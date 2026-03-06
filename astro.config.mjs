@@ -1,8 +1,14 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
+import tailwindcss from '@tailwindcss/vite';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://thunderplunder.github.io',
-  base: '/vox-web',
+  base: '/',
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });

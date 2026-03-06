@@ -1,13 +1,16 @@
-<html lang="no">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>VOX</title>
-  </head>
-  <body>
-    <main>
-      <h1>VOX</h1>
-      <p>Norsk side – første versjon.</p>
-    </main>
-  </body>
-</html>
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="VOX — Hørehjelpen">
+  <main class="py-12">
+    <h1 class="text-3xl font-semibold">Få høreapparatet tilbake i hverdagen</h1>
+    <p class="mt-4 text-lg text-slate-600">
+      Test: hvis dette ser “stylet” ut (større tekst, margin, grå ingress), så er Tailwind live.
+    </p>
+
+    <a class="mt-8 inline-flex rounded-lg bg-blue-600 px-4 py-2 text-white" href="#">
+      Start chat
+    </a>
+  </main>
+</BaseLayout>

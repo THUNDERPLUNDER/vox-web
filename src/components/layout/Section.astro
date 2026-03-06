@@ -1,0 +1,14 @@
+---
+const { as: Tag = "section", id, tone = "default" } = Astro.props;
+
+const tones = {
+  default: "",
+  surface: "bg-[rgb(var(--surface))] border border-[rgb(var(--border))] rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)]",
+};
+---
+
+<Tag id={id} class={`py-12 sm:py-16 ${tones[tone] ?? tones.default}`}>
+  <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+    <slot />
+  </div>
+</Tag>

@@ -1,0 +1,12 @@
+@import "./tokens.css";
+@import "tailwindcss";
+
+html { 
+    font-family: var(--font-sans);
+    line-height: var(--leading);
+  }
+  
+  body {
+    background: rgb(var(--bg));
+    color: rgb(var(--text));
+  }
