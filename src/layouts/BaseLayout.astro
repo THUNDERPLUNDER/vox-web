@@ -53,11 +53,12 @@ const { title = "VOX" } = Astro.props;
         try {
           chatSdk.registerContext(
             chatSdk.prebuilts.ces.createContext({
-              deploymentName: "projects/hearing-aid-mvp/locations/eu/apps/1741e68d-0528-4625-8b83-99a0dbb5298f/deployments/dc1619d0-44a1-401b-92a6-1357c29274ea",
+              appId: '1741e68d-0528-4625-8b83-99a0dbb5298f',
+              deploymentName: 'dc1619d0-44a1-401b-92a6-1357c29274ea',
               tokenBroker: { enableTokenBroker: true, enableRecaptcha: false },
             }),
           );
-          console.log("CES Widget: registerContext called successfully.");
+          console.log("CES Widget: registerContext called successfully with appId and deploymentName.");
         } catch (error) {
           console.error("CES Widget: Error during registerContext.", error);
         }
