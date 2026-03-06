@@ -73,6 +73,12 @@ const { title = "VOX" } = Astro.props;
             console.log("CES Widget: Found widget element.", widget);
             widget.addEventListener('open', (e) => console.log('CES Widget: open event', e.detail || e));
             widget.addEventListener('close', (e) => console.log('CES Widget: close event', e.detail || e));
+
+            if (window.location.pathname.startsWith('/no')) {
+                console.log("CES Widget: /no page detected, making widget launcher visible for debug.");
+                widget.show?.();
+                widget.style.display = 'block';
+            }
         } else {
             console.error("CES Widget: Could not find widget element with id 'ces-widget'");
         }
