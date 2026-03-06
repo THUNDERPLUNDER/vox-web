@@ -3,225 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VOX - Visuelt Målbilde</title>
+    <title>VOX – Det Visuelle Målbildet</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600;700&family=Inter:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* 1. DESIGN SYSTEM - OPPDATERT MED "NERVEN" */
+        /* DESIGN SYSTEM TOKENS */
         :root {
             --bg: #FDFDFC;          /* Warm Paper */
-            --text: #0F172A;        /* Slate 900 - Autoritet */
-            --primary: #1E3A8A;     /* Midnight Navy - Tillit */
-            --nerve: #FB7185;       /* Electric Coral - Innovasjon & Menneske */
+            --text: #0F172A;        /* Midnight Navy Text */
+            --primary: #1E3A8A;     /* Navy - Tillit */
+            --nerve: #FB7185;       /* Electric Coral - Innovasjon */
             --muted: #64748B;       /* Slate 500 */
             --surface: #FFFFFF;
-            --radius: 24px;         
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            --max-width: 1100px;
         }
 
-        * { box-sizing: border-box; }
+        /* RESET & SCROLL BEHAVIOR */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
         body {
-            background-color: #F1F5F9;
-            display: grid;
-            gap: 60px;
-            grid-template-columns: 1fr;
-            margin: 0;
-            padding: 60px 0;
-            place-items: center;
+            background-color: var(--bg);
             font-family: 'Inter', sans-serif;
             color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .slide-container {
-            background-color: var(--bg);
-            border-radius: 16px;
-            box-shadow: 0 30px 60px rgba(15, 23, 42, 0.1);
-            display: flex;
-            flex-direction: column;
-            height: 720px;
-            overflow: hidden;
-            padding: 80px;
-            position: relative;
-            width: 1280px;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        /* Bakgrunnsdekor: En subtil linje som representerer reisen/nerven */
-        .slide-container::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 6px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--nerve) 100%);
-            opacity: 0.8;
-        }
-
-        h1, h2, h3 { 
-            font-family: 'Figtree', sans-serif; 
-            margin: 0; 
-            color: var(--text);
-        }
-
-        .slide-title {
-            font-size: 52px;
-            font-weight: 700;
-            margin-bottom: 40px;
-            position: relative;
+        /* SLIDE WRAPPER */
+        section {
+            height: 100vh;
+            width: 100vw;
             display: flex;
             align-items: center;
-            gap: 20px;
-        }
-
-        .slide-title::before {
-            content: '';
-            width: 12px;
-            height: 48px;
-            background: var(--nerve);
-            border-radius: 4px;
-        }
-
-        .content-area {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
             justify-content: center;
+            scroll-snap-align: start;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            width: 100%;
+            z-index: 10;
+        }
+
+        /* "NERVEN" - Den røde tråden */
+        .the-pulse {
+            position: fixed;
+            left: 50%;
+            bottom: 40px;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background: rgba(15, 23, 42, 0.1);
+            z-index: 100;
+        }
+        .the-pulse-active {
+            width: 30%;
+            height: 100%;
+            background: var(--nerve);
+            box-shadow: 0 0 10px var(--nerve);
+        }
+
+        /* TYPOGRAPHY */
+        h1, h2, h3 {
+            font-family: 'Figtree', sans-serif;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .title-large { font-size: clamp(3rem, 8vw, 6rem); letter-spacing: -0.04em; margin-bottom: 0.5em; }
+        .title-medium { font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: -0.03em; margin-bottom: 0.6em; }
+        
+        .eyebrow {
+            color: var(--nerve);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .lead { font-size: 1.4rem; color: var(--muted); font-weight: 300; max-width: 700px; }
+
+        /* LAYOUT COMPONENTS */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        
+        .card {
+            background: var(--surface);
+            padding: 48px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(15, 23, 42, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            position: relative;
+        }
+
+        .image-frame {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            height: 500px;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.1);
+        }
+
+        .image-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Justert fokus for å vise øret bedre */
+            object-position: 80% center; 
+        }
+
+        /* BACKGROUND DECOR */
+        .blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(251, 113, 133, 0.03) 0%, transparent 70%);
+            border-radius: 50%;
             z-index: 1;
         }
 
-        p, li { font-size: 22px; line-height: 1.6; color: var(--muted); }
+        /* SLIDE SPECIFICS */
+        #hero { background-color: #FDFDFC; }
+        #identity { background-color: var(--text); color: white; }
+        #identity h2, #identity .lead { color: white; }
+        #identity .eyebrow { color: var(--nerve); }
 
-        /* SPESIFIKKE LAYOUTS */
-        .title-layout { text-align: left; }
-        .title-layout h1 { font-size: 92px; letter-spacing: -3px; line-height: 0.9; margin-bottom: 24px; }
-        .title-layout .subtitle { font-size: 28px; color: var(--nerve); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
-
-        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-        
-        /* FIKSET BILDE-POSISJON FOR SLIDE 6 */
-        .image-wrapper { border-radius: var(--radius); overflow: hidden; height: 450px; background: #E2E8F0; }
-        .image-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: 75% center; } /* Fokusert mer på høyre side av bildet */
-
-        .tile { 
-            background: var(--surface); 
-            padding: 40px; 
-            border-radius: var(--radius); 
-            flex: 1; 
-            border-bottom: 4px solid var(--primary);
-            transition: transform 0.3s ease;
+        .tag {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(251, 113, 133, 0.1);
+            color: var(--nerve);
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
         }
-        .tile:hover { transform: translateY(-10px); border-bottom-color: var(--nerve); }
-        .tile .icon { font-size: 44px; color: var(--nerve); margin-bottom: 24px; }
 
-        /* HIGHLIGHT FOR INNOVASJON */
-        .nerve-text { color: var(--nerve); font-weight: 700; }
-        .accent-box { border-left: 8px solid var(--nerve); padding-left: 30px; margin: 40px 0; }
+        /* ANIMATION */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .container { animation: fadeIn 1s ease-out forwards; }
+
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; gap: 40px; }
+            section { padding: 20px; }
+            .image-frame { height: 300px; }
+        }
     </style>
 </head>
 <body>
 
-<!-- Slide 1: Tittel -->
-<div class="slide-container" id="slide1">
-    <div class="content-area title-layout">
-        <p class="subtitle">Trygg Innovasjon</p>
-        <h1>VOX –<br>Hørehjelpen</h1>
-        <p style="font-size: 24px; max-width: 600px;">Fra 1993 til 2025: 30 år med digital nysgjerrighet og menneskelig omsorg samlet i én tjeneste.</p>
-    </div>
-</div>
+    <div class="the-pulse"><div class="the-pulse-active"></div></div>
 
-<!-- Slide 2: Identiteten - Bruddet -->
-<div class="slide-container" id="slide2">
-    <h2 class="slide-title">Identiteten</h2>
-    <div class="content-area">
-        <div class="two-column">
-            <div>
-                <h3>En nerve av innovasjon</h3>
-                <p>VOX er ikke bare nok en blå helse-app. Vi kombinerer den dype autoriteten fra <span class="nerve-text">Midnattssblå</span> med varmen og drivkraften i <span class="nerve-text">Electric Coral</span>.</p>
-                <div class="accent-box">
-                    <p style="color: var(--text); font-style: italic;">"Vi er broen mellom det tekniske modemet og den varme samtalen."</p>
+    <!-- SLIDE 1: INTRO -->
+    <section id="hero">
+        <div class="blob" style="top: -200px; right: -200px;"></div>
+        <div class="container">
+            <span class="eyebrow">Etablering av Merkevare</span>
+            <h1 class="title-large">VOX –<br>Hørehjelpen</h1>
+            <p class="lead">Fra internetts pionerånd i 1993 til Kirkens SOS i 2025. En reise i trygg innovasjon og menneskelig omsorg.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE 2: IDENTITETEN -->
+    <section id="identity">
+        <div class="container">
+            <div class="grid">
+                <div>
+                    <span class="eyebrow">Kjernen</span>
+                    <h2 class="title-medium">En Nerve av<br>Innovasjon</h2>
+                    <p class="lead" style="margin-bottom: 2rem; opacity: 0.9;">Vi opererer i paradokset mellom det tekniske modemet og den varme samtalen.</p>
+                    <div style="border-left: 4px solid var(--nerve); padding-left: 2rem; margin-top: 3rem;">
+                        <p style="font-style: italic; font-weight: 300; font-size: 1.2rem;">"Målet er ikke å bare vise vei, men å være tryggheten i rommet mens teknologien mestres."</p>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div class="card" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: white;">
+                        <h3 style="color: var(--nerve); margin-bottom: 10px;">Midnight Navy</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8;">Autoritet, Soliditet, Kirkens SOS.</p>
+                    </div>
+                    <div class="card" style="background: rgba(251, 113, 133, 0.1); border-color: var(--nerve); color: white;">
+                        <h3 style="color: var(--nerve); margin-bottom: 10px;">Electric Coral</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8;">Innovasjon, Puls, Menneskemøtet.</p>
+                    </div>
                 </div>
             </div>
-            <div class="image-wrapper" style="background: linear-gradient(135deg, var(--primary) 0%, var(--nerve) 100%); display: flex; align-items: center; justify-content: center;">
-                 <i class="fa-solid fa-bolt-lightning" style="font-size: 120px; color: white;"></i>
-            </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<!-- Slide 3: Historien som autoritet -->
-<div class="slide-container" id="slide3">
-    <h2 class="slide-title">Erfaring som fundament</h2>
-    <div class="content-area">
-        <div class="two-column">
-             <div style="font-size: 100px; font-weight: 800; opacity: 0.1; line-height: 1;">1993<br>2025</div>
-             <div>
-                 <h3>Innovasjon med sjel</h3>
-                 <p>Bak VOX ligger en unik reise:</p>
-                 <ul style="list-style: none; padding: 0;">
-                     <li style="margin-bottom: 15px;"><i class="fa-solid fa-check" style="color: var(--nerve); margin-right: 15px;"></i> Pionerånd fra internetts barndom.</li>
-                     <li style="margin-bottom: 15px;"><i class="fa-solid fa-check" style="color: var(--nerve); margin-right: 15px;"></i> Dyp empati fra Kirkens SOS.</li>
-                     <li style="margin-bottom: 15px;"><i class="fa-solid fa-check" style="color: var(--nerve); margin-right: 15px;"></i> Ekspertise på designsystemer.</li>
-                 </ul>
-                 <p>Dette er vår "unfair advantage": Vi forstår både koden og mennesket.</p>
-             </div>
+    <!-- SLIDE 3: ERFARING -->
+    <section>
+        <div class="blob" style="bottom: -200px; left: -200px;"></div>
+        <div class="container">
+            <div class="grid">
+                <div style="text-align: center;">
+                    <div style="font-size: 12rem; font-family: 'Figtree'; font-weight: 800; color: var(--primary); opacity: 0.05; position: absolute; top: 10%; left: 0;">30 ÅR</div>
+                    <div class="card" style="display: inline-block; padding: 60px;">
+                        <i class="fa-solid fa-bolt-lightning" style="font-size: 80px; color: var(--nerve);"></i>
+                        <p style="margin-top: 20px; font-weight: 600; color: var(--primary);">EST. 1993</p>
+                    </div>
+                </div>
+                <div>
+                    <span class="eyebrow">Erfaring</span>
+                    <h2 class="title-medium">Fundamentet</h2>
+                    <p style="margin-bottom: 1.5rem;">Vår autoritet bygger på en unik tidslinje:</p>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 1rem; display: flex; gap: 15px; align-items: center;"><i class="fa-solid fa-circle-check" style="color: var(--nerve);"></i> Pionerånd (IRC, BBS, HTML '96)</li>
+                        <li style="margin-bottom: 1rem; display: flex; gap: 15px; align-items: center;"><i class="fa-solid fa-circle-check" style="color: var(--nerve);"></i> Menneskelig dybde (Kirkens SOS)</li>
+                        <li style="margin-bottom: 1rem; display: flex; gap: 15px; align-items: center;"><i class="fa-solid fa-circle-check" style="color: var(--nerve);"></i> Systemforståelse (Designsystem Lead)</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<!-- Slide 4: Typografi & Form (OPPDATERT FOKUS) -->
-<div class="slide-container" id="slide6">
-    <h2 class="slide-title">Typografi & Form</h2>
-    <div class="content-area">
-        <div class="two-column">
-            <div class="image-wrapper">
-                <!-- Bildet er nå forskjøvet mot høyre i CSS for å vise øret bedre -->
-                <img src="http://googleusercontent.com/image_collection/image_retrieval/15185958262209202660" alt="Høreapparat detaljfoto">
-            </div>
-            <div>
-                <h3>Figtree & Inter</h3>
-                <p>Vi bruker Figtree for overskrifter for å gi karakter og varme. Inter sikrer maksimal lesbarhet i brødtekst.</p>
-                <p><strong>Radius: rounded-2xl</strong><br>Alle flater har myke hjørner (16-24px). Ingenting skal føles spisst eller aggressivt.</p>
+    <!-- SLIDE 4: VISUELT UTTRYKK -->
+    <section>
+        <div class="container">
+            <div class="grid">
+                <div>
+                    <span class="tag">Design Tokens</span>
+                    <h2 class="title-medium">Form & Følelse</h2>
+                    <p class="lead">Vi bruker moderne geometri kombinert med klassisk typografi for å skape en følelse av "Ekspertise med Empati".</p>
+                    <div style="margin-top: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <p style="font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Typografi</p>
+                            <p>Figtree / Inter</p>
+                        </div>
+                        <div>
+                            <p style="font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Radius</p>
+                            <p>32px (rounded-3xl)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-frame">
+                    <!-- Bildet er nå sentrert mer mot høyre i CSS for å vise øret/detaljene -->
+                    <img src="http://googleusercontent.com/image_collection/image_retrieval/15185958262209202660" alt="Høreapparat detaljfoto">
+                </div>
             </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<!-- Slide 5: Kjerneverdier -->
-<div class="slide-container" id="slide3">
-    <h2 class="slide-title">Kjerneverdier</h2>
-    <div class="content-area">
-        <div style="display: flex; gap: 30px;">
-            <div class="tile">
-                <div class="icon"><i class="fa-solid fa-heart"></i></div>
-                <h3>Empati</h3>
-                <p>Menneske til menneske. Vi lytter før vi svarer.</p>
-            </div>
-            <div class="tile">
-                <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
-                <h3>Troverdighet</h3>
-                <p>Soliditet i hvert steg. Vi bygger trygge broer.</p>
-            </div>
-            <div class="tile">
-                <div class="icon"><i class="fa-solid fa-microchip"></i></div>
-                <h3>Innovasjon</h3>
-                <p>Vi bruker teknologien til å gjøre det komplekse enkelt.</p>
+    <!-- SLIDE 5: NESTE SKRITT -->
+    <section style="background: var(--primary); color: white;">
+        <div class="container" style="text-align: center;">
+            <span class="eyebrow" style="color: var(--nerve);">Fremtiden</span>
+            <h2 class="title-large" style="color: white;">Neste Skritt</h2>
+            <p class="lead" style="color: rgba(255,255,255,0.8); margin: 0 auto 3rem;">Fra den første koden i 1996 til en revolusjon for hverdagsmestring i 2026.</p>
+            <div style="display: flex; gap: 20px; justify-content: center;">
+                <div style="padding: 20px 40px; border: 2px solid var(--nerve); border-radius: 100px; font-weight: 700; letter-spacing: 0.1em;">PROTOTYPE</div>
+                <div style="padding: 20px 40px; background: white; color: var(--primary); border-radius: 100px; font-weight: 700; letter-spacing: 0.1em;">VOX.RADDUM.NO</div>
             </div>
         </div>
-    </div>
-</div>
-
-<!-- Slide 6: Q&A -->
-<div class="slide-container" id="slide12" style="text-align: center; border-bottom: 10px solid var(--nerve);">
-    <div class="content-area">
-        <h2 style="font-size: 72px;">Neste skritt</h2>
-        <p style="font-size: 24px; margin-top: 20px;">Fra prototype til personlig frihet.</p>
-        <div style="margin-top: 60px; font-weight: 700; color: var(--primary); font-size: 28px;">
-            vox.raddum.no
-        </div>
-    </div>
-</div>
+    </section>
 
 </body>
 </html>
