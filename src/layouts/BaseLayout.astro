@@ -48,19 +48,16 @@ const { title = "VOX" } = Astro.props;
     <script>
       console.log("CES Widget: Initializing script...");
 
-      window.addEventListener("chat-messenger-loaded", () => {
-        console.log("CES Widget: chat-messenger-loaded event fired.");
+      window.addEventListener('chat-messenger-loaded', () => {
         try {
           chatSdk.registerContext(
             chatSdk.prebuilts.ces.createContext({
-              appId: '1741e68d-0528-4625-8b83-99a0dbb5298f',
               deploymentName: 'projects/1088102295663/locations/eu/apps/1741e68d-0528-4625-8b83-99a0dbb5298f/deployments/dc1619d0-44a1-401b-92a6-1357c29274ea',
-              tokenBroker: { enableTokenBroker: true, enableRecaptcha: false },
-            }),
+              tokenBroker: { enableTokenBroker: true, enableRecaptcha: false }
+            })
           );
-          console.log("CES Widget: registerContext called successfully with appId and deploymentName.");
         } catch (error) {
-          console.error("CES Widget: Error during registerContext.", error);
+          console.error('CES Widget Error', error);
         }
       });
 
@@ -69,7 +66,7 @@ const { title = "VOX" } = Astro.props;
       });
 
       document.addEventListener('DOMContentLoaded', () => {
-        const widget = document.getElementById('ces-widget');
+        const widget = document.querySelector('chat-messenger');
         if(widget) {
             console.log("CES Widget: Found widget element.", widget);
             widget.addEventListener('open', (e) => console.log('CES Widget: open event', e.detail || e));
@@ -81,17 +78,12 @@ const { title = "VOX" } = Astro.props;
                 widget.style.display = 'block';
             }
         } else {
-            console.error("CES Widget: Could not find widget element with id 'ces-widget'");
+            console.error("CES Widget: Could not find chat-messenger element");
         }
       });
     </script>
     
-    <chat-messenger
-      id="ces-widget"
-      url-allowlist="*"
-      location="eu"
-      agent-id={import.meta.env.PUBLIC_AGENT_ID}
-    >
+    <chat-messenger url-allowlist="*">
       <chat-messenger-container
         chat-title="Hørehjelpen"
         chat-title-icon="https://gstatic.com/dialogflow-console/common/assets/ccai-favicons/conversational_agents.png"
