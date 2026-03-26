@@ -42,45 +42,10 @@ const { title = "VOX" } = Astro.props;
       <slot />
     </div>
 
-    <script>
-      console.log("CES Widget: Initializing script...");
-
-      window.addEventListener('chat-messenger-loaded', () => {
-        try {
-          chatSdk.registerContext(
-            chatSdk.prebuilts.ces.createContext({
-              deploymentName: 'projects/1088102295663/locations/eu/apps/1741e68d-0528-4625-8b83-99a0dbb5298f/deployments/dc1619d0-44a1-401b-92a6-1357c29274ea',
-              tokenBroker: { enableTokenBroker: true, enableRecaptcha: false }
-            })
-          );
-        } catch (error) {
-          console.error('CES Widget Error', error);
-        }
-      });
-
-      window.addEventListener("chat-messenger-error", (e) => {
-        console.error("CES Widget: chat-messenger-error event fired.", e.detail || e);
-      });
-
-      document.addEventListener('DOMContentLoaded', () => {
-        const widget = document.querySelector('chat-messenger');
-        if(widget) {
-            console.log("CES Widget: Found widget element.", widget);
-            widget.addEventListener('open', (e) => console.log('CES Widget: open event', e.detail || e));
-            widget.addEventListener('close', (e) => console.log('CES Widget: close event', e.detail || e));
-
-            if (window.location.pathname.startsWith('/no')) {
-                console.log("CES Widget: /no page detected, making widget launcher visible for debug.");
-                widget.show?.();
-                widget.style.display = 'block';
-            }
-        } else {
-            console.error("CES Widget: Could not find chat-messenger element");
-        }
-      });
-    </script>
-    
-    <chat-messenger url-allowlist="*">
+    <chat-messenger
+      url-allowlist="*"
+      deployment-id="projects/1088102295663/locations/eu/apps/1741e68d-0528-4625-8b83-99a0dbb5298f/deployments/dc1619d0-44a1-401b-92a6-1357c29274ea"
+    >
       <chat-messenger-container
         chat-title="Hørehjelpen"
         chat-title-icon="https://gstatic.com/dialogflow-console/common/assets/ccai-favicons/conversational_agents.png"
