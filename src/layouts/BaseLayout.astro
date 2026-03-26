@@ -42,7 +42,8 @@ const { title = "VOX" } = Astro.props;
       <slot />
     </div>
 
-    <chat-messenger url-allowlist="*">
+    <!-- CONTRACT: CES widget plumbing (chatSdk.registerContext + deploymentName). Do not change unless updating from CES Deploy embed. -->
+    <chat-messenger id="ces-widget" url-allowlist="*" style="display:none">
       <chat-messenger-container
         chat-title="Hørehjelpen"
         enable-file-upload
@@ -77,6 +78,18 @@ const { title = "VOX" } = Astro.props;
       window.addEventListener("chat-messenger-error", (e) => {
         console.error("chat-messenger-error", e?.detail || e);
       });
+    </script>
+
+    <script is:inline>
+      window.VOX = {
+        openChat: () => {
+          const el = document.getElementById("ces-widget");
+          if (!el) return;
+          el.style.display = "block";
+          el.open?.();
+          el.show?.();
+        },
+      };
     </script>
   </body>
 </html>
