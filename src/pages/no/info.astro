@@ -1,0 +1,39 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Section from "../../components/layout/Section.astro";
+---
+
+<BaseLayout title="VOX - Hørehjelpen info">
+  <main>
+    <Section>
+      <div class="max-w-3xl">
+        <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+          Få høreapparatet tilbake i hverdagen
+        </h1>
+
+        <p class="mt-4 text-lg text-[rgb(var(--muted))]">
+          Hørehjelpen gir deg korte, konkrete steg når teknikken frustrerer - og en trygg inngang når terskelen er høy.
+          Du trenger ikke kunne alt for å starte.
+        </p>
+
+        <div class="mt-8">
+          <a
+            href="/no"
+            class="inline-flex items-center justify-center rounded-[var(--radius-sm)] border border-[rgb(var(--border))] bg-transparent px-5 py-3 text-sm font-medium"
+          >
+            Tilbake til chat
+          </a>
+        </div>
+
+        <p class="mt-4 text-sm text-[rgb(var(--muted))]">
+          Start med én setning. Vi tar resten stegvis.
+        </p>
+      </div>
+    </Section>
+
+    <Section id="kan-hjelpe" tone="surface">
+      <h2 class="text-xl font-semibold tracking-tight">Dette kan jeg hjelpe med</h2>
+      <p class="mt-2 text-[rgb(var(--muted))]">Kommer: 5 kort.</p>
+    </Section>
+  </main>
+</BaseLayout>
