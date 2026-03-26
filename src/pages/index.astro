@@ -1,6 +1,57 @@
 ---
-return new Response(null, {
-  status: 302,
-  headers: { Location: "/no" },
-});
+/* CONTRACT: Render the root landing page with a responsive info-card grid for Hørehjelpen. */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/layout/Section.astro";
+import InfoCard from "../components/InfoCard.astro";
 ---
+
+<BaseLayout title="VOX - Hørehjelpen">
+  <main class="py-10 sm:py-14">
+    <Section>
+      <div class="max-w-3xl">
+        <h1 class="text-3xl font-semibold tracking-tight text-[rgb(var(--text))] sm:text-4xl">
+          Hørehjelpen gjør det enklere å mestre høreapparatet i hverdagen
+        </h1>
+        <p class="mt-4 text-base leading-relaxed text-[rgb(var(--muted))] sm:text-lg">
+          Få trygg, konkret støtte når noe ikke fungerer som forventet. Start med ett spørsmål,
+          og få hjelp steg for steg.
+        </p>
+      </div>
+    </Section>
+
+    <Section id="hva-du-far" tone="surface">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <p class="text-sm font-medium text-[rgb(var(--primary))]">Hva du får</p>
+          <h2 class="mt-1 text-2xl font-semibold tracking-tight text-[rgb(var(--text))] sm:text-3xl">
+            Tre måter Hørehjelpen støtter deg på
+          </h2>
+        </div>
+      </div>
+
+      <div class="mt-6 grid grid-cols-1 gap-4 sm:mt-8 sm:gap-5 lg:grid-cols-3">
+        <InfoCard
+          eyebrow="Kom i gang"
+          title="Stegvis feilsøking"
+          description="Få enkle steg når lyd, batteri eller tilkobling skaper problemer. Du slipper å gjette hva du skal prøve først."
+          href="#"
+          tone="surface"
+        />
+        <InfoCard
+          eyebrow="Når det haster"
+          title="Rask hjelp i situasjonen"
+          description="Få konkrete råd der og da - hjemme, på jobb eller på farten - slik at du raskt kan komme tilbake til samtalen."
+          href="#"
+          tone="surface"
+        />
+        <InfoCard
+          eyebrow="Trygghet over tid"
+          title="Enklere hverdag med høreapparat"
+          description="Bygg trygghet med korte forklaringer og praktiske tips, slik at teknikken blir mindre stress og mer støtte."
+          href="#"
+          tone="surface"
+        />
+      </div>
+    </Section>
+  </main>
+</BaseLayout>

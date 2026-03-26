@@ -1,0 +1,20 @@
+# Kjerne-stack
+- Framework: Astro (siste versjon)
+- Styling: Tailwind CSS
+- CMS: Storyblok (Astro-integrasjon)
+- Hosting: Vercel
+
+# Designsystem & Styling (VIKTIG)
+- Bruk ALLTID Tailwind CSS for styling.
+- Farger, typografi og spacing skal primært hentes fra definerte tokens i `src/styles/tokens.css`.
+- Unngå inline styles.
+- Mobile-first tilnærming for alt UI.
+
+# Storyblok Integrasjon
+- Innhold skal alltid hentes med `version: "draft"` i utvikling og preview.
+- All tekst i UI skal kunne redigeres fra Storyblok (ingen hardkodet tekst i .astro-filene hvis det kan unngås).
+
+# Kodestil & Arkitektur
+- Hold Astro-komponenter små og modulære (f.eks. `<Hero />`, `<InfoGrid />`).
+- Hver fil skal starte med en kort HTML/JS-kommentar som fungerer som en "CONTRACT" om filens ansvar.
+- Ikke rør CES-widget integrasjonen (<chat-messenger>) med mindre det er eksplisitt bedt om.

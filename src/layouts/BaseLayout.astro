@@ -86,7 +86,11 @@ const { title = "VOX" } = Astro.props;
       });
     </script>
     
-    <chat-messenger id="ces-widget" url-allowlist="*">
+    <chat-messenger
+      id="ces-widget"
+      url-allowlist="*"
+      agent-id={import.meta.env.PUBLIC_AGENT_ID}
+    >
       <chat-messenger-container
         chat-title="Hørehjelpen"
         chat-title-icon="https://gstatic.com/dialogflow-console/common/assets/ccai-favicons/conversational_agents.png"

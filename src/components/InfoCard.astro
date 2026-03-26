@@ -1,0 +1,103 @@
+<!-- CONTRACT: Present a reusable, responsive info card using Tailwind + design tokens (CSS variables). -->
+---
+type Props = {
+  title?: string;
+  eyebrow?: string;
+  description?: string;
+  href?: string;
+  /** Optional icon HTML (e.g. an SVG). */
+  icon?: string;
+  tone?: "surface" | "ghost";
+};
+
+const {
+  title,
+  eyebrow,
+  description,
+  href,
+  icon,
+  tone = "surface",
+} = Astro.props as Props;
+
+const tones: Record<NonNullable<Props["tone"]>, string> = {
+  surface:
+    "bg-[rgb(var(--surface))] border border-[rgb(var(--border))] shadow-[var(--shadow-sm)]",
+  ghost: "bg-transparent border border-[rgb(var(--border))] shadow-none",
+};
+
+const base =
+  "group block w-full rounded-[var(--radius-md)] p-5 sm:p-6 transition-colors";
+
+const interactive = href
+  ? "hover:border-[rgb(var(--muted))] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--bg))]"
+  : "";
+---
+
+{href ? (
+  <a href={href} class={`${base} ${tones[tone]} ${interactive}`}>
+    <div class="flex items-start gap-4 sm:gap-5">
+      {icon ? (
+        <div
+          class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[rgb(var(--bg))] text-[rgb(var(--primary))] ring-1 ring-[rgb(var(--border))]"
+          set:html={icon}
+        />
+      ) : null}
+
+      <div class="min-w-0">
+        {eyebrow ? (
+          <p class="text-sm font-medium tracking-tight text-[rgb(var(--muted))]">
+            {eyebrow}
+          </p>
+        ) : null}
+
+        {title ? (
+          <h3 class="mt-1 text-base font-semibold leading-snug text-[rgb(var(--text))]">
+            {title}
+          </h3>
+        ) : null}
+
+        {description ? (
+          <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--muted))]">
+            {description}
+          </p>
+        ) : null}
+      </div>
+
+      <div class="hidden sm:block shrink-0 pt-1 text-[rgb(var(--muted))] transition-colors group-hover:text-[rgb(var(--text))]">
+        <span aria-hidden="true">→</span>
+      </div>
+    </div>
+  </a>
+) : (
+  <div class={`${base} ${tones[tone]}`}>
+    <div class="flex items-start gap-4 sm:gap-5">
+      {icon ? (
+        <div
+          class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[rgb(var(--bg))] text-[rgb(var(--primary))] ring-1 ring-[rgb(var(--border))]"
+          set:html={icon}
+        />
+      ) : null}
+
+      <div class="min-w-0">
+        {eyebrow ? (
+          <p class="text-sm font-medium tracking-tight text-[rgb(var(--muted))]">
+            {eyebrow}
+          </p>
+        ) : null}
+
+        {title ? (
+          <h3 class="mt-1 text-base font-semibold leading-snug text-[rgb(var(--text))]">
+            {title}
+          </h3>
+        ) : null}
+
+        {description ? (
+          <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--muted))]">
+            {description}
+          </p>
+        ) : null}
+      </div>
+    </div>
+  </div>
+)}
+
