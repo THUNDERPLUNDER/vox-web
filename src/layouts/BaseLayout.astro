@@ -42,19 +42,41 @@ const { title = "VOX" } = Astro.props;
       <slot />
     </div>
 
-    <chat-messenger
-      url-allowlist="*"
-      location="eu"
-      deployment-id="projects/1088102295663/locations/eu/apps/1741e68d-0528-4625-8b83-99a0dbb5298f/deployments/dc1619d0-44a1-401b-92a6-1357c29274ea"
-    >
+    <chat-messenger url-allowlist="*">
       <chat-messenger-container
         chat-title="Hørehjelpen"
-        chat-title-icon="https://gstatic.com/dialogflow-console/common/assets/ccai-favicons/conversational_agents.png"
         enable-file-upload
         enable-audio-input
-      >
-        <chat-reset-session-button slot="titlebar-actions" title-text="Start new chat"></chat-reset-session-button>
-      </chat-messenger-container>
+      ></chat-messenger-container>
     </chat-messenger>
+
+    <script is:inline>
+      const deploymentName =
+        "projects/1088102295663/locations/eu/apps/1741e68d-0528-4625-8b83-99a0dbb5298f/deployments/dc1619d0-44a1-401b-92a6-1357c29274ea";
+
+      const register = () => {
+        if (!window.chatSdk) return false;
+        chatSdk.registerContext(
+          chatSdk.prebuilts.ces.createContext({
+            deploymentName,
+            tokenBroker: { enableTokenBroker: true, enableRecaptcha: false },
+          }),
+        );
+        return true;
+      };
+
+      window.addEventListener("chat-messenger-loaded", () => {
+        if (register()) return;
+        let tries = 0;
+        const t = setInterval(() => {
+          tries++;
+          if (register() || tries > 10) clearInterval(t);
+        }, 200);
+      });
+
+      window.addEventListener("chat-messenger-error", (e) => {
+        console.error("chat-messenger-error", e?.detail || e);
+      });
+    </script>
   </body>
 </html>
