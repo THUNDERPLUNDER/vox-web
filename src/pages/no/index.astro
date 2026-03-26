@@ -7,6 +7,14 @@ import Section from "../../components/layout/Section.astro";
   <main class="py-8 sm:py-10">
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_460px] lg:items-start">
       <aside class="order-1 lg:order-2 lg:sticky lg:top-6">
+        <button
+          id="openInfoBtn"
+          type="button"
+          class="mb-3 inline-flex items-center justify-center rounded-[var(--radius-sm)] border border-[rgb(var(--border))] bg-[rgb(var(--surface))] px-4 py-2 text-sm font-medium lg:hidden"
+        >
+          Info
+        </button>
+
         <chat-messenger
           id="ces-widget"
           url-allowlist="*"
@@ -18,47 +26,92 @@ import Section from "../../components/layout/Section.astro";
       </aside>
 
       <div class="order-2 lg:order-1">
-        <!-- Hero -->
-        <Section>
-          <div class="max-w-3xl">
-            <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">
-              Få høreapparatet tilbake i hverdagen
-            </h1>
+        <div id="infoContent" class="hidden lg:block">
+          <!-- Hero -->
+          <Section>
+            <div class="max-w-3xl">
+              <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+                Få høreapparatet tilbake i hverdagen
+              </h1>
 
-            <p class="mt-4 text-lg text-[rgb(var(--muted))]">
-              Hørehjelpen gir deg korte, konkrete steg når teknikken frustrerer - og en trygg inngang når terskelen er høy.
-              Du trenger ikke kunne alt for å starte.
-            </p>
+              <p class="mt-4 text-lg text-[rgb(var(--muted))]">
+                Hørehjelpen gir deg korte, konkrete steg når teknikken frustrerer - og en trygg inngang når terskelen er høy.
+                Du trenger ikke kunne alt for å starte.
+              </p>
 
-            <div class="mt-8 flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onclick="document.getElementById('ces-widget')?.scrollIntoView({behavior:'smooth', block:'start'}); document.getElementById('ces-widget')?.open?.(); document.getElementById('ces-widget')?.show?.();"
-                class="inline-flex items-center justify-center rounded-[var(--radius-sm)] bg-[rgb(var(--primary))] px-5 py-3 text-sm font-medium text-[rgb(var(--primary-contrast))]"
-              >
-                Start chat
-              </button>
+              <div class="mt-8 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onclick="document.getElementById('ces-widget')?.scrollIntoView({behavior:'smooth', block:'start'}); document.getElementById('ces-widget')?.open?.(); document.getElementById('ces-widget')?.show?.();"
+                  class="inline-flex items-center justify-center rounded-[var(--radius-sm)] bg-[rgb(var(--primary))] px-5 py-3 text-sm font-medium text-[rgb(var(--primary-contrast))]"
+                >
+                  Start chat
+                </button>
 
-              <a
-                href="#kan-hjelpe"
-                class="inline-flex items-center justify-center rounded-[var(--radius-sm)] border border-[rgb(var(--border))] bg-transparent px-5 py-3 text-sm font-medium"
-              >
-                Hva kan jeg få hjelp med?
-              </a>
+                <a
+                  href="#kan-hjelpe"
+                  class="inline-flex items-center justify-center rounded-[var(--radius-sm)] border border-[rgb(var(--border))] bg-transparent px-5 py-3 text-sm font-medium"
+                >
+                  Hva kan jeg få hjelp med?
+                </a>
+              </div>
+
+              <p class="mt-4 text-sm text-[rgb(var(--muted))]">
+                Start med én setning. Vi tar resten stegvis.
+              </p>
             </div>
+          </Section>
 
-            <p class="mt-4 text-sm text-[rgb(var(--muted))]">
-              Start med én setning. Vi tar resten stegvis.
-            </p>
-          </div>
-        </Section>
+          <!-- Neste seksjoner kommer her (vi bygger de i morgen eller neste steg) -->
+          <Section id="kan-hjelpe" tone="surface">
+            <h2 class="text-xl font-semibold tracking-tight">Dette kan jeg hjelpe med</h2>
+            <p class="mt-2 text-[rgb(var(--muted))]">Kommer: 5 kort.</p>
+          </Section>
+        </div>
+      </div>
+    </div>
 
-        <!-- Neste seksjoner kommer her (vi bygger de i morgen eller neste steg) -->
-        <Section id="kan-hjelpe" tone="surface">
-          <h2 class="text-xl font-semibold tracking-tight">Dette kan jeg hjelpe med</h2>
-          <p class="mt-2 text-[rgb(var(--muted))]">Kommer: 5 kort.</p>
-        </Section>
+    <div id="infoSheet" class="fixed inset-0 z-50 hidden lg:hidden" data-open="false">
+      <button id="infoOverlay" type="button" class="absolute inset-0 bg-black/40" aria-label="Lukk info"></button>
+      <div class="absolute inset-x-0 bottom-0 max-h-[85vh] translate-y-4 overflow-y-auto rounded-t-[var(--radius-lg)] border-t border-[rgb(var(--border))] bg-[rgb(var(--surface))] p-4 shadow-[var(--shadow-md)] transition-transform duration-200">
+        <div class="mb-3 flex items-center justify-between">
+          <p class="text-sm font-medium text-[rgb(var(--muted))]">Info</p>
+          <button id="closeInfoBtn" type="button" class="rounded-[var(--radius-sm)] border border-[rgb(var(--border))] px-3 py-1.5 text-sm">Lukk</button>
+        </div>
+        <div id="infoSheetContent"></div>
       </div>
     </div>
   </main>
+
+  <script is:inline>
+    const sheet = document.getElementById("infoSheet");
+    const panel = sheet?.querySelector("div.absolute.inset-x-0.bottom-0");
+    const overlay = document.getElementById("infoOverlay");
+    const openBtn = document.getElementById("openInfoBtn");
+    const closeBtn = document.getElementById("closeInfoBtn");
+    const source = document.getElementById("infoContent");
+    const target = document.getElementById("infoSheetContent");
+
+    const openSheet = () => {
+      if (!sheet || !panel) return;
+      if (target && source && !target.innerHTML.trim()) target.innerHTML = source.innerHTML;
+      sheet.classList.remove("hidden");
+      sheet.dataset.open = "true";
+      requestAnimationFrame(() => panel.classList.remove("translate-y-4"));
+    };
+
+    const closeSheet = () => {
+      if (!sheet || !panel) return;
+      panel.classList.add("translate-y-4");
+      sheet.dataset.open = "false";
+      setTimeout(() => sheet.classList.add("hidden"), 180);
+    };
+
+    openBtn?.addEventListener("click", openSheet);
+    closeBtn?.addEventListener("click", closeSheet);
+    overlay?.addEventListener("click", closeSheet);
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && sheet?.dataset.open === "true") closeSheet();
+    });
+  </script>
 </BaseLayout>
