@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@500;600;700&family=Inter:wght@400;500;600&display=swap");
 @import "./tokens.css";
 @import "tailwindcss";
 
@@ -10,3 +11,10 @@ html {
     background: rgb(var(--bg));
     color: rgb(var(--text));
   }
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
