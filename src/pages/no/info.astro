@@ -1,22 +1,17 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Section from "../../components/layout/Section.astro";
+import Header from "../../components/nav/Header.astro";
+import Footer from "../../components/nav/Footer.astro";
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 ---
 
 <BaseLayout title="VOX - Hørehjelpen info">
-  <main class="py-8 sm:py-10">
-    <button
-      id="menuToggleBtn"
-      type="button"
-      aria-label="Meny"
-      class="lg:hidden fixed right-3 z-[2000] rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--surface))] shadow-[var(--shadow-sm)] w-10 h-10 flex items-center justify-center"
-      style="top: calc(env(safe-area-inset-top) + 12px);"
-    >
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path id="menuIconPath" d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </button>
+  <meta slot="head" name="robots" content="noindex,follow" />
+  <Header currentPath="/no/info" />
 
+  <main class="py-8 sm:py-10">
     <Section>
       <div class="max-w-3xl">
         <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -38,77 +33,6 @@ import Section from "../../components/layout/Section.astro";
       <h2 class="text-xl font-semibold tracking-tight">Dette kan jeg hjelpe med</h2>
       <p class="mt-2 text-[rgb(var(--muted))]">Kommer: 5 kort.</p>
     </Section>
-
-    <div id="mobileSheet" class="fixed inset-0 hidden lg:hidden" data-open="false">
-      <button id="mobileOverlay" type="button" class="fixed inset-0 bg-black/40 z-[3000]" aria-label="Lukk meny"></button>
-      <div class="fixed top-0 right-0 z-[3001] h-full w-[min(420px,90vw)] translate-x-full overflow-y-auto border-l border-[rgb(var(--border))] bg-[rgb(var(--surface))] p-4 shadow-[var(--shadow-md)] transition-transform duration-200">
-        <div class="sticky top-0 z-10 mb-3 flex items-center justify-between bg-[rgb(var(--surface))] pb-3">
-          <p class="text-sm font-medium text-[rgb(var(--muted))]">Meny</p>
-        </div>
-
-        <section>
-          <nav class="mt-1">
-            <a href="/no" class="flex w-full items-center justify-between border-b border-[rgb(var(--border))] py-3 text-sm">
-              <span>Chat</span><span aria-hidden="true">→</span>
-            </a>
-            <a href="/no/info" class="flex w-full items-center justify-between border-b border-[rgb(var(--border))] bg-[rgb(var(--bg))] py-3 text-sm font-semibold">
-              <span>Kom i gang</span><span aria-hidden="true">→</span>
-            </a>
-            <a href="/no/ordbok" class="flex w-full items-center justify-between border-b border-[rgb(var(--border))] py-3 text-sm">
-              <span>Ordbok</span><span aria-hidden="true">→</span>
-            </a>
-            <a href="/no/om" class="flex w-full items-center justify-between border-b border-[rgb(var(--border))] py-3 text-sm">
-              <span>Om</span><span aria-hidden="true">→</span>
-            </a>
-            <a href="/no/personvern" class="flex w-full items-center justify-between border-b border-[rgb(var(--border))] py-3 text-sm">
-              <span>Personvern</span><span aria-hidden="true">→</span>
-            </a>
-          </nav>
-        </section>
-      </div>
-    </div>
   </main>
-
-  <script is:inline>
-    const sheet = document.getElementById("mobileSheet");
-    const panel = sheet?.querySelector("div.fixed.top-0.right-0");
-    const overlay = document.getElementById("mobileOverlay");
-    const toggleBtn = document.getElementById("menuToggleBtn");
-    const menuIconPath = document.getElementById("menuIconPath");
-
-    const setMenuOpen = (isOpen) => {
-      if (!menuIconPath) return;
-      menuIconPath.setAttribute("d", isOpen ? "M6 6l12 12M18 6L6 18" : "M4 7h16M4 12h16M4 17h16");
-    };
-
-    const openSheet = () => {
-      if (!sheet || !panel) return;
-      sheet.classList.remove("hidden");
-      sheet.dataset.open = "true";
-      toggleBtn?.setAttribute("aria-label", "Lukk meny");
-      setMenuOpen(true);
-      requestAnimationFrame(() => panel.classList.remove("translate-x-full"));
-    };
-
-    const closeSheet = () => {
-      if (!sheet || !panel) return;
-      panel.classList.add("translate-x-full");
-      sheet.dataset.open = "false";
-      toggleBtn?.setAttribute("aria-label", "Meny");
-      setMenuOpen(false);
-      setTimeout(() => sheet.classList.add("hidden"), 180);
-    };
-
-    toggleBtn?.addEventListener("click", () => {
-      if (sheet?.dataset.open === "true") {
-        closeSheet();
-      } else {
-        openSheet();
-      }
-    });
-    overlay?.addEventListener("click", closeSheet);
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && sheet?.dataset.open === "true") closeSheet();
-    });
-  </script>
+  <Footer />
 </BaseLayout>

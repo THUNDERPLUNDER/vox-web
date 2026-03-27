@@ -1,0 +1,43 @@
+<!-- CONTRACT: Global site header with desktop nav and mobile menu trigger. -->
+---
+import MobileMenu from "./MobileMenu.astro";
+
+type Props = {
+  currentPath?: string;
+};
+
+const { currentPath = "" } = Astro.props as Props;
+
+const links = [
+  { href: "/no", label: "Start" },
+  { href: "/no/info", label: "Kom i gang" },
+  { href: "/no/ordbok", label: "Ordbok" },
+  { href: "/no/om", label: "Om" },
+  { href: "/no/personvern", label: "Personvern" },
+];
+---
+
+<header class="py-4 sm:py-5">
+  <div class="flex items-center justify-between">
+    <a href="/no" class="text-sm font-semibold tracking-tight text-[rgb(var(--text))]">Hørehjelpen</a>
+    <nav class="hidden lg:flex items-center gap-2">
+      {links.map((link) => {
+        const isActive = currentPath === link.href || (link.href !== "/no" && currentPath.startsWith(`${link.href}/`));
+        return (
+          <a
+            href={link.href}
+            class={`rounded-[var(--radius-sm)] px-3 py-2 text-sm ${
+              isActive
+                ? "bg-[rgb(var(--bg))] font-semibold text-[rgb(var(--text))]"
+                : "text-[rgb(var(--muted))] hover:text-[rgb(var(--text))]"
+            }`}
+          >
+            {link.label}
+          </a>
+        );
+      })}
+    </nav>
+  </div>
+</header>
+
+<MobileMenu currentPath={currentPath} />
