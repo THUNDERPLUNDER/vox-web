@@ -26,7 +26,7 @@ const links = [
         return (
           <a
             href={link.href}
-            class={`rounded-[var(--radius-sm)] px-3 py-2 text-sm ${
+            class={`rounded-[var(--radius-sm)] px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))] ${
               isActive
                 ? "bg-[rgb(var(--bg))] font-semibold text-[rgb(var(--text))]"
                 : "text-[rgb(var(--muted))] hover:text-[rgb(var(--text))]"
