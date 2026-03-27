@@ -30,6 +30,13 @@ Nøktern oppsummering av dagens designgrunnmur i kodebasen, samt retning fra des
 - I v0.2 mappes disse til eksisterende primitive tokens/verdier for å holde endringen trygg og bakoverkompatibel.
 - Dette gjør videre skalering enklere ved at komponenter gradvis kan bruke semantiske navn uten å endre grunnpaletten.
 
+## Operativ bruk av semantiske tokens
+- Bruk `--surface` for standard innholdsflater/kort der flaten skal oppleves nøytral og “default”.
+- Bruk `--surface-subtle` for lav-emfase flater (sekundære paneler, diskrete bakgrunner, svak visuell separasjon).
+- Bruk `--surface-elevated` for flater som skal føles mer fremhevet enn bakgrunnen, uten å introdusere ny farge.
+- Foretrekk semantiske tokens i komponenter (`--text-secondary`, `--focus-ring`, `--surface-*`) fremfor primitive tokens (`--muted`, `--focus`, `--bg`) når hensikten er kjent.
+- Bruk primitive tokens direkte kun når du definerer nye semantiske tokens eller gjør svært lavnivå grunnmurarbeid.
+
 ## Neste designsteg
 - Oversette Stitch-beslutninger til eksplisitte kode-tokens (inkl. typografi, lagdeling og gradientbruk).
 - Etablere en kort komponentnær designkontrakt for hvordan tokens brukes i layout, seksjoner og interaktive elementer.
