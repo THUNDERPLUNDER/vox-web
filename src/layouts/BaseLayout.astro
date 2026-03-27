@@ -46,25 +46,31 @@ const { title = "VOX" } = Astro.props;
       const deploymentName =
         "projects/1088102295663/locations/eu/apps/1741e68d-0528-4625-8b83-99a0dbb5298f/deployments/dc1619d0-44a1-401b-92a6-1357c29274ea";
 
-      const register = () => {
-        const widget = document.getElementById("ces-widget");
+      const register = (widget) => {
         if (!widget) return false;
         if (!window.chatSdk) return false;
-        chatSdk.registerContext(
-          chatSdk.prebuilts.ces.createContext({
-            deploymentName,
-            tokenBroker: { enableTokenBroker: true, enableRecaptcha: false },
-          }),
-        );
-        return true;
+        try {
+          chatSdk.registerContext(
+            chatSdk.prebuilts.ces.createContext({
+              deploymentName,
+              tokenBroker: { enableTokenBroker: true, enableRecaptcha: false },
+            }),
+          );
+          return true;
+        } catch (e) {
+          console.error("chat-messenger-error", e?.detail || e);
+          return false;
+        }
       };
 
       window.addEventListener("chat-messenger-loaded", () => {
-        if (register()) return;
+        const widget = document.getElementById("ces-widget");
+        if (!widget) return;
+        if (register(widget)) return;
         let tries = 0;
         const t = setInterval(() => {
           tries++;
-          if (register() || tries > 10) clearInterval(t);
+          if (register(widget) || tries > 10) clearInterval(t);
         }, 200);
       });
 
