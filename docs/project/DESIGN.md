@@ -21,6 +21,15 @@ Nøktern oppsummering av dagens designgrunnmur i kodebasen, samt retning fra des
 - Gradient- og tonal-lagstrategi finnes delvis i bakgrunn/orb-bruk, men ikke dokumentert som helhetlig mønsterbibliotek i komponentene.
 - Ingen samlet design-kontrakt i kode som binder navngivning, komponentnivå og visuelle regler til strategien.
 
+## Tokens v0.2
+- `src/styles/tokens.css` har nå et lite semantisk lag over dagens primitive tokens:
+  - `--surface-subtle`, `--surface-elevated`
+  - `--text-secondary`
+  - `--focus-ring`
+  - `--accent-primary`
+- I v0.2 mappes disse til eksisterende primitive tokens/verdier for å holde endringen trygg og bakoverkompatibel.
+- Dette gjør videre skalering enklere ved at komponenter gradvis kan bruke semantiske navn uten å endre grunnpaletten.
+
 ## Neste designsteg
 - Oversette Stitch-beslutninger til eksplisitte kode-tokens (inkl. typografi, lagdeling og gradientbruk).
 - Etablere en kort komponentnær designkontrakt for hvordan tokens brukes i layout, seksjoner og interaktive elementer.

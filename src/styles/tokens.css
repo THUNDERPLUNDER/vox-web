@@ -10,6 +10,13 @@
   /* Electric Coral (secondary accent) */
   --focus: 251 113 133;
 
+  /* Semantic color layer (v0.2) */
+  --surface-subtle: var(--bg);
+  --surface-elevated: var(--surface);
+  --text-secondary: var(--muted);
+  --focus-ring: var(--focus);
+  --accent-primary: var(--primary);
+
   /* Text */
   --text: 15 23 42;
   --muted: 100 116 139;
