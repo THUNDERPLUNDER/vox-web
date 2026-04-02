@@ -8,10 +8,30 @@ const { title = "VOX", currentPath = "" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="no">
+<html lang="no" data-theme="system">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      (function () {
+        var STORAGE_KEY = "vox-theme";
+        var v = null;
+        try {
+          v = localStorage.getItem(STORAGE_KEY);
+        } catch (_) {}
+        var mode =
+          v === "light" || v === "dark" || v === "system" ? v : "system";
+        document.documentElement.setAttribute("data-theme", mode);
+        function resolvedColorScheme(m) {
+          if (m === "light") return "light";
+          if (m === "dark") return "dark";
+          return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        }
+        document.documentElement.style.colorScheme = resolvedColorScheme(mode);
+      })();
+    </script>
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -32,24 +52,27 @@ const { title = "VOX", currentPath = "" } = Astro.props;
       <!-- orb 1: primary, top-left -->
       <div
         class="absolute -top-[12%] -left-[12%] h-[520px] w-[520px] rounded-full blur-[120px]"
-        style="background: rgb(var(--primary) / 0.06);"
+        style="background: rgb(var(--primary) / var(--orb-a));"
       ></div>
   
-      <!-- orb 2: coral/focus, mid-right -->
+      <!-- orb 2: focus accent, mid-right -->
       <div
         class="absolute top-[35%] -right-[8%] h-[420px] w-[420px] rounded-full blur-[110px]"
-        style="background: rgb(var(--focus) / 0.10);"
+        style="background: rgb(var(--focus) / var(--orb-b));"
       ></div>
   
       <!-- orb 3: primary, bottom-center -->
       <div
         class="absolute -bottom-[22%] left-[18%] h-[640px] w-[640px] rounded-full blur-[150px]"
-        style="background: rgb(var(--primary) / 0.04);"
+        style="background: rgb(var(--primary) / var(--orb-c));"
       ></div>
     </div>
 
     <header class="fixed inset-x-0 top-0 z-40">
-      <div class="bg-[rgb(var(--surface-elevated))/0.9] backdrop-blur-xl shadow-[0_14px_36px_-24px_rgba(15,23,42,0.55)]">
+      <div
+        class="border-b border-[rgb(var(--border))/0.45] bg-[rgb(var(--surface-elevated))/0.88] backdrop-blur-xl"
+        style="box-shadow: var(--shadow-header);"
+      >
         <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <Header currentPath={currentPath} />
         </div>

@@ -3,41 +3,57 @@
 ## Formål
 Nøktern oppsummering av dagens designgrunnmur i kodebasen, samt retning fra designstrategien.
 
-## Hva som finnes i kode i dag
-- `src/styles/tokens.css` definerer CSS-variabler for farger, tekst, border, radius, skygger og grunnleggende typografi (`--font-sans`, `--leading`).
-- `src/styles/global.css` importerer både `tokens.css` og Tailwind v4 (`@import "tailwindcss"`), og setter global font/linjehøyde og basis bakgrunn/tekstfarge.
-- `src/layouts/BaseLayout.astro` bruker en orb-basert bakgrunn (flere blur-lag) over tokenfarger og laster CES widget assets (script + stylesheet) i `<head>`.
+## Stylingmodell (faktisk i bruk)
+- **Hybrid:** CSS-variabler for designverdier + **Tailwind CSS v4** for layout og komponentstruktur.
+- **`src/styles/tokens.css`:** Kilde for farger, tekst, border, radius, skygger og typografi-variabler (`--font-sans`, `--font-display`, `--leading`, osv.) inkl. et lite semantisk lag (v0.2).
+- **`src/styles/global.css`:** Importerer `tokens.css` og `tailwindcss` (`@import "tailwindcss"`); setter global typografi/base (`html`, `body`, `h1–h3`) og utility-klasser som `.sonic-pulse-cta`.
+- **Tailwind:** Aktivert via `@tailwindcss/vite` i Astro; **ingen** `tailwind.config.*` — tema kommer primært fra tokens + utilities i komponenter.
+- **Komponenter:** Bruker typisk `rgb(var(--…))` for farger og Tailwind-klasser for spacing, flex/grid, responsivitet, z-index, osv.
+
+## Layout og shell
+- **`src/layouts/BaseLayout.astro`:** Felles shell med orb-basert bakgrunn (blur-lag over tokenfarger), **fast header** (glass/surface), innhold i begrenset bredde med topp-padding under header.
+- **Global navigasjon:** Rendres fra layout; sider sender `currentPath` for aktiv tilstand. Ingen duplikat lokal header på relevante innholdssider.
+- **CES:** Widget lastes i `<head>` (script + tema-CSS); funksjonell integrasjon skal ikke endres uten eget mandat.
+- **Typografi:** **Epilogue + Inter** via Google Fonts i `BaseLayout` og bruk av `--font-display` / `--font-sans` i `global.css`.
+
+## Mobilmeny
+- **Trigger** i header-raden (`MobileMenuTrigger`); **sheet** (`MobileMenuSheet`) monteres som søsken etter `</header>` slik at fullskjerm `fixed` ikke begrenses av `backdrop-filter` på header-wrapper.
+
+## Tema / dark mode
+- **Ikke implementert.** Én lys palett i `:root`. Ingen `dark:`-klasser, ingen `class`-strategi på `<html>`, ingen system-/brukervalg — dette er bevisst hull inntil videre.
 
 ## Hva som kommer fra designstrategien
 - Retning: **Sonic Architect**.
 - Posisjonering: **tech/livsstil + omsorg**.
 - Visuell metode: **tonal lagdeling** og bruk av **gradienter**.
-- Typografi: **Epilogue + Inter**.
-- Form: **medium rundhet**.
+- Typografi: **Epilogue + Inter** (landet i laste-mekanisme + CSS-variabler).
+- Form: **medium rundhet** (radius-tokens i bruk).
 
 ## Gap mellom dagens kode og ønsket retning
-- Dagens kode bruker en funksjonell tokenbase, men mangler enda et fullt eksplisitt tokensystem knyttet til Sonic Architect-prinsippene.
-- Typografien i kode er foreløpig systemfont via `--font-sans`, ikke tydelig implementert som Epilogue + Inter.
-- Gradient- og tonal-lagstrategi finnes delvis i bakgrunn/orb-bruk, men ikke dokumentert som helhetlig mønsterbibliotek i komponentene.
-- Ingen samlet design-kontrakt i kode som binder navngivning, komponentnivå og visuelle regler til strategien.
+- Fullt eksplisitt tokensystem knyttet til alle Sonic Architect-prinsipper (fortsatt rom for presisering).
+- Helhetlig mønsterbibliotek for seksjoner, kort og interaksjon (delvis; shell og noen mønstre finnes).
+- **Dark mode / flere temaer** — ikke startet.
+- Eventuell sentral Tailwind-`@theme` / config-fil — ikke valgt; dagens kilde er primært `tokens.css`.
 
 ## Tokens v0.2
-- `src/styles/tokens.css` har nå et lite semantisk lag over dagens primitive tokens:
+- `src/styles/tokens.css` har et lite semantisk lag over primitive tokens:
   - `--surface-subtle`, `--surface-elevated`
   - `--text-secondary`
   - `--focus-ring`
   - `--accent-primary`
-- I v0.2 mappes disse til eksisterende primitive tokens/verdier for å holde endringen trygg og bakoverkompatibel.
-- Dette gjør videre skalering enklere ved at komponenter gradvis kan bruke semantiske navn uten å endre grunnpaletten.
+- Mappes til primitive verdier for trygg videre utvidelse.
 
 ## Operativ bruk av semantiske tokens
-- Bruk `--surface` for standard innholdsflater/kort der flaten skal oppleves nøytral og “default”.
+- Bruk `--surface` for standard innholdsflater/kort der flaten skal oppleves nøytral og «default».
 - Bruk `--surface-subtle` for lav-emfase flater (sekundære paneler, diskrete bakgrunner, svak visuell separasjon).
 - Bruk `--surface-elevated` for flater som skal føles mer fremhevet enn bakgrunnen, uten å introdusere ny farge.
 - Foretrekk semantiske tokens i komponenter (`--text-secondary`, `--focus-ring`, `--surface-*`) fremfor primitive tokens (`--muted`, `--focus`, `--bg`) når hensikten er kjent.
 - Bruk primitive tokens direkte kun når du definerer nye semantiske tokens eller gjør svært lavnivå grunnmurarbeid.
 
-## Neste designsteg
-- Oversette Stitch-beslutninger til eksplisitte kode-tokens (inkl. typografi, lagdeling og gradientbruk).
-- Etablere en kort komponentnær designkontrakt for hvordan tokens brukes i layout, seksjoner og interaktive elementer.
-- Sikre at Epilogue + Inter og medium rundhet blir konsekvent implementert i Astro/Tailwind-strukturen.
+## Ordbok (bygg / statikk)
+- Dynamisk route `src/pages/no/ordbok/[term].astro` har **minimal `getStaticPaths()`** (tom liste) inntil termkilde finnes — sikrer statisk build. Oppdater når ekte termliste er klar.
+
+## Neste designsteg (naturlig rekkefølge)
+- Utvide tokens og mønstre der MVP trenger det (uten å innføre unødig kompleksitet).
+- Etablere kort komponentnær kontrakt for layout/seksjoner når innhold vokser.
+- **Hvis** dark mode ønskes senere: avklar strategi (klasser vs. `prefers-color-scheme`) og dupliserte eller overstyrende token-sett — ikke påbegynt nå.

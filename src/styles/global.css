@@ -4,6 +4,19 @@
 html {
   font-family: var(--font-sans);
   line-height: var(--leading);
+  color-scheme: light dark;
+}
+
+.theme-control__btn {
+  @apply rounded-[var(--radius-sm)] border border-[rgb(var(--border))] bg-[rgb(var(--surface-elevated))] px-3 py-1.5 text-xs font-medium text-[rgb(var(--text))];
+}
+
+.theme-control__btn:hover {
+  @apply bg-[rgb(var(--surface-subtle))];
+}
+
+.theme-control__btn[aria-pressed="true"] {
+  @apply border-[rgb(var(--primary))] bg-[rgb(var(--surface-subtle))] ring-1 ring-[rgb(var(--primary))/0.35];
 }
 
 body {
@@ -20,14 +33,17 @@ h3 {
 }
 
 .sonic-pulse-cta {
+  color: rgb(var(--on-sonic));
   background-image: linear-gradient(
     135deg,
     rgb(var(--primary)) 0%,
     rgb(var(--focus)) 100%
   );
-  box-shadow: 0 8px 24px -12px rgb(var(--primary) / 0.5);
+  box-shadow: 0 10px 28px -14px rgb(var(--primary) / 0.45),
+    0 4px 14px -8px rgb(var(--focus) / 0.2);
 }
 
 .sonic-pulse-cta:hover {
-  box-shadow: 0 12px 28px -12px rgb(var(--primary) / 0.55);
+  box-shadow: 0 14px 34px -14px rgb(var(--primary) / 0.5),
+    0 6px 18px -8px rgb(var(--focus) / 0.25);
 }

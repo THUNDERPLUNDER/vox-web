@@ -27,3 +27,8 @@ Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår 
 - Beslutning: Prosjektet skal ikke bygge videre på et rent klinisk narrativ.
 - Begrunnelse: Vi ønsker en varm, teknisk sterk og premium orientert posisjon i skjæringspunktet mellom tech/livsstil og omsorg.
 - Konsekvens: Språk, design, innhold og produktretning skal støtte lydglede, mestring og optimalisering av lyttekjeden, ikke bare kompensasjon for hørselstap.
+
+## 2026-04-02 - Hybrid styling: tokens + Tailwind utilities
+- Beslutning: MVP bruker en **hybridmodell**: **CSS-variabler** i `tokens.css` som designverdier (farger, radius, skygger, font-stack-variabler), og **Tailwind CSS v4** (via `@tailwindcss/vite`) for **layout, struktur og utilities** i Astro-komponenter. Det finnes **ingen** `tailwind.config.*` som primær token-kilde; tema i praksis kommer fra tokens + utilities.
+- Begrunnelse: Gir rask UI-iterasjon med Tailwind samtidig som palett og semantiske pekere kan holdes i én CSS-fil uten full migrasjon til Tailwind-theme ennå.
+- Konsekvens: Nye farger/semantikk legges helst inn i `tokens.css` (eller utvidelser derav); spacing/breakpoints/layout fortsetter med Tailwind-klasser med mindre annet avtales. **Dark mode / flere temaer** er ikke besluttet implementert — krever eget vedtak når tidspunktet er riktig.

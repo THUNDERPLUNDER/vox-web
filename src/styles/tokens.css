@@ -1,40 +1,119 @@
+/* CONTRACT: Design tokens; light/dark via data-theme + system preference. */
 :root {
-  /* Warm neutral background */
-  --bg: 250 248 244;
-  --surface: 255 252 248;
+  /* Light: warm paper, confident sonic blue + soft magenta (Sonic Architect / livsstil) */
+  --bg: 252 250 246;
+  --surface: 255 253 250;
 
-  /* Sonic blue primary */
-  --primary: 30 108 189;
+  --primary: 26 118 188;
   --primary-contrast: 255 255 255;
 
-  /* Soft magenta accent */
-  --focus: 232 126 188;
+  --focus: 214 122 178;
 
-  /* Semantic color layer (v0.2) */
+  --text: 28 32 38;
+  --muted: 105 112 126;
+
+  --border: 232 228 220;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 32px;
+
+  --shadow-sm: 0 4px 20px -8px rgba(28, 32, 38, 0.1);
+  --shadow-md: 0 16px 40px -16px rgba(28, 32, 38, 0.14),
+    0 6px 18px -10px rgba(28, 32, 38, 0.08);
+  --shadow-header: 0 14px 36px -22px rgba(28, 32, 38, 0.14);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-display: "Epilogue", var(--font-sans);
+  --leading: 1.5;
+
   --surface-subtle: var(--bg);
   --surface-elevated: var(--surface);
   --text-secondary: var(--muted);
   --focus-ring: var(--focus);
   --accent-primary: var(--primary);
 
-  /* Text */
-  --text: 26 32 48;
-  --muted: 108 118 139;
+  /* Text on gradient CTAs (same family light/dark) */
+  --on-sonic: 255 255 255;
 
-  /* Borders */
-  --border: 226 232 240;
+  /* Orb wash intensities (tonal depth, not clinical flat) */
+  --orb-a: 0.07;
+  --orb-b: 0.11;
+  --orb-c: 0.05;
+}
 
-  /* Radius */
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 32px;
+html[data-theme="light"] {
+  --bg: 252 250 246;
+  --surface: 255 253 250;
+  --primary: 26 118 188;
+  --primary-contrast: 255 255 255;
+  --focus: 214 122 178;
+  --text: 28 32 38;
+  --muted: 105 112 126;
+  --border: 232 228 220;
+  --shadow-sm: 0 4px 20px -8px rgba(28, 32, 38, 0.1);
+  --shadow-md: 0 16px 40px -16px rgba(28, 32, 38, 0.14),
+    0 6px 18px -10px rgba(28, 32, 38, 0.08);
+  --shadow-header: 0 14px 36px -22px rgba(28, 32, 38, 0.14);
+  --surface-subtle: var(--bg);
+  --surface-elevated: var(--surface);
+  --text-secondary: var(--muted);
+  --focus-ring: var(--focus);
+  --accent-primary: var(--primary);
+  --on-sonic: 255 255 255;
+  --orb-a: 0.07;
+  --orb-b: 0.11;
+  --orb-c: 0.05;
+}
 
-  /* Shadow */
-  --shadow-sm: 0 4px 18px -6px rgba(15, 23, 42, 0.12);
-  --shadow-md: 0 14px 34px -12px rgba(15, 23, 42, 0.18), 0 6px 16px -10px rgba(15, 23, 42, 0.12);
+/* Dark: rolig high-end audio / studio — samme primær+magenta-akse som lys */
+html[data-theme="dark"] {
+  --bg: 8 12 22;
+  --surface: 18 26 42;
+  --primary: 82 198 255;
+  --primary-contrast: 8 12 22;
+  --focus: 210 140 200;
+  --text: 238 242 248;
+  --muted: 148 162 186;
+  --border: 55 68 94;
+  --shadow-sm: 0 4px 24px -6px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 20px 48px -16px rgba(0, 0, 0, 0.55),
+    0 8px 24px -12px rgba(0, 0, 0, 0.4);
+  --shadow-header: 0 18px 42px -20px rgba(0, 0, 0, 0.65);
+  --surface-subtle: 12 18 32;
+  --surface-elevated: 28 38 58;
+  --text-secondary: var(--muted);
+  --focus-ring: var(--focus);
+  --accent-primary: var(--primary);
+  --on-sonic: 255 255 255;
+  --orb-a: 0.14;
+  --orb-b: 0.09;
+  --orb-c: 0.07;
+}
 
-  /* Typography */
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  --font-display: "Epilogue", var(--font-sans);
-  --leading: 1.5;
+@media (prefers-color-scheme: dark) {
+  html[data-theme="system"] {
+    --bg: 8 12 22;
+    --surface: 18 26 42;
+    --primary: 82 198 255;
+    --primary-contrast: 8 12 22;
+    --focus: 210 140 200;
+    --text: 238 242 248;
+    --muted: 148 162 186;
+    --border: 55 68 94;
+    --shadow-sm: 0 4px 24px -6px rgba(0, 0, 0, 0.45);
+    --shadow-md: 0 20px 48px -16px rgba(0, 0, 0, 0.55),
+      0 8px 24px -12px rgba(0, 0, 0, 0.4);
+    --shadow-header: 0 18px 42px -20px rgba(0, 0, 0, 0.65);
+    --surface-subtle: 12 18 32;
+    --surface-elevated: 28 38 58;
+    --text-secondary: var(--muted);
+    --focus-ring: var(--focus);
+    --accent-primary: var(--primary);
+    --on-sonic: 255 255 255;
+    --orb-a: 0.14;
+    --orb-b: 0.09;
+    --orb-c: 0.07;
+  }
 }

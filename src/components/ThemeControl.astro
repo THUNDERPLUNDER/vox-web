@@ -1,0 +1,71 @@
+<!-- CONTRACT: MVP theme switcher (system / light / dark); pairs with head script in BaseLayout. -->
+---
+
+---
+
+<div class="theme-control mt-8 border-t border-[rgb(var(--border))] pt-6" role="group" aria-label="Fargetema">
+  <p class="mb-2 text-xs font-medium text-[rgb(var(--muted))]">Tema</p>
+  <div class="flex flex-wrap gap-2">
+    <button
+      type="button"
+      class="theme-control__btn"
+      data-theme-choice="system"
+      aria-pressed="false"
+    >
+      System
+    </button>
+    <button type="button" class="theme-control__btn" data-theme-choice="light" aria-pressed="false">
+      Lys
+    </button>
+    <button type="button" class="theme-control__btn" data-theme-choice="dark" aria-pressed="false">
+      Mørk
+    </button>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var STORAGE_KEY = "vox-theme";
+
+    function resolvedColorScheme(mode) {
+      if (mode === "light") return "light";
+      if (mode === "dark") return "dark";
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+
+    function applyTheme(mode) {
+      if (mode !== "light" && mode !== "dark" && mode !== "system") mode = "system";
+      try {
+        localStorage.setItem(STORAGE_KEY, mode);
+      } catch (_) {}
+      document.documentElement.setAttribute("data-theme", mode);
+      document.documentElement.style.colorScheme = resolvedColorScheme(mode);
+      syncButtons();
+    }
+
+    function syncButtons() {
+      var mode = document.documentElement.getAttribute("data-theme") || "system";
+      document.querySelectorAll("[data-theme-choice]").forEach(function (btn) {
+        var choice = btn.getAttribute("data-theme-choice");
+        btn.setAttribute("aria-pressed", choice === mode ? "true" : "false");
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", function () {
+      syncButtons();
+      document.querySelectorAll("[data-theme-choice]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          applyTheme(btn.getAttribute("data-theme-choice"));
+        });
+      });
+    });
+
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", function () {
+        if (document.documentElement.getAttribute("data-theme") === "system") {
+          document.documentElement.style.colorScheme = resolvedColorScheme("system");
+        }
+      });
+  })();
+</script>

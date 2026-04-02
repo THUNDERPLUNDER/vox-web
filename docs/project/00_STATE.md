@@ -9,35 +9,39 @@
 - Hovedmål for nåværende periode: Få på plass en enkel, testbar MVP med agent, innhold og nettside nok til å kunne prøve ut om løsningen oppleves nyttig for reelle brukere.
 - Hva vi prøver å få til i MVP: Bygge en første versjon der en bruker kan få praktisk hjelp via AI-agenten, forstå hva tjenesten hjelper med via nettsiden, og møte en første mengde søkbart innhold i artikler og ordbok som kan gi trafikk fra Google og AI-baserte søk, slik at vi kan teste nytte, tillit og teknisk gjennomførbarhet.
 
-## Status
-- Det som er på plass:
-  - Teknisk stack er valgt.
-  - AI-agent fungerer i Google CES.
-  - Forside og noen sider er påbegynt i Astro og Vercel.
-  - Et første visuelt designspor finnes i Google Stitch.
-  - Brukermanualer for flere av de mest brukte høreapparatene er lagt inn i stores i Google Cloud.
-- Det som er under arbeid:
-  - Designtokens og stilretning skal flyttes fra Stitch til kodebasen i Cursor, slik at de blir del av Astro, Git og deploy-flyten.
-  - Nettsiden trenger mer innhold og flere ferdige sider.
-  - Flere dokumenter og mer innsikt skal legges inn i kunnskapsgrunnlaget til AI-agenten.
-- Det som ikke er avklart ennå:
-  - Første testgruppe for MVP-en.
-  - Videre finansiering etter første MVP-fase.
+## Status (repo, faktisk landet)
+- **Frontend:** Astro **5** med statisk output der det passer.
+- **Styling:** **Tailwind CSS v4** via `@tailwindcss/vite` (ingen `tailwind.config.*` i repoet). Hybridmodell: `tokens.css` som designvariabler, `global.css` som kobler tokens + Tailwind og global base, utilities i `.astro`-komponenter (se `01_STACK.md` og `DESIGN.md`).
+- **Designvariabler:** `src/styles/tokens.css` er i bruk i Git/deploy-flyten (ikke «kun Stitch ved siden av»).
+- **Shell:** `BaseLayout.astro` er felles ramme: orb-bakgrunn, fast header med glass/surface, **global navigasjon**, CES-widget (script + stylesheet) uendret i funksjon.
+- **Navigasjon:** Én global toppflate; innholdssider sender `currentPath` til layout. Lokal duplikat-header er fjernet der den ga dobbel meny.
+- **Mobilmeny:** `MobileMenuTrigger` + `MobileMenuSheet` (drawer montert utenfor `backdrop-blur`-wrapper slik at `position: fixed` dekker viewport).
+- **Typografi:** **Epilogue + Inter** lastes via Google Fonts i `BaseLayout` og brukes via `--font-display` / `--font-sans` i `global.css`.
+- **Dark mode / tema:** Ikke implementert (kun lys palett i `:root`; ingen `dark:`-strategi eller toggle).
+- **Ordbok (dynamisk route):** `src/pages/no/ordbok/[term].astro` har minimal `getStaticPaths()` (tom liste inntil term-data finnes) for at **produksjonsbuild** skal passere.
+- **Øvrig:** AI-agent i Google CES; manualer i Cloud stores; Stitch som visuell referanse.
+
+## Det som fortsatt er under arbeid
+- Mer innhold og ferdige sider (artikler, ordbok med reelle termer).
+- Flere dokumenter og innsikt inn i kunnskapsgrunnlaget til AI-agenten.
+- Utdyping av tokens og komponentmønstre (designstrategi vs. dagens v0.2-tokens).
+
+## Det som ikke er avklart ennå
+- Første testgruppe for MVP-en.
+- Videre finansiering etter første MVP-fase.
+- Eventuell fremtidig dark mode / systemvalg (ikke startet i kode).
 
 ## Aktivt spor
-- Nåværende fokus: Etablere source-of-truth-filer og klargjøre første design/token-overføring til Cursor.
-- Neste konkrete steg:
-  - Ferdigstille `00_STATE.md` v0.1.
-  - Opprette `01_STACK.md`, `02_LINKS.md` og `03_DECISIONS.md` i enkel v0.1.
-  - Lage første presise Cursor-oppgave for å flytte tokens fra Stitch-markdown til Astro-kodebasen.
+- Utvide innhold og testbarhet i tråd med MVP-målene, med stabil shell og hybrid styling som utgangspunkt.
+
+## Neste konkrete steg (forslag)
+- Holde `docs/project/*` synket med kode (denne runden).
+- Fylle ordbok med reell `getStaticPaths()`-kilde når termliste finnes.
+- Vurdere bevisst neste steg for tema (dark) når MVP-kjernen er stabil — ikke påkrevd nå.
 
 ## Risiko / blokkere
-- Kjente hindringer:
-  - Arbeidet spenner over flere spor samtidig: agent, innhold, nettside og designoverføring.
-  - Viktig innsikt og flere dokumenter er fortsatt ikke lagt inn i kunnskapsgrunnlaget.
-- Avhengigheter:
-  - Overføring av tokens/design fra Stitch til kodebasen.
-  - Videre innlegging av dokumentasjon i Google Cloud stores.
+- Kjente hindringer: arbeid spenner over agent, innhold, nettside og design samtidig; kunnskapsgrunnlag kan fortsatt være tynt.
+- Deploy: dynamiske ruter må ha gyldig statisk strategi så lenge bygget er statisk (ordbok er sikret med minimal `getStaticPaths()`).
 
 ## Arbeidsmåte
 - Strategi og logg: Strategisk arbeid, roadmap og løpende logg føres primært av @Navigator i Gemini.
@@ -45,5 +49,5 @@
 - Hosting / drift: Nettsiden bygges i Astro, versjoneres i Git/GitHub og deployes via Vercel. AI-agenten kjøres i Google CES.
 
 ## Sist oppdatert
-- Dato: 2026-03-27
-- Oppdatert av: Thomas / @rigger
+- Dato: 2026-04-02
+- Oppdatert av: dokumentasjon synket med repo (Cursor)
