@@ -1,15 +1,13 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Section from "../../../components/layout/Section.astro";
-import Header from "../../../components/nav/Header.astro";
 import Footer from "../../../components/nav/Footer.astro";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 ---
 
-<BaseLayout title="VOX - Ordbok">
+<BaseLayout title="VOX - Ordbok" currentPath="/no/ordbok">
   <meta slot="head" name="robots" content="noindex,follow" />
-  <Header currentPath="/no/ordbok" />
 
   <main class="py-8 sm:py-10">
     <Section>
