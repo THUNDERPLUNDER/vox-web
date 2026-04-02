@@ -12,32 +12,33 @@
 ## Status (repo, faktisk landet)
 - **Frontend:** Astro **5** med statisk output der det passer.
 - **Styling:** **Tailwind CSS v4** via `@tailwindcss/vite` (ingen `tailwind.config.*` i repoet). Hybridmodell: `tokens.css` som designvariabler, `global.css` som kobler tokens + Tailwind og global base, utilities i `.astro`-komponenter (se `01_STACK.md` og `DESIGN.md`).
-- **Designvariabler:** `src/styles/tokens.css` er i bruk i Git/deploy-flyten (ikke «kun Stitch ved siden av»).
+- **Designvariabler:** `src/styles/tokens.css` er i bruk i Git/deploy-flyten (lys + mørk palett; se `DESIGN.md`).
+- **Content surfaces:** `.vox-surface-calm`, `.vox-surface-lifted`, `.vox-surface-tech`, `.vox-section-title`, `.vox-lead` i `global.css`; `Section` støtter `tone="band"` (se `DESIGN.md`).
 - **Shell:** `BaseLayout.astro` er felles ramme: orb-bakgrunn, fast header med glass/surface, **global navigasjon**, CES-widget (script + stylesheet) uendret i funksjon.
+- **Landing `/no`:** Desktop: innhold venstre, **sticky** chat høyre. Mobil: **innhold først**, chat som egen blokk senere (bevisst MVP-valg, dokumentert i `DESIGN.md` og `03_DECISIONS.md`).
 - **Navigasjon:** Én global toppflate; innholdssider sender `currentPath` til layout. Lokal duplikat-header er fjernet der den ga dobbel meny.
 - **Mobilmeny:** `MobileMenuTrigger` + `MobileMenuSheet` (drawer montert utenfor `backdrop-blur`-wrapper slik at `position: fixed` dekker viewport).
 - **Typografi:** **Epilogue + Inter** lastes via Google Fonts i `BaseLayout` og brukes via `--font-display` / `--font-sans` i `global.css`.
-- **Dark mode / tema:** Ikke implementert (kun lys palett i `:root`; ingen `dark:`-strategi eller toggle).
+- **Tema:** **`data-theme`** (`system` / `light` / `dark`), `localStorage`, `ThemeControl` i footer — se `DESIGN.md`.
 - **Ordbok (dynamisk route):** `src/pages/no/ordbok/[term].astro` har minimal `getStaticPaths()` (tom liste inntil term-data finnes) for at **produksjonsbuild** skal passere.
 - **Øvrig:** AI-agent i Google CES; manualer i Cloud stores; Stitch som visuell referanse.
 
 ## Det som fortsatt er under arbeid
 - Mer innhold og ferdige sider (artikler, ordbok med reelle termer).
 - Flere dokumenter og innsikt inn i kunnskapsgrunnlaget til AI-agenten.
-- Utdyping av tokens og komponentmønstre (designstrategi vs. dagens v0.2-tokens).
+- Utdyping av tokens der MVP trenger finere kontroll.
 
 ## Det som ikke er avklart ennå
 - Første testgruppe for MVP-en.
 - Videre finansiering etter første MVP-fase.
-- Eventuell fremtidig dark mode / systemvalg (ikke startet i kode).
 
 ## Aktivt spor
 - Utvide innhold og testbarhet i tråd med MVP-målene, med stabil shell og hybrid styling som utgangspunkt.
 
 ## Neste konkrete steg (forslag)
-- Holde `docs/project/*` synket med kode (denne runden).
+- Holde `docs/project/*` synket med kode.
 - Fylle ordbok med reell `getStaticPaths()`-kilde når termliste finnes.
-- Vurdere bevisst neste steg for tema (dark) når MVP-kjernen er stabil — ikke påkrevd nå.
+- Vurdere flere innholdssider med samme surface-mønstre etter behov.
 
 ## Risiko / blokkere
 - Kjente hindringer: arbeid spenner over agent, innhold, nettside og design samtidig; kunnskapsgrunnlag kan fortsatt være tynt.
@@ -50,4 +51,4 @@
 
 ## Sist oppdatert
 - Dato: 2026-04-02
-- Oppdatert av: dokumentasjon synket med repo (Cursor)
+- Oppdatert av: konsolideringsbatch (surfaces, `/no`-layout, tema, `/no/om`, docs)

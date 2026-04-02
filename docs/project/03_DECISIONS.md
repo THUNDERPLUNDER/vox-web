@@ -31,4 +31,14 @@ Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår 
 ## 2026-04-02 - Hybrid styling: tokens + Tailwind utilities
 - Beslutning: MVP bruker en **hybridmodell**: **CSS-variabler** i `tokens.css` som designverdier (farger, radius, skygger, font-stack-variabler), og **Tailwind CSS v4** (via `@tailwindcss/vite`) for **layout, struktur og utilities** i Astro-komponenter. Det finnes **ingen** `tailwind.config.*` som primær token-kilde; tema i praksis kommer fra tokens + utilities.
 - Begrunnelse: Gir rask UI-iterasjon med Tailwind samtidig som palett og semantiske pekere kan holdes i én CSS-fil uten full migrasjon til Tailwind-theme ennå.
-- Konsekvens: Nye farger/semantikk legges helst inn i `tokens.css` (eller utvidelser derav); spacing/breakpoints/layout fortsetter med Tailwind-klasser med mindre annet avtales. **Dark mode / flere temaer** er ikke besluttet implementert — krever eget vedtak når tidspunktet er riktig.
+- Konsekvens: Nye farger/semantikk legges helst inn i `tokens.css` (eller utvidelser derav); spacing/breakpoints/layout fortsetter med Tailwind-klasser med mindre annet avtales. **Tema (lys / mørk / system)** er implementert med `data-theme` + tokens — videre utvidelse av palett fortsatt via `tokens.css`.
+
+## 2026-04-02 - Innholdsflater: vox-surface-* og Section `band`
+- Beslutning: MVP bruker et **lite, dokumentert sett** gjenbrukbare CSS-klasser i `global.css` (`.vox-surface-calm`, `.vox-surface-lifted`, `.vox-surface-tech`, pluss `.vox-section-title` og `.vox-lead`) og **`Section` `tone="band"`** for seksjonsbånd — ikke et eget komponentbibliotek i denne omgangen.
+- Begrunnelse: Gir visuell konsistens på forsiden, info og om uten å låse oss til mange nye Astro-komponenter før Storyblok og innhold skaleres.
+- Konsekvens: Nye informasjonssider bør i utgangspunktet gjenbruke disse mønstrene; avvik dokumenteres bevisst.
+
+## 2026-04-02 - Landing `/no`: desktop- og mobil-komposisjon (MVP)
+- Beslutning: **Desktop:** to kolonner — **innholdsstolpe venstre** (hero + etterfølgende blokker i samme kolonne), **CES-chat høyre** med **sticky** plassering og avtalt høyde. **Mobil:** **innhold og hero først** i scroll; **chat som egen blokk senere** i stacken, med begrenset høyde og tydelig ramme rundt widget-host for å unngå overlap med VOX-innhold (bl.a. pga. CES’ bruk av fast composer).
+- Begrunnelse: Gir lesbar helhet på desktop uten «hull» under hero ved siden av chat, og trygg vertikal flyt på mobil uten at tekst oppleves under chat-UI.
+- Konsekvens: Dette er **bevisste produkt- og layoutvalg** for MVP, ikke tilfeldige workarounds. Endringer i rekkefølge eller chat-høyde skal vurderes opp mot samme prinsipper og oppdateres i `DESIGN.md`.

@@ -1,4 +1,5 @@
 ---
+/* CONTRACT: Norwegian about page; same shell and content surfaces as forsiden og info. */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Section from "../../components/layout/Section.astro";
 import Footer from "../../components/nav/Footer.astro";
@@ -6,15 +7,96 @@ import Footer from "../../components/nav/Footer.astro";
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 ---
 
-<BaseLayout title="VOX - Om" currentPath="/no/om">
+<BaseLayout title="VOX - Om Hørehjelpen" currentPath="/no/om">
   <meta slot="head" name="robots" content="noindex,follow" />
 
   <main class="py-8 sm:py-10">
-    <Section>
-      <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Om</h1>
-      <p class="mt-4 text-[rgb(var(--muted))]">
-        Placeholder: Informasjon om tjenesten kommer her.
-      </p>
+    <Section class="!pt-2 !pb-10 sm:!pt-4 sm:!pb-12">
+      <div class="max-w-3xl">
+        <div class="vox-surface-calm">
+          <h1
+            class="font-display text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl"
+          >
+            Om VOX og Hørehjelpen
+          </h1>
+          <p class="vox-lead mt-5">
+            VOX er inngangen til Hørehjelpen — en samtalebasert støtte som hjelper deg med konkrete spørsmål om høreapparat og tilbehør, i et tempo du selv styrer.
+          </p>
+          <p class="mt-4 text-sm text-[rgb(var(--muted))]">
+            Vi bygger for hverdagen: varm tone, tydelig teknikk, lite «sykehusfølelse».
+          </p>
+        </div>
+      </div>
+    </Section>
+
+    <Section id="hvorfor" tone="band" class="!py-10 sm:!py-12">
+      <div class="max-w-3xl">
+        <h2 class="vox-section-title">Hva vi jobber mot</h2>
+        <p class="mt-3 max-w-2xl text-[rgb(var(--text-secondary))] leading-relaxed">
+          Mange opplever at små tekniske utfordringer stopper lysten til å bruke høreapparatet fullt ut. Hørehjelpen er ment å senke terskelen: korte svar, trygg inngang, og rom for å komme tilbake når det passer.
+        </p>
+        <p class="mt-4 max-w-2xl text-sm leading-relaxed text-[rgb(var(--muted))]">
+          Tjenesten er i MVP-fase og utvikles fortløpende — innhold og muligheter kan endre seg etter hvert som vi lærer mer av bruk.
+        </p>
+      </div>
+    </Section>
+
+    <Section class="!pt-6 !pb-10 sm:!pb-12">
+      <div class="max-w-3xl">
+        <h2 class="vox-section-title">Tre ting verdt å vite</h2>
+        <div class="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5">
+          <div class="vox-surface-tech">
+            <p class="text-sm font-semibold text-[rgb(var(--text))]">Praktisk, ikke medisinsk</p>
+            <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Vi hjelper med bruk, tilkobling og vanlige feil — ikke diagnose eller behandling. Ved behov for faghjelp, ta kontakt med audiograf eller klinikk.
+            </p>
+          </div>
+          <div class="vox-surface-tech">
+            <p class="text-sm font-semibold text-[rgb(var(--text))]">Personvern</p>
+            <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Vi tar personvern på alvor. Overordnede vilkår og praksis beskrives på personvern-siden.
+            </p>
+          </div>
+          <div class="vox-surface-tech sm:col-span-2">
+            <p class="text-sm font-semibold text-[rgb(var(--text))]">Teknisk plattform</p>
+            <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Chatten kjører på en moderne samtaleplattform (Google CES) integrert i nettsiden — du trenger ikke installere egen app for å komme i gang her.
+            </p>
+          </div>
+        </div>
+      </div>
+    </Section>
+
+    <Section class="!pt-2 !pb-12 sm:!pb-16">
+      <div class="max-w-3xl">
+        <div class="vox-surface-lifted">
+          <h2 class="vox-section-title text-lg sm:text-xl">Vil du videre?</h2>
+          <p class="mt-2 max-w-xl text-sm leading-relaxed text-[rgb(var(--muted))]">
+            Start med chat på forsiden, eller les kort om hvordan det henger sammen på info-siden.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a
+              href="/no"
+              class="sonic-pulse-cta inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold transition-shadow"
+            >
+              Til forsiden
+            </a>
+            <a
+              href="/no/info"
+              class="inline-flex items-center justify-center rounded-[var(--radius-md)] border border-[rgb(var(--border))] bg-[rgb(var(--surface-elevated))/0.5] px-5 py-2.5 text-sm font-medium text-[rgb(var(--text))] backdrop-blur-sm transition-colors hover:bg-[rgb(var(--surface-elevated))/0.85]"
+            >
+              Kom i gang (info)
+            </a>
+          </div>
+          <p class="mt-6 text-sm text-[rgb(var(--muted))]">
+            <a
+              href="/no/personvern"
+              class="font-medium text-[rgb(var(--text))] underline decoration-[rgb(var(--border))] underline-offset-4 transition-colors hover:decoration-[rgb(var(--primary))]"
+              >Personvern</a
+            >
+          </p>
+        </div>
+      </div>
     </Section>
   </main>
 
