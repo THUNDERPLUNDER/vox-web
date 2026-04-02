@@ -1,15 +1,14 @@
 ---
+/* CONTRACT: Norwegian landing page with hero content and CES panel entrypoint. */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Section from "../../components/layout/Section.astro";
-import Header from "../../components/nav/Header.astro";
 import Footer from "../../components/nav/Footer.astro";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 ---
 
-<BaseLayout title="VOX - Hørehjelpen">
+<BaseLayout title="VOX - Hørehjelpen" currentPath="/no">
   <meta slot="head" name="robots" content="noindex,follow" />
-  <Header currentPath="/no" />
 
   <main class="py-8 sm:py-10">
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_460px] lg:items-start">

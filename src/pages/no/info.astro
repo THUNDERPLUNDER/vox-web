@@ -1,15 +1,14 @@
 ---
+/* CONTRACT: Norwegian info page inside the shared shell with onboarding context. */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Section from "../../components/layout/Section.astro";
-import Header from "../../components/nav/Header.astro";
 import Footer from "../../components/nav/Footer.astro";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 ---
 
-<BaseLayout title="VOX - Hørehjelpen info">
+<BaseLayout title="VOX - Hørehjelpen info" currentPath="/no/info">
   <meta slot="head" name="robots" content="noindex,follow" />
-  <Header currentPath="/no/info" />
 
   <main class="py-8 sm:py-10">
     <Section>

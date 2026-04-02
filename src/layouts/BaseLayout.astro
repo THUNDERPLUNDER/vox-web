@@ -1,7 +1,9 @@
 ---
+/* CONTRACT: Shared application shell with global header, background mood layer, and CES bootstrapping. */
 import "../styles/global.css";
+import Header from "../components/nav/Header.astro";
 
-const { title = "VOX" } = Astro.props;
+const { title = "VOX", currentPath = "" } = Astro.props;
 ---
 
 <!doctype html>
@@ -44,8 +46,16 @@ const { title = "VOX" } = Astro.props;
         style="background: rgb(var(--primary) / 0.04);"
       ></div>
     </div>
-  
-    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+
+    <header class="fixed inset-x-0 top-0 z-40">
+      <div class="bg-[rgb(var(--surface))/0.75] backdrop-blur-xl shadow-[0_8px_26px_-18px_rgba(15,23,42,0.4)]">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <Header currentPath={currentPath} />
+        </div>
+      </div>
+    </header>
+
+    <div class="mx-auto max-w-6xl px-4 pt-24 sm:px-6 sm:pt-26 lg:px-8">
       <slot />
     </div>
 

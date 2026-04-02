@@ -9,7 +9,7 @@ type Props = {
 const { currentPath = "" } = Astro.props as Props;
 
 const links = [
-  { href: "/no", label: "Start" },
+  { href: "/no", label: "Chat" },
   { href: "/no/info", label: "Kom i gang" },
   { href: "/no/ordbok", label: "Ordbok" },
   { href: "/no/om", label: "Om" },
@@ -17,19 +17,23 @@ const links = [
 ];
 ---
 
-<header class="py-4 sm:py-5">
-  <div class="flex items-center justify-between">
-    <a href="/no" class="text-sm font-semibold tracking-tight text-[rgb(var(--text))]">Hørehjelpen</a>
-    <nav class="hidden lg:flex items-center gap-2">
+<header class="py-3 sm:py-4">
+  <div class="flex items-center gap-3 sm:gap-4">
+    <a href="/no" class="inline-flex items-center rounded-[var(--radius-sm)] px-2 py-1.5 text-sm font-semibold tracking-tight text-[rgb(var(--text))]">
+      <span class="font-semibold">VOX</span>
+      <span class="mx-2 text-[rgb(var(--muted))]">·</span>
+      <span class="text-[rgb(var(--muted))]">Hørehjelpen</span>
+    </a>
+    <nav class="hidden flex-1 items-center justify-center gap-1 lg:flex">
       {links.map((link) => {
         const isActive = currentPath === link.href || (link.href !== "/no" && currentPath.startsWith(`${link.href}/`));
         return (
           <a
             href={link.href}
-            class={`rounded-[var(--radius-sm)] px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))] ${
+            class={`rounded-[var(--radius-sm)] px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4] ${
               isActive
-                ? "bg-[rgb(var(--bg))] font-semibold text-[rgb(var(--text))]"
-                : "text-[rgb(var(--muted))] hover:text-[rgb(var(--text))]"
+                ? "bg-[rgb(var(--surface-subtle))] font-semibold text-[rgb(var(--text))] shadow-[0_6px_16px_-14px_rgba(15,23,42,0.5)]"
+                : "text-[rgb(var(--muted))] hover:bg-[rgb(var(--surface-subtle))/0.7] hover:text-[rgb(var(--text))]"
             }`}
           >
             {link.label}
@@ -37,6 +41,12 @@ const links = [
         );
       })}
     </nav>
+    <a
+      href="/no"
+      class="hidden lg:inline-flex items-center justify-center rounded-[var(--radius-sm)] px-4 py-2 text-sm font-medium text-[rgb(var(--primary-contrast))] sonic-pulse-cta"
+    >
+      Start chat
+    </a>
   </div>
 </header>
 
