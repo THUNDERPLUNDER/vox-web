@@ -17,9 +17,9 @@ const links = [
 ];
 ---
 
-<header class="py-3 sm:py-4">
-  <div class="flex items-center gap-3 sm:gap-4">
-    <a href="/no" class="inline-flex items-center rounded-[var(--radius-sm)] px-2 py-1.5 text-sm font-semibold tracking-tight text-[rgb(var(--text))]">
+<header class="h-16 sm:h-[4.5rem]">
+  <div class="flex h-full items-center gap-3 sm:gap-4">
+    <a href="/no" class="inline-flex items-center rounded-[var(--radius-sm)] px-2 py-1.5 text-sm font-semibold tracking-tight text-[rgb(var(--text))] sm:text-base">
       <span class="font-semibold">VOX</span>
       <span class="mx-2 text-[rgb(var(--muted))]">·</span>
       <span class="text-[rgb(var(--muted))]">Hørehjelpen</span>
@@ -47,7 +47,6 @@ const links = [
     >
       Start chat
     </a>
+    <MobileMenu currentPath={currentPath} />
   </div>
 </header>
-
-<MobileMenu currentPath={currentPath} />

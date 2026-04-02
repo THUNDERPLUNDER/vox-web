@@ -48,14 +48,14 @@ const { title = "VOX", currentPath = "" } = Astro.props;
     </div>
 
     <header class="fixed inset-x-0 top-0 z-40">
-      <div class="bg-[rgb(var(--surface))/0.75] backdrop-blur-xl shadow-[0_8px_26px_-18px_rgba(15,23,42,0.4)]">
+      <div class="bg-[rgb(var(--surface-elevated))/0.9] backdrop-blur-xl shadow-[0_14px_36px_-24px_rgba(15,23,42,0.55)]">
         <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <Header currentPath={currentPath} />
         </div>
       </div>
     </header>
 
-    <div class="mx-auto max-w-6xl px-4 pt-24 sm:px-6 sm:pt-26 lg:px-8">
+    <div class="mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-30 lg:px-8">
       <slot />
     </div>
 
