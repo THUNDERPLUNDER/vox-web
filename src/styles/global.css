@@ -47,3 +47,25 @@ h3 {
   box-shadow: 0 14px 34px -14px rgb(var(--primary) / 0.5),
     0 6px 18px -8px rgb(var(--focus) / 0.25);
 }
+
+/* Content-surface hooks: calm (informasjon), lifted (premium), tech (kort); + titler/lead. */
+.vox-surface-calm {
+  @apply rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.55] bg-[rgb(var(--surface-elevated))/0.45] px-5 py-6 backdrop-blur-sm sm:px-7 sm:py-8;
+}
+
+.vox-surface-lifted {
+  @apply rounded-[var(--radius-lg)] border border-[rgb(var(--border))] bg-[rgb(var(--surface))] p-6 shadow-[var(--shadow-md)] sm:p-8;
+}
+
+.vox-surface-tech {
+  @apply rounded-[var(--radius-md)] border border-[rgb(var(--border))] border-l-[3px] border-l-[rgb(var(--primary))] bg-[rgb(var(--surface-elevated))/0.65] px-4 py-4 shadow-[var(--shadow-sm)] backdrop-blur-sm sm:px-5 sm:py-5;
+}
+
+.vox-section-title {
+  font-family: var(--font-display);
+  @apply text-xl font-semibold tracking-[-0.02em] text-[rgb(var(--text))] sm:text-2xl;
+}
+
+.vox-lead {
+  @apply text-lg leading-relaxed text-[rgb(var(--text-secondary))];
+}

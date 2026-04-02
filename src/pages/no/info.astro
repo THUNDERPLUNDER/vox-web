@@ -11,26 +11,74 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
   <meta slot="head" name="robots" content="noindex,follow" />
 
   <main class="py-8 sm:py-10">
-    <Section>
+    <Section class="!pt-2 !pb-10 sm:!pt-4 sm:!pb-12">
       <div class="max-w-3xl">
-        <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Få høreapparatet tilbake i hverdagen
-        </h1>
+        <div class="vox-surface-calm">
+          <h1
+            class="font-display text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl"
+          >
+            Få høreapparatet tilbake i hverdagen
+          </h1>
 
-        <p class="mt-4 text-lg text-[rgb(var(--muted))]">
-          Hørehjelpen gir deg korte, konkrete steg når teknikken frustrerer - og en trygg inngang når terskelen er høy.
-          Du trenger ikke kunne alt for å starte.
+          <p class="vox-lead mt-5">
+            Hørehjelpen gir deg korte, konkrete steg når teknikken frustrerer - og en trygg inngang når terskelen er høy.
+            Du trenger ikke kunne alt for å starte.
+          </p>
+
+          <p class="mt-4 text-sm text-[rgb(var(--muted))]">
+            Start med én setning. Vi tar resten stegvis.
+          </p>
+        </div>
+      </div>
+    </Section>
+
+    <Section id="kan-hjelpe" tone="band" class="!py-10 sm:!py-12">
+      <div class="max-w-3xl">
+        <h2 class="vox-section-title">Dette kan jeg hjelpe med</h2>
+        <p class="mt-3 max-w-2xl text-[rgb(var(--text-secondary))]">
+          Korte forklaringer og forslag — bygget for hverdagsproblemer rundt høreapparat og tilbehør.
         </p>
-
-        <p class="mt-4 text-sm text-[rgb(var(--muted))]">
-          Start med én setning. Vi tar resten stegvis.
+        <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+          <div class="vox-surface-tech">
+            <p class="text-sm font-semibold text-[rgb(var(--text))]">App og tilkobling</p>
+            <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Tilkobling, paring og vanlige feilkilder i programvare.
+            </p>
+          </div>
+          <div class="vox-surface-tech">
+            <p class="text-sm font-semibold text-[rgb(var(--text))]">Batteri og stell</p>
+            <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Daglig bruk, bytte av batteri og enkel vedlikehold.
+            </p>
+          </div>
+          <div class="vox-surface-tech sm:col-span-2 lg:col-span-1">
+            <p class="text-sm font-semibold text-[rgb(var(--text))]">Still spørsmål</p>
+            <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Du trenger ikke formulere det perfekt — vi bryter det ned sammen.
+            </p>
+          </div>
+        </div>
+        <p class="mt-8 text-sm text-[rgb(var(--muted))]">
+          Flere emner kommer etter hvert som innholdet bygges ut.
         </p>
       </div>
     </Section>
 
-    <Section id="kan-hjelpe" tone="surface" class="bg-[rgb(var(--surface-subtle))]">
-      <h2 class="text-xl font-semibold tracking-tight">Dette kan jeg hjelpe med</h2>
-      <p class="mt-2 text-[rgb(var(--muted))]">Kommer: 5 kort.</p>
+    <Section class="!pt-6 !pb-12 sm:!pt-8 sm:!pb-16">
+      <div class="max-w-3xl">
+        <div class="vox-surface-lifted">
+          <h2 class="vox-section-title text-lg sm:text-xl">Tilbake til chat</h2>
+          <p class="mt-2 max-w-xl text-sm leading-relaxed text-[rgb(var(--muted))]">
+            Når du vil prate direkte med Hørehjelpen, åpner du chatten på forsiden.
+          </p>
+          <a
+            href="/no"
+            class="sonic-pulse-cta mt-6 inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold transition-shadow"
+          >
+            Gå til forsiden
+          </a>
+        </div>
+      </div>
     </Section>
   </main>
   <Footer />
