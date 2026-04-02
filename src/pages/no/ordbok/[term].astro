@@ -4,6 +4,11 @@ import Section from "../../../components/layout/Section.astro";
 import Header from "../../../components/nav/Header.astro";
 import Footer from "../../../components/nav/Footer.astro";
 
+export async function getStaticPaths() {
+  // TODO: Replace with real term source when glossary data is available.
+  return [];
+}
+
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
 const { term } = Astro.params;
