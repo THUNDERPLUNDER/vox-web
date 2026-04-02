@@ -12,12 +12,14 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
   <main class="py-8 sm:py-10">
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_460px] lg:items-start">
-      <aside class="order-1 lg:order-2 lg:sticky lg:top-6">
+      <aside
+        class="relative isolate z-10 order-2 lg:order-2 lg:sticky lg:top-6"
+        aria-label="Hørehjelpen chat"
+      >
         <chat-messenger
           id="ces-widget"
           url-allowlist="*"
-          class="block w-full rounded-[var(--radius-md)] bg-[rgb(var(--surface-elevated))] shadow-[var(--shadow-md)]"
-          style="height:min(720px,calc(100vh - 6rem));"
+          class="block w-full overflow-hidden rounded-[var(--radius-md)] bg-[rgb(var(--surface-elevated))] shadow-[var(--shadow-md)] max-lg:h-[min(26rem,62dvh)] lg:h-[min(45rem,calc(100vh-6rem))]"
         >
           <chat-messenger-container
             chat-title="Hørehjelpen"
@@ -27,8 +29,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         </chat-messenger>
       </aside>
 
-      <div class="order-2 flex flex-col lg:order-1">
-        <Section class="!py-10 sm:!py-14 lg:flex lg:min-h-[min(58vh,520px)] lg:flex-col lg:justify-center">
+      <div class="relative z-0 order-1 flex flex-col lg:order-1">
+        <Section class="!py-6 sm:!py-10 lg:!py-14 lg:flex lg:min-h-[min(58vh,520px)] lg:flex-col lg:justify-center">
           <div class="relative max-w-3xl">
             <div
               class="pointer-events-none absolute -inset-x-4 -inset-y-3 -z-10 rounded-[var(--radius-lg)] bg-gradient-to-br from-[rgb(var(--primary)/0.07)] via-transparent to-[rgb(var(--focus)/0.06)] sm:-inset-x-6 sm:-inset-y-4"
