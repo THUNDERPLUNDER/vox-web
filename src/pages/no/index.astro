@@ -27,7 +27,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         </chat-messenger>
       </aside>
 
-      <div class="order-2 lg:order-1">
+      <div class="order-2 flex flex-col lg:order-1">
         <Section class="!py-10 sm:!py-14 lg:flex lg:min-h-[min(58vh,520px)] lg:flex-col lg:justify-center">
           <div class="relative max-w-3xl">
             <div
@@ -63,67 +63,62 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
             </p>
           </div>
         </Section>
-      </div>
-    </div>
 
-    <div
-      class="mt-12 grid grid-cols-1 gap-10 sm:mt-14 lg:mt-16 lg:grid-cols-[minmax(0,1fr)_460px] lg:gap-6 lg:items-start"
-    >
-      <div class="max-w-3xl space-y-12 sm:space-y-14 lg:max-w-none">
-        <section aria-labelledby="forside-slik-heading">
-          <h2 id="forside-slik-heading" class="vox-section-title">Slik fungerer det</h2>
-          <p class="vox-lead mt-3 max-w-2xl">
-            Korte svar og konkrete steg — uten at du må forklare alt på en gang.
-          </p>
-          <ul class="mt-8 grid list-none gap-4 p-0 sm:gap-5" role="list">
-            <li class="vox-surface-tech">
-              <p class="text-sm font-semibold text-[rgb(var(--text))]">Start samtalen</p>
-              <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
-                Si kort hva du står i. Én setning er nok i starten.
-              </p>
-            </li>
-            <li class="vox-surface-tech">
-              <p class="text-sm font-semibold text-[rgb(var(--text))]">Steg for steg</p>
-              <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
-                Du får forslag du kan prøve med én gang — ikke lange tekstvegger.
-              </p>
-            </li>
-            <li class="vox-surface-tech">
-              <p class="text-sm font-semibold text-[rgb(var(--text))]">Ditt tempo</p>
-              <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
-                Avslutt når du vil og kom tilbake når det passer deg.
-              </p>
-            </li>
-          </ul>
-        </section>
+        <div class="mt-12 max-w-3xl space-y-12 sm:mt-14 sm:space-y-14 lg:mt-14">
+          <section aria-labelledby="forside-slik-heading">
+            <h2 id="forside-slik-heading" class="vox-section-title">Slik fungerer det</h2>
+            <p class="vox-lead mt-3 max-w-2xl">
+              Korte svar og konkrete steg — uten at du må forklare alt på en gang.
+            </p>
+            <ul class="mt-8 grid list-none gap-4 p-0 sm:gap-5" role="list">
+              <li class="vox-surface-tech">
+                <p class="text-sm font-semibold text-[rgb(var(--text))]">Start samtalen</p>
+                <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
+                  Si kort hva du står i. Én setning er nok i starten.
+                </p>
+              </li>
+              <li class="vox-surface-tech">
+                <p class="text-sm font-semibold text-[rgb(var(--text))]">Steg for steg</p>
+                <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
+                  Du får forslag du kan prøve med én gang — ikke lange tekstvegger.
+                </p>
+              </li>
+              <li class="vox-surface-tech">
+                <p class="text-sm font-semibold text-[rgb(var(--text))]">Ditt tempo</p>
+                <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
+                  Avslutt når du vil og kom tilbake når det passer deg.
+                </p>
+              </li>
+            </ul>
+          </section>
 
-        <div class="vox-surface-calm">
-          <p class="text-base leading-relaxed text-[rgb(var(--text-secondary))] sm:text-lg">
-            Vil du lese litt mer kontekst før du chatter? På info-siden samler vi det samme budskapet med litt mer struktur.
-          </p>
-          <a
-            href="/no/info"
-            class="mt-5 inline-flex items-center justify-center rounded-[var(--radius-md)] border border-[rgb(var(--border))] bg-[rgb(var(--surface-elevated))/0.5] px-5 py-2.5 text-sm font-medium text-[rgb(var(--text))] backdrop-blur-sm transition-colors hover:bg-[rgb(var(--surface-elevated))/0.85]"
-          >
-            Til info-siden
-          </a>
-        </div>
+          <div class="vox-surface-calm">
+            <p class="text-base leading-relaxed text-[rgb(var(--text-secondary))] sm:text-lg">
+              Vil du lese litt mer kontekst før du chatter? På info-siden samler vi det samme budskapet med litt mer struktur.
+            </p>
+            <a
+              href="/no/info"
+              class="mt-5 inline-flex items-center justify-center rounded-[var(--radius-md)] border border-[rgb(var(--border))] bg-[rgb(var(--surface-elevated))/0.5] px-5 py-2.5 text-sm font-medium text-[rgb(var(--text))] backdrop-blur-sm transition-colors hover:bg-[rgb(var(--surface-elevated))/0.85]"
+            >
+              Til info-siden
+            </a>
+          </div>
 
-        <div class="vox-surface-lifted">
-          <h2 class="vox-section-title text-lg sm:text-xl">Klar når du er</h2>
-          <p class="mt-2 max-w-xl text-sm leading-relaxed text-[rgb(var(--muted))]">
-            På forsiden ligger chatten ved siden av introteksten — på mobil øverst, på større skjermer i eget panel.
-          </p>
-          <button
-            type="button"
-            onclick="document.getElementById('ces-widget')?.scrollIntoView({behavior:'smooth', block:'start'}); document.getElementById('ces-widget')?.open?.(); document.getElementById('ces-widget')?.show?.();"
-            class="sonic-pulse-cta mt-6 inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold transition-shadow"
-          >
-            Åpne chat
-          </button>
+          <div class="vox-surface-lifted">
+            <h2 class="vox-section-title text-lg sm:text-xl">Klar når du er</h2>
+            <p class="mt-2 max-w-xl text-sm leading-relaxed text-[rgb(var(--muted))]">
+              På forsiden ligger chatten ved siden av introteksten — på mobil øverst, på større skjermer i eget panel.
+            </p>
+            <button
+              type="button"
+              onclick="document.getElementById('ces-widget')?.scrollIntoView({behavior:'smooth', block:'start'}); document.getElementById('ces-widget')?.open?.(); document.getElementById('ces-widget')?.show?.();"
+              class="sonic-pulse-cta mt-6 inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold transition-shadow"
+            >
+              Åpne chat
+            </button>
+          </div>
         </div>
       </div>
-      <div class="hidden lg:block" aria-hidden="true"></div>
     </div>
   </main>
   <Footer />
