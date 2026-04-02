@@ -2,6 +2,7 @@
 /* CONTRACT: Shared application shell with global header, background mood layer, and CES bootstrapping. */
 import "../styles/global.css";
 import Header from "../components/nav/Header.astro";
+import MobileMenuSheet from "../components/nav/MobileMenuSheet.astro";
 
 const { title = "VOX", currentPath = "" } = Astro.props;
 ---
@@ -54,6 +55,8 @@ const { title = "VOX", currentPath = "" } = Astro.props;
         </div>
       </div>
     </header>
+
+    <MobileMenuSheet currentPath={currentPath} />
 
     <div class="mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-30 lg:px-8">
       <slot />

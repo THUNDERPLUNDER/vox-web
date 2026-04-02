@@ -1,6 +1,6 @@
 <!-- CONTRACT: Global site header with desktop nav and mobile menu trigger. -->
 ---
-import MobileMenu from "./MobileMenu.astro";
+import MobileMenuTrigger from "./MobileMenuTrigger.astro";
 
 type Props = {
   currentPath?: string;
@@ -47,6 +47,6 @@ const links = [
     >
       Start chat
     </a>
-    <MobileMenu currentPath={currentPath} />
+    <MobileMenuTrigger />
   </div>
 </header>
