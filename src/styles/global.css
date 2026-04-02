@@ -1,20 +1,33 @@
-@import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@500;600;700&family=Inter:wght@400;500;600&display=swap");
 @import "./tokens.css";
 @import "tailwindcss";
 
-html { 
-    font-family: var(--font-sans);
-    line-height: var(--leading);
-  }
-  
-  body {
-    background: rgb(var(--bg));
-    color: rgb(var(--text));
-  }
+html {
+  font-family: var(--font-sans);
+  line-height: var(--leading);
+}
+
+body {
+  font-family: var(--font-sans);
+  background: rgb(var(--bg));
+  color: rgb(var(--text));
+}
 
 h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+}
+
+.sonic-pulse-cta {
+  background-image: linear-gradient(
+    135deg,
+    rgb(var(--primary)) 0%,
+    rgb(var(--focus)) 100%
+  );
+  box-shadow: 0 8px 24px -12px rgb(var(--primary) / 0.5);
+}
+
+.sonic-pulse-cta:hover {
+  box-shadow: 0 12px 28px -12px rgb(var(--primary) / 0.55);
 }
