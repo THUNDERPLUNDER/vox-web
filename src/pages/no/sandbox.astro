@@ -21,6 +21,14 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         <p class="mt-4 text-sm leading-relaxed text-[rgb(var(--muted))]">
           Inspeksjon av gjeldende byggeklosser og innholdsmønstre. Ikke en del av produksjonsnavigasjon.
         </p>
+        <ul
+          class="mt-5 list-disc space-y-1.5 pl-5 text-xs leading-relaxed text-[rgb(var(--muted))]"
+          role="list"
+        >
+          <li>Test hover på knapper og klikkbare flater.</li>
+          <li>Bruk Tab for fokus (synlig ring) — Shift+Tab bakover.</li>
+          <li>Prøv lys og mørk modus via theme-kontrollen nederst på siden.</li>
+        </ul>
       </div>
     </Section>
 
@@ -101,27 +109,33 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       <div class="max-w-5xl">
         <h2 class="vox-section-title">C – Glass surfaces</h2>
         <p class="mt-2 max-w-2xl text-sm text-[rgb(var(--muted))]">
-          Tre flater mot Sonic-bakgrunn — calm, lifted, tech.
+          Tre flater mot Sonic-bakgrunn — calm (statisk), lifted og tech som lenkeflater du kan teste.
         </p>
         <div class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
           <div class="vox-surface-calm">
             <p class="text-sm font-semibold text-[rgb(var(--text))]">.vox-surface-calm</p>
             <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--muted))]">
-              Rolig intro og forklaringsblokker (f.eks. topp på kunnskapssider).
+              Rolig intro og forklaringsblokker (f.eks. topp på kunnskapssider). Ikke klikkbar her — kontrast til de to andre.
             </p>
           </div>
-          <div class="vox-surface-lifted">
+          <a
+            href="/no/info"
+            class="vox-surface-lifted block no-underline transition-shadow hover:shadow-[var(--shadow-md)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--bg))] active:opacity-90"
+          >
             <p class="text-sm font-semibold text-[rgb(var(--text))]">.vox-surface-lifted</p>
             <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--muted))]">
-              Løftet flate for videre lesning, navigasjon eller kontekst.
+              Klikkbar lenkeflate (demo → info). Hover, fokus og aktiv tilstand kan testes.
             </p>
-          </div>
-          <div class="vox-surface-tech">
+          </a>
+          <a
+            href="/no/ordbok"
+            class="vox-surface-tech block no-underline transition-colors hover:bg-[rgb(var(--surface-elevated))/0.62] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--bg))] active:opacity-90"
+          >
             <p class="text-sm font-semibold text-[rgb(var(--text))]">.vox-surface-tech</p>
             <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--muted))]">
-              Kort teknisk innhold, begrepslinjer, korte fakta.
+              Klikkbar lenkeflate (demo → ordbok). Samme overflate som i produksjon.
             </p>
-          </div>
+          </a>
         </div>
       </div>
     </Section>
@@ -131,21 +145,21 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       <div class="max-w-3xl">
         <h2 class="vox-section-title">D – UI-elementer</h2>
         <p class="mt-2 text-sm text-[rgb(var(--muted))]">
-          Primær- og sekundærknapp slik de brukes i innholdslag.
+          Ekte knapp og ekte lenke — samme klasser som i innholdslag; hover, fokus og aktiv tilstand er testbare.
         </p>
         <div class="mt-8 flex flex-wrap items-center gap-3">
           <button
             type="button"
-            class="sonic-pulse-cta inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold transition-shadow"
+            class="sonic-pulse-cta inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--bg))] active:opacity-90"
           >
             Primær (sonic-pulse-cta)
           </button>
-          <button
-            type="button"
-            class="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--surface-elevated))/0.45] px-5 py-2.5 text-sm font-medium text-[rgb(var(--text))] shadow-sm ring-0 backdrop-blur-md transition-colors hover:bg-[rgb(var(--surface-elevated))/0.65]"
+          <a
+            href="/no/om"
+            class="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--surface-elevated))/0.45] px-5 py-2.5 text-sm font-medium text-[rgb(var(--text))] shadow-sm ring-0 backdrop-blur-md transition-colors hover:bg-[rgb(var(--surface-elevated))/0.65] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--bg))] active:opacity-90"
           >
-            Sekundær (glass)
-          </button>
+            Sekundær (glass) → om
+          </a>
         </div>
       </div>
     </Section>
@@ -155,7 +169,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       <div class="max-w-3xl">
         <h2 class="vox-section-title">E1 – Ordbok: indeks-mønster</h2>
         <p class="mt-2 text-sm text-[rgb(var(--muted))]">
-          Demonstrasjon — ikke ekte data eller lenker.
+          Demonstrasjon — ekte lenker der det er markeret som interaktivt.
         </p>
       </div>
     </Section>
@@ -183,16 +197,21 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       <div class="max-w-3xl">
         <h3 class="vox-section-title">Begreper</h3>
         <ul class="mt-8 grid list-none gap-3 p-0 sm:gap-4" role="list">
-          <li class="vox-surface-tech">
-            <span class="text-sm font-semibold text-[rgb(var(--text))]">Eksempel A</span>
-            <span class="mt-1.5 block text-sm leading-relaxed text-[rgb(var(--muted))]">
-              Tech-kort i band-segment.
-            </span>
+          <li>
+            <a
+              href="/no/ordbok"
+              class="vox-surface-tech block no-underline transition-colors hover:bg-[rgb(var(--surface-elevated))/0.62] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--bg))] active:opacity-90"
+            >
+              <span class="text-sm font-semibold text-[rgb(var(--text))]">Eksempel A (interaktiv)</span>
+              <span class="mt-1.5 block text-sm leading-relaxed text-[rgb(var(--muted))]">
+                Tech-kort som lenke til ordbok — hover og fokus som i produksjon.
+              </span>
+            </a>
           </li>
           <li class="vox-surface-tech">
             <span class="text-sm font-semibold text-[rgb(var(--text))]">Eksempel B</span>
             <span class="mt-1.5 block text-sm leading-relaxed text-[rgb(var(--muted))]">
-              Uten fungerende lenker — kun visuelt mønster.
+              Statisk kort — kun visuelt mønster.
             </span>
           </li>
           <li class="vox-surface-tech">
@@ -221,7 +240,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       <div class="max-w-3xl">
         <h2 class="vox-section-title">E2 – Ordbok: term-mønster</h2>
         <p class="mt-2 text-sm text-[rgb(var(--muted))]">
-          Demonstrasjon — samme struktur som term-mal, uten routing.
+          Demonstrasjon — samme struktur som term-mal; navigasjon under er ekte lenker.
         </p>
 
         <div class="mt-8 vox-surface-calm relative overflow-hidden">
@@ -252,21 +271,21 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         <div class="mt-8 vox-surface-lifted">
           <h3 class="vox-section-title text-lg sm:text-xl">Navigasjon</h3>
           <p class="mt-2 text-sm text-[rgb(var(--muted))]">
-            Tilbake til ordbok eller forsiden — her kun knappestiler, ingen ekte navigasjon.
+            Tilbake til ordbok eller forsiden — lenker med produksjonsklasser.
           </p>
           <div class="mt-5 flex flex-wrap gap-3">
-            <button
-              type="button"
-              class="sonic-pulse-cta inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold transition-shadow"
+            <a
+              href="/no/ordbok"
+              class="sonic-pulse-cta inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--bg))] active:opacity-90"
             >
               Til ordboken
-            </button>
-            <button
-              type="button"
-              class="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--surface-elevated))/0.45] px-5 py-2.5 text-sm font-medium text-[rgb(var(--text))] shadow-sm ring-0 backdrop-blur-md transition-colors hover:bg-[rgb(var(--surface-elevated))/0.65]"
+            </a>
+            <a
+              href="/no"
+              class="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--surface-elevated))/0.45] px-5 py-2.5 text-sm font-medium text-[rgb(var(--text))] shadow-sm ring-0 backdrop-blur-md transition-colors hover:bg-[rgb(var(--surface-elevated))/0.65] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--bg))] active:opacity-90"
             >
               Til forsiden
-            </button>
+            </a>
           </div>
         </div>
       </div>
