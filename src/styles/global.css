@@ -50,15 +50,15 @@ h3 {
 
 /* Content-surface hooks: calm (informasjon), lifted (premium), tech (kort); + titler/lead. */
 .vox-surface-calm {
-  @apply rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.12] bg-[rgb(var(--surface-elevated))/0.55] px-5 py-6 backdrop-blur-sm sm:px-7 sm:py-8;
+  @apply rounded-[var(--radius-lg)] border-0 bg-[rgb(var(--surface-elevated))/0.42] px-5 py-6 shadow-[var(--shadow-sm)] ring-0 outline-none backdrop-blur-md sm:px-7 sm:py-8;
 }
 
 .vox-surface-lifted {
-  @apply rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.14] bg-[rgb(var(--surface))] p-6 shadow-[var(--shadow-md)] sm:p-8;
+  @apply rounded-[var(--radius-lg)] border-0 bg-[rgb(var(--surface))/0.68] p-6 shadow-[var(--shadow-md)] ring-0 outline-none backdrop-blur-md sm:p-8;
 }
 
 .vox-surface-tech {
-  @apply rounded-[var(--radius-md)] border-l-4 border-l-[rgb(var(--primary))] bg-[rgb(var(--surface-elevated))/0.7] px-4 py-4 shadow-[var(--shadow-sm)] backdrop-blur-sm sm:px-5 sm:py-5;
+  @apply rounded-[var(--radius-md)] border-0 border-l-4 border-l-[rgb(var(--primary))] bg-[rgb(var(--surface-elevated))/0.5] px-4 py-4 shadow-[var(--shadow-sm)] ring-0 outline-none backdrop-blur-md sm:px-5 sm:py-5;
 }
 
 .vox-section-title {

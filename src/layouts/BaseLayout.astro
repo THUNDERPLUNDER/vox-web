@@ -48,6 +48,13 @@ const { title = "VOX", currentPath = "" } = Astro.props;
     <div class="fixed inset-0 -z-10 overflow-hidden">
       <!-- base wash -->
       <div class="absolute inset-0" style="background: rgb(var(--bg));"></div>
+
+      <!-- Sonic gradient blob: very subtle tonal depth (~5% axis) -->
+      <div
+        class="pointer-events-none absolute left-1/2 top-[30%] h-[min(100vh,900px)] w-[min(130vw,1100px)] -translate-x-1/2 rounded-full blur-[160px]"
+        aria-hidden="true"
+        style="background: linear-gradient(135deg, rgb(var(--accent-gradient-start) / 0.05), rgb(var(--accent-gradient-end) / 0.05));"
+      ></div>
   
       <!-- orb 1: primary, top-left -->
       <div
