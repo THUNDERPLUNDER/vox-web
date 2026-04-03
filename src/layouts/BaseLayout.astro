@@ -42,6 +42,32 @@ const { title = "VOX", currentPath = "" } = Astro.props;
     <slot name="head" />
     <script defer src="https://www.gstatic.com/ces-console/fast/chat-messenger/prod/v1.15/chat-messenger.js"></script>
     <link rel="stylesheet" href="https://www.gstatic.com/ces-console/fast/chat-messenger/prod/v1.15/themes/chat-messenger.css">
+    <style is:global>
+      /* Sonic gradient blob: light ~5%; dark / system→dark ~17% for glass depth */
+      .vox-sonic-blob {
+        background: linear-gradient(
+          135deg,
+          rgb(var(--accent-gradient-start) / 0.05),
+          rgb(var(--accent-gradient-end) / 0.05)
+        );
+      }
+      html[data-theme="dark"] .vox-sonic-blob {
+        background: linear-gradient(
+          135deg,
+          rgb(var(--accent-gradient-start) / 0.17),
+          rgb(var(--accent-gradient-end) / 0.17)
+        );
+      }
+      @media (prefers-color-scheme: dark) {
+        html[data-theme="system"] .vox-sonic-blob {
+          background: linear-gradient(
+            135deg,
+            rgb(var(--accent-gradient-start) / 0.17),
+            rgb(var(--accent-gradient-end) / 0.17)
+          );
+        }
+      }
+    </style>
   </head>
 
   <body class="min-h-screen antialiased">
@@ -49,11 +75,10 @@ const { title = "VOX", currentPath = "" } = Astro.props;
       <!-- base wash -->
       <div class="absolute inset-0" style="background: rgb(var(--bg));"></div>
 
-      <!-- Sonic gradient blob: very subtle tonal depth (~5% axis) -->
+      <!-- Sonic gradient blob: tonal depth (opacity via .vox-sonic-blob) -->
       <div
-        class="pointer-events-none absolute left-1/2 top-[30%] h-[min(100vh,900px)] w-[min(130vw,1100px)] -translate-x-1/2 rounded-full blur-[160px]"
+        class="vox-sonic-blob pointer-events-none absolute left-1/2 top-[30%] h-[min(100vh,900px)] w-[min(130vw,1100px)] -translate-x-1/2 rounded-full blur-[160px]"
         aria-hidden="true"
-        style="background: linear-gradient(135deg, rgb(var(--accent-gradient-start) / 0.05), rgb(var(--accent-gradient-end) / 0.05));"
       ></div>
   
       <!-- orb 1: primary, top-left -->
