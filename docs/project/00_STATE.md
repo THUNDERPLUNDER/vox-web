@@ -9,24 +9,32 @@
 - Hovedmål for nåværende periode: Få på plass en enkel, testbar MVP med agent, innhold og nettside nok til å kunne prøve ut om løsningen oppleves nyttig for reelle brukere.
 - Hva vi prøver å få til i MVP: Bygge en første versjon der en bruker kan få praktisk hjelp via AI-agenten, forstå hva tjenesten hjelper med via nettsiden, og møte en første mengde søkbart innhold i artikler og ordbok som kan gi trafikk fra Google og AI-baserte søk, slik at vi kan teste nytte, tillit og teknisk gjennomførbarhet.
 
+## Nå står vi her (baseline for neste tråd)
+- **Stack:** Astro 5, Tailwind CSS v4 via `@tailwindcss/vite`, **ingen** `tailwind.config.*`.
+- **Styling:** `tokens.css` = designverdier / semantiske tokens; `global.css` = wiring, base, hooks (`.sonic-pulse-cta`, `.vox-surface-*`); utilities i `.astro`.
+- **Tema:** `data-theme` (system / light / dark), `localStorage`, `ThemeControl` i footer — **landet og i bruk**.
+- **Sonic Resonance:** Eksplisitt token-baseline i `tokens.css` (brand + gradient + surface light/dark); ref. commit **`4d5fd53`**. `.sonic-pulse-cta` og gradientaksen er koblet til `--accent-gradient-start/end`.
+- **Flater:** Content surfaces og **`Section` `tone="band"`** — band bruker **tonal gradient-separasjon**, ikke hard 1px divider mellom seksjoner.
+- **Landing:** `/no` og `/no/info` er **visuelt oppdatert i samme familie** (gradient tydeligere, inkrementelt — ikke full redesign). `/no`-layout: desktop innhold venstre + sticky chat høyre; mobil innhold først, chat senere (uendret prinsipp).
+- **Dokumentasjon:** `DESIGN.md`, `00_STATE.md`, `03_DECISIONS.md` skal speile denne baseline; videre arbeid bygger oppå, ikke forutsetter gammel «kun lys palett»-tilstand.
+
 ## Status (repo, faktisk landet)
 - **Frontend:** Astro **5** med statisk output der det passer.
-- **Styling:** **Tailwind CSS v4** via `@tailwindcss/vite` (ingen `tailwind.config.*` i repoet). Hybridmodell: `tokens.css` som designvariabler, `global.css` som kobler tokens + Tailwind og global base, utilities i `.astro`-komponenter (se `01_STACK.md` og `DESIGN.md`).
-- **Designvariabler:** `src/styles/tokens.css` er i bruk i Git/deploy-flyten (lys + mørk palett; se `DESIGN.md`).
-- **Content surfaces:** `.vox-surface-calm`, `.vox-surface-lifted`, `.vox-surface-tech`, `.vox-section-title`, `.vox-lead` i `global.css`; `Section` støtter `tone="band"` (se `DESIGN.md`).
+- **Styling:** **Tailwind CSS v4** via `@tailwindcss/vite` (**ingen** `tailwind.config.*`). Hybridmodell som over; se `01_STACK.md` og `DESIGN.md`.
+- **Designvariabler:** `src/styles/tokens.css` inkl. **Sonic Resonance**-primitives og semantisk mapping.
+- **Content surfaces:** `.vox-surface-calm`, `.vox-surface-lifted`, `.vox-surface-tech`, `.vox-section-title`, `.vox-lead` i `global.css`; `Section` med `tone="band"` (tonal band).
 - **Shell:** `BaseLayout.astro` er felles ramme: orb-bakgrunn, fast header med glass/surface, **global navigasjon**, CES-widget (script + stylesheet) uendret i funksjon.
-- **Landing `/no`:** Desktop: innhold venstre, **sticky** chat høyre. Mobil: **innhold først**, chat som egen blokk senere (bevisst MVP-valg, dokumentert i `DESIGN.md` og `03_DECISIONS.md`).
-- **Navigasjon:** Én global toppflate; innholdssider sender `currentPath` til layout. Lokal duplikat-header er fjernet der den ga dobbel meny.
-- **Mobilmeny:** `MobileMenuTrigger` + `MobileMenuSheet` (drawer montert utenfor `backdrop-blur`-wrapper slik at `position: fixed` dekker viewport).
-- **Typografi:** **Epilogue + Inter** lastes via Google Fonts i `BaseLayout` og brukes via `--font-display` / `--font-sans` i `global.css`.
-- **Tema:** **`data-theme`** (`system` / `light` / `dark`), `localStorage`, `ThemeControl` i footer — se `DESIGN.md`.
+- **Landing `/no`:** Desktop: innhold venstre, **sticky** chat høyre. Mobil: **innhold først**, chat som egen blokk senere (`DESIGN.md`, `03_DECISIONS.md`).
+- **Navigasjon:** Én global toppflate; innholdssider sender `currentPath` til layout.
+- **Mobilmeny:** `MobileMenuTrigger` + `MobileMenuSheet` (drawer montert utenfor `backdrop-blur`-wrapper).
+- **Typografi:** **Epilogue + Inter** via Google Fonts i `BaseLayout` og `--font-display` / `--font-sans` i `global.css`.
 - **Ordbok (dynamisk route):** `src/pages/no/ordbok/[term].astro` har minimal `getStaticPaths()` (tom liste inntil term-data finnes) for at **produksjonsbuild** skal passere.
 - **Øvrig:** AI-agent i Google CES; manualer i Cloud stores; Stitch som visuell referanse.
 
 ## Det som fortsatt er under arbeid
 - Mer innhold og ferdige sider (artikler, ordbok med reelle termer).
 - Flere dokumenter og innsikt inn i kunnskapsgrunnlaget til AI-agenten.
-- Utdyping av tokens der MVP trenger finere kontroll.
+- Finjustering av tokens og innhold der MVP trenger det.
 
 ## Det som ikke er avklart ennå
 - Første testgruppe for MVP-en.
@@ -36,9 +44,9 @@
 - Utvide innhold og testbarhet i tråd med MVP-målene, med stabil shell og hybrid styling som utgangspunkt.
 
 ## Neste konkrete steg (forslag)
-- Holde `docs/project/*` synket med kode.
+- Holde `docs/project/*` synket ved endringer i tokens eller layout-prinsipper.
 - Fylle ordbok med reell `getStaticPaths()`-kilde når termliste finnes.
-- Vurdere flere innholdssider med samme surface-mønstre etter behov.
+- Flere sider med samme surface-mønstre etter behov.
 
 ## Risiko / blokkere
 - Kjente hindringer: arbeid spenner over agent, innhold, nettside og design samtidig; kunnskapsgrunnlag kan fortsatt være tynt.
@@ -51,4 +59,4 @@
 
 ## Sist oppdatert
 - Dato: 2026-04-02
-- Oppdatert av: konsolideringsbatch (surfaces, `/no`-layout, tema, `/no/om`, docs)
+- Oppdatert av: docs-sync etter Sonic Resonance token-pass (`4d5fd53`)
