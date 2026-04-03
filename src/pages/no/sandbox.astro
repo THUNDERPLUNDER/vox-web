@@ -1,0 +1,277 @@
+---
+/* CONTRACT: Internal Sonic Resonance showroom; no new primitives — mirrors existing patterns only. */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Section from "../../components/layout/Section.astro";
+import Footer from "../../components/nav/Footer.astro";
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+---
+
+<BaseLayout title="VOX – Sandbox (intern)" currentPath="/no/sandbox">
+  <meta slot="head" name="robots" content="noindex,follow" />
+
+  <main class="pb-8 sm:pb-10">
+    <Section class="!pt-4 !pb-10 sm:!pb-12">
+      <div class="max-w-3xl">
+        <h1
+          class="font-display text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl"
+        >
+          Intern sandbox
+        </h1>
+        <p class="mt-4 text-sm leading-relaxed text-[rgb(var(--muted))]">
+          Inspeksjon av gjeldende byggeklosser og innholdsmønstre. Ikke en del av produksjonsnavigasjon.
+        </p>
+      </div>
+    </Section>
+
+    <!-- A – Tokens / farger -->
+    <Section tone="band" class="!py-10 sm:!py-12">
+      <div class="max-w-5xl">
+        <h2 class="vox-section-title">A – Tokens / farger</h2>
+        <p class="mt-2 max-w-2xl text-sm text-[rgb(var(--muted))]">
+          Rene fargeflater mot sidens bakgrunn (ingen ekstra effekter).
+        </p>
+        <div
+          class="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4"
+          role="list"
+          aria-label="Fargeprøver"
+        >
+          <div class="flex flex-col gap-2">
+            <div
+              class="h-16 rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.5] bg-[rgb(var(--primary))]"
+              role="presentation"
+            ></div>
+            <span class="text-xs text-[rgb(var(--muted))]">Primary</span>
+          </div>
+          <div class="flex flex-col gap-2">
+            <div
+              class="h-16 rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.5] bg-[rgb(var(--vox-surface-light))]"
+              role="presentation"
+            ></div>
+            <span class="text-xs text-[rgb(var(--muted))]">Surface (lys)</span>
+          </div>
+          <div class="flex flex-col gap-2">
+            <div
+              class="h-16 rounded-[var(--radius-md)] border border-white/10 bg-[rgb(var(--vox-surface-dark))]"
+              role="presentation"
+            ></div>
+            <span class="text-xs text-[rgb(var(--muted))]">Surface (mørk)</span>
+          </div>
+          <div class="flex flex-col gap-2">
+            <div
+              class="h-16 rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.35]"
+              style="background: linear-gradient(135deg, rgb(var(--accent-gradient-start)) 0%, rgb(var(--accent-gradient-end)) 100%);"
+              role="presentation"
+            ></div>
+            <span class="text-xs text-[rgb(var(--muted))]">Sonic Pulse (gradient)</span>
+          </div>
+        </div>
+      </div>
+    </Section>
+
+    <!-- B – Typografi -->
+    <Section class="!py-10 sm:!py-12">
+      <div class="max-w-3xl space-y-6">
+        <h2 class="vox-section-title">B – Typografi</h2>
+        <p class="text-sm text-[rgb(var(--muted))]">
+          Epilogue på overskrifter (font-display), Inter på brødtekst.
+        </p>
+        <div class="space-y-4 border-0 pt-2">
+          <h1
+            class="font-display text-3xl font-semibold tracking-[-0.03em] sm:text-4xl"
+          >
+            Demonstrasjon H1
+          </h1>
+          <h2 class="vox-section-title">Demonstrasjon H2</h2>
+          <h3 class="font-display text-xl font-semibold tracking-[-0.02em]">
+            Demonstrasjon H3
+          </h3>
+          <h4 class="font-display text-base font-semibold tracking-[-0.02em]">
+            Demonstrasjon H4
+          </h4>
+          <p class="text-base leading-relaxed text-[rgb(var(--text))]">
+            Brødtekst (Inter): Kort avsnitt som viser linjehøyde og farge på vanlig innhold. Samme stemme som på info- og ordboksider.
+          </p>
+        </div>
+      </div>
+    </Section>
+
+    <!-- C – Glass surfaces -->
+    <Section tone="band" class="!py-10 sm:!py-12">
+      <div class="max-w-5xl">
+        <h2 class="vox-section-title">C – Glass surfaces</h2>
+        <p class="mt-2 max-w-2xl text-sm text-[rgb(var(--muted))]">
+          Tre flater mot Sonic-bakgrunn — calm, lifted, tech.
+        </p>
+        <div class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
+          <div class="vox-surface-calm">
+            <p class="text-sm font-semibold text-[rgb(var(--text))]">.vox-surface-calm</p>
+            <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Rolig intro og forklaringsblokker (f.eks. topp på kunnskapssider).
+            </p>
+          </div>
+          <div class="vox-surface-lifted">
+            <p class="text-sm font-semibold text-[rgb(var(--text))]">.vox-surface-lifted</p>
+            <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Løftet flate for videre lesning, navigasjon eller kontekst.
+            </p>
+          </div>
+          <div class="vox-surface-tech">
+            <p class="text-sm font-semibold text-[rgb(var(--text))]">.vox-surface-tech</p>
+            <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Kort teknisk innhold, begrepslinjer, korte fakta.
+            </p>
+          </div>
+        </div>
+      </div>
+    </Section>
+
+    <!-- D – UI-knapper -->
+    <Section class="!py-10 sm:!py-12">
+      <div class="max-w-3xl">
+        <h2 class="vox-section-title">D – UI-elementer</h2>
+        <p class="mt-2 text-sm text-[rgb(var(--muted))]">
+          Primær- og sekundærknapp slik de brukes i innholdslag.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            class="sonic-pulse-cta inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold transition-shadow"
+          >
+            Primær (sonic-pulse-cta)
+          </button>
+          <button
+            type="button"
+            class="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--surface-elevated))/0.45] px-5 py-2.5 text-sm font-medium text-[rgb(var(--text))] shadow-sm ring-0 backdrop-blur-md transition-colors hover:bg-[rgb(var(--surface-elevated))/0.65]"
+          >
+            Sekundær (glass)
+          </button>
+        </div>
+      </div>
+    </Section>
+
+    <!-- E1 – Ordbok indeks-mønster (calm → band → lifted, som /no/ordbok) -->
+    <Section class="!pt-4 !pb-8 sm:!pb-10">
+      <div class="max-w-3xl">
+        <h2 class="vox-section-title">E1 – Ordbok: indeks-mønster</h2>
+        <p class="mt-2 text-sm text-[rgb(var(--muted))]">
+          Demonstrasjon — ikke ekte data eller lenker.
+        </p>
+      </div>
+    </Section>
+
+    <Section class="!pt-2 !pb-8 sm:!pb-10">
+      <div class="max-w-3xl">
+        <div class="vox-surface-calm relative overflow-hidden">
+          <div
+            class="pointer-events-none absolute -inset-x-2 -top-2 h-16 rounded-[var(--radius-md)] bg-gradient-to-r from-[rgb(var(--accent-gradient-start)/0.12)] to-[rgb(var(--accent-gradient-end)/0.1)] blur-2xl"
+            aria-hidden="true"
+          ></div>
+          <h3
+            class="font-display text-2xl font-semibold tracking-[-0.03em] text-balance sm:text-3xl"
+          >
+            Ordbok (eksempel)
+          </h3>
+          <p class="vox-lead mt-4">
+            Kort innledning i calm-overflate — samme rytme som på /no/ordbok.
+          </p>
+        </div>
+      </div>
+    </Section>
+
+    <Section tone="band" class="!py-10 sm:!py-12">
+      <div class="max-w-3xl">
+        <h3 class="vox-section-title">Begreper</h3>
+        <ul class="mt-8 grid list-none gap-3 p-0 sm:gap-4" role="list">
+          <li class="vox-surface-tech">
+            <span class="text-sm font-semibold text-[rgb(var(--text))]">Eksempel A</span>
+            <span class="mt-1.5 block text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Tech-kort i band-segment.
+            </span>
+          </li>
+          <li class="vox-surface-tech">
+            <span class="text-sm font-semibold text-[rgb(var(--text))]">Eksempel B</span>
+            <span class="mt-1.5 block text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Uten fungerende lenker — kun visuelt mønster.
+            </span>
+          </li>
+          <li class="vox-surface-tech">
+            <span class="text-sm font-semibold text-[rgb(var(--text))]">Eksempel C</span>
+            <span class="mt-1.5 block text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Tredje kort for liste-rytme.
+            </span>
+          </li>
+        </ul>
+      </div>
+    </Section>
+
+    <Section class="!pt-6 !pb-10 sm:!pb-12">
+      <div class="max-w-3xl">
+        <div class="vox-surface-lifted">
+          <h3 class="vox-section-title text-lg sm:text-xl">Videre lesning</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--muted))]">
+            Lifted-blokk for kontekst og neste steg, som på ordbok-indeksen.
+          </p>
+        </div>
+      </div>
+    </Section>
+
+    <!-- E2 – Ordbok term-mønster -->
+    <Section class="!py-10 sm:!pb-14">
+      <div class="max-w-3xl">
+        <h2 class="vox-section-title">E2 – Ordbok: term-mønster</h2>
+        <p class="mt-2 text-sm text-[rgb(var(--muted))]">
+          Demonstrasjon — samme struktur som term-mal, uten routing.
+        </p>
+
+        <div class="mt-8 vox-surface-calm relative overflow-hidden">
+          <div
+            class="pointer-events-none absolute -inset-x-2 -top-2 h-16 rounded-[var(--radius-md)] bg-gradient-to-r from-[rgb(var(--accent-gradient-start)/0.12)] to-[rgb(var(--accent-gradient-end)/0.1)] blur-2xl"
+            aria-hidden="true"
+          ></div>
+          <p class="text-xs font-medium uppercase tracking-wide text-[rgb(var(--muted))]">
+            Ordbok
+          </p>
+          <h3
+            class="font-display mt-2 text-2xl font-semibold tracking-[-0.03em] text-balance sm:text-3xl"
+          >
+            Eksempelbegrep
+          </h3>
+          <p class="vox-lead mt-4">
+            Kort forklaring i calm hero — leder innholdet uten å dominere.
+          </p>
+        </div>
+
+        <div class="mt-8 vox-surface-tech">
+          <p class="text-sm font-semibold text-[rgb(var(--text))]">Innhold</p>
+          <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">
+            Faglig kort tekst i tech-flate — ett avsnitt eller oppramsing, som på term-siden.
+          </p>
+        </div>
+
+        <div class="mt-8 vox-surface-lifted">
+          <h3 class="vox-section-title text-lg sm:text-xl">Navigasjon</h3>
+          <p class="mt-2 text-sm text-[rgb(var(--muted))]">
+            Tilbake til ordbok eller forsiden — her kun knappestiler, ingen ekte navigasjon.
+          </p>
+          <div class="mt-5 flex flex-wrap gap-3">
+            <button
+              type="button"
+              class="sonic-pulse-cta inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold transition-shadow"
+            >
+              Til ordboken
+            </button>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--surface-elevated))/0.45] px-5 py-2.5 text-sm font-medium text-[rgb(var(--text))] shadow-sm ring-0 backdrop-blur-md transition-colors hover:bg-[rgb(var(--surface-elevated))/0.65]"
+            >
+              Til forsiden
+            </button>
+          </div>
+        </div>
+      </div>
+    </Section>
+  </main>
+
+  <Footer />
+</BaseLayout>
