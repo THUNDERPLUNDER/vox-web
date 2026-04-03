@@ -13,7 +13,11 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
   <main class="py-8 sm:py-10">
     <Section class="!pt-2 !pb-10 sm:!pt-4 sm:!pb-12">
       <div class="max-w-3xl">
-        <div class="vox-surface-calm">
+        <div class="vox-surface-calm relative overflow-hidden">
+          <div
+            class="pointer-events-none absolute -inset-x-2 -top-2 h-16 rounded-[var(--radius-md)] bg-gradient-to-r from-[rgb(var(--accent-gradient-start)/0.14)] to-[rgb(var(--accent-gradient-end)/0.12)] blur-2xl"
+            aria-hidden="true"
+          ></div>
           <h1
             class="font-display text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl"
           >
@@ -83,7 +87,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
             </a>
             <a
               href="/no/info"
-              class="inline-flex items-center justify-center rounded-[var(--radius-md)] border border-[rgb(var(--border))] bg-[rgb(var(--surface-elevated))/0.5] px-5 py-2.5 text-sm font-medium text-[rgb(var(--text))] backdrop-blur-sm transition-colors hover:bg-[rgb(var(--surface-elevated))/0.85]"
+              class="inline-flex items-center justify-center rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.35] bg-[rgb(var(--surface-elevated))/0.6] px-5 py-2.5 text-sm font-medium text-[rgb(var(--text))] backdrop-blur-sm transition-colors hover:bg-[rgb(var(--surface-elevated))/0.82]"
             >
               Kom i gang (info)
             </a>
