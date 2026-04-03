@@ -1,21 +1,28 @@
 /* CONTRACT: Design tokens; light/dark via data-theme + system preference. */
 :root {
-  /* Light: warm paper, confident sonic blue + soft magenta (Sonic Architect / livsstil) */
-  --bg: 252 250 246;
-  --surface: 255 253 250;
+  /* Sonic Resonance primitives (source of truth) */
+  --vox-brand-primary: 14 165 233; /* #0EA5E9 */
+  --vox-brand-gradient-start: 96 165 250; /* #60A5FA */
+  --vox-brand-gradient-end: 244 114 182; /* #F472B6 */
+  --vox-surface-light: 250 249 246; /* #FAF9F6 */
+  --vox-surface-dark: 2 6 23; /* #020617 */
 
-  --primary: 26 118 188;
-  --primary-contrast: 255 255 255;
+  /* Light base */
+  --bg: var(--vox-surface-light);
+  --surface: 255 252 248;
 
-  --focus: 214 122 178;
+  --primary: var(--vox-brand-primary);
+  --primary-contrast: 248 250 252;
+
+  --focus: var(--vox-brand-gradient-end);
 
   --text: 28 32 38;
   --muted: 105 112 126;
 
-  --border: 232 228 220;
+  --border: 228 224 216;
 
   --radius-sm: 8px;
-  --radius-md: 16px;
+  --radius-md: 0.5rem;
   --radius-lg: 32px;
 
   --shadow-sm: 0 4px 20px -8px rgba(28, 32, 38, 0.1);
@@ -28,11 +35,13 @@
   --font-display: "Epilogue", var(--font-sans);
   --leading: 1.5;
 
-  --surface-subtle: var(--bg);
+  --surface-subtle: 246 243 237;
   --surface-elevated: var(--surface);
   --text-secondary: var(--muted);
   --focus-ring: var(--focus);
   --accent-primary: var(--primary);
+  --accent-gradient-start: var(--vox-brand-gradient-start);
+  --accent-gradient-end: var(--vox-brand-gradient-end);
 
   /* Text on gradient CTAs (same family light/dark) */
   --on-sonic: 255 255 255;
@@ -44,23 +53,25 @@
 }
 
 html[data-theme="light"] {
-  --bg: 252 250 246;
-  --surface: 255 253 250;
-  --primary: 26 118 188;
-  --primary-contrast: 255 255 255;
-  --focus: 214 122 178;
+  --bg: var(--vox-surface-light);
+  --surface: 255 252 248;
+  --primary: var(--vox-brand-primary);
+  --primary-contrast: 248 250 252;
+  --focus: var(--vox-brand-gradient-end);
   --text: 28 32 38;
   --muted: 105 112 126;
-  --border: 232 228 220;
+  --border: 228 224 216;
   --shadow-sm: 0 4px 20px -8px rgba(28, 32, 38, 0.1);
   --shadow-md: 0 16px 40px -16px rgba(28, 32, 38, 0.14),
     0 6px 18px -10px rgba(28, 32, 38, 0.08);
   --shadow-header: 0 14px 36px -22px rgba(28, 32, 38, 0.14);
-  --surface-subtle: var(--bg);
+  --surface-subtle: 246 243 237;
   --surface-elevated: var(--surface);
   --text-secondary: var(--muted);
   --focus-ring: var(--focus);
   --accent-primary: var(--primary);
+  --accent-gradient-start: var(--vox-brand-gradient-start);
+  --accent-gradient-end: var(--vox-brand-gradient-end);
   --on-sonic: 255 255 255;
   --orb-a: 0.07;
   --orb-b: 0.11;
@@ -69,23 +80,25 @@ html[data-theme="light"] {
 
 /* Dark: rolig high-end audio / studio — samme primær+magenta-akse som lys */
 html[data-theme="dark"] {
-  --bg: 8 12 22;
-  --surface: 18 26 42;
-  --primary: 82 198 255;
+  --bg: var(--vox-surface-dark);
+  --surface: 12 18 34;
+  --primary: var(--vox-brand-primary);
   --primary-contrast: 8 12 22;
-  --focus: 210 140 200;
-  --text: 238 242 248;
+  --focus: var(--vox-brand-gradient-end);
+  --text: 230 236 245;
   --muted: 148 162 186;
-  --border: 55 68 94;
+  --border: 56 72 100;
   --shadow-sm: 0 4px 24px -6px rgba(0, 0, 0, 0.45);
   --shadow-md: 0 20px 48px -16px rgba(0, 0, 0, 0.55),
     0 8px 24px -12px rgba(0, 0, 0, 0.4);
   --shadow-header: 0 18px 42px -20px rgba(0, 0, 0, 0.65);
-  --surface-subtle: 12 18 32;
-  --surface-elevated: 28 38 58;
+  --surface-subtle: 8 14 28;
+  --surface-elevated: 20 30 50;
   --text-secondary: var(--muted);
   --focus-ring: var(--focus);
   --accent-primary: var(--primary);
+  --accent-gradient-start: var(--vox-brand-gradient-start);
+  --accent-gradient-end: var(--vox-brand-gradient-end);
   --on-sonic: 255 255 255;
   --orb-a: 0.14;
   --orb-b: 0.09;
@@ -94,23 +107,25 @@ html[data-theme="dark"] {
 
 @media (prefers-color-scheme: dark) {
   html[data-theme="system"] {
-    --bg: 8 12 22;
-    --surface: 18 26 42;
-    --primary: 82 198 255;
+    --bg: var(--vox-surface-dark);
+    --surface: 12 18 34;
+    --primary: var(--vox-brand-primary);
     --primary-contrast: 8 12 22;
-    --focus: 210 140 200;
-    --text: 238 242 248;
+    --focus: var(--vox-brand-gradient-end);
+    --text: 230 236 245;
     --muted: 148 162 186;
-    --border: 55 68 94;
+    --border: 56 72 100;
     --shadow-sm: 0 4px 24px -6px rgba(0, 0, 0, 0.45);
     --shadow-md: 0 20px 48px -16px rgba(0, 0, 0, 0.55),
       0 8px 24px -12px rgba(0, 0, 0, 0.4);
     --shadow-header: 0 18px 42px -20px rgba(0, 0, 0, 0.65);
-    --surface-subtle: 12 18 32;
-    --surface-elevated: 28 38 58;
+    --surface-subtle: 8 14 28;
+    --surface-elevated: 20 30 50;
     --text-secondary: var(--muted);
     --focus-ring: var(--focus);
     --accent-primary: var(--primary);
+    --accent-gradient-start: var(--vox-brand-gradient-start);
+    --accent-gradient-end: var(--vox-brand-gradient-end);
     --on-sonic: 255 255 255;
     --orb-a: 0.14;
     --orb-b: 0.09;
