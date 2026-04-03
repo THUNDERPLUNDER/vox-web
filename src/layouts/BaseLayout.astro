@@ -106,9 +106,22 @@ const { title = "VOX", currentPath = "" } = Astro.props;
         }
       };
 
+      function syncCesWidgetTheme() {
+        const widget = document.getElementById("ces-widget");
+        if (!widget) return;
+        const mode = document.documentElement.getAttribute("data-theme") || "system";
+        let dark = false;
+        if (mode === "dark") dark = true;
+        else if (mode === "light") dark = false;
+        else
+          dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        widget.setAttribute("theme-id", dark ? "dark" : "light");
+      }
+
       window.addEventListener("chat-messenger-loaded", () => {
         const widget = document.getElementById("ces-widget");
         if (!widget) return;
+        syncCesWidgetTheme();
         if (register(widget)) return;
         let tries = 0;
         const t = setInterval(() => {
@@ -119,6 +132,21 @@ const { title = "VOX", currentPath = "" } = Astro.props;
 
       window.addEventListener("chat-messenger-error", (e) => {
         console.error("chat-messenger-error", e?.detail || e);
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        syncCesWidgetTheme();
+        new MutationObserver(syncCesWidgetTheme).observe(
+          document.documentElement,
+          { attributes: true, attributeFilter: ["data-theme"] },
+        );
+        window
+          .matchMedia("(prefers-color-scheme: dark)")
+          .addEventListener("change", () => {
+            if (document.documentElement.getAttribute("data-theme") === "system") {
+              syncCesWidgetTheme();
+            }
+          });
       });
     </script>
   </body>
