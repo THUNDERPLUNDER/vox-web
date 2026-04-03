@@ -50,15 +50,15 @@ h3 {
 
 /* Content-surface hooks: calm (informasjon), lifted (premium), tech (kort); + titler/lead. */
 .vox-surface-calm {
-  @apply rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.28] bg-[rgb(var(--surface-elevated))/0.55] px-5 py-6 backdrop-blur-sm sm:px-7 sm:py-8;
+  @apply rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.12] bg-[rgb(var(--surface-elevated))/0.55] px-5 py-6 backdrop-blur-sm sm:px-7 sm:py-8;
 }
 
 .vox-surface-lifted {
-  @apply rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.35] bg-[rgb(var(--surface))] p-6 shadow-[var(--shadow-md)] sm:p-8;
+  @apply rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.14] bg-[rgb(var(--surface))] p-6 shadow-[var(--shadow-md)] sm:p-8;
 }
 
 .vox-surface-tech {
-  @apply rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.35] border-l-[3px] border-l-[rgb(var(--accent-gradient-start))] bg-[rgb(var(--surface-elevated))/0.72] px-4 py-4 shadow-[var(--shadow-sm)] backdrop-blur-sm sm:px-5 sm:py-5;
+  @apply rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.12] bg-[rgb(var(--surface-elevated))/0.7] px-4 py-4 shadow-[var(--shadow-sm)] backdrop-blur-sm sm:px-5 sm:py-5;
 }
 
 .vox-section-title {
@@ -68,4 +68,16 @@ h3 {
 
 .vox-lead {
   @apply text-lg leading-relaxed text-[rgb(var(--text-secondary))];
+}
+
+html[data-theme="dark"] chat-messenger#ces-widget,
+html[data-theme="dark"] chat-messenger#ces-widget chat-messenger-container {
+  background: rgb(var(--surface-elevated));
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-theme="system"] chat-messenger#ces-widget,
+  html[data-theme="system"] chat-messenger#ces-widget chat-messenger-container {
+    background: rgb(var(--surface-elevated));
+  }
 }

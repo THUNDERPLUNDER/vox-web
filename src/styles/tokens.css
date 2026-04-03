@@ -100,9 +100,9 @@ html[data-theme="dark"] {
   --accent-gradient-start: var(--vox-brand-gradient-start);
   --accent-gradient-end: var(--vox-brand-gradient-end);
   --on-sonic: 255 255 255;
-  --orb-a: 0.14;
-  --orb-b: 0.09;
-  --orb-c: 0.07;
+  --orb-a: 0;
+  --orb-b: 0;
+  --orb-c: 0;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -127,8 +127,8 @@ html[data-theme="dark"] {
     --accent-gradient-start: var(--vox-brand-gradient-start);
     --accent-gradient-end: var(--vox-brand-gradient-end);
     --on-sonic: 255 255 255;
-    --orb-a: 0.14;
-    --orb-b: 0.09;
-    --orb-c: 0.07;
+    --orb-a: 0;
+    --orb-b: 0;
+    --orb-c: 0;
   }
 }
