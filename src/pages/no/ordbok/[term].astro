@@ -1,21 +1,100 @@
 ---
-/* CONTRACT: Norwegian glossary term page; calm knowledge surface (paths from getStaticPaths when data exists). */
+/* CONTRACT: Norwegian glossary term page; Storyblok spike for title/description + existing calm layout. */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Section from "../../../components/layout/Section.astro";
 import Footer from "../../../components/nav/Footer.astro";
+import {
+  getStoryblokVersion,
+  STORYBLOK_GLOSSARY_STARTS_WITH,
+  termSlugFromFullSlug,
+} from "../../../lib/storyblok-glossary";
+
+type TermProps = {
+  storyTitle: string;
+  storyDescription: string;
+  fromStoryblok: boolean;
+};
 
 export async function getStaticPaths() {
-  // TODO: Replace with real term source when glossary data is available.
-  return [];
+  const token = import.meta.env.STORYBLOK_DELIVERY_API_TOKEN;
+  if (typeof token !== "string" || !token.trim()) {
+    return [];
+  }
+
+  try {
+    const { useStoryblokApi } = await import("@storyblok/astro");
+    const storyblokApi = useStoryblokApi();
+    const version = getStoryblokVersion();
+    const { data } = await storyblokApi.get("cdn/stories", {
+      version,
+      starts_with: STORYBLOK_GLOSSARY_STARTS_WITH,
+    });
+
+    const stories = data?.stories;
+    if (!Array.isArray(stories) || stories.length === 0) {
+      return [];
+    }
+
+    const paths: {
+      params: { term: string };
+      props: TermProps;
+    }[] = [];
+
+    for (const story of stories) {
+      const slug = termSlugFromFullSlug(story.full_slug);
+      if (!slug) continue;
+
+      const content = story.content && typeof story.content === "object" ? story.content : {};
+      const rawTitle = "title" in content ? content.title : undefined;
+      const rawDesc = "description" in content ? content.description : undefined;
+
+      const storyTitle =
+        typeof rawTitle === "string" && rawTitle.trim()
+          ? rawTitle.trim()
+          : typeof story.name === "string"
+            ? story.name
+            : slug;
+
+      const storyDescription =
+        typeof rawDesc === "string" && rawDesc.trim() ? rawDesc.trim() : "";
+
+      paths.push({
+        params: { term: slug },
+        props: {
+          storyTitle,
+          storyDescription,
+          fromStoryblok: true,
+        },
+      });
+    }
+
+    return paths;
+  } catch {
+    return [];
+  }
 }
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
+const FALLBACK_LEAD =
+  "Her vises definisjon og forklaring når oppslaget er publisert. Under MVP er dette en mal for hvordan et begrep kan presenteres tydelig og rolig.";
+
+const FALLBACK_BODY =
+  "Brødtekst, eksempler og eventuelle «se også»-henvisninger plasseres her med god linjeavstand og tydelig avsnittsrytme — uten tette tabeller eller teknisk PDF-følelse.";
+
 const { term } = Astro.params;
+const props = Astro.props as TermProps | undefined;
+
 const termLabel = term ? decodeURIComponent(term) : "";
+const storyTitle = props?.storyTitle ?? termLabel;
+const storyDescription = props?.storyDescription ?? "";
+const fromStoryblok = props?.fromStoryblok === true;
+
+const leadText = fromStoryblok && storyDescription ? storyDescription : FALLBACK_LEAD;
+const bodyText = fromStoryblok && storyDescription ? storyDescription : FALLBACK_BODY;
 ---
 
-<BaseLayout title={`VOX - Ordbok: ${termLabel}`} currentPath="/no/ordbok">
+<BaseLayout title={`VOX - Ordbok: ${storyTitle}`} currentPath="/no/ordbok">
   <meta slot="head" name="robots" content="noindex,follow" />
 
   <main class="py-8 sm:py-10">
@@ -32,10 +111,10 @@ const termLabel = term ? decodeURIComponent(term) : "";
           <h1
             class="font-display mt-2 text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl"
           >
-            {termLabel}
+            {storyTitle}
           </h1>
           <p class="vox-lead mt-5">
-            Her vises definisjon og forklaring når oppslaget er publisert. Under MVP er dette en mal for hvordan et begrep kan presenteres tydelig og rolig.
+            {leadText}
           </p>
         </div>
       </div>
@@ -46,11 +125,15 @@ const termLabel = term ? decodeURIComponent(term) : "";
         <h2 class="vox-section-title">Innhold</h2>
         <div class="vox-surface-tech mt-6">
           <p class="text-sm leading-relaxed text-[rgb(var(--text-secondary))]">
-            Brødtekst, eksempler og eventuelle «se også»-henvisninger plasseres her med god linjeavstand og tydelig avsnittsrytme — uten tette tabeller eller teknisk PDF-følelse.
+            {bodyText}
           </p>
         </div>
         <p class="mt-6 text-sm text-[rgb(var(--muted))]">
-          Når datakilde er koblet til, fylles dette feltet automatisk for hvert begrep.
+          {
+            fromStoryblok
+              ? "Innhold hentet fra Storyblok (spike)."
+              : "Når datakilde er koblet til, fylles dette feltet automatisk for hvert begrep."
+          }
         </p>
       </div>
     </Section>
