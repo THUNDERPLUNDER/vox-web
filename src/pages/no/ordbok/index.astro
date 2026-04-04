@@ -3,8 +3,12 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Section from "../../../components/layout/Section.astro";
 import Footer from "../../../components/nav/Footer.astro";
+import { fetchGlossaryTerms, truncateForCard } from "../../../lib/storyblok-glossary";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+
+const glossaryTerms = await fetchGlossaryTerms();
+const hasStoryblokTerms = glossaryTerms.length > 0;
 ---
 
 <BaseLayout title="VOX - Ordbok" currentPath="/no/ordbok">
@@ -27,7 +31,11 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
             Korte, tydelige forklaringer på begreper om hørsel, teknologi og hverdagsbruk — i samme rolige tone som resten av Hørehjelpen.
           </p>
           <p class="mt-4 text-sm text-[rgb(var(--muted))]">
-            Oppslag kobles inn etter hvert som innholdet bygges ut.
+            {
+              hasStoryblokTerms
+                ? "Begrepene under er hentet fra Storyblok og oppdateres når du publiserer."
+                : "Ordboken bygges ut fortløpende — under ser du eksempel på hvordan begreper kan presenteres."
+            }
           </p>
         </div>
       </div>
@@ -37,27 +45,56 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       <div class="max-w-3xl">
         <h2 class="vox-section-title">Begreper</h2>
         <p class="mt-3 max-w-2xl text-[rgb(var(--text-secondary))]">
-          Slik kan et oppslag se ut når det er publisert — skannbart, uten tunge rammer.
+          {
+            hasStoryblokTerms
+              ? "Trykk på et begrep for å lese hele oppslaget — skannbart, uten tunge rammer."
+              : "Slik kan et oppslag se ut når det er publisert — skannbart, uten tunge rammer."
+          }
         </p>
         <ul class="mt-8 grid list-none gap-3 p-0 sm:grid-cols-1 sm:gap-4" role="list">
-          <li class="vox-surface-tech">
-            <span class="text-sm font-semibold text-[rgb(var(--text))]">Tilkobling</span>
-            <span class="mt-1.5 block text-sm leading-relaxed text-[rgb(var(--muted))]">
-              Eksempel: paring, Bluetooth, vanlige feil.
-            </span>
-          </li>
-          <li class="vox-surface-tech">
-            <span class="text-sm font-semibold text-[rgb(var(--text))]">Feedback</span>
-            <span class="mt-1.5 block text-sm leading-relaxed text-[rgb(var(--muted))]">
-              Eksempel: piping, støy, hvordan du beskriver det i chat.
-            </span>
-          </li>
-          <li class="vox-surface-tech">
-            <span class="text-sm font-semibold text-[rgb(var(--text))]">Romklang</span>
-            <span class="mt-1.5 block text-sm leading-relaxed text-[rgb(var(--muted))]">
-              Eksempel: akustikk og opplevelse i rom.
-            </span>
-          </li>
+          {
+            hasStoryblokTerms ? (
+              glossaryTerms.map((t) => {
+                const blurb = truncateForCard(t.description);
+                return (
+                  <li>
+                    <a
+                      href={`/no/ordbok/${encodeURIComponent(t.slug)}`}
+                      class="vox-surface-tech block no-underline text-inherit transition-colors hover:bg-[rgb(var(--surface-elevated))/0.62] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--bg))]"
+                    >
+                      <span class="text-sm font-semibold text-[rgb(var(--text))]">{t.title}</span>
+                      {blurb ? (
+                        <span class="mt-1.5 block text-sm leading-relaxed text-[rgb(var(--muted))]">
+                          {blurb}
+                        </span>
+                      ) : null}
+                    </a>
+                  </li>
+                );
+              })
+            ) : (
+              <>
+                <li class="vox-surface-tech">
+                  <span class="text-sm font-semibold text-[rgb(var(--text))]">Tilkobling</span>
+                  <span class="mt-1.5 block text-sm leading-relaxed text-[rgb(var(--muted))]">
+                    Eksempel: paring, Bluetooth, vanlige feil.
+                  </span>
+                </li>
+                <li class="vox-surface-tech">
+                  <span class="text-sm font-semibold text-[rgb(var(--text))]">Feedback</span>
+                  <span class="mt-1.5 block text-sm leading-relaxed text-[rgb(var(--muted))]">
+                    Eksempel: piping, støy, hvordan du beskriver det i chat.
+                  </span>
+                </li>
+                <li class="vox-surface-tech">
+                  <span class="text-sm font-semibold text-[rgb(var(--text))]">Romklang</span>
+                  <span class="mt-1.5 block text-sm leading-relaxed text-[rgb(var(--muted))]">
+                    Eksempel: akustikk og opplevelse i rom.
+                  </span>
+                </li>
+              </>
+            )
+          }
         </ul>
       </div>
     </Section>

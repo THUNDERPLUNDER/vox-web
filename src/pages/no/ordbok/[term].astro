@@ -6,7 +6,7 @@ import Footer from "../../../components/nav/Footer.astro";
 import {
   getStoryblokVersion,
   STORYBLOK_GLOSSARY_STARTS_WITH,
-  termSlugFromFullSlug,
+  glossaryEntryFromStoryblokStory,
 } from "../../../lib/storyblok-glossary";
 
 type TermProps = {
@@ -41,28 +41,14 @@ export async function getStaticPaths() {
     }[] = [];
 
     for (const story of stories) {
-      const slug = termSlugFromFullSlug(story.full_slug);
-      if (!slug) continue;
-
-      const content = story.content && typeof story.content === "object" ? story.content : {};
-      const rawTitle = "title" in content ? content.title : undefined;
-      const rawDesc = "description" in content ? content.description : undefined;
-
-      const storyTitle =
-        typeof rawTitle === "string" && rawTitle.trim()
-          ? rawTitle.trim()
-          : typeof story.name === "string"
-            ? story.name
-            : slug;
-
-      const storyDescription =
-        typeof rawDesc === "string" && rawDesc.trim() ? rawDesc.trim() : "";
+      const entry = glossaryEntryFromStoryblokStory(story);
+      if (!entry) continue;
 
       paths.push({
-        params: { term: slug },
+        params: { term: entry.slug },
         props: {
-          storyTitle,
-          storyDescription,
+          storyTitle: entry.title,
+          storyDescription: entry.description,
           fromStoryblok: true,
         },
       });
