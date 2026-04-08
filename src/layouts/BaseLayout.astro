@@ -202,6 +202,11 @@ const { title = "VOX", currentPath = "" } = Astro.props;
           "--chat-messenger-internal-chat-messagelist-scroll-shadow-background",
           "linear-gradient(180deg, rgb(var(--surface-elevated) / 0) 0%, rgb(var(--surface-elevated) / 0.72) 72%, rgb(var(--surface-elevated)) 100%)",
         );
+        set("--chat-messenger-internal-send-icon-background", inputBoxTone);
+        set("--chat-messenger-internal-send-icon-color", asRgb("--primary"));
+        set("--chat-messenger-internal-send-icon-border-radius", "0.85rem");
+        set("--chat-messenger-internal-send-icon-offset-x", "0px");
+        set("--chat-messenger-color--state-layer-on-surface", "rgb(var(--text) / 0.05)");
         set(
           "--chat-messenger-elevation",
           dark
