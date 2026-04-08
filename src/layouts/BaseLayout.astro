@@ -160,15 +160,44 @@ const { title = "VOX", currentPath = "" } = Astro.props;
           if (value) widget.style.setProperty(name, value);
         };
 
+        const surfaceTone = dark
+          ? "rgb(var(--surface-subtle))"
+          : "color-mix(in srgb, rgb(var(--surface-elevated)) 92%, rgb(var(--accent-gradient-start)) 8%)";
+        const containerTone = dark
+          ? "rgb(var(--surface-elevated))"
+          : "color-mix(in srgb, rgb(var(--surface-elevated)) 96%, rgb(var(--accent-gradient-start)) 4%)";
+        const composerTone = dark
+          ? "rgb(var(--surface-elevated))"
+          : "color-mix(in srgb, rgb(var(--surface-elevated)) 90%, rgb(var(--accent-gradient-start)) 10%)";
+
         set("--chat-messenger-color--primary", asRgb("--primary"));
         set("--chat-messenger-color--on-primary", asRgb("--on-sonic"));
-        set("--chat-messenger-color--surface", asRgb("--surface-subtle"));
-        set("--chat-messenger-color--surface-container", asRgb("--surface-elevated"));
+        set("--chat-messenger-color--surface", surfaceTone);
+        set("--chat-messenger-color--surface-container", containerTone);
         set("--chat-messenger-color--on-surface", asRgb("--text"));
         set("--chat-messenger-color--on-surface-variant", asRgb("--text-secondary"));
         set("--chat-messenger-color--outline", asRgb("--border"));
-        set("--chat-messenger-internal-input-background-color", asRgb("--surface-elevated"));
+        set("--chat-messenger-color--surface-container-low", surfaceTone);
+        set("--chat-messenger-color--surface-container-high", containerTone);
+        set("--chat-messenger-internal-input-background-color", composerTone);
+        set("--chat-messenger-internal-input-background", composerTone);
         set("--chat-messenger-internal-chat-border-radius", token("--radius-lg"));
+        set("--chat-messenger-internal-chat-padding", "10px 12px 0 12px");
+        set("--chat-messenger-internal-input-gutter", "12px");
+        set("--chat-messenger-internal-input-inner-padding", "12px 14px");
+        set("--chat-messenger-internal-input-font-size", "15px");
+        set("--chat-messenger-internal-input-box-background-color", composerTone);
+        set("--chat-messenger-internal-input-box-border", "1px solid rgb(var(--border) / 0.2)");
+        set("--chat-messenger-internal-input-box-focus-border", "1px solid rgb(var(--focus-ring) / 0.55)");
+        set("--chat-messenger-internal-input-box-border-radius", "1rem");
+        set("--chat-messenger-internal-input-border-top", "none");
+        set("--chat-messenger-internal-chat-messagelist-scroll-shadow-background", composerTone);
+        set(
+          "--chat-messenger-elevation",
+          dark
+            ? "0 20px 46px -18px rgba(0,0,0,0.62), 0 8px 24px -12px rgba(0,0,0,0.42)"
+            : "0 18px 42px -20px rgba(28,32,38,0.18), 0 8px 20px -12px rgba(28,32,38,0.12)",
+        );
       }
 
       window.addEventListener("chat-messenger-loaded", () => {
