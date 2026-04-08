@@ -169,9 +169,7 @@ const { title = "VOX", currentPath = "" } = Astro.props;
         const composerTone = dark
           ? "rgb(var(--surface-elevated))"
           : "color-mix(in srgb, rgb(var(--surface-elevated)) 90%, rgb(var(--accent-gradient-start)) 10%)";
-        const inputBoxTone = dark
-          ? "rgb(var(--surface-elevated))"
-          : "color-mix(in srgb, rgb(var(--surface)) 99%, rgb(var(--accent-gradient-start)) 1%)";
+        const inputBoxTone = composerTone;
 
         set("--chat-messenger-color--primary", asRgb("--primary"));
         set("--chat-messenger-color--on-primary", asRgb("--on-sonic"));
@@ -186,11 +184,11 @@ const { title = "VOX", currentPath = "" } = Astro.props;
         set("--chat-messenger-internal-input-background", composerTone);
         set("--chat-messenger-internal-chat-border-radius", token("--radius-lg"));
         set("--chat-messenger-internal-chat-padding", "8px 12px 0 12px");
-        set("--chat-messenger-internal-input-gutter", "10px");
+        set("--chat-messenger-internal-input-gutter", "8px");
         set("--chat-messenger-internal-input-inner-padding", "16px 18px");
         set("--chat-messenger-internal-input-font-size", "15px");
         set("--chat-messenger-internal-input-box-background-color", inputBoxTone);
-        set("--chat-messenger-internal-input-box-border", "1px solid rgb(var(--border) / 0.16)");
+        set("--chat-messenger-internal-input-box-border", "1px solid rgb(var(--border) / 0.1)");
         set("--chat-messenger-internal-input-box-focus-border", "1px solid rgb(var(--focus-ring) / 0.55)");
         set("--chat-messenger-internal-input-box-border-radius", "1rem");
         set("--chat-messenger-internal-input-border-top", "none");
@@ -200,11 +198,11 @@ const { title = "VOX", currentPath = "" } = Astro.props;
         set("--chat-messenger-internal-chat-messagelist-border", "none");
         set(
           "--chat-messenger-internal-chat-messagelist-scroll-shadow-background",
-          "linear-gradient(180deg, rgb(var(--surface-elevated) / 0) 0%, rgb(var(--surface-elevated) / 0.72) 72%, rgb(var(--surface-elevated)) 100%)",
+          "linear-gradient(180deg, rgb(var(--surface-elevated) / 0) 0%, rgb(var(--surface-elevated) / 0.78) 58%, rgb(var(--surface-elevated)) 100%)",
         );
-        set("--chat-messenger-internal-send-icon-background", inputBoxTone);
+        set("--chat-messenger-internal-send-icon-background", composerTone);
         set("--chat-messenger-internal-send-icon-color", asRgb("--primary"));
-        set("--chat-messenger-internal-send-icon-border-radius", "0.85rem");
+        set("--chat-messenger-internal-send-icon-border-radius", "1rem");
         set("--chat-messenger-internal-send-icon-offset-x", "0px");
         set("--chat-messenger-color--state-layer-on-surface", "rgb(var(--text) / 0.05)");
         set(
