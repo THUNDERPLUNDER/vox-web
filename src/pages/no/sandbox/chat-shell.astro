@@ -1,0 +1,79 @@
+---
+/* CONTRACT: Internal mock custom chat shell prototype for feasibility; no backend/agent integration. */
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/layout/Section.astro";
+import Footer from "../../../components/nav/Footer.astro";
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+---
+
+<BaseLayout title="VOX – Sandbox: Chat Shell (intern)" currentPath="/no/sandbox/chat-shell">
+  <meta slot="head" name="robots" content="noindex,follow" />
+
+  <main class="pb-8 sm:pb-10">
+    <Section class="!pt-4 !pb-8 sm:!pb-10">
+      <div class="max-w-3xl">
+        <h1 class="font-display text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl">
+          Chat shell prototype (intern)
+        </h1>
+        <p class="mt-4 max-w-2xl text-sm leading-relaxed text-[rgb(var(--muted))]">
+          Visual feasibility-spike for VOX-owned chat shell. Static mock only in this phase.
+        </p>
+      </div>
+    </Section>
+
+    <Section tone="band" class="!py-8 sm:!py-10">
+      <div class="mx-auto max-w-[920px]">
+        <div
+          class="relative overflow-hidden rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.26] bg-[rgb(var(--surface-elevated))/0.82] shadow-[var(--shadow-md)] backdrop-blur-md"
+        >
+          <div class="border-b border-[rgb(var(--border))/0.2] bg-[rgb(var(--surface-subtle))/0.78] px-4 py-3 sm:px-5">
+            <p class="text-xs uppercase tracking-wide text-[rgb(var(--muted))]">VOX · Hørehjelpen</p>
+            <p class="mt-1 text-sm font-semibold text-[rgb(var(--text))]">Custom shell mock</p>
+          </div>
+
+          <div class="max-h-[min(62vh,580px)] overflow-y-auto px-4 py-5 sm:px-5 sm:py-6">
+            <div class="mx-auto flex w-full max-w-3xl flex-col gap-3">
+              <div class="max-w-[85%] rounded-[1rem] rounded-bl-md bg-[rgb(var(--surface-subtle))] px-4 py-3 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">
+                Hei! Beskriv kort hva som er vanskelig med høreapparatet akkurat nå, så tar vi ett steg om gangen.
+              </div>
+
+              <div class="ml-auto max-w-[85%] rounded-[1rem] rounded-br-md bg-[rgb(var(--surface))/0.94] px-4 py-3 text-sm leading-relaxed text-[rgb(var(--text))] shadow-[var(--shadow-sm)] ring-1 ring-[rgb(var(--border))/0.25]">
+                Jeg mister ofte lyden når jeg bytter mellom mobil og TV.
+              </div>
+
+              <div class="max-w-[85%] rounded-[1rem] rounded-bl-md bg-[rgb(var(--surface-subtle))] px-4 py-3 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">
+                Skjønner. Start med å bekrefte at høreapparatet er aktivt parret til riktig enhet nå, så tar vi byttet stegvis.
+              </div>
+            </div>
+          </div>
+
+          <div class="pointer-events-none absolute inset-x-0 bottom-[88px] h-14 bg-gradient-to-t from-[rgb(var(--surface-elevated))/0.92] to-transparent"></div>
+
+          <div class="sticky bottom-0 border-t-0 bg-[rgb(var(--surface-elevated))/0.95] px-4 pb-4 pt-3 backdrop-blur-md sm:px-5 sm:pb-5">
+            <div class="mx-auto max-w-3xl">
+              <label for="chat-shell-input" class="sr-only">Skriv melding</label>
+              <div class="flex items-end gap-2 rounded-[1rem] bg-[rgb(var(--surface))/0.98] p-2 shadow-[var(--shadow-sm)] ring-1 ring-[rgb(var(--border))/0.2]">
+                <textarea
+                  id="chat-shell-input"
+                  rows="1"
+                  placeholder="Skriv melding…"
+                  class="min-h-[56px] w-full resize-none rounded-[0.85rem] bg-transparent px-3 py-3 text-sm leading-relaxed text-[rgb(var(--text))] placeholder:text-[rgb(var(--muted))] focus:outline-none"
+                ></textarea>
+                <button
+                  type="button"
+                  class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[0.85rem] bg-[rgb(var(--primary))/0.12] text-[rgb(var(--primary))] transition-colors hover:bg-[rgb(var(--primary))/0.18] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.45] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--surface))]"
+                  aria-label="Send melding"
+                >
+                  <span aria-hidden="true">↗</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Section>
+  </main>
+
+  <Footer />
+</BaseLayout>
