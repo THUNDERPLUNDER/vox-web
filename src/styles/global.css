@@ -70,14 +70,53 @@ h3 {
   @apply text-lg leading-relaxed text-[rgb(var(--text-secondary))];
 }
 
-html[data-theme="dark"] chat-messenger#ces-widget,
-html[data-theme="dark"] chat-messenger#ces-widget chat-messenger-container {
+/* CES theming hook: map Sonic tokens directly on the host element. */
+#ces-widget,
+chat-messenger {
+  --chat-messenger-color--primary: rgb(var(--primary));
+  --chat-messenger-color--primary-container: rgb(var(--surface-subtle));
+  --chat-messenger-color--on-primary: rgb(var(--on-sonic));
+  --chat-messenger-color--secondary: rgb(var(--accent-gradient-start));
+  --chat-messenger-color--surface: rgb(var(--surface-subtle));
+  --chat-messenger-color--surface-container: rgb(var(--surface-elevated));
+  --chat-messenger-color--surface-container-low: rgb(var(--surface-subtle));
+  --chat-messenger-color--surface-container-high: rgb(var(--surface-elevated));
+  --chat-messenger-color--on-surface: rgb(var(--text));
+  --chat-messenger-color--on-surface-variant: rgb(var(--text-secondary));
+  --chat-messenger-color--outline: rgb(var(--border));
+  --chat-messenger-color--outline-variant: rgb(var(--border) / 0.34);
+  --chat-messenger-color--state-layer-on-surface: rgb(var(--text) / 0.08);
+  --chat-messenger-color--link: rgb(var(--primary));
+  --chat-messenger-color--link-hover: rgb(var(--accent-gradient-start));
+  --chat-messenger-elevation: var(--shadow-md);
+  --chat-messenger-internal-chat-border-radius: var(--radius-lg);
+  --chat-messenger-internal-chat-border-radius-minimized: var(--radius-lg);
+  --chat-messenger-internal-chat-border: 1px solid rgb(var(--border) / 0.28);
+  --chat-messenger-internal-chat-messagelist-border: none;
+  --chat-messenger-internal-titlebar-border-bottom: none;
+  --chat-messenger-internal-input-background-color: rgb(var(--surface-elevated));
+  --chat-messenger-internal-input-border-top: none;
+  --chat-messenger-internal-input-border: none;
+  --chat-messenger-internal-input-box-background-color: rgb(var(--surface-elevated));
+  --chat-messenger-internal-input-box-border: 1px solid rgb(var(--border) / 0.24);
+  --chat-messenger-internal-input-box-focus-border: 1px solid
+    rgb(var(--focus-ring) / 0.55);
+  --chat-messenger-internal-input-box-border-radius: 0.75rem;
+  background: rgb(var(--surface-elevated));
+}
+
+html[data-theme="dark"] #ces-widget,
+html[data-theme="dark"] #ces-widget chat-messenger-container,
+html[data-theme="dark"] chat-messenger,
+html[data-theme="dark"] chat-messenger chat-messenger-container {
   background: rgb(var(--surface-elevated));
 }
 
 @media (prefers-color-scheme: dark) {
-  html[data-theme="system"] chat-messenger#ces-widget,
-  html[data-theme="system"] chat-messenger#ces-widget chat-messenger-container {
+  html[data-theme="system"] #ces-widget,
+  html[data-theme="system"] #ces-widget chat-messenger-container,
+  html[data-theme="system"] chat-messenger,
+  html[data-theme="system"] chat-messenger chat-messenger-container {
     background: rgb(var(--surface-elevated));
   }
 }

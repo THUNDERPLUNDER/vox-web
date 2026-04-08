@@ -148,6 +148,27 @@ const { title = "VOX", currentPath = "" } = Astro.props;
         else
           dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         widget.setAttribute("theme-id", dark ? "dark" : "light");
+
+        // Force CES host variables inline (widget defaults can win over external CSS).
+        const root = getComputedStyle(document.documentElement);
+        const token = (name) => root.getPropertyValue(name).trim();
+        const asRgb = (name) => {
+          const raw = token(name);
+          return raw ? `rgb(${raw})` : "";
+        };
+        const set = (name, value) => {
+          if (value) widget.style.setProperty(name, value);
+        };
+
+        set("--chat-messenger-color--primary", asRgb("--primary"));
+        set("--chat-messenger-color--on-primary", asRgb("--on-sonic"));
+        set("--chat-messenger-color--surface", asRgb("--surface-subtle"));
+        set("--chat-messenger-color--surface-container", asRgb("--surface-elevated"));
+        set("--chat-messenger-color--on-surface", asRgb("--text"));
+        set("--chat-messenger-color--on-surface-variant", asRgb("--text-secondary"));
+        set("--chat-messenger-color--outline", asRgb("--border"));
+        set("--chat-messenger-internal-input-background-color", asRgb("--surface-elevated"));
+        set("--chat-messenger-internal-chat-border-radius", token("--radius-lg"));
       }
 
       window.addEventListener("chat-messenger-loaded", () => {
