@@ -31,35 +31,35 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
     <Section tone="band" class="!py-7 sm:!py-9">
       <div class="mx-auto max-w-[920px]">
         <div class="vox-surface-lifted relative overflow-hidden !p-0">
-          <div class="bg-[rgb(var(--surface))/0.98] px-4 py-3 shadow-[0_10px_24px_-20px_rgba(15,23,42,0.35)] sm:px-5">
+          <div class="bg-[rgb(var(--surface-elevated))/0.98] px-4 py-3 shadow-[0_14px_28px_-22px_rgba(15,23,42,0.45)] sm:px-5">
             <p class="text-xs uppercase tracking-wide text-[rgb(var(--muted))]">VOX · Hørehjelpen</p>
             <p class="mt-1 text-sm font-semibold text-[rgb(var(--text))]">Samtaleflate</p>
           </div>
 
-          <div class="max-h-[min(60vh,560px)] overflow-y-auto bg-[rgb(var(--surface-subtle))/0.9] px-3 py-4 sm:px-5 sm:py-6">
+          <div class="max-h-[min(60vh,560px)] overflow-y-auto bg-[rgb(var(--surface-subtle))/0.96] px-3 py-4 sm:px-5 sm:py-6">
             <div class="mx-auto flex w-full max-w-3xl flex-col gap-3 sm:gap-3.5">
-              <div class="max-w-[88%] rounded-[1rem] rounded-bl-md bg-[rgb(var(--surface))/0.78] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text-secondary))] shadow-[0_10px_22px_-16px_rgba(15,23,42,0.25)] sm:max-w-[82%] sm:px-4">
+              <div class="max-w-[88%] px-1 py-1 text-sm leading-relaxed text-[rgb(var(--text-secondary))] sm:max-w-[82%]">
                 <p class="mb-1 text-[11px] font-medium uppercase tracking-wide text-[rgb(var(--muted))]/80">Hørehjelpen</p>
                 Hei! Beskriv kort hva som er vanskelig med høreapparatet akkurat nå, så tar vi ett steg om gangen.
               </div>
 
-              <div class="ml-auto max-w-[88%] rounded-[1rem] rounded-br-md bg-[rgb(var(--surface))/0.98] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text))] shadow-[0_10px_24px_-16px_rgb(var(--primary)/0.35)] sm:max-w-[82%] sm:px-4">
+              <div class="ml-auto max-w-[88%] rounded-[1rem] rounded-br-md bg-[color-mix(in_srgb,rgb(var(--surface-elevated))_86%,rgb(var(--primary))_14%)] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text))] shadow-[0_10px_22px_-18px_rgba(15,23,42,0.35)] sm:max-w-[82%] sm:px-4">
                 Jeg mister ofte lyden når jeg bytter mellom mobil og TV.
               </div>
 
-              <div class="max-w-[88%] rounded-[1rem] rounded-bl-md bg-[rgb(var(--surface))/0.78] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text-secondary))] shadow-[0_10px_22px_-16px_rgba(15,23,42,0.25)] sm:max-w-[82%] sm:px-4">
+              <div class="max-w-[88%] px-1 py-1 text-sm leading-relaxed text-[rgb(var(--text-secondary))] sm:max-w-[82%]">
                 <p class="mb-1 text-[11px] font-medium uppercase tracking-wide text-[rgb(var(--muted))]/80">Hørehjelpen</p>
                 Skjønner. Start med å bekrefte at høreapparatet er aktivt parret til riktig enhet nå, så tar vi byttet stegvis.
               </div>
             </div>
           </div>
 
-          <div class="pointer-events-none absolute inset-x-0 bottom-[102px] h-24 bg-gradient-to-t from-[rgb(var(--surface))/0.96] via-[rgb(var(--surface))/0.72] to-transparent"></div>
+          <div class="pointer-events-none absolute inset-x-0 bottom-[102px] h-24 bg-gradient-to-t from-[rgb(var(--surface-elevated))/0.94] via-[rgb(var(--surface-elevated))/0.58] to-transparent"></div>
 
-          <div class="sticky bottom-0 bg-[rgb(var(--surface))/0.98] px-3 pb-3.5 pt-2.5 backdrop-blur-md shadow-[0_-12px_28px_-24px_rgba(15,23,42,0.4)] sm:px-5 sm:pb-5 sm:pt-3">
+          <div class="sticky bottom-0 bg-[rgb(var(--surface-elevated))/0.98] px-3 pb-3.5 pt-2.5 backdrop-blur-md shadow-[0_-16px_34px_-24px_rgba(0,0,0,0.62)] sm:px-5 sm:pb-5 sm:pt-3">
             <div class="mx-auto max-w-3xl">
               <label for="chat-shell-input" class="sr-only">Skriv melding</label>
-              <div class="flex items-end gap-1.5 rounded-[1rem] bg-[rgb(var(--surface-subtle))/0.94] px-2 py-2.5 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.35)] sm:gap-2 sm:p-2.5">
+              <div class="flex items-end gap-1.5 rounded-[1rem] bg-transparent px-1 py-1.5 sm:gap-2 sm:px-1.5 sm:py-1.5">
                 <textarea
                   id="chat-shell-input"
                   rows="1"
