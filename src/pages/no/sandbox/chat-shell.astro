@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Internal mock custom chat shell prototype for feasibility; no backend/agent integration. */
+/* CONTRACT: Internal custom chat shell visual-alignment sandbox; no backend/agent integration. */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Section from "../../../components/layout/Section.astro";
 import Footer from "../../../components/nav/Footer.astro";
@@ -11,49 +11,55 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
   <meta slot="head" name="robots" content="noindex,follow" />
 
   <main class="pb-8 sm:pb-10">
-    <Section class="!pt-4 !pb-8 sm:!pb-10">
+    <Section class="!pt-4 !pb-7 sm:!pb-9">
       <div class="max-w-3xl">
-        <h1 class="font-display text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl">
-          Chat shell prototype (intern)
-        </h1>
-        <p class="mt-4 max-w-2xl text-sm leading-relaxed text-[rgb(var(--muted))]">
-          Visual feasibility-spike for VOX-owned chat shell. Static mock only in this phase.
-        </p>
+        <div class="vox-surface-calm relative overflow-hidden">
+          <div
+            class="pointer-events-none absolute -inset-x-2 -top-2 h-14 rounded-[var(--radius-md)] bg-gradient-to-r from-[rgb(var(--accent-gradient-start)/0.1)] to-[rgb(var(--accent-gradient-end)/0.08)] blur-2xl"
+            aria-hidden="true"
+          ></div>
+          <h1 class="font-display text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl">
+            Chat shell (intern)
+          </h1>
+          <p class="mt-4 max-w-2xl text-sm leading-relaxed text-[rgb(var(--muted))]">
+            Frontend-spor for å evaluere VOX-eid chatflate med samme rytme, flatespråk og tonalitet som resten av produktet.
+          </p>
+        </div>
       </div>
     </Section>
 
     <Section tone="band" class="!py-7 sm:!py-9">
       <div class="mx-auto max-w-[920px]">
         <div
-          class="relative overflow-hidden rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.2] bg-[rgb(var(--surface-elevated))/0.78] shadow-[var(--shadow-md)] backdrop-blur-md"
+          class="vox-surface-lifted relative overflow-hidden !p-0"
         >
-          <div class="border-b border-[rgb(var(--border))/0.16] bg-[rgb(var(--surface-subtle))/0.72] px-4 py-3 sm:px-5">
+          <div class="border-b border-[rgb(var(--border))/0.14] bg-[rgb(var(--surface-subtle))/0.7] px-4 py-3 sm:px-5">
             <p class="text-xs uppercase tracking-wide text-[rgb(var(--muted))]">VOX · Hørehjelpen</p>
-            <p class="mt-1 text-sm font-semibold text-[rgb(var(--text))]">Custom shell mock</p>
+            <p class="mt-1 text-sm font-semibold text-[rgb(var(--text))]">Samtaleflate</p>
           </div>
 
           <div class="max-h-[min(60vh,560px)] overflow-y-auto px-3 py-4 sm:px-5 sm:py-6">
             <div class="mx-auto flex w-full max-w-3xl flex-col gap-2.5 sm:gap-3">
-              <div class="max-w-[88%] rounded-[1rem] rounded-bl-md bg-[rgb(var(--surface-subtle))/0.95] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text-secondary))] sm:max-w-[82%] sm:px-4">
+              <div class="max-w-[88%] rounded-[1rem] rounded-bl-md bg-[rgb(var(--surface-subtle))/0.92] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text-secondary))] sm:max-w-[82%] sm:px-4">
                 Hei! Beskriv kort hva som er vanskelig med høreapparatet akkurat nå, så tar vi ett steg om gangen.
               </div>
 
-              <div class="ml-auto max-w-[88%] rounded-[1rem] rounded-br-md bg-[rgb(var(--surface))/0.98] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text))] shadow-[var(--shadow-sm)] ring-1 ring-[rgb(var(--border))/0.18] sm:max-w-[82%] sm:px-4">
+              <div class="ml-auto max-w-[88%] rounded-[1rem] rounded-br-md bg-[rgb(var(--surface))/0.96] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text))] shadow-[var(--shadow-sm)] ring-1 ring-[rgb(var(--border))/0.14] sm:max-w-[82%] sm:px-4">
                 Jeg mister ofte lyden når jeg bytter mellom mobil og TV.
               </div>
 
-              <div class="max-w-[88%] rounded-[1rem] rounded-bl-md bg-[rgb(var(--surface-subtle))/0.95] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text-secondary))] sm:max-w-[82%] sm:px-4">
+              <div class="max-w-[88%] rounded-[1rem] rounded-bl-md bg-[rgb(var(--surface-subtle))/0.92] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text-secondary))] sm:max-w-[82%] sm:px-4">
                 Skjønner. Start med å bekrefte at høreapparatet er aktivt parret til riktig enhet nå, så tar vi byttet stegvis.
               </div>
             </div>
           </div>
 
-          <div class="pointer-events-none absolute inset-x-0 bottom-[98px] h-20 bg-gradient-to-t from-[rgb(var(--surface-elevated))/0.94] via-[rgb(var(--surface-elevated))/0.62] to-transparent"></div>
+          <div class="pointer-events-none absolute inset-x-0 bottom-[98px] h-20 bg-gradient-to-t from-[rgb(var(--surface))/0.95] via-[rgb(var(--surface))/0.62] to-transparent"></div>
 
-          <div class="sticky bottom-0 bg-[rgb(var(--surface-elevated))/0.96] px-3 pb-3.5 pt-2.5 backdrop-blur-md sm:px-5 sm:pb-5 sm:pt-3">
+          <div class="sticky bottom-0 bg-[rgb(var(--surface))/0.94] px-3 pb-3.5 pt-2.5 backdrop-blur-md sm:px-5 sm:pb-5 sm:pt-3">
             <div class="mx-auto max-w-3xl">
               <label for="chat-shell-input" class="sr-only">Skriv melding</label>
-              <div class="flex items-end gap-1.5 rounded-[1rem] bg-[rgb(var(--surface))/0.98] px-2 py-2.5 shadow-[var(--shadow-sm)] ring-1 ring-[rgb(var(--border))/0.18] sm:gap-2 sm:p-2.5">
+              <div class="flex items-end gap-1.5 rounded-[1rem] bg-[rgb(var(--surface-subtle))/0.9] px-2 py-2.5 shadow-[var(--shadow-sm)] ring-1 ring-[rgb(var(--border))/0.16] sm:gap-2 sm:p-2.5">
                 <textarea
                   id="chat-shell-input"
                   rows="1"
@@ -62,7 +68,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
                 ></textarea>
                 <button
                   type="button"
-                  class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[0.8rem] bg-[rgb(var(--primary))/0.14] text-[rgb(var(--primary))] shadow-[0_6px_14px_-10px_rgb(var(--primary)/0.65)] transition-colors hover:bg-[rgb(var(--primary))/0.2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.45] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--surface))] sm:h-11 sm:w-11"
+                  class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[0.8rem] bg-[rgb(var(--primary))/0.12] text-[rgb(var(--primary))] shadow-[0_6px_14px_-10px_rgb(var(--primary)/0.45)] transition-colors hover:bg-[rgb(var(--primary))/0.18] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.45] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--surface-subtle))] sm:h-11 sm:w-11"
                   aria-label="Send melding"
                 >
                   <span aria-hidden="true">↗</span>
