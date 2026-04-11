@@ -25,6 +25,8 @@ const { title, wireframeFileNav, wireframeMeta } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
 
+const hasInfobar = !!wireframeMeta;
+
 const fileNavIndex =
   wireframeFileNav?.allFiles.findIndex((f) => slugFromHtmlFilename(f) === wireframeFileNav.currentSlug) ?? -1;
 const prevFileNavHref =
@@ -54,118 +56,282 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
       }
     </style>
   </head>
-  <body class="vis-prototype-body bg-gray-100 antialiased pt-10 pb-0">
-    <div
-      class:list={[
-        "vis-prototype-topbar fixed top-0 left-0 z-[9999] w-full border-b border-gray-950 bg-gray-900 font-mono text-xs text-white shadow-md",
-        wireframeFileNav
-          ? "grid h-10 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1.5 px-2 sm:gap-x-3 sm:px-4"
-          : "flex h-10 items-center justify-between px-4",
-      ]}
-    >
-      <div class="flex min-w-0 shrink-0 items-center gap-2">
-        <a
-          href={`${base}vis/`}
-          class="text-sm font-bold uppercase tracking-widest text-purple-400 transition hover:text-purple-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+  <body
+    class:list={[
+      "bg-gray-100 antialiased pb-0",
+      hasInfobar ? "flex min-h-screen flex-col pt-0" : "vis-prototype-body pt-10",
+    ]}
+  >
+    {
+      hasInfobar && wireframeFileNav && wireframeMeta ? (
+        <header
+          id="vis-chrome-infobar"
+          class="sticky top-0 z-[9999] w-full border-b border-gray-950/60 bg-gray-900/80 font-mono text-xs text-white shadow-sm backdrop-blur-md"
         >
-          VIS
-        </a>
-        <span class="text-[10px] font-medium text-gray-500">v0.1</span>
-      </div>
-
-      {
-        wireframeFileNav && (
-          <div class="vis-wireframe-filetools flex max-w-[100vw] shrink-0 items-center justify-center gap-0.5 sm:gap-1">
-            {prevFileNavHref ? (
+          <div
+            class:list={[
+              "grid h-10 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1.5 px-2 sm:gap-x-3 sm:px-4",
+            ]}
+          >
+            <div class="flex min-w-0 shrink-0 items-center gap-2">
               <a
-                href={prevFileNavHref}
-                class="inline-flex h-7 min-w-[2rem] shrink-0 items-center justify-center rounded border border-gray-600 bg-gray-900 text-[1.35rem] font-light leading-none text-gray-200 hover:border-gray-500 hover:bg-gray-800 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
-                aria-label="Forrige wireframe"
+                href={`${base}vis/`}
+                class="text-sm font-bold uppercase tracking-widest text-purple-400 transition hover:text-purple-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
               >
-                ‹
+                VIS
               </a>
-            ) : (
-              <span
-                class="inline-flex h-7 min-w-[2rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-[1.35rem] font-light leading-none text-gray-600"
-                aria-hidden="true"
-              >
-                ‹
-              </span>
-            )}
+              <span class="text-[10px] font-medium text-gray-500">v0.1</span>
+            </div>
 
-            <button
-              type="button"
-              id="vis-file-picker-open"
-              class="inline-flex h-7 shrink-0 items-center gap-0.5 rounded border border-gray-700 bg-gray-900 px-1.5 py-0.5 text-[11px] tabular-nums text-gray-300 hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 md:hidden"
-              aria-haspopup="dialog"
-              aria-controls="vis-file-picker-dialog"
-              aria-label={`Velg wireframe, viser ${fileNavPosition} av ${fileNavTotal}`}
-            >
-              {fileNavPosition} / {fileNavTotal}
-              <span aria-hidden="true" class="text-[10px]">
-                ▾
-              </span>
-            </button>
+            <div class="vis-wireframe-filetools flex max-w-[100vw] shrink-0 items-center justify-center gap-0.5 sm:gap-1">
+              {prevFileNavHref ? (
+                <a
+                  href={prevFileNavHref}
+                  class="inline-flex h-7 min-w-[2.25rem] shrink-0 items-center justify-center rounded border border-gray-500/90 bg-gray-900/90 text-[1.5rem] font-light leading-none text-gray-100 hover:border-gray-400 hover:bg-gray-800 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                  aria-label="Forrige wireframe"
+                >
+                  ‹
+                </a>
+              ) : (
+                <span
+                  class="inline-flex h-7 min-w-[2.25rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-[1.5rem] font-light leading-none text-gray-600"
+                  aria-hidden="true"
+                >
+                  ‹
+                </span>
+              )}
 
-            <label class="sr-only" for="vis-wireframe-jump-desktop">
-              Velg wireframe-fil
-            </label>
-            <select
-              id="vis-wireframe-jump-desktop"
-              class="hidden h-7 max-w-[min(14rem,calc(100vw-12rem))] shrink truncate rounded border border-gray-700 bg-gray-900 py-0 pl-2 pr-7 text-[11px] text-gray-200 focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600 md:block"
-              aria-label="Velg wireframe-fil"
-            >
-              {wireframeFileNav.allFiles.map((name) => {
-                const s = slugFromHtmlFilename(name);
-                const optHref = `${base}vis/${encodeURIComponent(s)}`;
-                const sel = s === wireframeFileNav.currentSlug;
-                return (
-                  <option value={optHref} selected={sel}>
-                    {name}
-                  </option>
-                );
-              })}
-            </select>
+              <button
+                type="button"
+                id="vis-file-picker-open"
+                class="inline-flex h-7 shrink-0 items-center gap-0.5 rounded border border-gray-700 bg-gray-900/90 px-1.5 py-0.5 text-[11px] tabular-nums text-gray-300 hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 md:hidden"
+                aria-haspopup="dialog"
+                aria-controls="vis-file-picker-dialog"
+                aria-label={`Velg wireframe, viser ${fileNavPosition} av ${fileNavTotal}`}
+              >
+                {fileNavPosition} / {fileNavTotal}
+                <span aria-hidden="true" class="text-[10px]">
+                  ▾
+                </span>
+              </button>
 
-            {nextFileNavHref ? (
-              <a
-                href={nextFileNavHref}
-                class="inline-flex h-7 min-w-[2rem] shrink-0 items-center justify-center rounded border border-gray-600 bg-gray-900 text-[1.35rem] font-light leading-none text-gray-200 hover:border-gray-500 hover:bg-gray-800 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
-                aria-label="Neste wireframe"
+              <label class="sr-only" for="vis-wireframe-jump-desktop">
+                Velg wireframe-fil
+              </label>
+              <select
+                id="vis-wireframe-jump-desktop"
+                class="hidden h-7 max-w-[min(14rem,calc(100vw-12rem))] shrink truncate rounded border border-gray-700 bg-gray-900/90 py-0 pl-2 pr-7 text-[11px] text-gray-200 focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600 md:block"
+                aria-label="Velg wireframe-fil"
               >
-                ›
-              </a>
-            ) : (
-              <span
-                class="inline-flex h-7 min-w-[2rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-[1.35rem] font-light leading-none text-gray-600"
-                aria-hidden="true"
+                {wireframeFileNav.allFiles.map((name) => {
+                  const s = slugFromHtmlFilename(name);
+                  const optHref = `${base}vis/${encodeURIComponent(s)}`;
+                  const sel = s === wireframeFileNav.currentSlug;
+                  return (
+                    <option value={optHref} selected={sel}>
+                      {name}
+                    </option>
+                  );
+                })}
+              </select>
+
+              {nextFileNavHref ? (
+                <a
+                  href={nextFileNavHref}
+                  class="inline-flex h-7 min-w-[2.25rem] shrink-0 items-center justify-center rounded border border-gray-500/90 bg-gray-900/90 text-[1.5rem] font-light leading-none text-gray-100 hover:border-gray-400 hover:bg-gray-800 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                  aria-label="Neste wireframe"
+                >
+                  ›
+                </a>
+              ) : (
+                <span
+                  class="inline-flex h-7 min-w-[2.25rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-[1.5rem] font-light leading-none text-gray-600"
+                  aria-hidden="true"
+                >
+                  ›
+                </span>
+              )}
+            </div>
+
+            <div class="flex min-w-0 items-center justify-end gap-2 text-gray-500 sm:gap-3">
+              <button
+                type="button"
+                id="vis-meta-toggle"
+                class="vis-meta-toggle inline-flex h-7 shrink-0 items-center gap-1 rounded-md border border-purple-500/45 bg-gray-800 px-2 text-gray-200 ring-1 ring-purple-400/35 transition hover:border-purple-400/55 hover:bg-gray-800/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
+                aria-expanded="true"
+                aria-controls="vis-infobar-expand"
+                aria-label="Vis eller skjul informasjon om wireframen"
               >
-                ›
-              </span>
-            )}
+                <span class="hidden text-[10px] font-semibold uppercase tracking-wide text-purple-200/90 sm:inline">
+                  Info
+                </span>
+                <svg
+                  class="vis-infobar-chevron h-4 w-4 shrink-0 rotate-180 text-purple-200 transition-transform duration-300 ease-out"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+              <span class="hidden md:inline">Visning for: Vibeke</span>
+              <div class="h-2 w-2 shrink-0 rounded-full bg-green-500" title="Live" />
+            </div>
           </div>
-        )
-      }
 
-      <div class="flex min-w-0 items-center justify-end gap-2 text-gray-500 sm:gap-4">
-        {
-          wireframeMeta && (
-            <button
-              type="button"
-              id="vis-meta-toggle"
-              class="vis-meta-toggle inline-flex h-7 w-7 shrink-0 items-center justify-center rounded border border-purple-500/45 bg-gray-800 text-[11px] font-semibold text-purple-300 ring-1 ring-purple-400/35 transition hover:border-purple-400/60 hover:bg-gray-800/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
-              aria-expanded="true"
-              aria-controls="vis-wireframe-meta-panel"
-              aria-label="Vis eller skjul informasjon om wireframen"
+          <div
+            id="vis-infobar-expand"
+            class="grid overflow-hidden transition-[grid-template-rows] duration-300 ease-in-out"
+            style="grid-template-rows: 1fr;"
+          >
+            <div class="min-h-0">
+              <div class="max-h-[min(50vh,28rem)] overflow-y-auto border-t border-gray-600/25 bg-gray-900/25 px-3 py-3 backdrop-blur-[1px] sm:px-6 sm:py-4">
+                <div
+                  class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-x-10 md:gap-y-3 md:items-start"
+                  role="region"
+                  aria-labelledby="vis-meta-title"
+                >
+                  <div>
+                    <p class="text-[10px] font-medium uppercase tracking-[0.14em] text-gray-500">Wireframe</p>
+                    <h2
+                      id="vis-meta-title"
+                      class="mt-1.5 text-base font-semibold leading-snug tracking-tight text-white sm:text-lg"
+                    >
+                      {wireframeMeta.displayTitle}
+                    </h2>
+                    <div class="mt-2">
+                      {wireframeMeta.description ? (
+                        <p class="text-sm font-medium leading-relaxed text-gray-100/95">{wireframeMeta.description}</p>
+                      ) : (
+                        <p class="text-sm text-gray-500">Ingen beskrivelse i HTML-filen.</p>
+                      )}
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-3 md:pt-0.5">
+                    {wireframeMeta.delta ? (
+                      <div>
+                        <h3 class="text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+                          Endret i denne varianten
+                        </h3>
+                        <p class="mt-1.5 text-sm font-medium leading-relaxed text-gray-100/95">{wireframeMeta.delta}</p>
+                      </div>
+                    ) : null}
+                    <a
+                      href={wireframeMeta.rawHref}
+                      class="inline-flex w-full items-center justify-center rounded-md border border-gray-500/60 bg-gray-800/35 px-3 py-2 font-mono text-xs font-medium text-gray-200 transition hover:border-gray-400 hover:bg-gray-800/80 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 sm:mt-1 sm:w-auto sm:self-start"
+                    >
+                      Direkte fil
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+      ) : (
+        <div
+          class:list={[
+            "vis-prototype-topbar fixed top-0 left-0 z-[9999] w-full border-b border-gray-950 bg-gray-900 font-mono text-xs text-white shadow-md",
+            wireframeFileNav
+              ? "grid h-10 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1.5 px-2 sm:gap-x-3 sm:px-4"
+              : "flex h-10 items-center justify-between px-4",
+          ]}
+        >
+          <div class="flex min-w-0 shrink-0 items-center gap-2">
+            <a
+              href={`${base}vis/`}
+              class="text-sm font-bold uppercase tracking-widest text-purple-400 transition hover:text-purple-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
             >
-              i
-            </button>
-          )
-        }
-        <span class="hidden md:inline">Visning for: Vibeke</span>
-        <div class="h-2 w-2 shrink-0 rounded-full bg-green-500" title="Live"></div>
-      </div>
-    </div>
+              VIS
+            </a>
+            <span class="text-[10px] font-medium text-gray-500">v0.1</span>
+          </div>
+
+          {
+            wireframeFileNav && (
+              <div class="vis-wireframe-filetools flex max-w-[100vw] shrink-0 items-center justify-center gap-0.5 sm:gap-1">
+                {prevFileNavHref ? (
+                  <a
+                    href={prevFileNavHref}
+                    class="inline-flex h-7 min-w-[2.25rem] shrink-0 items-center justify-center rounded border border-gray-600 bg-gray-900 text-[1.5rem] font-light leading-none text-gray-200 hover:border-gray-500 hover:bg-gray-800 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                    aria-label="Forrige wireframe"
+                  >
+                    ‹
+                  </a>
+                ) : (
+                  <span
+                    class="inline-flex h-7 min-w-[2.25rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-[1.5rem] font-light leading-none text-gray-600"
+                    aria-hidden="true"
+                  >
+                    ‹
+                  </span>
+                )}
+
+                <button
+                  type="button"
+                  id="vis-file-picker-open"
+                  class="inline-flex h-7 shrink-0 items-center gap-0.5 rounded border border-gray-700 bg-gray-900 px-1.5 py-0.5 text-[11px] tabular-nums text-gray-300 hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 md:hidden"
+                  aria-haspopup="dialog"
+                  aria-controls="vis-file-picker-dialog"
+                  aria-label={`Velg wireframe, viser ${fileNavPosition} av ${fileNavTotal}`}
+                >
+                  {fileNavPosition} / {fileNavTotal}
+                  <span aria-hidden="true" class="text-[10px]">
+                    ▾
+                  </span>
+                </button>
+
+                <label class="sr-only" for="vis-wireframe-jump-desktop">
+                  Velg wireframe-fil
+                </label>
+                <select
+                  id="vis-wireframe-jump-desktop"
+                  class="hidden h-7 max-w-[min(14rem,calc(100vw-12rem))] shrink truncate rounded border border-gray-700 bg-gray-900 py-0 pl-2 pr-7 text-[11px] text-gray-200 focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600 md:block"
+                  aria-label="Velg wireframe-fil"
+                >
+                  {wireframeFileNav.allFiles.map((name) => {
+                    const s = slugFromHtmlFilename(name);
+                    const optHref = `${base}vis/${encodeURIComponent(s)}`;
+                    const sel = s === wireframeFileNav.currentSlug;
+                    return (
+                      <option value={optHref} selected={sel}>
+                        {name}
+                      </option>
+                    );
+                  })}
+                </select>
+
+                {nextFileNavHref ? (
+                  <a
+                    href={nextFileNavHref}
+                    class="inline-flex h-7 min-w-[2.25rem] shrink-0 items-center justify-center rounded border border-gray-600 bg-gray-900 text-[1.5rem] font-light leading-none text-gray-200 hover:border-gray-500 hover:bg-gray-800 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                    aria-label="Neste wireframe"
+                  >
+                    ›
+                  </a>
+                ) : (
+                  <span
+                    class="inline-flex h-7 min-w-[2.25rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-[1.5rem] font-light leading-none text-gray-600"
+                    aria-hidden="true"
+                  >
+                    ›
+                  </span>
+                )}
+              </div>
+            )
+          }
+
+          <div class="flex min-w-0 items-center justify-end gap-2 text-gray-500 sm:gap-4">
+            <span class="hidden md:inline">Visning for: Vibeke</span>
+            <div class="h-2 w-2 shrink-0 rounded-full bg-green-500" title="Live" />
+          </div>
+        </div>
+      )
+    }
 
     {
       wireframeFileNav && (
@@ -213,94 +379,21 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
     }
 
     {
-      wireframeMeta && (
-        <>
-          <div
-            id="vis-meta-scrim"
-            class="pointer-events-none fixed inset-0 top-10 z-[9997] bg-slate-900/[0.025] transition-opacity duration-150"
-            aria-hidden="true"
-          >
-          </div>
-          <div
-            id="vis-wireframe-meta-root"
-            class="fixed left-0 right-0 top-10 z-[9998] flex justify-center px-3 pb-2 pt-0 sm:px-4"
-          >
-            <div
-              id="vis-wireframe-meta-panel"
-              class="vis-wireframe-meta-panel pointer-events-auto relative w-full max-w-xl overflow-hidden rounded-b-xl border border-gray-600/70 border-t-0 bg-gray-900/98 text-left text-gray-200 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.45)] backdrop-blur-sm"
-              role="region"
-              aria-labelledby="vis-meta-title"
-            >
-              <button
-                type="button"
-                id="vis-meta-close"
-                class="absolute right-2 top-2 inline-flex h-7 min-w-[1.75rem] items-center justify-center rounded text-lg leading-none text-gray-500 hover:bg-gray-800 hover:text-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
-                aria-label="Skjul informasjonspanel"
-              >
-                ×
-              </button>
-              <div class="border-b border-gray-700/70 px-8 pb-5 pr-12 pt-7 sm:px-10 sm:pb-6 sm:pr-14 sm:pt-9">
-                <p class="text-[11px] font-medium uppercase tracking-[0.12em] text-gray-500">Wireframe</p>
-                <h2
-                  id="vis-meta-title"
-                  class="mt-2 text-lg font-semibold leading-snug tracking-tight text-white sm:text-xl"
-                >
-                  {wireframeMeta.displayTitle}
-                </h2>
-              </div>
-              <div class="max-h-[min(52dvh,22rem)] space-y-6 overflow-y-auto px-8 py-5 sm:px-10 sm:py-7">
-                <div>
-                  {
-                    wireframeMeta.description ? (
-                      <p class="text-sm leading-relaxed text-gray-300">{wireframeMeta.description}</p>
-                    ) : (
-                      <p class="text-sm text-gray-500">Ingen beskrivelse i HTML-filen.</p>
-                    )
-                  }
-                </div>
-                {
-                  wireframeMeta.delta ? (
-                    <div class="border-t border-gray-700/60 pt-5">
-                      <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                        Endret i denne varianten
-                      </h3>
-                      <p class="mt-2 text-sm leading-relaxed text-gray-200">{wireframeMeta.delta}</p>
-                    </div>
-                  ) : null
-                }
-              </div>
-              <div class="border-t border-gray-700/70 px-8 py-3 sm:px-10">
-                <a
-                  href={wireframeMeta.rawHref}
-                  class="inline-flex w-full items-center justify-center rounded-md border border-gray-500/70 bg-gray-800/40 px-3 py-2 font-mono text-xs text-gray-300 transition hover:border-gray-400 hover:bg-gray-800/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 sm:w-auto"
-                >
-                  Direkte fil
-                </a>
-              </div>
-            </div>
-          </div>
-        </>
-      )
-    }
-
-    {
-      wireframeMeta ? (
+      hasInfobar ? (
         <script is:inline>
           (function () {
             try {
               if (sessionStorage.getItem("vox.vis.wireframeMetaOpen") === "false") {
-                var r = document.getElementById("vis-wireframe-meta-root");
-                var s = document.getElementById("vis-meta-scrim");
+                var exp = document.getElementById("vis-infobar-expand");
                 var t = document.getElementById("vis-meta-toggle");
-                if (r) r.classList.add("hidden");
-                if (s) s.classList.add("hidden");
+                var chev = document.querySelector(".vis-infobar-chevron");
+                if (exp) exp.style.gridTemplateRows = "0fr";
+                if (chev) chev.classList.remove("rotate-180");
                 if (t) {
                   t.setAttribute("aria-expanded", "false");
-                  ["border-purple-500/45", "bg-gray-800", "text-purple-300", "ring-1", "ring-purple-400/35"].forEach(
-                    function (c) {
-                      t.classList.remove(c);
-                    },
-                  );
+                  ["border-purple-500/45", "bg-gray-800", "text-gray-200", "ring-1", "ring-purple-400/35"].forEach(function (c) {
+                    t.classList.remove(c);
+                  });
                   ["border-gray-700", "bg-gray-900", "text-gray-400"].forEach(function (c) {
                     t.classList.add(c);
                   });
@@ -334,11 +427,10 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
           });
         }
         var META_OPEN_KEY = "vox.vis.wireframeMetaOpen";
-        var metaRoot = document.getElementById("vis-wireframe-meta-root");
-        var metaScrim = document.getElementById("vis-meta-scrim");
         var metaToggle = document.getElementById("vis-meta-toggle");
-        var metaClose = document.getElementById("vis-meta-close");
-        var META_ON = ["border-purple-500/45", "bg-gray-800", "text-purple-300", "ring-1", "ring-purple-400/35"];
+        var infobarExpand = document.getElementById("vis-infobar-expand");
+        var chev = document.querySelector(".vis-infobar-chevron");
+        var META_ON = ["border-purple-500/45", "bg-gray-800", "text-gray-200", "ring-1", "ring-purple-400/35"];
         var META_OFF = ["border-gray-700", "bg-gray-900", "text-gray-400"];
         function syncMetaToggleStyles(open) {
           if (!metaToggle) return;
@@ -359,34 +451,38 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
             sessionStorage.setItem(META_OPEN_KEY, "true");
           } catch (e) {}
         }
-        function metaPanelIsOpen() {
-          return metaRoot && !metaRoot.classList.contains("hidden");
+        function infobarIsOpen() {
+          return metaToggle && metaToggle.getAttribute("aria-expanded") === "true";
         }
-        function setMetaPanelOpen(open) {
-          if (metaRoot) metaRoot.classList.toggle("hidden", !open);
-          if (metaScrim) metaScrim.classList.toggle("hidden", !open);
+        function setInfobarOpen(open) {
+          if (infobarExpand) infobarExpand.style.gridTemplateRows = open ? "1fr" : "0fr";
+          if (chev) chev.classList.toggle("rotate-180", !!open);
           if (metaToggle) metaToggle.setAttribute("aria-expanded", open ? "true" : "false");
           syncMetaToggleStyles(open);
         }
-        if (metaToggle && metaRoot) {
+        if (metaToggle && infobarExpand) {
           metaToggle.addEventListener("click", function () {
-            var next = !metaPanelIsOpen();
+            var next = !infobarIsOpen();
             if (next) setMetaOpenInSession();
             else setMetaClosedInSession();
-            setMetaPanelOpen(next);
-          });
-        }
-        if (metaClose && metaRoot) {
-          metaClose.addEventListener("click", function () {
-            setMetaClosedInSession();
-            setMetaPanelOpen(false);
+            setInfobarOpen(next);
           });
         }
       })();
     </script>
 
-    <div class="vis-prototype-main relative min-h-screen w-full bg-white">
-      <slot />
-    </div>
+    {
+      hasInfobar ? (
+        <div class="flex min-h-0 flex-1 flex-col">
+          <div class="vis-prototype-main flex min-h-0 flex-1 flex-col bg-white">
+            <slot />
+          </div>
+        </div>
+      ) : (
+        <div class="vis-prototype-main relative min-h-screen w-full bg-white">
+          <slot />
+        </div>
+      )
+    }
   </body>
 </html>
