@@ -1,7 +1,7 @@
 ---
-/* CONTRACT: VIS backstage index — auto-lists raw HTML wireframes from public/vis/raw. */
+/* CONTRACT: VIS backstage index — auto-lists raw HTML from public/vis/raw med type-badge. */
 import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
-import { wireframeIndexEntries } from "../../lib/vis-wireframes";
+import { visTypeLabelNo, wireframeIndexEntries } from "../../lib/vis-wireframes";
 
 const entries = wireframeIndexEntries();
 const base = import.meta.env.BASE_URL;
@@ -9,9 +9,10 @@ const base = import.meta.env.BASE_URL;
 
 <PrototypeLayout title="Oversikt">
   <main class="px-4 py-6 sm:px-6 sm:py-8">
-    <h1 class="text-lg font-semibold text-gray-900">Rå HTML-wireframes</h1>
+    <h1 class="text-lg font-semibold text-gray-900">Prototyper og underlag</h1>
     <p class="mt-2 max-w-prose text-sm text-gray-600">
-      Filer i <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">public/vis/raw/</code> listes her automatisk ved bygg.
+      Rå HTML-filer i{" "}
+      <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">public/vis/raw/</code> — wireframes og strategidokumenter — listes her automatisk ved bygg.
     </p>
 
     {
@@ -22,13 +23,21 @@ const base = import.meta.env.BASE_URL;
         </p>
       ) : (
         <ul class="mt-6 divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
-          {entries.map(({ filename: name, slug, displayTitle, description }) => {
+          {entries.map(({ filename: name, slug, displayTitle, description, visType }) => {
             const view = `${base}vis/${encodeURIComponent(slug)}`;
             const rawUrl = `${base}vis/raw/${encodeURIComponent(name)}`;
+            const typeLabel = visTypeLabelNo(visType);
             return (
               <li class="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                 <div class="min-w-0">
-                  <p class="text-sm font-semibold leading-snug text-gray-900">{displayTitle}</p>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span
+                      class="inline-flex shrink-0 rounded border border-gray-200 bg-gray-50 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-gray-600"
+                    >
+                      {typeLabel}
+                    </span>
+                    <p class="text-sm font-semibold leading-snug text-gray-900">{displayTitle}</p>
+                  </div>
                   {description ? (
                     <p class="mt-1 text-sm leading-relaxed text-gray-600">{description}</p>
                   ) : null}

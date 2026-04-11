@@ -1,4 +1,4 @@
-/* CONTRACT: Build-time helpers for listing raw HTML wireframes under public/vis/raw.
+/* CONTRACT: Build-time helpers for listing raw HTML under public/vis/raw (wireframes, strategy, m.m.).
  * Public URLs for raw files and /vis routes must use `import.meta.env.BASE_URL` in .astro files (GitHub Pages base path). */
 import fs from "node:fs";
 import path from "node:path";
@@ -66,14 +66,40 @@ function readMetaContentByName(head: string, name: string): string | undefined {
   return v || undefined;
 }
 
+/** Normalisert innholdstype for VIS-index; `document` er nøytral fallback. */
+export type VisContentType = "wireframe" | "strategy" | "document";
+
+const VIS_TYPE_LABEL_NO: Record<VisContentType, string> = {
+  wireframe: "Wireframe",
+  strategy: "Strategi",
+  document: "Dokument",
+};
+
 /**
- * Reads `<title>`, `<meta name="description">`, and `<meta name="vis:delta">` from the start of a raw HTML file.
+ * Leser valgfritt `<meta name="vis:type" content="wireframe|strategy|document">`, ellers faller tilbake til filnavn.
+ */
+export function resolveVisType(filename: string, metaVisType?: string): VisContentType {
+  const raw = metaVisType?.trim().toLowerCase();
+  if (raw === "wireframe" || raw === "strategy" || raw === "document") return raw;
+  const base = path.basename(filename);
+  if (/^wire_/i.test(base)) return "wireframe";
+  if (/^KlarLyd_Strategi_/i.test(base)) return "strategy";
+  return "document";
+}
+
+export function visTypeLabelNo(kind: VisContentType): string {
+  return VIS_TYPE_LABEL_NO[kind];
+}
+
+/**
+ * Reads `<title>`, `<meta name="description">`, `<meta name="vis:delta">`, and `<meta name="vis:type">` from the start of a raw HTML file.
  * Best-effort regex parsing only; no full DOM.
  */
 export function readWireframeHeadMetadata(filePath: string): {
   title?: string;
   description?: string;
   visDelta?: string;
+  visTypeMeta?: string;
 } {
   try {
     if (!fs.existsSync(filePath)) return {};
@@ -102,11 +128,13 @@ export function readWireframeHeadMetadata(filePath: string): {
     }
 
     const visDelta = readMetaContentByName(head, "vis:delta");
+    const visTypeMeta = readMetaContentByName(head, "vis:type");
 
     return {
       title: title || undefined,
       description: description || undefined,
       visDelta: visDelta || undefined,
+      visTypeMeta: visTypeMeta || undefined,
     };
   } catch {
     return {};
@@ -120,6 +148,8 @@ export type WireframeIndexEntry = {
   displayTitle: string;
   /** `<meta name="description">` when present. */
   description?: string;
+  /** Løst type for badge på `/vis` (meta + filnavn-fallback). */
+  visType: VisContentType;
 };
 
 /** Same `displayTitle` + `description` + optional `delta` as `/vis` index for a single raw HTML file. */
@@ -138,12 +168,15 @@ export function wireframeIndexEntries(): WireframeIndexEntry[] {
   const dir = visRawDir();
   return listVisRawHtmlFiles().map((filename) => {
     const slug = slugFromHtmlFilename(filename);
-    const { displayTitle, description } = wireframeDisplayMeta(filename);
+    const meta = readWireframeHeadMetadata(path.join(dir, filename));
+    const displayTitle = (meta.title && meta.title.length > 0 ? meta.title : filename) || filename;
+    const visType = resolveVisType(filename, meta.visTypeMeta);
     return {
       filename,
       slug,
       displayTitle,
-      description,
+      description: meta.description,
+      visType,
     };
   });
 }
