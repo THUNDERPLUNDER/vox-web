@@ -74,12 +74,6 @@ export function readWireframeHeadMetadata(filePath: string): { title?: string; d
       if (description.length > 320) description = description.slice(0, 317) + "…";
     }
 
-    /** Optional: drop a common "KlarLyd - " style prefix if the remainder is non-empty. */
-    if (title) {
-      const trimmed = title.replace(/^\s*KlarLyd\s*[-–—]\s*/i, "").trim();
-      if (trimmed.length > 0) title = trimmed;
-    }
-
     return { title: title || undefined, description: description || undefined };
   } catch {
     return {};

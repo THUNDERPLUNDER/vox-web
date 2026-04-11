@@ -5,7 +5,6 @@ import { slugFromHtmlFilename } from "../lib/vis-wireframes";
 
 interface Props {
   title: string;
-  activePage: "forside" | "hub" | "artikkel" | "wireframe";
   /** When set (e.g. on /vis/[slug]), compact pager in the main top bar; mobile uses position + dialog list, desktop uses select. Hidden in ?preview=1. */
   wireframeFileNav?: {
     allFiles: string[];
@@ -13,7 +12,7 @@ interface Props {
   };
 }
 
-const { title, activePage, wireframeFileNav } = Astro.props;
+const { title, wireframeFileNav } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
 
@@ -63,7 +62,6 @@ const exitPreviewHref = (() => {
     <style is:global>
       /* Clean preview: chrome hidden, near-fullscreen content; toggled only when ?preview=1 (see script above). */
       html.vis-preview .vis-prototype-topbar,
-      html.vis-preview .vis-prototype-bottombar,
       html.vis-preview .vis-wireframe-filetools,
       html.vis-preview #vis-file-picker-dialog {
         display: none !important;
@@ -93,7 +91,7 @@ const exitPreviewHref = (() => {
       }
     </style>
   </head>
-  <body class="vis-prototype-body bg-gray-100 antialiased pt-10 pb-20 sm:pb-0">
+  <body class="vis-prototype-body bg-gray-100 antialiased pt-10 pb-0">
     <div
       class:list={[
         "vis-prototype-topbar fixed top-0 left-0 z-[9999] w-full border-b border-gray-950 bg-gray-900 font-mono text-xs text-white shadow-md",
@@ -102,47 +100,14 @@ const exitPreviewHref = (() => {
           : "flex h-10 items-center justify-between px-4",
       ]}
     >
-      <div class:list={["flex min-w-0 items-center", wireframeFileNav ? "space-x-3 sm:space-x-6" : "space-x-6"]}>
-        <div class="flex shrink-0 items-baseline gap-2">
-          <span class="text-sm font-bold uppercase tracking-widest text-purple-400">VIS</span>
-          <span class="text-[10px] font-medium text-gray-500">v0.1</span>
-        </div>
-
-        <nav class="hidden min-w-0 border-l border-gray-700 pl-3 sm:flex sm:space-x-1 sm:pl-6">
-          <a
-            href={`${base}vis/`}
-            class:list={[
-              "rounded px-3 py-1 transition",
-              activePage === "forside"
-                ? "bg-gray-700 text-white"
-                : "text-gray-400 hover:bg-gray-800 hover:text-white",
-            ]}
-          >
-            Forside
-          </a>
-          <a
-            href={`${base}vis/hub`}
-            class:list={[
-              "rounded px-3 py-1 transition",
-              activePage === "hub"
-                ? "bg-gray-700 text-white"
-                : "text-gray-400 hover:bg-gray-800 hover:text-white",
-            ]}
-          >
-            Hub
-          </a>
-          <a
-            href={`${base}vis/artikkel`}
-            class:list={[
-              "rounded px-3 py-1 transition",
-              activePage === "artikkel"
-                ? "bg-gray-700 text-white"
-                : "text-gray-400 hover:bg-gray-800 hover:text-white",
-            ]}
-          >
-            Artikkel
-          </a>
-        </nav>
+      <div class="flex min-w-0 shrink-0 items-center gap-2">
+        <a
+          href={`${base}vis/`}
+          class="text-sm font-bold uppercase tracking-widest text-purple-400 transition hover:text-purple-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+        >
+          VIS
+        </a>
+        <span class="text-[10px] font-medium text-gray-500">v0.1</span>
       </div>
 
       {
@@ -293,30 +258,6 @@ const exitPreviewHref = (() => {
         }
       })();
     </script>
-
-    <div
-      class="vis-prototype-bottombar fixed bottom-0 left-0 z-[9999] flex w-full justify-around border-t border-gray-800 bg-gray-900 py-3 font-mono text-xs text-white sm:hidden"
-      style="padding-bottom: env(safe-area-inset-bottom);"
-    >
-      <a
-        href={`${base}vis/`}
-        class:list={[activePage === "forside" ? "text-gray-300" : "text-gray-500"]}
-      >
-        Forside
-      </a>
-      <a
-        href={`${base}vis/hub`}
-        class:list={[activePage === "hub" ? "text-gray-300" : "text-gray-500"]}
-      >
-        Hub
-      </a>
-      <a
-        href={`${base}vis/artikkel`}
-        class:list={[activePage === "artikkel" ? "text-gray-300" : "text-gray-500"]}
-      >
-        Artikkel
-      </a>
-    </div>
 
     <a
       href={exitPreviewHref}

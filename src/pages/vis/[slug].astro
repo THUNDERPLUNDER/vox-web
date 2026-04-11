@@ -24,14 +24,10 @@ const src = `${base}vis/raw/${encodeURIComponent(fileName)}`;
 const title = fileName.replace(/\.html$/i, "");
 ---
 
-<PrototypeLayout
-  title={title}
-  activePage="wireframe"
-  wireframeFileNav={{ allFiles: files, currentSlug: slug! }}
->
+<PrototypeLayout title={title} wireframeFileNav={{ allFiles: files, currentSlug: slug! }}>
   <iframe
     title={title}
     src={src}
-    class="vis-wireframe-iframe block h-[calc(100dvh-9rem)] min-h-[calc(100dvh-9rem)] w-full border-0 bg-white sm:h-[calc(100dvh-2.5rem)] sm:min-h-[calc(100dvh-2.5rem)]"
+    class="vis-wireframe-iframe block h-[calc(100dvh-2.5rem)] min-h-[calc(100dvh-2.5rem)] w-full border-0 bg-white"
   />
 </PrototypeLayout>
