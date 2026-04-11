@@ -28,7 +28,9 @@
 - **Navigasjon:** Én global toppflate; innholdssider sender `currentPath` til layout.
 - **Mobilmeny:** `MobileMenuTrigger` + `MobileMenuSheet` (drawer montert utenfor `backdrop-blur`-wrapper).
 - **Typografi:** **Epilogue + Inter** via Google Fonts i `BaseLayout` og `--font-display` / `--font-sans` i `global.css`.
-- **Ordbok (dynamisk route):** `src/pages/no/ordbok/[term].astro` har minimal `getStaticPaths()` (tom liste inntil term-data finnes) for at **produksjonsbuild** skal passere.
+- **Ordbok (Storyblok):** `src/pages/no/ordbok` og `src/pages/no/ordbok/[term].astro` henter publisert innhold fra Storyblok under `no/ordbok/` i statisk build.
+- **Custom chat shell (feasibility, intern):** Rute **`/no/sandbox/chat-shell`** — aktiv **feasibility-spike** for en eventuell VOX-eid samtaleflate. **Step 1** på kodenivå er **visuell tilpasning / shell-prototype** med mockede meldinger og **uten** backend, agentkall, auth eller CES-bridge; **ikke produksjonskoblet**. Siste commit som rørte selve siden: **`b2d91050e8b737cbb663f4fd8894a84d68315be7`** (`src/pages/no/sandbox/chat-shell.astro`). Full definisjon: `docs/project/05_CHAT_SHELL_FEASIBILITY.md`.
+- **VIS (backstage):** Eget **landet** verktøy for HTML-wireframes under **`/vis`** (internt, `noindex`). **Ikke** hovedsporet for MVP-produkt eller chat-shell; holdes adskilt i arbeid og dokumentasjon.
 - **Øvrig:** AI-agent i Google CES; manualer i Cloud stores; Stitch som visuell referanse.
 
 ## Det som fortsatt er under arbeid
@@ -56,7 +58,8 @@
 - Strategi og logg: Strategisk arbeid, roadmap og løpende logg føres primært av @Navigator i Gemini.
 - Kode og implementering: ChatGPT/@rigger bryter arbeid ned i konkrete steg, og Cursor utfører i kodebasen.
 - Hosting / drift: Nettsiden bygges i Astro, versjoneres i Git/GitHub og deployes via Vercel. AI-agenten kjøres i Google CES.
+- Publiseringsflyt CMS (MVP): Storyblok publish -> webhook -> Vercel deploy hook -> ny production build (`docs/project/04_PUBLISHING.md`) — testet og verifisert i praksis.
 
 ## Sist oppdatert
-- Dato: 2026-04-02
-- Oppdatert av: docs-sync etter Sonic Resonance token-pass (`4d5fd53`)
+- Dato: 2026-04-11
+- Oppdatert av: docs-lukking chat shell Step 1 + eksisterende baseline (Sonic Resonance ref. fortsatt `4d5fd53` der relevant)

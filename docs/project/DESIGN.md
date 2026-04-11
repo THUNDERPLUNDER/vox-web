@@ -52,6 +52,7 @@ Operative hooks i `global.css` — **ikke** et eget komponentbibliotek; brukes s
 - **Global navigasjon:** Rendres fra layout; sider sender `currentPath` for aktiv tilstand. Ingen duplikat lokal header på relevante innholdssider.
 - **CES:** Widget lastes i `<head>` (script + tema-CSS); funksjonell integrasjon skal ikke endres uten eget mandat.
 - **Typografi:** **Epilogue + Inter** via Google Fonts i `BaseLayout` og bruk av `--font-display` / `--font-sans` i `global.css`.
+- **Sandbox custom shell (ikke CES-baseline):** `/no/sandbox/chat-shell` er en **separat intern feasibility-route** for en eventuell **VOX-eid** chatflate (mock, ingen produksjonskobling til agent). Produktets referanse for innebygd chat på landing forblir **CES-widget** som over. Se `docs/project/05_CHAT_SHELL_FEASIBILITY.md`.
 
 ## Landing `/no` — bevisst layout (MVP)
 Dette er **produktvalg** dokumentert for konsistens mellom design og kode — ikke ad hoc-workarounds.
