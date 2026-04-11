@@ -6,7 +6,7 @@ import { slugFromHtmlFilename } from "../lib/vis-wireframes";
 interface Props {
   title: string;
   activePage: "forside" | "hub" | "artikkel" | "wireframe";
-  /** When set (e.g. on /vis/[slug]), shows prev/select/next wireframe strip under the main bar. Hidden in ?preview=1. */
+  /** When set (e.g. on /vis/[slug]), compact pager in the main top bar; mobile uses position + dialog list, desktop uses select. Hidden in ?preview=1. */
   wireframeFileNav?: {
     allFiles: string[];
     currentSlug: string;
@@ -27,6 +27,10 @@ const nextFileNavHref =
   wireframeFileNav && fileNavIndex >= 0 && fileNavIndex < wireframeFileNav.allFiles.length - 1
     ? `${base}vis/${encodeURIComponent(slugFromHtmlFilename(wireframeFileNav.allFiles[fileNavIndex + 1]!))}`
     : null;
+
+const fileNavPosition =
+  wireframeFileNav && fileNavIndex >= 0 ? fileNavIndex + 1 : 0;
+const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
 
 /**
  * Exit preview: same path without `preview` (build-time path is correct per page).
@@ -60,7 +64,8 @@ const exitPreviewHref = (() => {
       /* Clean preview: chrome hidden, near-fullscreen content; toggled only when ?preview=1 (see script above). */
       html.vis-preview .vis-prototype-topbar,
       html.vis-preview .vis-prototype-bottombar,
-      html.vis-preview .vis-wireframe-filenav {
+      html.vis-preview .vis-wireframe-filetools,
+      html.vis-preview #vis-file-picker-dialog {
         display: none !important;
       }
       .vis-prototype-exit {
@@ -83,24 +88,27 @@ const exitPreviewHref = (() => {
         min-height: 100dvh !important;
         height: 100dvh !important;
       }
+      #vis-file-picker-dialog::backdrop {
+        background: rgb(0 0 0 / 0.45);
+      }
     </style>
   </head>
-  <body
-    class:list={[
-      "vis-prototype-body bg-gray-100 antialiased pb-20 sm:pb-0",
-      wireframeFileNav ? "pt-[4.75rem]" : "pt-10",
-    ]}
-  >
+  <body class="vis-prototype-body bg-gray-100 antialiased pt-10 pb-20 sm:pb-0">
     <div
-      class="vis-prototype-topbar fixed top-0 left-0 z-[9999] flex h-10 w-full items-center justify-between border-b border-gray-950 bg-gray-900 px-4 font-mono text-xs text-white shadow-md"
+      class:list={[
+        "vis-prototype-topbar fixed top-0 left-0 z-[9999] w-full border-b border-gray-950 bg-gray-900 font-mono text-xs text-white shadow-md",
+        wireframeFileNav
+          ? "grid h-10 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1.5 px-2 sm:gap-x-3 sm:px-4"
+          : "flex h-10 items-center justify-between px-4",
+      ]}
     >
-      <div class="flex items-center space-x-6">
-        <div class="flex items-baseline gap-2">
+      <div class:list={["flex min-w-0 items-center", wireframeFileNav ? "space-x-3 sm:space-x-6" : "space-x-6"]}>
+        <div class="flex shrink-0 items-baseline gap-2">
           <span class="text-sm font-bold uppercase tracking-widest text-purple-400">VIS</span>
           <span class="text-[10px] font-medium text-gray-500">v0.1</span>
         </div>
 
-        <nav class="hidden border-l border-gray-700 pl-6 sm:flex sm:space-x-1">
+        <nav class="hidden min-w-0 border-l border-gray-700 pl-3 sm:flex sm:space-x-1 sm:pl-6">
           <a
             href={`${base}vis/`}
             class:list={[
@@ -137,7 +145,81 @@ const exitPreviewHref = (() => {
         </nav>
       </div>
 
-      <div class="flex items-center space-x-4 text-gray-500">
+      {
+        wireframeFileNav && (
+          <div class="vis-wireframe-filetools flex max-w-[100vw] shrink-0 items-center justify-center gap-0.5 sm:gap-1">
+            {prevFileNavHref ? (
+              <a
+                href={prevFileNavHref}
+                class="inline-flex h-7 min-w-[1.75rem] shrink-0 items-center justify-center rounded border border-gray-700 bg-gray-900 text-sm leading-none text-gray-300 hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                aria-label="Forrige wireframe"
+              >
+                ‹
+              </a>
+            ) : (
+              <span
+                class="inline-flex h-7 min-w-[1.75rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-sm text-gray-600"
+                aria-hidden="true"
+              >
+                ‹
+              </span>
+            )}
+
+            <button
+              type="button"
+              id="vis-file-picker-open"
+              class="inline-flex h-7 shrink-0 items-center gap-0.5 rounded border border-gray-700 bg-gray-900 px-1.5 py-0.5 text-[11px] tabular-nums text-gray-300 hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 md:hidden"
+              aria-haspopup="dialog"
+              aria-controls="vis-file-picker-dialog"
+              aria-label={`Velg wireframe, viser ${fileNavPosition} av ${fileNavTotal}`}
+            >
+              {fileNavPosition} / {fileNavTotal}
+              <span aria-hidden="true" class="text-[10px]">
+                ▾
+              </span>
+            </button>
+
+            <label class="sr-only" for="vis-wireframe-jump-desktop">
+              Velg wireframe-fil
+            </label>
+            <select
+              id="vis-wireframe-jump-desktop"
+              class="hidden h-7 max-w-[min(14rem,calc(100vw-12rem))] shrink truncate rounded border border-gray-700 bg-gray-900 py-0 pl-2 pr-7 text-[11px] text-gray-200 focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600 md:block"
+              aria-label="Velg wireframe-fil"
+            >
+              {wireframeFileNav.allFiles.map((name) => {
+                const s = slugFromHtmlFilename(name);
+                const optHref = `${base}vis/${encodeURIComponent(s)}`;
+                const sel = s === wireframeFileNav.currentSlug;
+                return (
+                  <option value={optHref} selected={sel}>
+                    {name}
+                  </option>
+                );
+              })}
+            </select>
+
+            {nextFileNavHref ? (
+              <a
+                href={nextFileNavHref}
+                class="inline-flex h-7 min-w-[1.75rem] shrink-0 items-center justify-center rounded border border-gray-700 bg-gray-900 text-sm leading-none text-gray-300 hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                aria-label="Neste wireframe"
+              >
+                ›
+              </a>
+            ) : (
+              <span
+                class="inline-flex h-7 min-w-[1.75rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-sm text-gray-600"
+                aria-hidden="true"
+              >
+                ›
+              </span>
+            )}
+          </div>
+        )
+      }
+
+      <div class="flex items-center justify-end space-x-2 text-gray-500 sm:space-x-4">
         <span class="hidden md:inline">Visning for: Vibeke</span>
         <div class="h-2 w-2 shrink-0 rounded-full bg-green-500" title="Live"></div>
       </div>
@@ -145,72 +227,70 @@ const exitPreviewHref = (() => {
 
     {
       wireframeFileNav && (
-        <div
-          class="vis-wireframe-filenav fixed top-10 left-0 z-[9998] flex h-9 w-full items-center justify-center gap-1.5 border-b border-gray-800 bg-gray-950 px-2 font-mono text-[11px] text-gray-400 shadow-sm sm:gap-2 sm:px-4"
+        <dialog
+          id="vis-file-picker-dialog"
+          class="z-[10001] w-[min(100vw-2rem,20rem)] max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg border border-gray-700 bg-gray-900 p-0 text-gray-200 shadow-2xl"
+          aria-labelledby="vis-file-picker-title"
         >
-          {prevFileNavHref ? (
-            <a
-              href={prevFileNavHref}
-              class="inline-flex h-7 min-w-[2rem] shrink-0 items-center justify-center rounded border border-gray-700 bg-gray-900 text-gray-300 hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
-              aria-label="Forrige wireframe"
-            >
-              ‹
-            </a>
-          ) : (
-            <span
-              class="inline-flex h-7 min-w-[2rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-gray-600"
-              aria-hidden="true"
-            >
-              ‹
-            </span>
-          )}
-          <label class="sr-only" for="vis-wireframe-jump">
-            Velg wireframe-fil
-          </label>
-          <select
-            id="vis-wireframe-jump"
-            class="max-w-[min(100vw-8rem,280px)] flex-1 truncate rounded border border-gray-700 bg-gray-900 py-1 pl-2 pr-7 text-xs text-gray-200 focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
-            aria-label="Velg wireframe-fil"
-          >
+          <div class="border-b border-gray-800 px-3 py-2">
+            <p id="vis-file-picker-title" class="text-[10px] font-medium uppercase tracking-wide text-gray-500">
+              Velg wireframe
+            </p>
+          </div>
+          <ul class="max-h-[min(60dvh,22rem)] overflow-y-auto p-2">
             {wireframeFileNav.allFiles.map((name) => {
               const s = slugFromHtmlFilename(name);
-              const optHref = `${base}vis/${encodeURIComponent(s)}`;
-              const sel = s === wireframeFileNav.currentSlug;
+              const href = `${base}vis/${encodeURIComponent(s)}`;
+              const current = s === wireframeFileNav.currentSlug;
               return (
-                <option value={optHref} selected={sel}>
-                  {name}
-                </option>
+                <li>
+                  <a
+                    href={href}
+                    class:list={[
+                      "block truncate rounded px-2 py-2 text-xs hover:bg-gray-800",
+                      current ? "bg-gray-800 text-white" : "text-gray-300",
+                    ]}
+                  >
+                    {name}
+                  </a>
+                </li>
               );
             })}
-          </select>
-          {nextFileNavHref ? (
-            <a
-              href={nextFileNavHref}
-              class="inline-flex h-7 min-w-[2rem] shrink-0 items-center justify-center rounded border border-gray-700 bg-gray-900 text-gray-300 hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
-              aria-label="Neste wireframe"
+          </ul>
+          <div class="border-t border-gray-800 p-2">
+            <button
+              type="button"
+              class="w-full rounded border border-gray-700 bg-gray-900 py-1.5 text-[11px] text-gray-400 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+              id="vis-file-picker-close"
             >
-              ›
-            </a>
-          ) : (
-            <span
-              class="inline-flex h-7 min-w-[2rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-gray-600"
-              aria-hidden="true"
-            >
-              ›
-            </span>
-          )}
-        </div>
+              Lukk
+            </button>
+          </div>
+        </dialog>
       )
     }
 
     <script is:inline>
       (function () {
-        var el = document.getElementById("vis-wireframe-jump");
-        if (!el) return;
-        el.addEventListener("change", function () {
-          var v = el.value;
-          if (v) window.location.href = v;
-        });
+        var sel = document.getElementById("vis-wireframe-jump-desktop");
+        if (sel)
+          sel.addEventListener("change", function () {
+            var v = sel.value;
+            if (v) window.location.href = v;
+          });
+        var openBtn = document.getElementById("vis-file-picker-open");
+        var dlg = document.getElementById("vis-file-picker-dialog");
+        var closeBtn = document.getElementById("vis-file-picker-close");
+        if (openBtn && dlg) {
+          openBtn.addEventListener("click", function () {
+            if (typeof dlg.showModal === "function") dlg.showModal();
+          });
+        }
+        if (closeBtn && dlg) {
+          closeBtn.addEventListener("click", function () {
+            dlg.close();
+          });
+        }
       })();
     </script>
 
