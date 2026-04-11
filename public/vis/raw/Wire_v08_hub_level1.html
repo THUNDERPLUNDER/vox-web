@@ -1,11 +1,224 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="no">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Wire_v08_hub_level1</title>
-  </head>
-  <body>
-    <p>Wire_v08_hub_level1 — rå HTML-placeholder (legg inn ekte wireframe her).</p>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KlarLyd - Hub: NAV & Rettigheter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-800 font-sans antialiased flex flex-col min-h-screen overflow-hidden md:overflow-auto">
+
+    <!-- OVERLAY FOR MOBIL (Mørkner bakgrunnen når chat er åpen på små skjermer) -->
+    <div class="fixed inset-0 bg-gray-900/40 z-40 md:hidden backdrop-blur-sm hidden" id="mobile-overlay"></div>
+
+    <!-- 1. GLOBAL HEADER -->
+    <header class="border-b border-gray-200 py-4 px-5 md:px-8 flex justify-between items-center sticky top-0 bg-white z-30 shadow-sm">
+        <div class="font-bold text-2xl tracking-tight cursor-pointer hover:opacity-80 transition">KlarLyd<span class="text-purple-600">.</span></div>
+        
+        <!-- Desktop Navigasjon -->
+        <nav class="hidden md:flex space-x-8 font-medium text-gray-600">
+            <a href="#" class="hover:text-blue-600 transition">Mistanke & Avklaring</a>
+            <a href="#" class="text-orange-600 font-bold border-b-2 border-orange-600 pb-1">NAV & Rettigheter</a>
+            <a href="#" class="hover:text-teal-600 transition">Daglig Mestring</a>
+        </nav>
+        
+        <div class="flex items-center space-x-5">
+            <span class="text-xl cursor-pointer hover:opacity-70">🔍</span>
+            <button class="md:hidden text-2xl text-gray-800 leading-none">☰</button>
+            <div class="hidden md:flex w-9 h-9 rounded-full bg-gray-200 items-center justify-center text-sm cursor-pointer hover:bg-gray-300">👤</div>
+        </div>
+    </header>
+
+    <main class="flex-grow transition-all duration-300">
+        
+        <!-- 2. HUB HERO SEKSJON (Oransje fargetema) -->
+        <section class="bg-orange-50/50 border-b border-orange-100 py-8 md:py-16 px-5">
+            <div class="max-w-7xl mx-auto">
+                <!-- Brødsmulesti -->
+                <nav class="text-sm font-medium text-gray-500 mb-6 flex items-center space-x-2">
+                    <a href="#" class="hover:text-gray-800 transition">Forside</a>
+                    <span>/</span>
+                    <span class="text-orange-800">NAV & Rettigheter</span>
+                </nav>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                    <div>
+                        <div class="w-16 h-1.5 bg-orange-500 mb-6 rounded-full"></div>
+                        <h1 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight text-gray-900">NAV & Rettigheter</h1>
+                        <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-lg leading-relaxed">
+                            Byråkratiet oversatt til klarspråk. Få full oversikt over økonomi, støtteordninger og hvordan du navigerer søknadsprosessene uten stress.
+                        </p>
+                    </div>
+                    
+                    <!-- Dekorativ Hub-illustrasjon -->
+                    <div class="hidden md:flex justify-end">
+                        <div class="w-full max-w-md h-64 bg-orange-100/50 rounded-3xl border-2 border-dashed border-orange-200 flex flex-col items-center justify-center text-orange-400">
+                            <span class="text-6xl mb-4">⚖️</span>
+                            <span class="text-sm font-medium uppercase tracking-wider">Hovedillustrasjon for NAV-Kjernen</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. LOKAL MENY / SPOKES (De viktigste underoppgavene) -->
+        <section class="py-12 md:py-20 px-5 max-w-7xl mx-auto relative z-10 -mt-10 md:-mt-16">
+            
+            <!-- Cards Grid (Top Tasks) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                
+                <!-- Spoke 1 -->
+                <div class="bg-white border border-gray-200 p-6 rounded-2xl shadow-lg shadow-gray-100/50 hover:shadow-xl hover:-translate-y-1 transition duration-300 cursor-pointer group flex flex-col">
+                    <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-orange-500 group-hover:text-white transition">💰</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Satser 2026</h3>
+                    <p class="text-gray-600 text-sm flex-grow">Oppdatert oversikt over hvor mye du kan få i støtte til høreapparat i år.</p>
+                </div>
+
+                <!-- Spoke 2 -->
+                <div class="bg-white border border-gray-200 p-6 rounded-2xl shadow-lg shadow-gray-100/50 hover:shadow-xl hover:-translate-y-1 transition duration-300 cursor-pointer group flex flex-col">
+                    <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-orange-500 group-hover:text-white transition">💳</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Egenandel (Mellomlegg)</h3>
+                    <p class="text-gray-600 text-sm flex-grow">Hva betyr mellomlegg, og hvor mye må du egentlig betale fra egen lomme?</p>
+                </div>
+
+                <!-- Spoke 3 -->
+                <div class="bg-white border border-gray-200 p-6 rounded-2xl shadow-lg shadow-gray-100/50 hover:shadow-xl hover:-translate-y-1 transition duration-300 cursor-pointer group flex flex-col">
+                    <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-orange-500 group-hover:text-white transition">📝</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Søknadsprosess</h3>
+                    <p class="text-gray-600 text-sm flex-grow">Steg-for-steg guide til hvordan du faktisk søker NAV om støtte.</p>
+                </div>
+
+                <!-- Spoke 4 -->
+                <div class="bg-white border border-gray-200 p-6 rounded-2xl shadow-lg shadow-gray-100/50 hover:shadow-xl hover:-translate-y-1 transition duration-300 cursor-pointer group flex flex-col">
+                    <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:bg-orange-500 group-hover:text-white transition">🏥</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Avtalespesialister</h3>
+                    <p class="text-gray-600 text-sm flex-grow">Finn audiografer og klinikker som har avtale med det offentlige.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 4. UTVALGTE DYPDYKK (Magasin/Artikler relatert til NAV) -->
+        <section class="py-12 md:py-16 px-5 max-w-7xl mx-auto border-t border-gray-100">
+            <h2 class="text-2xl font-bold mb-8">Nyttige guider om rettigheter</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Artikkel 1 -->
+                <div class="flex flex-col md:flex-row gap-6 group cursor-pointer">
+                    <div class="w-full md:w-48 h-48 md:h-auto bg-gray-200 rounded-xl flex-shrink-0 border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 group-hover:border-orange-300 transition">
+                        <span class="text-2xl">📸</span>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <span class="text-xs font-bold text-orange-600 uppercase tracking-wider mb-2">Guide</span>
+                        <h3 class="text-xl font-bold mb-3 group-hover:text-orange-700 transition">Slik klager du på et vedtak</h3>
+                        <p class="text-gray-600 text-sm mb-4">Fikk du avslag, eller mindre i støtte enn forventet? Her er dine rettigheter og hvordan du utformer en klage.</p>
+                        <span class="text-sm font-medium text-gray-900 flex items-center space-x-1 group-hover:text-orange-600">
+                            <span>Les guiden</span> <span class="group-hover:translate-x-1 transition-transform">→</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Artikkel 2 -->
+                <div class="flex flex-col md:flex-row gap-6 group cursor-pointer">
+                    <div class="w-full md:w-48 h-48 md:h-auto bg-gray-200 rounded-xl flex-shrink-0 border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 group-hover:border-orange-300 transition">
+                        <span class="text-2xl">📸</span>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <span class="text-xs font-bold text-orange-600 uppercase tracking-wider mb-2">Regelverk</span>
+                        <h3 class="text-xl font-bold mb-3 group-hover:text-orange-700 transition">Hvor ofte kan du få nye apparater?</h3>
+                        <p class="text-gray-600 text-sm mb-4">Hovedregelen er hvert 6. år, men det finnes viktige unntak. Sjekk om du kvalifiserer til bytte tidligere.</p>
+                        <span class="text-sm font-medium text-gray-900 flex items-center space-x-1 group-hover:text-orange-600">
+                            <span>Les reglene</span> <span class="group-hover:translate-x-1 transition-transform">→</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 5. FOOTER (Global) -->
+    <footer class="bg-gray-100 border-t border-gray-200 py-12 px-5 md:px-8 mt-auto">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
+            <div class="text-center md:text-left">
+                <h4 class="font-bold text-lg mb-3 text-gray-800">Hold deg oppdatert</h4>
+                <p class="text-gray-600 mb-5 text-sm md:text-base max-w-sm mx-auto md:mx-0">Få de nyeste guidene, oppdaterte satser og artikler rett i innboksen.</p>
+                <div class="flex flex-col sm:flex-row max-w-md mx-auto md:mx-0">
+                    <input type="email" placeholder="Din e-postadresse" class="px-4 py-3 border border-gray-300 rounded-t-md sm:rounded-l-md sm:rounded-t-none w-full focus:outline-none focus:border-orange-500">
+                    <button class="bg-gray-900 text-white px-6 py-3 rounded-b-md sm:rounded-r-md sm:rounded-b-none hover:bg-gray-800 transition font-medium whitespace-nowrap mt-[-1px] sm:mt-0">Meld på</button>
+                </div>
+            </div>
+            <div class="text-center md:text-right flex flex-col justify-center">
+                <div class="font-bold text-2xl tracking-tight mb-5 text-gray-800">KlarLyd<span class="text-purple-600">.</span></div>
+                <ul class="space-y-3 text-sm md:text-base text-gray-600 font-medium">
+                    <li><a href="#" class="hover:text-purple-600 transition">Om KlarLyd</a></li>
+                    <li><a href="#" class="hover:text-purple-600 transition">Kontakt oss</a></li>
+                    <li><a href="#" class="hover:text-purple-600 transition">Personvern og vilkår</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-gray-300 text-center text-sm text-gray-500">
+            &copy; 2026 KlarLyd. Alle rettigheter reservert.
+        </div>
+    </footer>
+
+    <!-- Z-AKSE: ÅPENT CHAT-PANEL (Kontekst-bevisst for NAV-Hub) -->
+    <!-- NB! I denne wireframen viser vi den åpen for å demonstrere kontekstendringen. -->
+    <div class="fixed inset-x-0 bottom-0 md:inset-auto md:right-8 md:bottom-24 z-50 flex flex-col bg-white md:w-[400px] h-[85vh] md:h-[600px] rounded-t-[2rem] md:rounded-2xl shadow-2xl border-t md:border border-gray-200 transform transition-transform duration-300 shadow-purple-900/10">
+        
+        <!-- Chat Header -->
+        <div class="bg-purple-600 text-white px-6 py-4 rounded-t-[2rem] md:rounded-t-2xl flex justify-between items-center shadow-md z-10">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-xl shadow-inner">✨</div>
+                <div>
+                    <h3 class="font-bold text-lg leading-tight">KlarLyd Assistent</h3>
+                    <p class="text-purple-200 text-xs font-medium">NAV & Økonomi Ekspert</p>
+                </div>
+            </div>
+            <button class="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+
+        <!-- Chat Meldinger -->
+        <div class="flex-grow p-6 overflow-y-auto bg-gray-50 flex flex-col space-y-5">
+            
+            <!-- AI Kontekstuell Velkomstmelding -->
+            <div class="flex items-start space-x-3 max-w-[85%]">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex-shrink-0 flex items-center justify-center text-sm border border-purple-200">✨</div>
+                <div class="bg-white border border-gray-200 p-4 rounded-2xl rounded-tl-sm shadow-sm text-gray-700 text-sm md:text-base leading-relaxed">
+                    Velkommen til NAV-kjernen! 📜<br><br>Jeg kan hjelpe deg med å forstå regelverket, regne ut egenandeler, eller guide deg gjennom søknadsprosessen. Hva lurer du på?
+                </div>
+            </div>
+
+            <!-- Kontekstuelle Snarveier (Spesifikke for NAV) -->
+            <div class="pl-11 pr-2 flex flex-col space-y-2">
+                <button class="bg-purple-50 text-purple-700 border border-purple-200 px-4 py-2.5 rounded-xl text-sm font-medium text-left hover:bg-purple-100 transition shadow-sm w-fit">
+                    Hva er NAV-satsen i 2026?
+                </button>
+                <button class="bg-purple-50 text-purple-700 border border-purple-200 px-4 py-2.5 rounded-xl text-sm font-medium text-left hover:bg-purple-100 transition shadow-sm w-fit">
+                    Kan jeg få støtte til lader?
+                </button>
+                <button class="bg-purple-50 text-purple-700 border border-purple-200 px-4 py-2.5 rounded-xl text-sm font-medium text-left hover:bg-purple-100 transition shadow-sm w-fit">
+                    Hvor lang er behandlingstiden nå?
+                </button>
+            </div>
+            
+            <div class="text-center text-xs text-gray-400 font-medium mt-4">I dag 10:04</div>
+        </div>
+
+        <!-- Input-felt -->
+        <div class="p-4 bg-white border-t border-gray-100 md:rounded-b-2xl">
+            <div class="flex items-end bg-gray-100 p-1.5 rounded-2xl border border-gray-200 focus-within:border-purple-400 focus-within:ring-2 focus-within:ring-purple-100 transition-all">
+                <textarea rows="1" placeholder="Spør om søknad, satser, klage..." class="w-full bg-transparent p-3 outline-none resize-none text-sm md:text-base max-h-32 text-gray-800 placeholder-gray-500"></textarea>
+                <button class="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mb-0.5 mr-0.5 hover:bg-purple-700 transition shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform rotate-90" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>
+                </button>
+            </div>
+            <div class="text-center mt-3 text-[10px] text-gray-400 font-medium uppercase tracking-wider">
+                KlarLyd AI gjør ikke vedtak. Sjekk alltid med NAV.
+            </div>
+        </div>
+    </div>
+
+</body>
 </html>

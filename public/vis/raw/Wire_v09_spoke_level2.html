@@ -1,11 +1,206 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="no">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Wire_v09_spoke_level2</title>
-  </head>
-  <body>
-    <p>Wire_v09_spoke_level2 — rå HTML-placeholder (legg inn ekte wireframe her).</p>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KlarLyd - Spoke: Artikkel (Dypdykk)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Enkel styling for å simulere brødtekst/artikkelinnhold */
+        .prose p { margin-bottom: 1.5em; line-height: 1.8; color: #4b5563; }
+        .prose h2 { font-size: 1.5em; font-weight: 700; margin-top: 2em; margin-bottom: 0.75em; color: #111827; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
+
+    <!-- 1. GLOBAL HEADER -->
+    <header class="border-b border-gray-200 py-4 px-5 md:px-8 flex justify-between items-center sticky top-0 bg-white z-30 shadow-sm">
+        <div class="font-bold text-2xl tracking-tight cursor-pointer hover:opacity-80 transition">KlarLyd<span class="text-purple-600">.</span></div>
+        
+        <!-- Desktop Navigasjon (Viser aktiv tilstand for Blå Kjerne) -->
+        <nav class="hidden md:flex space-x-8 font-medium text-gray-600">
+            <a href="#" class="text-blue-600 font-bold border-b-2 border-blue-600 pb-1">Mistanke & Avklaring</a>
+            <a href="#" class="hover:text-orange-600 transition">NAV & Rettigheter</a>
+            <a href="#" class="hover:text-teal-600 transition">Daglig Mestring</a>
+        </nav>
+        
+        <div class="flex items-center space-x-5">
+            <span class="text-xl cursor-pointer hover:opacity-70">🔍</span>
+            <button class="md:hidden text-2xl text-gray-800 leading-none">☰</button>
+            <div class="hidden md:flex w-9 h-9 rounded-full bg-gray-200 items-center justify-center text-sm cursor-pointer hover:bg-gray-300">👤</div>
+        </div>
+    </header>
+
+    <main class="flex-grow py-8 md:py-12 px-5">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            <!-- VENSTRE KOLONNE: Hovedartikkel (Bredde 8 av 12) -->
+            <article class="lg:col-span-8 bg-white p-6 md:p-12 rounded-3xl shadow-sm border border-gray-100">
+                
+                <!-- Brødsmulesti -->
+                <nav class="text-sm font-medium text-gray-500 mb-8 flex flex-wrap items-center gap-2">
+                    <a href="#" class="hover:text-gray-800 transition">Forside</a>
+                    <span>/</span>
+                    <a href="#" class="hover:text-blue-800 transition">Mistanke & Avklaring</a>
+                    <span>/</span>
+                    <span class="text-blue-800 font-semibold truncate">Slik tar du praten...</span>
+                </nav>
+
+                <!-- Artikkel-Header -->
+                <header class="mb-10">
+                    <span class="inline-block py-1 px-3 rounded-full bg-blue-50 text-blue-700 text-xs font-bold tracking-wider uppercase mb-4 border border-blue-100">Dypdykk</span>
+                    <h1 class="text-3xl md:text-5xl font-extrabold mb-6 leading-tight text-gray-900">Slik tar du praten med en som hører dårlig</h1>
+                    <p class="text-lg md:text-xl text-gray-600 leading-relaxed mb-8">
+                        Det er ofte de pårørende som merker hørselstapet først. Her er psykologens og audiografens beste råd for å ufarliggjøre temaet og unngå forsvarsmekanismer.
+                    </p>
+
+                    <!-- E-E-A-T (Metadata & Forfattere) -->
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-6 py-5 border-y border-gray-100">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-lg">👩‍⚕️</div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-900">Skrevet av Vibeke</p>
+                                <p class="text-xs text-gray-500">Innholdssjef</p>
+                            </div>
+                        </div>
+                        <div class="hidden sm:block w-px h-8 bg-gray-200"></div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-lg">🩺</div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-900">Faglig kvalitetssikret</p>
+                                <p class="text-xs text-gray-500">Dr. Torkil (Fastlege)</p>
+                            </div>
+                        </div>
+                        <div class="hidden sm:block w-px h-8 bg-gray-200"></div>
+                        <div>
+                            <p class="text-sm font-bold text-gray-900">Oppdatert</p>
+                            <p class="text-xs text-gray-500">10. April 2026</p>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Hovedbilde for artikkelen -->
+                <div class="w-full h-64 md:h-96 bg-gray-100 rounded-2xl mb-10 flex flex-col items-center justify-center text-gray-400 border border-gray-200">
+                    <span class="text-5xl mb-3">📸</span>
+                    <span class="text-sm font-medium uppercase tracking-wider">Artikkel-foto</span>
+                </div>
+
+                <!-- Artikkelinnhold (Prose) -->
+                <div class="prose max-w-none">
+                    <p>Mange opplever at det er et sensitivt tema å ta opp hørselstap med en partner, en forelder eller en god kollega. Ofte blir man møtt med "jeg hører helt fint, det er bare du som mumler!". Dette er en helt naturlig forsvarsmekanisme.</p>
+                    
+                    <h2>1. Velg riktig tid og sted</h2>
+                    <p>Ikke ta praten over en bråkete middagsbord eller når TV-en står på fullt volum. Finn en rolig stund hvor dere sitter ansikt til ansikt. God belysning er viktig, da mange ubevisst leser litt på leppene når hørselen svikter.</p>
+
+                    <!-- Fremhevet Sitat / Visuelt brudd -->
+                    <blockquote class="border-l-4 border-blue-500 pl-6 py-2 my-8 bg-blue-50/50 rounded-r-xl italic text-gray-700 text-lg">
+                        "Det handler ikke om å bevise at den andre tar feil, men om å vise at man ønsker å ha det hyggelig sammen i samtalen."
+                    </blockquote>
+
+                    <h2>2. Bruk "Jeg"-budskap</h2>
+                    <p>I stedet for å si "Du hører jo ingenting lenger!", prøv å vri det til hvordan det påvirker deg og relasjonen deres. For eksempel: "Jeg synes det er litt trist at vi misforstår hverandre så ofte i det siste" eller "Jeg merker at jeg må anstrenge meg for at vi skal få pratet sammen".</p>
+                </div>
+
+                <!-- E-E-A-T Boks i bunnen: Om forfatteren -->
+                <div class="mt-12 p-6 bg-gray-50 rounded-2xl border border-gray-100 flex items-start space-x-4">
+                    <div class="w-16 h-16 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center text-2xl">👩‍⚕️</div>
+                    <div>
+                        <h4 class="font-bold text-gray-900">Om forfatteren</h4>
+                        <p class="text-sm text-gray-600 mt-1">Vibeke har jobbet med tilrettelegging og klarspråk i over 10 år. Hun brenner for å gjøre komplisert informasjon tilgjengelig for alle. Teksten er medisinsk gjennomgått av Dr. Torkil for å sikre faglig korrekthet.</p>
+                    </div>
+                </div>
+
+            </article>
+
+            <!-- HØYRE KOLONNE: Sidebar / Assistent (Bredde 4 av 12) -->
+            <aside class="lg:col-span-4 space-y-8">
+                
+                <!-- Z-Akse Promotering (Leder brukeren inn i chatten) -->
+                <div class="bg-purple-600 text-white p-6 rounded-3xl shadow-lg relative overflow-hidden group">
+                    <!-- Dekorativ bakgrunn -->
+                    <div class="absolute -right-6 -top-6 w-32 h-32 bg-purple-500 rounded-full opacity-50"></div>
+                    
+                    <div class="relative z-10">
+                        <span class="text-3xl mb-4 block">✨</span>
+                        <h3 class="font-bold text-xl mb-2">Spørsmål til teksten?</h3>
+                        <p class="text-purple-100 text-sm mb-6 leading-relaxed">
+                            Er det et faguttrykk her du ikke forstår, eller trenger du råd til akkurat din situasjon? Spør KlarLyd-assistenten!
+                        </p>
+                        <button class="w-full bg-white text-purple-700 font-bold py-3 px-4 rounded-xl shadow-sm hover:bg-gray-50 transition flex justify-center items-center space-x-2">
+                            <span>Åpne Chat</span> <span>→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lokal Ruting: Mer fra kjernen -->
+                <div class="bg-white p-6 rounded-3xl border border-blue-100 shadow-sm">
+                    <div class="flex items-center space-x-2 mb-6">
+                        <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                        <h3 class="font-bold text-gray-900 uppercase tracking-wider text-sm">Mer fra denne huben</h3>
+                    </div>
+                    
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="#" class="group block">
+                                <h4 class="font-bold text-gray-800 text-sm group-hover:text-blue-600 transition">Sjekkliste for symptomer</h4>
+                                <p class="text-xs text-gray-500 mt-1">7 tegn på at hørselen begynner å svikte.</p>
+                            </a>
+                        </li>
+                        <li class="pt-4 border-t border-gray-100">
+                            <a href="#" class="group block">
+                                <h4 class="font-bold text-gray-800 text-sm group-hover:text-blue-600 transition">Fastlege-ruten 1-2-3</h4>
+                                <p class="text-xs text-gray-500 mt-1">Slik foregår en henvisning til spesialist.</p>
+                            </a>
+                        </li>
+                        <li class="pt-4 border-t border-gray-100">
+                            <a href="#" class="group block">
+                                <h4 class="font-bold text-gray-800 text-sm group-hover:text-blue-600 transition">Moderne Høreapparater</h4>
+                                <p class="text-xs text-gray-500 mt-1">Glem de store, beige bananene. Se hva teknologien kan i dag.</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Nyhetsbrev Mini-variant -->
+                <div class="bg-gray-100 p-6 rounded-3xl border border-gray-200 text-center">
+                    <span class="text-2xl mb-2 block">📫</span>
+                    <h3 class="font-bold text-gray-900 mb-2">Få guider i innboksen</h3>
+                    <p class="text-xs text-gray-600 mb-4">Vi sender deg kun det viktigste, uten spam.</p>
+                    <input type="email" placeholder="Din e-postadresse" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm mb-2 focus:outline-none focus:border-blue-500">
+                    <button class="w-full bg-gray-900 text-white font-bold py-2 rounded-lg text-sm hover:bg-gray-800 transition">Meld på</button>
+                </div>
+
+            </aside>
+        </div>
+    </main>
+
+    <!-- 5. FOOTER (Global) -->
+    <footer class="bg-white border-t border-gray-200 py-12 px-5 md:px-8 mt-10">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div>
+                <div class="font-bold text-2xl tracking-tight mb-4 text-gray-800">KlarLyd<span class="text-purple-600">.</span></div>
+                <p class="text-gray-500 text-sm max-w-sm">Din veiviser til en enklere hørselskverdag. Bygget med klarspråk og trygg teknologi.</p>
+            </div>
+            <div class="md:text-right">
+                <ul class="space-y-2 text-sm text-gray-600 font-medium">
+                    <li><a href="#" class="hover:text-purple-600 transition">Mistanke & Avklaring</a></li>
+                    <li><a href="#" class="hover:text-purple-600 transition">NAV & Rettigheter</a></li>
+                    <li><a href="#" class="hover:text-purple-600 transition">Personvern og vilkår</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Z-AKSE / AI CHAT (Flytende knapp) -->
+    <!-- NB: På denne artikkel-siden har vi en liten konversasjons-boble som peker på at chatten vet hva du leser om -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        <div class="bg-white shadow-md border border-gray-100 px-4 py-2 rounded-2xl rounded-br-none mb-3 text-sm font-medium text-gray-700 animate-bounce cursor-pointer hover:bg-gray-50">
+            Vil du ha tips til hvordan<br>starte samtalen? 👇
+        </div>
+        <button class="bg-purple-600 text-white rounded-full w-14 h-14 shadow-2xl hover:bg-purple-700 transition flex items-center justify-center">
+            <span class="text-2xl">✨</span>
+        </button>
+    </div>
+
+</body>
 </html>

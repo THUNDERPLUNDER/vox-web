@@ -1,11 +1,84 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="no">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Wire_v01</title>
-  </head>
-  <body>
-    <p>Wire_v01 — rå HTML-placeholder (legg inn ekte wireframe her).</p>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KlarLyd - Wireframe Variant A</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-800 font-sans antialiased flex flex-col min-h-screen">
+
+    <header class="border-b border-gray-200 py-4 px-8 flex justify-between items-center sticky top-0 bg-white z-40">
+        <div class="font-bold text-2xl tracking-tight">KlarLyd<span class="text-purple-600">.</span></div>
+        
+        <nav class="hidden md:flex space-x-8 font-medium text-gray-600">
+            <a href="#" class="hover:text-blue-600">Mistanke & Avklaring</a>
+            <a href="#" class="hover:text-orange-600">NAV & Rettigheter</a>
+            <a href="#" class="hover:text-teal-600">Daglig Mestring</a>
+        </nav>
+        
+        <div class="flex items-center space-x-4">
+            <span class="text-xl">🔍</span>
+            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm">👤</div>
+        </div>
+    </header>
+
+    <section class="bg-gray-50 py-20 px-8 text-center">
+        <div class="max-w-3xl mx-auto">
+            <span class="text-sm font-bold tracking-widest text-gray-500 uppercase">Ukens Dypdykk</span>
+            <h1 class="text-4xl md:text-5xl font-extrabold mt-4 mb-6 leading-tight">Slik tar du praten med en som hører dårlig</h1>
+            <p class="text-lg text-gray-600 mb-8">En praktisk guide for pårørende om hvordan man ufarliggjør overgangen til moderne høreapparater.</p>
+            <button class="bg-gray-900 text-white px-8 py-3 rounded-full font-medium hover:bg-gray-800 transition">Les artikkelen</button>
+        </div>
+    </section>
+
+    <section class="py-16 px-8 max-w-6xl mx-auto flex-grow w-full">
+        <h2 class="text-2xl font-bold mb-8 text-center">Hva trenger du hjelp med i dag?</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div class="border border-blue-100 bg-blue-50/30 p-8 rounded-2xl hover:shadow-lg transition cursor-pointer">
+                <div class="w-12 h-1 bg-blue-500 mb-6 rounded-full"></div>
+                <h3 class="text-xl font-bold text-blue-900 mb-3">Mistanke & Avklaring</h3>
+                <p class="text-gray-600 mb-6 text-sm">Ufarliggjør veien inn i systemet. Sjekk symptomer og forstå fastlege-ruten.</p>
+                <ul class="space-y-2 text-sm text-blue-700 font-medium">
+                    <li>→ Sjekkliste for symptomer</li>
+                    <li>→ Moderne Apparater</li>
+                    <li>→ Fastlege-ruten</li>
+                </ul>
+            </div>
+
+            <div class="border border-orange-100 bg-orange-50/30 p-8 rounded-2xl hover:shadow-lg transition cursor-pointer">
+                <div class="w-12 h-1 bg-orange-500 mb-6 rounded-full"></div>
+                <h3 class="text-xl font-bold text-orange-900 mb-3">NAV & Rettigheter</h3>
+                <p class="text-gray-600 mb-6 text-sm">Byråkratiet oversatt til klarspråk. Få oversikt over satser og mellomlegg.</p>
+                <ul class="space-y-2 text-sm text-orange-700 font-medium">
+                    <li>→ Satser 2026</li>
+                    <li>→ Egenandel (Mellomlegg)</li>
+                    <li>→ Søknadsprosess</li>
+                </ul>
+            </div>
+
+            <div class="border border-teal-100 bg-teal-50/30 p-8 rounded-2xl hover:shadow-lg transition cursor-pointer">
+                <div class="w-12 h-1 bg-teal-500 mb-6 rounded-full"></div>
+                <h3 class="text-xl font-bold text-teal-900 mb-3">Daglig Mestring</h3>
+                <p class="text-gray-600 mb-6 text-sm">Løs praktiske problemer lynraskt og bygg opp din verktøykasse.</p>
+                <ul class="space-y-2 text-sm text-teal-700 font-medium">
+                    <li>→ Slå opp i Ordboken</li>
+                    <li>→ Teknisk Vedlikehold</li>
+                    <li>→ Spør i Landsbyen</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="fixed bottom-6 right-6 z-50">
+        <button class="bg-purple-600 text-white rounded-full p-4 shadow-xl hover:bg-purple-700 transition flex items-center space-x-3 group">
+            <span class="text-2xl">✨</span>
+            <span class="font-medium pr-2 hidden group-hover:block whitespace-nowrap">Spør KlarLyd</span>
+        </button>
+    </div>
+
+</body>
 </html>
