@@ -50,9 +50,6 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
       #vis-file-picker-dialog::backdrop {
         background: rgb(0 0 0 / 0.45);
       }
-      #vis-wireframe-meta-dialog::backdrop {
-        background: rgb(15 23 42 / 0.38);
-      }
     </style>
   </head>
   <body class="vis-prototype-body bg-gray-100 antialiased pt-10 pb-0">
@@ -80,14 +77,14 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
             {prevFileNavHref ? (
               <a
                 href={prevFileNavHref}
-                class="inline-flex h-7 min-w-[1.75rem] shrink-0 items-center justify-center rounded border border-gray-700 bg-gray-900 text-sm leading-none text-gray-300 hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                class="inline-flex h-7 min-w-[2rem] shrink-0 items-center justify-center rounded border border-gray-600 bg-gray-900 text-[1.35rem] font-light leading-none text-gray-200 hover:border-gray-500 hover:bg-gray-800 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
                 aria-label="Forrige wireframe"
               >
                 ‹
               </a>
             ) : (
               <span
-                class="inline-flex h-7 min-w-[1.75rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-sm text-gray-600"
+                class="inline-flex h-7 min-w-[2rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-[1.35rem] font-light leading-none text-gray-600"
                 aria-hidden="true"
               >
                 ‹
@@ -131,14 +128,14 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
             {nextFileNavHref ? (
               <a
                 href={nextFileNavHref}
-                class="inline-flex h-7 min-w-[1.75rem] shrink-0 items-center justify-center rounded border border-gray-700 bg-gray-900 text-sm leading-none text-gray-300 hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                class="inline-flex h-7 min-w-[2rem] shrink-0 items-center justify-center rounded border border-gray-600 bg-gray-900 text-[1.35rem] font-light leading-none text-gray-200 hover:border-gray-500 hover:bg-gray-800 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
                 aria-label="Neste wireframe"
               >
                 ›
               </a>
             ) : (
               <span
-                class="inline-flex h-7 min-w-[1.75rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-sm text-gray-600"
+                class="inline-flex h-7 min-w-[2rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-[1.35rem] font-light leading-none text-gray-600"
                 aria-hidden="true"
               >
                 ›
@@ -153,11 +150,11 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
           wireframeMeta && (
             <button
               type="button"
-              id="vis-meta-open"
-              class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded border border-gray-700 bg-gray-900 text-[11px] font-semibold text-gray-400 hover:border-gray-600 hover:bg-gray-800 hover:text-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
-              aria-haspopup="dialog"
-              aria-controls="vis-wireframe-meta-dialog"
-              aria-label="Om denne wireframen"
+              id="vis-meta-toggle"
+              class="vis-meta-toggle inline-flex h-7 w-7 shrink-0 items-center justify-center rounded border border-purple-500/45 bg-gray-800 text-[11px] font-semibold text-purple-300 ring-1 ring-purple-400/35 transition hover:border-purple-400/60 hover:bg-gray-800/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50"
+              aria-expanded="true"
+              aria-controls="vis-wireframe-meta-panel"
+              aria-label="Vis eller skjul informasjon om wireframen"
             >
               i
             </button>
@@ -215,52 +212,94 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
 
     {
       wireframeMeta && (
-        <dialog
-          id="vis-wireframe-meta-dialog"
-          class="z-[10001] m-auto max-h-[min(92dvh,40rem)] w-[min(92vw,36rem)] overflow-hidden rounded-xl border border-gray-600/80 bg-gray-900 p-0 text-left text-gray-200 shadow-2xl"
-          aria-labelledby="vis-meta-title"
-        >
-          <div class="border-b border-gray-700/80 px-8 pb-5 pt-8 sm:px-10 sm:pb-6 sm:pt-10">
-            <p class="text-[11px] font-medium uppercase tracking-[0.12em] text-gray-500">Wireframe</p>
-            <h2
-              id="vis-meta-title"
-              class="mt-3 text-lg font-semibold leading-snug tracking-tight text-white sm:text-xl"
-            >
-              {wireframeMeta.displayTitle}
-            </h2>
+        <>
+          <div
+            id="vis-meta-scrim"
+            class="pointer-events-none fixed inset-0 top-10 z-[9997] bg-slate-950/[0.07] transition-opacity duration-150"
+            aria-hidden="true"
+          >
           </div>
-          <div class="max-h-[min(58dvh,24rem)] space-y-6 overflow-y-auto px-8 py-6 sm:px-10 sm:py-8">
-            <div>
-              {
-                wireframeMeta.description ? (
-                  <p class="text-sm leading-relaxed text-gray-300">{wireframeMeta.description}</p>
-                ) : (
-                  <p class="text-sm text-gray-500">Ingen beskrivelse i HTML-filen.</p>
-                )
-              }
-            </div>
-            {
-              wireframeMeta.delta ? (
-                <div class="border-t border-gray-700/70 pt-6">
-                  <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                    Endret i denne varianten
-                  </h3>
-                  <p class="mt-2 text-sm leading-relaxed text-gray-200">{wireframeMeta.delta}</p>
+          <div
+            id="vis-wireframe-meta-root"
+            class="fixed left-0 right-0 top-10 z-[9998] flex justify-center px-3 pb-2 pt-0 sm:px-4"
+          >
+            <div
+              id="vis-wireframe-meta-panel"
+              class="vis-wireframe-meta-panel pointer-events-auto relative w-full max-w-xl overflow-hidden rounded-b-xl border border-gray-600/70 border-t-0 bg-gray-900/98 text-left text-gray-200 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.45)] backdrop-blur-sm"
+              role="region"
+              aria-labelledby="vis-meta-title"
+            >
+              <button
+                type="button"
+                id="vis-meta-close"
+                class="absolute right-2 top-2 inline-flex h-7 min-w-[1.75rem] items-center justify-center rounded text-lg leading-none text-gray-500 hover:bg-gray-800 hover:text-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                aria-label="Skjul informasjonspanel"
+              >
+                ×
+              </button>
+              <div class="border-b border-gray-700/70 px-8 pb-5 pr-12 pt-7 sm:px-10 sm:pb-6 sm:pr-14 sm:pt-9">
+                <p class="text-[11px] font-medium uppercase tracking-[0.12em] text-gray-500">Wireframe</p>
+                <h2
+                  id="vis-meta-title"
+                  class="mt-2 text-lg font-semibold leading-snug tracking-tight text-white sm:text-xl"
+                >
+                  {wireframeMeta.displayTitle}
+                </h2>
+              </div>
+              <div class="max-h-[min(52dvh,22rem)] space-y-6 overflow-y-auto px-8 py-5 sm:px-10 sm:py-7">
+                <div>
+                  {
+                    wireframeMeta.description ? (
+                      <p class="text-sm leading-relaxed text-gray-300">{wireframeMeta.description}</p>
+                    ) : (
+                      <p class="text-sm text-gray-500">Ingen beskrivelse i HTML-filen.</p>
+                    )
+                  }
                 </div>
-              ) : null
-            }
+                {
+                  wireframeMeta.delta ? (
+                    <div class="border-t border-gray-700/60 pt-5">
+                      <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                        Endret i denne varianten
+                      </h3>
+                      <p class="mt-2 text-sm leading-relaxed text-gray-200">{wireframeMeta.delta}</p>
+                    </div>
+                  ) : null
+                }
+              </div>
+            </div>
           </div>
-          <div class="border-t border-gray-700/80 px-8 py-4 sm:px-10">
-            <button
-              type="button"
-              class="w-full rounded-lg border border-gray-600 bg-gray-800/80 py-2.5 text-sm font-medium text-gray-200 transition hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
-              id="vis-meta-close"
-            >
-              Lukk
-            </button>
-          </div>
-        </dialog>
+        </>
       )
+    }
+
+    {
+      wireframeMeta ? (
+        <script is:inline>
+          (function () {
+            try {
+              if (sessionStorage.getItem("vox.vis.wireframeMetaOpen") === "false") {
+                var r = document.getElementById("vis-wireframe-meta-root");
+                var s = document.getElementById("vis-meta-scrim");
+                var t = document.getElementById("vis-meta-toggle");
+                if (r) r.classList.add("hidden");
+                if (s) s.classList.add("hidden");
+                if (t) {
+                  t.setAttribute("aria-expanded", "false");
+                  ["border-purple-500/45", "bg-gray-800", "text-purple-300", "ring-1", "ring-purple-400/35"].forEach(
+                    function (c) {
+                      t.classList.remove(c);
+                    },
+                  );
+                  ["border-gray-700", "bg-gray-900", "text-gray-400"].forEach(function (c) {
+                    t.classList.add(c);
+                  });
+                }
+              }
+            } catch (e) {}
+          })();
+        </script>
+      ) : null
     }
 
     <script is:inline>
@@ -285,9 +324,21 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
           });
         }
         var META_OPEN_KEY = "vox.vis.wireframeMetaOpen";
-        var metaOpen = document.getElementById("vis-meta-open");
-        var metaDlg = document.getElementById("vis-wireframe-meta-dialog");
+        var metaRoot = document.getElementById("vis-wireframe-meta-root");
+        var metaScrim = document.getElementById("vis-meta-scrim");
+        var metaToggle = document.getElementById("vis-meta-toggle");
         var metaClose = document.getElementById("vis-meta-close");
+        var META_ON = ["border-purple-500/45", "bg-gray-800", "text-purple-300", "ring-1", "ring-purple-400/35"];
+        var META_OFF = ["border-gray-700", "bg-gray-900", "text-gray-400"];
+        function syncMetaToggleStyles(open) {
+          if (!metaToggle) return;
+          META_ON.forEach(function (c) {
+            metaToggle.classList.toggle(c, !!open);
+          });
+          META_OFF.forEach(function (c) {
+            metaToggle.classList.toggle(c, !open);
+          });
+        }
         function setMetaClosedInSession() {
           try {
             sessionStorage.setItem(META_OPEN_KEY, "false");
@@ -298,38 +349,28 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
             sessionStorage.setItem(META_OPEN_KEY, "true");
           } catch (e) {}
         }
-        function openMetaDialog() {
-          if (metaDlg && typeof metaDlg.showModal === "function") metaDlg.showModal();
+        function metaPanelIsOpen() {
+          return metaRoot && !metaRoot.classList.contains("hidden");
         }
-        if (metaOpen && metaDlg) {
-          metaOpen.addEventListener("click", function () {
-            setMetaOpenInSession();
-            openMetaDialog();
+        function setMetaPanelOpen(open) {
+          if (metaRoot) metaRoot.classList.toggle("hidden", !open);
+          if (metaScrim) metaScrim.classList.toggle("hidden", !open);
+          if (metaToggle) metaToggle.setAttribute("aria-expanded", open ? "true" : "false");
+          syncMetaToggleStyles(open);
+        }
+        if (metaToggle && metaRoot) {
+          metaToggle.addEventListener("click", function () {
+            var next = !metaPanelIsOpen();
+            if (next) setMetaOpenInSession();
+            else setMetaClosedInSession();
+            setMetaPanelOpen(next);
           });
         }
-        if (metaClose && metaDlg) {
+        if (metaClose && metaRoot) {
           metaClose.addEventListener("click", function () {
             setMetaClosedInSession();
-            metaDlg.close();
+            setMetaPanelOpen(false);
           });
-        }
-        if (metaDlg) {
-          metaDlg.addEventListener("click", function (e) {
-            if (e.target === metaDlg) {
-              setMetaClosedInSession();
-              metaDlg.close();
-            }
-          });
-          metaDlg.addEventListener("cancel", function () {
-            setMetaClosedInSession();
-          });
-        }
-        if (metaDlg) {
-          try {
-            if (sessionStorage.getItem(META_OPEN_KEY) !== "false") openMetaDialog();
-          } catch (e) {
-            openMetaDialog();
-          }
         }
       })();
     </script>
