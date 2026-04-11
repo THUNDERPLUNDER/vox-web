@@ -1,7 +1,12 @@
 ---
 /* CONTRACT: VIS single wireframe viewer — embeds raw HTML from public/vis/raw via iframe. */
 import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
-import { htmlFileForSlug, listVisRawHtmlFiles, slugFromHtmlFilename } from "../../lib/vis-wireframes";
+import {
+  htmlFileForSlug,
+  listVisRawHtmlFiles,
+  slugFromHtmlFilename,
+  wireframeDisplayMeta,
+} from "../../lib/vis-wireframes";
 
 const base = import.meta.env.BASE_URL;
 
@@ -21,12 +26,16 @@ if (!fileName) {
 }
 
 const src = `${base}vis/raw/${encodeURIComponent(fileName)}`;
-const title = fileName.replace(/\.html$/i, "");
+const { displayTitle, description } = wireframeDisplayMeta(fileName);
 ---
 
-<PrototypeLayout title={title} wireframeFileNav={{ allFiles: files, currentSlug: slug! }}>
+<PrototypeLayout
+  title={displayTitle}
+  wireframeFileNav={{ allFiles: files, currentSlug: slug! }}
+  wireframeMeta={{ displayTitle, description }}
+>
   <iframe
-    title={title}
+    title={displayTitle}
     src={src}
     class="vis-wireframe-iframe block h-[calc(100dvh-2.5rem)] min-h-[calc(100dvh-2.5rem)] w-full border-0 bg-white"
   />

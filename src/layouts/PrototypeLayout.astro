@@ -5,14 +5,19 @@ import { slugFromHtmlFilename } from "../lib/vis-wireframes";
 
 interface Props {
   title: string;
-  /** When set (e.g. on /vis/[slug]), compact pager in the main top bar; mobile uses position + dialog list, desktop uses select. Hidden in ?preview=1. */
+  /** When set (e.g. on /vis/[slug]), compact pager in the main top bar; mobile uses position + dialog list, desktop uses select. */
   wireframeFileNav?: {
     allFiles: string[];
     currentSlug: string;
   };
+  /** Parsed `<title>` + `<meta name="description">` from the raw HTML file (wireframe viewer only). */
+  wireframeMeta?: {
+    displayTitle: string;
+    description?: string;
+  };
 }
 
-const { title, wireframeFileNav } = Astro.props;
+const { title, wireframeFileNav, wireframeMeta } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
 
@@ -30,17 +35,6 @@ const nextFileNavHref =
 const fileNavPosition =
   wireframeFileNav && fileNavIndex >= 0 ? fileNavIndex + 1 : 0;
 const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
-
-/**
- * Exit preview: same path without `preview` (build-time path is correct per page).
- * With static output, runtime `?preview=1` is toggled via `html.vis-preview` + CSS + head script.
- */
-const exitPreviewHref = (() => {
-  const u = new URL(Astro.url.href);
-  u.searchParams.delete("preview");
-  const q = u.searchParams.toString();
-  return q ? `${u.pathname}?${q}` : u.pathname;
-})();
 ---
 
 <!doctype html>
@@ -50,43 +44,9 @@ const exitPreviewHref = (() => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title>VIS Wireframe - {title}</title>
-    <script is:inline>
-      (function () {
-        try {
-          if (new URLSearchParams(window.location.search).get("preview") === "1") {
-            document.documentElement.classList.add("vis-preview");
-          }
-        } catch (_) {}
-      })();
-    </script>
     <style is:global>
-      /* Clean preview: chrome hidden, near-fullscreen content; toggled only when ?preview=1 (see script above). */
-      html.vis-preview .vis-prototype-topbar,
-      html.vis-preview .vis-wireframe-filetools,
-      html.vis-preview #vis-file-picker-dialog {
-        display: none !important;
-      }
-      .vis-prototype-exit {
-        display: none;
-      }
-      html.vis-preview .vis-prototype-exit {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-      html.vis-preview .vis-prototype-body {
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        min-height: 100dvh !important;
-      }
-      html.vis-preview .vis-prototype-main {
-        min-height: 100dvh !important;
-      }
-      html.vis-preview .vis-wireframe-iframe {
-        min-height: 100dvh !important;
-        height: 100dvh !important;
-      }
-      #vis-file-picker-dialog::backdrop {
+      #vis-file-picker-dialog::backdrop,
+      #vis-wireframe-meta-dialog::backdrop {
         background: rgb(0 0 0 / 0.45);
       }
     </style>
@@ -184,7 +144,21 @@ const exitPreviewHref = (() => {
         )
       }
 
-      <div class="flex items-center justify-end space-x-2 text-gray-500 sm:space-x-4">
+      <div class="flex min-w-0 items-center justify-end gap-2 text-gray-500 sm:gap-4">
+        {
+          wireframeMeta && (
+            <button
+              type="button"
+              id="vis-meta-open"
+              class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded border border-gray-700 bg-gray-900 text-[11px] font-semibold text-gray-400 hover:border-gray-600 hover:bg-gray-800 hover:text-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+              aria-haspopup="dialog"
+              aria-controls="vis-wireframe-meta-dialog"
+              aria-label="Om denne wireframen"
+            >
+              i
+            </button>
+          )
+        }
         <span class="hidden md:inline">Visning for: Vibeke</span>
         <div class="h-2 w-2 shrink-0 rounded-full bg-green-500" title="Live"></div>
       </div>
@@ -235,6 +209,41 @@ const exitPreviewHref = (() => {
       )
     }
 
+    {
+      wireframeMeta && (
+        <dialog
+          id="vis-wireframe-meta-dialog"
+          class="z-[10001] w-[min(100vw-2rem,22rem)] max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg border border-gray-700 bg-gray-900 p-0 text-gray-200 shadow-2xl"
+          aria-labelledby="vis-meta-heading"
+        >
+          <div class="border-b border-gray-800 px-3 py-2">
+            <p id="vis-meta-heading" class="text-[10px] font-medium uppercase tracking-wide text-gray-500">
+              Wireframe
+            </p>
+            <p class="mt-1 text-xs font-semibold leading-snug text-white">{wireframeMeta.displayTitle}</p>
+          </div>
+          <div class="max-h-[min(50dvh,16rem)] overflow-y-auto px-3 py-2.5">
+            {
+              wireframeMeta.description ? (
+                <p class="text-xs leading-relaxed text-gray-300">{wireframeMeta.description}</p>
+              ) : (
+                <p class="text-xs text-gray-500">Ingen beskrivelse i HTML-filen.</p>
+              )
+            }
+          </div>
+          <div class="border-t border-gray-800 p-2">
+            <button
+              type="button"
+              class="w-full rounded border border-gray-700 bg-gray-900 py-1.5 text-[11px] text-gray-400 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+              id="vis-meta-close"
+            >
+              Lukk
+            </button>
+          </div>
+        </dialog>
+      )
+    }
+
     <script is:inline>
       (function () {
         var sel = document.getElementById("vis-wireframe-jump-desktop");
@@ -256,17 +265,26 @@ const exitPreviewHref = (() => {
             dlg.close();
           });
         }
+        var metaOpen = document.getElementById("vis-meta-open");
+        var metaDlg = document.getElementById("vis-wireframe-meta-dialog");
+        var metaClose = document.getElementById("vis-meta-close");
+        if (metaOpen && metaDlg) {
+          metaOpen.addEventListener("click", function () {
+            if (typeof metaDlg.showModal === "function") metaDlg.showModal();
+          });
+        }
+        if (metaClose && metaDlg) {
+          metaClose.addEventListener("click", function () {
+            metaDlg.close();
+          });
+        }
+        if (metaDlg) {
+          metaDlg.addEventListener("click", function (e) {
+            if (e.target === metaDlg) metaDlg.close();
+          });
+        }
       })();
     </script>
-
-    <a
-      href={exitPreviewHref}
-      class="vis-prototype-exit fixed z-[10000] max-w-[calc(100vw-1.5rem)] items-center justify-center rounded-full bg-gray-900/95 px-3.5 py-2.5 font-mono text-xs font-medium text-white shadow-lg backdrop-blur-sm transition hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/80"
-      style="top: calc(env(safe-area-inset-top, 0px) + 12px); right: calc(env(safe-area-inset-right, 0px) + 12px);"
-      aria-label="Tilbake til prototype-meny"
-    >
-      ← Tilbake
-    </a>
 
     <div class="vis-prototype-main relative min-h-screen w-full bg-white">
       <slot />

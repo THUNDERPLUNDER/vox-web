@@ -89,18 +89,24 @@ export type WireframeIndexEntry = {
   description?: string;
 };
 
+/** Same `displayTitle` + `description` as `/vis` index for a single raw HTML file. */
+export function wireframeDisplayMeta(filename: string): { displayTitle: string; description?: string } {
+  const meta = readWireframeHeadMetadata(path.join(visRawDir(), filename));
+  const displayTitle = (meta.title && meta.title.length > 0 ? meta.title : filename) || filename;
+  return { displayTitle, description: meta.description };
+}
+
 /** Build-time list entries for `/vis` with optional metadata from each HTML file. */
 export function wireframeIndexEntries(): WireframeIndexEntry[] {
   const dir = visRawDir();
   return listVisRawHtmlFiles().map((filename) => {
     const slug = slugFromHtmlFilename(filename);
-    const meta = readWireframeHeadMetadata(path.join(dir, filename));
-    const displayTitle = (meta.title && meta.title.length > 0 ? meta.title : filename) || filename;
+    const { displayTitle, description } = wireframeDisplayMeta(filename);
     return {
       filename,
       slug,
       displayTitle,
-      description: meta.description,
+      description,
     };
   });
 }

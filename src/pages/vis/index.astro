@@ -24,7 +24,6 @@ const base = import.meta.env.BASE_URL;
         <ul class="mt-6 divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
           {entries.map(({ filename: name, slug, displayTitle, description }) => {
             const view = `${base}vis/${encodeURIComponent(slug)}`;
-            const preview = `${view}?preview=1`;
             const rawUrl = `${base}vis/raw/${encodeURIComponent(name)}`;
             return (
               <li class="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
@@ -46,12 +45,6 @@ const base = import.meta.env.BASE_URL;
                     class="rounded-md bg-gray-900 px-3 py-1.5 font-mono text-xs text-white hover:bg-gray-800"
                   >
                     Åpne
-                  </a>
-                  <a
-                    href={preview}
-                    class="rounded-md border border-gray-300 bg-white px-3 py-1.5 font-mono text-xs text-gray-800 hover:bg-gray-50"
-                  >
-                    Preview
                   </a>
                 </div>
               </li>
