@@ -1,9 +1,9 @@
 ---
 /* CONTRACT: VIS backstage index — auto-lists raw HTML wireframes from public/vis/raw. */
 import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
-import { listVisRawHtmlFiles, slugFromHtmlFilename } from "../../lib/vis-wireframes";
+import { wireframeIndexEntries } from "../../lib/vis-wireframes";
 
-const files = listVisRawHtmlFiles();
+const entries = wireframeIndexEntries();
 const base = import.meta.env.BASE_URL;
 ---
 
@@ -15,23 +15,26 @@ const base = import.meta.env.BASE_URL;
     </p>
 
     {
-      files.length === 0 ? (
+      entries.length === 0 ? (
         <p class="mt-6 text-sm text-gray-500">
           Ingen <code class="font-mono">.html</code>-filer funnet. Legg filer i{" "}
           <code class="font-mono">public/vis/raw/</code> og bygg på nytt.
         </p>
       ) : (
         <ul class="mt-6 divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
-          {files.map((name) => {
-            const slug = slugFromHtmlFilename(name);
+          {entries.map(({ filename: name, slug, displayTitle, description }) => {
             const view = `${base}vis/${encodeURIComponent(slug)}`;
             const preview = `${view}?preview=1`;
             const rawUrl = `${base}vis/raw/${encodeURIComponent(name)}`;
             return (
               <li class="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                 <div class="min-w-0">
-                  <p class="truncate font-mono text-sm font-medium text-gray-900">{name}</p>
-                  <p class="mt-0.5 text-xs text-gray-500">
+                  <p class="text-sm font-semibold leading-snug text-gray-900">{displayTitle}</p>
+                  {description ? (
+                    <p class="mt-1 text-sm leading-relaxed text-gray-600">{description}</p>
+                  ) : null}
+                  <p class="mt-1 truncate font-mono text-xs text-gray-500">{name}</p>
+                  <p class="mt-1 text-xs text-gray-500">
                     <a href={rawUrl} class="text-gray-600 underline decoration-gray-300 hover:text-gray-900">
                       Direkte fil
                     </a>
