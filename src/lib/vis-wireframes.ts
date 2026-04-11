@@ -67,20 +67,21 @@ function readMetaContentByName(head: string, name: string): string | undefined {
 }
 
 /** Normalisert innholdstype for VIS-index; `document` er nøytral fallback. */
-export type VisContentType = "wireframe" | "strategy" | "document";
+export type VisContentType = "wireframe" | "strategy" | "document" | "sprint";
 
 const VIS_TYPE_LABEL_NO: Record<VisContentType, string> = {
   wireframe: "Wireframe",
   strategy: "Strategi",
   document: "Dokument",
+  sprint: "Sprint",
 };
 
 /**
- * Leser valgfritt `<meta name="vis:type" content="wireframe|strategy|document">`, ellers faller tilbake til filnavn.
+ * Leser valgfritt `<meta name="vis:type" content="wireframe|strategy|document|sprint">`, ellers faller tilbake til filnavn.
  */
 export function resolveVisType(filename: string, metaVisType?: string): VisContentType {
   const raw = metaVisType?.trim().toLowerCase();
-  if (raw === "wireframe" || raw === "strategy" || raw === "document") return raw;
+  if (raw === "wireframe" || raw === "strategy" || raw === "document" || raw === "sprint") return raw;
   const base = path.basename(filename);
   if (/^wire_/i.test(base)) return "wireframe";
   if (/^KlarLyd_Strategi_/i.test(base)) return "strategy";
