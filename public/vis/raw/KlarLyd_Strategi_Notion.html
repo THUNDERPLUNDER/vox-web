@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>KlarLyd – Strategisk IA v4 (Notion-stil)</title>
+    <meta name="description" content="KlarLyd strategidokument formatert for lesbarhet med fastlåst innholdsfortegnelse til venstre." />
+    <meta name="vis:delta" content="Konvertert fra Word. Lagt til sticky sidebar og stylet innholdsmatrisen som lesbare kort/tabeller." />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Sikrer myk scrolling når man klikker i menyen */
+        html { scroll-behavior: smooth; }
+        /* Notion-inspirert typografi for hovedinnhold */
+        .notion-prose p { margin-bottom: 1.5em; line-height: 1.7; color: #374151; }
+        .notion-prose h2 { font-size: 1.5em; font-weight: 700; margin-top: 2.5em; margin-bottom: 1em; color: #111827; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5em; }
+        .notion-prose h3 { font-size: 1.25em; font-weight: 600; margin-top: 1.5em; margin-bottom: 0.75em; color: #1f2937; }
+        .notion-prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1.5em; color: #374151; }
+        .notion-prose li { margin-bottom: 0.5em; }
+    </style>
+</head>
+<body class="bg-white text-gray-900 font-sans antialiased selection:bg-purple-200">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row gap-12 relative items-start">
+        
+        <aside class="hidden md:block w-64 flex-shrink-0 sticky top-24">
+            <div class="mb-8">
+                <div class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Dokument</div>
+                <h1 class="text-xl font-bold leading-tight">Strategisk IA v4</h1>
+                <p class="text-xs text-gray-500 mt-2">Sist oppdatert: April 2026</p>
+            </div>
+            
+            <nav class="space-y-1 text-sm font-medium border-l border-gray-200">
+                <a href="#strategisk-fundament" class="block pl-4 py-2 text-gray-600 hover:text-purple-600 hover:border-l hover:border-purple-600 transition -ml-[1px]">1. Strategisk Fundament</a>
+                <a href="#visuell-arkitektur" class="block pl-4 py-2 text-gray-600 hover:text-purple-600 hover:border-l hover:border-purple-600 transition -ml-[1px]">2. Visuell Arkitektur</a>
+                <a href="#hierarkisk-oversikt" class="block pl-4 py-2 text-gray-600 hover:text-purple-600 hover:border-l hover:border-purple-600 transition -ml-[1px]">3. Hierarkisk Oversikt</a>
+                <a href="#innholdsmatrise" class="block pl-4 py-2 text-gray-600 hover:text-purple-600 hover:border-l hover:border-purple-600 transition -ml-[1px]">4. Innholdsmatrise</a>
+                <a href="#systemarkitektur" class="block pl-4 py-2 text-gray-600 hover:text-purple-600 hover:border-l hover:border-purple-600 transition -ml-[1px]">5. Systemarkitektur</a>
+            </nav>
+        </aside>
+
+        <main class="flex-grow max-w-3xl w-full notion-prose pb-32">
+            
+            <div class="md:hidden mb-12 border-b border-gray-200 pb-6">
+                <div class="text-xs font-bold uppercase tracking-wider text-purple-600 mb-2">KlarLyd Økosystem</div>
+                <h1 class="text-3xl font-extrabold leading-tight">Strategisk Informasjonsarkitektur (IA) & Økosystem</h1>
+            </div>
+
+            <section id="strategisk-fundament" class="scroll-mt-24">
+                <h2 class="mt-0">1. Strategisk Fundament</h2>
+                <p>Dette dokumentet definerer den helhetlige informasjonsarkitekturen for KlarLyd. Arkitekturen er ikke et tradisjonelt, statisk sitemap, men et levende <strong>Kjerne-økosystem (Hub & Spoke)</strong>.</p>
+                <p>Metodikken bygger på:</p>
+                <ul>
+                    <li><strong>Top Tasks (Gerry McGovern):</strong> Vi prioriterer innhold brutalt basert på hva brukeren faktisk <em>må</em> få løst.</li>
+                    <li><strong>Kjernemodellen (Are Halland):</strong> Hver hovedside er en destinasjon med klare innveier (søk) og utveier (handling).</li>
+                    <li><strong>AEO (Answer Engine Optimization):</strong> Ved å bygge dype, tematisk autoritative klynger ("Hubs" med tilhørende "Spokes"), posisjonerer vi KlarLyd for fremtidens AI-søkemotorer gjennom E-E-A-T (Expertise, Experience, Authoritativeness, Trustworthiness).</li>
+                </ul>
+            </section>
+
+            <section id="visuell-arkitektur" class="scroll-mt-24">
+                <h2>2. Visuell Arkitektur (Hub & Spoke)</h2>
+                <p>Selve innholdet er organisert som et solsystem. Forsiden er sentrum, med tre tunge tyngdepunkter (Kjerner), som igjen har dedikerte støtteartikler og verktøy i bane rundt seg. <strong>AI Chat-assistent ("Problemløseren") ligger aktivt over alle sider.</strong></p>
+                
+                <div class="w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-8 my-8 text-center">
+                    <p class="text-sm text-gray-500 font-mono mb-2">⬇️ LIM INN &lt;img&gt; TAG HER (Solsystem/Hub&Spoke) ⬇️</p>
+                    <span class="text-4xl">🪐</span>
+                </div>
+            </section>
+
+            <section id="hierarkisk-oversikt" class="scroll-mt-24">
+                <h2>3. Hierarkisk Oversikt ("Max Schrøder"-modellen)</h2>
+                <p>Dette er kartet over plattformen strukturert hierarkisk for å gi et raskt visuelt overblikk over hvordan sidene og kjernene forholder seg til hverandre i dybden.</p>
+                
+                <div class="w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-8 my-8 text-center">
+                    <p class="text-sm text-gray-500 font-mono mb-2">⬇️ LIM INN &lt;img&gt; TAG HER (Hierarki-kart) ⬇️</p>
+                    <span class="text-4xl">🗺️</span>
+                </div>
+            </section>
+
+            <section id="innholdsmatrise" class="scroll-mt-24">
+                <h2>4. Innholdsmatrise</h2>
+                <p>En detaljert nedbryting av innholdet på Nivå 1 (Kjernene) og Nivå 2 (Spokes).</p>
+
+                <h3>4.1 Nivå 1: Hubs (De Tre Kjernene)</h3>
+                <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg mb-8">
+                    <table class="min-w-full divide-y divide-gray-300 text-sm">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left font-semibold text-gray-900">Kjerne</th>
+                                <th scope="col" class="px-3 py-3.5 text-left font-semibold text-gray-900">Fokus</th>
+                                <th scope="col" class="px-3 py-3.5 text-left font-semibold text-gray-900">Utveier (Top Tasks)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                            <tr>
+                                <td class="py-4 pl-4 pr-3 font-medium text-blue-900 bg-blue-50/30">1. Mistanke & Avklaring</td>
+                                <td class="px-3 py-4 text-gray-600">Identifisere behov, ufarliggjøre prosessen, fastlege-ruten.</td>
+                                <td class="px-3 py-4 text-gray-600">"Sjekkliste for symptomer", "Slik tar du praten", "Moderne apparater"</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 pl-4 pr-3 font-medium text-orange-900 bg-orange-50/30">2. NAV & Rettigheter</td>
+                                <td class="px-3 py-4 text-gray-600">Økonomi, satser, mellomlegg, byråkratiet i klarspråk.</td>
+                                <td class="px-3 py-4 text-gray-600">"Satser 2026", "Hva er mellomlegg", "Søknadsprosess"</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 pl-4 pr-3 font-medium text-teal-900 bg-teal-50/30">3. Daglig Mestring</td>
+                                <td class="px-3 py-4 text-gray-600">Livet med apparat, praktiske råd, vedlikehold og teknologi.</td>
+                                <td class="px-3 py-4 text-gray-600">"Teknisk feilsøking", "Guide til Bluetooth", "Mental tilvenning"</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>4.3 Nivå 2: Støtteinnhold (Spokes / Satellitter)</h3>
+                <p>Dette er dybdeinnholdet som sirkulerer rundt kjernene. Dette bygger tematisk autoritet for Google, og fungerer som treningsdata for AI-chatten.</p>
+                <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-300 text-sm">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left font-semibold text-gray-900">Tilhører Kjerne</th>
+                                <th scope="col" class="px-3 py-3.5 text-left font-semibold text-gray-900">Innholdstype</th>
+                                <th scope="col" class="px-3 py-3.5 text-left font-semibold text-gray-900">Beskrivelse / Eksempler</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                            <tr>
+                                <td class="py-4 pl-4 pr-3 font-medium text-gray-900">1. Mistanke & Avklaring</td>
+                                <td class="px-3 py-4 text-gray-600">Dypdykk-artikkel</td>
+                                <td class="px-3 py-4 text-gray-600">"Slik tar du praten med en som hører dårlig"</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 pl-4 pr-3 font-medium text-gray-900">2. NAV & Rettigheter</td>
+                                <td class="px-3 py-4 text-gray-600">Register / Linker</td>
+                                <td class="px-3 py-4 text-gray-600">Oversikt over godkjente avtalespesialister</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 pl-4 pr-3 font-medium text-gray-900" rowspan="3">3. Daglig Mestring</td>
+                                <td class="px-3 py-4 text-gray-600">Ordbok</td>
+                                <td class="px-3 py-4 text-gray-600">Leksikon for faguttrykk (Feedback, Hyperacusis, Kuppel). Globalt tilgjengelig for AI.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-4 text-gray-600 border-t border-gray-100">Magasinet</td>
+                                <td class="px-3 py-4 text-gray-600 border-t border-gray-100">Artikler drevet av lidenskap og ekspertise (F.eks. "Høreapparat + Android", "Musikk og hørselstap").</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-4 text-gray-600 border-t border-gray-100">Landsbyen</td>
+                                <td class="px-3 py-4 text-gray-600 border-t border-gray-100">Utvei/Lenke til lukket Facebook-gruppe for skalerbar likepersonstøtte.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="systemarkitektur" class="scroll-mt-24">
+                <h2>5. Systemarkitektur & Datastrøm</h2>
+                <p>For at økosystemet over skal fungere i praksis, kreves en moderne, frakoblet "Headless" systemarkitektur hvor innhold, presentasjon og AI snakker sømløst sammen.</p>
+                
+                <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 mt-6">
+                    <h3 class="text-gray-900 font-bold mt-0 text-base">Systemets Hovedkomponenter:</h3>
+                    <ul class="mb-0">
+                        <li><strong>Storyblok CMS (Innholdsdatabasen):</strong> Her bor all tekst for Kjernene og Spokes.</li>
+                        <li><strong>Astro (Frontend):</strong> Lynrask presentasjon for brukeren (som dette dokumentet).</li>
+                        <li><strong>AI-Motor:</strong> Henter kontekst direkte fra CMS og oversetter for brukeren i sanntid.</li>
+                    </ul>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+</body>
+</html>
