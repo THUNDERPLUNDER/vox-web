@@ -1,15 +1,32 @@
 ---
 /* CONTRACT: Isolated backstage wireframe shell for /vis; no VOX app shell, nav, or theme coupling. */
 import "../styles/global.css";
+import { slugFromHtmlFilename } from "../lib/vis-wireframes";
 
 interface Props {
   title: string;
   activePage: "forside" | "hub" | "artikkel" | "wireframe";
+  /** When set (e.g. on /vis/[slug]), shows prev/select/next wireframe strip under the main bar. Hidden in ?preview=1. */
+  wireframeFileNav?: {
+    allFiles: string[];
+    currentSlug: string;
+  };
 }
 
-const { title, activePage } = Astro.props;
+const { title, activePage, wireframeFileNav } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
+
+const fileNavIndex =
+  wireframeFileNav?.allFiles.findIndex((f) => slugFromHtmlFilename(f) === wireframeFileNav.currentSlug) ?? -1;
+const prevFileNavHref =
+  wireframeFileNav && fileNavIndex > 0
+    ? `${base}vis/${encodeURIComponent(slugFromHtmlFilename(wireframeFileNav.allFiles[fileNavIndex - 1]!))}`
+    : null;
+const nextFileNavHref =
+  wireframeFileNav && fileNavIndex >= 0 && fileNavIndex < wireframeFileNav.allFiles.length - 1
+    ? `${base}vis/${encodeURIComponent(slugFromHtmlFilename(wireframeFileNav.allFiles[fileNavIndex + 1]!))}`
+    : null;
 
 /**
  * Exit preview: same path without `preview` (build-time path is correct per page).
@@ -42,7 +59,8 @@ const exitPreviewHref = (() => {
     <style is:global>
       /* Clean preview: chrome hidden, near-fullscreen content; toggled only when ?preview=1 (see script above). */
       html.vis-preview .vis-prototype-topbar,
-      html.vis-preview .vis-prototype-bottombar {
+      html.vis-preview .vis-prototype-bottombar,
+      html.vis-preview .vis-wireframe-filenav {
         display: none !important;
       }
       .vis-prototype-exit {
@@ -67,7 +85,12 @@ const exitPreviewHref = (() => {
       }
     </style>
   </head>
-  <body class="vis-prototype-body bg-gray-100 antialiased pt-10 pb-20 sm:pb-0">
+  <body
+    class:list={[
+      "vis-prototype-body bg-gray-100 antialiased pb-20 sm:pb-0",
+      wireframeFileNav ? "pt-[4.75rem]" : "pt-10",
+    ]}
+  >
     <div
       class="vis-prototype-topbar fixed top-0 left-0 z-[9999] flex h-10 w-full items-center justify-between border-b border-gray-950 bg-gray-900 px-4 font-mono text-xs text-white shadow-md"
     >
@@ -119,6 +142,77 @@ const exitPreviewHref = (() => {
         <div class="h-2 w-2 shrink-0 rounded-full bg-green-500" title="Live"></div>
       </div>
     </div>
+
+    {
+      wireframeFileNav && (
+        <div
+          class="vis-wireframe-filenav fixed top-10 left-0 z-[9998] flex h-9 w-full items-center justify-center gap-1.5 border-b border-gray-800 bg-gray-950 px-2 font-mono text-[11px] text-gray-400 shadow-sm sm:gap-2 sm:px-4"
+        >
+          {prevFileNavHref ? (
+            <a
+              href={prevFileNavHref}
+              class="inline-flex h-7 min-w-[2rem] shrink-0 items-center justify-center rounded border border-gray-700 bg-gray-900 text-gray-300 hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+              aria-label="Forrige wireframe"
+            >
+              ‹
+            </a>
+          ) : (
+            <span
+              class="inline-flex h-7 min-w-[2rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-gray-600"
+              aria-hidden="true"
+            >
+              ‹
+            </span>
+          )}
+          <label class="sr-only" for="vis-wireframe-jump">
+            Velg wireframe-fil
+          </label>
+          <select
+            id="vis-wireframe-jump"
+            class="max-w-[min(100vw-8rem,280px)] flex-1 truncate rounded border border-gray-700 bg-gray-900 py-1 pl-2 pr-7 text-xs text-gray-200 focus:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-600"
+            aria-label="Velg wireframe-fil"
+          >
+            {wireframeFileNav.allFiles.map((name) => {
+              const s = slugFromHtmlFilename(name);
+              const optHref = `${base}vis/${encodeURIComponent(s)}`;
+              const sel = s === wireframeFileNav.currentSlug;
+              return (
+                <option value={optHref} selected={sel}>
+                  {name}
+                </option>
+              );
+            })}
+          </select>
+          {nextFileNavHref ? (
+            <a
+              href={nextFileNavHref}
+              class="inline-flex h-7 min-w-[2rem] shrink-0 items-center justify-center rounded border border-gray-700 bg-gray-900 text-gray-300 hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+              aria-label="Neste wireframe"
+            >
+              ›
+            </a>
+          ) : (
+            <span
+              class="inline-flex h-7 min-w-[2rem] shrink-0 cursor-not-allowed items-center justify-center rounded border border-gray-800 bg-gray-900/50 text-gray-600"
+              aria-hidden="true"
+            >
+              ›
+            </span>
+          )}
+        </div>
+      )
+    }
+
+    <script is:inline>
+      (function () {
+        var el = document.getElementById("vis-wireframe-jump");
+        if (!el) return;
+        el.addEventListener("change", function () {
+          var v = el.value;
+          if (v) window.location.href = v;
+        });
+      })();
+    </script>
 
     <div
       class="vis-prototype-bottombar fixed bottom-0 left-0 z-[9999] flex w-full justify-around border-t border-gray-800 bg-gray-900 py-3 font-mono text-xs text-white sm:hidden"
