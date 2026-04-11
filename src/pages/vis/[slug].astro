@@ -1,0 +1,36 @@
+---
+/* CONTRACT: VIS single wireframe viewer — embeds raw HTML from public/vis/raw via iframe. */
+import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
+import {
+  htmlFileForSlug,
+  listVisRawHtmlFiles,
+  slugFromHtmlFilename,
+  VIS_RAW_PUBLIC_PREFIX,
+} from "../../lib/vis-wireframes";
+
+export function getStaticPaths() {
+  const files = listVisRawHtmlFiles();
+  return files.map((file) => ({
+    params: { slug: slugFromHtmlFilename(file) },
+  }));
+}
+
+const { slug } = Astro.params;
+const files = listVisRawHtmlFiles();
+const fileName = slug ? htmlFileForSlug(slug, files) : undefined;
+
+if (!fileName) {
+  throw new Error(`[vis] Unknown wireframe slug: ${slug}`);
+}
+
+const src = `${VIS_RAW_PUBLIC_PREFIX}/${encodeURIComponent(fileName)}`;
+const title = fileName.replace(/\.html$/i, "");
+---
+
+<PrototypeLayout title={title} activePage="wireframe">
+  <iframe
+    title={title}
+    src={src}
+    class="vis-wireframe-iframe block h-[calc(100dvh-9rem)] min-h-[calc(100dvh-9rem)] w-full border-0 bg-white sm:h-[calc(100dvh-2.5rem)] sm:min-h-[calc(100dvh-2.5rem)]"
+  />
+</PrototypeLayout>
