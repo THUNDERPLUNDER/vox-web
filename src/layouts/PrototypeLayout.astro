@@ -16,6 +16,8 @@ interface Props {
     description?: string;
     /** `<meta name="vis:delta">` — endring fra forrige iterasjon. */
     delta?: string;
+    /** Rå HTML under `public/vis/raw/` (samme som «Direkte fil» på `/vis`). */
+    rawHref: string;
   };
 }
 
@@ -215,7 +217,7 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
         <>
           <div
             id="vis-meta-scrim"
-            class="pointer-events-none fixed inset-0 top-10 z-[9997] bg-slate-950/[0.07] transition-opacity duration-150"
+            class="pointer-events-none fixed inset-0 top-10 z-[9997] bg-slate-900/[0.025] transition-opacity duration-150"
             aria-hidden="true"
           >
           </div>
@@ -266,6 +268,14 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
                     </div>
                   ) : null
                 }
+              </div>
+              <div class="border-t border-gray-700/70 px-8 py-3 sm:px-10">
+                <a
+                  href={wireframeMeta.rawHref}
+                  class="inline-flex w-full items-center justify-center rounded-md border border-gray-500/70 bg-gray-800/40 px-3 py-2 font-mono text-xs text-gray-300 transition hover:border-gray-400 hover:bg-gray-800/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 sm:w-auto"
+                >
+                  Direkte fil
+                </a>
               </div>
             </div>
           </div>
