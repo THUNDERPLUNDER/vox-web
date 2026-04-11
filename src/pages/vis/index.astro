@@ -26,25 +26,26 @@ const base = import.meta.env.BASE_URL;
             const view = `${base}vis/${encodeURIComponent(slug)}`;
             const rawUrl = `${base}vis/raw/${encodeURIComponent(name)}`;
             return (
-              <li class="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <li class="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                 <div class="min-w-0">
                   <p class="text-sm font-semibold leading-snug text-gray-900">{displayTitle}</p>
                   {description ? (
                     <p class="mt-1 text-sm leading-relaxed text-gray-600">{description}</p>
                   ) : null}
                   <p class="mt-1 truncate font-mono text-xs text-gray-500">{name}</p>
-                  <p class="mt-1 text-xs text-gray-500">
-                    <a href={rawUrl} class="text-gray-600 underline decoration-gray-300 hover:text-gray-900">
-                      Direkte fil
-                    </a>
-                  </p>
                 </div>
-                <div class="flex flex-wrap gap-2">
+                <div class="flex shrink-0 flex-wrap items-center gap-2">
                   <a
                     href={view}
                     class="rounded-md bg-gray-900 px-3 py-1.5 font-mono text-xs text-white hover:bg-gray-800"
                   >
                     Åpne
+                  </a>
+                  <a
+                    href={rawUrl}
+                    class="rounded-md border border-gray-300 bg-white px-3 py-1.5 font-mono text-xs text-gray-800 hover:bg-gray-50"
+                  >
+                    Direkte fil
                   </a>
                 </div>
               </li>

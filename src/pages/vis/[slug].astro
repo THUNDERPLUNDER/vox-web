@@ -26,13 +26,13 @@ if (!fileName) {
 }
 
 const src = `${base}vis/raw/${encodeURIComponent(fileName)}`;
-const { displayTitle, description } = wireframeDisplayMeta(fileName);
+const { displayTitle, description, delta } = wireframeDisplayMeta(fileName);
 ---
 
 <PrototypeLayout
   title={displayTitle}
   wireframeFileNav={{ allFiles: files, currentSlug: slug! }}
-  wireframeMeta={{ displayTitle, description }}
+  wireframeMeta={{ displayTitle, description, delta }}
 >
   <iframe
     title={displayTitle}

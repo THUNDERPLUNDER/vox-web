@@ -10,10 +10,12 @@ interface Props {
     allFiles: string[];
     currentSlug: string;
   };
-  /** Parsed `<title>` + `<meta name="description">` from the raw HTML file (wireframe viewer only). */
+  /** Parsed head metadata from the raw HTML file (wireframe viewer only). */
   wireframeMeta?: {
     displayTitle: string;
     description?: string;
+    /** `<meta name="vis:delta">` — endring fra forrige iterasjon. */
+    delta?: string;
   };
 }
 
@@ -45,9 +47,11 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
     <meta name="robots" content="noindex, nofollow" />
     <title>VIS Wireframe - {title}</title>
     <style is:global>
-      #vis-file-picker-dialog::backdrop,
-      #vis-wireframe-meta-dialog::backdrop {
+      #vis-file-picker-dialog::backdrop {
         background: rgb(0 0 0 / 0.45);
+      }
+      #vis-wireframe-meta-dialog::backdrop {
+        background: rgb(15 23 42 / 0.38);
       }
     </style>
   </head>
@@ -213,28 +217,43 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
       wireframeMeta && (
         <dialog
           id="vis-wireframe-meta-dialog"
-          class="z-[10001] w-[min(100vw-2rem,22rem)] max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg border border-gray-700 bg-gray-900 p-0 text-gray-200 shadow-2xl"
-          aria-labelledby="vis-meta-heading"
+          class="z-[10001] m-auto max-h-[min(92dvh,40rem)] w-[min(92vw,36rem)] overflow-hidden rounded-xl border border-gray-600/80 bg-gray-900 p-0 text-left text-gray-200 shadow-2xl"
+          aria-labelledby="vis-meta-title"
         >
-          <div class="border-b border-gray-800 px-3 py-2">
-            <p id="vis-meta-heading" class="text-[10px] font-medium uppercase tracking-wide text-gray-500">
-              Wireframe
-            </p>
-            <p class="mt-1 text-xs font-semibold leading-snug text-white">{wireframeMeta.displayTitle}</p>
+          <div class="border-b border-gray-700/80 px-8 pb-5 pt-8 sm:px-10 sm:pb-6 sm:pt-10">
+            <p class="text-[11px] font-medium uppercase tracking-[0.12em] text-gray-500">Wireframe</p>
+            <h2
+              id="vis-meta-title"
+              class="mt-3 text-lg font-semibold leading-snug tracking-tight text-white sm:text-xl"
+            >
+              {wireframeMeta.displayTitle}
+            </h2>
           </div>
-          <div class="max-h-[min(50dvh,16rem)] overflow-y-auto px-3 py-2.5">
+          <div class="max-h-[min(58dvh,24rem)] space-y-6 overflow-y-auto px-8 py-6 sm:px-10 sm:py-8">
+            <div>
+              {
+                wireframeMeta.description ? (
+                  <p class="text-sm leading-relaxed text-gray-300">{wireframeMeta.description}</p>
+                ) : (
+                  <p class="text-sm text-gray-500">Ingen beskrivelse i HTML-filen.</p>
+                )
+              }
+            </div>
             {
-              wireframeMeta.description ? (
-                <p class="text-xs leading-relaxed text-gray-300">{wireframeMeta.description}</p>
-              ) : (
-                <p class="text-xs text-gray-500">Ingen beskrivelse i HTML-filen.</p>
-              )
+              wireframeMeta.delta ? (
+                <div class="border-t border-gray-700/70 pt-6">
+                  <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                    Endret i denne varianten
+                  </h3>
+                  <p class="mt-2 text-sm leading-relaxed text-gray-200">{wireframeMeta.delta}</p>
+                </div>
+              ) : null
             }
           </div>
-          <div class="border-t border-gray-800 p-2">
+          <div class="border-t border-gray-700/80 px-8 py-4 sm:px-10">
             <button
               type="button"
-              class="w-full rounded border border-gray-700 bg-gray-900 py-1.5 text-[11px] text-gray-400 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+              class="w-full rounded-lg border border-gray-600 bg-gray-800/80 py-2.5 text-sm font-medium text-gray-200 transition hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
               id="vis-meta-close"
             >
               Lukk
@@ -265,23 +284,52 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
             dlg.close();
           });
         }
+        var META_OPEN_KEY = "vox.vis.wireframeMetaOpen";
         var metaOpen = document.getElementById("vis-meta-open");
         var metaDlg = document.getElementById("vis-wireframe-meta-dialog");
         var metaClose = document.getElementById("vis-meta-close");
+        function setMetaClosedInSession() {
+          try {
+            sessionStorage.setItem(META_OPEN_KEY, "false");
+          } catch (e) {}
+        }
+        function setMetaOpenInSession() {
+          try {
+            sessionStorage.setItem(META_OPEN_KEY, "true");
+          } catch (e) {}
+        }
+        function openMetaDialog() {
+          if (metaDlg && typeof metaDlg.showModal === "function") metaDlg.showModal();
+        }
         if (metaOpen && metaDlg) {
           metaOpen.addEventListener("click", function () {
-            if (typeof metaDlg.showModal === "function") metaDlg.showModal();
+            setMetaOpenInSession();
+            openMetaDialog();
           });
         }
         if (metaClose && metaDlg) {
           metaClose.addEventListener("click", function () {
+            setMetaClosedInSession();
             metaDlg.close();
           });
         }
         if (metaDlg) {
           metaDlg.addEventListener("click", function (e) {
-            if (e.target === metaDlg) metaDlg.close();
+            if (e.target === metaDlg) {
+              setMetaClosedInSession();
+              metaDlg.close();
+            }
           });
+          metaDlg.addEventListener("cancel", function () {
+            setMetaClosedInSession();
+          });
+        }
+        if (metaDlg) {
+          try {
+            if (sessionStorage.getItem(META_OPEN_KEY) !== "false") openMetaDialog();
+          } catch (e) {
+            openMetaDialog();
+          }
         }
       })();
     </script>

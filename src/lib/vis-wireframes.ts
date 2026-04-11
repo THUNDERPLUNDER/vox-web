@@ -31,7 +31,7 @@ export function htmlFileForSlug(slug: string, files: string[]): string | undefin
 
 const READ_HEAD_MAX_CHARS = 100_000;
 
-/** Minimal entity decode for title/description snippets from wireframe HTML. */
+/** Minimal entity decode for title/description/delta snippets from wireframe HTML. */
 function decodeBasicEntities(s: string): string {
   return s
     .replace(/&amp;/g, "&")
@@ -43,11 +43,38 @@ function decodeBasicEntities(s: string): string {
     .trim();
 }
 
+/** Best-effort `<meta name="…" content="…">` (either attribute order). `name` is matched literally. */
+function readMetaContentByName(head: string, name: string): string | undefined {
+  const esc = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  let m = head.match(
+    new RegExp(
+      `<meta\\s+[^>]*name\\s*=\\s*["']${esc}["'][^>]*content\\s*=\\s*["']([^"']*)["'][^>]*\\/?>`,
+      "i",
+    ),
+  );
+  if (!m) {
+    m = head.match(
+      new RegExp(
+        `<meta\\s+[^>]*content\\s*=\\s*["']([^"']*)["'][^>]*name\\s*=\\s*["']${esc}["'][^>]*\\/?>`,
+        "i",
+      ),
+    );
+  }
+  if (!m?.[1]) return undefined;
+  let v = decodeBasicEntities(m[1]);
+  if (v.length > 400) v = v.slice(0, 397) + "…";
+  return v || undefined;
+}
+
 /**
- * Reads `<title>` and `<meta name="description">` from the start of a raw HTML file.
+ * Reads `<title>`, `<meta name="description">`, and `<meta name="vis:delta">` from the start of a raw HTML file.
  * Best-effort regex parsing only; no full DOM.
  */
-export function readWireframeHeadMetadata(filePath: string): { title?: string; description?: string } {
+export function readWireframeHeadMetadata(filePath: string): {
+  title?: string;
+  description?: string;
+  visDelta?: string;
+} {
   try {
     if (!fs.existsSync(filePath)) return {};
     const raw = fs.readFileSync(filePath, "utf8");
@@ -74,7 +101,13 @@ export function readWireframeHeadMetadata(filePath: string): { title?: string; d
       if (description.length > 320) description = description.slice(0, 317) + "…";
     }
 
-    return { title: title || undefined, description: description || undefined };
+    const visDelta = readMetaContentByName(head, "vis:delta");
+
+    return {
+      title: title || undefined,
+      description: description || undefined,
+      visDelta: visDelta || undefined,
+    };
   } catch {
     return {};
   }
@@ -89,11 +122,15 @@ export type WireframeIndexEntry = {
   description?: string;
 };
 
-/** Same `displayTitle` + `description` as `/vis` index for a single raw HTML file. */
-export function wireframeDisplayMeta(filename: string): { displayTitle: string; description?: string } {
+/** Same `displayTitle` + `description` + optional `delta` as `/vis` index for a single raw HTML file. */
+export function wireframeDisplayMeta(filename: string): {
+  displayTitle: string;
+  description?: string;
+  delta?: string;
+} {
   const meta = readWireframeHeadMetadata(path.join(visRawDir(), filename));
   const displayTitle = (meta.title && meta.title.length > 0 ? meta.title : filename) || filename;
-  return { displayTitle, description: meta.description };
+  return { displayTitle, description: meta.description, delta: meta.visDelta };
 }
 
 /** Build-time list entries for `/vis` with optional metadata from each HTML file. */
