@@ -8,6 +8,17 @@ interface Props {
 }
 
 const { title, activePage } = Astro.props;
+
+/**
+ * Exit preview: same path without `preview` (build-time path is correct per page).
+ * With static output, runtime `?preview=1` is applied in the browser; visibility is toggled via `html.klarlyd-preview` + CSS + head script.
+ */
+const exitPreviewHref = (() => {
+  const u = new URL(Astro.url.href);
+  u.searchParams.delete("preview");
+  const q = u.searchParams.toString();
+  return q ? `${u.pathname}?${q}` : u.pathname;
+})();
 ---
 
 <!doctype html>
@@ -17,10 +28,44 @@ const { title, activePage } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title>KlarLyd Wireframe - {title}</title>
+    <script is:inline>
+      (function () {
+        try {
+          if (new URLSearchParams(window.location.search).get("preview") === "1") {
+            document.documentElement.classList.add("klarlyd-preview");
+          }
+        } catch (_) {}
+      })();
+    </script>
+    <style is:global>
+      /* Clean preview: chrome hidden, near-fullscreen content; toggled only when ?preview=1 (see script above). */
+      html.klarlyd-preview .klarlyd-prototype-topbar,
+      html.klarlyd-preview .klarlyd-prototype-bottombar {
+        display: none !important;
+      }
+      .klarlyd-prototype-exit {
+        display: none;
+      }
+      html.klarlyd-preview .klarlyd-prototype-exit {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      html.klarlyd-preview .klarlyd-prototype-body {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        min-height: 100dvh !important;
+      }
+      html.klarlyd-preview .klarlyd-prototype-main {
+        min-height: 100dvh !important;
+      }
+    </style>
   </head>
-  <body class="bg-gray-100 antialiased pt-10 pb-20 sm:pb-0">
+  <body
+    class="klarlyd-prototype-body bg-gray-100 antialiased pt-10 pb-20 sm:pb-0"
+  >
     <div
-      class="fixed top-0 left-0 z-[9999] flex h-10 w-full items-center justify-between border-b border-gray-950 bg-gray-900 px-4 font-mono text-xs text-white shadow-md"
+      class="klarlyd-prototype-topbar fixed top-0 left-0 z-[9999] flex h-10 w-full items-center justify-between border-b border-gray-950 bg-gray-900 px-4 font-mono text-xs text-white shadow-md"
     >
       <div class="flex items-center space-x-6">
         <span class="font-bold uppercase tracking-widest text-purple-400">KlarLyd v0.1</span>
@@ -69,7 +114,7 @@ const { title, activePage } = Astro.props;
     </div>
 
     <div
-      class="fixed bottom-0 left-0 z-[9999] flex w-full justify-around border-t border-gray-800 bg-gray-900 py-3 font-mono text-xs text-white sm:hidden"
+      class="klarlyd-prototype-bottombar fixed bottom-0 left-0 z-[9999] flex w-full justify-around border-t border-gray-800 bg-gray-900 py-3 font-mono text-xs text-white sm:hidden"
       style="padding-bottom: env(safe-area-inset-bottom);"
     >
       <a
@@ -92,7 +137,16 @@ const { title, activePage } = Astro.props;
       </a>
     </div>
 
-    <div class="relative min-h-screen w-full bg-white">
+    <a
+      href={exitPreviewHref}
+      class="klarlyd-prototype-exit fixed z-[10000] max-w-[calc(100vw-1.5rem)] items-center justify-center rounded-full bg-gray-900/95 px-3.5 py-2.5 font-mono text-xs font-medium text-white shadow-lg backdrop-blur-sm transition hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/80"
+      style="top: calc(env(safe-area-inset-top, 0px) + 12px); right: calc(env(safe-area-inset-right, 0px) + 12px);"
+      aria-label="Tilbake til prototype-meny"
+    >
+      ← Tilbake
+    </a>
+
+    <div class="klarlyd-prototype-main relative min-h-screen w-full bg-white">
       <slot />
     </div>
   </body>
