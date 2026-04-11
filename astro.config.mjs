@@ -17,10 +17,18 @@ const storyblokIntegration =
       })
     : null;
 
+// GitHub Pages project sites are served under https://<user>.github.io/<repo>/ — without this,
+// hardcoded paths like /vis/ resolve to the domain root and 404. CI sets GITHUB_REPOSITORY=owner/repo.
+const ghRepo =
+  typeof process.env.GITHUB_REPOSITORY === 'string'
+    ? process.env.GITHUB_REPOSITORY.split('/')[1]
+    : '';
+const base = ghRepo ? `/${ghRepo}/` : '/';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://thunderplunder.github.io',
-  base: '/',
+  base,
 
   integrations: [...(storyblokIntegration ? [storyblokIntegration] : [])],
 

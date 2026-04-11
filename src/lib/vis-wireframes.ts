@@ -1,8 +1,7 @@
-/* CONTRACT: Build-time helpers for listing raw HTML wireframes under public/vis/raw. */
+/* CONTRACT: Build-time helpers for listing raw HTML wireframes under public/vis/raw.
+ * Public URLs for raw files and /vis routes must use `import.meta.env.BASE_URL` in .astro files (GitHub Pages base path). */
 import fs from "node:fs";
 import path from "node:path";
-
-export const VIS_RAW_PUBLIC_PREFIX = "/vis/raw";
 
 export function visRawDir(): string {
   return path.join(process.cwd(), "public", "vis", "raw");

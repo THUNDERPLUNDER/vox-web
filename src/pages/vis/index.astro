@@ -1,13 +1,10 @@
 ---
 /* CONTRACT: VIS backstage index — auto-lists raw HTML wireframes from public/vis/raw. */
 import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
-import {
-  listVisRawHtmlFiles,
-  slugFromHtmlFilename,
-  VIS_RAW_PUBLIC_PREFIX,
-} from "../../lib/vis-wireframes";
+import { listVisRawHtmlFiles, slugFromHtmlFilename } from "../../lib/vis-wireframes";
 
 const files = listVisRawHtmlFiles();
+const base = import.meta.env.BASE_URL;
 ---
 
 <PrototypeLayout title="Oversikt" activePage="forside">
@@ -27,9 +24,9 @@ const files = listVisRawHtmlFiles();
         <ul class="mt-6 divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
           {files.map((name) => {
             const slug = slugFromHtmlFilename(name);
-            const view = `/vis/${encodeURIComponent(slug)}`;
+            const view = `${base}vis/${encodeURIComponent(slug)}`;
             const preview = `${view}?preview=1`;
-            const rawUrl = `${VIS_RAW_PUBLIC_PREFIX}/${encodeURIComponent(name)}`;
+            const rawUrl = `${base}vis/raw/${encodeURIComponent(name)}`;
             return (
               <li class="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                 <div class="min-w-0">
