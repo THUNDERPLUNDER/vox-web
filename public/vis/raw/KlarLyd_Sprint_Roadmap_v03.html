@@ -7,8 +7,8 @@
     <!-- VIS METADATA KONTRAKT -->
     <title>KlarLyd – Sprint: Fra Struktur til Innhold</title>
     <meta name="vis:type" content="sprint" />
-    <meta name="description" content="Kortsiktig roadmap for KlarLyd. Fokus på opprydding i VIS, utforskning av AI-first grensesnitt, og produksjon av reelt innhold for testing." />
-    <meta name="vis:delta" content="v0.2: Kastet slide-deck formatet. Designet om til et responsivt, vertikalt web-dokument (Action Plan) med Tailwind CSS som passer perfekt inn i VIS og ruller naturlig." />
+    <meta name="description" content="Oppdatert roadmap. Inkluderer nå et dedikert steg for Merkevareplattform og Tone of Voice før vi går til The Content Slice." />
+    <meta name="vis:delta" content="v0.3: Lagt til nytt Steg 3 for Merkevareplattform & TOV. Skjøvet The Content Slice til Steg 4." />
     
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -26,12 +26,12 @@
                 Fra <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-500 to-gray-800">Struktur</span> til <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-500">Innhold</span>
             </h1>
             <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                Kortsiktig roadmap for de neste arbeidsdagene. Fokus på opprydding, konseptuell utforskning av "AI First", og overgangen til 100 % reelt innhold.
+                Kortsiktig roadmap for de neste arbeidsdagene. Fokus på opprydding, UI-hypoteser, etablering av merkevareplattform, og overgangen til 100 % reelt innhold.
             </p>
         </header>
 
         <!-- TIMELINE / ACTION PLAN -->
-        <div class="space-y-12 relative before:absolute before:inset-0 before:ml-5 md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-purple-200 before:via-blue-200 before:to-teal-200">
+        <div class="space-y-12 relative before:absolute before:inset-0 before:ml-5 md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-purple-200 before:via-blue-200 before:via-orange-200 before:to-teal-200">
 
             <!-- STEG 1: Vårrengjøring -->
             <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
@@ -99,18 +99,49 @@
                 </div>
             </div>
 
-            <!-- STEG 3: The Content Slice -->
+            <!-- STEG 3: Merkevare & TOV -->
+            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                <!-- Timeline Dot -->
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-orange-500 text-white shadow flex-shrink-0 absolute left-0 md:left-1/2 md:-translate-x-1/2 z-10">
+                    3
+                </div>
+                <!-- Card -->
+                <div class="w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] ml-auto md:ml-0 md:group-odd:ml-auto md:group-even:mr-auto">
+                    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-orange-100 hover:shadow-md transition">
+                        <div class="text-4xl mb-4">💎</div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-3">Merkevare & TOV</h2>
+                        <p class="text-gray-600 text-sm mb-5 leading-relaxed">Før vi skriver et eneste ord på nettsiden, må vi definere hvem vi er og hvordan vi høres ut. Vi bruker Telenor-metodikken som rammeverk.</p>
+                        
+                        <ul class="space-y-3 text-sm text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-orange-500 mr-2 mt-0.5">■</span>
+                                <div><strong>Differensiatorer (Reasons to choose):</strong> Hvorfor skal de velge (og stole på) KlarLyd?</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-orange-500 mr-2 mt-0.5">■</span>
+                                <div><strong>Merkevarehuset:</strong> Låse Posisjon, Merkevareløfte og Assosiasjonsord.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-orange-500 mr-2 mt-0.5">■</span>
+                                <div><strong>Tone of Voice (TOV):</strong> Etablere de konkrete språkreglene for innholdsprodusenter og System Prompten til AI-assistenten.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEG 4: The Content Slice -->
             <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
                 <!-- Timeline Dot -->
                 <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-teal-500 text-white shadow flex-shrink-0 absolute left-0 md:left-1/2 md:-translate-x-1/2 z-10">
-                    3
+                    4
                 </div>
                 <!-- Card -->
                 <div class="w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] ml-auto md:ml-0 md:group-odd:ml-auto md:group-even:mr-auto">
                     <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-teal-100 hover:shadow-md transition">
                         <div class="text-4xl mb-4">✍️</div>
                         <h2 class="text-2xl font-bold text-gray-900 mb-3">The Content Slice</h2>
-                        <p class="text-gray-600 text-sm mb-6 leading-relaxed">Når strukturen sitter, velger vi én spesifikk brukerreise og populerer den med 100% ekte data for å stressteste designet.</p>
+                        <p class="text-gray-600 text-sm mb-6 leading-relaxed">Med strukturen og merkevaren på plass, velger vi én spesifikk brukerreise og populerer den med 100% ekte data for å stressteste designet og AI-en.</p>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
@@ -119,7 +150,7 @@
                             </div>
                             <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                 <h4 class="font-bold text-gray-900 text-xs uppercase tracking-wider mb-1">AI-Persona</h4>
-                                <p class="text-xs text-gray-600">Skrive System Prompten for hvordan assistenten skal svare på temaet.</p>
+                                <p class="text-xs text-gray-600">Skrive System Prompten basert på våre nye TOV-regler.</p>
                             </div>
                             <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                 <h4 class="font-bold text-gray-900 text-xs uppercase tracking-wider mb-1">Brukerflyt</h4>
@@ -127,7 +158,7 @@
                             </div>
                             <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                 <h4 class="font-bold text-gray-900 text-xs uppercase tracking-wider mb-1">Design-Diktat</h4>
-                                <p class="text-xs text-gray-600">La det faktiske innholdet justere spacing og fontstørrelser.</p>
+                                <p class="text-xs text-gray-600">La det faktiske innholdet justere spacing og fontstørrelser i grensesnittet.</p>
                             </div>
                         </div>
                     </div>
