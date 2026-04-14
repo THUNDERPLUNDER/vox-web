@@ -153,7 +153,24 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
               )}
             </div>
 
-            <div class="flex min-w-0 items-center justify-end gap-2 text-gray-500 sm:gap-3">
+            <div class="relative flex min-w-0 items-center justify-end gap-2 text-gray-500 sm:gap-3">
+              <button
+                type="button"
+                id="vis-local-nav-toggle"
+                class="hidden h-7 shrink-0 items-center rounded-md border border-gray-700 bg-gray-900/90 px-2 text-[10px] font-semibold uppercase tracking-wide text-gray-200 transition hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+                aria-expanded="false"
+                aria-controls="vis-local-nav-panel"
+                aria-label="Åpne innholdsmeny"
+              >
+                Innhold
+              </button>
+              <div
+                id="vis-local-nav-panel"
+                class="absolute right-0 top-full z-10 mt-2 hidden max-h-[min(70vh,24rem)] w-[min(20rem,calc(100vw-1rem))] overflow-y-auto rounded-md border border-gray-700 bg-gray-900 p-1 shadow-2xl"
+                aria-label="Lokal innholdsmeny"
+              >
+                <ul id="vis-local-nav-list" class="space-y-0.5"></ul>
+              </div>
               <button
                 type="button"
                 id="vis-meta-toggle"
@@ -466,6 +483,121 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
             if (next) setMetaOpenInSession();
             else setMetaClosedInSession();
             setInfobarOpen(next);
+          });
+        }
+
+        var localNavToggle = document.getElementById("vis-local-nav-toggle");
+        var localNavPanel = document.getElementById("vis-local-nav-panel");
+        var localNavList = document.getElementById("vis-local-nav-list");
+        var iframe = document.querySelector(".vis-wireframe-iframe");
+        var lastLocalNavTrigger = null;
+        function closeLocalNavPanel() {
+          if (!localNavToggle || !localNavPanel) return;
+          localNavPanel.classList.add("hidden");
+          localNavToggle.setAttribute("aria-expanded", "false");
+          if (lastLocalNavTrigger === "keyboard") localNavToggle.focus();
+          lastLocalNavTrigger = null;
+        }
+        function openLocalNavPanel() {
+          if (!localNavToggle || !localNavPanel || !localNavList) return;
+          if (!localNavList.children.length) return;
+          localNavPanel.classList.remove("hidden");
+          localNavToggle.setAttribute("aria-expanded", "true");
+          var firstLink = localNavList.querySelector("a");
+          if (firstLink) firstLink.focus();
+        }
+        function navigateIframeToHash(hash) {
+          if (!hash || hash.charAt(0) !== "#") return;
+          if (!iframe) return;
+          try {
+            var doc = iframe.contentDocument;
+            if (!doc) return;
+            var id = hash.slice(1);
+            if (!id) return;
+            var target = doc.getElementById(id);
+            if (!target) return;
+            if (typeof target.scrollIntoView === "function") target.scrollIntoView({ behavior: "smooth", block: "start" });
+            try {
+              if (iframe.contentWindow && iframe.contentWindow.location) iframe.contentWindow.location.hash = hash;
+            } catch (e) {}
+          } catch (e) {}
+        }
+        function hydrateLocalNavFromIframe() {
+          if (!localNavToggle || !localNavPanel || !localNavList || !iframe) return;
+          try {
+            var doc = iframe.contentDocument;
+            if (!doc) return;
+            var nav = doc.querySelector("[data-vis-local-nav]");
+            if (!nav) return;
+            var anchors = Array.from(nav.querySelectorAll('a[href^="#"]')).filter(function (a) {
+              var href = a.getAttribute("href") || "";
+              return href.length > 1;
+            });
+            if (!anchors.length) return;
+            localNavList.innerHTML = "";
+            anchors.forEach(function (a) {
+              var href = a.getAttribute("href");
+              if (!href) return;
+              var label = (a.textContent || "").trim();
+              if (!label) return;
+              var li = document.createElement("li");
+              var link = document.createElement("button");
+              link.type = "button";
+              link.className =
+                "block w-full rounded px-2 py-2 text-left text-xs text-gray-200 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500";
+              link.textContent = label;
+              link.setAttribute("data-href", href);
+              link.addEventListener("click", function () {
+                navigateIframeToHash(href);
+                closeLocalNavPanel();
+              });
+              li.appendChild(link);
+              localNavList.appendChild(li);
+            });
+            if (!localNavList.children.length) return;
+            localNavToggle.classList.remove("hidden");
+            localNavToggle.classList.add("inline-flex");
+          } catch (e) {}
+        }
+        if (iframe) {
+          iframe.addEventListener("load", hydrateLocalNavFromIframe);
+          hydrateLocalNavFromIframe();
+        }
+        if (localNavToggle && localNavPanel) {
+          localNavToggle.addEventListener("click", function () {
+            var open = localNavToggle.getAttribute("aria-expanded") === "true";
+            if (open) closeLocalNavPanel();
+            else openLocalNavPanel();
+          });
+        }
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape") closeLocalNavPanel();
+        });
+        document.addEventListener("mousedown", function (event) {
+          if (!localNavPanel || localNavPanel.classList.contains("hidden")) return;
+          if (!localNavPanel.contains(event.target) && !(localNavToggle && localNavToggle.contains(event.target))) {
+            closeLocalNavPanel();
+          }
+        });
+        document.addEventListener("focusin", function (event) {
+          if (!localNavPanel || localNavPanel.classList.contains("hidden")) return;
+          if (localNavPanel.contains(event.target)) return;
+          if (localNavToggle && localNavToggle.contains(event.target)) return;
+          closeLocalNavPanel();
+        });
+        if (localNavToggle) {
+          localNavToggle.addEventListener("keydown", function (event) {
+            if (event.key === "ArrowDown") {
+              event.preventDefault();
+              lastLocalNavTrigger = "keyboard";
+              openLocalNavPanel();
+            }
+          });
+          localNavToggle.addEventListener("mousedown", function () {
+            lastLocalNavTrigger = "mouse";
+          });
+          localNavToggle.addEventListener("keydown", function () {
+            lastLocalNavTrigger = "keyboard";
           });
         }
       })();
