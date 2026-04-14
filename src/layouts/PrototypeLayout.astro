@@ -489,7 +489,7 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
         var localNavToggle = document.getElementById("vis-local-nav-toggle");
         var localNavPanel = document.getElementById("vis-local-nav-panel");
         var localNavList = document.getElementById("vis-local-nav-list");
-        var iframe = document.querySelector(".vis-wireframe-iframe");
+        var iframe = null;
         var lastLocalNavTrigger = null;
         function closeLocalNavPanel() {
           if (!localNavToggle || !localNavPanel) return;
@@ -503,7 +503,7 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
           if (!localNavList.children.length) return;
           localNavPanel.classList.remove("hidden");
           localNavToggle.setAttribute("aria-expanded", "true");
-          var firstLink = localNavList.querySelector("a");
+          var firstLink = localNavList.querySelector("button");
           if (firstLink) firstLink.focus();
         }
         function navigateIframeToHash(hash) {
@@ -559,9 +559,17 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
             localNavToggle.classList.add("inline-flex");
           } catch (e) {}
         }
-        if (iframe) {
+        function bindLocalNavToIframe() {
+          if (iframe) return;
+          iframe = document.querySelector(".vis-wireframe-iframe");
+          if (!iframe) return;
           iframe.addEventListener("load", hydrateLocalNavFromIframe);
           hydrateLocalNavFromIframe();
+        }
+        bindLocalNavToIframe();
+        if (!iframe) {
+          window.addEventListener("DOMContentLoaded", bindLocalNavToIframe, { once: true });
+          window.addEventListener("load", bindLocalNavToIframe, { once: true });
         }
         if (localNavToggle && localNavPanel) {
           localNavToggle.addEventListener("click", function () {
