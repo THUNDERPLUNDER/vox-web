@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- METADATA KONTRAKT FOR VIS -->
+  <title>KlarLyd – Merkevaregrunnlag v0.1 (VIS arbeidswiki)</title>
+  <meta name="description" content="Arbeidsvennlig HTML-versjon av KlarLyd merkevaregrunnlag v0.1. Strukturert for raskt oppslag i VIS med segmenter, merkevareplattform, budskapsarkitektur, Tone of Voice og merkevarepersonlighet." />
+  <meta name="vis:delta" content="v0.2: Refaktorert for intern arbeidsflyt i VIS med hvit base, roligere meny, tabeller for sammenligning, ekspanderbare undernivåer og scanbar struktur. Innhold beholdt fra PDF med kun mikro-normalisering." />
+  <meta name="vis:type" content="brand" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; }
+    :root {
+      --vis-accent: #8b5cf6;
+      --vis-accent-soft: #f5f3ff;
+      --vis-text: #111827;
+      --vis-muted: #6b7280;
+      --vis-line: #e5e7eb;
+      --vis-subtle: #f8fafc;
+      --vis-warm: #fafaf8;
+    }
+
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 999px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+
+    .content-prose p { color: #374151; line-height: 1.75; margin-bottom: 1rem; }
+    .content-prose ul { list-style: disc; padding-left: 1.25rem; color: #374151; margin-bottom: 1rem; }
+    .content-prose li { margin-bottom: .375rem; }
+    .content-prose h2 {
+      font-size: 1.75rem;
+      line-height: 1.2;
+      font-weight: 800;
+      color: var(--vis-text);
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      padding-bottom: .75rem;
+      border-bottom: 1px solid var(--vis-line);
+    }
+    .content-prose h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--vis-text);
+      margin-bottom: .875rem;
+    }
+    .content-prose h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--vis-text);
+      margin-bottom: .5rem;
+    }
+
+    .toc-group[data-open="false"] .toc-children { display: none; }
+    .toc-link {
+      position: relative;
+      display: block;
+      padding: .45rem 0 .45rem 1rem;
+      color: #4b5563;
+      transition: color .16s ease;
+      border-left: 1px solid transparent;
+      margin-left: -1px;
+    }
+    .toc-link:hover { color: var(--vis-accent); }
+    .toc-link.active {
+      color: var(--vis-accent);
+      border-left-color: var(--vis-accent);
+      font-weight: 600;
+    }
+    .toc-group-button {
+      width: 100%;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      padding: .45rem 0 .45rem 1rem;
+      color: #111827;
+      font-weight: 600;
+      margin-left: -1px;
+      border-left: 1px solid transparent;
+    }
+    .toc-group-button:hover { color: var(--vis-accent); }
+    .toc-group[data-active="true"] > .toc-group-button {
+      color: var(--vis-accent);
+      border-left-color: var(--vis-accent);
+    }
+    .caret { transition: transform .16s ease; font-size: .875rem; color: #9ca3af; }
+    .toc-group[data-open="true"] .caret { transform: rotate(90deg); }
+
+    .quick-link {
+      border: 1px solid #e5e7eb;
+      background: white;
+      color: #374151;
+      border-radius: .75rem;
+      padding: .55rem .8rem;
+      font-size: .875rem;
+      font-weight: 500;
+      transition: all .16s ease;
+      white-space: nowrap;
+    }
+    .quick-link:hover {
+      border-color: #c4b5fd;
+      color: var(--vis-accent);
+      background: #faf5ff;
+    }
+
+    .scan-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9375rem;
+      min-width: 760px;
+      background: white;
+    }
+    .scan-table th {
+      text-align: left;
+      font-size: .75rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: #6b7280;
+      font-weight: 700;
+      padding: .9rem 1rem;
+      background: #fafaf8;
+      border-bottom: 1px solid #e5e7eb;
+      vertical-align: top;
+    }
+    .scan-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #eef2f7;
+      color: #1f2937;
+      vertical-align: top;
+      line-height: 1.55;
+    }
+    .scan-table tr:hover td { background: #fcfcff; }
+
+    .mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      font-size: .95rem;
+    }
+    .mini-table th {
+      width: 220px;
+      text-align: left;
+      padding: .9rem 1rem;
+      border-bottom: 1px solid #e5e7eb;
+      background: #fafaf8;
+      color: #374151;
+      font-weight: 700;
+      vertical-align: top;
+    }
+    .mini-table td {
+      padding: .9rem 1rem;
+      border-bottom: 1px solid #e5e7eb;
+      vertical-align: top;
+      color: #111827;
+      line-height: 1.6;
+    }
+
+    details.segment-details, details.tov-details {
+      border: 1px solid #e5e7eb;
+      border-radius: 1rem;
+      background: white;
+      overflow: hidden;
+    }
+    details.segment-details + details.segment-details,
+    details.tov-details + details.tov-details { margin-top: 1rem; }
+
+    details > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 1rem 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      font-weight: 700;
+      color: #111827;
+      background: white;
+    }
+    details > summary::-webkit-details-marker { display: none; }
+    details[open] > summary { border-bottom: 1px solid #e5e7eb; background: #fcfcff; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: .2rem .55rem;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 700;
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+
+    .callout {
+      border: 1px solid #e5e7eb;
+      background: #fafaf8;
+      border-left: 3px solid var(--vis-accent);
+      border-radius: 1rem;
+      padding: 1rem 1.1rem;
+    }
+
+    @media (max-width: 1023px) {
+      .desktop-shell { display: block; }
+      .desktop-sidebar { display: none; }
+    }
+    @media (min-width: 1024px) {
+      .mobile-toc { display: none; }
+    }
+  </style>
+</head>
+<body data-vis-doc="brand" class="bg-white text-gray-900 antialiased selection:bg-violet-200">
+  <nav data-vis-local-nav hidden aria-label="Lokal navigasjon for VIS">
+    <a href="#formaal">1. Formål</a>
+    <a href="#segmentoversikt">2. Segmenter</a>
+    <a href="#prioritering">3. Strategisk prioritering</a>
+    <a href="#plattform">4. Merkevareplattform</a>
+    <a href="#brand-house">5. Brand house</a>
+    <a href="#budskap-felles">6. Budskapsarkitektur</a>
+    <a href="#tov">7. Tone of Voice</a>
+    <a href="#personlighet">8. Merkevarepersonlighet</a>
+  </nav>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-[16rem_minmax(0,1fr)] gap-10 lg:gap-14 items-start">
+
+      <!-- SIDEBAR -->
+      <aside class="desktop-sidebar sticky top-24 self-start">
+        <div class="mb-7">
+          <div class="text-xs font-bold uppercase tracking-[0.16em] text-gray-400 mb-2">Dokument</div>
+          <h1 class="text-xl font-bold leading-tight text-gray-900">Merkevaregrunnlag v0.1</h1>
+          <p class="text-sm text-gray-500 mt-2">Arbeidswiki for oppslag i VIS</p>
+        </div>
+
+        <nav id="toc" class="border-l border-gray-200 text-sm">
+          <div class="toc-group" data-open="true" data-active="false">
+            <button class="toc-group-button" data-group="formaal">
+              <span>1. Formål</span>
+              <span class="caret">›</span>
+            </button>
+            <div class="toc-children">
+              <a class="toc-link" href="#formaal">Formål</a>
+              <a class="toc-link" href="#arbeidshypotese">Arbeidshypotese</a>
+            </div>
+          </div>
+
+          <div class="toc-group" data-open="false" data-active="false">
+            <button class="toc-group-button" data-group="segmenter">
+              <span>2. Segmenter</span>
+              <span class="caret">›</span>
+            </button>
+            <div class="toc-children">
+              <a class="toc-link" href="#segmentoversikt">Oversikt</a>
+              <a class="toc-link" href="#segment1">Lyd-optimisten</a>
+              <a class="toc-link" href="#segment2">Moderne livsnyter</a>
+              <a class="toc-link" href="#segment3">Proaktiv partner</a>
+              <a class="toc-link" href="#segment4">Reaktiv tviler</a>
+            </div>
+          </div>
+
+          <div class="toc-group" data-open="false" data-active="false">
+            <button class="toc-group-button" data-group="prioritering">
+              <span>3. Strategisk prioritering</span>
+              <span class="caret">›</span>
+            </button>
+            <div class="toc-children">
+              <a class="toc-link" href="#prioritering">Prioritering</a>
+              <a class="toc-link" href="#hlf-investor">HLF og investorer</a>
+              <a class="toc-link" href="#beslutninger">Beslutninger nå</a>
+              <a class="toc-link" href="#neste-steg">Neste steg</a>
+            </div>
+          </div>
+
+          <div class="toc-group" data-open="false" data-active="false">
+            <button class="toc-group-button" data-group="plattform">
+              <span>4. Merkevareplattform</span>
+              <span class="caret">›</span>
+            </button>
+            <div class="toc-children">
+              <a class="toc-link" href="#plattform">Plattform light</a>
+              <a class="toc-link" href="#differensiatorer">Differensiatorer</a>
+              <a class="toc-link" href="#folelser">Følelser</a>
+            </div>
+          </div>
+
+          <div class="toc-group" data-open="false" data-active="false">
+            <button class="toc-group-button" data-group="brandhouse">
+              <span>5. Brand house</span>
+              <span class="caret">›</span>
+            </button>
+            <div class="toc-children">
+              <a class="toc-link" href="#brand-house">Brand house</a>
+            </div>
+          </div>
+
+          <div class="toc-group" data-open="false" data-active="false">
+            <button class="toc-group-button" data-group="budskap">
+              <span>6. Budskapsarkitektur</span>
+              <span class="caret">›</span>
+            </button>
+            <div class="toc-children">
+              <a class="toc-link" href="#budskap">Per segment</a>
+              <a class="toc-link" href="#budskap-felles">Felles budskapshierarki</a>
+            </div>
+          </div>
+
+          <div class="toc-group" data-open="false" data-active="false">
+            <button class="toc-group-button" data-group="tov">
+              <span>7. Tone of Voice</span>
+              <span class="caret">›</span>
+            </button>
+            <div class="toc-children">
+              <a class="toc-link" href="#tov">Grunntone</a>
+              <a class="toc-link" href="#sprakprinsipper">Språkprinsipper</a>
+              <a class="toc-link" href="#ordvalg">Ordvalg</a>
+              <a class="toc-link" href="#tov-segmenter">Tone per segment</a>
+              <a class="toc-link" href="#tov-situasjoner">Tone i situasjoner</a>
+              <a class="toc-link" href="#mikroeksempler">Mikroeksempler</a>
+            </div>
+          </div>
+
+          <div class="toc-group" data-open="false" data-active="false">
+            <button class="toc-group-button" data-group="personlighet">
+              <span>8. Merkevarepersonlighet</span>
+              <span class="caret">›</span>
+            </button>
+            <div class="toc-children">
+              <a class="toc-link" href="#personlighet">Personlighet</a>
+            </div>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="content-prose max-w-none pb-24">
+        <header class="mb-10">
+          <div class="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 mb-2">KlarLyd</div>
+          <h1 class="text-4xl lg:text-[2.75rem] font-extrabold tracking-tight text-gray-900 leading-tight mb-4">
+            Merkevaregrunnlag v0.1
+          </h1>
+          <p class="text-lg text-gray-600 max-w-3xl">
+            Arbeidsvennlig oppslagsversjon for VIS. Innholdet er hentet fra PDF-en og strukturert for raskere scanning, sammenligning og bruk i intern flyt.
+          </p>
+        </header>
+
+        <!-- MOBILE TOC -->
+        <details class="mobile-toc mb-8 border border-gray-200 rounded-2xl bg-white">
+          <summary class="px-4 py-3 font-semibold text-gray-900 cursor-pointer">Innhold</summary>
+          <div class="px-4 pb-4 border-t border-gray-200">
+            <div class="grid grid-cols-1 gap-2 pt-3 text-sm">
+              <a href="#formaal" class="text-gray-700">1. Formål</a>
+              <a href="#segmentoversikt" class="text-gray-700">2. Segmenter</a>
+              <a href="#prioritering" class="text-gray-700">3. Strategisk prioritering</a>
+              <a href="#plattform" class="text-gray-700">4. Merkevareplattform</a>
+              <a href="#brand-house" class="text-gray-700">5. Brand house</a>
+              <a href="#budskap" class="text-gray-700">6. Budskapsarkitektur</a>
+              <a href="#tov" class="text-gray-700">7. Tone of Voice</a>
+              <a href="#personlighet" class="text-gray-700">8. Merkevarepersonlighet</a>
+            </div>
+          </div>
+        </details>
+
+        <!-- QUICK LINKS -->
+        <div class="mb-12 overflow-x-auto">
+          <div class="flex gap-3 min-w-max">
+            <a href="#segmentoversikt" class="quick-link">Segmenter</a>
+            <a href="#plattform" class="quick-link">Merkevareplattform</a>
+            <a href="#brand-house" class="quick-link">Brand house</a>
+            <a href="#budskap" class="quick-link">Budskapsarkitektur</a>
+            <a href="#tov" class="quick-link">Tone of Voice</a>
+            <a href="#personlighet" class="quick-link">Merkevarepersonlighet</a>
+          </div>
+        </div>
+
+        <!-- 1 FORMAL -->
+        <section id="formaal" class="scroll-mt-24 mb-16">
+          <h2>1. Formål</h2>
+          <p>Dette er et første arbeidsutkast for å komme fra analyse til retning.</p>
+          <p>Målet er ikke å fastslå perfekte markedsandeler, men å etablere et godt nok strategisk grunnlag for:</p>
+          <ul>
+            <li>merkevareløfte</li>
+            <li>prioriterte segmenter</li>
+            <li>viktigste behov</li>
+            <li>samtaler med HLF og mulige investorer</li>
+          </ul>
+
+          <div id="arbeidshypotese" class="callout mt-6">
+            <div class="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 mb-2">Arbeidshypotese</div>
+            <p class="mb-3">KlarLyd bør bygges rundt et tydelig skille mellom:</p>
+            <ul class="mb-0">
+              <li>segmenter som definerer merkevaren</li>
+              <li>segmenter som driver offentlig verdi og volum</li>
+              <li>segmenter som påvirker valg og adopsjon</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 2 SEGMENTER -->
+        <section id="segmentoversikt" class="scroll-mt-24 mb-16">
+          <h2>2. Segmenter</h2>
+          <div class="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+            <table class="scan-table">
+              <thead>
+                <tr>
+                  <th>Segment</th>
+                  <th>Omtrentlig andel*</th>
+                  <th>Rolle i strategien</th>
+                  <th>Kort beskrivelse</th>
+                  <th>Viktigste behov</th>
+                  <th>Hva KlarLyd må levere</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>1. Lyd-optimisten</strong></td>
+                  <td>5–12 %</td>
+                  <td>Primærsegment</td>
+                  <td>Yrkesaktiv, kvalitetsbevisst, vil fungere godt i komplekse lydmiljøer og er mottakelig for et moderne, ikke-stigmatiserende tilbud.</td>
+                  <td>Høre godt i møter, samtaler, restaurant og hybride situasjoner. Slippe stigma og sykehusfølelse. Oppleve teknologien som smart, diskret og oppdatert. Få tilbake kontroll, energi og lydglede.</td>
+                  <td>Følelse av moderne mestring. Klart språk uten klinisk preg. Hjelp til å få faktisk nytte i hverdagen. En opplevelse av «dette er for folk som vil fungere godt».</td>
+                </tr>
+                <tr>
+                  <td><strong>2. Moderne livsnyter</strong></td>
+                  <td>20–30 %</td>
+                  <td>Primærsegment</td>
+                  <td>Aktiv i jobb eller tidlig pensjon, ønsker sosial deltakelse, kultur, reiser og hverdagsflyt uten å føle seg «pasient».</td>
+                  <td>Høre bedre i middager, reiser, kultur og familiesituasjoner. Enkel og varm støtte. Føle seg trygg og ivaretatt. Beholde sosial deltakelse og livskvalitet.</td>
+                  <td>Lav terskel og lite stress. Tydelig hjelp når noe ikke fungerer. Opplevelse av at livet blir enklere og rikere. Et språk som handler om deltakelse, ikke bare kompensasjon.</td>
+                </tr>
+                <tr>
+                  <td><strong>3. Proaktiv partner</strong></td>
+                  <td>Ikke del av 100 %-kaken</td>
+                  <td>Påvirkersegment</td>
+                  <td>Partner, ektefelle eller voksen pårørende som ofte ser problemet tidligere enn brukeren selv og påvirker valg og oppfølging.</td>
+                  <td>Forstå hva som faktisk hjelper. Kunne ta samtalen uten å skape motstand. Få et språk som er varmt, konkret og ikke moraliserende. Oppleve håp om mindre frustrasjon i hverdagen.</td>
+                  <td>Troverdig forklaring på hvorfor bruk er vanskelig. Støtte til adopsjon og oppfølging. Et mindre klinisk og mer relasjonelt språk.</td>
+                </tr>
+                <tr>
+                  <td><strong>4. Reaktiv tviler</strong></td>
+                  <td>60–75 %</td>
+                  <td>Strategisk skalasegment</td>
+                  <td>Størst i volum, høy terskel for endring, trenger trygghet, enkelhet og støtte for å komme i gang og fortsette.</td>
+                  <td>Enkelhet. Trygghet. Menneskelig støtte. Hjelp som faktisk virker uten for mye teknisk stress.</td>
+                  <td>Rolig og tydelig onboarding. Opplevelse av å bli hjulpet, ikke eksponert. Praktisk mestring i hverdagen.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-sm text-gray-500 mt-3">* Arbeidshypoteser for merkevare- og strategiarbeid. Ikke registerdata.</p>
+
+          <div class="mt-8 space-y-4">
+            <details id="segment1" class="segment-details" open>
+              <summary>
+                <span>Segment 1 — Lyd-optimisten</span>
+                <span class="pill">Primærsegment</span>
+              </summary>
+              <div class="p-5 grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4>Kjennetegn</h4>
+                  <ul>
+                    <li>Midt i arbeidslivet</li>
+                    <li>Høy verdi av å fungere godt i møter, arbeid og sosialt liv</li>
+                    <li>Teknologisk mottakelig, men ikke nødvendigvis interessert i høreapparater som medisinsk kategori</li>
+                    <li>Kan være motivert av ytelse, flyt og lydkvalitet mer enn av «helseproblem»-språk</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4>Rolle i merkevaren</h4>
+                  <p>Dette segmentet hjelper KlarLyd å fremstå som relevant, moderne, attraktiv og fremtidsrettet.</p>
+                </div>
+              </div>
+            </details>
+
+            <details id="segment2" class="segment-details">
+              <summary>
+                <span>Segment 2 — Moderne livsnyter</span>
+                <span class="pill">Primærsegment</span>
+              </summary>
+              <div class="p-5 grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4>Kjennetegn</h4>
+                  <ul>
+                    <li>Yrkesaktiv eller i overgang til tidlig pensjon</li>
+                    <li>Vil nyte familie, venner, kultur, reiser og gode samtaler</li>
+                    <li>Søker trygghet og kvalitet, men orker ikke teknisk friksjon</li>
+                    <li>Kan være i langvarig fornektelse, men kjenner ofte tydelig sosial belastning</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4>Rolle i merkevaren</h4>
+                  <p>Dette segmentet hjelper KlarLyd å fremstå som menneskelig, relevant og nært hverdagslivet.</p>
+                </div>
+              </div>
+            </details>
+
+            <details id="segment3" class="segment-details">
+              <summary>
+                <span>Segment 3 — Proaktiv partner</span>
+                <span class="pill">Påvirkersegment</span>
+              </summary>
+              <div class="p-5 grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4>Kjennetegn</h4>
+                  <ul>
+                    <li>Ser ofte problemet tidligere enn brukeren selv</li>
+                    <li>Kan være ektefelle, partner eller voksen barn</li>
+                    <li>Bærer frustrasjon, praktisk ansvar og emosjonell belastning</li>
+                    <li>Kan være avgjørende for at noen faktisk søker hjelp og fortsetter å bruke løsningen</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4>Rolle i merkevaren</h4>
+                  <p>Ikke hovedmålgruppe i størrelsesmatrise, men svært viktig konverterings- og tillitssegment.</p>
+                </div>
+              </div>
+            </details>
+
+            <details id="segment4" class="segment-details">
+              <summary>
+                <span>Segment 4 — Reaktiv tviler</span>
+                <span class="pill">Strategisk skalasegment</span>
+              </summary>
+              <div class="p-5 grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4>Kjennetegn</h4>
+                  <ul>
+                    <li>Størst i volum</li>
+                    <li>Høy terskel for endring</li>
+                    <li>Kan være skeptisk til teknologi eller lei av å streve</li>
+                    <li>Har ofte større funksjons- og mestringsutfordringer enn de yngre segmentene</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4>Rolle i merkevaren</h4>
+                  <p>Dette segmentet er viktig for offentlig verdi, skala og senere vekst, men bør ikke alene definere hele merkevarens uttrykk.</p>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <!-- 3 PRIORITERING -->
+        <section id="prioritering" class="scroll-mt-24 mb-16">
+          <h2>3. Strategisk prioritering</h2>
+
+          <div class="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+            <table class="mini-table">
+              <tbody>
+                <tr>
+                  <th>Primærsegmenter for merkevaren</th>
+                  <td>1. Lyd-optimisten<br>2. Moderne livsnyter</td>
+                </tr>
+                <tr>
+                  <th>Sekundærsegment</th>
+                  <td>3. Proaktiv partner</td>
+                </tr>
+                <tr>
+                  <th>Strategisk skalasegment</th>
+                  <td>4. Reaktiv tviler</td>
+                </tr>
+                <tr>
+                  <th>Hvorfor denne prioriteringen er nyttig</th>
+                  <td>
+                    <ul class="mb-0">
+                      <li>Segment 1 og 2 gir KlarLyd en mer attraktiv og fremtidsrettet merkevareplattform</li>
+                      <li>Segment 3 styrker adopsjon, språk og troverdighet</li>
+                      <li>Segment 4 er avgjørende for offentlig relevans og langsiktig volum, men bør ikke eie hele merkevaretonen</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Arbeidshypotese</th>
+                  <td>KlarLyd bør være aspirasjonelt nok til å tiltrekke Segment 1 og 2, men varmt og nyttig nok til å fungere for Segment 3 og 4.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="hlf-investor" class="mt-10">
+            <h3>En-sides samtalegrunnlag for HLF og investorer</h3>
+            <div class="callout mb-5">
+              <div class="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 mb-2">Kort fortalt</div>
+              <p class="mb-0">KlarLyd adresserer et tydelig gap i dagens hørselsreise: Mange har et reelt behov, men for få oppnår stabil, funksjonell og meningsfull bruk i hverdagen.</p>
+            </div>
+            <table class="mini-table rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+              <tbody>
+                <tr>
+                  <th>Strategisk hypotese</th>
+                  <td>Markedet er størst blant eldre og mer skeptiske brukere, men merkevaren bør først defineres gjennom segmenter som gjør KlarLyd attraktiv, moderne og ønskelig.</td>
+                </tr>
+                <tr>
+                  <th>Derfor prioriterer vi slik</th>
+                  <td>
+                    <ul class="mb-0">
+                      <li>Primært: Lyd-optimisten og Moderne livsnyter</li>
+                      <li>Sekundært: Proaktiv partner</li>
+                      <li>Skala/offentlig verdi: Reaktiv tviler</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Hva dette gjør mulig</th>
+                  <td>
+                    <ul class="mb-0">
+                      <li>et mer attraktivt merkevareløfte</li>
+                      <li>tydeligere språk og behovsforståelse</li>
+                      <li>bedre bro mellom kommersiell appell og offentlig relevans</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Enkel figur-logikk</th>
+                  <td>
+                    Merkevaren bygges av: Segment 1 + 2<br>
+                    Adopsjon påvirkes av: Segment 3<br>
+                    Skala og offentlig verdi drives av: Segment 4
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="beslutninger" class="mt-10">
+            <h3>Beslutninger vi kan ta allerede nå</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="border border-gray-200 rounded-2xl p-5 bg-white">
+                <div class="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 mb-3">Dette virker klart nok</div>
+                <ul class="mb-0">
+                  <li>KlarLyd bør ikke posisjoneres for bredt som «for alle med hørselstap»</li>
+                  <li>Merkevaren bør ikke bygges på det mest kliniske eller tyngste offentlige språket</li>
+                  <li>Segment 1 og 2 bør være viktigst i merkevareplattformen</li>
+                  <li>Segment 3 bør behandles som strategisk viktig påvirker</li>
+                  <li>Segment 4 bør være viktig i tjenestedesign og offentlig case, men ikke definere hele uttrykket</li>
+                </ul>
+              </div>
+              <div class="border border-gray-200 rounded-2xl p-5 bg-white">
+                <div class="text-xs font-bold uppercase tracking-[0.16em] text-gray-500 mb-3">Dette må fortsatt avklares senere</div>
+                <ul class="mb-0">
+                  <li>mer presise størrelsesanslag dersom dere vil lage investorregnestykke</li>
+                  <li>hvilken versjon av merkevareløftet som best treffer</li>
+                  <li>hvilke differensiatorer som faktisk er mest troverdige etter pilot/intervjuer</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div id="neste-steg" class="mt-10">
+            <h3>Anbefalt neste steg</h3>
+            <table class="mini-table rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+              <tbody>
+                <tr>
+                  <th>Neste naturlige arbeidspakke</th>
+                  <td>
+                    <ol class="list-decimal pl-5">
+                      <li>Spisse merkevareløftet til 2–3 gode kandidater</li>
+                      <li>Lage en enkel brand house / merkevareplattform på én side</li>
+                      <li>Oversette segmentbehovene til:
+                        <ul>
+                          <li>budskapsarkitektur</li>
+                          <li>tone of voice-prinsipper</li>
+                          <li>visuell retning</li>
+                        </ul>
+                      </li>
+                    </ol>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Arbeidshypotese for videre utvikling</th>
+                  <td>KlarLyd vinner ikke ved å være mest medisinsk eller mest teknisk. KlarLyd vinner ved å være den mest relevante broen mellom hørselsteknologi og faktisk livskvalitet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 4 PLATTFORM -->
+        <section id="plattform" class="scroll-mt-24 mb-16">
+          <h2>4. Merkevareplattform</h2>
+          <table class="mini-table rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+            <tbody>
+              <tr>
+                <th>Posisjon</th>
+                <td>KlarLyd er en moderne hørehjelp som gjør det lettere å høre, delta og fungere godt i hverdagen.</td>
+              </tr>
+              <tr>
+                <th>Merkevareløfte — førsteutkast</th>
+                <td>KlarLyd hjelper deg å høre bedre, delta mer og få tilbake lydgleden — med støtte som faktisk fungerer i hverdagen.</td>
+              </tr>
+              <tr>
+                <th>Alternativt, litt skarpere løfte</th>
+                <td>For deg som vil høre bedre og leve friere — uten stigma, stress og teknisk friksjon.</td>
+              </tr>
+              <tr>
+                <th>Hva vi egentlig lover</th>
+                <td>
+                  <ul class="mb-0">
+                    <li>Ikke bare teknologi</li>
+                    <li>Ikke bare apparat</li>
+                    <li>Ikke bare informasjon</li>
+                    <li>Men hjelp til å få faktisk nytte av hørselsløsninger i virkelige situasjoner</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <th>Kjerneidé</th>
+                <td>
+                  KlarLyd lukker gapet mellom:
+                  <ul class="mb-0">
+                    <li>behov</li>
+                    <li>apparat / løsning</li>
+                    <li>faktisk bruk</li>
+                    <li>opplevd nytte i hverdagen</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div id="differensiatorer" class="mt-10">
+            <h3>Differensiatorer — førsteutkast</h3>
+            <div class="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+              <table class="scan-table">
+                <thead>
+                  <tr>
+                    <th>Differensiator</th>
+                    <th>Beskrivelse</th>
+                    <th>Hva dette svarer på</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>1. Faktisk mestring</strong></td>
+                    <td>Vi hjelper folk å få reell nytte i hverdagen, ikke bare tilgang til et hjelpemiddel.</td>
+                    <td>«Jeg har noe, men det fungerer ikke godt nok for meg.»<br>«Jeg trenger hjelp til å få dette til å virke i mitt liv.»</td>
+                  </tr>
+                  <tr>
+                    <td><strong>2. Lydglede, ikke bare lydtap</strong></td>
+                    <td>Vi snakker ikke bare om hva som er vanskelig, men om hva folk vil tilbake til: samtaler, musikk, nærhet, arbeid, opplevelser.</td>
+                    <td>«Jeg vil ikke defineres av et tap.»<br>«Jeg vil tilbake til livet mitt.»</td>
+                  </tr>
+                  <tr>
+                    <td><strong>3. Moderne og ikke-stigmatiserende</strong></td>
+                    <td>KlarLyd skal oppleves som oppdatert, diskré og menneskelig — mer som en smart støtte enn som et medisinsk stigma.</td>
+                    <td>«Jeg vil ikke føle meg gammel eller sykeliggjort.»<br>«Jeg vil ha noe som passer mitt liv og min identitet.»</td>
+                  </tr>
+                  <tr>
+                    <td><strong>4. Trygg støtte når det trengs</strong></td>
+                    <td>Når det er vanskelig, skal det være lett å få hjelp videre. KlarLyd må gi trygghet, ikke bare produktinformasjon.</td>
+                    <td>«Jeg trenger noen som skjønner problemet og kan hjelpe meg videre.»<br>«Jeg vil slippe å gi opp.»</td>
+                  </tr>
+                  <tr>
+                    <td><strong>5. Bedre utnyttelse av det som allerede finnes</strong></td>
+                    <td>KlarLyd kan på sikt bli relevant ikke bare for brukeren, men også for systemet, fordi løsningen kan bidra til bedre bruk av allerede tildelte hjelpemidler.</td>
+                    <td>«Det holder ikke at noe deles ut. Det må faktisk brukes og virke.»</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="folelser" class="mt-10">
+            <h3>Følelsene merkevaren bør skape</h3>
+            <div class="flex flex-wrap gap-3">
+              <span class="pill">Trygghet — dette virker mulig</span>
+              <span class="pill">Lettelse — jeg er ikke alene om dette</span>
+              <span class="pill">Verdighet — dette handler ikke om å bli redusert</span>
+              <span class="pill">Glede — jeg kan få tilbake mer av livet mitt</span>
+              <span class="pill">Fremtidstro — det finnes moderne hjelp som gir mening</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5 BRAND HOUSE -->
+        <section id="brand-house" class="scroll-mt-24 mb-16">
+          <h2>5. Brand house — én side</h2>
+          <table class="mini-table rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+            <tbody>
+              <tr>
+                <th>Formål</th>
+                <td>Denne siden er laget som et komprimert styringsverktøy for videre arbeid med språk, konsept, design og prioritering.</td>
+              </tr>
+              <tr>
+                <th>Målgrupper vi bygger merkevaren rundt</th>
+                <td>
+                  <strong>Primærsegmenter</strong>
+                  <ul>
+                    <li>Lyd-optimisten</li>
+                    <li>Moderne livsnyter</li>
+                  </ul>
+                  <strong>Sekundært påvirkersegment</strong>
+                  <ul>
+                    <li>Proaktiv partner</li>
+                  </ul>
+                  <strong>Strategisk skalasegment</strong>
+                  <ul class="mb-0">
+                    <li>Reaktiv tviler</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <th>Innsikt</th>
+                <td>Mange har et reelt hørselsbehov, men for få oppnår stabil, funksjonell og meningsfull bruk i hverdagen.</td>
+              </tr>
+              <tr>
+                <th>Posisjon</th>
+                <td>KlarLyd er en moderne hørehjelp som gjør det lettere å høre, delta og fungere godt i hverdagen.</td>
+              </tr>
+              <tr>
+                <th>Merkevareløfte</th>
+                <td><strong>Hør bedre. Delta mer. Få tilbake lydgleden.</strong></td>
+              </tr>
+              <tr>
+                <th>Utdypet løfte</th>
+                <td>KlarLyd hjelper deg å få faktisk nytte av hørselsløsninger i virkelige situasjoner — med støtte som fungerer i hverdagen.</td>
+              </tr>
+              <tr>
+                <th>Differensiatorer</th>
+                <td>
+                  <ol class="list-decimal pl-5">
+                    <li>Faktisk mestring — Vi hjelper folk å få reell nytte i hverdagen, ikke bare tilgang til et hjelpemiddel.</li>
+                    <li>Lydglede — Vi tar utgangspunkt i livet folk vil tilbake til: samtaler, musikk, arbeid, nærhet og opplevelser.</li>
+                    <li>Moderne og verdig — KlarLyd skal oppleves som oppdatert, diskré og menneskelig — uten stigma og sykehusfølelse.</li>
+                    <li>Trygg støtte — Når noe er vanskelig, skal det være lett å få hjelp videre.</li>
+                    <li>Bedre anvendelse — KlarLyd skal bidra til bedre bruk av løsninger som allerede finnes, slik at behov oftere blir til faktisk nytte.</li>
+                  </ol>
+                </td>
+              </tr>
+              <tr>
+                <th>Funksjonell verdi</th>
+                <td>
+                  <ul class="mb-0">
+                    <li>lettere å fungere i møter, samtaler og sosiale situasjoner</li>
+                    <li>enklere å forstå hva som virker</li>
+                    <li>lavere terskel for å komme i gang og fortsette</li>
+                    <li>bedre mestring i hverdagen</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <th>Emosjonell verdi</th>
+                <td>trygghet, lettelse, verdighet, glede, fremtidstro</td>
+              </tr>
+              <tr>
+                <th>Bevis vi må kunne bygge videre på</th>
+                <td>
+                  <ul class="mb-0">
+                    <li>dokumentert gap mellom behov, tildeling og funksjonell bruk</li>
+                    <li>tydelige brukerbehov i arbeid, sosialt liv og hverdagsmestring</li>
+                    <li>mulig verdi i bedre anvendelse av allerede tildelte hjelpemidler</li>
+                    <li>senere pilotdata som viser effekt på bruk, mestring og opplevd nytte</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <th>Hva merkevaren ikke skal bli</th>
+                <td>
+                  <ul class="mb-0">
+                    <li>tung, klinisk og problemorientert</li>
+                    <li>teknologisk for sin egen skyld</li>
+                    <li>et språk som reduserer folk til pasienter</li>
+                    <li>et offentlig spareargument uten menneskelig verdi</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <th>Tone i merkevaren</th>
+                <td>enkel, varm, trygg, oppdatert, konkret, verdig</td>
+              </tr>
+              <tr>
+                <th>Strategisk setning</th>
+                <td><strong>KlarLyd bør oppleves som broen mellom hørselsteknologi og faktisk livskvalitet.</strong></td>
+              </tr>
+              <tr>
+                <th>Bruk av brand house</th>
+                <td>Dette rammeverket kan brukes som grunnlag for: videre spissing av merkevareløfte, budskapsarkitektur, pitch til HLF og investorer, tone of voice, visuell retning.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- 6 BUDSKAP -->
+        <section id="budskap" class="scroll-mt-24 mb-16">
+          <h2>6. Budskapsarkitektur</h2>
+          <div class="callout mb-6">
+            <p class="mb-0">Denne delen oversetter brand house til mer konkrete budskap per segment. Tanken er ikke at hvert segment skal få en helt egen merkevare, men at KlarLyd skal kunne snakke relevant til ulike behov uten å miste sin felles identitet.</p>
+          </div>
+
+          <div class="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+            <table class="scan-table">
+              <thead>
+                <tr>
+                  <th>Segment</th>
+                  <th>Hva dette segmentet trenger å høre</th>
+                  <th>Kjernebudskap</th>
+                  <th>Støttebudskap</th>
+                  <th>Bevis / troverdighetsmarkører</th>
+                  <th>Følelse vi vil skape</th>
+                  <th>Eksempel på formuleringer</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>1. Lyd-optimisten</strong></td>
+                  <td>Dette handler ikke om å bli redusert, men om å fungere godt. Du kan få bedre flyt i arbeid, møter og sosiale situasjoner. Det finnes en smartere og mer verdig vei inn i hørselsstøtte.</td>
+                  <td>KlarLyd hjelper deg å høre bedre i et liv som stiller høye krav — uten stigma, stress og unødig friksjon.</td>
+                  <td>Få mer ut av møter, samtaler og komplekse lydmiljøer. Opplev hørselsstøtte som moderne, diskré og relevant for livet du lever. Bruk mindre energi på å kompensere, og mer på å være til stede. Få hjelp til å få faktisk nytte, ikke bare et apparat.</td>
+                  <td>Fokus på funksjon i arbeid og hverdagsliv. Støtte for faktisk bruk og mestring. Et språk og uttrykk som ikke føles klinisk eller gammeldags.</td>
+                  <td>kontroll, lettelse, fremtidstro, verdighet</td>
+                  <td>Hør bedre når det faktisk gjelder. Få tilbake flyten i møter, samtaler og hverdagen. En smartere vei til bedre hørsel i et aktivt liv.</td>
+                </tr>
+                <tr>
+                  <td><strong>2. Moderne livsnyter</strong></td>
+                  <td>Du skal ikke bare høre mer, men få mer ut av livet. Hjelpen skal være enkel, trygg og menneskelig. Dette handler om deltakelse, nærhet og livskvalitet.</td>
+                  <td>KlarLyd gjør det lettere å delta i samtaler, opplevelser og hverdagsøyeblikk — med støtte som fungerer.</td>
+                  <td>Hør bedre i middager, familieliv, reiser og kulturopplevelser. Få støtte som gjør det enklere å komme i gang og fortsette. Opplev mindre stress og mer ro i situasjoner som før tappet deg. Bevar nærheten til menneskene og livet rundt deg.</td>
+                  <td>Lavere terskel for bruk. Hjelp som er lett å forstå. Tydelig vekt på hverdagsnytte fremfor teknisk kompleksitet.</td>
+                  <td>trygghet, glede, lettelse, nærhet</td>
+                  <td>Hør bedre. Vær mer med. Få mer ut av samtaler, reiser og øyeblikkene du bryr deg om. En tryggere og enklere vei til bedre hørsel i hverdagen.</td>
+                </tr>
+                <tr>
+                  <td><strong>3. Proaktiv partner</strong></td>
+                  <td>Du er ikke alene om å se dette problemet. Det finnes en måte å hjelpe på som ikke skaper mer motstand. Målet er mindre frustrasjon og mer kontakt i hverdagen.</td>
+                  <td>KlarLyd gjør det lettere å støtte noen du er glad i — med en vei inn som føles trygg, verdig og mulig å ta i bruk.</td>
+                  <td>Få et språk som gjør det lettere å ta praten. Forstå hvorfor bruk ofte er vanskeligere enn det ser ut. Møt mindre motstand og mer håp om faktisk bedring. Bidra til mer ro, bedre kontakt og mindre gjentakelse i hverdagen.</td>
+                  <td>Relasjonelt språk. Forståelse for barrierer, ikke bare teknologi. Tydelig støtte til adopsjon og oppfølging.</td>
+                  <td>håp, avlastning, trygghet, tillit</td>
+                  <td>Hjelp uten å presse. En bedre vei inn for dere begge. Når bedre hørsel også handler om bedre kontakt.</td>
+                </tr>
+                <tr>
+                  <td><strong>4. Reaktiv tviler</strong></td>
+                  <td>Dette trenger ikke være vanskelig. Du trenger ikke forstå alt teknisk for å få hjelp. Målet er at hverdagen skal bli enklere og tryggere.</td>
+                  <td>KlarLyd gjør det enklere å høre bedre i hverdagen — med tydelig støtte og mindre teknisk stress.</td>
+                  <td>Få hjelp til å komme i gang i ditt eget tempo. Opplev mer mestring i samtaler og daglige situasjoner. Få støtte som er rolig, tydelig og lett å forstå. Bruk mindre energi på å streve og mer på å være med.</td>
+                  <td>Enkel onboarding. Menneskelig og tydelig språk. Fokus på praktisk nytte og trygghet.</td>
+                  <td>ro, trygghet, mestring, verdighet</td>
+                  <td>Bedre hørsel, enklere hverdag. Det skal være mulig å få dette til. Hjelp som gjør det lettere å høre og lettere å være med.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="budskap-felles" class="mt-10">
+            <h3>Felles budskapshierarki</h3>
+            <table class="mini-table rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+              <tbody>
+                <tr>
+                  <th>Øverste merkevarebudskap</th>
+                  <td><strong>Hør bedre. Delta mer. Få tilbake lydgleden.</strong></td>
+                </tr>
+                <tr>
+                  <th>Felles sekundærbudskap</th>
+                  <td>
+                    <ul class="mb-0">
+                      <li>KlarLyd hjelper deg å få faktisk nytte av hørselsløsninger i hverdagen.</li>
+                      <li>Vi gjør veien fra behov til bruk enklere, tryggere og mer relevant.</li>
+                      <li>Målet er ikke bare at noe skal fungere i teorien, men i virkelige situasjoner.</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Segmenttilpasset vinkling</th>
+                  <td>
+                    Segment 1: funksjon, flyt, arbeid, energi<br>
+                    Segment 2: deltakelse, livskvalitet, nærhet, opplevelser<br>
+                    Segment 3: støtte, relasjon, mindre frustrasjon, lettere samtale<br>
+                    Segment 4: enkelhet, trygghet, mestring, hverdagsro
+                  </td>
+                </tr>
+                <tr>
+                  <th>Hvordan budskapsarkitekturen brukes videre</th>
+                  <td>Dette kan nå brukes som grunnlag for: nettsidehierarki, pitch-deck, kampanjebudskap, tone of voice-prinsipper, visuell retning og bildebruk, førsteutkast til landingssider eller seksjoner per målgruppe.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 7 TOV -->
+        <section id="tov" class="scroll-mt-24 mb-16">
+          <h2>7. Tone of Voice</h2>
+          <p>Tone of voice skal gjøre KlarLyd gjenkjennelig på tvers av nettside, pitch, produkttekst, støtteinnhold og dialog. Den skal hjelpe merkevaren å føles samlet, troverdig og relevant for ulike segmenter — uten å bli klinisk, nedlatende eller overivrig.</p>
+          <p>Tone of voice handler ikke bare om hvordan vi skriver. Den styrer også:</p>
+          <ul>
+            <li>hvilke ord vi velger</li>
+            <li>hva vi legger vekt på</li>
+            <li>hvor mye vi forklarer</li>
+            <li>hvordan vi skaper trygghet uten å bli tunge</li>
+            <li>hvordan vi inspirerer uten å overdrive</li>
+          </ul>
+
+          <div class="callout mb-8">
+            <div class="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 mb-2">Grunntone</div>
+            <p class="mb-3">KlarLyd skal oppleves som:</p>
+            <div class="flex flex-wrap gap-3 mb-3">
+              <span class="pill">varm</span>
+              <span class="pill">tydelig</span>
+              <span class="pill">verdig</span>
+              <span class="pill">oppdatert</span>
+              <span class="pill">menneskelig</span>
+              <span class="pill">faglig trygg</span>
+            </div>
+            <p class="mb-0">Den samlede effekten bør være: en moderne og hjelpsom aktør som forstår både mennesker, hverdagsliv og hørselsteknologi.</p>
+          </div>
+
+          <div id="sprakprinsipper" class="mb-10">
+            <h3>Språkprinsipper</h3>
+
+            <details class="tov-details" open>
+              <summary><span>A. Vi snakker om livet, ikke bare om problemet</span><span class="pill">Prinsipp</span></summary>
+              <div class="p-5 overflow-x-auto">
+                <table class="scan-table min-w-0">
+                  <thead>
+                    <tr><th>Prinsipp</th><th>Foretrekk</th><th>Vær forsiktig med</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Vi tar utgangspunkt i det folk vil tilbake til: samtaler, nærhet, arbeid, musikk, ro, mestring og deltakelse.</td>
+                      <td>delta mer<br>høre bedre når det gjelder<br>få tilbake lydgleden<br>fungere bedre i hverdagen</td>
+                      <td>ensidig problem- og mangelspråk<br>språk som reduserer mennesker til diagnose eller tap</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </details>
+
+            <details class="tov-details">
+              <summary><span>B. Vi gjør det begripelig</span><span class="pill">Prinsipp</span></summary>
+              <div class="p-5 overflow-x-auto">
+                <table class="scan-table min-w-0">
+                  <thead>
+                    <tr><th>Prinsipp</th><th>Foretrekk</th><th>Unngå</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Vi bruker enkel og presis norsk. Vi forklarer uten å forenkle så mye at det blir banalt.</td>
+                      <td>klare setninger<br>kjent ordforråd<br>ett poeng om gangen</td>
+                      <td>tungt fagspråk uten forklaring<br>teknisk detaljering før behovet er etablert<br>lange og abstrakte resonnementer i brukerrettet tekst</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </details>
+
+            <details class="tov-details">
+              <summary><span>C. Vi er varme uten å bli sentimentale</span><span class="pill">Prinsipp</span></summary>
+              <div class="p-5 overflow-x-auto">
+                <table class="scan-table min-w-0">
+                  <thead>
+                    <tr><th>Prinsipp</th><th>Foretrekk</th><th>Unngå</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Vi viser forståelse, men uten å bli svulmende eller terapeutiske.</td>
+                      <td>Det kan være krevende når hørselen begynner å komme i veien.<br>Mange strever mer enn det synes utenpå.<br>Det finnes hjelp som kan gjøre hverdagen lettere.</td>
+                      <td>Vi skjønner akkurat hvordan du har det<br>Du lider kanskje i stillhet<br>Nå kan livet ditt endelig bli bra igjen</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </details>
+
+            <details class="tov-details">
+              <summary><span>D. Vi er faglig trygge uten å være belærende</span><span class="pill">Prinsipp</span></summary>
+              <div class="p-5 overflow-x-auto">
+                <table class="scan-table min-w-0">
+                  <thead>
+                    <tr><th>Prinsipp</th><th>Foretrekk</th><th>Unngå</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Vi skal virke kompetente og pålitelige, men ikke snakke ovenfra.</td>
+                      <td>Dette er vanligere enn mange tror.<br>Det er ikke alltid nok å få et apparat. Det må også fungere i livet ditt.<br>God støtte handler ofte om både teknologi, tilpasning og vaner.</td>
+                      <td>bastante påstander uten dekning<br>overforklarende ekspertstemme<br>formuleringer som får brukeren til å føle seg dum eller sen</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </details>
+
+            <details class="tov-details">
+              <summary><span>E. Vi er moderne uten å bli glatte</span><span class="pill">Prinsipp</span></summary>
+              <div class="p-5 overflow-x-auto">
+                <table class="scan-table min-w-0">
+                  <thead>
+                    <tr><th>Prinsipp</th><th>Foretrekk</th><th>Unngå</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>KlarLyd skal oppleves oppdatert og relevant, men ikke som generisk startup-språk.</td>
+                      <td>moderne hørehjelp<br>støtte som fungerer i hverdagen<br>smartere vei til faktisk nytte</td>
+                      <td>game changer<br>disruptiv løsning<br>revolusjonerende plattform<br>seamless økosystem</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </details>
+
+            <details class="tov-details">
+              <summary><span>F. Vi gir håp uten å love for mye</span><span class="pill">Prinsipp</span></summary>
+              <div class="p-5 overflow-x-auto">
+                <table class="scan-table min-w-0">
+                  <thead>
+                    <tr><th>Prinsipp</th><th>Foretrekk</th><th>Unngå</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Vi skal vise mulighet, ikke garantere utfall.</td>
+                      <td>kan gjøre det lettere<br>kan bidra til bedre mestring<br>kan gi mer nytte i hverdagen<br>kan redusere friksjon mellom behov og bruk</td>
+                      <td>vil løse<br>garanterer<br>eliminerer<br>sikrer store besparelser</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          </div>
+
+          <div id="ordvalg" class="mb-10">
+            <h3>Ordvalg</h3>
+            <div class="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+              <table class="scan-table">
+                <thead>
+                  <tr>
+                    <th>Språk vi vil eie</th>
+                    <th>Språk vi bør bruke med forsiktighet</th>
+                    <th>Ord vi helst vil unngå i merkevaretekst</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>høre bedre<br>delta mer<br>lydglede<br>mestring<br>faktisk nytte<br>hverdagsbruk<br>trygg støtte<br>mindre friksjon<br>lettere å være med<br>fungere godt<br>komme i gang<br>fortsette å bruke<br>støtte som fungerer<br>moderne hørehjelp<br>bedre flyt<br>enklere hverdag</td>
+                    <td>pasient<br>lidelse<br>alvorlig svikt<br>compliance<br>intervensjon<br>behandlingseffekt<br>kostnad av passivitet<br>demensforebygging<br>institusjonalisering<br><br>Når slike ord må brukes, bør de som regel reserveres til: faglige dokumenter, offentlige samtaler, investor- eller helseøkonomiske underlag.</td>
+                    <td>skjebne<br>usynlig lidelse<br>håpløshet<br>tragisk<br>revolusjonerende<br>game changer<br>friksjonsfri<br>sømløs<br>genial<br>banebrytende<br>garantert<br>uomtvistelig</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="tov-segmenter" class="mb-10">
+            <h3>Hvordan tonen justeres per segment</h3>
+            <div class="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+              <table class="scan-table">
+                <thead>
+                  <tr>
+                    <th>Segment</th>
+                    <th>Tonevekt</th>
+                    <th>Vi legger vekt på</th>
+                    <th>Vi sier heller</th>
+                    <th>Enn</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Segment 1 — Lyd-optimisten</strong></td>
+                    <td>oppdatert, presis, relevant, fremoverlent</td>
+                    <td>funksjon<br>flyt<br>energi<br>kvalitet<br>diskré modernitet</td>
+                    <td>Få mer ut av møter, samtaler og krevende lydmiljøer.<br>Hjelp som passer et aktivt liv.</td>
+                    <td>Nå kan du endelig få hjelp for hørselstapet ditt.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Segment 2 — Moderne livsnyter</strong></td>
+                    <td>varm, trygg, enkel, livsnær</td>
+                    <td>deltakelse<br>nærhet<br>opplevelser<br>sosial trygghet<br>lettelse</td>
+                    <td>Gjør det lettere å være med i samtaler, middager og opplevelser.<br>Få støtte som fungerer i hverdagen.</td>
+                    <td>En teknologisk løsning for aldersrelatert hørselssvikt.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Segment 3 — Proaktiv partner</strong></td>
+                    <td>empatisk, relasjonell, avlastende</td>
+                    <td>forståelse<br>støtte<br>håp<br>mindre frustrasjon<br>bedre kontakt</td>
+                    <td>Det finnes måter å hjelpe på som ikke skaper mer motstand.<br>Bedre hørsel handler også om bedre kontakt.</td>
+                    <td>Du må få partneren din til å ta dette på alvor.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Segment 4 — Reaktiv tviler</strong></td>
+                    <td>rolig, tydelig, trygg, lite teknisk</td>
+                    <td>enkelhet<br>mestring<br>hjelp i eget tempo<br>praktisk nytte</td>
+                    <td>Det skal være mulig å få dette til.<br>Hjelp som gjør hverdagen enklere.</td>
+                    <td>Optimaliser hørselsreisen din med avansert støtte.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="tov-situasjoner" class="mb-10">
+            <h3>Tone i ulike situasjoner</h3>
+            <div class="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+              <table class="scan-table">
+                <thead>
+                  <tr>
+                    <th>Situasjon</th>
+                    <th>Her skal tonen være</th>
+                    <th>Eksempel</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>A. Forside / merkevaretekst</strong></td>
+                    <td>enkel<br>inviterende<br>håpefull<br>tydelig på verdi</td>
+                    <td>Hør bedre. Delta mer. Få tilbake lydgleden.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>B. Forklarende nettsidetekst</strong></td>
+                    <td>pedagogisk<br>konkret<br>rolig<br>trygg</td>
+                    <td>Det holder ikke alltid å få et høreapparat. Det må også fungere i livet ditt. KlarLyd er laget for å gjøre veien fra behov til faktisk nytte enklere.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>C. Hjelpe- og støttetekst</strong></td>
+                    <td>rolig<br>praktisk<br>lite dømmende<br>oppmuntrende</td>
+                    <td>Det er vanlig at bruk tar tid. Små justeringer kan gjøre stor forskjell i hverdagen.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>D. Offentlig / investor / HLF</strong></td>
+                    <td>nøktern<br>presis<br>troverdig<br>mindre emosjonell, men fortsatt menneskelig</td>
+                    <td>KlarLyd adresserer et dokumentert gap mellom behov, tildeling og funksjonell bruk av hørselsløsninger i hverdagen.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mb-10">
+            <h3>Setningsnivå — slik bør vi skrive</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="border border-gray-200 rounded-2xl p-5 bg-white">
+                <div class="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 mb-3">Vi foretrekker</div>
+                <ul class="mb-0">
+                  <li>korte til middels lange setninger</li>
+                  <li>én hovedidé per setning eller avsnitt</li>
+                  <li>aktive formuleringer</li>
+                  <li>konkrete ord fremfor abstrakte begreper</li>
+                </ul>
+              </div>
+              <div class="border border-gray-200 rounded-2xl p-5 bg-white">
+                <div class="text-xs font-bold uppercase tracking-[0.16em] text-gray-500 mb-3">Vi unngår</div>
+                <ul class="mb-0">
+                  <li>for mange innskudd og bisetninger</li>
+                  <li>stablede abstraksjoner</li>
+                  <li>markedsføringsfloskler</li>
+                  <li>å starte for langt opp i systemnivå når teksten er brukerrettet</li>
+                </ul>
+              </div>
+            </div>
+            <table class="mini-table rounded-2xl overflow-hidden border border-gray-200 shadow-sm mt-6">
+              <tbody>
+                <tr>
+                  <th>Bedre</th>
+                  <td>Mange opplever at hørselen kommer i veien lenge før de føler seg «klare» for et høreapparat.</td>
+                </tr>
+                <tr>
+                  <th>Svakere</th>
+                  <td>Hørselsutfordringer manifesterer seg ofte i forkant av en eksplisitt subjektiv erkjennelse av rehabiliteringsbehov.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mb-10">
+            <h3>Do / Don’t</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="border border-gray-200 rounded-2xl p-5 bg-white">
+                <div class="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 mb-3">Do</div>
+                <ul class="mb-0">
+                  <li>si det enkelt og tydelig</li>
+                  <li>vis menneskelig forståelse</li>
+                  <li>knytt verdien til virkelige situasjoner</li>
+                  <li>bruk håp med bakkekontakt</li>
+                  <li>vær trygg uten å bli hard</li>
+                  <li>la brukeren kjenne seg respektert</li>
+                </ul>
+              </div>
+              <div class="border border-gray-200 rounded-2xl p-5 bg-white">
+                <div class="text-xs font-bold uppercase tracking-[0.16em] text-gray-500 mb-3">Don’t</div>
+                <ul class="mb-0">
+                  <li>skriv som et sykehus</li>
+                  <li>skriv som en generisk startup</li>
+                  <li>overdriv effekter</li>
+                  <li>bruk skam eller frykt som motor</li>
+                  <li>snakk som om alle er like</li>
+                  <li>gjør teknologien til hovedperson</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div id="mikroeksempler" class="mb-10">
+            <h3>Mikroeksempler</h3>
+            <div class="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+              <table class="scan-table">
+                <thead>
+                  <tr>
+                    <th>Overskrifter</th>
+                    <th>CTA-er</th>
+                    <th>Hjelpetekst</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Hør bedre når det faktisk gjelder<br>Gjør det lettere å være med<br>Få mer nytte av hørselsløsningen din<br>Bedre hørsel, enklere hverdag<br>Støtte som fungerer i virkelige situasjoner</td>
+                    <td>Se hvordan det fungerer<br>Finn veien som passer deg<br>Få hjelp til å komme i gang<br>Utforsk hva KlarLyd kan gjøre<br>Les mer om hvordan det virker</td>
+                    <td>Dette kan være et godt sted å starte.<br>Du trenger ikke forstå alt med én gang.<br>Målet er at dette skal fungere bedre i hverdagen din.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="callout">
+            <div class="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 mb-2">Kort TOV-kompass</div>
+            <p class="mb-0">Når vi er i tvil, skal teksten kunne bestå denne testen: KlarLyd høres ut som noen som forstår at dette er menneskelig, kan sitt fag, forklarer klart, lover nøkternt, peker mot et bedre hverdagsliv. Hvis teksten høres for klinisk, for glanset eller for skråsikker ut, må den strammes inn.</p>
+          </div>
+        </section>
+
+        <!-- 8 PERSONLIGHET -->
+        <section id="personlighet" class="scroll-mt-24 mb-12">
+          <h2>8. Merkevarepersonlighet</h2>
+          <p>Ja — dette var et manglende lag.</p>
+          <p>I arbeidet så langt har vi i praksis beskrevet mye av personligheten indirekte gjennom:</p>
+          <ul>
+            <li>posisjon</li>
+            <li>differensiatorer</li>
+            <li>følelsene vi vil skape</li>
+            <li>tone of voice</li>
+          </ul>
+          <p>Men vi har ikke formulert merkevarepersonlighet tydelig nok som eget mellomlag.</p>
+          <p>Det er nyttig å skille mellom:</p>
+          <ul>
+            <li>Merkevarepersonlighet = hvilke menneskelige trekk KlarLyd skal oppleves å ha</li>
+            <li>Tone of voice = hvordan denne personligheten høres ut i språk</li>
+          </ul>
+          <p>Merkevarepersonligheten fungerer derfor som broen mellom strategi og språk.</p>
+
+          <div class="grid lg:grid-cols-3 gap-6 mb-8">
+            <div class="border border-gray-200 rounded-2xl p-6 bg-white">
+              <h3 class="mt-0 mb-3">Oppdatert</h3>
+              <p>KlarLyd skal oppleves som relevant for vår tid, med et tydelig blikk fremover. Ikke teknologisk for teknologiens skyld, men moderne på en måte som gjør hørselsstøtte mer attraktiv, mindre stigmatiserende og mer naturlig å ta i bruk.</p>
+              <h4>Dette betyr</h4>
+              <ul>
+                <li>vi viser at det finnes en smartere vei inn i bedre hørsel</li>
+                <li>vi gjør hørselsstøtte mer samtidsnær og mindre medisinsk tung</li>
+                <li>vi kobler teknologi til faktisk liv, ikke til gadget-interesse alene</li>
+              </ul>
+              <h4>Ikke slik</h4>
+              <ul class="mb-0">
+                <li>blank startup-energi</li>
+                <li>hype og trendjag</li>
+                <li>teknologisk posering</li>
+              </ul>
+            </div>
+
+            <div class="border border-gray-200 rounded-2xl p-6 bg-white">
+              <h3 class="mt-0 mb-3">Omsorgsfull</h3>
+              <p>KlarLyd skal oppleves som menneskelig, nær og hjelpsom. Vi skal forstå at hørsel griper inn i identitet, relasjoner, arbeid og selvfølelse. Omsorgen skal være varm, men ikke sentimental.</p>
+              <h4>Dette betyr</h4>
+              <ul>
+                <li>vi møter mennesker med respekt og verdighet</li>
+                <li>vi skriver og forklarer slik at folk føler seg forstått, ikke redusert</li>
+                <li>vi anerkjenner at veien til bruk og mestring kan være krevende</li>
+              </ul>
+              <h4>Ikke slik</h4>
+              <ul class="mb-0">
+                <li>terapeutisk språk</li>
+                <li>medlidenhet</li>
+                <li>overinvolvering eller emosjonelt overtrykk</li>
+              </ul>
+            </div>
+
+            <div class="border border-gray-200 rounded-2xl p-6 bg-white">
+              <h3 class="mt-0 mb-3">Trygg</h3>
+              <p>KlarLyd skal oppleves som pålitelig, kompetent og rolig. Når noe er vanskelig eller uklart, skal vi skape oversikt og tillit. Vi skal virke som noen som vet hva de snakker om og som hjelper videre på en enkel måte.</p>
+              <h4>Dette betyr</h4>
+              <ul>
+                <li>vi er tydelige og nøkterne</li>
+                <li>vi lover ikke mer enn vi kan stå for</li>
+                <li>vi hjelper folk å forstå hva som faktisk kan være nyttig</li>
+                <li>vi gir følelsen av at dette går an å få til</li>
+              </ul>
+              <h4>Ikke slik</h4>
+              <ul class="mb-0">
+                <li>belærende ekspertstemme</li>
+                <li>hard autoritet</li>
+                <li>skråsikre påstander uten dekning</li>
+              </ul>
+            </div>
+          </div>
+
+          <table class="mini-table rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+            <tbody>
+              <tr>
+                <th>Samlet uttrykk</th>
+                <td>
+                  KlarLyds merkevarepersonlighet kan kort oppsummeres slik:<br>
+                  <strong>Oppdatert, omsorgsfull og trygg</strong><br><br>
+                  Det betyr at KlarLyd skal føles som:
+                  <ul class="mb-0">
+                    <li>en moderne aktør</li>
+                    <li>som forstår mennesker</li>
+                    <li>og som gir trygg hjelp videre</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <th>Følelsene personligheten skal skape</th>
+                <td>trygghet, lettelse, verdighet, lydglede, fremtidstro</td>
+              </tr>
+              <tr>
+                <th>Hvordan personligheten henger sammen med tone of voice</th>
+                <td>
+                  <strong>Oppdatert høres ut som</strong><br>
+                  enkel og samtidig tidsriktig<br>
+                  konkret og relevant<br>
+                  fri for klinisk tyngde og gammel språkdrakt<br><br>
+
+                  <strong>Omsorgsfull høres ut som</strong><br>
+                  varm og respektfull<br>
+                  interessert i menneskers faktiske hverdag<br>
+                  hjelpsom uten å bli myk på en uklar måte<br><br>
+
+                  <strong>Trygg høres ut som</strong><br>
+                  klar og presis<br>
+                  nøktern i løfter og påstander<br>
+                  rolig når noe er vanskelig
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout mt-6">
+            <div class="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 mb-2">Hurtigtest</div>
+            <p class="mb-3">Hvis en tekst, presentasjon eller side skal ligne KlarLyd, bør vi kunne kjenne igjen minst to av disse tre trekkene tydelig:</p>
+            <ul>
+              <li>Oppdatert</li>
+              <li>Omsorgsfull</li>
+              <li>Trygg</li>
+            </ul>
+            <p class="mb-0">Hvis teksten bare er varm, men ikke tydelig, mister vi trygghet. Hvis den bare er moderne, men ikke menneskelig, mister vi omsorg. Hvis den bare er trygg, men ikke relevant og attraktiv, mister vi fremdrift.</p>
+          </div>
+
+          <div class="mt-6 border border-gray-200 rounded-2xl p-5 bg-white">
+            <div class="text-xs font-bold uppercase tracking-[0.16em] text-gray-500 mb-3">Kort versjon til bruk i deck eller intern side</div>
+            <p class="mb-2"><strong>KlarLyds merkevarepersonlighet</strong></p>
+            <ul class="mb-0">
+              <li><strong>Oppdatert:</strong> gjør hørselsstøtte mer relevant, attraktiv og samtidsnær</li>
+              <li><strong>Omsorgsfull:</strong> møter mennesker med respekt, varme og verdighet</li>
+              <li><strong>Trygg:</strong> gir klar, nøktern og kompetent hjelp videre</li>
+            </ul>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const groups = Array.from(document.querySelectorAll('.toc-group'));
+    const groupButtons = Array.from(document.querySelectorAll('.toc-group-button'));
+    const tocLinks = Array.from(document.querySelectorAll('.toc-link'));
+    const sections = tocLinks
+      .map(link => document.querySelector(link.getAttribute('href')))
+      .filter(Boolean);
+
+    function setGroupState(group, open) {
+      group.dataset.open = open ? 'true' : 'false';
+    }
+
+    groupButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const group = button.closest('.toc-group');
+        const isOpen = group.dataset.open === 'true';
+        groups.forEach(g => setGroupState(g, false));
+        setGroupState(group, !isOpen);
+      });
+    });
+
+    function activateLink(id) {
+      tocLinks.forEach(link => {
+        const active = link.getAttribute('href') === '#' + id;
+        link.classList.toggle('active', active);
+      });
+
+      groups.forEach(group => group.dataset.active = 'false');
+
+      const activeLink = tocLinks.find(link => link.getAttribute('href') === '#' + id);
+      if (!activeLink) return;
+      const activeGroup = activeLink.closest('.toc-group');
+      if (activeGroup) {
+        activeGroup.dataset.active = 'true';
+        groups.forEach(group => {
+          if (group !== activeGroup) setGroupState(group, false);
+        });
+        setGroupState(activeGroup, true);
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) activateLink(visible.target.id);
+    }, {
+      rootMargin: '-20% 0px -65% 0px',
+      threshold: [0.1, 0.25, 0.5]
+    });
+
+    sections.forEach(section => observer.observe(section));
+
+    if (sections[0]) activateLink(sections[0].id);
+  </script>
+</body>
+</html>
