@@ -7,7 +7,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "storyblok:bootstrap:slice01": "node scripts/storyblok-bootstrap-slice-01.mjs"
+    "storyblok:bootstrap:slice01": "node scripts/storyblok-bootstrap-slice-01.mjs",
+    "kl:tasks": "node scripts/kl-task-layer.mjs"
   },
   "dependencies": {
     "@storyblok/astro": "^9.0.3",
