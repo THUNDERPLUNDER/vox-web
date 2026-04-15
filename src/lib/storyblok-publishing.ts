@@ -96,6 +96,15 @@ function asStringArray(value: unknown): string[] {
   return out;
 }
 
+function asLineList(value: unknown): string[] {
+  if (Array.isArray(value)) return asStringArray(value);
+  if (typeof value !== "string") return [];
+  return value
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
 function parseRelatedLink(raw: unknown): RelatedLink | null {
   const rec = toRecord(raw);
   const label = asString(rec.label) || asString(rec.title);
@@ -134,7 +143,7 @@ function parseArticleSections(value: unknown): ArticleSection[] {
 }
 
 function parsePoints(rec: AnyRecord): string[] {
-  return asStringArray(rec.points).concat(asStringArray(rec.items));
+  return asLineList(rec.points).concat(asLineList(rec.items));
 }
 
 function parseArticleModule(raw: unknown): ArticleModule | null {
@@ -160,7 +169,7 @@ function parseArticleModule(raw: unknown): ArticleModule | null {
     return {
       component,
       title: asString(rec.title) || asString(rec.heading),
-      cards: asStringArray(rec.cards).concat(asStringArray(rec.phrases)),
+      cards: asLineList(rec.cards).concat(asLineList(rec.phrases)),
     };
   }
 
@@ -197,7 +206,7 @@ function normalizeHubStory(story: AnyRecord): HubPageContent {
     slug,
     kjerne: asString(content.kjerne),
     intro: asString(content.intro),
-    helpPoints: asStringArray(content.help_points),
+    helpPoints: asLineList(content.help_points),
     primaryCtaLabel: asString(content.primary_cta_label),
     primaryCtaTarget: asString(content.primary_cta_target),
     secondaryLinks: parseSecondaryLinks(content.secondary_links),
@@ -217,7 +226,7 @@ function normalizeArticleStory(story: AnyRecord): ArticlePageContent {
     ingress: asString(content.ingress),
     sections: parseArticleSections(content.sections),
     moduleBlocks: parseArticleModules(content.module_blocks),
-    nextSteps: asStringArray(content.next_steps),
+    nextSteps: asLineList(content.next_steps),
     authorName: asString(content.author_name),
     authorRole: asString(content.author_role),
     reviewerName: asString(content.reviewer_name),
