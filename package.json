@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "storyblok:bootstrap:slice01": "node scripts/storyblok-bootstrap-slice-01.mjs"
   },
   "dependencies": {
     "@storyblok/astro": "^9.0.3",
