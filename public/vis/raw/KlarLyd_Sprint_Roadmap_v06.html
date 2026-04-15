@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- VIS METADATA KONTRAKT -->
+    <title>KlarLyd – Sprint: Editorial Polish & Automatisering</title>
+    <meta name="vis:type" content="sprint" />
+    <meta name="description" content="Oppdatert roadmap. Integrert avvikshåndtering i historikken for å bevare læring og strategiske justeringer uten å rote til UI." />
+    <meta name="vis:delta" content="v0.6: Lagt inn plassbesparende system for 'Rasjonale for avvik' inne i detalj-trekkspillet, med subtile varsel-badges på kort-nivå." />
+    
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Fjern standard pil på details/summary for et renere look */
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-[#FAFAF8] text-stone-800 antialiased min-h-screen pb-20">
+
+    <div class="max-w-4xl mx-auto px-5 pt-12 md:pt-20">
+        
+        <!-- HEADER -->
+        <header class="mb-20 text-center">
+            <div class="inline-flex items-center justify-center space-x-2 bg-purple-100 text-purple-800 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-6 border border-purple-200 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+                <span>Aktiv Sprint v0.6</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-stone-900 tracking-tight mb-6">
+                Editorial <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">Polish</span> & Skalering
+            </h1>
+            <p class="text-lg md:text-xl text-stone-600 max-w-2xl mx-auto leading-relaxed">
+                Fundamentet er lagt og teknisk pipe er validert. Fokuset skifter nå fra infrastruktur til redaksjonell kvalitet, finpuss av TOV, og automatisering av innholdsmotoren.
+            </p>
+        </header>
+
+        <!-- TIMELINE / ACTION PLAN -->
+        <div class="space-y-12 relative before:absolute before:inset-0 before:ml-5 md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-emerald-300 before:via-purple-300 before:to-stone-200">
+
+            <!-- STEG 1: Vårrengjøring (FULLFØRT - Uten avvik) -->
+            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group opacity-80 hover:opacity-100 transition-opacity">
+                <!-- Timeline Dot (Done) -->
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#FAFAF8] bg-emerald-500 text-white shadow flex-shrink-0 absolute left-0 md:left-1/2 md:-translate-x-1/2 z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                </div>
+                <!-- Card -->
+                <div class="w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] ml-auto md:ml-0 md:group-odd:ml-auto md:group-even:mr-auto">
+                    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-emerald-100 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">Fullført</div>
+                        <h2 class="text-xl font-bold text-stone-400 mb-3 flex items-center line-through decoration-emerald-300">1. Vårrengjøring i VIS</h2>
+                        
+                        <!-- Leveranse Status -->
+                        <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-4 mt-4">
+                            <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex justify-between items-center">
+                                <span>Hva ble levert:</span>
+                            </h4>
+                            <p class="text-sm text-emerald-900 leading-relaxed">Etablerte "The Golden Set" i VIS-arkivet. Innførte standardiserte metadata-kontrakter (`vis:type`) og fjernet støy fra gamle wireframes for å sikre rent systemdesign.</p>
+                        </div>
+
+                        <!-- Historisk Scope (Collapsible) -->
+                        <details class="group/details mt-4">
+                            <summary class="text-xs font-semibold text-stone-500 hover:text-emerald-700 cursor-pointer flex items-center gap-2 select-none outline-none transition-colors uppercase tracking-wider">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3 transition-transform duration-200 group-open/details:rotate-90">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                </svg>
+                                Se opprinnelig scope
+                            </summary>
+                            <div class="pt-4 mt-3 border-t border-stone-100 opacity-60">
+                                <p class="text-stone-600 text-sm mb-4 leading-relaxed">VIS skal fremstå som et polert bibliotek og et verktøy for presisjon, ikke en rotete nedlastingsmappe.</p>
+                                <ul class="space-y-3 text-sm text-stone-700">
+                                    <li class="flex items-start">
+                                        <span class="text-purple-400 mr-2 mt-0.5">■</span>
+                                        <div><strong>Etablere "The Golden Set":</strong> Reduser VIS-arkivet til kun de ferskeste filene som representerer dagens state-of-the-art.</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEG 2: AI First (FULLFØRT - MED AVVIK) -->
+            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group opacity-80 hover:opacity-100 transition-opacity">
+                <!-- Timeline Dot (Done) -->
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#FAFAF8] bg-emerald-500 text-white shadow flex-shrink-0 absolute left-0 md:left-1/2 md:-translate-x-1/2 z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                </div>
+                <!-- Card -->
+                <div class="w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] ml-auto md:ml-0 md:group-odd:ml-auto md:group-even:mr-auto">
+                    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-emerald-100 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">Fullført</div>
+                        <h2 class="text-xl font-bold text-stone-400 mb-3 flex items-center line-through decoration-emerald-300">2. Variant B (AI First)</h2>
+                        
+                        <!-- Leveranse Status (MED BADGE) -->
+                        <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-4 mt-4">
+                            <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex justify-between items-center">
+                                <span>Hva ble levert:</span>
+                                <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[9px] tracking-widest flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg> SCOPE JUSTERT</span>
+                            </h4>
+                            <p class="text-sm text-emerald-900 leading-relaxed">Konseptualiserte informasjonsarkitekturen for det radikale sporet: Forsiden som et aktivt søkefelt (Søkemotor-paradigmet) for å ha et konseptuelt motstykke til Magasin-paradigmet.</p>
+                        </div>
+
+                        <!-- Historisk Scope & Avvik (Collapsible) -->
+                        <details class="group/details mt-4">
+                            <summary class="text-xs font-semibold text-stone-500 hover:text-emerald-700 cursor-pointer flex items-center gap-2 select-none outline-none transition-colors uppercase tracking-wider">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3 transition-transform duration-200 group-open/details:rotate-90">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                </svg>
+                                Se opprinnelig scope & Avvik
+                            </summary>
+                            <div class="pt-4 mt-3 border-t border-stone-100">
+                                <!-- Opprinnelig -->
+                                <div class="opacity-60 mb-4">
+                                    <p class="text-stone-600 text-xs mb-2 leading-relaxed">Før vi låser oss til "Variant A" (magasinfølelsen), må vi bygge og visualisere vår andre hypotese: Søkemotor-paradigmet.</p>
+                                    <ul class="space-y-2 text-xs text-stone-700">
+                                        <li class="flex items-start"><span class="text-blue-400 mr-2">→</span><div>Kode <code>KlarLyd_Forside_Variant_B.html</code> for VIS.</div></li>
+                                        <li class="flex items-start"><span class="text-blue-400 mr-2">→</span><div>De tre kjernene presentert som forslag under søket.</div></li>
+                                    </ul>
+                                </div>
+                                
+                                <!-- Rasjonale for Avvik (NY) -->
+                                <div class="bg-amber-50/50 border border-amber-100 rounded-lg p-3">
+                                    <h5 class="text-[10px] font-bold text-amber-800 uppercase tracking-wider mb-1">Rasjonale for avvik</h5>
+                                    <p class="text-xs text-amber-900/80 leading-relaxed">
+                                        Vi valgte å sette den faktiske kodingen av HTML-forsiden for Variant B på vent. Vi innså at vi manglet reelt innhold for AI-en å søke i, og valgte derfor å fremskynde arbeidet med "The Content Slice" og Storyblok-integrasjonen i stedet for å bygge et tomt skall.
+                                    </p>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEG 3: Merkevare & TOV (FULLFØRT) -->
+            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group opacity-80 hover:opacity-100 transition-opacity">
+                <!-- Timeline Dot (Done) -->
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#FAFAF8] bg-emerald-500 text-white shadow flex-shrink-0 absolute left-0 md:left-1/2 md:-translate-x-1/2 z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                </div>
+                <!-- Card -->
+                <div class="w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] ml-auto md:ml-0 md:group-odd:ml-auto md:group-even:mr-auto">
+                    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-emerald-100 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">Fullført</div>
+                        <h2 class="text-xl font-bold text-stone-400 mb-3 line-through decoration-emerald-300">3. Merkevare & TOV</h2>
+                        
+                        <!-- Leveranse Status -->
+                        <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-4 mt-4">
+                            <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2">Hva ble levert:</h4>
+                            <ul class="space-y-2 text-sm text-emerald-900">
+                                <li>• Brand Book (v0.2.1) implementert som låst arbeidswiki i VIS.</li>
+                                <li>• Ny AI-agent (`@knaus`) etablert som Innholdsarkitekt.</li>
+                                <li>• TOV-rapport generert autonomt som Google Doc.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Historisk Scope (Collapsible) -->
+                        <details class="group/details mt-4">
+                            <summary class="text-xs font-semibold text-stone-500 hover:text-emerald-700 cursor-pointer flex items-center gap-2 select-none outline-none transition-colors uppercase tracking-wider">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3 transition-transform duration-200 group-open/details:rotate-90">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                </svg>
+                                Se opprinnelig scope
+                            </summary>
+                            <div class="pt-4 mt-3 border-t border-stone-100 opacity-60">
+                                <p class="text-stone-600 text-xs mb-2 leading-relaxed">Før vi skriver et eneste ord på nettsiden, må vi definere hvem vi er og hvordan vi høres ut.</p>
+                                <ul class="space-y-2 text-xs text-stone-700">
+                                    <li class="flex items-start"><span class="text-orange-400 mr-2">■</span><div><strong>Merkevarehuset:</strong> Låse Posisjon, Merkevareløfte og Assosiasjonsord.</div></li>
+                                    <li class="flex items-start"><span class="text-orange-400 mr-2">■</span><div><strong>Tone of Voice (TOV):</strong> Etablere de konkrete språkreglene.</div></li>
+                                </ul>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEG 4: Content Slice 01 - QA (AKTIV) -->
+            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group transform scale-105 origin-left md:origin-center z-20">
+                <!-- Timeline Dot (Active) -->
+                <div class="flex items-center justify-center w-12 h-12 rounded-full border-4 border-[#FAFAF8] bg-purple-600 text-white shadow-lg flex-shrink-0 absolute left-0 md:left-1/2 md:-translate-x-1/2 -ml-1 md:ml-0">
+                    <span class="text-xl">✍️</span>
+                    <span class="absolute -inset-2 rounded-full border border-purple-400 animate-ping opacity-75"></span>
+                </div>
+                <!-- Card -->
+                <div class="w-[calc(100%-3.5rem)] md:w-[calc(50%-3rem)] ml-auto md:ml-0 md:group-odd:ml-auto md:group-even:mr-auto">
+                    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border-2 border-purple-200 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-purple-100 text-purple-800 text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">PÅGÅR NÅ</div>
+                        
+                        <h2 class="text-2xl font-bold text-stone-900 mb-2">4. Redaksjonell Polering (Slice 01)</h2>
+                        <p class="text-purple-700 text-sm font-semibold mb-4">Gjennombrudd oppnådd: Teknisk publiseringsrør (Storyblok -> Frontend) er validert og live!</p>
+                        <p class="text-stone-600 text-sm mb-6 leading-relaxed">Nå som strukturen virker, må innholdet foredles. Vi skifter fokus fra "pilot/systemversjon" til et varmt, trygt og merkevarebyggende dypdykk for Pårørende-segmentet ("Slik tar du praten").</p>
+                        
+                        <div class="grid grid-cols-1 gap-3">
+                            <div class="bg-stone-50 p-4 rounded-xl border border-stone-100">
+                                <h4 class="font-bold text-stone-900 text-xs uppercase tracking-wider mb-1 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span> Fjerne teknisk støy</h4>
+                                <p class="text-xs text-stone-600">Rydde bort interne/tekniske labels som "lekker" ut i UI-et.</p>
+                            </div>
+                            <div class="bg-stone-50 p-4 rounded-xl border border-stone-100">
+                                <h4 class="font-bold text-stone-900 text-xs uppercase tracking-wider mb-1 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span> Editorial Polish (@knaus)</h4>
+                                <p class="text-xs text-stone-600">Løfte artikkelen fra en "strukturert oppsummering" til empatisk langlesing med riktig TOV.</p>
+                            </div>
+                            <div class="bg-stone-50 p-4 rounded-xl border border-stone-100">
+                                <h4 class="font-bold text-stone-900 text-xs uppercase tracking-wider mb-1 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span> Etablere "Trust-laget"</h4>
+                                <p class="text-xs text-stone-600">Gjøre tillitssignalene (kilder, verifisering) konkrete og troverdige i grensesnittet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEG 5: Automatisering & Slice 02 (NESTE) -->
+            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group opacity-50">
+                <!-- Timeline Dot (Next) -->
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#FAFAF8] bg-stone-300 text-stone-600 shadow flex-shrink-0 absolute left-0 md:left-1/2 md:-translate-x-1/2 z-10">
+                    5
+                </div>
+                <!-- Card -->
+                <div class="w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] ml-auto md:ml-0 md:group-odd:ml-auto md:group-even:mr-auto">
+                    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-stone-200">
+                        <div class="text-3xl mb-4 opacity-50">⚙️</div>
+                        <h2 class="text-xl font-bold text-stone-900 mb-2">5. Automatisering & Slice 02</h2>
+                        <p class="text-stone-600 text-sm leading-relaxed mb-4">Når kvaliteten på Slice 01 sitter, skalerer vi opp maskineriet.</p>
+                        
+                        <ul class="space-y-3 text-sm text-stone-600">
+                            <li class="flex items-start">
+                                <span class="text-stone-400 mr-2 mt-0.5">■</span>
+                                <div><strong>Pipeline:</strong> Integrere `@knaus` direkte med Storyblok Management API via script eller Webhook.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-stone-400 mr-2 mt-0.5">■</span>
+                                <div><strong>Neste Målgruppe:</strong> Starte tekstproduksjon for Segment 1 og 2 (Forsiden).</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

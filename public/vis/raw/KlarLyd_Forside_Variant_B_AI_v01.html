@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- VIS METADATA KONTRAKT -->
+    <title>KlarLyd – Forside, Variant B (AI First)</title>
+    <meta name="vis:type" content="wireframe" />
+    <meta name="description" content="Hypotese 2: AI-first design (Søkemotor-paradigmet). Søkefeltet/Z-aksen er det primære grensesnittet for hele plattformen, med de tre Hub-kjernene som underliggende kontekstuelle forslag." />
+    <meta name="vis:delta" content="v0.1: Opprettet Variant B. Fjernet tradisjonell hero-artikkel, erstattet med stort sentrert KI-søk inspirert av Google/Perplexity." />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen relative overflow-x-hidden">
+
+    <!-- SUBTIL DEKORATIV BAKGRUNN FOR Z-AKSE FØLELSE -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-purple-400/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+
+    <!-- 1. MINIMALISTISK HEADER -->
+    <header class="py-6 px-5 md:px-8 flex justify-between items-center w-full max-w-7xl mx-auto z-20">
+        <div class="font-bold text-2xl tracking-tight text-gray-900">KlarLyd<span class="text-purple-600">.</span></div>
+        <div class="flex items-center space-x-6">
+            <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-500">
+                <a href="#" class="hover:text-gray-900 transition">Om KlarLyd</a>
+                <a href="#" class="hover:text-gray-900 transition">Min Side</a>
+            </nav>
+            <div class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-sm shadow-sm cursor-pointer hover:bg-gray-50 transition">👤</div>
+        </div>
+    </header>
+
+    <!-- 2. HOVEDFOKUS: AI-SØKET -->
+    <main class="flex-grow flex flex-col items-center justify-center px-5 -mt-16 z-20">
+        
+        <!-- Logo/Ikon sentrert -->
+        <div class="w-16 h-16 bg-white text-purple-600 rounded-full flex items-center justify-center text-3xl mb-8 shadow-sm border border-purple-100 ring-8 ring-purple-50">
+            ✨
+        </div>
+
+        <!-- Massiv Overskrift -->
+        <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 mb-8 text-center tracking-tight max-w-2xl">
+            Hva kan jeg hjelpe deg med?
+        </h1>
+
+        <!-- Det Sentrale Input-Feltet -->
+        <div class="w-full max-w-3xl bg-white rounded-full shadow-xl border border-gray-200 p-2 md:p-3 flex items-center focus-within:ring-4 focus-within:ring-purple-100 focus-within:border-purple-400 transition-all duration-300">
+            <span class="pl-4 md:pl-6 text-xl opacity-50 hidden sm:block">🔍</span>
+            <input type="text" placeholder="Spør om høreapparater, rettigheter, NAV-satser..." class="w-full bg-transparent px-4 md:px-6 py-3 md:py-4 text-base md:text-xl outline-none text-gray-800 placeholder-gray-400">
+            <button class="bg-purple-600 text-white w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center flex-shrink-0 hover:bg-purple-700 transition shadow-md group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform rotate-90 group-hover:scale-110 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>
+            </button>
+        </div>
+
+        <!-- Tillitsskapende mikrotekst -->
+        <p class="text-xs md:text-sm text-gray-500 mt-5 mb-16 text-center font-medium bg-white/50 px-4 py-1.5 rounded-full border border-gray-100 backdrop-blur-sm">
+            KlarLyd AI oversetter byråkrati og gir råd, men erstatter ikke fastlegen.
+        </p>
+
+        <!-- 3. HUB-FORSLAG (Nivå 1 som innganger under søket) -->
+        <div class="w-full max-w-4xl">
+            <div class="flex items-center justify-center space-x-4 mb-6 opacity-60">
+                <div class="h-px bg-gray-300 flex-grow max-w-[100px]"></div>
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest text-center">Eller utforsk våre kjernetemaer</h2>
+                <div class="h-px bg-gray-300 flex-grow max-w-[100px]"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                
+                <!-- Hub 1: Blå -->
+                <div class="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-900/5 transition-all p-6 rounded-2xl cursor-pointer group text-center flex flex-col items-center">
+                    <div class="w-14 h-14 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:-translate-y-1 transition-transform border border-blue-100">🩺</div>
+                    <h3 class="font-bold text-gray-900 text-lg mb-1">Mistanke & Avklaring</h3>
+                    <p class="text-sm text-gray-500">Symptomer, fastlege og de første skrittene.</p>
+                </div>
+                
+                <!-- Hub 2: Oransje -->
+                <div class="bg-white border border-gray-200 hover:border-orange-300 hover:shadow-lg hover:shadow-orange-900/5 transition-all p-6 rounded-2xl cursor-pointer group text-center flex flex-col items-center">
+                    <div class="w-14 h-14 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:-translate-y-1 transition-transform border border-orange-100">⚖️</div>
+                    <h3 class="font-bold text-gray-900 text-lg mb-1">NAV & Rettigheter</h3>
+                    <p class="text-sm text-gray-500">Økonomi, søknader, satser og mellomlegg.</p>
+                </div>
+                
+                <!-- Hub 3: Grønn -->
+                <div class="bg-white border border-gray-200 hover:border-teal-300 hover:shadow-lg hover:shadow-teal-900/5 transition-all p-6 rounded-2xl cursor-pointer group text-center flex flex-col items-center">
+                    <div class="w-14 h-14 bg-teal-50 text-teal-500 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:-translate-y-1 transition-transform border border-teal-100">🛠️</div>
+                    <h3 class="font-bold text-gray-900 text-lg mb-1">Daglig Mestring</h3>
+                    <p class="text-sm text-gray-500">Vedlikehold, ordbok, bluetooth og samliv.</p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- 4. ENKEL FOOTER -->
+    <footer class="py-8 px-5 border-t border-gray-200 bg-white z-20 mt-16">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+            <div class="mb-4 md:mb-0">
+                &copy; 2026 KlarLyd. Alle rettigheter reservert.
+            </div>
+            <div class="flex space-x-6 font-medium">
+                <a href="#" class="hover:text-gray-900 transition">Personvern</a>
+                <a href="#" class="hover:text-gray-900 transition">Vilkår for bruk</a>
+                <a href="#" class="hover:text-gray-900 transition">Kontakt Oss</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
