@@ -36,7 +36,7 @@ GITHUB_TOKEN=... npm run kl:tasks -- setup-foundation --owner THUNDERPLUNDER --r
 
 Dette oppretter (eller gjenbruker) prosjektet, og sikrer:
 
-- Status: Backlog, Neste, I arbeid, Review, Ferdig, Senere
+- KL Status: Backlog, Neste, I arbeid, Review, Ferdig, Senere
 - Priority: P1, P2, P3
 - Area: Content UI, AI UI, IA, CMS, Tech, Ops, Strategy
 - Text-felt: Owner, Notes, Link

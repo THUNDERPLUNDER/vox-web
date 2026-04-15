@@ -20,6 +20,7 @@ if (!token) {
 }
 
 const STATUS_OPTIONS = ["Backlog", "Neste", "I arbeid", "Review", "Ferdig", "Senere"];
+const WORKFLOW_FIELD_NAME = "KL Status";
 const PRIORITY_OPTIONS = ["P1", "P2", "P3"];
 const AREA_OPTIONS = ["Content UI", "AI UI", "IA", "CMS", "Tech", "Ops", "Strategy"];
 const DEFAULT_PROJECT_TITLE = "Minimal KlarLyd Task Layer v0";
@@ -177,7 +178,7 @@ async function ensureFoundation(owner, repo, projectTitle) {
   let fields = await getProjectFields(project.id);
   const byName = new Map(fields.map((f) => [f.name, f]));
 
-  if (!byName.has("Status")) await createSingleSelectField(project.id, "Status", STATUS_OPTIONS);
+  if (!byName.has(WORKFLOW_FIELD_NAME)) await createSingleSelectField(project.id, WORKFLOW_FIELD_NAME, STATUS_OPTIONS);
   if (!byName.has("Priority")) await createSingleSelectField(project.id, "Priority", PRIORITY_OPTIONS);
   if (!byName.has("Area")) await createSingleSelectField(project.id, "Area", AREA_OPTIONS);
   if (!byName.has("Owner")) await createTextField(project.id, "Owner");
@@ -216,7 +217,7 @@ async function ensureFoundation(owner, repo, projectTitle) {
   console.log(`Project ready: ${project.title} (#${project.number})`);
   console.log("Fields:");
   for (const f of fields) {
-    if (["Title", "Status", "Priority", "Area", "Owner", "Notes", "Link"].includes(f.name)) {
+    if (["Title", WORKFLOW_FIELD_NAME, "Priority", "Area", "Owner", "Notes", "Link"].includes(f.name)) {
       const suffix = f.options?.length ? ` [${f.options.map((o) => o.name).join(", ")}]` : "";
       console.log(`- ${f.name}${suffix}`);
     }
@@ -390,7 +391,7 @@ async function listTasks(owner, projectTitle) {
     const row = {
       issue: item.content.number,
       title: item.content.title,
-      status: fieldMap.Status || "-",
+      status: fieldMap[WORKFLOW_FIELD_NAME] || "-",
       priority: fieldMap.Priority || "-",
       area: fieldMap.Area || "-",
       url: item.content.url,
@@ -416,7 +417,7 @@ async function createTask(args) {
   const itemId = await addIssueToProject(project.id, issue.id);
 
   if (args.status) {
-    const f = findField(fields, "Status");
+    const f = findField(fields, WORKFLOW_FIELD_NAME);
     await setSingleSelectField(project.id, itemId, f.id, findOptionId(f, args.status));
   }
   if (args.priority) {
@@ -461,7 +462,7 @@ async function moveTask(args) {
 
   const project = await getProjectByTitle(owner, projectTitle);
   const fields = await getProjectFields(project.id);
-  const statusField = findField(fields, "Status");
+  const statusField = findField(fields, WORKFLOW_FIELD_NAME);
   const item = await findProjectItemByIssueNumber(project.id, issue);
   if (!item) throw new Error(`Issue #${issue} not found in project`);
   await setSingleSelectField(project.id, item.id, statusField.id, findOptionId(statusField, status));
