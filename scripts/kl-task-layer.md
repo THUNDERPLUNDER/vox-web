@@ -6,6 +6,7 @@ Dette er en liten, bevisbar grunnmur der GitHub Projects v2 er sannhetskilde.
 
 - Sett `GITHUB_TOKEN` i shell (må ha tilgang til repo + projects).
 - Repo: `THUNDERPLUNDER/vox-web`
+- `--owner` kan være både personlig konto (User) og Organization.
 
 ### Token-scope (minimum)
 

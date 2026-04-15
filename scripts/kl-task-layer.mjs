@@ -61,30 +61,35 @@ async function getOwner(ownerLogin) {
   const data = await gql(
     `
       query($owner: String!) {
-        user(login: $owner) { id login }
-        organization(login: $owner) { id login }
+        repositoryOwner(login: $owner) {
+          __typename
+          login
+          id
+        }
       }
     `,
     { owner: ownerLogin },
   );
-  return data.user || data.organization;
+  return data.repositoryOwner;
 }
 
 async function listProjects(ownerLogin) {
   const data = await gql(
     `
       query($owner: String!) {
-        user(login: $owner) {
-          projectsV2(first: 50) { nodes { id title number } }
-        }
-        organization(login: $owner) {
-          projectsV2(first: 50) { nodes { id title number } }
+        repositoryOwner(login: $owner) {
+          ... on User {
+            projectsV2(first: 50) { nodes { id title number } }
+          }
+          ... on Organization {
+            projectsV2(first: 50) { nodes { id title number } }
+          }
         }
       }
     `,
     { owner: ownerLogin },
   );
-  return (data.user?.projectsV2?.nodes || data.organization?.projectsV2?.nodes || []).filter(Boolean);
+  return (data.repositoryOwner?.projectsV2?.nodes || []).filter(Boolean);
 }
 
 async function getOrCreateProject(ownerLogin, projectTitle = DEFAULT_PROJECT_TITLE) {
