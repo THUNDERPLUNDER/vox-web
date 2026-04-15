@@ -1,0 +1,119 @@
+---
+/* CONTRACT: Minimal Slice 01 hub page from Storyblok hub_page + ai_seed_question content. */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Section from "../../components/layout/Section.astro";
+import Footer from "../../components/nav/Footer.astro";
+import { fetchAiSeedQuestions, fetchPublishingHub } from "../../lib/storyblok-publishing";
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+
+const hub = await fetchPublishingHub();
+const seeds = await fetchAiSeedQuestions();
+
+const title = hub?.title || "KlarLyd Hub";
+const intro =
+  hub?.intro ||
+  "En enkel testflate for første publiserte innholdspakke fra Storyblok.";
+---
+
+<BaseLayout title={`VOX - ${title}`} currentPath="/no/hub">
+  <meta slot="head" name="robots" content="noindex,follow" />
+
+  <main class="py-8 sm:py-10">
+    <Section class="!pt-2 !pb-10 sm:!pt-4 sm:!pb-12">
+      <div class="max-w-3xl">
+        <div class="vox-surface-calm">
+          <p class="text-xs font-medium uppercase tracking-wide text-[rgb(var(--muted))]">Hub</p>
+          <h1 class="font-display mt-2 text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl">
+            {title}
+          </h1>
+          {hub?.kjerne ? <p class="mt-4 text-sm font-medium text-[rgb(var(--text-secondary))]">{hub.kjerne}</p> : null}
+          <p class="vox-lead mt-5">{intro}</p>
+          {hub?.status ? (
+            <p class="mt-4 text-xs uppercase tracking-wide text-[rgb(var(--muted))]">Status: {hub.status}</p>
+          ) : null}
+        </div>
+      </div>
+    </Section>
+
+    <Section tone="band" class="!py-10 sm:!py-12">
+      <div class="max-w-3xl">
+        <h2 class="vox-section-title">Dette får du hjelp med</h2>
+        {hub?.helpPoints.length ? (
+          <ul class="mt-6 grid list-none gap-3 p-0 sm:gap-4" role="list">
+            {hub.helpPoints.map((point) => (
+              <li class="vox-surface-tech text-sm leading-relaxed text-[rgb(var(--text-secondary))]">{point}</li>
+            ))}
+          </ul>
+        ) : (
+          <p class="mt-4 text-sm text-[rgb(var(--muted))]">Ingen help points publisert ennå.</p>
+        )}
+
+        {(hub?.primaryCtaLabel && hub?.primaryCtaTarget) || hub?.secondaryLinks.length ? (
+          <div class="mt-8 space-y-4">
+            {hub?.primaryCtaLabel && hub?.primaryCtaTarget ? (
+              <a
+                href={hub.primaryCtaTarget}
+                class="sonic-pulse-cta inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold transition-shadow"
+              >
+                {hub.primaryCtaLabel}
+              </a>
+            ) : null}
+
+            {hub?.secondaryLinks.length ? (
+              <ul class="grid list-none gap-3 p-0 sm:grid-cols-2" role="list">
+                {hub.secondaryLinks.map((link) => (
+                  <li class="vox-surface-tech">
+                    <a
+                      href={link.href}
+                      class:list={[
+                        "block text-sm font-medium text-[rgb(var(--text))] no-underline",
+                        link.comingSoon ? "pointer-events-none opacity-60" : "hover:underline",
+                      ]}
+                      aria-disabled={link.comingSoon ? "true" : undefined}
+                    >
+                      {link.label}
+                      {link.comingSoon ? (
+                        <span class="ml-2 text-xs uppercase tracking-wide text-[rgb(var(--muted))]">Kommer snart</span>
+                      ) : null}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+    </Section>
+
+    {seeds.length ? (
+      <Section class="!pt-6 !pb-12 sm:!pb-16">
+        <div class="max-w-3xl">
+          <div class="vox-surface-lifted">
+            <h2 class="vox-section-title text-lg sm:text-xl">Forslag til spørsmål</h2>
+            <ul class="mt-4 grid list-none gap-3 p-0" role="list">
+              {seeds.map((seed) => (
+                <li class="rounded-[var(--radius-md)] border border-[rgb(var(--border))] bg-[rgb(var(--surface))/0.42] p-4">
+                  <p class="text-sm font-semibold text-[rgb(var(--text))]">{seed.question}</p>
+                  {seed.shortAnswer ? (
+                    <p class="mt-1.5 text-sm text-[rgb(var(--muted))]">{seed.shortAnswer}</p>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Section>
+    ) : null}
+
+    {hub?.trustNote ? (
+      <Section class="!pt-0 !pb-10 sm:!pb-14">
+        <div class="max-w-3xl">
+          <p class="text-sm text-[rgb(var(--muted))]">{hub.trustNote}</p>
+        </div>
+      </Section>
+    ) : null}
+  </main>
+
+  <Footer />
+</BaseLayout>

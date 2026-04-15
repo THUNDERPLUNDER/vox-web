@@ -1,0 +1,175 @@
+---
+/* CONTRACT: Minimal Slice 01 article page from Storyblok article_page + module blocks + trust layer. */
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/layout/Section.astro";
+import Footer from "../../../components/nav/Footer.astro";
+import {
+  fetchAiSeedQuestions,
+  fetchPublishingArticleBySlug,
+  fetchPublishingArticleSlugs,
+} from "../../../lib/storyblok-publishing";
+
+type ArticleProps = {
+  slug: string;
+};
+
+export async function getStaticPaths() {
+  const allSlugs = await fetchPublishingArticleSlugs();
+  const target = "slik-tar-du-praten";
+  const slugs = allSlugs.includes(target) ? [target] : [];
+  return slugs.map((slug) => ({ params: { slug }, props: { slug } satisfies ArticleProps }));
+}
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+
+const { slug } = Astro.props as ArticleProps;
+const article = await fetchPublishingArticleBySlug(slug);
+if (!article) {
+  throw new Error(`[publishing] Missing article_page for slug: ${slug}`);
+}
+
+const seeds = (await fetchAiSeedQuestions()).filter((seed) =>
+  !seed.relatedArticle || seed.relatedArticle === article.slug,
+);
+
+const updatedLabel = article.updatedAt
+  ? (() => {
+      const d = new Date(article.updatedAt);
+      return Number.isNaN(d.getTime()) ? article.updatedAt : d.toLocaleDateString("no-NO");
+    })()
+  : undefined;
+---
+
+<BaseLayout title={`VOX - ${article.title}`} currentPath="/no/hub">
+  <meta slot="head" name="robots" content="noindex,follow" />
+
+  <main class="py-8 sm:py-10">
+    <Section class="!pt-2 !pb-8 sm:!pt-4 sm:!pb-10">
+      <div class="max-w-3xl">
+        <div class="vox-surface-calm">
+          {article.categoryLabel ? (
+            <p class="text-xs font-medium uppercase tracking-wide text-[rgb(var(--muted))]">{article.categoryLabel}</p>
+          ) : null}
+          <h1 class="font-display mt-2 text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl">
+            {article.title}
+          </h1>
+          {article.ingress ? <p class="vox-lead mt-5">{article.ingress}</p> : null}
+        </div>
+      </div>
+    </Section>
+
+    <Section tone="band" class="!py-8 sm:!py-10">
+      <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+        <article class="space-y-6">
+          {article.sections.length ? (
+            article.sections.map((section) => (
+              <section class="vox-surface-tech">
+                {section.heading ? <h2 class="text-lg font-semibold text-[rgb(var(--text))]">{section.heading}</h2> : null}
+                {section.body ? <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">{section.body}</p> : null}
+              </section>
+            ))
+          ) : (
+            <p class="text-sm text-[rgb(var(--muted))]">Ingen sections publisert ennå.</p>
+          )}
+
+          {article.moduleBlocks.map((block) => {
+            if (block.component === "module_phrase_cards") {
+              return (
+                <section class="vox-surface-tech">
+                  <h3 class="text-sm font-semibold uppercase tracking-wide text-[rgb(var(--text))]">
+                    {block.title || "Eksempelfraser"}
+                  </h3>
+                  <ul class="mt-3 grid list-none gap-2 p-0 sm:grid-cols-2" role="list">
+                    {block.cards.map((card) => (
+                      <li class="rounded-[var(--radius-sm)] border border-[rgb(var(--border))] bg-[rgb(var(--surface))/0.45] px-3 py-2 text-sm text-[rgb(var(--text-secondary))]">
+                        {card}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              );
+            }
+
+            if (block.component === "related_link") {
+              return (
+                <section class="vox-surface-tech">
+                  <a
+                    href={block.href}
+                    class:list={[
+                      "text-sm font-medium no-underline",
+                      block.comingSoon
+                        ? "pointer-events-none text-[rgb(var(--muted))]"
+                        : "text-[rgb(var(--text))] hover:underline",
+                    ]}
+                    aria-disabled={block.comingSoon ? "true" : undefined}
+                  >
+                    {block.label}
+                    {block.comingSoon ? (
+                      <span class="ml-2 text-xs uppercase tracking-wide text-[rgb(var(--muted))]">Kommer snart</span>
+                    ) : null}
+                  </a>
+                </section>
+              );
+            }
+
+            return (
+              <section class="vox-surface-tech">
+                <p class="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--muted))]">
+                  {block.component.replaceAll("_", " ")}
+                </p>
+                {block.title ? <h3 class="mt-1 text-base font-semibold text-[rgb(var(--text))]">{block.title}</h3> : null}
+                {block.body ? <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">{block.body}</p> : null}
+                {block.points.length ? (
+                  <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-[rgb(var(--text-secondary))]">
+                    {block.points.map((point) => (
+                      <li>{point}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </section>
+            );
+          })}
+
+          {article.nextSteps.length ? (
+            <section class="vox-surface-lifted">
+              <h2 class="vox-section-title text-lg">Neste steg</h2>
+              <ul class="mt-3 list-disc space-y-1 pl-5 text-sm text-[rgb(var(--text-secondary))]">
+                {article.nextSteps.map((step) => (
+                  <li>{step}</li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+        </article>
+
+        <aside class="space-y-4 lg:sticky lg:top-28 lg:self-start">
+          <div class="vox-surface-tech">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-[rgb(var(--text))]">Om innholdet</h2>
+            <ul class="mt-3 space-y-2 text-sm text-[rgb(var(--text-secondary))]">
+              {article.authorName ? <li><strong>Forfatter:</strong> {article.authorName}{article.authorRole ? `, ${article.authorRole}` : ""}</li> : null}
+              {article.reviewerName ? <li><strong>Faglig sjekk:</strong> {article.reviewerName}{article.reviewerRole ? `, ${article.reviewerRole}` : ""}</li> : null}
+              {updatedLabel ? <li><strong>Oppdatert:</strong> {updatedLabel}</li> : null}
+            </ul>
+            {article.aiNote ? <p class="mt-3 text-xs leading-relaxed text-[rgb(var(--muted))]">{article.aiNote}</p> : null}
+            {article.methodNote ? <p class="mt-2 text-xs leading-relaxed text-[rgb(var(--muted))]">{article.methodNote}</p> : null}
+          </div>
+
+          {seeds.length ? (
+            <div class="vox-surface-tech">
+              <h2 class="text-sm font-semibold uppercase tracking-wide text-[rgb(var(--text))]">Spørsmål du kan starte med</h2>
+              <ul class="mt-3 space-y-2 text-sm text-[rgb(var(--text-secondary))]">
+                {seeds.map((seed) => (
+                  <li class="rounded-[var(--radius-sm)] border border-[rgb(var(--border))] bg-[rgb(var(--surface))/0.45] px-3 py-2">
+                    {seed.question}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </aside>
+      </div>
+    </Section>
+  </main>
+
+  <Footer />
+</BaseLayout>
