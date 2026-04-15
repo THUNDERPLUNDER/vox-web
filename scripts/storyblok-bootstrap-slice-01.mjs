@@ -8,12 +8,12 @@
  * - STORYBLOK_PERSONAL_TOKEN or STORYBLOK_OAUTH_TOKEN
  *
  * Optional env:
- * - STORYBLOK_MANAGEMENT_BASE_URL (default: https://api.storyblok.com/v1)
+ * - STORYBLOK_MANAGEMENT_BASE_URL (default: https://mapi.storyblok.com/v1)
  */
 
 const SPACE_ID = process.env.STORYBLOK_SPACE_ID;
 const TOKEN = process.env.STORYBLOK_PERSONAL_TOKEN || process.env.STORYBLOK_OAUTH_TOKEN;
-const BASE_URL = process.env.STORYBLOK_MANAGEMENT_BASE_URL || "https://api.storyblok.com/v1";
+const BASE_URL = process.env.STORYBLOK_MANAGEMENT_BASE_URL || "https://mapi.storyblok.com/v1";
 
 if (!SPACE_ID) {
   console.error("Missing env: STORYBLOK_SPACE_ID");
@@ -81,7 +81,7 @@ const componentSpecs = [
       slug: textField(1),
       kjerne: textareaField(2),
       intro: textareaField(3),
-      help_points: { type: "list", pos: 4 },
+      help_points: textareaField(4),
       primary_cta_label: textField(5),
       primary_cta_target: linkField(6),
       secondary_links: bloksField(7, ["related_link"]),
@@ -113,7 +113,7 @@ const componentSpecs = [
         "module_reassurance_block",
         "related_link",
       ]),
-      next_steps: { type: "list", pos: 7 },
+      next_steps: textareaField(7),
       author_name: textField(8),
       author_role: textField(9),
       reviewer_name: textField(10),
@@ -163,7 +163,7 @@ const componentSpecs = [
     schema: {
       title: textField(0),
       body: textareaField(1),
-      points: { type: "list", pos: 2 },
+      points: textareaField(2),
     },
   },
   {
@@ -174,7 +174,7 @@ const componentSpecs = [
     schema: {
       title: textField(0),
       body: textareaField(1),
-      points: { type: "list", pos: 2 },
+      points: textareaField(2),
     },
   },
   {
@@ -184,7 +184,7 @@ const componentSpecs = [
     is_nestable: true,
     schema: {
       title: textField(0),
-      cards: { type: "list", pos: 1 },
+      cards: textareaField(1),
     },
   },
   {
@@ -195,7 +195,7 @@ const componentSpecs = [
     schema: {
       title: textField(0),
       body: textareaField(1),
-      points: { type: "list", pos: 2 },
+      points: textareaField(2),
     },
   },
   {
@@ -206,7 +206,7 @@ const componentSpecs = [
     schema: {
       title: textField(0),
       body: textareaField(1),
-      points: { type: "list", pos: 2 },
+      points: textareaField(2),
     },
   },
   {
@@ -237,7 +237,7 @@ const hubStory = {
       "Setninger du kan bruke i praksis.",
       "Hva du gjør når praten låser seg.",
       "Neste steg hvis dere trenger støtte.",
-    ],
+    ].join("\n"),
     primary_cta_label: "Les: Slik tar du praten",
     primary_cta_target: "/no/artikkel/slik-tar-du-praten",
     secondary_links: [
@@ -297,7 +297,7 @@ const articleStory = {
           "Mange misforståelser i samtaler.",
           "TV-volumet blir stadig høyere.",
           "Sosiale settinger blir oftere unngått.",
-        ],
+        ].join("\n"),
       },
       {
         component: "module_friction_box",
@@ -307,7 +307,7 @@ const articleStory = {
           "Temaet føles skambelagt.",
           "Begge parter blir fort defensive.",
           "Man mangler konkrete ord i øyeblikket.",
-        ],
+        ].join("\n"),
       },
       {
         component: "module_phrase_cards",
@@ -317,7 +317,7 @@ const articleStory = {
           "Jeg ser at noen situasjoner tapper deg mer enn før.",
           "Kan vi teste noen små grep sammen?",
           "Vi trenger ikke løse alt nå.",
-        ],
+        ].join("\n"),
       },
       {
         component: "module_response_block",
@@ -327,13 +327,13 @@ const articleStory = {
           "Bekreft følelsen: 'Jeg skjønner at dette er vanskelig å snakke om.'",
           "Gå tilbake til omsorg: 'Jeg vil bare at du skal ha det lettere i hverdagen.'",
           "Foreslå et lite neste steg i stedet for stor beslutning.",
-        ],
+        ].join("\n"),
       },
       {
         component: "module_reassurance_block",
         title: "Trygghet i prosessen",
         body: "Små steg er ofte nok i starten. En god første prat kan være viktigere enn en perfekt plan.",
-        points: ["Du gjør allerede noe viktig ved å ta temaet på alvor."],
+        points: ["Du gjør allerede noe viktig ved å ta temaet på alvor."].join("\n"),
       },
       {
         component: "related_link",
@@ -346,7 +346,7 @@ const articleStory = {
       "Velg én situasjon dere vil gjøre lettere denne uken.",
       "Bli enige om én setning dere kan bruke når det blir vanskelig.",
       "Vurder om dere vil utforske mer støtte sammen.",
-    ],
+    ].join("\n"),
     author_name: "KlarLyd Redaksjon",
     author_role: "Innholdsutvikling",
     reviewer_name: "Faglig rådgiver",
