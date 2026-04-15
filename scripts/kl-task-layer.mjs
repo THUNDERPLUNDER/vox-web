@@ -24,6 +24,11 @@ const PRIORITY_OPTIONS = ["P1", "P2", "P3"];
 const AREA_OPTIONS = ["Content UI", "AI UI", "IA", "CMS", "Tech", "Ops", "Strategy"];
 const DEFAULT_PROJECT_TITLE = "Minimal KlarLyd Task Layer v0";
 
+function printResult(event, payload) {
+  const body = { event, ...payload };
+  console.log(`RESULT ${JSON.stringify(body)}`);
+}
+
 function parseArgs(argv) {
   const [command, ...rest] = argv;
   const args = {};
@@ -211,6 +216,12 @@ async function ensureFoundation(owner, repo, projectTitle) {
       console.log(`- ${f.name}${suffix}`);
     }
   }
+  printResult("setup_foundation_done", {
+    projectTitle: project.title,
+    projectNumber: project.number,
+    owner,
+    repo,
+  });
 }
 
 async function getProjectByTitle(owner, projectTitle) {
@@ -366,14 +377,25 @@ async function listTasks(owner, projectTitle) {
   );
 
   const items = data.node.items.nodes.filter((n) => n.content?.number);
+  const rows = [];
   for (const item of items) {
     const fieldMap = Object.fromEntries(
       item.fieldValues.nodes.map((fv) => [fv.field?.name, fv.name ?? fv.text]).filter((x) => x[0]),
     );
-    console.log(
-      `#${item.content.number} ${item.content.title} | Status=${fieldMap.Status || "-"} | Priority=${fieldMap.Priority || "-"} | Area=${fieldMap.Area || "-"}`,
-    );
+    const row = {
+      issue: item.content.number,
+      title: item.content.title,
+      status: fieldMap.Status || "-",
+      priority: fieldMap.Priority || "-",
+      area: fieldMap.Area || "-",
+      url: item.content.url,
+    };
+    rows.push(row);
+    console.log(`#${row.issue} ${row.title}`);
+    console.log(`  status=${row.status} priority=${row.priority} area=${row.area}`);
+    console.log(`  ${row.url}`);
   }
+  printResult("list_tasks_done", { count: rows.length, tasks: rows });
 }
 
 async function createTask(args) {
@@ -415,6 +437,14 @@ async function createTask(args) {
 
   console.log(`Created task: #${issue.number} ${issue.title}`);
   console.log(issue.url);
+  printResult("create_task_done", {
+    issue: issue.number,
+    title: issue.title,
+    url: issue.url,
+    status: args.status || null,
+    priority: args.priority || null,
+    area: args.area || null,
+  });
 }
 
 async function moveTask(args) {
@@ -431,6 +461,7 @@ async function moveTask(args) {
   if (!item) throw new Error(`Issue #${issue} not found in project`);
   await setSingleSelectField(project.id, item.id, statusField.id, findOptionId(statusField, status));
   console.log(`Moved #${issue} -> ${status}`);
+  printResult("move_task_done", { issue: Number(issue), status });
 }
 
 async function setPriority(args) {
@@ -447,6 +478,7 @@ async function setPriority(args) {
   if (!item) throw new Error(`Issue #${issue} not found in project`);
   await setSingleSelectField(project.id, item.id, priorityField.id, findOptionId(priorityField, priority));
   console.log(`Set priority #${issue} -> ${priority}`);
+  printResult("set_priority_done", { issue: Number(issue), priority });
 }
 
 async function main() {
