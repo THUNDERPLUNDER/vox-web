@@ -139,7 +139,7 @@ async function getProjectFields(projectId) {
 }
 
 async function createSingleSelectField(projectId, name, optionNames) {
-  const options = optionNames.map((n) => ({ name: n, color: "GRAY" }));
+  const options = optionNames.map((n) => ({ name: n, color: "GRAY", description: "" }));
   await gql(
     `
       mutation($projectId: ID!, $name: String!, $options: [ProjectV2SingleSelectFieldOptionInput!]!) {
