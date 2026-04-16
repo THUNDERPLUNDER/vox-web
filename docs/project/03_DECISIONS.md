@@ -67,3 +67,8 @@ Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår 
 - Beslutning: Visuell løft av forsiden og info med tydeligere Sonic-gradient og tonal detaljer er **inkrementelt** (token- og hook-basert), **ikke** full redesign av layout, copy eller informasjonsarkitektur i samme sleng.
 - Begrunnelse: Kontrollert MVP-iterasjon; reduserer risiko og scope-glidning.
 - Konsekvens: Videre «store» redesigns krever eget mandat; små justeringer fortsetter innen eksisterende mønstre.
+
+## 2026-04-16 - Return Ticket etablert som operativ repo-mal
+- Beslutning: Return Ticket dokumenteres i repoet som en liten, fast operativ mal i `docs/project/06_RETURN_TICKET.md`.
+- Begrunnelse: Arbeidsmodellen krever retur fra viktig utførelse, og pilot viste behov for ett fast sted og ett kort format.
+- Konsekvens: Viktig utførelse regnes ikke som helt ferdig før Return Ticket er fylt ut eller eksplisitt vurdert som unødvendig.
