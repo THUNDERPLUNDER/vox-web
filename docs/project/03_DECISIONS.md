@@ -72,3 +72,8 @@ Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår 
 - Beslutning: Return Ticket dokumenteres i repoet som en liten, fast operativ mal i `docs/project/06_RETURN_TICKET.md`.
 - Begrunnelse: Arbeidsmodellen krever retur fra viktig utførelse, og pilot viste behov for ett fast sted og ett kort format.
 - Konsekvens: Viktig utførelse regnes ikke som helt ferdig før Return Ticket er fylt ut eller eksplisitt vurdert som unødvendig.
+
+## 2026-04-16 - GitHub Projects forankres som ett felles task bus-prosjekt
+- Beslutning: KlarLyd bruker ett felles GitHub Project som delt oppgavebuss, med eksplisitt skille mellom statusflyt (`KL Status`) og arbeidsspor (`Workstream`).
+- Begrunnelse: Vi trenger én felles operativ sannhet for Thomas, Vibeke, @navigator, @rigger og Cursor, uten å splitte status på flere parallelle prosjekter.
+- Konsekvens: Overordnet tidslinje, workstream-oversikt og operativ utførelse skal løses med views over samme prosjekt, ikke med nye sideprosjekter.
