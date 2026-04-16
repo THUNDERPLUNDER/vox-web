@@ -101,6 +101,9 @@ export function readWireframeHeadMetadata(filePath: string): {
   description?: string;
   visDelta?: string;
   visTypeMeta?: string;
+  visSectionMeta?: string;
+  visFeaturedMeta?: string;
+  visUpdatedMeta?: string;
 } {
   try {
     if (!fs.existsSync(filePath)) return {};
@@ -130,12 +133,18 @@ export function readWireframeHeadMetadata(filePath: string): {
 
     const visDelta = readMetaContentByName(head, "vis:delta");
     const visTypeMeta = readMetaContentByName(head, "vis:type");
+    const visSectionMeta = readMetaContentByName(head, "vis:section");
+    const visFeaturedMeta = readMetaContentByName(head, "vis:featured");
+    const visUpdatedMeta = readMetaContentByName(head, "vis:updated");
 
     return {
       title: title || undefined,
       description: description || undefined,
       visDelta: visDelta || undefined,
       visTypeMeta: visTypeMeta || undefined,
+      visSectionMeta: visSectionMeta || undefined,
+      visFeaturedMeta: visFeaturedMeta || undefined,
+      visUpdatedMeta: visUpdatedMeta || undefined,
     };
   } catch {
     return {};
@@ -151,6 +160,13 @@ export type WireframeIndexEntry = {
   description?: string;
   /** Løst type for badge på `/vis` (meta + filnavn-fallback). */
   visType: VisContentType;
+  /** Valgfri eksplisitt seksjon via `<meta name="vis:section">`. */
+  visSectionMeta?: string;
+  /** Valgfri markering av fremhevet innhold via `<meta name="vis:featured">`. */
+  visFeatured: boolean;
+  /** Valgfri oppdateringsdato via `<meta name="vis:updated">`. */
+  visUpdatedRaw?: string;
+  visUpdatedEpoch?: number;
 };
 
 /** Same `displayTitle` + `description` + optional `delta` as `/vis` index for a single raw HTML file. */
@@ -172,12 +188,95 @@ export function wireframeIndexEntries(): WireframeIndexEntry[] {
     const meta = readWireframeHeadMetadata(path.join(dir, filename));
     const displayTitle = (meta.title && meta.title.length > 0 ? meta.title : filename) || filename;
     const visType = resolveVisType(filename, meta.visTypeMeta);
+    const featuredRaw = meta.visFeaturedMeta?.trim().toLowerCase();
+    const visFeatured = featuredRaw === "true" || featuredRaw === "1" || featuredRaw === "yes";
+    const visUpdatedRaw = meta.visUpdatedMeta?.trim();
+    const parsedUpdated = visUpdatedRaw ? Date.parse(visUpdatedRaw) : Number.NaN;
+    const visUpdatedEpoch = Number.isFinite(parsedUpdated) ? parsedUpdated : undefined;
     return {
       filename,
       slug,
       displayTitle,
       description: meta.description,
       visType,
+      visSectionMeta: meta.visSectionMeta,
+      visFeatured,
+      visUpdatedRaw,
+      visUpdatedEpoch,
     };
   });
+}
+
+export type VisIndexSection =
+  | "Task flow / status"
+  | "Sprint / roadmap"
+  | "Strategi"
+  | "Dokumenter"
+  | "Wireframes";
+
+const VIS_SECTION_ORDER: VisIndexSection[] = [
+  "Task flow / status",
+  "Sprint / roadmap",
+  "Strategi",
+  "Dokumenter",
+  "Wireframes",
+];
+
+export function classifyVisEntry(entry: WireframeIndexEntry): VisIndexSection {
+  const sectionRaw = entry.visSectionMeta?.trim().toLowerCase();
+  if (sectionRaw) {
+    if (sectionRaw.includes("task")) return "Task flow / status";
+    if (sectionRaw.includes("roadmap") || sectionRaw.includes("sprint")) return "Sprint / roadmap";
+    if (sectionRaw.includes("strategi") || sectionRaw.includes("strategy")) return "Strategi";
+    if (sectionRaw.includes("wire")) return "Wireframes";
+    if (sectionRaw.includes("dokument") || sectionRaw.includes("document")) return "Dokumenter";
+  }
+
+  const titleHaystack = `${entry.filename} ${entry.displayTitle} ${entry.description || ""}`.toLowerCase();
+  if (entry.visType === "sprint" || titleHaystack.includes("roadmap") || titleHaystack.includes("sprint")) {
+    return "Sprint / roadmap";
+  }
+  if (titleHaystack.includes("task flow") || titleHaystack.includes("board") || titleHaystack.includes("status")) {
+    return "Task flow / status";
+  }
+  if (entry.visType === "strategy" || titleHaystack.includes("strategi")) return "Strategi";
+  if (entry.visType === "wireframe") return "Wireframes";
+  return "Dokumenter";
+}
+
+export function groupedVisEntries(entries: WireframeIndexEntry[]): {
+  section: VisIndexSection;
+  items: WireframeIndexEntry[];
+}[] {
+  const buckets = new Map<VisIndexSection, WireframeIndexEntry[]>();
+  for (const section of VIS_SECTION_ORDER) buckets.set(section, []);
+  for (const entry of entries) buckets.get(classifyVisEntry(entry))?.push(entry);
+  return VIS_SECTION_ORDER.map((section) => ({
+    section,
+    items: (buckets.get(section) || []).sort((a, b) => a.displayTitle.localeCompare(b.displayTitle, "no")),
+  })).filter((group) => group.items.length > 0);
+}
+
+export function recentVisEntries(entries: WireframeIndexEntry[], limit = 4): WireframeIndexEntry[] {
+  return entries
+    .filter((e) => Number.isFinite(e.visUpdatedEpoch))
+    .sort((a, b) => (b.visUpdatedEpoch || 0) - (a.visUpdatedEpoch || 0))
+    .slice(0, limit);
+}
+
+export function featuredVisEntries(entries: WireframeIndexEntry[], limit = 4): WireframeIndexEntry[] {
+  const explicit = entries.filter((e) => e.visFeatured);
+  if (explicit.length > 0) return explicit.slice(0, limit);
+  const ranked = [...entries].sort((a, b) => {
+    const rank = (x: WireframeIndexEntry) => {
+      const section = classifyVisEntry(x);
+      if (section === "Sprint / roadmap") return 50;
+      if (section === "Task flow / status") return 40;
+      if (section === "Strategi") return 30;
+      if (section === "Dokumenter") return 20;
+      return 10;
+    };
+    return rank(b) - rank(a);
+  });
+  return ranked.slice(0, limit);
 }
