@@ -6,9 +6,12 @@
  * Examples:
  * - node scripts/kl-task-layer.mjs setup-foundation --owner THUNDERPLUNDER --repo vox-web
  * - node scripts/kl-task-layer.mjs list_tasks --owner THUNDERPLUNDER --project "Minimal KlarLyd Task Layer v0"
- * - node scripts/kl-task-layer.mjs create_task --owner THUNDERPLUNDER --repo vox-web --project "Minimal KlarLyd Task Layer v0" --title "Polish trust layer" --status "Neste" --priority P2 --area "Content UI" --notes "Small copy pass" --link "https://github.com/THUNDERPLUNDER/vox-web/issues/1"
+ * - node scripts/kl-task-layer.mjs create_task --owner THUNDERPLUNDER --repo vox-web --project "Minimal KlarLyd Task Layer v0" --title "Polish trust layer" --status "Neste" --priority P2 --area "Content UI" --workstream "Ops / Architecture" --level Task --start-date 2026-04-16 --target-date 2026-04-18 --notes "Small copy pass" --link "https://github.com/THUNDERPLUNDER/vox-web/issues/1" --body "Kort brief"
  * - node scripts/kl-task-layer.mjs move_task --owner THUNDERPLUNDER --project "Minimal KlarLyd Task Layer v0" --issue 123 --status "I arbeid"
  * - node scripts/kl-task-layer.mjs set_priority --owner THUNDERPLUNDER --project "Minimal KlarLyd Task Layer v0" --issue 123 --priority P1
+ * - node scripts/kl-task-layer.mjs set_workstream --owner THUNDERPLUNDER --project "Minimal KlarLyd Task Layer v0" --issue 123 --workstream "Ops / Architecture"
+ * - node scripts/kl-task-layer.mjs set_level --owner THUNDERPLUNDER --project "Minimal KlarLyd Task Layer v0" --issue 123 --level Track
+ * - node scripts/kl-task-layer.mjs set_dates --owner THUNDERPLUNDER --project "Minimal KlarLyd Task Layer v0" --issue 123 --start-date 2026-04-16 --target-date 2026-04-20
  */
 
 const API_URL = "https://api.github.com/graphql";
@@ -23,7 +26,11 @@ const STATUS_OPTIONS = ["Backlog", "Neste", "I arbeid", "Review", "Ferdig", "Sen
 const WORKFLOW_FIELD_NAME = "KL Status";
 const PRIORITY_OPTIONS = ["P1", "P2", "P3"];
 const AREA_OPTIONS = ["Content UI", "AI UI", "IA", "CMS", "Tech", "Ops", "Strategy"];
+const WORKSTREAM_OPTIONS = ["Content", "IA", "AI Agent", "AI Training", "UI Design", "Ops / Architecture"];
+const LEVEL_OPTIONS = ["Track", "Task"];
 const DEFAULT_PROJECT_TITLE = "Minimal KlarLyd Task Layer v0";
+const START_DATE_FIELD = "Start date";
+const TARGET_DATE_FIELD = "Target date";
 
 function printResult(event, payload) {
   const body = { event, ...payload };
@@ -173,6 +180,19 @@ async function createTextField(projectId, name) {
   );
 }
 
+async function createDateField(projectId, name) {
+  await gql(
+    `
+      mutation($projectId: ID!, $name: String!) {
+        createProjectV2Field(input: { projectId: $projectId, dataType: DATE, name: $name }) {
+          projectV2Field { ... on ProjectV2FieldCommon { id name } }
+        }
+      }
+    `,
+    { projectId, name },
+  );
+}
+
 async function ensureFoundation(owner, repo, projectTitle) {
   const project = await getOrCreateProject(owner, projectTitle);
   let fields = await getProjectFields(project.id);
@@ -181,9 +201,13 @@ async function ensureFoundation(owner, repo, projectTitle) {
   if (!byName.has(WORKFLOW_FIELD_NAME)) await createSingleSelectField(project.id, WORKFLOW_FIELD_NAME, STATUS_OPTIONS);
   if (!byName.has("Priority")) await createSingleSelectField(project.id, "Priority", PRIORITY_OPTIONS);
   if (!byName.has("Area")) await createSingleSelectField(project.id, "Area", AREA_OPTIONS);
+  if (!byName.has("Workstream")) await createSingleSelectField(project.id, "Workstream", WORKSTREAM_OPTIONS);
+  if (!byName.has("Level")) await createSingleSelectField(project.id, "Level", LEVEL_OPTIONS);
   if (!byName.has("Owner")) await createTextField(project.id, "Owner");
   if (!byName.has("Notes")) await createTextField(project.id, "Notes");
   if (!byName.has("Link")) await createTextField(project.id, "Link");
+  if (!byName.has(START_DATE_FIELD)) await createDateField(project.id, START_DATE_FIELD);
+  if (!byName.has(TARGET_DATE_FIELD)) await createDateField(project.id, TARGET_DATE_FIELD);
 
   fields = await getProjectFields(project.id);
 
@@ -217,7 +241,21 @@ async function ensureFoundation(owner, repo, projectTitle) {
   console.log(`Project ready: ${project.title} (#${project.number})`);
   console.log("Fields:");
   for (const f of fields) {
-    if (["Title", WORKFLOW_FIELD_NAME, "Priority", "Area", "Owner", "Notes", "Link"].includes(f.name)) {
+    if (
+      [
+        "Title",
+        WORKFLOW_FIELD_NAME,
+        "Priority",
+        "Area",
+        "Workstream",
+        "Level",
+        "Owner",
+        "Notes",
+        "Link",
+        START_DATE_FIELD,
+        TARGET_DATE_FIELD,
+      ].includes(f.name)
+    ) {
       const suffix = f.options?.length ? ` [${f.options.map((o) => o.name).join(", ")}]` : "";
       console.log(`- ${f.name}${suffix}`);
     }
@@ -245,16 +283,16 @@ async function getRepoId(owner, repo) {
   return data.repository.id;
 }
 
-async function createIssue(owner, repo, title) {
+async function createIssue(owner, repo, title, body) {
   const data = await gql(
     `
-      mutation($repoId: ID!, $title: String!) {
-        createIssue(input: { repositoryId: $repoId, title: $title }) {
+      mutation($repoId: ID!, $title: String!, $body: String) {
+        createIssue(input: { repositoryId: $repoId, title: $title, body: $body }) {
           issue { id number url title }
         }
       }
     `,
-    { repoId: await getRepoId(owner, repo), title },
+    { repoId: await getRepoId(owner, repo), title, body: body || null },
   );
   return data.createIssue.issue;
 }
@@ -325,6 +363,26 @@ async function setTextField(projectId, itemId, fieldId, text) {
   );
 }
 
+async function setDateField(projectId, itemId, fieldId, date) {
+  await gql(
+    `
+      mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $date: Date!) {
+        updateProjectV2ItemFieldValue(
+          input: {
+            projectId: $projectId
+            itemId: $itemId
+            fieldId: $fieldId
+            value: { date: $date }
+          }
+        ) {
+          projectV2Item { id }
+        }
+      }
+    `,
+    { projectId, itemId, fieldId, date },
+  );
+}
+
 async function findProjectItemByIssueNumber(projectId, issueNumber) {
   const data = await gql(
     `
@@ -371,6 +429,10 @@ async function listTasks(owner, projectTitle) {
                       field { ... on ProjectV2FieldCommon { name } }
                       text
                     }
+                    ... on ProjectV2ItemFieldDateValue {
+                      field { ... on ProjectV2FieldCommon { name } }
+                      date
+                    }
                   }
                 }
               }
@@ -386,7 +448,7 @@ async function listTasks(owner, projectTitle) {
   const rows = [];
   for (const item of items) {
     const fieldMap = Object.fromEntries(
-      item.fieldValues.nodes.map((fv) => [fv.field?.name, fv.name ?? fv.text]).filter((x) => x[0]),
+      item.fieldValues.nodes.map((fv) => [fv.field?.name, fv.name ?? fv.text ?? fv.date]).filter((x) => x[0]),
     );
     const row = {
       issue: item.content.number,
@@ -394,11 +456,18 @@ async function listTasks(owner, projectTitle) {
       status: fieldMap[WORKFLOW_FIELD_NAME] || "-",
       priority: fieldMap.Priority || "-",
       area: fieldMap.Area || "-",
+      workstream: fieldMap.Workstream || "-",
+      level: fieldMap.Level || "-",
+      startDate: fieldMap[START_DATE_FIELD] || "-",
+      targetDate: fieldMap[TARGET_DATE_FIELD] || "-",
       url: item.content.url,
     };
     rows.push(row);
     console.log(`#${row.issue} ${row.title}`);
-    console.log(`  status=${row.status} priority=${row.priority} area=${row.area}`);
+    console.log(
+      `  status=${row.status} priority=${row.priority} workstream=${row.workstream} level=${row.level} area=${row.area}`,
+    );
+    console.log(`  start=${row.startDate} target=${row.targetDate}`);
     console.log(`  ${row.url}`);
   }
   printResult("list_tasks_done", { count: rows.length, tasks: rows });
@@ -413,7 +482,7 @@ async function createTask(args) {
 
   const project = await getProjectByTitle(owner, projectTitle);
   const fields = await getProjectFields(project.id);
-  const issue = await createIssue(owner, repo, title);
+  const issue = await createIssue(owner, repo, title, args.body);
   const itemId = await addIssueToProject(project.id, issue.id);
 
   if (args.status) {
@@ -428,6 +497,14 @@ async function createTask(args) {
     const f = findField(fields, "Area");
     await setSingleSelectField(project.id, itemId, f.id, findOptionId(f, args.area));
   }
+  if (args.workstream) {
+    const f = findField(fields, "Workstream");
+    await setSingleSelectField(project.id, itemId, f.id, findOptionId(f, args.workstream));
+  }
+  if (args.level) {
+    const f = findField(fields, "Level");
+    await setSingleSelectField(project.id, itemId, f.id, findOptionId(f, args.level));
+  }
   if (args.ownerText) {
     const f = findField(fields, "Owner");
     await setTextField(project.id, itemId, f.id, args.ownerText);
@@ -440,6 +517,14 @@ async function createTask(args) {
     const f = findField(fields, "Link");
     await setTextField(project.id, itemId, f.id, args.link);
   }
+  if (args["start-date"]) {
+    const f = findField(fields, START_DATE_FIELD);
+    await setDateField(project.id, itemId, f.id, args["start-date"]);
+  }
+  if (args["target-date"]) {
+    const f = findField(fields, TARGET_DATE_FIELD);
+    await setDateField(project.id, itemId, f.id, args["target-date"]);
+  }
 
   console.log(`Created task: #${issue.number} ${issue.title}`);
   console.log(issue.url);
@@ -450,6 +535,10 @@ async function createTask(args) {
     status: args.status || null,
     priority: args.priority || null,
     area: args.area || null,
+    workstream: args.workstream || null,
+    level: args.level || null,
+    startDate: args["start-date"] || null,
+    targetDate: args["target-date"] || null,
   });
 }
 
@@ -487,10 +576,69 @@ async function setPriority(args) {
   printResult("set_priority_done", { issue: Number(issue), priority });
 }
 
+async function setWorkstream(args) {
+  const owner = args.owner;
+  const projectTitle = args.project || DEFAULT_PROJECT_TITLE;
+  const issue = args.issue;
+  const workstream = args.workstream;
+  if (!owner || !issue || !workstream) throw new Error("set_workstream requires --owner --issue --workstream");
+  const project = await getProjectByTitle(owner, projectTitle);
+  const fields = await getProjectFields(project.id);
+  const field = findField(fields, "Workstream");
+  const item = await findProjectItemByIssueNumber(project.id, issue);
+  if (!item) throw new Error(`Issue #${issue} not found in project`);
+  await setSingleSelectField(project.id, item.id, field.id, findOptionId(field, workstream));
+  console.log(`Set workstream #${issue} -> ${workstream}`);
+  printResult("set_workstream_done", { issue: Number(issue), workstream });
+}
+
+async function setLevel(args) {
+  const owner = args.owner;
+  const projectTitle = args.project || DEFAULT_PROJECT_TITLE;
+  const issue = args.issue;
+  const level = args.level;
+  if (!owner || !issue || !level) throw new Error("set_level requires --owner --issue --level");
+  const project = await getProjectByTitle(owner, projectTitle);
+  const fields = await getProjectFields(project.id);
+  const field = findField(fields, "Level");
+  const item = await findProjectItemByIssueNumber(project.id, issue);
+  if (!item) throw new Error(`Issue #${issue} not found in project`);
+  await setSingleSelectField(project.id, item.id, field.id, findOptionId(field, level));
+  console.log(`Set level #${issue} -> ${level}`);
+  printResult("set_level_done", { issue: Number(issue), level });
+}
+
+async function setDates(args) {
+  const owner = args.owner;
+  const projectTitle = args.project || DEFAULT_PROJECT_TITLE;
+  const issue = args.issue;
+  const startDate = args["start-date"];
+  const targetDate = args["target-date"];
+  if (!owner || !issue || (!startDate && !targetDate)) {
+    throw new Error("set_dates requires --owner --issue and at least one of --start-date --target-date");
+  }
+  const project = await getProjectByTitle(owner, projectTitle);
+  const fields = await getProjectFields(project.id);
+  const item = await findProjectItemByIssueNumber(project.id, issue);
+  if (!item) throw new Error(`Issue #${issue} not found in project`);
+  if (startDate) {
+    const field = findField(fields, START_DATE_FIELD);
+    await setDateField(project.id, item.id, field.id, startDate);
+  }
+  if (targetDate) {
+    const field = findField(fields, TARGET_DATE_FIELD);
+    await setDateField(project.id, item.id, field.id, targetDate);
+  }
+  console.log(`Set dates #${issue} -> start=${startDate || "-"} target=${targetDate || "-"}`);
+  printResult("set_dates_done", { issue: Number(issue), startDate: startDate || null, targetDate: targetDate || null });
+}
+
 async function main() {
   const { command, args } = parseArgs(process.argv.slice(2));
   if (!command) {
-    console.error("Missing command. Use: setup-foundation | list_tasks | create_task | move_task | set_priority");
+    console.error(
+      "Missing command. Use: setup-foundation | list_tasks | create_task | move_task | set_priority | set_workstream | set_level | set_dates",
+    );
     process.exit(1);
   }
 
@@ -516,6 +664,18 @@ async function main() {
   }
   if (command === "set_priority") {
     await setPriority(args);
+    return;
+  }
+  if (command === "set_workstream") {
+    await setWorkstream(args);
+    return;
+  }
+  if (command === "set_level") {
+    await setLevel(args);
+    return;
+  }
+  if (command === "set_dates") {
+    await setDates(args);
     return;
   }
 
