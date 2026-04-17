@@ -42,7 +42,7 @@ const intro =
             ))}
           </ul>
         ) : (
-          <p class="mt-4 text-sm text-[rgb(var(--muted))]">Ingen help points publisert ennå.</p>
+          <p class="mt-4 text-sm text-[rgb(var(--muted))]">Vi fyller på denne oversikten fortløpende.</p>
         )}
 
         {(hub?.primaryCtaLabel && hub?.primaryCtaTarget) || hub?.secondaryLinks.length ? (
@@ -90,7 +90,10 @@ const intro =
       <Section class="!pt-4 !pb-12 sm:!pb-16">
         <div class="max-w-3xl">
           <div class="vox-surface-lifted">
-            <h2 class="vox-section-title text-lg sm:text-xl">Forslag til spørsmål</h2>
+            <h2 class="vox-section-title text-lg sm:text-xl">Smarte spørsmål du kan starte med</h2>
+            <p class="mt-2 text-sm text-[rgb(var(--text-secondary))]">
+              Les i ditt eget tempo, eller bruk ett av spørsmålene for å starte en rolig samtale videre.
+            </p>
             <ul class="mt-4 grid list-none gap-3 p-0" role="list">
               {seeds.map((seed) => (
                 <li class="rounded-[var(--radius-md)] border border-[rgb(var(--border))] bg-[rgb(var(--surface))/0.42] p-4">
