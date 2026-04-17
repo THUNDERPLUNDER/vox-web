@@ -24,7 +24,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
           </div>
         </div>
 
-        <div class="overflow-hidden rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.75] bg-[rgb(var(--surface-subtle))]">
+        <div class="overflow-hidden rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.28] bg-[rgb(var(--surface-subtle))] shadow-[0_8px_24px_-20px_rgba(15,23,42,0.35)]">
           <chat-messenger
             id="ces-demo-widget"
             url-allowlist="*"
@@ -53,7 +53,9 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       if (seedStrip && initialQuestion) seedStrip.classList.remove("hidden");
       if (seedTextEl) seedTextEl.textContent = initialQuestion;
       if (statusEl && initialQuestion) {
-        statusEl.textContent = from ? `Hentet fra ${from === "article" ? "artikkel" : "hub"}. Klargjør samtalestart ...` : "Klargjør samtalestart ...";
+        statusEl.textContent = from
+          ? `Hentet fra ${from === "article" ? "artikkel" : "hub"}. Vi legger det klart i samtalen nå.`
+          : "Vi legger spørsmålet klart i samtalen nå.";
       }
       if (!widget || !initialQuestion) return;
 
@@ -73,7 +75,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         if (sendSeed() || tries > 40) {
           clearInterval(timer);
           if (tries > 40 && statusEl) {
-            statusEl.textContent = "Startspørsmålet er klart over chatten dersom du vil sende det manuelt.";
+            statusEl.textContent = "Spørsmålet ditt ligger klart over chatten. Du kan sende det når du er klar.";
           }
         }
       }, 250);
