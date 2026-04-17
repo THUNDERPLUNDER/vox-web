@@ -67,6 +67,7 @@ const from = Astro.url.searchParams.get("from")?.trim();
                 <button
                   id="chat-shell-send"
                   type="button"
+                  disabled
                   class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[0.8rem] bg-[rgb(var(--primary))/0.14] text-[rgb(var(--primary))] shadow-[0_6px_14px_-10px_rgb(var(--primary)/0.5)] transition-colors hover:bg-[rgb(var(--primary))/0.22] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.45] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--surface))] sm:h-11 sm:w-11"
                   aria-label="Send melding"
                 >
@@ -80,7 +81,7 @@ const from = Astro.url.searchParams.get("from")?.trim();
     </Section>
 
     <div class="pointer-events-none absolute h-px w-px overflow-hidden opacity-0" aria-hidden="true">
-      <chat-messenger id="ces-shell-bridge" url-allowlist="*">
+      <chat-messenger id="ces-widget" url-allowlist="*">
         <chat-messenger-container
           chat-title="Hørehjelpen"
           enable-file-upload
@@ -98,13 +99,15 @@ const from = Astro.url.searchParams.get("from")?.trim();
       const inputEl = document.getElementById("chat-shell-input");
       const sendBtn = document.getElementById("chat-shell-send");
       const statusEl = document.getElementById("chat-shell-status");
-      const bridge = document.getElementById("ces-shell-bridge");
+      const bridge = document.getElementById("ces-widget");
       let state = "idle";
+      let bridgeReady = false;
+      let pendingSeed = typeof seed === "string" ? seed.trim() : "";
 
       const setState = (nextState, text) => {
         state = nextState;
         if (statusEl) statusEl.textContent = text;
-        if (sendBtn) sendBtn.toggleAttribute("disabled", state === "sending");
+        if (sendBtn) sendBtn.toggleAttribute("disabled", state === "sending" || !bridgeReady);
       };
 
       const appendUserMessage = (text) => {
@@ -165,16 +168,11 @@ const from = Astro.url.searchParams.get("from")?.trim();
 
       const attachBridgeListeners = () => {
         if (!bridge) return;
-        const events = [
-          "ces-text-received",
-          "ces-message-received",
-          "chat-messenger-response-received",
-          "chat-message-received",
-        ];
+        const events = ["ces-text-received", "ces-message-received"];
         for (const eventName of events) {
           bridge.addEventListener(eventName, onBotReply);
         }
-        bridge.addEventListener("chat-messenger-error", () => {
+        window.addEventListener("chat-messenger-error", () => {
           setState("error", "Kunne ikke hente svar akkurat nå. Prøv igjen.");
         });
       };
@@ -182,7 +180,7 @@ const from = Astro.url.searchParams.get("from")?.trim();
       const sendMessage = (text) => {
         const trimmed = text.trim();
         if (!trimmed) return;
-        if (!bridge || typeof bridge.sessionInput !== "function") {
+        if (!bridgeReady || !bridge || typeof bridge.sessionInput !== "function") {
           setState("error", "Samtalemotoren er ikke klar. Last siden på nytt.");
           return;
         }
@@ -203,17 +201,37 @@ const from = Astro.url.searchParams.get("from")?.trim();
       }
 
       attachBridgeListeners();
-      setState("idle", "Klar.");
+      setState("idle", "Kobler til samtalemotor...");
 
-      if (typeof seed === "string" && seed.trim()) {
-        window.addEventListener(
-          "chat-messenger-loaded",
-          () => {
-            sendMessage(seed);
-          },
-          { once: true },
-        );
-      }
+      const markReadyIfPossible = () => {
+        if (!bridge || typeof bridge.sessionInput !== "function") return false;
+        bridgeReady = true;
+        setState("idle", "Motor klar.");
+        if (pendingSeed) {
+          const toSend = pendingSeed;
+          pendingSeed = "";
+          sendMessage(toSend);
+        }
+        return true;
+      };
+
+      const onReadySignal = () => {
+        if (markReadyIfPossible()) return;
+        let tries = 0;
+        const timer = setInterval(() => {
+          tries += 1;
+          if (markReadyIfPossible() || tries > 20) {
+            clearInterval(timer);
+            if (!bridgeReady) {
+              setState("error", "Samtalemotoren ble ikke klar. Prøv å laste siden på nytt.");
+            }
+          }
+        }, 250);
+      };
+
+      window.addEventListener("chat-messenger-loaded", onReadySignal, { once: true });
+      window.addEventListener("ces-messenger-connected", onReadySignal, { once: true });
+      onReadySignal();
     })();
   </script>
 </BaseLayout>
