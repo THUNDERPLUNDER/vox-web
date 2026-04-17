@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>KlarLyd – Live Board/Roadmap v0.3</title>
+    <title>KlarLyd – Live Board/Roadmap v0.3.1</title>
     <meta name="vis:type" content="sprint" />
     <meta name="vis:section" content="Sprint / roadmap" />
     <meta name="vis:featured" content="true" />
     <meta name="vis:updated" content="2026-04-17" />
     <meta name="description" content="Operativ live visning av oppgaver og spor med tydelig Nå / Neste / Senere. Skilt fra Sprint 01-arkivet." />
-    <meta name="vis:delta" content="v0.3: Tynn GitHub-adapter kobler inn ekte issue-id/tittel/status/lenke for Track #2 og Task #3 via lokal snapshot-fil." />
+    <meta name="vis:delta" content="v0.3.1: Presiserer at board-kolonner fortsatt er kuratert i v1, mens statuslinjen viser faktisk GitHub issue-state." />
 
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -19,7 +19,7 @@
         <header class="rounded-md border border-gray-300 bg-white px-4 py-4 sm:px-5">
             <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Live dashboard</p>
             <h1 class="mt-1 text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-                Live Board / Roadmap v0.3
+                Live Board / Roadmap v0.3.1
             </h1>
             <p class="mt-3 max-w-3xl text-sm leading-relaxed text-gray-600">
                 Operativ visning for hva som skjer nå, hva som er neste, og hva som bevisst ligger senere.
@@ -38,6 +38,9 @@
         <section class="mt-6 rounded-md border border-gray-300 bg-white">
             <header class="border-b border-gray-200 px-4 py-3">
                 <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Board (Oppgaver i flyt)</h2>
+                <p class="mt-1 text-[11px] text-gray-500">
+                    v1-notat: Kolonneplassering er foreløpig kuratert. Statuslinjen på hvert kort viser live GitHub issue-state.
+                </p>
             </header>
             <div class="grid gap-3 px-4 py-4 sm:grid-cols-2 lg:grid-cols-3">
                 <article class="rounded-sm border border-gray-300 bg-white">
