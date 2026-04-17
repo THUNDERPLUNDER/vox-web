@@ -4,9 +4,6 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Section from "../../components/layout/Section.astro";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
-
-const seed = Astro.url.searchParams.get("seed")?.trim();
-const from = Astro.url.searchParams.get("from")?.trim();
 ---
 
 <BaseLayout title="VOX - Hørehjelpen samtale" currentPath="/no/chat">
@@ -20,37 +17,44 @@ const from = Astro.url.searchParams.get("from")?.trim();
           <p class="mt-1.5 max-w-2xl text-sm leading-relaxed text-[rgb(var(--muted))]">
             Ta ett steg om gangen. Skriv selv, eller fortsett fra spørsmålet du valgte.
           </p>
-          {seed ? (
-            <div class="mt-2 border-l-2 border-[rgb(var(--primary))/0.35] pl-3">
-              <p class="text-[11px] uppercase tracking-wide text-[rgb(var(--muted))]">Valgt startspørsmål</p>
-              <p class="mt-0.5 text-sm text-[rgb(var(--text))]">{seed}</p>
-              <p id="seed-sync-status" class="mt-0.5 text-xs text-[rgb(var(--muted))]">
-                {from ? `Hentet fra ${from === "article" ? "artikkel" : "hub"}.` : "Klargjør samtalestart ..."}
-              </p>
-            </div>
-          ) : null}
+          <div id="seed-strip" class="mt-2 hidden border-l-2 border-[rgb(var(--primary))/0.35] pl-3">
+            <p class="text-[11px] uppercase tracking-wide text-[rgb(var(--muted))]">Valgt startspørsmål</p>
+            <p id="seed-text" class="mt-0.5 text-sm text-[rgb(var(--text))]"></p>
+            <p id="seed-sync-status" class="mt-0.5 text-xs text-[rgb(var(--muted))]"></p>
+          </div>
         </div>
 
-        <chat-messenger
-          id="ces-demo-widget"
-          url-allowlist="*"
-          class="block h-[min(70vh,680px)] w-full overflow-hidden rounded-[var(--radius-md)] bg-[rgb(var(--surface-subtle))]"
-        >
-          <chat-messenger-container
-            chat-title="Hørehjelpen"
-            enable-file-upload
-            enable-audio-input
-          ></chat-messenger-container>
-        </chat-messenger>
+        <div class="overflow-hidden rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.75] bg-[rgb(var(--surface-subtle))]">
+          <chat-messenger
+            id="ces-demo-widget"
+            url-allowlist="*"
+            class="block h-[min(70vh,680px)] w-full overflow-hidden rounded-none bg-[rgb(var(--surface-subtle))]"
+          >
+            <chat-messenger-container
+              chat-title="Hørehjelpen"
+              enable-file-upload
+              enable-audio-input
+            ></chat-messenger-container>
+          </chat-messenger>
+        </div>
       </div>
     </Section>
   </main>
 
-  <script is:inline define:vars={{ seed }}>
+  <script is:inline>
     (() => {
       const widget = document.getElementById("ces-demo-widget");
+      const seedStrip = document.getElementById("seed-strip");
+      const seedTextEl = document.getElementById("seed-text");
       const statusEl = document.getElementById("seed-sync-status");
-      const initialQuestion = typeof seed === "string" ? seed.trim() : "";
+      const params = new URLSearchParams(window.location.search);
+      const initialQuestion = (params.get("seed") || "").trim();
+      const from = (params.get("from") || "").trim();
+      if (seedStrip && initialQuestion) seedStrip.classList.remove("hidden");
+      if (seedTextEl) seedTextEl.textContent = initialQuestion;
+      if (statusEl && initialQuestion) {
+        statusEl.textContent = from ? `Hentet fra ${from === "article" ? "artikkel" : "hub"}. Klargjør samtalestart ...` : "Klargjør samtalestart ...";
+      }
       if (!widget || !initialQuestion) return;
 
       const sendSeed = () => {
