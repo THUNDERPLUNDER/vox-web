@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>KlarLyd – Live Board/Roadmap v0.2</title>
+    <title>KlarLyd – Live Board/Roadmap v0.3</title>
     <meta name="vis:type" content="sprint" />
     <meta name="vis:section" content="Sprint / roadmap" />
     <meta name="vis:featured" content="true" />
     <meta name="vis:updated" content="2026-04-17" />
     <meta name="description" content="Operativ live visning av oppgaver og spor med tydelig Nå / Neste / Senere. Skilt fra Sprint 01-arkivet." />
-    <meta name="vis:delta" content="v0.2: Board oppgradert til tydelig statusflyt med meningsfulle empty states. Roadmap viser Nå / Neste / Senere." />
+    <meta name="vis:delta" content="v0.3: Tynn GitHub-adapter kobler inn ekte issue-id/tittel/status/lenke for Track #2 og Task #3 via lokal snapshot-fil." />
 
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -19,7 +19,7 @@
         <header class="rounded-md border border-gray-300 bg-white px-4 py-4 sm:px-5">
             <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Live dashboard</p>
             <h1 class="mt-1 text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-                Live Board / Roadmap v0.2
+                Live Board / Roadmap v0.3
             </h1>
             <p class="mt-3 max-w-3xl text-sm leading-relaxed text-gray-600">
                 Operativ visning for hva som skjer nå, hva som er neste, og hva som bevisst ligger senere.
@@ -84,10 +84,12 @@
                         <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-700">Ferdig</h3>
                     </header>
                     <div class="px-3 py-3">
-                        <div class="rounded-sm border border-gray-200 bg-gray-50 px-2.5 py-2.5">
+                        <div class="rounded-sm border border-gray-200 bg-gray-50 px-2.5 py-2.5" data-gh-item="board-done">
                             <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Oppgave · Ops / Architecture</p>
-                            <p class="mt-1 text-sm font-semibold text-gray-900">Run first real GitHub task bus pilot flow</p>
-                            <p class="mt-1 text-[11px] text-gray-500">Issue #3</p>
+                            <p class="mt-1 text-sm font-semibold text-gray-900" data-gh-title>Run first real GitHub task bus pilot flow</p>
+                            <p class="mt-1 text-[11px] text-gray-500" data-gh-issue>Issue #3</p>
+                            <p class="mt-1 text-[11px] text-gray-500" data-gh-status>Status: -</p>
+                            <a class="mt-1 inline-flex text-[11px] font-medium text-gray-700 underline decoration-gray-300 underline-offset-2 hover:text-gray-900" data-gh-link href="https://github.com/THUNDERPLUNDER/vox-web/issues/3" target="_blank" rel="noreferrer">Åpne issue</a>
                         </div>
                     </div>
                 </article>
@@ -110,10 +112,12 @@
             <div class="grid gap-3 px-4 py-4 md:grid-cols-3">
                 <section class="rounded-sm border border-gray-400 bg-gray-100 px-3 py-3">
                     <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-800">Nå</h3>
-                    <div class="mt-2 rounded-sm border border-gray-300 bg-white px-2.5 py-2.5">
+                    <div class="mt-2 rounded-sm border border-gray-300 bg-white px-2.5 py-2.5" data-gh-item="roadmap-now">
                         <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Aktivt spor · Track</p>
-                        <p class="mt-1 text-sm font-semibold text-gray-900">GitHub Task Bus v1 operationalisering</p>
-                        <p class="mt-1 text-[11px] text-gray-500">Issue #2</p>
+                        <p class="mt-1 text-sm font-semibold text-gray-900" data-gh-title>GitHub Task Bus v1 operationalisering</p>
+                        <p class="mt-1 text-[11px] text-gray-500" data-gh-issue>Issue #2</p>
+                        <p class="mt-1 text-[11px] text-gray-500" data-gh-status>Status: -</p>
+                        <a class="mt-1 inline-flex text-[11px] font-medium text-gray-700 underline decoration-gray-300 underline-offset-2 hover:text-gray-900" data-gh-link href="https://github.com/THUNDERPLUNDER/vox-web/issues/2" target="_blank" rel="noreferrer">Åpne issue</a>
                     </div>
                 </section>
 
@@ -162,10 +166,40 @@
             </div>
             <div class="border-t border-gray-200 px-4 py-3">
                 <p class="text-xs text-gray-500">
-                    v0.2 bruker fortsatt seedet innhold. Strukturen er laget for senere kobling mot faktiske GitHub-data.
+                    Datakilde v0.3: `KlarLyd_Live_Board_Roadmap_v01.github-state.json` (GitHub Issues REST API-snapshot).
+                    Oppdatering kjøres manuelt med `npm run vis:github:snapshot`.
                 </p>
             </div>
         </section>
     </main>
+    <script>
+        async function hydrateGithubSnapshot() {
+            try {
+                const response = await fetch("/vis/raw/KlarLyd_Live_Board_Roadmap_v01.github-state.json", { cache: "no-store" });
+                if (!response.ok) return;
+                const snapshot = await response.json();
+                const items = Array.isArray(snapshot.items) ? snapshot.items : [];
+
+                for (const item of items) {
+                    const container = document.querySelector('[data-gh-item="' + item.slot + '"]');
+                    if (!container) continue;
+
+                    const titleEl = container.querySelector("[data-gh-title]");
+                    const issueEl = container.querySelector("[data-gh-issue]");
+                    const statusEl = container.querySelector("[data-gh-status]");
+                    const linkEl = container.querySelector("[data-gh-link]");
+
+                    if (titleEl && item.title) titleEl.textContent = item.title;
+                    if (issueEl && item.issueId) issueEl.textContent = "Issue #" + item.issueId;
+                    if (statusEl && item.status) statusEl.textContent = "Status: " + item.status;
+                    if (linkEl && item.url) linkEl.href = item.url;
+                }
+            } catch (_) {
+                // Keep static fallback content if snapshot cannot be loaded.
+            }
+        }
+
+        hydrateGithubSnapshot();
+    </script>
 </body>
 </html>
