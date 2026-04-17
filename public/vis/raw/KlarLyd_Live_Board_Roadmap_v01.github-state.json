@@ -3,7 +3,7 @@
   "source": "GitHub Issues REST API",
   "note": "Status in this v1 snapshot is GitHub issue state (open/closed). KL Status from Project fields comes later.",
   "repository": "THUNDERPLUNDER/vox-web",
-  "fetchedAt": "2026-04-17T12:13:20.608Z",
+  "fetchedAt": "2026-04-17T13:01:27.015Z",
   "items": [
     {
       "issueId": 2,
@@ -19,9 +19,9 @@
       "kind": "task",
       "slot": "board-done",
       "title": "Run first real GitHub task bus pilot flow",
-      "status": "open",
+      "status": "closed",
       "url": "https://github.com/THUNDERPLUNDER/vox-web/issues/3",
-      "updatedAt": "2026-04-17T10:45:27Z"
+      "updatedAt": "2026-04-17T12:58:41Z"
     }
   ]
 }
