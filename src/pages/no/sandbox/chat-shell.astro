@@ -8,10 +8,17 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
 const seed = Astro.url.searchParams.get("seed")?.trim();
 const from = Astro.url.searchParams.get("from")?.trim();
-const fallbackParams = new URLSearchParams();
-if (seed) fallbackParams.set("q", seed);
-fallbackParams.set("from", "shell");
-const fallbackHref = `/no?${fallbackParams.toString()}`;
+const modeParam = Astro.url.searchParams.get("mode")?.trim().toLowerCase();
+const mode = modeParam === "ces" ? "ces" : "shell";
+const baseParams = new URLSearchParams();
+if (seed) baseParams.set("seed", seed);
+if (from) baseParams.set("from", from);
+const shellParams = new URLSearchParams(baseParams);
+shellParams.set("mode", "shell");
+const cesParams = new URLSearchParams(baseParams);
+cesParams.set("mode", "ces");
+const shellHref = `/no/sandbox/chat-shell?${shellParams.toString()}`;
+const cesHref = `/no/sandbox/chat-shell?${cesParams.toString()}`;
 ---
 
 <BaseLayout title="VOX - Hørehjelpen samtale" currentPath="/no/sandbox/chat-shell">
@@ -47,44 +54,75 @@ const fallbackHref = `/no?${fallbackParams.toString()}`;
           </div>
 
           <div class="max-h-[min(60vh,560px)] overflow-y-auto bg-[rgb(var(--surface-subtle))/0.96] px-3 py-4 sm:px-5 sm:py-6">
-            <div id="chat-shell-thread" class="mx-auto flex w-full max-w-3xl flex-col gap-3 sm:gap-3.5">
-              <div class="max-w-[88%] px-1 py-1 text-sm leading-relaxed text-[rgb(var(--text-secondary))] sm:max-w-[82%]">
-                <p class="mb-1 text-[11px] font-medium uppercase tracking-wide text-[rgb(var(--muted))]/80">Hørehjelpen</p>
-                Hei! Beskriv kort hva som er vanskelig med høreapparatet akkurat nå, så tar vi ett steg om gangen.
+            {mode === "shell" ? (
+              <div id="chat-shell-thread" class="mx-auto flex w-full max-w-3xl flex-col gap-3 sm:gap-3.5">
+                <div class="max-w-[88%] px-1 py-1 text-sm leading-relaxed text-[rgb(var(--text-secondary))] sm:max-w-[82%]">
+                  <p class="mb-1 text-[11px] font-medium uppercase tracking-wide text-[rgb(var(--muted))]/80">Hørehjelpen</p>
+                  Hei! Beskriv kort hva som er vanskelig med høreapparatet akkurat nå, så tar vi ett steg om gangen.
+                </div>
               </div>
-            </div>
+            ) : (
+              <div class="mx-auto w-full max-w-3xl">
+                <p class="mb-3 text-xs text-[rgb(var(--muted))]">Stabil samtalemodus aktiv. Du er fortsatt i samme samtaleflate.</p>
+                <chat-messenger
+                  id="ces-fallback-widget"
+                  url-allowlist="*"
+                  class="block w-full overflow-hidden rounded-[var(--radius-md)] bg-[rgb(var(--surface-subtle))] shadow-[var(--shadow-sm)] h-[min(48vh,480px)]"
+                >
+                  <chat-messenger-container
+                    chat-title="Hørehjelpen"
+                    enable-file-upload
+                    enable-audio-input
+                  ></chat-messenger-container>
+                </chat-messenger>
+              </div>
+            )}
           </div>
 
-          <div class="pointer-events-none absolute inset-x-0 bottom-[122px] h-24 bg-gradient-to-t from-[rgb(var(--surface-elevated))/0.94] via-[rgb(var(--surface-elevated))/0.58] to-transparent"></div>
+          {mode === "shell" ? (
+            <div class="pointer-events-none absolute inset-x-0 bottom-[122px] h-24 bg-gradient-to-t from-[rgb(var(--surface-elevated))/0.94] via-[rgb(var(--surface-elevated))/0.58] to-transparent"></div>
+          ) : null}
 
           <div class="sticky bottom-0 bg-[color-mix(in_srgb,rgb(var(--surface-elevated))_90%,white_10%)] px-3 pb-3.5 pt-2.5 backdrop-blur-md shadow-[0_-16px_34px_-24px_rgba(0,0,0,0.62)] sm:px-5 sm:pb-5 sm:pt-3">
             <div class="mx-auto max-w-3xl">
-              <p id="chat-shell-status" class="mb-2 text-xs text-[rgb(var(--muted))]" role="status" aria-live="polite">Klar.</p>
-              <label for="chat-shell-input" class="sr-only">Skriv melding</label>
-              <div class="flex items-end gap-1.5 rounded-[1rem] bg-transparent px-1 py-1.5 sm:gap-2 sm:px-1.5 sm:py-1.5">
-                <textarea
-                  id="chat-shell-input"
-                  rows="1"
-                  placeholder="Skriv melding..."
-                  class="min-h-[54px] w-full resize-none rounded-[0.85rem] bg-transparent px-2.5 py-2.5 text-sm leading-relaxed text-[rgb(var(--text))] placeholder:text-[rgb(var(--muted))] focus:outline-none sm:min-h-[56px] sm:px-3 sm:py-3"
-                ></textarea>
-                <button
-                  id="chat-shell-send"
-                  type="button"
-                  disabled
-                  class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[0.8rem] bg-[rgb(var(--primary))/0.14] text-[rgb(var(--primary))] shadow-[0_6px_14px_-10px_rgb(var(--primary)/0.5)] transition-colors hover:bg-[rgb(var(--primary))/0.22] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.45] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--surface))] sm:h-11 sm:w-11"
-                  aria-label="Send melding"
-                >
-                  <span aria-hidden="true">↗</span>
-                </button>
-              </div>
+              {mode === "shell" ? (
+                <>
+                  <p id="chat-shell-status" class="mb-2 text-xs text-[rgb(var(--muted))]" role="status" aria-live="polite">Klar.</p>
+                  <label for="chat-shell-input" class="sr-only">Skriv melding</label>
+                  <div class="flex items-end gap-1.5 rounded-[1rem] bg-transparent px-1 py-1.5 sm:gap-2 sm:px-1.5 sm:py-1.5">
+                    <textarea
+                      id="chat-shell-input"
+                      rows="1"
+                      placeholder="Skriv melding..."
+                      class="min-h-[54px] w-full resize-none rounded-[0.85rem] bg-transparent px-2.5 py-2.5 text-sm leading-relaxed text-[rgb(var(--text))] placeholder:text-[rgb(var(--muted))] focus:outline-none sm:min-h-[56px] sm:px-3 sm:py-3"
+                    ></textarea>
+                    <button
+                      id="chat-shell-send"
+                      type="button"
+                      disabled
+                      class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[0.8rem] bg-[rgb(var(--primary))/0.14] text-[rgb(var(--primary))] shadow-[0_6px_14px_-10px_rgb(var(--primary)/0.5)] transition-colors hover:bg-[rgb(var(--primary))/0.22] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.45] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--surface))] sm:h-11 sm:w-11"
+                      aria-label="Send melding"
+                    >
+                      <span aria-hidden="true">↗</span>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <p class="text-xs text-[rgb(var(--muted))]">
+                  Hvis du vil tilbake til vår egen skallsamtale, kan du bytte modus uten å forlate siden.
+                </p>
+              )}
               <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
-                <p class="text-[11px] text-[rgb(var(--muted))]">Hvis denne flaten er treg, kan du fortsette i samtalevisningen.</p>
+                <p class="text-[11px] text-[rgb(var(--muted))]">
+                  {mode === "shell"
+                    ? "Hvis denne flaten er treg, kan du fortsette i stabil samtalemodus."
+                    : "Stabil samtalemodus er valgt for sikker demo-flyt."}
+                </p>
                 <a
-                  href={fallbackHref}
+                  href={mode === "shell" ? cesHref : shellHref}
                   class="inline-flex rounded-[var(--radius-sm)] border border-[rgb(var(--border))] bg-[rgb(var(--surface))/0.7] px-2.5 py-1 text-[11px] font-medium text-[rgb(var(--text))] transition-colors hover:bg-[rgb(var(--surface))/0.95]"
                 >
-                  Åpne samtalen
+                  {mode === "shell" ? "Bytt til stabil samtalemodus" : "Tilbake til shell-modus"}
                 </a>
               </div>
             </div>
@@ -93,21 +131,43 @@ const fallbackHref = `/no?${fallbackParams.toString()}`;
       </div>
     </Section>
 
-    <div class="pointer-events-none absolute h-px w-px overflow-hidden opacity-0" aria-hidden="true">
-      <chat-messenger id="ces-shell-bridge" url-allowlist="*">
-        <chat-messenger-container
-          chat-title="Hørehjelpen"
-          enable-file-upload
-          enable-audio-input
-        ></chat-messenger-container>
-      </chat-messenger>
-    </div>
+    {mode === "shell" ? (
+      <div class="pointer-events-none absolute h-px w-px overflow-hidden opacity-0" aria-hidden="true">
+        <chat-messenger id="ces-shell-bridge" url-allowlist="*">
+          <chat-messenger-container
+            chat-title="Hørehjelpen"
+            enable-file-upload
+            enable-audio-input
+          ></chat-messenger-container>
+        </chat-messenger>
+      </div>
+    ) : null}
   </main>
 
   <Footer />
 
-  <script is:inline define:vars={{ seed }}>
+  <script is:inline define:vars={{ seed, mode }}>
     (() => {
+      if (mode === "ces") {
+        const widget = document.getElementById("ces-fallback-widget");
+        const initialQuestion = typeof seed === "string" ? seed.trim() : "";
+        if (!widget || !initialQuestion) return;
+        const sendSeed = () => {
+          if (typeof widget.sessionInput !== "function") return false;
+          widget.open?.();
+          widget.show?.();
+          widget.sessionInput(initialQuestion);
+          return true;
+        };
+        if (sendSeed()) return;
+        let tries = 0;
+        const timer = setInterval(() => {
+          tries += 1;
+          if (sendSeed() || tries > 40) clearInterval(timer);
+        }, 250);
+        return;
+      }
+
       const threadEl = document.getElementById("chat-shell-thread");
       const inputEl = document.getElementById("chat-shell-input");
       const sendBtn = document.getElementById("chat-shell-send");
