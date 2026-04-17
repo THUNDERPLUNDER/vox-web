@@ -77,3 +77,8 @@ Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår 
 - Beslutning: KlarLyd bruker ett felles GitHub Project som delt oppgavebuss, med eksplisitt skille mellom statusflyt (`KL Status`) og arbeidsspor (`Workstream`).
 - Begrunnelse: Vi trenger én felles operativ sannhet for Thomas, Vibeke, @navigator, @rigger og Cursor, uten å splitte status på flere parallelle prosjekter.
 - Konsekvens: Overordnet tidslinje, workstream-oversikt og operativ utførelse skal løses med views over samme prosjekt, ikke med nye sideprosjekter.
+
+## 2026-04-17 - Thread Handoff etableres som fast trådskifte-rutine
+- Beslutning: KlarLyd bruker en fast Thread Handoff-mal i `docs/project/08_THREAD_HANDOFF.md` ved naturlige trådskifter.
+- Begrunnelse: Vi trenger et lett og repeterbart mellomlag mellom Return Ticket, repo-state og ny tråd.
+- Konsekvens: Ved nytt hovedspor, lukket pilot eller uklar/blandet tråd skal Thread Handoff vurderes før ny tråd startes.
