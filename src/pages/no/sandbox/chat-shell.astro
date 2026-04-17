@@ -5,9 +5,12 @@ import Section from "../../../components/layout/Section.astro";
 import Footer from "../../../components/nav/Footer.astro";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+
+const seed = Astro.url.searchParams.get("seed")?.trim();
+const from = Astro.url.searchParams.get("from")?.trim();
 ---
 
-<BaseLayout title="VOX – Sandbox: Chat Shell (intern)" currentPath="/no/sandbox/chat-shell">
+<BaseLayout title="VOX - Hørehjelpen samtale" currentPath="/no/sandbox/chat-shell">
   <meta slot="head" name="robots" content="noindex,follow" />
 
   <main class="pb-8 sm:pb-10">
@@ -18,12 +21,15 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
             class="pointer-events-none absolute -inset-x-2 -top-2 h-14 rounded-[var(--radius-md)] bg-gradient-to-r from-[rgb(var(--accent-gradient-start)/0.1)] to-[rgb(var(--accent-gradient-end)/0.08)] blur-2xl"
             aria-hidden="true"
           ></div>
-          <h1 class="font-display text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl">
-            Chat shell (intern)
-          </h1>
+          <h1 class="font-display text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl">Hørehjelpen</h1>
           <p class="mt-4 max-w-2xl text-sm leading-relaxed text-[rgb(var(--muted))]">
-            Frontend-spor for å evaluere VOX-eid chatflate med samme rytme, flatespråk og tonalitet som resten av produktet.
+            En rolig samtaleflate der du kan ta ett steg om gangen.
           </p>
+          {seed ? (
+            <p class="mt-3 text-xs text-[rgb(var(--muted))]">
+              Startet fra {from === "article" ? "artikkel" : "hub"} med valgt spørsmål.
+            </p>
+          ) : null}
         </div>
       </div>
     </Section>
@@ -43,13 +49,21 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
                 Hei! Beskriv kort hva som er vanskelig med høreapparatet akkurat nå, så tar vi ett steg om gangen.
               </div>
 
-              <div class="ml-auto max-w-[88%] rounded-[1rem] rounded-br-md bg-[color-mix(in_srgb,rgb(var(--surface-elevated))_86%,rgb(var(--primary))_14%)] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text))] shadow-[0_10px_22px_-18px_rgba(15,23,42,0.35)] sm:max-w-[82%] sm:px-4">
-                Jeg mister ofte lyden når jeg bytter mellom mobil og TV.
-              </div>
+              {seed ? (
+                <div class="ml-auto max-w-[88%] rounded-[1rem] rounded-br-md bg-[color-mix(in_srgb,rgb(var(--surface-elevated))_86%,rgb(var(--primary))_14%)] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text))] shadow-[0_10px_22px_-18px_rgba(15,23,42,0.35)] sm:max-w-[82%] sm:px-4">
+                  {seed}
+                </div>
+              ) : (
+                <div class="ml-auto max-w-[88%] rounded-[1rem] rounded-br-md bg-[color-mix(in_srgb,rgb(var(--surface-elevated))_86%,rgb(var(--primary))_14%)] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text))] shadow-[0_10px_22px_-18px_rgba(15,23,42,0.35)] sm:max-w-[82%] sm:px-4">
+                  Jeg mister ofte lyden når jeg bytter mellom mobil og TV.
+                </div>
+              )}
 
               <div class="max-w-[88%] px-1 py-1 text-sm leading-relaxed text-[rgb(var(--text-secondary))] sm:max-w-[82%]">
                 <p class="mb-1 text-[11px] font-medium uppercase tracking-wide text-[rgb(var(--muted))]/80">Hørehjelpen</p>
-                Skjønner. Start med å bekrefte at høreapparatet er aktivt parret til riktig enhet nå, så tar vi byttet stegvis.
+                {seed
+                  ? "Takk, jeg har hentet spørsmålet ditt. Trykk send for å fortsette samtalen i samme spor."
+                  : "Skjønner. Start med å bekrefte at høreapparatet er aktivt parret til riktig enhet nå, så tar vi byttet stegvis."}
               </div>
             </div>
           </div>
