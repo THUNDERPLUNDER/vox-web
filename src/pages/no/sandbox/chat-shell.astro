@@ -81,7 +81,7 @@ const from = Astro.url.searchParams.get("from")?.trim();
     </Section>
 
     <div class="pointer-events-none absolute h-px w-px overflow-hidden opacity-0" aria-hidden="true">
-      <chat-messenger id="ces-widget" url-allowlist="*">
+      <chat-messenger id="ces-shell-bridge" url-allowlist="*">
         <chat-messenger-container
           chat-title="Hørehjelpen"
           enable-file-upload
@@ -99,7 +99,7 @@ const from = Astro.url.searchParams.get("from")?.trim();
       const inputEl = document.getElementById("chat-shell-input");
       const sendBtn = document.getElementById("chat-shell-send");
       const statusEl = document.getElementById("chat-shell-status");
-      const bridge = document.getElementById("ces-widget");
+      const bridge = document.getElementById("ces-shell-bridge");
       let state = "idle";
       let bridgeReady = false;
       let pendingSeed = typeof seed === "string" ? seed.trim() : "";
@@ -220,7 +220,7 @@ const from = Astro.url.searchParams.get("from")?.trim();
         let tries = 0;
         const timer = setInterval(() => {
           tries += 1;
-          if (markReadyIfPossible() || tries > 20) {
+          if (markReadyIfPossible() || tries > 80) {
             clearInterval(timer);
             if (!bridgeReady) {
               setState("error", "Samtalemotoren ble ikke klar. Prøv å laste siden på nytt.");
@@ -229,6 +229,17 @@ const from = Astro.url.searchParams.get("from")?.trim();
         }, 250);
       };
 
+      window.addEventListener("vox-ces-register", (event) => {
+        const detail = event?.detail || {};
+        if (detail.widgetId !== "ces-shell-bridge") return;
+        if (detail.success) {
+          onReadySignal();
+          return;
+        }
+        if (detail.reason === "register-throw" && detail.message) {
+          setState("error", "Samtalemotoren svarte med feil under oppstart.");
+        }
+      });
       window.addEventListener("chat-messenger-loaded", onReadySignal, { once: true });
       window.addEventListener("ces-messenger-connected", onReadySignal, { once: true });
       onReadySignal();
