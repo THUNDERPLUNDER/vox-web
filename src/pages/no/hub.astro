@@ -96,14 +96,37 @@ const intro =
             </p>
             <ul class="mt-4 grid list-none gap-3 p-0" role="list">
               {seeds.map((seed) => (
-                <li class="rounded-[var(--radius-md)] border border-[rgb(var(--border))] bg-[rgb(var(--surface))/0.42] p-4">
-                  <p class="text-sm font-semibold text-[rgb(var(--text))]">{seed.question}</p>
-                  {seed.shortAnswer ? (
-                    <p class="mt-1.5 text-sm text-[rgb(var(--muted))]">{seed.shortAnswer}</p>
-                  ) : null}
+                <li>
+                  <button
+                    type="button"
+                    class="w-full rounded-[var(--radius-md)] border border-[rgb(var(--border))] bg-[rgb(var(--surface))/0.42] p-4 text-left transition-colors hover:bg-[rgb(var(--surface))/0.7]"
+                    data-smart-seed={seed.question}
+                  >
+                    <p class="text-sm font-semibold text-[rgb(var(--text))]">{seed.question}</p>
+                    {seed.shortAnswer ? (
+                      <p class="mt-1.5 text-sm text-[rgb(var(--muted))]">{seed.shortAnswer}</p>
+                    ) : null}
+                  </button>
                 </li>
               ))}
             </ul>
+
+            <div class="mt-5 rounded-[var(--radius-md)] border border-[rgb(var(--border))] bg-[rgb(var(--surface))/0.35] p-3">
+              <p class="text-xs text-[rgb(var(--muted))]" data-seed-status role="status" aria-live="polite">
+                Klar til å sende spørsmål.
+              </p>
+              <chat-messenger
+                id="ces-widget"
+                url-allowlist="*"
+                class="mt-2 block h-[22rem] w-full overflow-hidden rounded-[var(--radius-md)] bg-[rgb(var(--surface-subtle))] shadow-[var(--shadow-md)]"
+              >
+                <chat-messenger-container
+                  chat-title="Hørehjelpen"
+                  enable-file-upload
+                  enable-audio-input
+                ></chat-messenger-container>
+              </chat-messenger>
+            </div>
           </div>
         </div>
       </Section>
@@ -119,4 +142,42 @@ const intro =
   </main>
 
   <Footer />
+
+  <script is:inline>
+    (() => {
+      const statusEl = document.querySelector("[data-seed-status]");
+      const seedButtons = Array.from(document.querySelectorAll("[data-smart-seed]"));
+      const widget = document.getElementById("ces-widget");
+
+      const setStatus = (text) => {
+        if (statusEl) statusEl.textContent = text;
+      };
+
+      const sendSeedToAi = (seedText) => {
+        if (!widget) {
+          setStatus("Samtaleflaten er ikke tilgjengelig akkurat nå.");
+          return;
+        }
+        if (typeof widget.sessionInput !== "function") {
+          setStatus("Kunne ikke sende spørsmålet. Prøv igjen om noen sekunder.");
+          return;
+        }
+
+        setStatus("Sender spørsmålet ...");
+        widget.open?.();
+        widget.show?.();
+        widget.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        widget.sessionInput(seedText);
+        setStatus("Spørsmål sendt. Svaret vises i samtalen under.");
+      };
+
+      for (const button of seedButtons) {
+        button.addEventListener("click", () => {
+          const seed = button.getAttribute("data-smart-seed");
+          if (!seed) return;
+          sendSeedToAi(seed);
+        });
+      }
+    })();
+  </script>
 </BaseLayout>

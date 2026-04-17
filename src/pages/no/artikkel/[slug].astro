@@ -70,12 +70,12 @@ const moduleToneLabel: Record<
 
     <Section tone="band" class="!py-8 sm:!py-10">
       <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-        <article class="space-y-5">
+        <article class="space-y-6">
           {article.sections.length ? (
             article.sections.map((section) => (
               <section class="vox-surface-tech">
                 {section.heading ? <h2 class="text-xl font-semibold text-[rgb(var(--text))]">{section.heading}</h2> : null}
-                {section.body ? <p class="mt-2.5 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">{section.body}</p> : null}
+                {section.body ? <p class="mt-2.5 text-base leading-relaxed text-[rgb(var(--text-secondary))]">{section.body}</p> : null}
               </section>
             ))
           ) : (
@@ -183,17 +183,82 @@ const moduleToneLabel: Record<
               </p>
               <ul class="mt-3 space-y-2 text-sm text-[rgb(var(--text-secondary))]">
                 {seeds.map((seed) => (
-                  <li class="rounded-[var(--radius-sm)] border border-[rgb(var(--border))] bg-[rgb(var(--surface))/0.45] px-3 py-2">
-                    {seed.question}
+                  <li>
+                    <button
+                      type="button"
+                      class="w-full rounded-[var(--radius-sm)] border border-[rgb(var(--border))] bg-[rgb(var(--surface))/0.45] px-3 py-2 text-left transition-colors hover:bg-[rgb(var(--surface))/0.7]"
+                      data-smart-seed={seed.question}
+                    >
+                      {seed.question}
+                    </button>
                   </li>
                 ))}
               </ul>
             </div>
           ) : null}
+
+          <div class="vox-surface-tech">
+            <h2 class="text-sm font-semibold uppercase tracking-wide text-[rgb(var(--text))]">Svar med Hørehjelpen</h2>
+            <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">
+              Trykk på et smart spørsmål, så sender vi det direkte inn i samtalen.
+            </p>
+            <p class="mt-2 text-xs text-[rgb(var(--muted))]" data-seed-status role="status" aria-live="polite">
+              Klar til å sende spørsmål.
+            </p>
+            <chat-messenger
+              id="ces-widget"
+              url-allowlist="*"
+              class="mt-3 block h-[24rem] w-full overflow-hidden rounded-[var(--radius-md)] bg-[rgb(var(--surface-subtle))] shadow-[var(--shadow-md)]"
+            >
+              <chat-messenger-container
+                chat-title="Hørehjelpen"
+                enable-file-upload
+                enable-audio-input
+              ></chat-messenger-container>
+            </chat-messenger>
+          </div>
         </aside>
       </div>
     </Section>
   </main>
 
   <Footer />
+
+  <script is:inline>
+    (() => {
+      const statusEl = document.querySelector("[data-seed-status]");
+      const seedButtons = Array.from(document.querySelectorAll("[data-smart-seed]"));
+      const widget = document.getElementById("ces-widget");
+
+      const setStatus = (text) => {
+        if (statusEl) statusEl.textContent = text;
+      };
+
+      const sendSeedToAi = (seedText) => {
+        if (!widget) {
+          setStatus("Samtaleflaten er ikke tilgjengelig akkurat nå.");
+          return;
+        }
+        if (typeof widget.sessionInput !== "function") {
+          setStatus("Kunne ikke sende spørsmålet. Prøv igjen om noen sekunder.");
+          return;
+        }
+
+        setStatus("Sender spørsmålet ...");
+        widget.open?.();
+        widget.show?.();
+        widget.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        widget.sessionInput(seedText);
+        setStatus("Spørsmål sendt. Svaret vises i samtalen under.");
+      };
+
+      for (const button of seedButtons) {
+        button.addEventListener("click", () => {
+          const seed = button.getAttribute("data-smart-seed");
+          if (!seed) return;
+          sendSeedToAi(seed);
+        });
+      }
+    })();
+  </script>
 </BaseLayout>
