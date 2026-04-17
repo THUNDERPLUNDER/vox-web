@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Internal custom chat shell visual-alignment sandbox; no backend/agent integration. */
+/* CONTRACT: Product-owned chat shell with thin CES bridge and minimal message states for demo flow. */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Section from "../../../components/layout/Section.astro";
 import Footer from "../../../components/nav/Footer.astro";
@@ -13,7 +13,7 @@ const from = Astro.url.searchParams.get("from")?.trim();
 <BaseLayout title="VOX - Hørehjelpen samtale" currentPath="/no/sandbox/chat-shell">
   <meta slot="head" name="robots" content="noindex,follow" />
 
-  <main class="pb-8 sm:pb-10">
+  <main class="relative pb-8 sm:pb-10">
     <Section class="!pt-4 !pb-7 sm:!pb-9">
       <div class="max-w-3xl">
         <div class="vox-surface-calm relative overflow-hidden">
@@ -43,44 +43,29 @@ const from = Astro.url.searchParams.get("from")?.trim();
           </div>
 
           <div class="max-h-[min(60vh,560px)] overflow-y-auto bg-[rgb(var(--surface-subtle))/0.96] px-3 py-4 sm:px-5 sm:py-6">
-            <div class="mx-auto flex w-full max-w-3xl flex-col gap-3 sm:gap-3.5">
+            <div id="chat-shell-thread" class="mx-auto flex w-full max-w-3xl flex-col gap-3 sm:gap-3.5">
               <div class="max-w-[88%] px-1 py-1 text-sm leading-relaxed text-[rgb(var(--text-secondary))] sm:max-w-[82%]">
                 <p class="mb-1 text-[11px] font-medium uppercase tracking-wide text-[rgb(var(--muted))]/80">Hørehjelpen</p>
                 Hei! Beskriv kort hva som er vanskelig med høreapparatet akkurat nå, så tar vi ett steg om gangen.
               </div>
-
-              {seed ? (
-                <div class="ml-auto max-w-[88%] rounded-[1rem] rounded-br-md bg-[color-mix(in_srgb,rgb(var(--surface-elevated))_86%,rgb(var(--primary))_14%)] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text))] shadow-[0_10px_22px_-18px_rgba(15,23,42,0.35)] sm:max-w-[82%] sm:px-4">
-                  {seed}
-                </div>
-              ) : (
-                <div class="ml-auto max-w-[88%] rounded-[1rem] rounded-br-md bg-[color-mix(in_srgb,rgb(var(--surface-elevated))_86%,rgb(var(--primary))_14%)] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text))] shadow-[0_10px_22px_-18px_rgba(15,23,42,0.35)] sm:max-w-[82%] sm:px-4">
-                  Jeg mister ofte lyden når jeg bytter mellom mobil og TV.
-                </div>
-              )}
-
-              <div class="max-w-[88%] px-1 py-1 text-sm leading-relaxed text-[rgb(var(--text-secondary))] sm:max-w-[82%]">
-                <p class="mb-1 text-[11px] font-medium uppercase tracking-wide text-[rgb(var(--muted))]/80">Hørehjelpen</p>
-                {seed
-                  ? "Takk, jeg har hentet spørsmålet ditt. Trykk send for å fortsette samtalen i samme spor."
-                  : "Skjønner. Start med å bekrefte at høreapparatet er aktivt parret til riktig enhet nå, så tar vi byttet stegvis."}
-              </div>
             </div>
           </div>
 
-          <div class="pointer-events-none absolute inset-x-0 bottom-[102px] h-24 bg-gradient-to-t from-[rgb(var(--surface-elevated))/0.94] via-[rgb(var(--surface-elevated))/0.58] to-transparent"></div>
+          <div class="pointer-events-none absolute inset-x-0 bottom-[122px] h-24 bg-gradient-to-t from-[rgb(var(--surface-elevated))/0.94] via-[rgb(var(--surface-elevated))/0.58] to-transparent"></div>
 
           <div class="sticky bottom-0 bg-[color-mix(in_srgb,rgb(var(--surface-elevated))_90%,white_10%)] px-3 pb-3.5 pt-2.5 backdrop-blur-md shadow-[0_-16px_34px_-24px_rgba(0,0,0,0.62)] sm:px-5 sm:pb-5 sm:pt-3">
             <div class="mx-auto max-w-3xl">
+              <p id="chat-shell-status" class="mb-2 text-xs text-[rgb(var(--muted))]" role="status" aria-live="polite">Klar.</p>
               <label for="chat-shell-input" class="sr-only">Skriv melding</label>
               <div class="flex items-end gap-1.5 rounded-[1rem] bg-transparent px-1 py-1.5 sm:gap-2 sm:px-1.5 sm:py-1.5">
                 <textarea
                   id="chat-shell-input"
                   rows="1"
-                  placeholder="Skriv melding…"
+                  placeholder="Skriv melding..."
                   class="min-h-[54px] w-full resize-none rounded-[0.85rem] bg-transparent px-2.5 py-2.5 text-sm leading-relaxed text-[rgb(var(--text))] placeholder:text-[rgb(var(--muted))] focus:outline-none sm:min-h-[56px] sm:px-3 sm:py-3"
                 ></textarea>
                 <button
+                  id="chat-shell-send"
                   type="button"
                   class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[0.8rem] bg-[rgb(var(--primary))/0.14] text-[rgb(var(--primary))] shadow-[0_6px_14px_-10px_rgb(var(--primary)/0.5)] transition-colors hover:bg-[rgb(var(--primary))/0.22] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.45] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--surface))] sm:h-11 sm:w-11"
                   aria-label="Send melding"
@@ -93,7 +78,142 @@ const from = Astro.url.searchParams.get("from")?.trim();
         </div>
       </div>
     </Section>
+
+    <div class="pointer-events-none absolute h-px w-px overflow-hidden opacity-0" aria-hidden="true">
+      <chat-messenger id="ces-shell-bridge" url-allowlist="*">
+        <chat-messenger-container
+          chat-title="Hørehjelpen"
+          enable-file-upload
+          enable-audio-input
+        ></chat-messenger-container>
+      </chat-messenger>
+    </div>
   </main>
 
   <Footer />
+
+  <script is:inline define:vars={{ seed }}>
+    (() => {
+      const threadEl = document.getElementById("chat-shell-thread");
+      const inputEl = document.getElementById("chat-shell-input");
+      const sendBtn = document.getElementById("chat-shell-send");
+      const statusEl = document.getElementById("chat-shell-status");
+      const bridge = document.getElementById("ces-shell-bridge");
+      let state = "idle";
+
+      const setState = (nextState, text) => {
+        state = nextState;
+        if (statusEl) statusEl.textContent = text;
+        if (sendBtn) sendBtn.toggleAttribute("disabled", state === "sending");
+      };
+
+      const appendUserMessage = (text) => {
+        if (!threadEl) return;
+        const bubble = document.createElement("div");
+        bubble.className =
+          "ml-auto max-w-[88%] rounded-[1rem] rounded-br-md bg-[color-mix(in_srgb,rgb(var(--surface-elevated))_86%,rgb(var(--primary))_14%)] px-3.5 py-3 text-sm leading-relaxed text-[rgb(var(--text))] shadow-[0_10px_22px_-18px_rgba(15,23,42,0.35)] sm:max-w-[82%] sm:px-4";
+        bubble.textContent = text;
+        threadEl.appendChild(bubble);
+        bubble.scrollIntoView({ block: "end", behavior: "smooth" });
+      };
+
+      const appendBotMessage = (text) => {
+        if (!threadEl) return;
+        const wrap = document.createElement("div");
+        wrap.className = "max-w-[88%] px-1 py-1 text-sm leading-relaxed text-[rgb(var(--text-secondary))] sm:max-w-[82%]";
+        wrap.innerHTML =
+          '<p class="mb-1 text-[11px] font-medium uppercase tracking-wide text-[rgb(var(--muted))]/80">Hørehjelpen</p>';
+        const content = document.createElement("p");
+        content.textContent = text;
+        wrap.appendChild(content);
+        threadEl.appendChild(wrap);
+        wrap.scrollIntoView({ block: "end", behavior: "smooth" });
+      };
+
+      const asText = (payload) => {
+        if (!payload) return "";
+        if (typeof payload === "string") return payload.trim();
+        if (Array.isArray(payload)) {
+          return payload.map((item) => asText(item)).filter(Boolean).join("\n").trim();
+        }
+        if (typeof payload === "object") {
+          const candidates = [
+            payload.text,
+            payload.transcript,
+            payload.outputText,
+            payload.message,
+            payload.content,
+            payload.payload,
+            payload.raw,
+            payload.data,
+            payload.messages,
+          ];
+          for (const candidate of candidates) {
+            const parsed = asText(candidate);
+            if (parsed) return parsed;
+          }
+        }
+        return "";
+      };
+
+      const onBotReply = (event) => {
+        const text = asText(event?.detail);
+        if (!text) return;
+        appendBotMessage(text);
+        setState("received", "Svar mottatt.");
+      };
+
+      const attachBridgeListeners = () => {
+        if (!bridge) return;
+        const events = [
+          "ces-text-received",
+          "ces-message-received",
+          "chat-messenger-response-received",
+          "chat-message-received",
+        ];
+        for (const eventName of events) {
+          bridge.addEventListener(eventName, onBotReply);
+        }
+        bridge.addEventListener("chat-messenger-error", () => {
+          setState("error", "Kunne ikke hente svar akkurat nå. Prøv igjen.");
+        });
+      };
+
+      const sendMessage = (text) => {
+        const trimmed = text.trim();
+        if (!trimmed) return;
+        if (!bridge || typeof bridge.sessionInput !== "function") {
+          setState("error", "Samtalemotoren er ikke klar. Last siden på nytt.");
+          return;
+        }
+        appendUserMessage(trimmed);
+        if (inputEl) inputEl.value = "";
+        setState("sending", "Sender ...");
+        bridge.sessionInput(trimmed);
+      };
+
+      if (sendBtn && inputEl) {
+        sendBtn.addEventListener("click", () => sendMessage(inputEl.value));
+        inputEl.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage(inputEl.value);
+          }
+        });
+      }
+
+      attachBridgeListeners();
+      setState("idle", "Klar.");
+
+      if (typeof seed === "string" && seed.trim()) {
+        window.addEventListener(
+          "chat-messenger-loaded",
+          () => {
+            sendMessage(seed);
+          },
+          { once: true },
+        );
+      }
+    })();
+  </script>
 </BaseLayout>
