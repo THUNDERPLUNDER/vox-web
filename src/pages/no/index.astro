@@ -124,4 +124,30 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
     </div>
   </main>
   <Footer />
+
+  <script is:inline>
+    (() => {
+      const params = new URLSearchParams(window.location.search);
+      const initialQuestion = params.get("q");
+      if (!initialQuestion) return;
+      const widget = document.getElementById("ces-widget");
+      if (!widget) return;
+
+      const sendInitialQuestion = () => {
+        if (typeof widget.sessionInput !== "function") return false;
+        widget.open?.();
+        widget.show?.();
+        widget.sessionInput(initialQuestion);
+        return true;
+      };
+
+      if (sendInitialQuestion()) return;
+
+      let tries = 0;
+      const t = setInterval(() => {
+        tries += 1;
+        if (sendInitialQuestion() || tries > 40) clearInterval(t);
+      }, 250);
+    })();
+  </script>
 </BaseLayout>
