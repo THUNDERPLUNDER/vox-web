@@ -389,7 +389,7 @@ async function findProjectItemByIssueNumber(projectId, issueNumber) {
       query($projectId: ID!) {
         node(id: $projectId) {
           ... on ProjectV2 {
-            items(first: 200) {
+            items(first: 100) {
               nodes {
                 id
                 content {
@@ -413,7 +413,7 @@ async function listTasks(owner, projectTitle) {
       query($projectId: ID!) {
         node(id: $projectId) {
           ... on ProjectV2 {
-            items(first: 200) {
+            items(first: 100) {
               nodes {
                 id
                 content {
