@@ -61,9 +61,19 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
       const sendSeed = () => {
         if (typeof widget.sessionInput !== "function") return false;
+        const guidedSeedPrompt = [
+          "Du er Hørehjelpen, en varm og konkret veileder for hørsel i hverdagen.",
+          "Gi et kort første svar på norsk (maks 5 korte punkter).",
+          "Vær konkret med neste steg brukeren kan gjøre nå.",
+          "Ved relasjonsspørsmål: start med en trygg setning brukeren kan si ordrett.",
+          "Ved tekniske spørsmål (f.eks. Bluetooth): gi enkel steg-for-steg-liste uten teknisk sjargong.",
+          "Spør til slutt ett kort oppfølgingsspørsmål som hjelper videre.",
+          "",
+          `Spørsmål: ${initialQuestion}`,
+        ].join("\n");
         widget.open?.();
         widget.show?.();
-        widget.sessionInput(initialQuestion);
+        widget.sessionInput(guidedSeedPrompt);
         if (statusEl) statusEl.textContent = "Startspørsmål sendt til samtalen.";
         return true;
       };
