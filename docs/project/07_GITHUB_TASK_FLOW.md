@@ -146,6 +146,26 @@ Oppsett:
 - Return Ticket = issue comment eller lenket artefakt
 - `Link`-feltet peker til viktigste artefakt når relevant
 
+## Backlog intake v0.1
+Formål:
+Fange nye ideer raskt fra Thomas, Vibeke og @navigator uten nytt prosjekt, ny persona eller ny automasjon.
+
+Flyt:
+- Inbox: Alle nye ideer kan opprettes direkte som issue og legges i prosjektet med `KL Status = Backlog`.
+- Triage: Kort avklaring av hva ideen er, hvilket arbeidsspor den hører til (`Workstream`), og om den er byggbar nå.
+- Neste: Kun byggbare ideer flyttes til `KL Status = Neste` og kan brytes videre ned til konkret Task ved behov.
+
+Minimum for intake-kort:
+- kort tittel med tydelig problem eller mulighet
+- 2-4 linjer kontekst i issue body
+- foreløpig `Workstream`
+- `Level` settes til Track eller Task etter enkel triage
+
+Avgrensning:
+- ingen ny backlog-løsning utenfor GitHub task bus
+- ingen VIS-endringer for intake
+- ingen utvidelse av statusmodellen i denne versjonen
+
 ## Definition of done for GitHub task bus v1
 GitHub Projects regnes ikke som levert før:
 - kanoniske felt er definert
