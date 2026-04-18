@@ -34,6 +34,11 @@ Eksplisitte primitive brand-verdier ligger i `tokens.css` og mappes inn i semant
 ## KlarLyd surface contract (kort, MVP)
 Fire flatetyper (**canvas**, **reading**, **calm card**, **embedded app**) — når de brukes, border/skygge/radius, og mapping til chat / artikkel / smart-spørsmål: se **`docs/project/SURFACES.md`**. Støtter issue **#10** (lett design system-metode) og **#5** (white paper reading zone).
 
+### White Paper reading zone (artikkelmal)
+- **Canvas** forblir `--bg` (varm KlarLyd-bakgrunn); **leseark** er `--reading-paper` med **`--reading-ink`** / **`--reading-ink-secondary`** for høy kontrast og magasin-rytme.
+- Hooks: **`.vox-reading-sheet`** (hovedkolonne), **`.vox-reading-inline`** (seksjoner/callouts på arket), **`.vox-reading-rail-card`** (sekundær kolonne — lavere vekt enn arket).
+- Implementert i **`src/pages/no/artikkel/[slug].astro`**; ingen avhengighet av `@tailwindcss/typography` — rytme løst med spacing + `leading-[1.75]` der det trengs.
+
 ## Content surfaces og seksjoner (MVP-mønstre)
 Operative hooks i `global.css` — **ikke** et eget komponentbibliotek; brukes sammen med `Section.astro` der det passer.
 
@@ -42,6 +47,9 @@ Operative hooks i `global.css` — **ikke** et eget komponentbibliotek; brukes s
 | **`.vox-surface-calm`** | Rollig informasjonsflate: diskret border, lett glass (`backdrop-blur`), god til intro/lead. |
 | **`.vox-surface-lifted`** | Løftet modul: `surface` + `shadow-md` — oppsummering, CTA-blokk. |
 | **`.vox-surface-tech`** | Teknisk/informasjonskort: `radius-md`, venstre **gradient-akse** (accent-start), egnet i grid. |
+| **`.vox-reading-sheet`** | White Paper-hovedkolonne: lyst ark, `shadow-sm`, ghost-ring — **ikke** hele siden. |
+| **`.vox-reading-inline`** | Seksjoner/callouts *på* lesearket (`--reading-inline`). |
+| **`.vox-reading-rail-card`** | Sekundær sidekolonne (metadata, trust) — underordnet leseflaten. |
 | **`.vox-section-title`** | `font-display`, konsistent h2/h3-nivå på innholdssider. |
 | **`.vox-lead`** | Lead-avsnitt (`text-secondary`, `text-lg`). |
 
@@ -97,6 +105,7 @@ Dette er **produktvalg** dokumentert for konsistens mellom design og kode — ik
   - Primitives: `--vox-brand-primary`, `--vox-brand-gradient-start`, `--vox-brand-gradient-end`, `--vox-surface-light`, `--vox-surface-dark`
   - Semantikk: `--surface-subtle`, `--surface-elevated`, `--accent-gradient-start`, `--accent-gradient-end`
   - `--text-secondary`, `--focus-ring`, `--accent-primary`
+  - **White Paper / reading:** `--reading-paper`, `--reading-ink`, `--reading-ink-secondary`, `--reading-inline` (lys + mørk variant)
 - Mappes til hverandre for trygg videre utvidelse; nye sider skal helst bruke semantiske pekere, ikke duplisere hex.
 
 ## Operativ bruk av semantiske tokens

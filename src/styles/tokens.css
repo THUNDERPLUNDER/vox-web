@@ -37,6 +37,11 @@
 
   --surface-subtle: 246 243 237;
   --surface-elevated: var(--surface);
+  /* White Paper reading column — lyst ark (lys); egen sheet-tone i mørk */
+  --reading-paper: 255 255 255;
+  --reading-ink: 28 32 38;
+  --reading-ink-secondary: 58 64 76;
+  --reading-inline: 245 243 239;
   --text-secondary: var(--muted);
   --focus-ring: var(--focus);
   --accent-primary: var(--primary);
@@ -67,6 +72,10 @@ html[data-theme="light"] {
   --shadow-header: 0 14px 36px -22px rgba(28, 32, 38, 0.14);
   --surface-subtle: 246 243 237;
   --surface-elevated: var(--surface);
+  --reading-paper: 255 255 255;
+  --reading-ink: 28 32 38;
+  --reading-ink-secondary: 58 64 76;
+  --reading-inline: 245 243 239;
   --text-secondary: var(--muted);
   --focus-ring: var(--focus);
   --accent-primary: var(--primary);
@@ -94,6 +103,10 @@ html[data-theme="dark"] {
   --shadow-header: 0 18px 42px -20px rgba(0, 0, 0, 0.65);
   --surface-subtle: 8 14 28;
   --surface-elevated: 20 30 50;
+  --reading-paper: 24 32 52;
+  --reading-ink: 236 240 248;
+  --reading-ink-secondary: 168 180 200;
+  --reading-inline: 18 26 44;
   --text-secondary: var(--muted);
   --focus-ring: var(--focus);
   --accent-primary: var(--primary);
@@ -121,6 +134,10 @@ html[data-theme="dark"] {
     --shadow-header: 0 18px 42px -20px rgba(0, 0, 0, 0.65);
     --surface-subtle: 8 14 28;
     --surface-elevated: 20 30 50;
+    --reading-paper: 24 32 52;
+    --reading-ink: 236 240 248;
+    --reading-ink-secondary: 168 180 200;
+    --reading-inline: 18 26 44;
     --text-secondary: var(--muted);
     --focus-ring: var(--focus);
     --accent-primary: var(--primary);

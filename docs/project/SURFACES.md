@@ -22,16 +22,16 @@
 | **Radius** | Ikke relevant for full viewport; underseksjoner bruker andre flater. |
 | **Eksempler** | `body` / `BaseLayout`-bakgrunn, hoved-`<main>` uten egen kort-stil. |
 
-### 2. Reading surface
+### 2. Reading surface (White Paper)
 
 | | |
 |---|---|
 | **Bruk** | Langform: artikler, white paper, veiledningstekst der **lesbarhet** og **fokus** er hovedjobben. |
-| **Bakgrunn / tone** | `--surface` eller `--surface-subtle` for kolonne; tekst via `--text` / `--text-secondary`. Tilstrekkelig linjelengde og luft. |
-| **Border** | Vanligvis ingen kant; eventuelt **ghost-border** (`--border` med lav alfa) bare hvis flaten må skilles fra nabotrinn uten «kontor-grå» styrke. |
-| **Skygge** | `--shadow-sm` valgfritt for å løfte lesesone fra canvas — diskret, ikke «kort-premium». |
-| **Radius** | `--radius-md` til `--radius-lg` avhengig av innholdsblokk; konsistent innen én artikkel. |
-| **Eksempler** | White paper-hovedstolpe, artikkel-`<article>`-wrapper, «fortsett å lese»-sone. |
+| **Bakgrunn / tone** | **Lyst «ark»** på varm canvas: `--reading-paper`, `--reading-ink`, `--reading-ink-secondary` (se `tokens.css`). Canvas (`--bg`) forblir rundt; selve kolonnen er hvit/nesten hvit i lys modus. |
+| **Border** | **Ghost-ring** på ark-wrapper (`ring` + lav alfa), ikke tung kort-ramme. |
+| **Skygge** | `--shadow-sm` på lesearket for rolig løft fra canvas. |
+| **Radius** | `--radius-lg` på hovedark; `--radius-md` på innrykkede blokker (`--reading-inline`). |
+| **Eksempler** | `src/pages/no/artikkel/[slug].astro` — `.vox-reading-sheet` + `.vox-reading-inline`; sidekolonne `.vox-reading-rail-card` (sekundær). |
 
 ### 3. Calm card surface
 
@@ -93,12 +93,12 @@
 
 ## Class- og token-konvensjoner (praktisk)
 
-**Implementerte hooks** (`global.css`): `.vox-surface-embedded-app` (CES-/app-ramme), `.vox-surface-calm-tile` (smart-spørsmål-lenker), `.vox-surface-reading` (artikkelkolonne mål).
+**Implementerte hooks** (`global.css`): `.vox-surface-embedded-app` (CES-/app-ramme), `.vox-surface-calm-tile` (smart-spørsmål-lenker), **`.vox-reading-sheet`** (White Paper-hovedkolonne), **`.vox-reading-inline`** (blokker på arket), **`.vox-reading-rail-card`** (sekundær sidekolonne).
 
 | Intensjon | Tokens / mønster |
 |-----------|-------------------|
 | Bakgrunn page | `rgb(var(--bg))` |
-| Lesesone / artikkel | `vox-surface-reading` på hovedkolonne, eller `rgb(var(--surface))` / `surface-subtle` + avtalt `max-w-*` |
+| Lesesone / artikkel | **`vox-reading-sheet`** + `--reading-paper` / `--reading-ink*`; innholdsblokker **`vox-reading-inline`** |
 | Diskret kort | `rgb(var(--surface-elevated))` + `shadow-[var(--shadow-sm)]` + `rounded-[var(--radius-lg)]` |
 | CES-ramme | **`vox-surface-embedded-app`** (= `surface-subtle` + `radius-lg` + `shadow-sm`) — **ikke** mørk `border` + **ikke** slate-tunge skygger på wrapper |
 | Smart-spørsmål-flis | **`vox-surface-calm-tile`** (ghost-ring, myk skygge) |
