@@ -31,7 +31,7 @@
 | **Border** | **Ghost-ring** på ark-wrapper (`ring` + lav alfa), ikke tung kort-ramme. |
 | **Skygge** | `--shadow-sm` på lesearket for rolig løft fra canvas. |
 | **Radius** | `--radius-lg` på hovedark; `--radius-md` på innrykkede blokker (`--reading-inline`). |
-| **Eksempler** | `src/pages/no/artikkel/[slug].astro` — `.vox-reading-sheet` + `.vox-reading-inline`; sidekolonne `.vox-reading-rail-card` (sekundær). |
+| **Eksempler** | `src/pages/no/artikkel/[slug].astro` — `.vox-reading-sheet`; **`.vox-reading-inline`** bare for utvalgte callouts (f.eks. én observasjon + neste steg), ellers ren brødtekst; sidekolonne `.vox-reading-rail-card` (sekundær). |
 
 ### 3. Calm card surface
 

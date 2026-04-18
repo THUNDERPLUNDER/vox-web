@@ -36,7 +36,8 @@ Fire flatetyper (**canvas**, **reading**, **calm card**, **embedded app**) — n
 
 ### White Paper reading zone (artikkelmal)
 - **Canvas** forblir `--bg` (varm KlarLyd-bakgrunn); **leseark** er `--reading-paper` med **`--reading-ink`** / **`--reading-ink-secondary`** for høy kontrast og magasin-rytme.
-- Hooks: **`.vox-reading-sheet`** (hovedkolonne), **`.vox-reading-inline`** (seksjoner/callouts på arket), **`.vox-reading-rail-card`** (sekundær kolonne — lavere vekt enn arket).
+- Hooks: **`.vox-reading-sheet`** (hovedkolonne), **`.vox-reading-inline`** (kun målrettede callouts), **`.vox-reading-rail-card`** (sekundær kolonne — lavere vekt enn arket).
+- **Redaksjonell innholdsgrammatikk:** Hovedløpet er **H2 + brødtekst** (avsnitt splittet ved tom linje i CMS); moduler uten boks; **maks to** innrammede flater: første «Observasjon» (hvis den finnes) og **«Neste steg»**; fraser som enkel liste, ikke kort-rutenett.
 - Implementert i **`src/pages/no/artikkel/[slug].astro`**; ingen avhengighet av `@tailwindcss/typography` — rytme løst med spacing + `leading-[1.75]` der det trengs.
 
 ## Content surfaces og seksjoner (MVP-mønstre)
