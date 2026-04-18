@@ -93,12 +93,15 @@
 
 ## Class- og token-konvensjoner (praktisk)
 
+**Implementerte hooks** (`global.css`): `.vox-surface-embedded-app` (CES-/app-ramme), `.vox-surface-calm-tile` (smart-spørsmål-lenker), `.vox-surface-reading` (artikkelkolonne mål).
+
 | Intensjon | Tokens / mønster |
 |-----------|-------------------|
 | Bakgrunn page | `rgb(var(--bg))` |
-| Lesesone / artikkel | `rgb(var(--surface))` eller `surface-subtle` + `max-w-prose` eller avtalt `max-w-*` |
+| Lesesone / artikkel | `vox-surface-reading` på hovedkolonne, eller `rgb(var(--surface))` / `surface-subtle` + avtalt `max-w-*` |
 | Diskret kort | `rgb(var(--surface-elevated))` + `shadow-[var(--shadow-sm)]` + `rounded-[var(--radius-lg)]` |
-| CES-ramme | `surface-subtle` + `radius-lg` + `shadow-sm` — **ikke** mørk `border` + **ikke** slate-tunge skygger på wrapper |
+| CES-ramme | **`vox-surface-embedded-app`** (= `surface-subtle` + `radius-lg` + `shadow-sm`) — **ikke** mørk `border` + **ikke** slate-tunge skygger på wrapper |
+| Smart-spørsmål-flis | **`vox-surface-calm-tile`** (ghost-ring, myk skygge) |
 | Tekst nivåer | `--text`, `--text-secondary` |
 | Kant når nødvendig | `border-[rgb(var(--border))/~0.2–0.35]` — «ghost» |
 

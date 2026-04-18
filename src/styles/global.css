@@ -61,6 +61,21 @@ h3 {
   @apply rounded-[var(--radius-md)] border-0 border-l-4 border-l-[rgb(var(--primary))] bg-[rgb(var(--surface-elevated))/0.5] px-4 py-4 shadow-[var(--shadow-sm)] ring-0 outline-none backdrop-blur-md sm:px-5 sm:py-5;
 }
 
+/* Surface contract (docs/project/SURFACES.md): CES / innebygd app-ramme — myk separasjon, ingen tung kant */
+.vox-surface-embedded-app {
+  @apply overflow-hidden rounded-[var(--radius-lg)] bg-[rgb(var(--surface-subtle))] shadow-[var(--shadow-sm)];
+}
+
+/* Calm card — kompakte fliser (f.eks. smart-spørsmål-lister): ghost-ring, ikke hard border */
+.vox-surface-calm-tile {
+  @apply block w-full rounded-[var(--radius-lg)] border-0 bg-[rgb(var(--surface-elevated))/0.9] text-left shadow-[var(--shadow-sm)] ring-1 ring-[rgb(var(--border))/0.22] backdrop-blur-sm transition-colors hover:bg-[rgb(var(--surface-elevated))];
+}
+
+/* Reading surface — artikkel-/langform-kolonne: komfortabel linjelengde uten «kort»-chrome */
+.vox-surface-reading {
+  @apply max-w-[min(100%,42rem)];
+}
+
 .vox-section-title {
   font-family: var(--font-display);
   @apply text-xl font-semibold tracking-[-0.02em] text-[rgb(var(--text))] sm:text-2xl;

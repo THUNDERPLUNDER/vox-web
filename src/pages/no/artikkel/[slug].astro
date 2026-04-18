@@ -71,7 +71,7 @@ const moduleToneLabel: Record<
 
     <Section tone="band" class="!py-8 sm:!py-10">
       <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-        <article class="space-y-6">
+        <article class="vox-surface-reading space-y-6">
           {article.sections.length ? (
             article.sections.map((section) => (
               <section class="vox-surface-tech">
@@ -187,7 +187,7 @@ const moduleToneLabel: Record<
                   <li>
                     <a
                       href={buildChatShellHref(seed.question, "article")}
-                      class="w-full rounded-[var(--radius-sm)] border border-[rgb(var(--border))] bg-[rgb(var(--surface))/0.45] px-3 py-2 text-left transition-colors hover:bg-[rgb(var(--surface))/0.7]"
+                      class="vox-surface-calm-tile px-3 py-2 text-sm"
                     >
                       {seed.question}
                     </a>
