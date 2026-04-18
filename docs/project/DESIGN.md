@@ -31,6 +31,9 @@ Eksplisitte primitive brand-verdier ligger i `tokens.css` og mappes inn i semant
 - **Ghost-border** der kant trengs: svak border-alfa i surface-klassene, ikke «kontor-grå» full styrke.
 - **Light og dark** skal oppleves som **én produktfamilie** (samme brand-akse og gradientlogikk; ulike flater, ikke to ulike merkevarer).
 
+## KlarLyd surface contract (kort, MVP)
+Fire flatetyper (**canvas**, **reading**, **calm card**, **embedded app**) — når de brukes, border/skygge/radius, og mapping til chat / artikkel / smart-spørsmål: se **`docs/project/SURFACES.md`**. Støtter issue **#10** (lett design system-metode) og **#5** (white paper reading zone).
+
 ## Content surfaces og seksjoner (MVP-mønstre)
 Operative hooks i `global.css` — **ikke** et eget komponentbibliotek; brukes sammen med `Section.astro` der det passer.
 
