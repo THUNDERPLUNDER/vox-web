@@ -1,0 +1,50 @@
+/* CONTRACT: Styles scoped to [data-article-master-sandbox] — Article Master sandbox only; not production. */
+
+[data-article-master-sandbox] h1,
+[data-article-master-sandbox] h2,
+[data-article-master-sandbox] h3,
+[data-article-master-sandbox] h4 {
+  font-family: var(--font-sans);
+  letter-spacing: -0.02em;
+}
+
+[data-article-master-sandbox] blockquote {
+  font-family: var(--font-sans);
+  letter-spacing: -0.02em;
+}
+
+/* Softer primary — not pure black; still clearly primary */
+[data-article-master-sandbox] .ams-primary-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  line-height: 1.4;
+  color: rgb(255 255 255);
+  background: rgb(55 61 74);
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+[data-article-master-sandbox] .ams-primary-cta:hover {
+  background: rgb(65 72 88);
+}
+
+[data-article-master-sandbox] .ams-primary-cta:focus-visible {
+  outline: 2px solid rgb(var(--reading-accent-iris) / 0.55);
+  outline-offset: 2px;
+}
+
+/* Editorial prompt rows — no underline; calm hover */
+[data-article-master-sandbox] .ams-prompt-row {
+  text-decoration: none;
+}
+
+[data-article-master-sandbox] aside h2 {
+  font-family: var(--font-sans);
+  letter-spacing: 0.14em;
+}
