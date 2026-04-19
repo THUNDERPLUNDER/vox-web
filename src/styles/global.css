@@ -71,22 +71,42 @@ h3 {
   @apply block w-full rounded-[var(--radius-lg)] border-0 bg-[rgb(var(--surface-elevated))/0.9] text-left shadow-[var(--shadow-sm)] ring-1 ring-[rgb(var(--border))/0.22] backdrop-blur-sm transition-colors hover:bg-[rgb(var(--surface-elevated))];
 }
 
-/* White Paper reading column (#5): lyst «ark» på canvas; separasjon via skygge + ghost-ring */
+/* White Paper / Article Master v1.1 — monokromt ark, disiplinert bredde, redaksjonell skygge */
 .vox-reading-sheet {
-  @apply max-w-[min(100%,42rem)] rounded-[var(--radius-lg)] px-6 py-9 shadow-[var(--shadow-sm)] ring-1 ring-[rgb(var(--border))/0.24] sm:px-9 sm:py-11;
+  @apply max-w-[min(100%,38rem)] rounded-[var(--radius-md)] px-7 py-10 sm:px-10 sm:py-12;
   background: rgb(var(--reading-paper));
   color: rgb(var(--reading-ink));
+  border: 1px solid rgb(var(--border) / 0.38);
+  box-shadow:
+    0 1px 0 rgb(0 0 0 / 0.04),
+    0 22px 56px -36px rgb(0 0 0 / 0.16);
 }
 
-/* Innholdsblokker på leseark (callouts, seksjoner) — lav konkurranse med selve arket */
+/* Callouts på leseark — iris-akcent, ikke produktblå; flat flate */
 .vox-reading-inline {
-  @apply rounded-[var(--radius-md)] border-l-4 border-l-[rgb(var(--primary))] px-4 py-5 ring-1 ring-[rgb(var(--border))/0.18] sm:px-5 sm:py-6;
+  @apply rounded-[var(--radius-sm)] px-5 py-5 sm:px-6 sm:py-6;
   background: rgb(var(--reading-inline));
+  border: 1px solid rgb(var(--border) / 0.28);
+  border-left: 3px solid rgb(var(--reading-accent-iris));
 }
 
-/* Sidekolonne: sekundær støtte — lavere visuell vekt enn lesearket */
+/* Sidekolonne — nøktern støtte, ingen glass */
 .vox-reading-rail-card {
-  @apply rounded-[var(--radius-lg)] bg-[rgb(var(--surface-subtle))/0.65] p-4 ring-1 ring-[rgb(var(--border))/0.12] backdrop-blur-sm sm:p-5;
+  @apply rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.32] bg-[rgb(var(--surface-subtle))] p-4 sm:p-5;
+}
+
+/* Artikkel: sekundærknapper (spørsmål inn i AI) */
+.article-seed-btn {
+  @apply block w-full rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.45] bg-[rgb(var(--reading-paper))] px-4 py-3.5 text-left text-sm font-medium text-[rgb(var(--reading-ink))] transition-colors;
+}
+
+.article-seed-btn:hover {
+  @apply border-[rgb(var(--reading-ink))/0.2] bg-[rgb(252_252_254)];
+}
+
+/* Artikkel: primær handling (mørk, ikke gradient) */
+.article-master-btn-primary {
+  @apply inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--reading-ink))] px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-[0.9];
 }
 
 .vox-section-title {

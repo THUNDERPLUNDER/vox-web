@@ -106,7 +106,7 @@ Dette er **produktvalg** dokumentert for konsistens mellom design og kode — ik
   - Primitives: `--vox-brand-primary`, `--vox-brand-gradient-start`, `--vox-brand-gradient-end`, `--vox-surface-light`, `--vox-surface-dark`
   - Semantikk: `--surface-subtle`, `--surface-elevated`, `--accent-gradient-start`, `--accent-gradient-end`
   - `--text-secondary`, `--focus-ring`, `--accent-primary`
-  - **White Paper / reading:** `--reading-paper`, `--reading-ink`, `--reading-ink-secondary`, `--reading-inline` (lys + mørk variant)
+  - **White Paper / reading:** `--reading-paper`, `--reading-ink`, `--reading-ink-secondary`, `--reading-inline`, **`--reading-accent-iris`** (editorial aksent, ikke primærblå), **`--article-page-canvas`** (bakgrunn rundt artikkelkolonne)
 - Mappes til hverandre for trygg videre utvidelse; nye sider skal helst bruke semantiske pekere, ikke duplisere hex.
 
 ## Operativ bruk av semantiske tokens
