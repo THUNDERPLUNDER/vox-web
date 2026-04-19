@@ -110,6 +110,16 @@ html[data-theme="light"] body.vox-shell--article {
   }
 }
 
+/* Sandbox (/no/sandbox/article-master): flat white page field in light — ambient layers omitted in layout */
+html[data-theme="light"] body.vox-shell--sandbox-white .vox-sandbox-flat-wash {
+  background: rgb(255 255 255) !important;
+}
+@media (prefers-color-scheme: light) {
+  html[data-theme="system"] body.vox-shell--sandbox-white .vox-sandbox-flat-wash {
+    background: rgb(255 255 255) !important;
+  }
+}
+
 /* Callouts på leseark — iris-akcent, ikke produktblå; flat flate */
 .vox-reading-inline {
   @apply rounded-[var(--radius-sm)] px-5 py-5 sm:px-6 sm:py-6;

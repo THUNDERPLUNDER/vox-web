@@ -1,0 +1,300 @@
+---
+/* CONTRACT: Sandbox for Article Master — long-form layout lab; borderless editorial; no production CMS coupling. */
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Footer from "../../../components/nav/Footer.astro";
+import { buildChatShellHref } from "../../../lib/chat-shell";
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+
+const demoSeeds = [
+  {
+    question: "Hvordan kan jeg starte en samtale uten at det føles som et tema?",
+  },
+  {
+    question: "Hva gjør jeg når den andre trekker seg unna eller svarer kort?",
+  },
+  {
+    question: "Hvordan beskriver jeg hva jeg opplever, uten å skylde på den andre?",
+  },
+  {
+    question: "Når bør vi heller ta en pause og prøve igjen senere?",
+  },
+];
+---
+
+<BaseLayout title="Sandbox – Article Master" currentPath="/no/sandbox/article-master" shellVariant="sandbox-white">
+  <meta slot="head" name="robots" content="noindex,follow" />
+
+  <main class="ams pb-16 pt-2 sm:pb-20" data-article-master-sandbox>
+    <div class="grid gap-14 lg:grid-cols-[minmax(0,1fr)_15.5rem] lg:gap-16 xl:gap-20">
+      <article class="max-w-[min(100%,38rem)]">
+        <nav
+          class="mb-10 text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]"
+          aria-label="Du er her"
+        >
+          <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
+          <span class="mx-1.5 text-[rgb(var(--reading-ink-secondary))]/50" aria-hidden="true">/</span>
+          <a href="/no/sandbox" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Sandbox</a>
+          <span class="mx-1.5 text-[rgb(var(--reading-ink-secondary))]/50" aria-hidden="true">/</span>
+          <span class="text-[rgb(var(--reading-ink))]">Article Master</span>
+        </nav>
+
+        <header class="pb-12">
+          <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-accent-iris))]">
+            Demo · Samtale og hørsel
+          </p>
+          <h1
+            class="font-display mt-4 text-[2.25rem] font-bold leading-[1.08] tracking-[-0.045em] text-balance text-[rgb(var(--reading-ink))] sm:text-[2.75rem]"
+          >
+            Når hørselen endrer samtalen — og hvordan du kan møte det roligere
+          </h1>
+          <p class="mt-7 max-w-2xl text-lg leading-[1.65] text-[rgb(var(--reading-ink-secondary))]">
+            Denne teksten er laget for layout-testing i KlarLyd-sandbox. Den beskriver en troverdig hverdagsproblemstilling:
+            når hørselstap gjør samtaler mer anstrengende, kan både den som hører dårligere og de rundt oppleve
+            misforståelser, irritasjon og stillhet som ikke er ment som avvisning.
+          </p>
+        </header>
+
+        <div class="space-y-14">
+          <section class="space-y-5">
+            <h2 class="font-display text-xl font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))] sm:text-2xl">
+              Hvorfor føles noen samtaler tyngre enn andre?
+            </h2>
+            <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+              Hørsel handler ikke bare om volum. Det handler også om hvor mye energi du bruker på å fylle inn det du
+              ikke fikk med deg — og hvor raskt du blir sliten av å følge med i støy, flere stemmer eller dårlig akustikk.
+              Når kroppen er spent, blir ofte ordene kortere, og tonen kan misforstås.
+            </p>
+            <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+              For pårørende kan dette se ut som manglende interesse. For den som strever med å høre, kan det føles som
+              skam eller frustrasjon over å måtte spørre om igjen. Mange møter begge deler i samme uke — i familie,
+              på jobb og i sosiale settinger.
+            </p>
+          </section>
+
+          <section class="space-y-6">
+            <h3 class="font-display text-lg font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))] sm:text-xl">
+              Når samtalen kjennes som en øvelse i å «holde maska»
+            </h3>
+            <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+              Noen prøver å kompensere ved å nikke, gjette seg frem eller trekke seg unna. Andre blir tydeligere i
+              kroppsspråket — kanskje høyere stemme, raskere replikk — uten at det var ønsket. Poenget er ikke å dømme
+              strategiene, men å se at de ofte er forsøk på å beskytte relasjonen mens man er sliten.
+            </p>
+            <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+              Et nyttig perspektiv er å skille mellom <strong class="font-medium text-[rgb(var(--reading-ink))]">intensjon</strong> og <strong class="font-medium text-[rgb(var(--reading-ink))]">effekt</strong>: du kan ønske å være tilstede, men oppleves som distansert fordi du trenger pauser du ikke rekker å forklare.
+            </p>
+          </section>
+
+          <section class="space-y-5">
+            <h3 class="font-display text-lg font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))] sm:text-xl">
+              Små grep som ofte letter trykket
+            </h3>
+            <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+              Her er eksempler på enkle grep som mange opplever som realistiske i en travel hverdag. De erstatter ikke
+              profesjonell hjelp, men kan gjøre samtaler litt mer forutsigbare.
+            </p>
+            <ul class="list-disc space-y-3 pl-6 text-[1.0625rem] leading-[1.75] text-[rgb(var(--reading-ink-secondary))]" role="list">
+              <li>Senk tempoet og del opp setninger — ett poeng om gangen.</li>
+              <li>Be om å flytte samtalen til et roligere rom eller å sitte slik at ansiktet er godt synlig.</li>
+              <li>Avklar kort hva du trenger: «Kan du si det én gang til, litt saktere?»</li>
+              <li>Planlegg vanskelige tema når dere ikke er på vei ut døra.</li>
+            </ul>
+          </section>
+
+          <section class="space-y-6">
+            <h2 class="font-display text-xl font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))] sm:text-2xl">
+              Praktiske samtalegrep i hverdagen
+            </h2>
+            <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+              Når du vil støtte noen som hører dårligere, kan det hjelpe å jobbe med struktur og forutsigbarhet. Det
+              handler mindre om «riktige ord» og mer om trygg ramme.
+            </p>
+
+            <h4 class="font-display text-base font-semibold tracking-[-0.02em] text-[rgb(var(--reading-ink))] sm:text-lg">
+              Mini-rutine før du tar opp et tema
+            </h4>
+            <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+              En kort innsjekk kan redusere misforståelser: signaliser at du vil snakke om noe, spør om tidspunktet passer,
+              og vær tydelig på at målet er å forstå — ikke å vinne diskusjonen.
+            </p>
+
+            <ol
+              class="list-decimal space-y-3 pl-7 text-[1.0625rem] leading-[1.75] text-[rgb(var(--reading-ink-secondary))]"
+              role="list"
+            >
+              <li>Velg et rolig øyeblikk og fjern unødvendig lyd der det er mulig.</li>
+              <li>Si hva du observerer uten å forklare den andres motiv: «Jeg merker at vi snakker i kryss».</li>
+              <li>Spør hva som ville gjort det lettere — og lytt til svaret uten å avbryte.</li>
+              <li>Avtal et neste steg som er liten nok til å gjennomføres.</li>
+            </ol>
+          </section>
+
+          <figure class="relative py-2 pl-6 sm:pl-7">
+            <span
+              class="pointer-events-none absolute left-0 top-3 h-[calc(100%-1.25rem)] w-[3px] rounded-full bg-[rgb(var(--reading-accent-iris))]"
+              aria-hidden="true"
+            ></span>
+            <blockquote class="font-display text-xl font-medium leading-snug text-[rgb(var(--reading-ink))] sm:text-2xl">
+              Den vanskeligste delen er ikke hørselen i seg selv — det er følelsen av å måtte be om plass i samtalen på
+              nytt, hver gang.
+            </blockquote>
+            <figcaption class="mt-4 text-sm text-[rgb(var(--reading-ink-secondary))]">
+              Et ofte gjentatt utsagn i brukerhistorier (demo-sitat for layout).
+            </figcaption>
+          </figure>
+
+          <section class="space-y-4 rounded-[var(--radius-sm)] bg-[rgb(var(--reading-inline)/0.42)] px-5 py-6 sm:px-6 sm:py-7">
+            <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-accent-iris))]">Observasjon</p>
+            <h3 class="font-display text-lg font-semibold tracking-[-0.02em] text-[rgb(var(--reading-ink))]">
+              Når «hverdagsirritasjon» egentlig er utmattelse
+            </h3>
+            <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+              Mange konflikter starter ikke i et vanskelig tema, men i mikroøyeblikk: gjentatte «hæ?», feilstaving av navn,
+              eller at noen snur seg bort midt i setningen. I layout-testen er denne blokken ment som et observasjonsfelt
+              uten kantlinje — bare myk flate og tydelig typografi.
+            </p>
+          </section>
+
+          <section class="space-y-4 rounded-[var(--radius-sm)] bg-[rgb(var(--reading-inline)/0.32)] px-5 py-6 sm:px-6 sm:py-7">
+            <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-accent-iris))]">Fakta å huske</p>
+            <h3 class="font-display text-lg font-semibold tracking-[-0.02em] text-[rgb(var(--reading-ink))]">
+              Akustikk påvirker mer enn volum
+            </h3>
+            <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+              Rom med harde flater, åpne kjøkkenløsninger og bakgrunnsstøy kan gjøre at tale blir vanskelig selv når
+              noen snur opp lyden på TV. Dette er ikke en medisinsk presisjon i denne sandbox-teksten — men et praktisk
+              utgangspunkt for å forstå hvorfor «det burde være hørbart» likevel kan føles umulig.
+            </p>
+          </section>
+
+          <section class="space-y-5">
+            <h2 class="font-display text-xl font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))] sm:text-2xl">
+              Når du trenger pause — uten å trekke deg unna relasjonen
+            </h2>
+            <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+              Pause er ikke det samme som å gi opp. I sterkere øyeblikk kan en kort avtale om å returnere til samtalen
+              senere samme dag være mer reparasjon enn å presse den ferdig når begge er spente.
+            </p>
+            <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+              Her er tre fraser som ofte oppleves mindre anklende — viktig for å teste linjelengde og avsnittsrytme over
+              mange skjermbredder:
+            </p>
+            <ul class="list-disc space-y-3 pl-6 text-[1.0625rem] leading-[1.75] text-[rgb(var(--reading-ink-secondary))]" role="list">
+              <li>«Jeg vil deg vel — jeg trenger bare ti minutter for å lande.»</li>
+              <li>«Kan vi ta dette etter middag, når det er roligere her?»</li>
+              <li>«Jeg orker ikke å finne de rette ordene akkurat nå — kan vi prøve igjen i morgen?»</li>
+            </ul>
+          </section>
+
+          <section class="space-y-5">
+            <h2 class="font-display text-xl font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))] sm:text-2xl">
+              Eksempelfraser du kan tilpasse
+            </h2>
+            <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+              Under følger en enkel liste uten innramming — grouping skjer med luft og overskrift, ikke med kantlinjer.
+            </p>
+            <ul class="space-y-3 text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]" role="list">
+              <li class="flex gap-3">
+                <span class="mt-[0.55em] h-1.5 w-1.5 shrink-0 rounded-full bg-[rgb(var(--reading-accent-iris))]" aria-hidden="true"></span>
+                <span>«Jeg fikk ikke med meg siste del — kan du gjenta én setning?»</span>
+              </li>
+              <li class="flex gap-3">
+                <span class="mt-[0.55em] h-1.5 w-1.5 shrink-0 rounded-full bg-[rgb(var(--reading-accent-iris))]" aria-hidden="true"></span>
+                <span>«Jeg trenger å sitte slik at jeg ser deg — det hjelper meg.»</span>
+              </li>
+              <li class="flex gap-3">
+                <span class="mt-[0.55em] h-1.5 w-1.5 shrink-0 rounded-full bg-[rgb(var(--reading-accent-iris))]" aria-hidden="true"></span>
+                <span>«Kan vi slå av bakgrunnslyden mens vi snakker om dette?»</span>
+              </li>
+            </ul>
+          </section>
+
+          <section class="space-y-5 pt-4">
+            <h2 class="font-display text-xl font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))] sm:text-2xl">
+              Kort oppsummert
+            </h2>
+            <ul class="list-disc space-y-3 pl-6 text-[1.0625rem] leading-[1.75] text-[rgb(var(--reading-ink-secondary))]" role="list">
+              <li>Samtaler påvirkes av hørsel, akustikk og energi — ikke bare av vilje.</li>
+              <li>Små grep i tempo og plass kan redusere misforståelser.</li>
+              <li>Pause kan være omsorg når den er avtalt og konkret.</li>
+            </ul>
+            <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+              I denne sandboxen er oppsummeringen en ekstra sjekk på avstand mellom blokker, og hvordan lister fungerer
+              etter lengre brødtekst.
+            </p>
+          </section>
+
+          <section class="space-y-6 pt-10" aria-labelledby="ams-continue">
+            <h2 id="ams-continue" class="font-display text-xl font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))] sm:text-2xl">
+              Fortsett i Hørehjelpen
+            </h2>
+            <p class="max-w-xl text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
+              Velg et spørsmål — samtalen åpner med dette som utgangspunkt. Dette området er bevisst uten listeramme og
+              uten skjemafelt-styling; det skal føles som redaksjonelle neste steg.
+            </p>
+            <div class="flex max-w-xl flex-col gap-6">
+              {
+                demoSeeds.map((seed) => (
+                  <a
+                    href={buildChatShellHref(seed.question, "article")}
+                    class="text-left text-[1.0625rem] font-normal leading-snug text-[rgb(var(--reading-ink))] underline decoration-[rgb(var(--reading-ink-secondary))/0.35] decoration-1 underline-offset-[5px] transition-colors hover:text-[rgb(var(--reading-accent-iris))] hover:decoration-[rgb(var(--reading-accent-iris))/0.5]"
+                  >
+                    {seed.question}
+                  </a>
+                ))
+              }
+            </div>
+            <p class="flex flex-wrap items-baseline gap-x-3 gap-y-2 text-xs leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
+              <span>Uten forslag:</span>
+              <a href="/no/chat" class="article-master-btn-primary no-underline">Åpne fri samtale</a>
+            </p>
+          </section>
+        </div>
+      </article>
+
+      <aside class="flex flex-col gap-14 lg:sticky lg:top-28 lg:self-start">
+        <div class="space-y-3">
+          <h2 class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]">
+            Faglig forankret
+          </h2>
+          <p class="text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
+            Innholdet bygger på etablerte råd for hørehelse og samtale i nære relasjoner (demo-tekst for layout).
+          </p>
+          <ul class="space-y-2 text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
+            <li>HLF — erfaring fra brukere og pårørende</li>
+            <li>FHI — helsefaglig kunnskapsgrunnlag</li>
+            <li>Helsedirektoratet — nasjonale råd og veiledning</li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h2 class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]">Om innholdet</h2>
+          <ul class="space-y-2.5 text-sm text-[rgb(var(--reading-ink-secondary))]">
+            <li><span class="font-medium text-[rgb(var(--reading-ink))]">Form:</span> Sandbox, ikke publisert innhold</li>
+            <li><span class="font-medium text-[rgb(var(--reading-ink))]">Oppdatert:</span> layout-lab</li>
+          </ul>
+          <p class="text-xs leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
+            Metodetekst kan stå her uten ramme — luft og typografi bærer strukturen.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h2 class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]">Samtale</h2>
+          <p class="text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
+            Forslagene over leder inn i Hørehjelpen. Du kan også gå direkte til{" "}
+            <a
+              href="/no/chat"
+              class="font-medium text-[rgb(var(--reading-ink))] underline-offset-2 hover:text-[rgb(var(--reading-accent-iris))]"
+            >
+              fri samtale
+            </a>
+            .
+          </p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <Footer variant="sandbox-tall" />
+</BaseLayout>

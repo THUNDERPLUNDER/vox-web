@@ -5,6 +5,7 @@ import Header from "../components/nav/Header.astro";
 import MobileMenuSheet from "../components/nav/MobileMenuSheet.astro";
 
 const { title = "VOX", currentPath = "", shellVariant = "default" } = Astro.props;
+const isSandboxWhite = shellVariant === "sandbox-white";
 ---
 
 <!doctype html>
@@ -74,38 +75,45 @@ const { title = "VOX", currentPath = "", shellVariant = "default" } = Astro.prop
     class:list={[
       "min-h-screen antialiased",
       shellVariant === "article" && "vox-shell--article",
+      isSandboxWhite && "vox-shell--sandbox-white",
     ]}
   >
-    <div class="fixed inset-0 -z-10 overflow-hidden">
-      <!-- base wash -->
-      <div class="absolute inset-0" style="background: rgb(var(--bg));"></div>
+    <div class="fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <!-- base wash (sandbox-white: flat white in light; token bg in dark so nothing breaks) -->
+      <div
+        class:list={["absolute inset-0", isSandboxWhite && "vox-sandbox-flat-wash"]}
+        style="background: rgb(var(--bg));"
+      ></div>
 
-      <!-- Sonic gradient blob: tonal depth (opacity via .vox-sonic-blob); article pages use quieter wash -->
-      <div
-        class:list={[
-          "vox-sonic-blob pointer-events-none absolute left-1/2 top-[30%] h-[min(100vh,900px)] w-[min(130vw,1100px)] -translate-x-1/2 rounded-full blur-[160px]",
-          shellVariant === "article" && "vox-sonic-blob--article",
-        ]}
-        aria-hidden="true"
-      ></div>
-  
-      <!-- orb 1: primary, top-left -->
-      <div
-        class="absolute -top-[12%] -left-[12%] h-[520px] w-[520px] rounded-full blur-[120px]"
-        style="background: rgb(var(--primary) / var(--orb-a));"
-      ></div>
-  
-      <!-- orb 2: focus accent, mid-right -->
-      <div
-        class="absolute top-[35%] -right-[8%] h-[420px] w-[420px] rounded-full blur-[110px]"
-        style="background: rgb(var(--focus) / var(--orb-b));"
-      ></div>
-  
-      <!-- orb 3: primary, bottom-center -->
-      <div
-        class="absolute -bottom-[22%] left-[18%] h-[640px] w-[640px] rounded-full blur-[150px]"
-        style="background: rgb(var(--primary) / var(--orb-c));"
-      ></div>
+      {
+        !isSandboxWhite ? (
+          <>
+            <!-- Sonic gradient blob: tonal depth (opacity via .vox-sonic-blob); article pages use quieter wash -->
+            <div
+              class:list={[
+                "vox-sonic-blob pointer-events-none absolute left-1/2 top-[30%] h-[min(100vh,900px)] w-[min(130vw,1100px)] -translate-x-1/2 rounded-full blur-[160px]",
+                shellVariant === "article" && "vox-sonic-blob--article",
+              ]}
+              aria-hidden="true"
+            />
+            <!-- orb 1: primary, top-left -->
+            <div
+              class="absolute -top-[12%] -left-[12%] h-[520px] w-[520px] rounded-full blur-[120px]"
+              style="background: rgb(var(--primary) / var(--orb-a));"
+            />
+            <!-- orb 2: focus accent, mid-right -->
+            <div
+              class="absolute top-[35%] -right-[8%] h-[420px] w-[420px] rounded-full blur-[110px]"
+              style="background: rgb(var(--focus) / var(--orb-b));"
+            />
+            <!-- orb 3: primary, bottom-center -->
+            <div
+              class="absolute -bottom-[22%] left-[18%] h-[640px] w-[640px] rounded-full blur-[150px]"
+              style="background: rgb(var(--primary) / var(--orb-c));"
+            />
+          </>
+        ) : null
+      }
     </div>
 
     <header class="fixed inset-x-0 top-0 z-40">

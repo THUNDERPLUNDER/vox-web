@@ -2,17 +2,24 @@
 ---
 import ThemeControl from "../ThemeControl.astro";
 
-type FooterVariant = "default" | "article";
+type FooterVariant = "default" | "article" | "sandbox-tall";
 
 const { variant = "default" } = Astro.props as { variant?: FooterVariant };
 const isArticle = variant === "article";
+const isSandboxTall = variant === "sandbox-tall";
 ---
 
-<footer class:list={[isArticle ? "mt-10 py-5 sm:py-6" : "mt-16 py-8 sm:mt-20 sm:py-10"]}>
+<footer
+  class:list={[
+    isSandboxTall && "mt-24 py-16 sm:mt-28 sm:py-24",
+    isArticle && !isSandboxTall && "mt-10 py-5 sm:py-6",
+    !isArticle && !isSandboxTall && "mt-16 py-8 sm:mt-20 sm:py-10",
+  ]}
+>
   <nav
     class:list={[
       "flex flex-wrap items-center gap-x-4 gap-y-2 text-[rgb(var(--muted))]",
-      isArticle ? "text-xs" : "text-sm",
+      isArticle && !isSandboxTall ? "text-xs" : "text-sm",
     ]}
   >
     <a href="/no/hubs" class="hover:text-[rgb(var(--text))]">Emnehuber</a>
@@ -21,10 +28,24 @@ const isArticle = variant === "article";
     <a href="/no/om" class="hover:text-[rgb(var(--text))]">Om</a>
     <a href="/no/personvern" class="hover:text-[rgb(var(--text))]">Personvern</a>
   </nav>
-  <p class:list={["text-[rgb(var(--muted))]", isArticle ? "mt-3 text-[11px]" : "mt-4 text-xs"]}>
+  <p
+    class:list={[
+      "text-[rgb(var(--muted))]",
+      isSandboxTall && "mt-8 max-w-md text-sm leading-relaxed",
+      isArticle && !isSandboxTall && "mt-3 text-[11px]",
+      !isArticle && !isSandboxTall && "mt-4 text-xs",
+    ]}
+  >
     Hørehjelpen er under utvikling.
   </p>
-  <div class:list={[isArticle ? "mt-3" : "mt-5"]}>
-    <ThemeControl compact={isArticle} />
+  {
+    isSandboxTall ? (
+      <p class="mt-10 max-w-xl text-[11px] leading-relaxed text-[rgb(var(--muted))]">
+        Sandbox · brukes til å teste artikkel-layout og bunnrytme. Ikke en produksjonsside.
+      </p>
+    ) : null
+  }
+  <div class:list={[isSandboxTall ? "mt-14" : isArticle ? "mt-3" : "mt-5"]}>
+    <ThemeControl compact={isArticle && !isSandboxTall} />
   </div>
 </footer>
