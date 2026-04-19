@@ -6,16 +6,16 @@ import Section from "../../components/layout/Section.astro";
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 ---
 
-<BaseLayout title="VOX - Hørehjelpen samtale" currentPath="/no/chat">
+<BaseLayout title="VOX - Hørehjelpen (fri samtale)" currentPath="/no/chat">
   <meta slot="head" name="robots" content="noindex,follow" />
 
   <main class="relative pb-2 sm:pb-3">
     <Section class="!pt-1 !pb-4 sm:!pt-2 sm:!pb-5">
       <div class="mx-auto max-w-[920px] space-y-6">
         <div>
-          <h1 class="font-display text-2xl font-semibold tracking-[-0.03em] text-balance sm:text-3xl">Her starter samtalen</h1>
+          <h1 class="font-display text-2xl font-semibold tracking-[-0.03em] text-balance sm:text-3xl">Hørehjelpen — fri samtale</h1>
           <p class="mt-2 max-w-2xl text-sm leading-relaxed text-[rgb(var(--muted))]">
-            Ta ett steg om gangen. Skriv selv, eller fortsett fra spørsmålet du valgte.
+            Skriv det du vil, uten forhåndsvalgt tema. Kom du fra en artikkel med valgt spørsmål, fyller vi inn utgangspunktet for deg.
           </p>
           <div id="seed-strip" class="mt-5 hidden border-l-2 border-[rgb(var(--primary))/0.35] pl-3">
             <p class="text-[11px] uppercase tracking-wide text-[rgb(var(--muted))]">Valgt startspørsmål</p>

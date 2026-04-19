@@ -1,18 +1,13 @@
 <!-- CONTRACT: Full-screen mobile drawer; must stay outside backdrop-blur ancestors so fixed positioning works. -->
 ---
+import { NO_NAV_LINKS } from "../../lib/no-nav-links";
+import { isNavActive } from "../../lib/nav-active";
+
 type Props = {
   currentPath?: string;
 };
 
 const { currentPath = "" } = Astro.props as Props;
-
-const links = [
-  { href: "/no", label: "Chat" },
-  { href: "/no/info", label: "Kom i gang" },
-  { href: "/no/ordbok", label: "Ordbok" },
-  { href: "/no/om", label: "Om" },
-  { href: "/no/personvern", label: "Personvern" },
-];
 ---
 
 <div
@@ -38,10 +33,8 @@ const links = [
 
     <nav class="mt-1 space-y-1">
       {
-        links.map((link) => {
-          const isActive =
-            currentPath === link.href ||
-            (link.href !== "/no" && currentPath.startsWith(`${link.href}/`));
+        NO_NAV_LINKS.map((link) => {
+          const isActive = isNavActive(link.href, currentPath);
           return (
             <a
               href={link.href}
