@@ -4,7 +4,7 @@ import "../styles/global.css";
 import Header from "../components/nav/Header.astro";
 import MobileMenuSheet from "../components/nav/MobileMenuSheet.astro";
 
-const { title = "VOX", currentPath = "" } = Astro.props;
+const { title = "VOX", currentPath = "", shellVariant = "default" } = Astro.props;
 ---
 
 <!doctype html>
@@ -70,14 +70,22 @@ const { title = "VOX", currentPath = "" } = Astro.props;
     </style>
   </head>
 
-  <body class="min-h-screen antialiased">
+  <body
+    class:list={[
+      "min-h-screen antialiased",
+      shellVariant === "article" && "vox-shell--article",
+    ]}
+  >
     <div class="fixed inset-0 -z-10 overflow-hidden">
       <!-- base wash -->
       <div class="absolute inset-0" style="background: rgb(var(--bg));"></div>
 
-      <!-- Sonic gradient blob: tonal depth (opacity via .vox-sonic-blob) -->
+      <!-- Sonic gradient blob: tonal depth (opacity via .vox-sonic-blob); article pages use quieter wash -->
       <div
-        class="vox-sonic-blob pointer-events-none absolute left-1/2 top-[30%] h-[min(100vh,900px)] w-[min(130vw,1100px)] -translate-x-1/2 rounded-full blur-[160px]"
+        class:list={[
+          "vox-sonic-blob pointer-events-none absolute left-1/2 top-[30%] h-[min(100vh,900px)] w-[min(130vw,1100px)] -translate-x-1/2 rounded-full blur-[160px]",
+          shellVariant === "article" && "vox-sonic-blob--article",
+        ]}
         aria-hidden="true"
       ></div>
   

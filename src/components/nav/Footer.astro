@@ -1,20 +1,30 @@
 <!-- CONTRACT: Global footer with utility links; separation via spacing only. -->
 ---
 import ThemeControl from "../ThemeControl.astro";
+
+type FooterVariant = "default" | "article";
+
+const { variant = "default" } = Astro.props as { variant?: FooterVariant };
+const isArticle = variant === "article";
 ---
 
-<footer class="mt-16 py-8 sm:mt-20 sm:py-10">
-  <nav class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[rgb(var(--muted))]">
+<footer class:list={[isArticle ? "mt-10 py-5 sm:py-6" : "mt-16 py-8 sm:mt-20 sm:py-10"]}>
+  <nav
+    class:list={[
+      "flex flex-wrap items-center gap-x-4 gap-y-2 text-[rgb(var(--muted))]",
+      isArticle ? "text-xs" : "text-sm",
+    ]}
+  >
     <a href="/no/hubs" class="hover:text-[rgb(var(--text))]">Emnehuber</a>
     <a href="/no/chat" class="hover:text-[rgb(var(--text))]">Hørehjelpen</a>
     <a href="/no/ordbok" class="hover:text-[rgb(var(--text))]">Ordbok</a>
     <a href="/no/om" class="hover:text-[rgb(var(--text))]">Om</a>
     <a href="/no/personvern" class="hover:text-[rgb(var(--text))]">Personvern</a>
   </nav>
-  <p class="mt-4 text-xs text-[rgb(var(--muted))]">
+  <p class:list={["text-[rgb(var(--muted))]", isArticle ? "mt-3 text-[11px]" : "mt-4 text-xs"]}>
     Hørehjelpen er under utvikling.
   </p>
-  <div class="mt-5">
-    <ThemeControl />
+  <div class:list={[isArticle ? "mt-3" : "mt-5"]}>
+    <ThemeControl compact={isArticle} />
   </div>
 </footer>

@@ -1,9 +1,13 @@
 <!-- CONTRACT: MVP theme switcher (system / light / dark); pairs with head script in BaseLayout. -->
 ---
-
+const { compact = false } = Astro.props;
 ---
 
-<div class="theme-control mt-10" role="group" aria-label="Fargetema">
+<div
+  class:list={["theme-control", compact && "theme-control--compact", !compact && "mt-10"]}
+  role="group"
+  aria-label="Fargetema"
+>
   <p class="mb-2 text-xs font-medium text-[rgb(var(--muted))]">Tema</p>
   <div class="flex flex-wrap gap-2">
     <button

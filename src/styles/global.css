@@ -19,6 +19,14 @@ html {
   @apply border-[rgb(var(--primary))] bg-[rgb(var(--surface-subtle))] ring-1 ring-[rgb(var(--primary))/0.35];
 }
 
+.theme-control--compact .theme-control__btn {
+  @apply px-2.5 py-1 text-[10px];
+}
+
+.theme-control--compact p {
+  @apply mb-1.5 text-[11px];
+}
+
 body {
   font-family: var(--font-sans);
   background: rgb(var(--bg));
@@ -71,15 +79,35 @@ h3 {
   @apply block w-full rounded-[var(--radius-lg)] border-0 bg-[rgb(var(--surface-elevated))/0.9] text-left shadow-[var(--shadow-sm)] ring-1 ring-[rgb(var(--border))/0.22] backdrop-blur-sm transition-colors hover:bg-[rgb(var(--surface-elevated))];
 }
 
-/* White Paper / Article Master v1.1 — monokromt ark, disiplinert bredde, redaksjonell skygge */
+/* Article Master v1.2 — light editorial: crisp paper, hairline edge, minimal lift (no app “panel”) */
 .vox-reading-sheet {
   @apply max-w-[min(100%,38rem)] rounded-[var(--radius-md)] px-7 py-10 sm:px-10 sm:py-12;
   background: rgb(var(--reading-paper));
   color: rgb(var(--reading-ink));
-  border: 1px solid rgb(var(--border) / 0.38);
-  box-shadow:
-    0 1px 0 rgb(0 0 0 / 0.04),
-    0 22px 56px -36px rgb(0 0 0 / 0.16);
+  border: 1px solid rgb(var(--border) / 0.22);
+  box-shadow: 0 1px 0 rgb(0 0 0 / 0.04);
+}
+
+/* Article route: dial back fixed ambient layers in light (reference mode); dark unchanged */
+html[data-theme="light"] .vox-sonic-blob--article {
+  opacity: 0.45;
+}
+@media (prefers-color-scheme: light) {
+  html[data-theme="system"] .vox-sonic-blob--article {
+    opacity: 0.45;
+  }
+}
+html[data-theme="light"] body.vox-shell--article {
+  --orb-a: 0.035;
+  --orb-b: 0.05;
+  --orb-c: 0.03;
+}
+@media (prefers-color-scheme: light) {
+  html[data-theme="system"] body.vox-shell--article {
+    --orb-a: 0.035;
+    --orb-b: 0.05;
+    --orb-c: 0.03;
+  }
 }
 
 /* Callouts på leseark — iris-akcent, ikke produktblå; flat flate */
@@ -90,18 +118,22 @@ h3 {
   border-left: 3px solid rgb(var(--reading-accent-iris));
 }
 
-/* Sidekolonne — nøktern støtte, ingen glass */
+/* Sidekolonne — lys støtteflate, ikke beige “kort” */
 .vox-reading-rail-card {
-  @apply rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.32] bg-[rgb(var(--surface-subtle))] p-4 sm:p-5;
+  @apply rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.2] bg-[rgb(var(--reading-paper))] p-4 sm:p-5;
 }
 
-/* Artikkel: sekundærknapper (spørsmål inn i AI) */
-.article-seed-btn {
-  @apply block w-full rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.45] bg-[rgb(var(--reading-paper))] px-4 py-3.5 text-left text-sm font-medium text-[rgb(var(--reading-ink))] transition-colors;
+/* Artikkel: kuraterte prompt-lenker (redaksjonell liste, ikke skjemafelt) */
+.article-seed-list {
+  @apply max-w-xl divide-y divide-[rgb(var(--border))/0.28] border-y border-[rgb(var(--border))/0.28];
 }
 
-.article-seed-btn:hover {
-  @apply border-[rgb(var(--reading-ink))/0.2] bg-[rgb(252_252_254)];
+.article-seed-link {
+  @apply block py-3.5 pr-1 text-left text-[0.9375rem] font-normal leading-snug text-[rgb(var(--reading-ink))] transition-colors;
+}
+
+.article-seed-link:hover {
+  @apply text-[rgb(var(--reading-accent-iris))];
 }
 
 /* Artikkel: primær handling (mørk, ikke gradient) */
