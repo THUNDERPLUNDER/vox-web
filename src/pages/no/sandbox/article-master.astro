@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Sandbox Article Master v0.6 — Prompt Group pattern; sandbox figures via bundled SVG URLs (base-safe). */
+/* CONTRACT: Sandbox Article Master v0.7 — flat plate surfaces, larger CTA radii; figures via bundled SVG URLs (base-safe). */
 import "../../../styles/sandbox-article-master.css";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Footer from "../../../components/nav/Footer.astro";
@@ -44,7 +44,7 @@ const promptItems = [
         <header class="ams-zone ams-zone--lead pb-10">
           <p class="ams-kicker ams-kicker--spread">Demo · Samtale og hørsel</p>
           <h1 class="mt-4 text-[2.125rem] font-semibold leading-[1.12] text-balance text-[rgb(var(--reading-ink))] sm:text-[2.5rem]">
-            Når hørselen endrer samtalen — og hvordan du kan møte det roligere
+            Når hørselen endrer samtalen — og hvordan du kan møte det med mer overskudd
           </h1>
           <p class="ams-lead mt-8 max-w-2xl text-lg text-[rgb(var(--reading-ink-secondary))]">
             Denne teksten er laget for layout-testing i KlarLyd-sandbox. Den beskriver en troverdig hverdagsproblemstilling:
@@ -123,7 +123,7 @@ const promptItems = [
             </div>
             <ul class="list-disc space-y-3.5 pl-6 text-[1.0625rem] leading-[1.75] text-[rgb(var(--reading-ink-secondary))]" role="list">
               <li>Senk tempoet og del opp setninger — ett poeng om gangen.</li>
-              <li>Be om å flytte samtalen til et roligere rom eller å sitte slik at ansiktet er godt synlig.</li>
+              <li>Be om å flytte samtalen til et stillere rom eller å sitte slik at ansiktet er godt synlig.</li>
               <li>Avklar kort hva du trenger: «Kan du si det én gang til, litt saktere?»</li>
               <li>Planlegg vanskelige tema når dere ikke er på vei ut døra.</li>
             </ul>
@@ -154,7 +154,7 @@ const promptItems = [
               class="list-decimal space-y-3.5 pl-7 text-[1.0625rem] leading-[1.75] text-[rgb(var(--reading-ink-secondary))]"
               role="list"
             >
-              <li>Velg et rolig øyeblikk og fjern unødvendig lyd der det er mulig.</li>
+              <li>Velg et passende øyeblikk og fjern unødvendig lyd der det er mulig.</li>
               <li>Si hva du observerer uten å forklare den andres motiv: «Jeg merker at vi snakker i kryss».</li>
               <li>Spør hva som ville gjort det lettere — og lytt til svaret uten å avbryte.</li>
               <li>Avtal et neste steg som er liten nok til å gjennomføres.</li>
@@ -171,7 +171,7 @@ const promptItems = [
             </figcaption>
           </figure>
 
-          <section class="space-y-4 rounded-[var(--radius-sm)] bg-[rgb(var(--reading-inline)/0.42)] px-5 py-8 sm:px-7 sm:py-9">
+          <section class="ams-plate space-y-4 px-5 py-8 sm:px-7 sm:py-9">
             <p class="ams-kicker">Observasjon</p>
             <h3 class="text-lg font-semibold leading-snug text-[rgb(var(--reading-ink))] sm:text-xl">
               Når «hverdagsirritasjon» egentlig er utmattelse
@@ -183,7 +183,7 @@ const promptItems = [
             </p>
           </section>
 
-          <section class="space-y-4 rounded-[var(--radius-sm)] bg-[rgb(var(--reading-inline)/0.32)] px-5 py-8 sm:px-7 sm:py-9">
+          <section class="ams-plate space-y-4 px-5 py-8 sm:px-7 sm:py-9">
             <p class="ams-kicker">Fakta å huske</p>
             <h3 class="text-lg font-semibold leading-snug text-[rgb(var(--reading-ink))] sm:text-xl">
               Akustikk påvirker mer enn volum
@@ -229,7 +229,7 @@ const promptItems = [
             </p>
             <ul class="list-disc space-y-3.5 pl-6 text-[1.0625rem] leading-[1.75] text-[rgb(var(--reading-ink-secondary))]" role="list">
               <li>«Jeg vil deg vel — jeg trenger bare ti minutter for å lande.»</li>
-              <li>«Kan vi ta dette etter middag, når det er roligere her?»</li>
+              <li>«Kan vi ta dette etter middag, når det er stillere her?»</li>
               <li>«Jeg orker ikke å finne de rette ordene akkurat nå — kan vi prøve igjen i morgen?»</li>
             </ul>
           </section>
@@ -259,7 +259,7 @@ const promptItems = [
             </ul>
           </section>
 
-          <section class="ams-zone ams-zone--summary space-y-6">
+          <section class="ams-zone ams-zone--summary ams-plate space-y-6">
             <div class="space-y-2 lg:space-y-2.5">
               <p class="ams-kicker">Oppsummert</p>
               <h2 class="text-xl font-semibold leading-snug text-[rgb(var(--reading-ink))] sm:text-2xl sm:leading-snug">
@@ -279,14 +279,14 @@ const promptItems = [
 
           <PromptGroup
             title="Fortsett i Hørehjelpen"
-            intro="Velg et spørsmål — samtalen åpner med dette som utgangspunkt. Dette er kuraterte neste steg inn i en rolig samtale, ikke en generell lenkeliste."
+            intro="Velg et spørsmål — samtalen åpner med dette som utgangspunkt. Dette er kuraterte neste steg inn i en strukturert samtale, ikke en generell lenkeliste."
             headingId="ams-continue"
             items={promptItems}
           />
         </div>
       </article>
 
-      <aside class="ams-rail lg:sticky lg:top-28 lg:self-start lg:pt-1">
+      <aside class="ams-rail ams-plate lg:sticky lg:top-28 lg:self-start lg:pt-1">
         <p class="mb-3 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-[rgb(var(--reading-ink-secondary))]">
           I margen
         </p>
@@ -317,7 +317,7 @@ const promptItems = [
             </li>
           </ul>
           <p class="text-xs leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
-            Metodetekst som støtter lesingen — samme logiske lag som artikkelen, i rolig spalte.
+            Metodetekst som støtter lesingen — samme logiske lag som artikkelen, i en avdempet spalte.
           </p>
         </div>
 

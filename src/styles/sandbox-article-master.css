@@ -1,8 +1,14 @@
-/* CONTRACT: Sandbox Article Master v0.6 — Prompt Group BEM, calmer accent family (less magenta candy), pullquote, assets via BASE_URL in markup. */
+/* CONTRACT: Sandbox Article Master v0.7 — flat plate surfaces (no aura/gradients on support zones), larger CTA radii, inline figure rhythm; assets unchanged. */
 
-/* Shared accent — editorial / slightly technical, not sugary */
 [data-article-master-sandbox] {
-  --ams-accent-soft: color-mix(in srgb, rgb(var(--accent-gradient-start)) 42%, rgb(var(--reading-ink-secondary)) 58%);
+  /* Editorial plate: flat, barely cool-neutral — no glow, no gradient */
+  --ams-plate-bg: color-mix(in srgb, rgb(var(--reading-inline)) 90%, rgb(232 236 242) 10%);
+  --ams-plate-radius: 16px;
+  /* Button discipline (compact text ~14–16px / CTA) */
+  --ams-btn-radius: 20px;
+  --ams-btn-radius-cta: 22px;
+  /* Softer kicker than v0.6 — still readable, not sugary */
+  --ams-accent-soft: color-mix(in srgb, rgb(var(--reading-ink-secondary)) 78%, rgb(var(--primary)) 22%);
 }
 
 [data-article-master-sandbox] h1,
@@ -58,12 +64,19 @@
   }
 }
 
-/* Primary CTA: same gradient family as «Start samtale», calmer shadow — not a black block */
+/* Shared plate surface — rail, Oppsummert, Prompt Group, optional callouts */
+[data-article-master-sandbox] .ams-plate {
+  background: var(--ams-plate-bg);
+  border-radius: var(--ams-plate-radius);
+  box-shadow: none;
+}
+
+/* Reference CTA (sandbox pattern) — flat fill, mature tone, larger radius */
 [data-article-master-sandbox] .ams-primary-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-md);
+  border-radius: var(--ams-btn-radius);
   padding: 0.625rem 1.35rem;
   font-size: 0.875rem;
   font-weight: 600;
@@ -71,40 +84,25 @@
   line-height: 1.4;
   color: rgb(var(--on-sonic));
   text-decoration: none;
-  background-image: linear-gradient(
-    135deg,
-    rgb(var(--accent-gradient-start) / 0.78) 0%,
-    rgb(var(--accent-gradient-end) / 0.72) 100%
-  );
-  box-shadow:
-    0 10px 28px -18px rgb(var(--accent-gradient-start) / 0.38),
-    0 4px 14px -10px rgb(var(--accent-gradient-end) / 0.22);
-  transition: filter 0.15s ease, box-shadow 0.15s ease;
+  background-color: color-mix(in srgb, rgb(var(--primary)) 82%, rgb(var(--reading-ink)) 18%);
+  box-shadow: none;
+  transition: background-color 0.15s ease, filter 0.15s ease;
 }
 
 [data-article-master-sandbox] .ams-primary-cta:hover {
-  filter: brightness(1.05) saturate(1.02);
-  box-shadow:
-    0 12px 32px -16px rgb(var(--accent-gradient-start) / 0.45),
-    0 6px 16px -10px rgb(var(--accent-gradient-end) / 0.28);
+  filter: brightness(1.04);
+  background-color: color-mix(in srgb, rgb(var(--primary)) 78%, rgb(var(--reading-ink)) 22%);
 }
 
 [data-article-master-sandbox] .ams-primary-cta:focus-visible {
-  outline: 2px solid rgb(var(--accent-gradient-start) / 0.55);
+  outline: 2px solid rgb(var(--primary) / 0.45);
   outline-offset: 2px;
 }
 
-/* —— Prompt Group — curated next-step bridge (design-system prototype) —— */
+/* —— Prompt Group —— */
 [data-article-master-sandbox] .prompt-group {
   margin-top: 0.35rem;
-  padding: 2rem 1rem 1.75rem;
-  border-radius: var(--radius-md);
-  background: linear-gradient(
-    168deg,
-    rgb(var(--reading-inline) / 0.32) 0%,
-    color-mix(in srgb, rgb(var(--reading-inline)) 94%, rgb(var(--reading-accent-iris)) 6%) 48%,
-    rgb(252 252 253) 100%
-  );
+  padding: 1.65rem 1rem 1.55rem;
 }
 
 @media (min-width: 640px) {
@@ -160,7 +158,7 @@
   margin-left: -0.65rem;
   margin-right: -0.65rem;
   padding: 0.85rem 0.65rem;
-  border-radius: var(--radius-sm);
+  border-radius: 12px;
   text-decoration: none;
   color: rgb(var(--reading-ink));
   font-size: 1.0625rem;
@@ -176,11 +174,11 @@
 }
 
 [data-article-master-sandbox] .prompt-group__link:hover {
-  background-color: color-mix(in srgb, rgb(var(--reading-inline)) 92%, rgb(var(--reading-accent-iris)) 8%);
+  background-color: color-mix(in srgb, rgb(var(--reading-inline)) 94%, rgb(var(--reading-ink)) 6%);
 }
 
 [data-article-master-sandbox] .prompt-group__link:focus-visible {
-  outline: 2px solid rgb(var(--reading-accent-iris) / 0.38);
+  outline: 2px solid rgb(var(--reading-accent-iris) / 0.35);
   outline-offset: 2px;
 }
 
@@ -208,41 +206,31 @@
   opacity: 0.4;
 }
 
-/* Primary CTA — same sonic family as .ams-primary-cta, lower chroma + softer depth */
 [data-article-master-sandbox] .prompt-group__cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin-top: 1.35rem;
-  padding: 0.58rem 1.28rem;
-  border-radius: var(--radius-md);
+  padding: 0.58rem 1.35rem;
+  border-radius: var(--ams-btn-radius-cta);
   font-size: 0.875rem;
   font-weight: 600;
   font-family: var(--font-sans);
   line-height: 1.4;
   color: rgb(var(--on-sonic));
   text-decoration: none;
-  background-image: linear-gradient(
-    135deg,
-    color-mix(in srgb, rgb(var(--accent-gradient-start)) 78%, rgb(var(--reading-ink)) 22%) 0%,
-    color-mix(in srgb, rgb(var(--primary)) 82%, rgb(var(--accent-gradient-start)) 18%) 55%,
-    color-mix(in srgb, rgb(var(--primary)) 62%, rgb(var(--reading-accent-iris)) 38%) 100%
-  );
-  box-shadow:
-    0 9px 26px -18px rgb(var(--accent-gradient-start) / 0.3),
-    0 3px 12px -8px rgb(var(--reading-ink) / 0.07);
-  transition: filter 0.15s ease, box-shadow 0.15s ease;
+  background-color: color-mix(in srgb, rgb(var(--primary)) 80%, rgb(var(--reading-ink)) 20%);
+  box-shadow: none;
+  transition: background-color 0.15s ease, filter 0.15s ease;
 }
 
 [data-article-master-sandbox] .prompt-group__cta:hover {
-  filter: brightness(1.03) saturate(0.94);
-  box-shadow:
-    0 11px 30px -16px rgb(var(--accent-gradient-start) / 0.34),
-    0 4px 14px -8px rgb(var(--reading-ink) / 0.09);
+  filter: brightness(1.03);
+  background-color: color-mix(in srgb, rgb(var(--primary)) 76%, rgb(var(--reading-ink)) 24%);
 }
 
 [data-article-master-sandbox] .prompt-group__cta:focus-visible {
-  outline: 2px solid rgb(var(--reading-accent-iris) / 0.42);
+  outline: 2px solid rgb(var(--primary) / 0.42);
   outline-offset: 2px;
 }
 
@@ -251,7 +239,7 @@
   letter-spacing: 0.14em;
 }
 
-/* Pullquote: soft gradient rule — not hard iris bar */
+/* Pullquote: single flat rule — no gradient bar */
 [data-article-master-sandbox] .ams-pullquote {
   position: relative;
 }
@@ -264,16 +252,11 @@
   bottom: 0.65rem;
   width: 2px;
   border-radius: 999px;
-  background: linear-gradient(
-    180deg,
-    rgb(var(--accent-gradient-start) / 0.42) 0%,
-    rgb(var(--accent-gradient-end) / 0.32) 55%,
-    rgb(var(--accent-gradient-end) / 0.12) 100%
-  );
-  opacity: 0.92;
+  background: rgb(var(--reading-ink-secondary) / 0.22);
+  opacity: 1;
 }
 
-/* Inline list bullets — soft sonic dots */
+/* List markers — flat dots */
 [data-article-master-sandbox] .ams-dot {
   display: block;
   height: 0.4rem;
@@ -281,25 +264,16 @@
   flex-shrink: 0;
   border-radius: 999px;
   margin-top: 0.55em;
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgb(var(--accent-gradient-start) / 0.65),
-    rgb(var(--primary) / 0.45)
-  );
-  opacity: 0.72;
+  background: rgb(var(--reading-ink-secondary) / 0.45);
+  opacity: 0.85;
 }
 
-/* —— Unified support rail — stronger single layer, soft aurora (still no stroke) —— */
+/* Right rail — one flat support plate */
 [data-article-master-sandbox] .ams-rail {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   padding: 1.45rem 1.2rem 1.55rem;
-  border-radius: var(--radius-md);
-  background:
-    radial-gradient(ellipse 130% 90% at 100% 0%, rgb(var(--accent-gradient-start) / 0.075) 0%, transparent 58%),
-    radial-gradient(ellipse 120% 70% at 0% 100%, rgb(var(--reading-accent-iris) / 0.065) 0%, transparent 52%),
-    linear-gradient(188deg, rgb(var(--reading-inline) / 0.58) 0%, rgb(var(--reading-inline) / 0.3) 48%, rgb(var(--reading-inline) / 0.42) 100%);
 }
 
 @media (min-width: 1024px) {
@@ -331,7 +305,7 @@
   color: rgb(var(--reading-ink));
 }
 
-/* —— Hero —— */
+/* Hero — white field only (no gradient wash) */
 [data-article-master-sandbox] .ams-hero {
   margin: 0;
 }
@@ -340,12 +314,8 @@
   padding: 0.85rem 0.65rem 1.1rem;
   margin-left: -0.65rem;
   margin-right: -0.65rem;
-  border-radius: var(--radius-md);
-  background: linear-gradient(
-    185deg,
-    color-mix(in srgb, rgb(var(--accent-gradient-start)) 2.5%, rgb(255 255 255)) 0%,
-    rgb(255 255 255) 70%
-  );
+  border-radius: var(--ams-plate-radius);
+  background: transparent;
 }
 
 @media (min-width: 640px) {
@@ -357,8 +327,8 @@
 
 [data-article-master-sandbox] .ams-hero__media {
   overflow: hidden;
-  border-radius: var(--radius-md);
-  background: rgb(var(--reading-inline) / 0.32);
+  border-radius: var(--ams-plate-radius);
+  background: rgb(var(--reading-inline) / 0.28);
 }
 
 [data-article-master-sandbox] .ams-hero__img {
@@ -375,19 +345,23 @@
   color: rgb(var(--reading-ink-secondary));
 }
 
-/* —— Inline visual —— */
+/* Inline explanatory figure — tighter attachment + flat media bed */
 [data-article-master-sandbox] .ams-inline-visual {
   margin: 0;
 }
 
+[data-article-master-sandbox] .ams-zone--article-body > figure.ams-inline-visual {
+  margin-top: clamp(1.5rem, 1.35rem + 0.35vw, 2rem) !important;
+}
+
+[data-article-master-sandbox] .ams-zone--article-body > figure.ams-inline-visual + section {
+  margin-top: clamp(2.25rem, 2rem + 0.5vw, 3rem) !important;
+}
+
 [data-article-master-sandbox] .ams-inline-visual__media {
   overflow: hidden;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(
-    160deg,
-    rgb(var(--reading-inline) / 0.26) 0%,
-    rgb(var(--reading-inline) / 0.2) 100%
-  );
+  border-radius: 12px;
+  background: rgb(var(--reading-inline) / 0.32);
 }
 
 [data-article-master-sandbox] .ams-inline-visual__img {
@@ -398,23 +372,17 @@
 }
 
 [data-article-master-sandbox] .ams-inline-visual__caption {
-  margin-top: 0.45rem;
+  margin-top: 0.5625rem;
   font-size: 0.6875rem;
   line-height: 1.4;
   color: rgb(var(--reading-ink-secondary));
 }
 
-/* —— Zones —— */
+/* Oppsummert — plate (background via .ams-plate) */
 [data-article-master-sandbox] .ams-zone--summary {
-  padding: 1.35rem 0.85rem 1.2rem;
+  padding: 1.4rem 0.85rem 1.25rem;
   margin-left: -0.65rem;
   margin-right: -0.65rem;
-  border-radius: var(--radius-md);
-  background: linear-gradient(
-    180deg,
-    rgb(var(--reading-inline) / 0.24) 0%,
-    color-mix(in srgb, rgb(var(--reading-inline)) 94%, rgb(var(--reading-accent-iris)) 6%) 100%
-  );
 }
 
 @media (min-width: 640px) {
@@ -423,4 +391,3 @@
     padding-right: 1rem;
   }
 }
-

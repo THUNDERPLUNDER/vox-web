@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Sandbox-only curated next-step prompts into Hørehjelpen — editorial rows + primary free-chat CTA; not FAQ/chips/forms. */
+/* CONTRACT: Sandbox-only curated next-step prompts into Hørehjelpen — plate surface + CTA; not FAQ/chips/forms. */
 import { buildChatShellHref } from "../../lib/chat-shell";
 
 export interface PromptItem {
@@ -32,7 +32,7 @@ const base = import.meta.env.BASE_URL ?? "/";
 const freeChatHref = freeChatHrefProp ?? (base.endsWith("/") ? `${base}no/chat` : `${base}/no/chat`);
 ---
 
-<section class="prompt-group ams-zone" aria-labelledby={headingId}>
+<section class="prompt-group ams-zone ams-plate" aria-labelledby={headingId}>
   <header class="prompt-group__header">
     <h2 id={headingId} class="prompt-group__title">{title}</h2>
     <p class="prompt-group__intro">{intro}</p>
