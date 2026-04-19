@@ -1,28 +1,20 @@
 ---
-/* CONTRACT: Sandbox Article Master v0.5 — sonic accent cohesion, soft CTA, BASE_URL-safe assets; no prod CMS. */
+/* CONTRACT: Sandbox Article Master v0.6 — Prompt Group pattern, calmer accents, BASE_URL-safe assets; no prod CMS. */
 import "../../../styles/sandbox-article-master.css";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Footer from "../../../components/nav/Footer.astro";
-import { buildChatShellHref } from "../../../lib/chat-shell";
+import PromptGroup from "../../../components/sandbox/PromptGroup.astro";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
 /** Public folder paths that work on GitHub Pages (`base`) and locally */
 const asset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
 
-const demoSeeds = [
-  {
-    question: "Hvordan kan jeg starte en samtale uten at det føles som et tema?",
-  },
-  {
-    question: "Hva gjør jeg når den andre trekker seg unna eller svarer kort?",
-  },
-  {
-    question: "Hvordan beskriver jeg hva jeg opplever, uten å skylde på den andre?",
-  },
-  {
-    question: "Når bør vi heller ta en pause og prøve igjen senere?",
-  },
+const promptItems = [
+  { question: "Hvordan kan jeg starte en samtale uten at det føles som et tema?" },
+  { question: "Hva gjør jeg når den andre trekker seg unna eller svarer kort?" },
+  { question: "Hvordan beskriver jeg hva jeg opplever, uten å skylde på den andre?" },
+  { question: "Når bør vi heller ta en pause og prøve igjen senere?" },
 ];
 ---
 
@@ -284,35 +276,12 @@ const demoSeeds = [
             </p>
           </section>
 
-          <section class="ams-zone ams-zone--next-step space-y-6" aria-labelledby="ams-continue">
-            <div class="space-y-2 lg:space-y-2.5">
-              <h2 id="ams-continue" class="text-xl font-semibold leading-snug text-[rgb(var(--reading-ink))] sm:text-2xl sm:leading-snug">
-                Fortsett i Hørehjelpen
-              </h2>
-              <p class="max-w-xl text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
-                Velg et spørsmål — samtalen åpner med dette som utgangspunkt. Presentasjonen under er tenkt som kuraterte
-                neste steg, ikke rå lenker.
-              </p>
-            </div>
-            <ul class="max-w-xl list-none space-y-0 p-0" role="list">
-              {
-                demoSeeds.map((seed) => (
-                  <li>
-                    <a
-                      href={buildChatShellHref(seed.question, "article")}
-                      class="ams-prompt-row -mx-3 block rounded-[var(--radius-sm)] px-3 py-3.5 text-left text-[1.0625rem] font-normal leading-snug text-[rgb(var(--reading-ink))] no-underline transition-colors hover:bg-[rgb(var(--primary)/0.07)] hover:text-[rgb(var(--primary))] sm:py-4"
-                    >
-                      <span class="block">{seed.question}</span>
-                    </a>
-                  </li>
-                ))
-              }
-            </ul>
-            <p class="flex flex-wrap items-baseline gap-x-3 gap-y-2 pt-2 text-xs leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
-              <span>Uten forslag:</span>
-              <a href="/no/chat" class="ams-primary-cta">Åpne fri samtale</a>
-            </p>
-          </section>
+          <PromptGroup
+            title="Fortsett i Hørehjelpen"
+            intro="Velg et spørsmål — samtalen åpner med dette som utgangspunkt. Dette er kuraterte neste steg inn i en rolig samtale, ikke en generell lenkeliste."
+            headingId="ams-continue"
+            items={promptItems}
+          />
         </div>
       </article>
 
