@@ -5,9 +5,11 @@ import { isNavActive } from "../../lib/nav-active";
 
 type Props = {
   currentPath?: string;
+  brand?: "default" | "klarlyd";
 };
 
-const { currentPath = "" } = Astro.props as Props;
+const { currentPath = "", brand = "default" } = Astro.props as Props;
+const menuTitle = brand === "klarlyd" ? "KLARLYD meny" : "VOX meny";
 ---
 
 <div
@@ -28,7 +30,7 @@ const { currentPath = "" } = Astro.props as Props;
     <div
       class="sticky top-0 z-10 mb-3 flex items-center justify-between bg-[rgb(var(--surface-elevated))/0.96] py-2 backdrop-blur-sm"
     >
-      <p class="text-sm font-medium text-[rgb(var(--muted))]">VOX meny</p>
+      <p class="text-sm font-medium text-[rgb(var(--muted))]">{menuTitle}</p>
     </div>
 
     <nav class="mt-1 space-y-1">

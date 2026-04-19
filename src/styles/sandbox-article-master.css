@@ -1,4 +1,9 @@
-/* CONTRACT: Sandbox Article Master v0.4 — rhythm, unified rail, zones; no global leakage. */
+/* CONTRACT: Sandbox Article Master v0.5 — sonic accent family, soft CTA, pullquote, BASE_URL-safe assets pattern in markup. */
+
+/* Shared accent (Sonic family, restrained — not landing-page loud) */
+[data-article-master-sandbox] {
+  --ams-accent-soft: color-mix(in srgb, rgb(var(--primary)) 55%, rgb(var(--text)) 45%);
+}
 
 [data-article-master-sandbox] h1,
 [data-article-master-sandbox] h2,
@@ -15,6 +20,18 @@
 [data-article-master-sandbox] blockquote {
   font-family: var(--font-sans);
   letter-spacing: -0.02em;
+}
+
+[data-article-master-sandbox] .ams-kicker {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ams-accent-soft);
+}
+
+[data-article-master-sandbox] .ams-kicker--spread {
+  letter-spacing: 0.14em;
 }
 
 [data-article-master-sandbox] .ams-body-p {
@@ -41,28 +58,39 @@
   }
 }
 
+/* Primary CTA: same gradient family as «Start samtale», calmer shadow — not a black block */
 [data-article-master-sandbox] .ams-primary-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-md);
-  padding: 0.625rem 1.25rem;
+  padding: 0.625rem 1.35rem;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   font-family: var(--font-sans);
   line-height: 1.4;
-  color: rgb(255 255 255);
-  background: rgb(55 61 74);
+  color: rgb(var(--on-sonic));
   text-decoration: none;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  background-image: linear-gradient(
+    135deg,
+    rgb(var(--accent-gradient-start) / 0.78) 0%,
+    rgb(var(--accent-gradient-end) / 0.72) 100%
+  );
+  box-shadow:
+    0 10px 28px -18px rgb(var(--accent-gradient-start) / 0.38),
+    0 4px 14px -10px rgb(var(--accent-gradient-end) / 0.22);
+  transition: filter 0.15s ease, box-shadow 0.15s ease;
 }
 
 [data-article-master-sandbox] .ams-primary-cta:hover {
-  background: rgb(65 72 88);
+  filter: brightness(1.05) saturate(1.02);
+  box-shadow:
+    0 12px 32px -16px rgb(var(--accent-gradient-start) / 0.45),
+    0 6px 16px -10px rgb(var(--accent-gradient-end) / 0.28);
 }
 
 [data-article-master-sandbox] .ams-primary-cta:focus-visible {
-  outline: 2px solid rgb(var(--reading-accent-iris) / 0.55);
+  outline: 2px solid rgb(var(--accent-gradient-start) / 0.55);
   outline-offset: 2px;
 }
 
@@ -75,25 +103,61 @@
   letter-spacing: 0.14em;
 }
 
-/* —— Unified support rail (one calm layer) —— */
+/* Pullquote: soft gradient rule — not hard iris bar */
+[data-article-master-sandbox] .ams-pullquote {
+  position: relative;
+}
+
+[data-article-master-sandbox] .ams-pullquote::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65rem;
+  bottom: 0.65rem;
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    rgb(var(--accent-gradient-start) / 0.42) 0%,
+    rgb(var(--accent-gradient-end) / 0.32) 55%,
+    rgb(var(--accent-gradient-end) / 0.12) 100%
+  );
+  opacity: 0.92;
+}
+
+/* Inline list bullets — soft sonic dots */
+[data-article-master-sandbox] .ams-dot {
+  display: block;
+  height: 0.4rem;
+  width: 0.4rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  margin-top: 0.55em;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgb(var(--accent-gradient-start) / 0.85),
+    rgb(var(--accent-gradient-end) / 0.55)
+  );
+  opacity: 0.75;
+}
+
+/* —— Unified support rail — stronger single layer, soft aurora (still no stroke) —— */
 [data-article-master-sandbox] .ams-rail {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 1.35rem 1.15rem 1.5rem;
+  padding: 1.45rem 1.2rem 1.55rem;
   border-radius: var(--radius-md);
-  background: linear-gradient(
-    185deg,
-    rgb(var(--reading-inline) / 0.44) 0%,
-    rgb(var(--reading-inline) / 0.26) 52%,
-    rgb(var(--reading-inline) / 0.34) 100%
-  );
+  background:
+    radial-gradient(ellipse 130% 90% at 100% 0%, rgb(var(--accent-gradient-start) / 0.11) 0%, transparent 58%),
+    radial-gradient(ellipse 120% 70% at 0% 100%, rgb(var(--accent-gradient-end) / 0.09) 0%, transparent 52%),
+    linear-gradient(188deg, rgb(var(--reading-inline) / 0.58) 0%, rgb(var(--reading-inline) / 0.3) 48%, rgb(var(--reading-inline) / 0.42) 100%);
 }
 
 @media (min-width: 1024px) {
   [data-article-master-sandbox] .ams-rail {
     gap: 1.65rem;
-    padding: 1.5rem 1.25rem 1.65rem;
+    padding: 1.55rem 1.3rem 1.7rem;
   }
 }
 
@@ -129,7 +193,11 @@
   margin-left: -0.65rem;
   margin-right: -0.65rem;
   border-radius: var(--radius-md);
-  background: linear-gradient(185deg, rgb(252 251 249) 0%, rgb(255 255 255) 72%);
+  background: linear-gradient(
+    185deg,
+    color-mix(in srgb, rgb(var(--accent-gradient-start)) 4%, rgb(255 255 255)) 0%,
+    rgb(255 255 255) 70%
+  );
 }
 
 @media (min-width: 640px) {
@@ -142,7 +210,7 @@
 [data-article-master-sandbox] .ams-hero__media {
   overflow: hidden;
   border-radius: var(--radius-md);
-  background: rgb(var(--reading-inline) / 0.35);
+  background: rgb(var(--reading-inline) / 0.32);
 }
 
 [data-article-master-sandbox] .ams-hero__img {
@@ -155,11 +223,11 @@
 [data-article-master-sandbox] .ams-hero__caption {
   margin-top: 0.45rem;
   font-size: 0.6875rem;
-  line-height: 1.42;
+  line-height: 1.4;
   color: rgb(var(--reading-ink-secondary));
 }
 
-/* —— Inline visual (single explanatory module) —— */
+/* —— Inline visual —— */
 [data-article-master-sandbox] .ams-inline-visual {
   margin: 0;
 }
@@ -167,7 +235,11 @@
 [data-article-master-sandbox] .ams-inline-visual__media {
   overflow: hidden;
   border-radius: var(--radius-sm);
-  background: rgb(var(--reading-inline) / 0.28);
+  background: linear-gradient(
+    160deg,
+    rgb(var(--reading-inline) / 0.26) 0%,
+    rgb(var(--reading-inline) / 0.2) 100%
+  );
 }
 
 [data-article-master-sandbox] .ams-inline-visual__img {
@@ -180,17 +252,21 @@
 [data-article-master-sandbox] .ams-inline-visual__caption {
   margin-top: 0.45rem;
   font-size: 0.6875rem;
-  line-height: 1.42;
+  line-height: 1.4;
   color: rgb(var(--reading-ink-secondary));
 }
 
-/* —— Zones: mild tonal memory —— */
+/* —— Zones —— */
 [data-article-master-sandbox] .ams-zone--summary {
   padding: 1.35rem 0.85rem 1.2rem;
   margin-left: -0.65rem;
   margin-right: -0.65rem;
   border-radius: var(--radius-md);
-  background: rgb(var(--reading-inline) / 0.2);
+  background: linear-gradient(
+    180deg,
+    rgb(var(--reading-inline) / 0.24) 0%,
+    color-mix(in srgb, rgb(var(--accent-gradient-end)) 5%, rgb(255 255 255)) 100%
+  );
 }
 
 @media (min-width: 640px) {
@@ -204,7 +280,11 @@
   margin-top: 0.35rem;
   padding: 2rem 1rem 1.65rem;
   border-radius: var(--radius-md);
-  background: rgb(var(--reading-inline) / 0.3);
+  background: linear-gradient(
+    165deg,
+    rgb(var(--reading-inline) / 0.34) 0%,
+    color-mix(in srgb, rgb(var(--accent-gradient-start)) 6%, rgb(252 252 253)) 100%
+  );
 }
 
 @media (min-width: 640px) {

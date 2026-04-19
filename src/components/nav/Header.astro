@@ -6,17 +6,38 @@ import { isNavActive } from "../../lib/nav-active";
 
 type Props = {
   currentPath?: string;
+  /** Sandbox wordmark test — default keeps VOX · Hørehjelpen */
+  brand?: "default" | "klarlyd";
 };
 
-const { currentPath = "" } = Astro.props as Props;
+const { currentPath = "", brand = "default" } = Astro.props as Props;
+const base = import.meta.env.BASE_URL;
+const homeHref = `${base}no`;
+const chatHref = `${base}no/chat`;
 ---
 
 <header class="h-16 sm:h-[4.5rem]">
   <div class="flex h-full items-center gap-3 sm:gap-4">
-    <a href="/no" class="inline-flex items-center rounded-[var(--radius-sm)] px-2 py-1.5 text-sm font-semibold tracking-tight text-[rgb(var(--text))] sm:text-base">
-      <span class="font-semibold">VOX</span>
-      <span class="mx-2 text-[rgb(var(--muted))]">·</span>
-      <span class="text-[rgb(var(--muted))]">Hørehjelpen</span>
+    <a
+      href={homeHref}
+      class="inline-flex items-center rounded-[var(--radius-sm)] px-2 py-1.5 text-sm font-semibold tracking-tight text-[rgb(var(--text))] sm:text-base"
+    >
+      {
+        brand === "klarlyd" ? (
+          <span class="inline-flex items-baseline gap-0.5 font-display text-[0.8125rem] font-semibold tracking-[0.16em] text-[rgb(var(--text))] sm:text-[0.9375rem]">
+            <span>KLAR</span>
+            <span class="bg-gradient-to-r from-[rgb(var(--primary))] to-[rgb(var(--accent-gradient-end))] bg-clip-text text-transparent">
+              LYD
+            </span>
+          </span>
+        ) : (
+          <>
+            <span class="font-semibold">VOX</span>
+            <span class="mx-2 text-[rgb(var(--muted))]">·</span>
+            <span class="text-[rgb(var(--muted))]">Hørehjelpen</span>
+          </>
+        )
+      }
     </a>
     <nav class="hidden flex-1 items-center justify-center gap-1 lg:flex">
       {NO_NAV_LINKS.map((link) => {
@@ -36,7 +57,7 @@ const { currentPath = "" } = Astro.props as Props;
       })}
     </nav>
     <a
-      href="/no/chat"
+      href={chatHref}
       class="sonic-pulse-cta hidden items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold lg:inline-flex"
     >
       Start samtale
