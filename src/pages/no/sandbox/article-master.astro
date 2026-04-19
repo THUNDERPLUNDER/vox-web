@@ -1,14 +1,13 @@
 ---
-/* CONTRACT: Sandbox Article Master v0.6 — Prompt Group pattern, calmer accents, BASE_URL-safe assets; no prod CMS. */
+/* CONTRACT: Sandbox Article Master v0.6 — Prompt Group pattern; sandbox figures via bundled SVG URLs (base-safe). */
 import "../../../styles/sandbox-article-master.css";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Footer from "../../../components/nav/Footer.astro";
 import PromptGroup from "../../../components/sandbox/PromptGroup.astro";
+import heroSvgUrl from "../../../assets/sandbox/article-master/hero.svg?url";
+import inlineBelastningSvgUrl from "../../../assets/sandbox/article-master/inline-belastning-kurve.svg?url";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
-
-/** Public folder paths that work on GitHub Pages (`base`) and locally */
-const asset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
 
 const promptItems = [
   { question: "Hvordan kan jeg starte en samtale uten at det føles som et tema?" },
@@ -58,12 +57,13 @@ const promptItems = [
           <div class="ams-hero__media">
             <img
               class="ams-hero__img"
-              src={asset("sandbox/article-master/hero.svg")}
+              src={heroSvgUrl}
               width="1200"
               height="675"
               loading="eager"
               decoding="async"
               alt="To personer ved kjøkkenbord i dempet dagslys — hverdagssamtale, ikke studio."
+              onerror="this.hidden=true"
             />
           </div>
           <figcaption class="ams-hero__caption">
@@ -199,12 +199,13 @@ const promptItems = [
             <div class="ams-inline-visual__media">
               <img
                 class="ams-inline-visual__img"
-                src={asset("sandbox/article-master/inline-belastning-kurve.svg")}
+                src={inlineBelastningSvgUrl}
                 width="720"
                 height="420"
                 loading="lazy"
                 decoding="async"
                 alt="Kurve som viser stigende mental belastning gjennom støy, gjentatte rettelser og høy anstrengelse, med markering for pause."
+                onerror="this.hidden=true"
               />
             </div>
             <figcaption class="ams-inline-visual__caption">

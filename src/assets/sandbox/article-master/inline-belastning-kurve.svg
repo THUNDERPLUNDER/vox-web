@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420" role="img" aria-labelledby="ib-title ib-desc">
   <title id="ib-title">Hvordan mental belastning kan stige i krevende lydsituasjoner</title>
-  <desc id="ib-desc">Kurve over tid: fra rolig start, gjennom støy og gjentatte tilpasninger, til økt anstrengelse. Anbefalt pause markert.</desc>
+  <desc id="ib-desc">Kurve over tid: fra rolig start, gjennom stÃ¸y og gjentatte tilpasninger, til Ã¸kt anstrengelse. Anbefalt pause markert.</desc>
   <rect width="720" height="420" fill="#faf9f8"/>
   <text x="360" y="34" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="13" font-weight="600" fill="#374151">
-    Når samtalen koster mer enn den «burde»
+    NÃ¥r samtalen koster mer enn den Â«burdeÂ»
   </text>
   <text x="360" y="54" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="11" fill="#6b7280">
-    Belastning bygger seg ofte opp trinnvis  ikke i ett dramatisk øyeblikk
+    Belastning bygger seg ofte opp trinnvis â€“ ikke i ett dramatisk Ã¸yeblikk
   </text>
   <line x1="72" y1="340" x2="648" y2="340" stroke="#d1d5db" stroke-width="1"/>
   <text x="72" y="362" font-family="system-ui,Segoe UI,sans-serif" font-size="10" fill="#9ca3af">Start</text>
@@ -23,11 +23,11 @@
   <circle cx="440" cy="155" r="5" fill="#9ca3af"/>
   <circle cx="620" cy="95" r="6" fill="#5f52dc" fill-opacity="0.85"/>
   <text x="88" y="288" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="9" fill="#4b5563">Rolig</text>
-  <text x="280" y="218" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="9" fill="#4b5563">Støy / flere</text>
+  <text x="280" y="218" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="9" fill="#4b5563">StÃ¸y / flere</text>
   <text x="280" y="232" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="9" fill="#4b5563">lydkilder</text>
   <text x="440" y="142" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="9" fill="#4b5563">Gjentatte</text>
-  <text x="440" y="154" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="9" fill="#4b5563">«hæ?» / rettelser</text>
-  <text x="620" y="118" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="9" font-weight="600" fill="#374151">Høy anstrengelse</text>
-  <text x="620" y="130" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="9" fill="#5f52dc"> pause / avtalt nytt tidspunkt</text>
-  <text x="360" y="400" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="10" fill="#9ca3af">Forklarende figur (sandbox)  ikke klinisk måling</text>
+  <text x="440" y="154" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="9" fill="#4b5563">Â«hÃ¦?Â» / rettelser</text>
+  <text x="620" y="118" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="9" font-weight="600" fill="#374151">HÃ¸y anstrengelse</text>
+  <text x="620" y="130" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="9" fill="#5f52dc">Anbefalt pause / avtalt nytt tidspunkt</text>
+  <text x="360" y="400" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="10" fill="#9ca3af">Forklarende figur (sandbox) â€“ ikke klinisk mÃ¥ling</text>
 </svg>
