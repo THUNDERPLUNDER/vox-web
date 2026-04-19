@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="h-title h-desc">
+  <title id="h-title">Stille samtale i hverdagsrom</title>
+  <desc id="h-desc">Abstrakt illustrasjon av to personer ved et bord i mykt dagslys.</desc>
+  <defs>
+    <linearGradient id="win" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8ecf4"/>
+      <stop offset="100%" stop-color="#f4f2ee"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#faf9f7"/>
+      <stop offset="100%" stop-color="#efece6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="#f7f6f4"/>
+  <ellipse cx="380" cy="120" rx="420" ry="200" fill="url(#win)" opacity="0.85"/>
+  <rect x="0" y="480" width="1200" height="195" fill="url(#floor)"/>
+  <line x1="80" y1="480" x2="1120" y2="480" stroke="#dcd7cf" stroke-width="1" opacity="0.5"/>
+  <ellipse cx="420" cy="520" rx="140" ry="24" fill="#e5e1d9" opacity="0.6"/>
+  <rect x="340" y="380" width="360" height="12" rx="4" fill="#ddd8d0" opacity="0.7"/>
+  <circle cx="430" cy="340" r="36" fill="#c5c0b8" opacity="0.45"/>
+  <path d="M394 380 Q430 360 466 380 L466 420 L394 420 Z" fill="#b8b3ab" opacity="0.4"/>
+  <circle cx="610" cy="335" r="34" fill="#c5c0b8" opacity="0.45"/>
+  <path d="M576 375 Q610 355 644 375 L644 418 L576 418 Z" fill="#b8b3ab" opacity="0.4"/>
+  <path d="M520 300 Q600 280 680 300" stroke="rgb(95 82 220)" stroke-width="2" fill="none" opacity="0.2" stroke-linecap="round"/>
+</svg>

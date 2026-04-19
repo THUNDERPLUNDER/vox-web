@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Sandbox Article Master v0.2 — composed column, neutral sans headings, borderless grouping; no prod CMS. */
+/* CONTRACT: Article Template Anatomy v0.1 — sandbox prototype: zones, hero, inline visuals; no prod CMS. */
 import "../../../styles/sandbox-article-master.css";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Footer from "../../../components/nav/Footer.astro";
@@ -29,24 +29,24 @@ const demoSeeds = [
   <main class="ams pb-16 pt-2 sm:pb-20" data-article-master-sandbox>
     <div class="grid gap-14 lg:grid-cols-[minmax(0,1fr)_15.5rem] lg:gap-x-16 lg:gap-y-14 xl:gap-x-20 xl:gap-y-16 2xl:gap-x-24">
       <article class="max-w-[min(100%,38rem)] lg:pl-6 xl:pl-10 2xl:pl-14">
-        <nav
-          class="mb-10 text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]"
-          aria-label="Du er her"
-        >
-          <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
-          <span class="mx-1.5 text-[rgb(var(--reading-ink-secondary))]/50" aria-hidden="true">/</span>
-          <a href="/no/sandbox" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Sandbox</a>
-          <span class="mx-1.5 text-[rgb(var(--reading-ink-secondary))]/50" aria-hidden="true">/</span>
-          <span class="text-[rgb(var(--reading-ink))]">Article Master</span>
-        </nav>
+        <div class="ams-zone ams-zone--context">
+          <nav
+            class="mb-10 text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]"
+            aria-label="Du er her"
+          >
+            <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
+            <span class="mx-1.5 text-[rgb(var(--reading-ink-secondary))]/50" aria-hidden="true">/</span>
+            <a href="/no/sandbox" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Sandbox</a>
+            <span class="mx-1.5 text-[rgb(var(--reading-ink-secondary))]/50" aria-hidden="true">/</span>
+            <span class="text-[rgb(var(--reading-ink))]">Article Master</span>
+          </nav>
+        </div>
 
-        <header class="pb-14">
+        <header class="ams-zone ams-zone--lead pb-10">
           <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-accent-iris))]">
             Demo · Samtale og hørsel
           </p>
-          <h1
-            class="mt-4 text-[2.125rem] font-semibold leading-[1.12] text-balance text-[rgb(var(--reading-ink))] sm:text-[2.5rem]"
-          >
+          <h1 class="mt-4 text-[2.125rem] font-semibold leading-[1.12] text-balance text-[rgb(var(--reading-ink))] sm:text-[2.5rem]">
             Når hørselen endrer samtalen — og hvordan du kan møte det roligere
           </h1>
           <p class="mt-8 max-w-2xl text-lg leading-[1.65] text-[rgb(var(--reading-ink-secondary))]">
@@ -56,7 +56,24 @@ const demoSeeds = [
           </p>
         </header>
 
-        <div class="space-y-[4.5rem]">
+        <figure class="ams-hero ams-zone ams-zone--hero pb-12">
+          <div class="ams-hero__media">
+            <img
+              class="ams-hero__img"
+              src="/sandbox/article-master/hero.svg"
+              width="1200"
+              height="675"
+              loading="eager"
+              decoding="async"
+              alt="Stilisert illustrasjon av to personer ved et bord i dempet dagslys, som støtter temaet samtale i hverdagen."
+            />
+          </div>
+          <figcaption class="ams-hero__caption">
+            Illustrasjon (sandbox): rolig hverdagsramme — samtalen skjer ofte mellom praktiske gjøremål, ikke på «scenen».
+          </figcaption>
+        </figure>
+
+        <div class="ams-zone ams-zone--article-body space-y-[4.5rem]">
           <section class="space-y-6">
             <div class="space-y-3">
               <h2 class="text-xl font-semibold leading-snug text-[rgb(var(--reading-ink))] sm:text-2xl sm:leading-snug">
@@ -76,6 +93,23 @@ const demoSeeds = [
               </p>
             </div>
           </section>
+
+          <figure class="ams-inline-visual ams-zone ams-zone--inline-visual">
+            <div class="ams-inline-visual__media">
+              <img
+                class="ams-inline-visual__img"
+                src="/sandbox/article-master/inline-stoy-samtale.svg"
+                width="680"
+                height="360"
+                loading="lazy"
+                decoding="async"
+                alt="Enkel sammenligning: rolig sone versus støy og flere stemmer, som krever mer oppmerksomhet."
+              />
+            </div>
+            <figcaption class="ams-inline-visual__caption">
+              Skjematikk (sandbox): samme type samtale kan oppleves lettere når bakgrunnen er roligere — ikke nødvendigvis fordi volumet er høyere, men fordi hjernen får mindre å filtrere.
+            </figcaption>
+          </figure>
 
           <section class="space-y-6">
             <div class="space-y-3">
@@ -232,7 +266,24 @@ const demoSeeds = [
             </ul>
           </section>
 
-          <section class="space-y-6 pt-6">
+          <figure class="ams-inline-visual ams-zone ams-zone--inline-visual">
+            <div class="ams-inline-visual__media">
+              <img
+                class="ams-inline-visual__img"
+                src="/sandbox/article-master/inline-pause-energi.svg"
+                width="680"
+                height="320"
+                loading="lazy"
+                decoding="async"
+                alt="Tre trinn: rolig, økt belastning, og planlagt pause før samtalen sporer av."
+              />
+            </div>
+            <figcaption class="ams-inline-visual__caption">
+              Forklarende figur (sandbox): en planlagt pause er ofte mer reparerende enn å presse samtalen ferdig når begge er slitne.
+            </figcaption>
+          </figure>
+
+          <section class="ams-zone ams-zone--summary space-y-6 pt-2">
             <div class="space-y-3">
               <p class="text-[11px] font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-accent-iris))]">
                 Oppsummert
@@ -252,7 +303,7 @@ const demoSeeds = [
             </p>
           </section>
 
-          <section class="space-y-6 pt-12" aria-labelledby="ams-continue">
+          <section class="ams-zone ams-zone--next-step space-y-6" aria-labelledby="ams-continue">
             <div class="space-y-3">
               <h2 id="ams-continue" class="text-xl font-semibold leading-snug text-[rgb(var(--reading-ink))] sm:text-2xl sm:leading-snug">
                 Fortsett i Hørehjelpen

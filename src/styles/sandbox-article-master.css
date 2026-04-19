@@ -1,4 +1,4 @@
-/* CONTRACT: Styles scoped to [data-article-master-sandbox] — Article Master sandbox only; not production. */
+/* CONTRACT: Article Template Anatomy v0.1 — sandbox-only; hero + inline visuals + zones. */
 
 [data-article-master-sandbox] h1,
 [data-article-master-sandbox] h2,
@@ -6,6 +6,11 @@
 [data-article-master-sandbox] h4 {
   font-family: var(--font-sans);
   letter-spacing: -0.02em;
+}
+
+/* H1: slightly tighter kerning for a cohesive line; still neutral sans */
+[data-article-master-sandbox] h1 {
+  letter-spacing: -0.038em;
 }
 
 [data-article-master-sandbox] blockquote {
@@ -47,4 +52,74 @@
 [data-article-master-sandbox] aside h2 {
   font-family: var(--font-sans);
   letter-spacing: 0.14em;
+}
+
+/* —— Hero (top article image) —— */
+[data-article-master-sandbox] .ams-hero {
+  margin: 0;
+}
+
+[data-article-master-sandbox] .ams-hero__media {
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: rgb(var(--reading-inline) / 0.4);
+}
+
+[data-article-master-sandbox] .ams-hero__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+[data-article-master-sandbox] .ams-hero__caption {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: rgb(var(--reading-ink-secondary));
+}
+
+/* —— Inline visuals (body) —— */
+[data-article-master-sandbox] .ams-inline-visual {
+  margin: 0;
+}
+
+[data-article-master-sandbox] .ams-inline-visual__media {
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: rgb(var(--reading-inline) / 0.3);
+}
+
+[data-article-master-sandbox] .ams-inline-visual__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+[data-article-master-sandbox] .ams-inline-visual__caption {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: rgb(var(--reading-ink-secondary));
+}
+
+/* Summary block: light separation from body rhythm */
+[data-article-master-sandbox] .ams-zone--summary {
+  padding-bottom: 0.25rem;
+}
+
+/* Next-step zone (Fortsett i Hørehjelpen): separated without stroke */
+[data-article-master-sandbox] .ams-zone--next-step {
+  margin-top: 0.25rem;
+  padding: 2.25rem 1rem 1.75rem;
+  border-radius: var(--radius-md);
+  background: rgb(var(--reading-inline) / 0.22);
+}
+
+@media (min-width: 640px) {
+  [data-article-master-sandbox] .ams-zone--next-step {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
 }
