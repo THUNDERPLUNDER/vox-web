@@ -1,4 +1,4 @@
-/* CONTRACT: Article Template Anatomy v0.1 — sandbox-only; hero + inline visuals + zones. */
+/* CONTRACT: Sandbox Article Master v0.4 — rhythm, unified rail, zones; no global leakage. */
 
 [data-article-master-sandbox] h1,
 [data-article-master-sandbox] h2,
@@ -8,7 +8,6 @@
   letter-spacing: -0.02em;
 }
 
-/* H1: slightly tighter kerning for a cohesive line; still neutral sans */
 [data-article-master-sandbox] h1 {
   letter-spacing: -0.038em;
 }
@@ -18,7 +17,30 @@
   letter-spacing: -0.02em;
 }
 
-/* Softer primary — not pure black; still clearly primary */
+[data-article-master-sandbox] .ams-body-p {
+  line-height: 1.78;
+}
+
+@media (min-width: 1024px) {
+  [data-article-master-sandbox] .ams-body-p {
+    line-height: 1.72;
+  }
+
+  [data-article-master-sandbox] .ams-zone--article-body section li {
+    line-height: 1.72;
+  }
+}
+
+[data-article-master-sandbox] .ams-lead {
+  line-height: 1.65;
+}
+
+@media (min-width: 1024px) {
+  [data-article-master-sandbox] .ams-lead {
+    line-height: 1.62;
+  }
+}
+
 [data-article-master-sandbox] .ams-primary-cta {
   display: inline-flex;
   align-items: center;
@@ -44,7 +66,6 @@
   outline-offset: 2px;
 }
 
-/* Editorial prompt rows — no underline; calm hover */
 [data-article-master-sandbox] .ams-prompt-row {
   text-decoration: none;
 }
@@ -54,15 +75,74 @@
   letter-spacing: 0.14em;
 }
 
-/* —— Hero (top article image) —— */
+/* —— Unified support rail (one calm layer) —— */
+[data-article-master-sandbox] .ams-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.35rem 1.15rem 1.5rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    185deg,
+    rgb(var(--reading-inline) / 0.44) 0%,
+    rgb(var(--reading-inline) / 0.26) 52%,
+    rgb(var(--reading-inline) / 0.34) 100%
+  );
+}
+
+@media (min-width: 1024px) {
+  [data-article-master-sandbox] .ams-rail {
+    gap: 1.65rem;
+    padding: 1.5rem 1.25rem 1.65rem;
+  }
+}
+
+[data-article-master-sandbox] .ams-rail__block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+[data-article-master-sandbox] .ams-rail__eyebrow {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(var(--reading-ink-secondary));
+}
+
+[data-article-master-sandbox] .ams-rail__title {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(var(--reading-ink));
+}
+
+/* —— Hero —— */
 [data-article-master-sandbox] .ams-hero {
   margin: 0;
+}
+
+[data-article-master-sandbox] .ams-zone--hero {
+  padding: 0.85rem 0.65rem 1.1rem;
+  margin-left: -0.65rem;
+  margin-right: -0.65rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(185deg, rgb(252 251 249) 0%, rgb(255 255 255) 72%);
+}
+
+@media (min-width: 640px) {
+  [data-article-master-sandbox] .ams-zone--hero {
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
+  }
 }
 
 [data-article-master-sandbox] .ams-hero__media {
   overflow: hidden;
   border-radius: var(--radius-md);
-  background: rgb(var(--reading-inline) / 0.4);
+  background: rgb(var(--reading-inline) / 0.35);
 }
 
 [data-article-master-sandbox] .ams-hero__img {
@@ -73,13 +153,13 @@
 }
 
 [data-article-master-sandbox] .ams-hero__caption {
-  margin-top: 0.5rem;
-  font-size: 0.75rem;
-  line-height: 1.45;
+  margin-top: 0.45rem;
+  font-size: 0.6875rem;
+  line-height: 1.42;
   color: rgb(var(--reading-ink-secondary));
 }
 
-/* —— Inline visuals (body) —— */
+/* —— Inline visual (single explanatory module) —— */
 [data-article-master-sandbox] .ams-inline-visual {
   margin: 0;
 }
@@ -87,7 +167,7 @@
 [data-article-master-sandbox] .ams-inline-visual__media {
   overflow: hidden;
   border-radius: var(--radius-sm);
-  background: rgb(var(--reading-inline) / 0.3);
+  background: rgb(var(--reading-inline) / 0.28);
 }
 
 [data-article-master-sandbox] .ams-inline-visual__img {
@@ -98,23 +178,33 @@
 }
 
 [data-article-master-sandbox] .ams-inline-visual__caption {
-  margin-top: 0.5rem;
-  font-size: 0.75rem;
-  line-height: 1.45;
+  margin-top: 0.45rem;
+  font-size: 0.6875rem;
+  line-height: 1.42;
   color: rgb(var(--reading-ink-secondary));
 }
 
-/* Summary block: light separation from body rhythm */
+/* —— Zones: mild tonal memory —— */
 [data-article-master-sandbox] .ams-zone--summary {
-  padding-bottom: 0.25rem;
+  padding: 1.35rem 0.85rem 1.2rem;
+  margin-left: -0.65rem;
+  margin-right: -0.65rem;
+  border-radius: var(--radius-md);
+  background: rgb(var(--reading-inline) / 0.2);
 }
 
-/* Next-step zone (Fortsett i Hørehjelpen): separated without stroke */
+@media (min-width: 640px) {
+  [data-article-master-sandbox] .ams-zone--summary {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 [data-article-master-sandbox] .ams-zone--next-step {
-  margin-top: 0.25rem;
-  padding: 2.25rem 1rem 1.75rem;
+  margin-top: 0.35rem;
+  padding: 2rem 1rem 1.65rem;
   border-radius: var(--radius-md);
-  background: rgb(var(--reading-inline) / 0.22);
+  background: rgb(var(--reading-inline) / 0.3);
 }
 
 @media (min-width: 640px) {
