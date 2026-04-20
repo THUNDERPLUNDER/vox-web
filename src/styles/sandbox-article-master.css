@@ -1,4 +1,4 @@
-/* CONTRACT: Sandbox Article Master v0.8 — typography tuning (H1 gather, body grip); plates/CTA/layout unchanged. */
+/* CONTRACT: Sandbox Article Master v1.0 — QA lock fixes for ghost-pill prompt, list grouping, and figure-to-heading spacing. */
 
 [data-article-master-sandbox] {
   /* Editorial plate: flat, barely cool-neutral — no glow, no gradient */
@@ -120,18 +120,26 @@ html[data-theme="dark"] [data-article-master-sandbox] {
 /* Lists: stronger indentation + grouped editorial rhythm */
 [data-article-master-sandbox] .ams-zone--article-body ul.list-disc,
 [data-article-master-sandbox] .ams-zone--article-body ol.list-decimal {
-  padding-left: 1.85rem !important;
+  padding-left: 2.35rem !important;
+  margin-left: 0.05rem;
+  list-style-position: outside;
 }
 
 [data-article-master-sandbox] .ams-zone--article-body ul.list-disc > li,
 [data-article-master-sandbox] .ams-zone--article-body ol.list-decimal > li {
-  padding-left: 0.22rem;
-  line-height: 1.56;
+  padding-left: 0.3rem;
+  line-height: 1.5;
 }
 
 [data-article-master-sandbox] .ams-zone--article-body ul.list-disc.space-y-3\.5 > li + li,
 [data-article-master-sandbox] .ams-zone--article-body ol.list-decimal.space-y-3\.5 > li + li {
-  margin-top: 0.625rem !important;
+  margin-top: 0.5rem !important;
+}
+
+[data-article-master-sandbox] .ams-zone--article-body ul.list-disc > li::marker,
+[data-article-master-sandbox] .ams-zone--article-body ol.list-decimal > li::marker {
+  color: rgb(var(--reading-ink-secondary));
+  font-weight: 600;
 }
 
 /* Shared plate surface — rail, Oppsummert, Prompt Group, optional callouts */
@@ -169,36 +177,20 @@ html[data-theme="dark"] [data-article-master-sandbox] {
   outline-offset: 2px;
 }
 
-/* Prompt variant comparison wrapper */
-[data-article-master-sandbox] .prompt-compare {
-  margin-top: 0.5rem !important;
-  margin-bottom: 0.2rem !important;
-}
-
 /* —— Prompt Group —— */
 [data-article-master-sandbox] .prompt-group {
-  margin-top: 0.35rem;
-  padding: 1.65rem 1rem 1.55rem;
+  margin-top: 0.9rem;
+  padding: 0;
 }
 
 @media (min-width: 640px) {
   [data-article-master-sandbox] .prompt-group {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
+    margin-top: 1rem;
   }
 }
 
 [data-article-master-sandbox] .prompt-group__header {
   margin-bottom: 1.15rem;
-}
-
-[data-article-master-sandbox] .prompt-group__variant-badge {
-  margin-bottom: 0.4rem;
-  font-size: 0.67rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgb(var(--reading-ink-secondary));
 }
 
 [data-article-master-sandbox] .prompt-group__title {
@@ -319,37 +311,6 @@ html[data-theme="dark"] [data-article-master-sandbox] {
   outline-offset: 2px;
 }
 
-/* Variant A — text-link continuation */
-[data-article-master-sandbox] .prompt-group--text-link .prompt-group__list {
-  max-width: 40rem;
-}
-
-[data-article-master-sandbox] .prompt-group--text-link .prompt-group__item + .prompt-group__item {
-  margin-top: 0.22rem;
-}
-
-[data-article-master-sandbox] .prompt-group--text-link .prompt-group__link {
-  margin-left: 0;
-  margin-right: 0;
-  padding: 0.34rem 0;
-  border-radius: 0;
-  font-size: 1rem;
-  line-height: 1.4;
-}
-
-[data-article-master-sandbox] .prompt-group--text-link .prompt-group__link:hover {
-  background-color: transparent;
-  color: rgb(var(--reading-ink));
-}
-
-[data-article-master-sandbox] .prompt-group--text-link .prompt-group__hint {
-  opacity: 0.34;
-}
-
-[data-article-master-sandbox] .prompt-group--text-link .prompt-group__cta {
-  margin-top: 1.1rem;
-}
-
 /* Variant B — ghost pills */
 [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__list {
   display: flex;
@@ -369,16 +330,23 @@ html[data-theme="dark"] [data-article-master-sandbox] {
   gap: 0.5rem;
   padding: 0.46rem 0.82rem;
   border-radius: 999px;
-  border: 1px solid rgb(var(--reading-ink-secondary) / 0.22);
+  border: 1px solid rgb(var(--reading-ink-secondary) / 0.2);
   background: rgb(var(--reading-paper) / 0.12);
   font-size: 0.95rem;
   line-height: 1.34;
   box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.05);
+  transition: background-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
 }
 
 [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover {
   background: rgb(var(--reading-paper) / 0.2);
-  border-color: rgb(var(--reading-ink-secondary) / 0.32);
+  box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.06);
+}
+
+[data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:focus-visible {
+  background: rgb(var(--reading-paper) / 0.2);
+  outline: 2px solid rgb(var(--reading-accent-iris) / 0.32);
+  outline-offset: 2px;
 }
 
 [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__hint {
@@ -506,7 +474,7 @@ html[data-theme="dark"] [data-article-master-sandbox] {
 }
 
 [data-article-master-sandbox] .ams-zone--article-body > figure.ams-inline-visual + section {
-  margin-top: clamp(2.7rem, 2.4rem + 0.6vw, 3.5rem) !important;
+  margin-top: clamp(3.5rem, 3.1rem + 0.9vw, 4.6rem) !important;
 }
 
 [data-article-master-sandbox] .ams-inline-visual__media {
