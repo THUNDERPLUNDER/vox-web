@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Sandbox Article Master v0.8 — typography tuning in CSS; figures via bundled SVG URLs (base-safe). */
+/* CONTRACT: Sandbox Article Master v0.9 — QA structure pass (lists, prompt variants, dark integration); figures via bundled SVG URLs (base-safe). */
 import "../../../styles/sandbox-article-master.css";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Footer from "../../../components/nav/Footer.astro";
@@ -213,6 +213,25 @@ const promptItems = [
             </figcaption>
           </figure>
 
+          <section class="prompt-compare space-y-4" aria-labelledby="ams-continue">
+            <PromptGroup
+              title="Fortsett i Hørehjelpen"
+              intro="Velg et spørsmål — dette er første naturlige forlengelse av temaet i artikkelen."
+              headingId="ams-continue"
+              items={promptItems}
+              variant="text-link"
+              variantBadge="Variant A · tekstlenker"
+            />
+            <PromptGroup
+              title="Fortsett i Hørehjelpen"
+              intro="Samme spørsmål vist som diskrete ghost-piller for rask sammenligning i sandbox."
+              headingId="ams-continue-ghost"
+              items={promptItems}
+              variant="ghost-pill"
+              variantBadge="Variant B · ghost-piller"
+            />
+          </section>
+
           <section class="space-y-6">
             <div class="space-y-2 lg:space-y-2.5">
               <h2 class="text-xl font-semibold leading-snug text-[rgb(var(--reading-ink))] sm:text-2xl sm:leading-snug">
@@ -277,12 +296,6 @@ const promptItems = [
             </p>
           </section>
 
-          <PromptGroup
-            title="Fortsett i Hørehjelpen"
-            intro="Velg et spørsmål — samtalen åpner med dette som utgangspunkt. Dette er kuraterte neste steg inn i en strukturert samtale, ikke en generell lenkeliste."
-            headingId="ams-continue"
-            items={promptItems}
-          />
         </div>
       </article>
 

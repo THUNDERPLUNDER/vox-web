@@ -13,6 +13,12 @@
   --ams-body-ink: color-mix(in srgb, rgb(var(--reading-ink-secondary)) 90%, rgb(var(--reading-ink)) 10%);
 }
 
+html[data-theme="dark"] [data-article-master-sandbox] {
+  /* Dark integration: plate sits closer to page field, less lifted-card contrast */
+  --ams-plate-bg: color-mix(in srgb, rgb(var(--reading-inline)) 86%, rgb(var(--article-page-canvas)) 14%);
+  --ams-body-ink: color-mix(in srgb, rgb(var(--reading-ink-secondary)) 84%, rgb(var(--reading-ink)) 16%);
+}
+
 /* Article column subheads only — rail / UI labels unchanged */
 [data-article-master-sandbox] article h2,
 [data-article-master-sandbox] article h3,
@@ -111,6 +117,23 @@
   margin-top: 0.6875rem !important;
 }
 
+/* Lists: stronger indentation + grouped editorial rhythm */
+[data-article-master-sandbox] .ams-zone--article-body ul.list-disc,
+[data-article-master-sandbox] .ams-zone--article-body ol.list-decimal {
+  padding-left: 1.85rem !important;
+}
+
+[data-article-master-sandbox] .ams-zone--article-body ul.list-disc > li,
+[data-article-master-sandbox] .ams-zone--article-body ol.list-decimal > li {
+  padding-left: 0.22rem;
+  line-height: 1.56;
+}
+
+[data-article-master-sandbox] .ams-zone--article-body ul.list-disc.space-y-3\.5 > li + li,
+[data-article-master-sandbox] .ams-zone--article-body ol.list-decimal.space-y-3\.5 > li + li {
+  margin-top: 0.625rem !important;
+}
+
 /* Shared plate surface — rail, Oppsummert, Prompt Group, optional callouts */
 [data-article-master-sandbox] .ams-plate {
   background: var(--ams-plate-bg);
@@ -146,6 +169,12 @@
   outline-offset: 2px;
 }
 
+/* Prompt variant comparison wrapper */
+[data-article-master-sandbox] .prompt-compare {
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.2rem !important;
+}
+
 /* —— Prompt Group —— */
 [data-article-master-sandbox] .prompt-group {
   margin-top: 0.35rem;
@@ -161,6 +190,15 @@
 
 [data-article-master-sandbox] .prompt-group__header {
   margin-bottom: 1.15rem;
+}
+
+[data-article-master-sandbox] .prompt-group__variant-badge {
+  margin-bottom: 0.4rem;
+  font-size: 0.67rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(var(--reading-ink-secondary));
 }
 
 [data-article-master-sandbox] .prompt-group__title {
@@ -279,6 +317,72 @@
 [data-article-master-sandbox] .prompt-group__cta:focus-visible {
   outline: 2px solid rgb(var(--primary) / 0.42);
   outline-offset: 2px;
+}
+
+/* Variant A — text-link continuation */
+[data-article-master-sandbox] .prompt-group--text-link .prompt-group__list {
+  max-width: 40rem;
+}
+
+[data-article-master-sandbox] .prompt-group--text-link .prompt-group__item + .prompt-group__item {
+  margin-top: 0.22rem;
+}
+
+[data-article-master-sandbox] .prompt-group--text-link .prompt-group__link {
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0.34rem 0;
+  border-radius: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+[data-article-master-sandbox] .prompt-group--text-link .prompt-group__link:hover {
+  background-color: transparent;
+  color: rgb(var(--reading-ink));
+}
+
+[data-article-master-sandbox] .prompt-group--text-link .prompt-group__hint {
+  opacity: 0.34;
+}
+
+[data-article-master-sandbox] .prompt-group--text-link .prompt-group__cta {
+  margin-top: 1.1rem;
+}
+
+/* Variant B — ghost pills */
+[data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.5rem;
+  max-width: 40rem;
+}
+
+[data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__item {
+  margin: 0;
+}
+
+[data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.46rem 0.82rem;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--reading-ink-secondary) / 0.22);
+  background: rgb(var(--reading-paper) / 0.12);
+  font-size: 0.95rem;
+  line-height: 1.34;
+  box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.05);
+}
+
+[data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover {
+  background: rgb(var(--reading-paper) / 0.2);
+  border-color: rgb(var(--reading-ink-secondary) / 0.32);
+}
+
+[data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__hint {
+  display: none;
 }
 
 [data-article-master-sandbox] aside h2 {
@@ -402,7 +506,7 @@
 }
 
 [data-article-master-sandbox] .ams-zone--article-body > figure.ams-inline-visual + section {
-  margin-top: clamp(2.25rem, 2rem + 0.5vw, 3rem) !important;
+  margin-top: clamp(2.7rem, 2.4rem + 0.6vw, 3.5rem) !important;
 }
 
 [data-article-master-sandbox] .ams-inline-visual__media {

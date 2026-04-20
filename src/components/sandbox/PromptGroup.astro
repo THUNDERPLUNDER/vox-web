@@ -12,10 +12,13 @@ export interface Props {
   items: PromptItem[];
   /** Anchor id for section heading (a11y). */
   headingId: string;
+  /** Variant A: editorial links. Variant B: ghost pills. */
+  variant?: "text-link" | "ghost-pill";
   ctaLabel?: string;
   /** Absolute path to fri samtale (respects `base`). */
   freeChatHref?: string;
   seedFrom?: "hub" | "article";
+  variantBadge?: string;
 }
 
 const {
@@ -23,17 +26,20 @@ const {
   intro,
   items,
   headingId,
+  variant = "text-link",
   ctaLabel = "Åpne fri samtale",
   freeChatHref: freeChatHrefProp,
   seedFrom = "article",
+  variantBadge,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL ?? "/";
 const freeChatHref = freeChatHrefProp ?? (base.endsWith("/") ? `${base}no/chat` : `${base}/no/chat`);
 ---
 
-<section class="prompt-group ams-zone ams-plate" aria-labelledby={headingId}>
+<section class={`prompt-group ams-zone ams-plate prompt-group--${variant}`} aria-labelledby={headingId}>
   <header class="prompt-group__header">
+    {variantBadge && <p class="prompt-group__variant-badge">{variantBadge}</p>}
     <h2 id={headingId} class="prompt-group__title">{title}</h2>
     <p class="prompt-group__intro">{intro}</p>
   </header>
