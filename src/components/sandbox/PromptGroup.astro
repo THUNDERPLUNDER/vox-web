@@ -40,15 +40,9 @@ const freeChatHref = freeChatHrefProp ?? (base.endsWith("/") ? `${base}no/chat` 
 
   <ul class="prompt-group__list" role="list">
     {
-      items.map((item, index) => (
+      items.map((item) => (
         <li class="prompt-group__item">
-          <a
-            href={buildChatShellHref(item.question, seedFrom)}
-            class:list={[
-              "prompt-group__link",
-              index === 0 && "prompt-group__link--qa-hover",
-            ]}
-          >
+          <a href={buildChatShellHref(item.question, seedFrom)} class="prompt-group__link">
             <span class="prompt-group__question">{item.question}</span>
             <span class="prompt-group__hint" aria-hidden="true">
               <svg class="prompt-group__hint-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
