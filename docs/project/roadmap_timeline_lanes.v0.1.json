@@ -1,0 +1,37 @@
+{
+  "version": "0.1",
+  "source_of_truth": "repo-manifest",
+  "description_no": "Niva 1 Spor for VIS roadmap timeline. Initiativ og oppgaver hentes fra GitHub issues metadata.",
+  "lanes": [
+    {
+      "id": "content",
+      "label_no": "Innhold",
+      "description_no": "Innholdsproduksjon, redaksjonelle prioriteringer og publiseringsklar tekst.",
+      "order": 10
+    },
+    {
+      "id": "ia",
+      "label_no": "Informasjonsarkitektur",
+      "description_no": "Struktur, navigasjon, sammenheng mellom sider og brukerflyt.",
+      "order": 20
+    },
+    {
+      "id": "ai-agent",
+      "label_no": "AI-agent",
+      "description_no": "Samtaleflyt, prompts, agentatferd og kvalitetsforbedring i hjelpelaget.",
+      "order": 30
+    },
+    {
+      "id": "ui-design",
+      "label_no": "UI-design",
+      "description_no": "Komponentkvalitet, designsystem og visuelle beslutninger for MVP.",
+      "order": 40
+    },
+    {
+      "id": "ops-architecture",
+      "label_no": "Ops / arkitektur",
+      "description_no": "Task-bus, VIS read models, deployflyt og teknisk grunnmur.",
+      "order": 50
+    }
+  ]
+}
