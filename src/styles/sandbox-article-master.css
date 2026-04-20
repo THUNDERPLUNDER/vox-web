@@ -1,4 +1,4 @@
-/* CONTRACT: Sandbox Article Master v0.7 — flat plate surfaces (no aura/gradients on support zones), larger CTA radii, inline figure rhythm; assets unchanged. */
+/* CONTRACT: Sandbox Article Master v0.8 — typography tuning (H1 gather, body grip); plates/CTA/layout unchanged. */
 
 [data-article-master-sandbox] {
   /* Editorial plate: flat, barely cool-neutral — no glow, no gradient */
@@ -9,18 +9,50 @@
   --ams-btn-radius-cta: 22px;
   /* Softer kicker than v0.6 — still readable, not sugary */
   --ams-accent-soft: color-mix(in srgb, rgb(var(--reading-ink-secondary)) 78%, rgb(var(--primary)) 22%);
+  /* Body: slightly stronger hold (v0.8) */
+  --ams-body-ink: color-mix(in srgb, rgb(var(--reading-ink-secondary)) 90%, rgb(var(--reading-ink)) 10%);
 }
 
-[data-article-master-sandbox] h1,
-[data-article-master-sandbox] h2,
-[data-article-master-sandbox] h3,
-[data-article-master-sandbox] h4 {
+/* Article column subheads only — rail / UI labels unchanged */
+[data-article-master-sandbox] article h2,
+[data-article-master-sandbox] article h3,
+[data-article-master-sandbox] article h4 {
   font-family: var(--font-sans);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.021em;
+  line-height: 1.32;
 }
 
-[data-article-master-sandbox] h1 {
-  letter-spacing: -0.038em;
+[data-article-master-sandbox] article h3 {
+  letter-spacing: -0.02em;
+  line-height: 1.34;
+}
+
+@media (min-width: 640px) {
+  [data-article-master-sandbox] article h2 {
+    letter-spacing: -0.022em;
+    line-height: 1.3;
+  }
+}
+
+/* Lead headline: gathered, editorial — responsive tracking + slightly tighter multi-line rhythm */
+[data-article-master-sandbox] .ams-zone--lead h1 {
+  font-family: var(--font-sans);
+  letter-spacing: -0.025em;
+  line-height: 1.13;
+}
+
+@media (min-width: 640px) {
+  [data-article-master-sandbox] .ams-zone--lead h1 {
+    letter-spacing: -0.03em;
+    line-height: 1.11;
+  }
+}
+
+@media (min-width: 1024px) {
+  [data-article-master-sandbox] .ams-zone--lead h1 {
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+  }
 }
 
 [data-article-master-sandbox] blockquote {
@@ -41,27 +73,42 @@
 }
 
 [data-article-master-sandbox] .ams-body-p {
-  line-height: 1.78;
+  letter-spacing: -0.003em;
+  line-height: 1.66;
+  color: var(--ams-body-ink);
 }
 
 @media (min-width: 1024px) {
   [data-article-master-sandbox] .ams-body-p {
-    line-height: 1.72;
+    letter-spacing: 0;
+    line-height: 1.61;
   }
 
   [data-article-master-sandbox] .ams-zone--article-body section li {
-    line-height: 1.72;
+    line-height: 1.61;
   }
 }
 
 [data-article-master-sandbox] .ams-lead {
-  line-height: 1.65;
+  letter-spacing: -0.002em;
+  line-height: 1.66;
+  color: var(--ams-body-ink);
 }
 
 @media (min-width: 1024px) {
   [data-article-master-sandbox] .ams-lead {
-    line-height: 1.62;
+    letter-spacing: 0;
+    line-height: 1.6;
   }
+}
+
+/* Slightly tighter stacks between body blocks (typographic grip; section vertical bands unchanged) */
+[data-article-master-sandbox] .ams-zone--article-body section .space-y-3\.5 > :not([hidden]) ~ * {
+  margin-top: 0.8125rem !important;
+}
+
+[data-article-master-sandbox] .ams-zone--article-body section .space-y-3 > :not([hidden]) ~ * {
+  margin-top: 0.6875rem !important;
 }
 
 /* Shared plate surface — rail, Oppsummert, Prompt Group, optional callouts */
