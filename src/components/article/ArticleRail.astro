@@ -1,0 +1,16 @@
+---
+/* CONTRACT: Reusable article right-rail wrapper with shared plate styling and slot-driven rail blocks. */
+export interface Props {
+  label?: string;
+  class?: string;
+}
+
+const { label = "I margen", class: className = "" } = Astro.props;
+---
+
+<aside class={`ams-rail ams-plate lg:sticky lg:top-28 lg:self-start lg:pt-1 ${className}`.trim()}>
+  <p class="mb-3 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-[rgb(var(--reading-ink-secondary))]">
+    {label}
+  </p>
+  <slot />
+</aside>

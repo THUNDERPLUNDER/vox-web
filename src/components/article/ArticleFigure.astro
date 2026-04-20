@@ -1,0 +1,52 @@
+---
+/* CONTRACT: Reusable article figure wrapper for hero/inline media with caption and safe image fallback. */
+export interface Props {
+  variant?: "hero" | "inline";
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  caption: string;
+  loading?: "eager" | "lazy";
+  decoding?: "async" | "auto" | "sync";
+  class?: string;
+}
+
+const {
+  variant = "inline",
+  src,
+  width,
+  height,
+  alt,
+  caption,
+  loading = variant === "hero" ? "eager" : "lazy",
+  decoding = "async",
+  class: className = "",
+} = Astro.props;
+
+const figureClass =
+  variant === "hero"
+    ? `ams-hero ams-zone ams-zone--hero pb-11 ${className}`.trim()
+    : `ams-inline-visual ams-zone ams-zone--inline-visual ${className}`.trim();
+const mediaClass = variant === "hero" ? "ams-hero__media" : "ams-inline-visual__media";
+const imageClass = variant === "hero" ? "ams-hero__img" : "ams-inline-visual__img";
+const captionClass = variant === "hero" ? "ams-hero__caption" : "ams-inline-visual__caption";
+---
+
+<figure class={figureClass}>
+  <div class={mediaClass}>
+    <img
+      class={imageClass}
+      src={src}
+      width={width}
+      height={height}
+      loading={loading}
+      decoding={decoding}
+      alt={alt}
+      onerror="this.hidden=true"
+    />
+  </div>
+  <figcaption class={captionClass}>
+    {caption}
+  </figcaption>
+</figure>

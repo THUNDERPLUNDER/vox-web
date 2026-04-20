@@ -3,7 +3,10 @@
 import "../../../styles/sandbox-article-master.css";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Footer from "../../../components/nav/Footer.astro";
-import PromptGroup from "../../../components/sandbox/PromptGroup.astro";
+import PromptGroup from "../../../components/article/PromptGroup.astro";
+import ArticleFigure from "../../../components/article/ArticleFigure.astro";
+import ArticleCallout from "../../../components/article/ArticleCallout.astro";
+import ArticleRail from "../../../components/article/ArticleRail.astro";
 import heroSvgUrl from "../../../assets/sandbox/article-master/hero.svg?url";
 import inlineBelastningSvgUrl from "../../../assets/sandbox/article-master/inline-belastning-kurve.svg?url";
 
@@ -25,7 +28,7 @@ const promptItems = [
 >
   <meta slot="head" name="robots" content="noindex,follow" />
 
-  <main class="ams pb-16 pt-2 sm:pb-20" data-article-master-sandbox>
+  <main class="ams pb-16 pt-2 sm:pb-20" data-article-master-sandbox data-article-system>
     <div class="grid gap-14 lg:grid-cols-[minmax(0,1fr)_15.5rem] lg:gap-x-16 lg:gap-y-14 xl:gap-x-20 xl:gap-y-16 2xl:gap-x-24">
       <article class="max-w-[min(100%,38rem)] lg:pl-6 xl:pl-10 2xl:pl-14">
         <div class="ams-zone ams-zone--context">
@@ -53,23 +56,14 @@ const promptItems = [
           </p>
         </header>
 
-        <figure class="ams-hero ams-zone ams-zone--hero pb-11">
-          <div class="ams-hero__media">
-            <img
-              class="ams-hero__img"
-              src={heroSvgUrl}
-              width="1200"
-              height="675"
-              loading="eager"
-              decoding="async"
-              alt="To personer ved kjøkkenbord i dempet dagslys — hverdagssamtale, ikke studio."
-              onerror="this.hidden=true"
-            />
-          </div>
-          <figcaption class="ams-hero__caption">
-            Motiv (sandbox): samtale om hørsel og nærhet skjer ofte her — ved kjøkkenbordet, i pausen, ikke i «presentasjonsmodus».
-          </figcaption>
-        </figure>
+        <ArticleFigure
+          variant="hero"
+          src={heroSvgUrl}
+          width={1200}
+          height={675}
+          alt="To personer ved kjøkkenbord i dempet dagslys — hverdagssamtale, ikke studio."
+          caption="Motiv (sandbox): samtale om hørsel og nærhet skjer ofte her — ved kjøkkenbordet, i pausen, ikke i «presentasjonsmodus»."
+        />
 
         <div class="ams-zone ams-zone--article-body space-y-20 lg:space-y-24">
           <section class="space-y-6">
@@ -171,47 +165,30 @@ const promptItems = [
             </figcaption>
           </figure>
 
-          <section class="ams-plate space-y-4 px-5 py-8 sm:px-7 sm:py-9">
-            <p class="ams-kicker">Observasjon</p>
-            <h3 class="text-lg font-semibold leading-snug text-[rgb(var(--reading-ink))] sm:text-xl">
-              Når «hverdagsirritasjon» egentlig er utmattelse
-            </h3>
+          <ArticleCallout kicker="Observasjon" title="Når «hverdagsirritasjon» egentlig er utmattelse">
             <p class="ams-body-p text-[1.0625rem] text-[rgb(var(--reading-ink-secondary))]">
               Mange konflikter starter ikke i et vanskelig tema, men i mikroøyeblikk: gjentatte «hæ?», feilstaving av navn,
               eller at noen snur seg bort midt i setningen. I layout-testen er denne blokken ment som et observasjonsfelt
               uten kantlinje — bare myk flate og tydelig typografi.
             </p>
-          </section>
+          </ArticleCallout>
 
-          <section class="ams-plate space-y-4 px-5 py-8 sm:px-7 sm:py-9">
-            <p class="ams-kicker">Fakta å huske</p>
-            <h3 class="text-lg font-semibold leading-snug text-[rgb(var(--reading-ink))] sm:text-xl">
-              Akustikk påvirker mer enn volum
-            </h3>
+          <ArticleCallout kicker="Fakta å huske" title="Akustikk påvirker mer enn volum">
             <p class="ams-body-p text-[1.0625rem] text-[rgb(var(--reading-ink-secondary))]">
               Rom med harde flater, åpne kjøkkenløsninger og bakgrunnsstøy kan gjøre at tale blir vanskelig selv når
               noen snur opp lyden på TV. Dette er ikke en medisinsk presisjon i denne sandbox-teksten — men et praktisk
               utgangspunkt for å forstå hvorfor «det burde være hørbart» likevel kan føles umulig.
             </p>
-          </section>
+          </ArticleCallout>
 
-          <figure class="ams-inline-visual ams-zone ams-zone--inline-visual">
-            <div class="ams-inline-visual__media">
-              <img
-                class="ams-inline-visual__img"
-                src={inlineBelastningSvgUrl}
-                width="720"
-                height="420"
-                loading="lazy"
-                decoding="async"
-                alt="Kurve som viser stigende mental belastning gjennom støy, gjentatte rettelser og høy anstrengelse, med markering for pause."
-                onerror="this.hidden=true"
-              />
-            </div>
-            <figcaption class="ams-inline-visual__caption">
-              Forklarende figur (sandbox): belastningen er ofte kumulativ — den kommer av mange små påkjenninger, ikke bare «dårlig lyd».
-            </figcaption>
-          </figure>
+          <ArticleFigure
+            variant="inline"
+            src={inlineBelastningSvgUrl}
+            width={720}
+            height={420}
+            alt="Kurve som viser stigende mental belastning gjennom støy, gjentatte rettelser og høy anstrengelse, med markering for pause."
+            caption="Forklarende figur (sandbox): belastningen er ofte kumulativ — den kommer av mange små påkjenninger, ikke bare «dårlig lyd»."
+          />
 
           <PromptGroup
             title="Fortsett i Hørehjelpen"
@@ -287,10 +264,7 @@ const promptItems = [
         </div>
       </article>
 
-      <aside class="ams-rail ams-plate lg:sticky lg:top-28 lg:self-start lg:pt-1">
-        <p class="mb-3 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-[rgb(var(--reading-ink-secondary))]">
-          I margen
-        </p>
+      <ArticleRail>
         <div class="ams-rail__block">
           <p class="ams-rail__eyebrow">Støtte</p>
           <h2 class="ams-rail__title">Faglig forankret</h2>
@@ -336,7 +310,7 @@ const promptItems = [
             .
           </p>
         </div>
-      </aside>
+      </ArticleRail>
     </div>
   </main>
 
