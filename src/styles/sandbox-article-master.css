@@ -351,38 +351,38 @@ html[data-theme="dark"] [data-article-master-sandbox] {
 
 [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover,
 [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link--qa-hover {
-  background: color-mix(in srgb, rgb(var(--reading-ink)) 16%, rgb(var(--reading-paper)) 84%);
+  background: color-mix(in srgb, rgb(var(--reading-ink)) 11%, rgb(var(--reading-paper)) 89%);
   box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.08);
 }
 
 [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:focus-visible {
-  background: color-mix(in srgb, rgb(var(--reading-ink)) 20%, rgb(var(--reading-paper)) 80%);
+  background: color-mix(in srgb, rgb(var(--reading-ink)) 14%, rgb(var(--reading-paper)) 86%);
   outline: 2px solid rgb(var(--reading-accent-iris) / 0.32);
   outline-offset: 2px;
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link {
-  border-color: rgb(var(--reading-ink-secondary) / 0.52);
-  background: rgb(var(--reading-paper) / 0.1);
+  border-color: rgb(var(--reading-ink-secondary) / 0.58);
+  background: color-mix(in srgb, rgb(var(--reading-inline)) 78%, rgb(var(--article-page-canvas)) 22%);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover,
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link--qa-hover {
-  background: rgb(var(--reading-paper) / 0.6);
+  background: color-mix(in srgb, rgb(var(--reading-inline)) 90%, rgb(var(--article-page-canvas)) 10%);
   box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.14);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:focus-visible {
-  background: rgb(var(--reading-paper) / 0.68);
+  background: color-mix(in srgb, rgb(var(--reading-inline)) 94%, rgb(var(--article-page-canvas)) 6%);
   outline-color: rgb(var(--reading-accent-iris) / 0.42);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group__cta {
-  background-color: color-mix(in srgb, rgb(var(--primary)) 18%, rgb(var(--reading-ink)) 82%);
+  background-color: color-mix(in srgb, rgb(var(--primary)) 10%, rgb(var(--reading-ink)) 90%);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group__cta:hover {
-  background-color: color-mix(in srgb, rgb(var(--primary)) 20%, rgb(var(--reading-ink)) 80%);
+  background-color: color-mix(in srgb, rgb(var(--primary)) 12%, rgb(var(--reading-ink)) 88%);
   filter: none;
 }
 
