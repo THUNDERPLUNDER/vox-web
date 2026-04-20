@@ -341,8 +341,8 @@ html[data-theme="dark"] [data-article-master-sandbox] {
   gap: 0.5rem;
   padding: 0.46rem 0.82rem;
   border-radius: 999px;
-  border: 1px solid rgb(var(--reading-ink-secondary) / 0.26);
-  background: rgb(var(--reading-paper) / 0.14);
+  border: 1px solid rgb(var(--reading-ink-secondary) / 0.24);
+  background: rgb(var(--reading-paper) / 0.12);
   font-size: 0.95rem;
   line-height: 1.34;
   box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.06);
@@ -350,39 +350,39 @@ html[data-theme="dark"] [data-article-master-sandbox] {
 }
 
 [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover,
-[data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link[data-qa-hover="true"] {
-  background: rgb(var(--reading-paper) / 0.5);
+[data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link--qa-hover {
+  background: color-mix(in srgb, rgb(var(--reading-ink)) 16%, rgb(var(--reading-paper)) 84%);
   box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.08);
 }
 
 [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:focus-visible {
-  background: rgb(var(--reading-paper) / 0.56);
+  background: color-mix(in srgb, rgb(var(--reading-ink)) 20%, rgb(var(--reading-paper)) 80%);
   outline: 2px solid rgb(var(--reading-accent-iris) / 0.32);
   outline-offset: 2px;
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link {
   border-color: rgb(var(--reading-ink-secondary) / 0.52);
-  background: rgb(var(--reading-paper) / 0.12);
+  background: rgb(var(--reading-paper) / 0.1);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover,
-html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link[data-qa-hover="true"] {
-  background: rgb(var(--reading-paper) / 0.46);
+html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link--qa-hover {
+  background: rgb(var(--reading-paper) / 0.6);
   box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.14);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:focus-visible {
-  background: rgb(var(--reading-paper) / 0.52);
+  background: rgb(var(--reading-paper) / 0.68);
   outline-color: rgb(var(--reading-accent-iris) / 0.42);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group__cta {
-  background-color: color-mix(in srgb, rgb(var(--primary)) 30%, rgb(var(--reading-ink)) 70%);
+  background-color: color-mix(in srgb, rgb(var(--primary)) 18%, rgb(var(--reading-ink)) 82%);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group__cta:hover {
-  background-color: color-mix(in srgb, rgb(var(--primary)) 32%, rgb(var(--reading-ink)) 68%);
+  background-color: color-mix(in srgb, rgb(var(--primary)) 20%, rgb(var(--reading-ink)) 80%);
   filter: none;
 }
 

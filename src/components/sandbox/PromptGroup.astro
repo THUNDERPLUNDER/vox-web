@@ -44,8 +44,10 @@ const freeChatHref = freeChatHrefProp ?? (base.endsWith("/") ? `${base}no/chat` 
         <li class="prompt-group__item">
           <a
             href={buildChatShellHref(item.question, seedFrom)}
-            class="prompt-group__link"
-            data-qa-hover={index === 0 ? "true" : undefined}
+            class:list={[
+              "prompt-group__link",
+              index === 0 && "prompt-group__link--qa-hover",
+            ]}
           >
             <span class="prompt-group__question">{item.question}</span>
             <span class="prompt-group__hint" aria-hidden="true">
