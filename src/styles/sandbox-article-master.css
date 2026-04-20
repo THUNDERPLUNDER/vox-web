@@ -338,20 +338,22 @@ html[data-theme="dark"] [data-article-master-sandbox] {
   margin: 0;
   display: inline-flex;
   align-items: center;
+  height: 40px;
   gap: 0.5rem;
-  padding: 0.59375rem 0.9375rem;
-  border-radius: 20px;
+  padding: 0.5625rem 0.75rem;
+  border-radius: 999px;
   border: 1px solid rgb(var(--reading-ink-secondary) / 0.26);
-  background: rgb(249 249 249);
+  background: transparent;
+  white-space: nowrap;
   font-size: 0.875rem;
-  line-height: 1.4286;
-  box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.06);
+  line-height: 1;
+  box-shadow: none;
   transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
 }
 
 [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover {
   background: rgb(240 240 240);
-  box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.08);
+  box-shadow: none;
 }
 
 [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:focus-visible {
@@ -363,17 +365,17 @@ html[data-theme="dark"] [data-article-master-sandbox] {
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link {
   border-color: transparent !important;
   background: rgba(255, 255, 255, 0.03) !important;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 1px 0 rgb(var(--reading-ink) / 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover {
   background: rgba(255, 255, 255, 0.09) !important;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 1px 0 rgb(var(--reading-ink) / 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:focus-visible {
   background: rgba(255, 255, 255, 0.12) !important;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 1px 0 rgb(var(--reading-ink) / 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
   outline-color: rgb(var(--reading-accent-iris) / 0.42);
 }
 
