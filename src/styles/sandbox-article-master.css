@@ -341,46 +341,48 @@ html[data-theme="dark"] [data-article-master-sandbox] {
   gap: 0.5rem;
   padding: 0.46rem 0.82rem;
   border-radius: 999px;
-  border: 1px solid rgb(var(--reading-ink-secondary) / 0.24);
-  background: rgb(var(--reading-paper) / 0.15);
+  border: 1px solid rgb(var(--reading-ink-secondary) / 0.26);
+  background: rgb(var(--reading-paper) / 0.14);
   font-size: 0.95rem;
   line-height: 1.34;
   box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.06);
-  transition: background-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
 }
 
-[data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover {
-  background: rgb(var(--reading-paper) / 0.4);
+[data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover,
+[data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link[data-qa-hover="true"] {
+  background: rgb(var(--reading-paper) / 0.5);
   box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.08);
 }
 
 [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:focus-visible {
-  background: rgb(var(--reading-paper) / 0.46);
+  background: rgb(var(--reading-paper) / 0.56);
   outline: 2px solid rgb(var(--reading-accent-iris) / 0.32);
   outline-offset: 2px;
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link {
-  border-color: rgb(var(--reading-ink-secondary) / 0.45);
-  background: rgb(var(--reading-paper) / 0.1);
+  border-color: rgb(var(--reading-ink-secondary) / 0.52);
+  background: rgb(var(--reading-paper) / 0.12);
 }
 
-html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover {
-  background: rgb(var(--reading-paper) / 0.34);
+html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover,
+html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link[data-qa-hover="true"] {
+  background: rgb(var(--reading-paper) / 0.46);
   box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.14);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:focus-visible {
-  background: rgb(var(--reading-paper) / 0.38);
+  background: rgb(var(--reading-paper) / 0.52);
   outline-color: rgb(var(--reading-accent-iris) / 0.42);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group__cta {
-  background-color: color-mix(in srgb, rgb(var(--primary)) 44%, rgb(var(--reading-ink)) 56%);
+  background-color: color-mix(in srgb, rgb(var(--primary)) 30%, rgb(var(--reading-ink)) 70%);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group__cta:hover {
-  background-color: color-mix(in srgb, rgb(var(--primary)) 40%, rgb(var(--reading-ink)) 60%);
+  background-color: color-mix(in srgb, rgb(var(--primary)) 32%, rgb(var(--reading-ink)) 68%);
   filter: none;
 }
 
