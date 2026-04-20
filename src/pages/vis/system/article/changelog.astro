@@ -1,0 +1,39 @@
+---
+/* CONTRACT: VIS status snapshot for Article System v0.1 with lightweight follow-up notes. */
+import PrototypeLayout from "../../../../layouts/PrototypeLayout.astro";
+---
+
+<PrototypeLayout title="Article Changelog">
+  <main class="px-4 py-6 sm:px-6 sm:py-8">
+    <h1 class="text-lg font-semibold text-gray-900">Changelog / status</h1>
+    <p class="mt-2 max-w-prose text-sm text-gray-600">
+      Kort statusflate for hva som er landet i v0.1. VIS er fortsatt referansevisning, ikke oppgavestyring.
+    </p>
+
+    <section class="mt-6 rounded-md border border-gray-300 bg-white p-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Landed nå</h2>
+      <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-700">
+        <li>Delte artikkelkomponenter under <code class="font-mono">src/components/article/</code>.</li>
+        <li>Delt stylesheet: <code class="font-mono">src/styles/article-system.css</code>.</li>
+        <li>Semantiske artikkel-tokens i <code class="font-mono">src/styles/tokens.css</code>.</li>
+        <li>Sandbox Article Master rewired til delt system.</li>
+      </ul>
+    </section>
+
+    <section class="mt-6 rounded-md border border-gray-300 bg-gray-50 p-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Akseptert for nå</h2>
+      <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-700">
+        <li>Article Master i sandbox er referansemal for v0.1.</li>
+        <li>VIS viser orientering for review, ikke redesign eller utforskning.</li>
+      </ul>
+    </section>
+
+    <section class="mt-6 rounded-md border border-gray-300 bg-white p-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Pending / next</h2>
+      <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-700">
+        <li>Token cleanup videreføres i relatert oppfølging (#17).</li>
+        <li>Eventuelle nye komponentutvidelser tas i ny iterasjon, ikke i denne VIS-passeringen.</li>
+      </ul>
+    </section>
+  </main>
+</PrototypeLayout>

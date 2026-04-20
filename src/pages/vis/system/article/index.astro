@@ -1,0 +1,41 @@
+---
+/* CONTRACT: VIS overview for Article System v0.1; presentation layer only. */
+import PrototypeLayout from "../../../../layouts/PrototypeLayout.astro";
+const base = import.meta.env.BASE_URL;
+---
+
+<PrototypeLayout title="Article System">
+  <main class="px-4 py-6 sm:px-6 sm:py-8">
+    <h1 class="text-lg font-semibold text-gray-900">Article System v0.1</h1>
+    <p class="mt-2 max-w-prose text-sm leading-relaxed text-gray-600">
+      Et lett referanselag for landet artikkelsystem fra sandbox. Formål: hjelpe Thomas og Vibeke med orientering og review.
+    </p>
+
+    <section class="mt-6 rounded-md border border-gray-300 bg-gray-50 px-3 py-3">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Hva er dette</h2>
+      <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-700">
+        <li>Kodet, gjenbrukbar artikkelstruktur (ikke ny designrunde).</li>
+        <li>Visual source of truth: <code class="font-mono text-xs">/no/sandbox/article-master</code>.</li>
+        <li>Innhold: tokens, komponenter, stylesheet og page recipe.</li>
+      </ul>
+      <p class="mt-2 text-xs text-gray-600">
+        VIS er referanseflate. Oppgaveflyt/backlog ligger fortsatt i GitHub Projects og issue-laget.
+      </p>
+    </section>
+
+    <nav class="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <a href={`${base}vis/system/article/foundations`} class="rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 hover:bg-gray-50">
+        Foundations
+      </a>
+      <a href={`${base}vis/system/article/components`} class="rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 hover:bg-gray-50">
+        Components
+      </a>
+      <a href={`${base}vis/system/article/templates`} class="rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 hover:bg-gray-50">
+        Template
+      </a>
+      <a href={`${base}vis/system/article/changelog`} class="rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 hover:bg-gray-50">
+        Changelog / status
+      </a>
+    </nav>
+  </main>
+</PrototypeLayout>

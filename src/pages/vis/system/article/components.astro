@@ -1,0 +1,107 @@
+---
+/* CONTRACT: VIS component reference for landed Article System v0.1 components and usage context. */
+import PrototypeLayout from "../../../../layouts/PrototypeLayout.astro";
+import "../../../../styles/article-system.css";
+import PromptGroup from "../../../../components/article/PromptGroup.astro";
+import ArticleFigure from "../../../../components/article/ArticleFigure.astro";
+import ArticleCallout from "../../../../components/article/ArticleCallout.astro";
+import ArticleRail from "../../../../components/article/ArticleRail.astro";
+import heroSvgUrl from "../../../../assets/sandbox/article-master/hero.svg?url";
+import inlineBelastningSvgUrl from "../../../../assets/sandbox/article-master/inline-belastning-kurve.svg?url";
+
+const base = import.meta.env.BASE_URL;
+const promptItems = [
+  { question: "Hvordan forklarer jeg hørselspress uten at det blir konflikt?" },
+  { question: "Hva kan vi teste hjemme denne uken for å gjøre samtaler enklere?" },
+  { question: "Når bør jeg vurdere en faglig sjekk?" },
+];
+---
+
+<PrototypeLayout title="Article Components">
+  <main class="px-4 py-6 sm:px-6 sm:py-8">
+    <h1 class="text-lg font-semibold text-gray-900">Article components (v0.1)</h1>
+    <p class="mt-2 max-w-prose text-sm text-gray-600">Dokumenterer landede komponenter i <code class="font-mono text-xs">src/components/article/</code>.</p>
+
+    <div class="mt-6 space-y-6 rounded-md border border-gray-300 bg-gray-50 p-4">
+      <section class="rounded border border-gray-300 bg-white p-3">
+        <h2 class="text-sm font-semibold text-gray-900">PromptGroup</h2>
+        <p class="mt-1 text-sm text-gray-700">Formål: prompt-bridge fra artikkel til Hørehjelpen.</p>
+        <p class="mt-1 text-xs text-gray-600">Brukes i: <code class="font-mono">/no/sandbox/article-master</code></p>
+      </section>
+      <section data-article-system class="rounded border border-gray-300 bg-white p-3">
+        <PromptGroup title="Fortsett i Hørehjelpen" intro="Kuraterte neste steg fra artikkelkontekst." items={promptItems} headingId="vis-article-prompts" />
+      </section>
+    </div>
+
+    <div class="mt-6 space-y-6 rounded-md border border-gray-300 bg-gray-50 p-4">
+      <section class="rounded border border-gray-300 bg-white p-3">
+        <h2 class="text-sm font-semibold text-gray-900">ArticleFigure</h2>
+        <p class="mt-1 text-sm text-gray-700">Formål: hero/inline figur med felles markup og trygg bildefallback.</p>
+        <p class="mt-1 text-xs text-gray-600">Varianter: <code class="font-mono">hero</code>, <code class="font-mono">inline</code></p>
+      </section>
+      <section data-article-system class="rounded border border-gray-300 bg-white p-3">
+        <ArticleFigure
+          variant="inline"
+          src={inlineBelastningSvgUrl}
+          width={1068}
+          height={648}
+          alt="Eksempelkurve for lyttetrykk over tid."
+          caption="Inline figur i artikkelkropp med beholdt rytme."
+        />
+      </section>
+    </div>
+
+    <div class="mt-6 space-y-6 rounded-md border border-gray-300 bg-gray-50 p-4">
+      <section class="rounded border border-gray-300 bg-white p-3">
+        <h2 class="text-sm font-semibold text-gray-900">ArticleCallout</h2>
+        <p class="mt-1 text-sm text-gray-700">Formål: editorial støtteblokk for observasjon/fakta uten hard card-følelse.</p>
+      </section>
+      <section data-article-system class="rounded border border-gray-300 bg-white p-3">
+        <ArticleCallout kicker="Observasjon" title="Belastning bygges ofte i små repetisjoner">
+          <p class="ams-body-p text-[1rem] text-[rgb(var(--reading-ink-secondary))]">
+            Callout-komponenten holder samme platespråk som resten av artikkelsystemet.
+          </p>
+        </ArticleCallout>
+      </section>
+    </div>
+
+    <div class="mt-6 space-y-6 rounded-md border border-gray-300 bg-gray-50 p-4">
+      <section class="rounded border border-gray-300 bg-white p-3">
+        <h2 class="text-sm font-semibold text-gray-900">ArticleRail</h2>
+        <p class="mt-1 text-sm text-gray-700">Formål: sekundær innsikt i høyrespalte med delt plate-overflate.</p>
+      </section>
+      <section data-article-system class="rounded border border-gray-300 bg-white p-3">
+        <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
+          <div class="text-sm text-gray-600">Hovedinnhold (for enkel demo i VIS).</div>
+          <ArticleRail>
+            <p class="text-sm text-[rgb(var(--reading-ink-secondary))]">Hvor brukes den: som støttekontekst i Article Master.</p>
+          </ArticleRail>
+        </div>
+      </section>
+    </div>
+
+    <section class="mt-6 rounded border border-gray-300 bg-white p-3">
+      <h2 class="text-sm font-semibold text-gray-900">Dark mode i praksis</h2>
+      <p class="mt-1 text-sm text-gray-700">
+        Mørk variant vurderes mot sandbox-referansen, siden VIS her primært er lettvekts dokumentasjon.
+      </p>
+      <a href={`${base}no/sandbox/article-master`} class="mt-2 inline-block text-sm underline underline-offset-2">
+        Åpne referanse: /no/sandbox/article-master
+      </a>
+    </section>
+
+    <section class="mt-6 rounded border border-gray-300 bg-white p-3">
+      <h2 class="text-sm font-semibold text-gray-900">Ekstra eksempelasset</h2>
+      <div data-article-system class="mt-2 rounded border border-gray-200 p-2">
+        <ArticleFigure
+          variant="hero"
+          src={heroSvgUrl}
+          width={1200}
+          height={675}
+          alt="Hero eksempel"
+          caption="Hero-varianten er også del av samme komponent."
+        />
+      </div>
+    </section>
+  </main>
+</PrototypeLayout>
