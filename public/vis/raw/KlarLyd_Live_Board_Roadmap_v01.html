@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>KlarLyd – Live Board/Roadmap v0.3.1</title>
+    <title>KlarLyd – Live Board/Roadmap v0.4.0</title>
     <meta name="vis:type" content="sprint" />
     <meta name="vis:section" content="Sprint / roadmap" />
     <meta name="vis:featured" content="true" />
-    <meta name="vis:updated" content="2026-04-17" />
+    <meta name="vis:updated" content="2026-04-20" />
     <meta name="description" content="Operativ live visning av oppgaver og spor med tydelig Nå / Neste / Senere. Skilt fra Sprint 01-arkivet." />
-    <meta name="vis:delta" content="v0.3.1: Presiserer at board-kolonner fortsatt er kuratert i v1, mens statuslinjen viser faktisk GitHub issue-state." />
+    <meta name="vis:delta" content="v0.4.0: Board-kolonner drives nå av live GitHub bus-status (labels/state), med minimal fallback-kuratering." />
 
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -19,7 +19,7 @@
         <header class="rounded-md border border-gray-300 bg-white px-4 py-4 sm:px-5">
             <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Live dashboard</p>
             <h1 class="mt-1 text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-                Live Board / Roadmap v0.3.1
+                Live Board / Roadmap v0.4.0
             </h1>
             <p class="mt-3 max-w-3xl text-sm leading-relaxed text-gray-600">
                 Operativ visning for hva som skjer nå, hva som er neste, og hva som bevisst ligger senere.
@@ -27,82 +27,79 @@
             <p class="mt-3 text-xs text-gray-600">
                 Oppgaver (Board) viser flyt i status. Spor (Roadmap) viser overordnet retning og prioritet.
             </p>
-            <a
-                href="/vis/KlarLyd_Sprint_01_Foundation_Archive_v09"
-                class="mt-4 inline-flex rounded-sm border border-gray-300 bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-800 hover:bg-gray-200"
-            >
-                Åpne Sprint 01-arkiv (historikk)
-            </a>
+            <div class="mt-4 flex flex-wrap gap-2">
+                <a
+                    href="/vis/system/task-bus-live"
+                    class="inline-flex rounded-sm border border-gray-300 bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-800 hover:bg-gray-200"
+                >
+                    Åpne task-bus kontrollside
+                </a>
+                <a
+                    href="/vis/KlarLyd_Sprint_01_Foundation_Archive_v09"
+                    class="inline-flex rounded-sm border border-gray-300 bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-800 hover:bg-gray-200"
+                >
+                    Åpne Sprint 01-arkiv (historikk)
+                </a>
+            </div>
         </header>
 
         <section class="mt-6 rounded-md border border-gray-300 bg-white">
             <header class="border-b border-gray-200 px-4 py-3">
                 <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Board (Oppgaver i flyt)</h2>
-                <p class="mt-1 text-[11px] text-gray-500">
-                    v1-notat: Kolonneplassering er foreløpig kuratert. Statuslinjen på hvert kort viser live GitHub issue-state.
-                </p>
+                <p id="gh-meta" class="mt-1 text-[11px] text-gray-500">Laster live status fra GitHub…</p>
             </header>
             <div class="grid gap-3 px-4 py-4 sm:grid-cols-2 lg:grid-cols-3">
-                <article class="rounded-sm border border-gray-300 bg-white">
+                <article class="rounded-sm border border-gray-300 bg-white" data-board-column="backlog">
                     <header class="border-b border-gray-200 px-3 py-2">
                         <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-700">Backlog</h3>
                     </header>
-                    <div class="px-3 py-3">
-                        <p class="text-xs text-gray-500">Ingen åpne backlog-kort akkurat nå.</p>
+                    <div class="px-3 py-3 space-y-2" data-column-list>
+                        <p class="text-xs text-gray-500" data-empty-text>Ingen åpne backlog-kort akkurat nå.</p>
                     </div>
                 </article>
 
-                <article class="rounded-sm border border-gray-300 bg-white">
+                <article class="rounded-sm border border-gray-300 bg-white" data-board-column="next">
                     <header class="border-b border-gray-200 px-3 py-2">
                         <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-700">Neste</h3>
                     </header>
-                    <div class="px-3 py-3">
-                        <div class="rounded-sm border border-gray-200 bg-gray-50 px-2.5 py-2.5">
-                            <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Ops / Architecture</p>
-                            <p class="mt-1 text-sm font-semibold text-gray-900">Live Board/Roadmap kobling mot GitHub-data</p>
-                        </div>
+                    <div class="px-3 py-3 space-y-2" data-column-list>
+                        <p class="text-xs text-gray-500" data-empty-text>Ingen oppgaver i neste akkurat nå.</p>
                     </div>
                 </article>
 
-                <article class="rounded-sm border border-gray-400 bg-gray-100">
+                <article class="rounded-sm border border-gray-400 bg-gray-100" data-board-column="in-progress">
                     <header class="border-b border-gray-300 px-3 py-2">
                         <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-800">I arbeid</h3>
                     </header>
-                    <div class="px-3 py-3">
-                        <p class="text-xs text-gray-600">Ingen kort i aktiv utførelse akkurat nå.</p>
+                    <div class="px-3 py-3 space-y-2" data-column-list>
+                        <p class="text-xs text-gray-600" data-empty-text>Ingen kort i aktiv utførelse akkurat nå.</p>
                     </div>
                 </article>
 
-                <article class="rounded-sm border border-gray-300 bg-white">
+                <article class="rounded-sm border border-gray-300 bg-white" data-board-column="review">
                     <header class="border-b border-gray-200 px-3 py-2">
                         <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-700">Review</h3>
                     </header>
-                    <div class="px-3 py-3">
-                        <p class="text-xs text-gray-500">Ingenting venter på review akkurat nå.</p>
+                    <div class="px-3 py-3 space-y-2" data-column-list>
+                        <p class="text-xs text-gray-500" data-empty-text>Ingenting venter på review akkurat nå.</p>
                     </div>
                 </article>
 
-                <article class="rounded-sm border border-gray-300 bg-white">
+                <article class="rounded-sm border border-gray-300 bg-white" data-board-column="done">
                     <header class="border-b border-gray-200 px-3 py-2">
                         <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-700">Ferdig</h3>
                     </header>
-                    <div class="px-3 py-3">
-                        <div class="rounded-sm border border-gray-200 bg-gray-50 px-2.5 py-2.5" data-gh-item="board-done">
-                            <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Oppgave · Ops / Architecture</p>
-                            <p class="mt-1 text-sm font-semibold text-gray-900" data-gh-title>Run first real GitHub task bus pilot flow</p>
-                            <p class="mt-1 text-[11px] text-gray-500" data-gh-issue>Issue #3</p>
-                            <p class="mt-1 text-[11px] text-gray-500" data-gh-status>Status: -</p>
-                            <a class="mt-1 inline-flex text-[11px] font-medium text-gray-700 underline decoration-gray-300 underline-offset-2 hover:text-gray-900" data-gh-link href="https://github.com/THUNDERPLUNDER/vox-web/issues/3" target="_blank" rel="noreferrer">Åpne issue</a>
-                        </div>
+                    <div class="px-3 py-3 space-y-2" data-column-list>
+                        <p class="text-xs text-gray-500" data-empty-text>Ingen ferdige kort i filtrert sett akkurat nå.</p>
                     </div>
                 </article>
 
-                <article class="rounded-sm border border-gray-300 bg-white">
+                <article class="rounded-sm border border-gray-300 bg-white" data-board-column="later">
                     <header class="border-b border-gray-200 px-3 py-2">
                         <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-700">Senere</h3>
                     </header>
-                    <div class="px-3 py-3">
-                        <p class="text-xs text-gray-500">Senere brukes for spor vi bevisst ikke tar nå.</p>
+                    <div class="px-3 py-3 space-y-2" data-column-list>
+                        <p class="text-xs text-gray-500" data-empty-text>Ingen kort merket som senere akkurat nå.</p>
                     </div>
                 </article>
             </div>
@@ -169,40 +166,114 @@
             </div>
             <div class="border-t border-gray-200 px-4 py-3">
                 <p class="text-xs text-gray-500">
-                    Datakilde v0.3: `KlarLyd_Live_Board_Roadmap_v01.github-state.json` (GitHub Issues REST API-snapshot).
-                    Oppdatering kjøres manuelt med `npm run vis:github:snapshot`.
+                    Datakilde v0.4: live GitHub Issues REST API (issues-first read model). Snapshot-filen beholdes kun som historisk artefakt.
                 </p>
             </div>
         </section>
     </main>
     <script>
-        async function hydrateGithubSnapshot() {
+        (function () {
+        const owner = "THUNDERPLUNDER";
+        const repo = "vox-web";
+        const endpoint = `https://api.github.com/repos/${owner}/${repo}/issues?state=all&per_page=100`;
+        const ghMeta = document.getElementById("gh-meta");
+
+        const curatedIssueNumbers = [16, 17, 18, 19];
+
+        function fmtDate(iso) {
+            if (!iso) return "ukjent";
+            const d = new Date(iso);
+            if (Number.isNaN(d.getTime())) return "ukjent";
+            return new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeStyle: "short" }).format(d);
+        }
+
+        function getLabelValue(labels, prefixes) {
+            const hit = labels.find((label) =>
+                prefixes.some((prefix) => label.name.toLowerCase().startsWith(prefix))
+            );
+            if (!hit) return "—";
+            const parts = hit.name.split(":");
+            return parts.length > 1 ? parts.slice(1).join(":").trim() : hit.name;
+        }
+
+        function toBoardColumn(issue) {
+            const labels = Array.isArray(issue.labels) ? issue.labels.filter((x) => typeof x?.name === "string") : [];
+            const names = labels.map((l) => l.name.toLowerCase());
+
+            const hasAny = (candidates) => candidates.some((candidate) => names.some((n) => n.includes(candidate)));
+
+            if (issue.state === "closed" || hasAny(["status:done", "status:closed", "state:done", "state:closed"])) return "done";
+            if (hasAny(["status:review", "state:review", "ready for review"])) return "review";
+            if (hasAny(["status:in-progress", "status:in progress", "state:in-progress", "state:in progress", "doing", "wip"])) return "in-progress";
+            if (hasAny(["status:backlog", "state:backlog", "todo"])) return "backlog";
+            if (hasAny(["status:later", "state:later", "icebox"])) return "later";
+            if (hasAny(["status:next", "state:next", "planned"])) return "next";
+
+            // Minimal fallback when bus metadata is sparse.
+            return issue.state === "open" ? "next" : "done";
+        }
+
+        function clearColumns() {
+            document.querySelectorAll("[data-column-list]").forEach((list) => {
+                list.querySelectorAll("[data-live-card]").forEach((node) => node.remove());
+                const empty = list.querySelector("[data-empty-text]");
+                if (empty) empty.hidden = false;
+            });
+        }
+
+        function renderIssueCard(issue) {
+            const labels = Array.isArray(issue.labels) ? issue.labels.filter((x) => typeof x?.name === "string") : [];
+            const priority = getLabelValue(labels, ["priority:", "prio:"]);
+            const area = getLabelValue(labels, ["area:", "scope:"]);
+            const status = getLabelValue(labels, ["status:", "state:"]);
+            const column = toBoardColumn(issue);
+            const columnList = document.querySelector(`[data-board-column="${column}"] [data-column-list]`);
+            if (!columnList) return;
+
+            const empty = columnList.querySelector("[data-empty-text]");
+            if (empty) empty.hidden = true;
+
+            const card = document.createElement("div");
+            card.setAttribute("data-live-card", "true");
+            card.className = "rounded-sm border border-gray-200 bg-gray-50 px-2.5 py-2.5";
+            card.innerHTML = `
+                <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Issue #${issue.number}</p>
+                <p class="mt-1 text-sm font-semibold text-gray-900">${issue.title}</p>
+                <p class="mt-1 text-[11px] text-gray-500">Status: ${status}</p>
+                <p class="mt-1 text-[11px] text-gray-500">Priority: ${priority} · Area: ${area}</p>
+                <p class="mt-1 text-[11px] text-gray-500">Sist oppdatert: ${fmtDate(issue.updated_at)}</p>
+                <a class="mt-1 inline-flex text-[11px] font-medium text-gray-700 underline decoration-gray-300 underline-offset-2 hover:text-gray-900" href="${issue.html_url}" target="_blank" rel="noreferrer">Åpne issue</a>
+            `;
+            columnList.appendChild(card);
+        }
+
+        async function hydrateLiveBoard() {
             try {
-                const response = await fetch("/vis/raw/KlarLyd_Live_Board_Roadmap_v01.github-state.json", { cache: "no-store" });
-                if (!response.ok) return;
-                const snapshot = await response.json();
-                const items = Array.isArray(snapshot.items) ? snapshot.items : [];
+                const res = await fetch(endpoint, {
+                    headers: { Accept: "application/vnd.github+json" },
+                    cache: "no-store",
+                });
+                if (!res.ok) throw new Error(`GitHub API svarte ${res.status}`);
 
-                for (const item of items) {
-                    const container = document.querySelector('[data-gh-item="' + item.slot + '"]');
-                    if (!container) continue;
+                const allIssues = await res.json();
+                const issues = allIssues
+                    .filter((issue) => !issue.pull_request && curatedIssueNumbers.includes(issue.number))
+                    .sort((a, b) => curatedIssueNumbers.indexOf(a.number) - curatedIssueNumbers.indexOf(b.number));
 
-                    const titleEl = container.querySelector("[data-gh-title]");
-                    const issueEl = container.querySelector("[data-gh-issue]");
-                    const statusEl = container.querySelector("[data-gh-status]");
-                    const linkEl = container.querySelector("[data-gh-link]");
-
-                    if (titleEl && item.title) titleEl.textContent = item.title;
-                    if (issueEl && item.issueId) issueEl.textContent = "Issue #" + item.issueId;
-                    if (statusEl && item.status) statusEl.textContent = "Status: " + item.status;
-                    if (linkEl && item.url) linkEl.href = item.url;
+                clearColumns();
+                issues.forEach(renderIssueCard);
+                if (ghMeta) {
+                    ghMeta.textContent = `Live-koblet til GitHub issues (#${curatedIssueNumbers.join(", #")}) · Sist hentet ${fmtDate(new Date().toISOString())}`;
                 }
             } catch (_) {
-                // Keep static fallback content if snapshot cannot be loaded.
+                if (ghMeta) {
+                    ghMeta.textContent = "Kunne ikke hente live status nå. Viser tom/fallback-kolonner.";
+                }
             }
         }
 
-        hydrateGithubSnapshot();
+        hydrateLiveBoard();
+        })();
     </script>
 </body>
 </html>
