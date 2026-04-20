@@ -361,17 +361,19 @@ html[data-theme="dark"] [data-article-master-sandbox] {
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link {
-  border-color: rgba(255, 255, 255, 0.3) !important;
+  border-color: transparent !important;
   background: rgba(255, 255, 255, 0.03) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 1px 0 rgb(var(--reading-ink) / 0.14);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover {
   background: rgba(255, 255, 255, 0.09) !important;
-  box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 1px 0 rgb(var(--reading-ink) / 0.14);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:focus-visible {
   background: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 1px 0 rgb(var(--reading-ink) / 0.14);
   outline-color: rgb(var(--reading-accent-iris) / 0.42);
 }
 
