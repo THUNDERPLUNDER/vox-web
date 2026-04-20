@@ -361,26 +361,26 @@ html[data-theme="dark"] [data-article-master-sandbox] {
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link {
-  border-color: rgb(var(--reading-ink-secondary) / 0.62);
-  background: color-mix(in srgb, rgb(var(--article-page-canvas)) 72%, rgb(var(--reading-inline)) 28%);
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:hover {
-  background: color-mix(in srgb, rgb(var(--article-page-canvas)) 52%, rgb(var(--reading-inline)) 48%);
+  background: rgba(255, 255, 255, 0.09) !important;
   box-shadow: 0 1px 0 rgb(var(--reading-ink) / 0.14);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group--ghost-pill .prompt-group__link:focus-visible {
-  background: color-mix(in srgb, rgb(var(--article-page-canvas)) 46%, rgb(var(--reading-inline)) 54%);
+  background: rgba(255, 255, 255, 0.12) !important;
   outline-color: rgb(var(--reading-accent-iris) / 0.42);
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group__cta {
-  background-color: color-mix(in srgb, rgb(var(--primary)) 6%, rgb(var(--reading-ink)) 94%);
+  background-color: #314c63 !important;
 }
 
 html[data-theme="dark"] [data-article-master-sandbox] .prompt-group__cta:hover {
-  background-color: color-mix(in srgb, rgb(var(--primary)) 8%, rgb(var(--reading-ink)) 92%);
+  background-color: #385770 !important;
   filter: none;
 }
 
