@@ -32,5 +32,10 @@ Dokumentere den nåværende, landede artikkeloppskriften fra sandbox som en lite
 - CTA dark tokens
 - Radius + section spacing
 
+## Tokenansvar (cleanup v0.1)
+- `src/styles/tokens.css` er source-of-truth for semantiske artikkelverdier og state-tokens (inkl. dark prompt-pill alpha/state og dark CTA base/hover).
+- `src/styles/article-system.css` konsumerer semantiske tokens direkte og holder kun lokale, avledede hjelpere når verdi må beregnes lokalt (f.eks. kicker tone).
+- `--ams-*` brukes ikke som skjult systemlag for sentrale state-verdier.
+
 ## Implementeringsregel
 Sandbox-siden (`/no/sandbox/article-master`) er visual source-of-truth i denne fasen og skal konsumere det ekstraherte systemet uten ny designendring.
