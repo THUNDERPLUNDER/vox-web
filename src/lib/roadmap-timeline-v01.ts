@@ -31,6 +31,8 @@ export interface TaskReadModel {
   laneId: string;
   parentIssueNumber: number | null;
   htmlUrl: string;
+  issueState: "open" | "closed";
+  labelNames: string[];
 }
 
 export interface RoadmapLaneGroup {
@@ -97,6 +99,8 @@ export interface GitHubIssueLike {
   title: string;
   body: string | null;
   html_url: string;
+  state?: string;
+  labels?: Array<{ name?: string } | string>;
   pull_request?: unknown;
 }
 
@@ -139,6 +143,8 @@ export function parseTaskFromIssueBody(body: string): TaskReadModel | null {
     laneId,
     parentIssueNumber,
     htmlUrl: "",
+    issueState: "open",
+    labelNames: [],
   };
 }
 
@@ -155,6 +161,12 @@ export function tasksFromGitHubIssues(issues: GitHubIssueLike[]): TaskReadModel[
       issueNumber: issue.number,
       title: issue.title,
       htmlUrl: issue.html_url,
+      issueState: issue.state === "closed" ? "closed" : "open",
+      labelNames: Array.isArray(issue.labels)
+        ? issue.labels
+            .map((label) => (typeof label === "string" ? label : label?.name))
+            .filter((name): name is string => typeof name === "string")
+        : [],
     });
   }
   return out;

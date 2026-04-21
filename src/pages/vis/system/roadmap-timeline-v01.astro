@@ -9,9 +9,9 @@ const repo = "vox-web";
 const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
 ---
 
-<PrototypeLayout title="Roadmap timeline v0.2">
+<PrototypeLayout title="Roadmap timeline v0.4.1">
   <main class="px-4 py-6 sm:px-6 sm:py-8">
-    <h1 class="text-lg font-semibold text-gray-900">Roadmap timeline (v0.2)</h1>
+    <h1 class="text-lg font-semibold text-gray-900">Roadmap timeline (v0.4.1)</h1>
     <p class="mt-2 max-w-prose text-sm leading-relaxed text-gray-600">
       Les modell for initiativer fra GitHub-bussen. Metadata hentes fra KL-META i issue body; spor-navn og rekkefølge kommer fra lane-manifest i repo.
       GitHub er source of truth — VIS viser kun.
@@ -106,6 +106,7 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
   };
   const monthNamesNo = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
   const knownLaneIds = new Set((laneManifest.lanes ?? []).map((lane) => lane.id));
+  const laneAnchors = ["●", "◆", "▲", "■", "✦"];
 
   const fmtPlan = (iso: string | null) => {
     if (!iso) return "—";
@@ -137,6 +138,23 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
 
   const activeRange = () => RANGE_MONTHS[rangeSelect?.value ?? "2026"] ?? RANGE_MONTHS["2026"];
 
+  const resolveTaskStatus = (task: TaskReadModel): { labelNo: "Neste" | "Pågående" | "Ferdig"; lampClass: string } => {
+    if (task.issueState === "closed") {
+      return { labelNo: "Ferdig", lampClass: "bg-emerald-500" };
+    }
+    const labels = task.labelNames.map((x) => x.toLowerCase());
+    const isReview = labels.some((x) => x.includes("review"));
+    const isInWork =
+      labels.some((x) => x.includes("i arbeid")) ||
+      labels.some((x) => x.includes("pågår")) ||
+      labels.some((x) => x.includes("in progress")) ||
+      labels.some((x) => x.startsWith("status:in-progress"));
+    const isDone = labels.some((x) => x.includes("done")) || labels.some((x) => x.includes("ferdig"));
+    if (isDone) return { labelNo: "Ferdig", lampClass: "bg-emerald-500" };
+    if (isReview || isInWork) return { labelNo: "Pågående", lampClass: "bg-amber-500" };
+    return { labelNo: "Neste", lampClass: "bg-sky-500" };
+  };
+
   const renderFromCache = () => {
     if (!root || !meta || !initiativesCache) return;
     const range = activeRange();
@@ -162,12 +180,16 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
     }
     frag.appendChild(axis);
 
-    for (const lane of groups) {
+    for (const [laneIndex, lane] of groups.entries()) {
       const section = document.createElement("section");
-      section.className = "rounded-md border border-gray-200 bg-gray-50/80 p-3";
+      section.className = "rounded-md border border-gray-200 p-3";
+      const laneBg = laneIndex % 2 === 0 ? "bg-gray-50/85" : "bg-white";
+      const laneAnchor = laneAnchors[laneIndex % laneAnchors.length];
       section.innerHTML = `
-        <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Spor</p>
-        <h3 class="mt-1 text-base font-semibold text-gray-900">${lane.labelNo}</h3>
+        <div class="${laneBg} -m-3 mb-2 rounded-md border-b border-gray-200 px-3 py-2">
+          <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Spor</p>
+          <h3 class="mt-1 text-base font-semibold text-gray-900">${laneAnchor} ${lane.labelNo}</h3>
+        </div>
         <div class="mt-3 space-y-3" id="lane-items"></div>
       `;
       const laneItems = section.querySelector("#lane-items");
@@ -181,31 +203,40 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
         const rawEndExclusive = monthIndex(end, range.startYear) + 2;
         const endCol = clamp(rawEndExclusive <= startCol ? startCol + 1 : rawEndExclusive, 2, range.monthCount + 1);
 
-        const item = document.createElement("article");
-        item.className = "rounded border border-gray-300 bg-white px-3 py-2.5";
+        const item = document.createElement("details");
+        item.className = "rounded border border-gray-300 bg-white px-3 py-2";
         const childTasks = tasksByParentCache?.get(it.issueNumber) ?? [];
         const taskCount = childTasks.length;
+        item.open = false;
         item.innerHTML = `
-          <div class="grid gap-2">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-3 py-1">
+            <div class="min-w-0">
+              <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Initiativ</p>
+              <p class="mt-0.5 truncate text-sm font-semibold text-gray-900">#${it.issueNumber} ${escapeHtml(it.title)}</p>
+            </div>
+            <div class="flex shrink-0 items-center gap-2 text-xs text-gray-600">
+              <span class="rounded border border-gray-200 bg-gray-50 px-1.5 py-0.5">Oppgaver: ${taskCount}</span>
+              <span aria-hidden="true">▾</span>
+            </div>
+          </summary>
+          <div class="grid gap-2 pb-1 pt-1.5">
             <div class="grid gap-1 rounded border border-gray-200 bg-gray-50 p-1" id="bar-grid"></div>
-            <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Initiativ</p>
-            <p class="mt-0.5 text-sm font-semibold text-gray-900">${escapeHtml(it.title)}</p>
-            <p class="mt-1 text-xs leading-relaxed text-gray-700"><span class="font-medium text-gray-800">Oppsummering:</span> ${escapeHtml(it.summaryNo || "—")}</p>
+            <p class="text-xs leading-relaxed text-gray-700"><span class="font-medium text-gray-800">Oppsummering:</span> ${escapeHtml(it.summaryNo || "—")}</p>
             ${
               it.explainerNo
                 ? `<p class="text-xs leading-relaxed text-gray-600"><span class="font-medium text-gray-700">Kort forklart:</span> ${escapeHtml(it.explainerNo)}</p>`
                 : ""
             }
-            <dl class="mt-1 grid gap-1 text-xs text-gray-700 sm:grid-cols-2">
+            <dl class="grid gap-1 text-xs text-gray-700 sm:grid-cols-2">
               <div><dt class="inline font-medium text-gray-600">Planlagt start:</dt> <dd class="inline">${fmtPlan(it.planStart)}</dd></div>
               <div><dt class="inline font-medium text-gray-600">Planlagt slutt:</dt> <dd class="inline">${fmtPlan(it.planEnd)}</dd></div>
             </dl>
-            <p class="mt-1">
+            <p>
               <a href="${it.htmlUrl}" target="_blank" rel="noreferrer" class="text-xs font-medium text-gray-900 underline underline-offset-2">
                 Åpne i GitHub (#${it.issueNumber})
               </a>
             </p>
-            <details class="mt-1 rounded border border-gray-200 bg-gray-50/70 px-2 py-1.5">
+            <details class="rounded border border-gray-200 bg-gray-50/70 px-2 py-1.5">
               <summary class="cursor-pointer text-xs font-medium text-gray-700">Oppgaver (${taskCount})</summary>
               <ul class="mt-2 space-y-1.5 text-xs text-gray-700" id="task-list"></ul>
             </details>
@@ -232,8 +263,15 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
             for (const task of childTasks) {
               const li = document.createElement("li");
               li.className = "rounded border border-gray-200 bg-white px-2 py-1";
+              const taskStatus = resolveTaskStatus(task);
               li.innerHTML = `
-                <p class="font-medium text-gray-800">${escapeHtml(task.title)}</p>
+                <div class="flex items-center justify-between gap-2">
+                  <p class="font-medium text-gray-800">#${task.issueNumber} ${escapeHtml(task.title)}</p>
+                  <span class="inline-flex items-center gap-1.5 text-[11px] text-gray-600">
+                    <span class="h-2 w-2 rounded-full ${taskStatus.lampClass}" aria-hidden="true"></span>
+                    ${taskStatus.labelNo}
+                  </span>
+                </div>
                 <p class="mt-0.5 text-gray-700"><span class="font-medium text-gray-600">Oppsummering:</span> ${escapeHtml(task.summaryNo || "—")}</p>
                 <p class="mt-0.5 text-gray-600"><span class="font-medium text-gray-600">Plan:</span> ${fmtPlan(task.planStart)} -> ${fmtPlan(task.planEnd)}</p>
                 <p class="mt-1"><a href="${task.htmlUrl}" target="_blank" rel="noreferrer" class="font-medium underline underline-offset-2">Åpne i GitHub (#${task.issueNumber})</a></p>
