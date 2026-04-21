@@ -57,6 +57,9 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
       <p class="mt-1 text-[11px] text-gray-500">
         Sikker avgrensning i v0.3: leser de siste 100 issue-elementene fra GitHub API-responsen.
       </p>
+      <p class="mt-1 text-[11px] text-gray-500">
+        Human-layer regel i v0.3.1: viser kun åpne initiatives (<code class="font-mono">state: open</code>).
+      </p>
       <p id="vis-roadmap-meta" class="mt-1 text-[11px] text-gray-500">Laster…</p>
       <div id="vis-roadmap-root" class="mt-4 space-y-6"></div>
     </section>
@@ -240,11 +243,13 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
           return;
         }
         const issueCandidates = all.filter(
-          (issue): issue is { number: number; title: string; body: string | null; html_url: string; pull_request?: unknown } =>
+          (issue): issue is { number: number; title: string; body: string | null; html_url: string; state: string; pull_request?: unknown } =>
             issue &&
             typeof issue === "object" &&
             "number" in issue &&
             typeof (issue as { number: unknown }).number === "number" &&
+            "state" in issue &&
+            (issue as { state?: unknown }).state === "open" &&
             !("pull_request" in issue && (issue as { pull_request?: unknown }).pull_request),
         );
 
@@ -252,7 +257,7 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
           .filter((initiative) => knownLaneIds.has(initiative.laneId))
           .sort((a, b) => a.issueNumber - b.issueNumber);
         if (initiativesCache.length === 0) {
-          renderEmpty("Fant ingen initiative-issues med KL-META i kjent spor blant de siste 100 issue-elementene.");
+          renderEmpty("Fant ingen åpne initiative-issues med KL-META i kjent spor blant de siste 100 issue-elementene.");
           meta.textContent = `Sist forsøkt: ${new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
           return;
         }
