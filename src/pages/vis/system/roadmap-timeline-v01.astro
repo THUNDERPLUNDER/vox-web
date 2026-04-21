@@ -272,17 +272,17 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
         const initiativeStarted = initiativeIsStarted(it);
         item.open = false;
         item.innerHTML = `
-          <summary class="flex cursor-pointer list-none items-start justify-between gap-3 py-1">
-            <div class="min-w-0 flex-1">
-              <p class="truncate text-sm font-semibold text-gray-900"><span class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Initiativ</span> · #${it.issueNumber} ${escapeHtml(it.title)}</p>
-              <div class="mt-1 grid gap-1 rounded border border-gray-200 bg-gray-50 p-1" id="bar-grid-summary"></div>
-            </div>
-            <div class="flex shrink-0 items-center gap-2 pt-[1px] text-xs">
-              <span class="rounded-sm border border-gray-300 bg-white/80 px-2 py-0.5 font-semibold text-gray-800 underline underline-offset-2">Oppgaver: ${taskCount}</span>
-              <span class="vis-epic-chevron-wrap" aria-hidden="true">
-                <span class="vis-epic-chevron text-base font-semibold leading-none text-gray-800 transition-transform duration-150">⌄</span>
+          <summary class="cursor-pointer list-none py-1">
+            <div class="flex items-baseline justify-between gap-3">
+              <p class="min-w-0 truncate text-sm font-semibold text-gray-900"><span class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Initiativ</span> · #${it.issueNumber} ${escapeHtml(it.title)}</p>
+              <span class="flex shrink-0 items-center gap-1.5 text-xs">
+                <span class="font-semibold text-gray-800 underline underline-offset-2">Oppgaver: ${taskCount}</span>
+                <span class="vis-epic-chevron-wrap" aria-hidden="true">
+                  <span class="vis-epic-chevron text-base font-semibold leading-none text-gray-800 transition-transform duration-150">⌄</span>
+                </span>
               </span>
             </div>
+            <div class="mt-1 grid gap-1 rounded border border-gray-200 bg-gray-50 p-1" id="bar-grid-summary"></div>
           </summary>
           <div class="grid gap-2 pb-1 pt-1">
             <p class="text-xs leading-relaxed text-gray-700"><span class="font-medium text-gray-800">Oppsummering:</span> ${escapeHtml(it.summaryNo || "—")}</p>
