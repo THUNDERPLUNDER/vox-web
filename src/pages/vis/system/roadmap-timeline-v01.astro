@@ -75,6 +75,11 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
 
 <!-- Props for client module: define:vars + import in the same Astro script breaks prod bundling; JSON bootstrap keeps one bundled module. -->
 <script type="application/json" id="vis-roadmap-props" set:html={roadmapClientProps} />
+<style is:global>
+  details[open] .vis-epic-chevron {
+    transform: rotate(180deg);
+  }
+</style>
 
 <script>
   import {
@@ -158,9 +163,16 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
       labels.some((x) => x.includes("pågår")) ||
       labels.some((x) => x.includes("in progress")) ||
       labels.some((x) => x.startsWith("status:in-progress"));
+    const hasRecentActivity = (() => {
+      if (!task.updatedAt) return false;
+      const ms = Date.parse(task.updatedAt);
+      if (Number.isNaN(ms)) return false;
+      const tenDaysMs = 10 * 24 * 60 * 60 * 1000;
+      return Date.now() - ms <= tenDaysMs;
+    })();
     const isDone = labels.some((x) => x.includes("done")) || labels.some((x) => x.includes("ferdig"));
     if (isDone) return { labelNo: "Ferdig", lampClass: "bg-emerald-500" };
-    if (isReview || isInWork) return { labelNo: "Pågående", lampClass: "bg-amber-500" };
+    if (isReview || isInWork || hasRecentActivity) return { labelNo: "Pågående", lampClass: "bg-amber-500" };
     return { labelNo: "Neste", lampClass: "bg-sky-500" };
   };
 
@@ -204,8 +216,8 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
     });
     const frag = document.createDocumentFragment();
 
-    const axis = document.createElement("section");
-    axis.className = "rounded-md border border-gray-200 bg-gray-50 p-3";
+    const axis = document.createElement("div");
+    axis.className = "mb-1 px-1";
     axis.innerHTML = `<div id="vis-roadmap-axis-grid" class="grid gap-1 text-[11px] text-gray-600"></div>`;
     const axisGrid = axis.querySelector("#vis-roadmap-axis-grid") as HTMLElement | null;
     if (axisGrid) {
@@ -224,8 +236,9 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
       const section = document.createElement("section");
       section.className = "rounded-md border p-3 border-gray-200";
       const laneTone = laneToneById[lane.laneId] ?? "bg-gray-50/80 border-gray-200";
+      section.classList.add(...laneTone.split(" "));
       section.innerHTML = `
-        <div class="${laneTone} -m-3 mb-2 rounded-md border-b px-3 py-2">
+        <div class="-m-3 mb-2 border-b border-black/5 px-3 py-2">
           <h3 class="text-base font-semibold text-gray-900"><span class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Spor</span> · ${lane.labelNo}</h3>
         </div>
         <div class="mt-3 space-y-3" id="lane-items"></div>
@@ -254,8 +267,8 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
               <div class="mt-1 grid gap-1 rounded border border-gray-200 bg-gray-50 p-1" id="bar-grid-summary"></div>
             </div>
             <div class="flex shrink-0 items-center gap-2 text-xs">
-              <span class="font-semibold text-gray-700 underline underline-offset-2">Oppgaver: ${taskCount}</span>
-              <span aria-hidden="true" class="text-base font-semibold text-gray-700">⌄</span>
+              <span class="rounded-sm bg-white/70 px-1.5 py-0.5 font-semibold text-gray-700 underline underline-offset-2">Oppgaver: ${taskCount}</span>
+              <span aria-hidden="true" class="vis-epic-chevron text-base font-semibold text-gray-700 transition-transform duration-150">⌄</span>
             </div>
           </summary>
           <div class="grid gap-2 pb-1 pt-1">
