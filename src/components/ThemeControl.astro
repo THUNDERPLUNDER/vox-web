@@ -24,6 +24,15 @@ const { compact = false } = Astro.props;
     <button type="button" class="theme-control__btn" data-theme-choice="dark" aria-pressed="false">
       Mørk
     </button>
+    <button
+      type="button"
+      class="theme-control__btn"
+      data-inspect-toggle="components"
+      aria-pressed="false"
+      hidden
+    >
+      Komponenter
+    </button>
   </div>
 </div>
 
@@ -53,13 +62,45 @@ const { compact = false } = Astro.props;
         var choice = btn.getAttribute("data-theme-choice");
         btn.setAttribute("aria-pressed", choice === mode ? "true" : "false");
       });
+      var inspectOn = new URLSearchParams(window.location.search).get("inspect") === "components";
+      document.querySelectorAll("[data-inspect-toggle='components']").forEach(function (btn) {
+        btn.setAttribute("aria-pressed", inspectOn ? "true" : "false");
+      });
+    }
+
+    function supportsInspectToggle(pathname) {
+      return (
+        pathname === "/no/artikkel/r1-spoke-v01" ||
+        pathname === "/no/artikkel/r2-spoke-v01" ||
+        pathname === "/no/artikkel/r3-spoke-v01" ||
+        pathname === "/no/sandbox/article-template-v01"
+      );
+    }
+
+    function toggleInspectParam() {
+      var url = new URL(window.location.href);
+      var params = url.searchParams;
+      var enabled = params.get("inspect") === "components";
+      if (enabled) params.delete("inspect");
+      else params.set("inspect", "components");
+      url.search = params.toString();
+      window.location.assign(url.toString());
     }
 
     window.addEventListener("DOMContentLoaded", function () {
       syncButtons();
+      var enableInspect = supportsInspectToggle(window.location.pathname);
+      document.querySelectorAll("[data-inspect-toggle='components']").forEach(function (btn) {
+        btn.hidden = !enableInspect;
+      });
       document.querySelectorAll("[data-theme-choice]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           applyTheme(btn.getAttribute("data-theme-choice"));
+        });
+      });
+      document.querySelectorAll("[data-inspect-toggle='components']").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          toggleInspectParam();
         });
       });
     });
