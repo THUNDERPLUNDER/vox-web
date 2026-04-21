@@ -21,6 +21,18 @@ export interface InitiativeReadModel {
   htmlUrl: string;
 }
 
+export interface TaskReadModel {
+  issueNumber: number;
+  title: string;
+  summaryNo: string;
+  explainerNo: string;
+  planStart: string | null;
+  planEnd: string | null;
+  laneId: string;
+  parentIssueNumber: number | null;
+  htmlUrl: string;
+}
+
 export interface RoadmapLaneGroup {
   laneId: string;
   labelNo: string;
@@ -95,6 +107,48 @@ export function initiativesFromGitHubIssues(issues: GitHubIssueLike[]): Initiati
     if (issue.pull_request) continue;
     const body = issue.body ?? "";
     const parsed = parseInitiativeFromIssueBody(body);
+    if (!parsed) continue;
+    out.push({
+      ...parsed,
+      issueNumber: issue.number,
+      title: issue.title,
+      htmlUrl: issue.html_url,
+    });
+  }
+  return out;
+}
+
+export function parseTaskFromIssueBody(body: string): TaskReadModel | null {
+  const yaml = extractKlMetaYaml(body);
+  if (!yaml) return null;
+  const meta = parseSimpleYamlScalarMap(yaml);
+  if (meta.type?.toLowerCase() !== "task") return null;
+  const laneId = meta.lane?.trim() ?? "";
+  if (!laneId) return null;
+  const planEnd = meta.target?.trim() || meta.plan_end?.trim() || null;
+  const planStart = meta.plan_start?.trim() || null;
+  const parentRaw = meta.parent?.trim() ?? "";
+  const parentIssueNumber = /^\d+$/.test(parentRaw) ? Number.parseInt(parentRaw, 10) : null;
+  return {
+    issueNumber: 0,
+    title: "",
+    summaryNo: meta.summary_no?.trim() ?? "",
+    explainerNo: meta.explainer_no?.trim() ?? "",
+    planStart,
+    planEnd,
+    laneId,
+    parentIssueNumber,
+    htmlUrl: "",
+  };
+}
+
+/** Build task read models from GitHub issue list; skips PRs and non-task bodies. */
+export function tasksFromGitHubIssues(issues: GitHubIssueLike[]): TaskReadModel[] {
+  const out: TaskReadModel[] = [];
+  for (const issue of issues) {
+    if (issue.pull_request) continue;
+    const body = issue.body ?? "";
+    const parsed = parseTaskFromIssueBody(body);
     if (!parsed) continue;
     out.push({
       ...parsed,

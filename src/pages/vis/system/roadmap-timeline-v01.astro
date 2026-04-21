@@ -77,6 +77,8 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
   import {
     groupInitiativesByLane,
     initiativesFromGitHubIssues,
+    tasksFromGitHubIssues,
+    type TaskReadModel,
     type LaneManifestV01,
   } from "../../../lib/roadmap-timeline-v01.ts";
 
@@ -96,6 +98,7 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
   const refresh = document.getElementById("vis-roadmap-refresh");
   const rangeSelect = document.getElementById("vis-roadmap-range") as HTMLSelectElement | null;
   let initiativesCache: ReturnType<typeof initiativesFromGitHubIssues> | null = null;
+  let tasksByParentCache: Map<number, TaskReadModel[]> | null = null;
 
   const RANGE_MONTHS: Record<string, { startYear: number; monthCount: number }> = {
     "2026": { startYear: 2026, monthCount: 12 },
@@ -180,6 +183,8 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
 
         const item = document.createElement("article");
         item.className = "rounded border border-gray-300 bg-white px-3 py-2.5";
+        const childTasks = tasksByParentCache?.get(it.issueNumber) ?? [];
+        const taskCount = childTasks.length;
         item.innerHTML = `
           <div class="grid gap-2">
             <div class="grid gap-1 rounded border border-gray-200 bg-gray-50 p-1" id="bar-grid"></div>
@@ -200,6 +205,10 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
                 Åpne i GitHub (#${it.issueNumber})
               </a>
             </p>
+            <details class="mt-1 rounded border border-gray-200 bg-gray-50/70 px-2 py-1.5">
+              <summary class="cursor-pointer text-xs font-medium text-gray-700">Oppgaver (${taskCount})</summary>
+              <ul class="mt-2 space-y-1.5 text-xs text-gray-700" id="task-list"></ul>
+            </details>
           </div>
         `;
 
@@ -211,6 +220,27 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
           bar.style.gridColumn = `${startCol} / ${endCol}`;
           bar.title = `${it.title}: ${fmtPlan(it.planStart)} -> ${fmtPlan(it.planEnd)}`;
           barGrid.appendChild(bar);
+        }
+        const taskList = item.querySelector("#task-list") as HTMLElement | null;
+        if (taskList) {
+          if (childTasks.length === 0) {
+            const empty = document.createElement("li");
+            empty.className = "text-gray-500";
+            empty.textContent = "Ingen oppgaver funnet under dette initiativet ennå.";
+            taskList.appendChild(empty);
+          } else {
+            for (const task of childTasks) {
+              const li = document.createElement("li");
+              li.className = "rounded border border-gray-200 bg-white px-2 py-1";
+              li.innerHTML = `
+                <p class="font-medium text-gray-800">${escapeHtml(task.title)}</p>
+                <p class="mt-0.5 text-gray-700"><span class="font-medium text-gray-600">Oppsummering:</span> ${escapeHtml(task.summaryNo || "—")}</p>
+                <p class="mt-0.5 text-gray-600"><span class="font-medium text-gray-600">Plan:</span> ${fmtPlan(task.planStart)} -> ${fmtPlan(task.planEnd)}</p>
+                <p class="mt-1"><a href="${task.htmlUrl}" target="_blank" rel="noreferrer" class="font-medium underline underline-offset-2">Åpne i GitHub (#${task.issueNumber})</a></p>
+              `;
+              taskList.appendChild(li);
+            }
+          }
         }
         laneItems.appendChild(item);
       }
@@ -256,6 +286,21 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
         initiativesCache = initiativesFromGitHubIssues(issueCandidates)
           .filter((initiative) => knownLaneIds.has(initiative.laneId))
           .sort((a, b) => a.issueNumber - b.issueNumber);
+
+        const allTasks = tasksFromGitHubIssues(issueCandidates)
+          .filter((task) => knownLaneIds.has(task.laneId) && task.parentIssueNumber !== null);
+        const byParent = new Map<number, TaskReadModel[]>();
+        for (const task of allTasks) {
+          const key = task.parentIssueNumber!;
+          const existing = byParent.get(key);
+          if (existing) existing.push(task);
+          else byParent.set(key, [task]);
+        }
+        for (const items of byParent.values()) {
+          items.sort((a, b) => a.issueNumber - b.issueNumber);
+        }
+        tasksByParentCache = byParent;
+
         if (initiativesCache.length === 0) {
           renderEmpty("Fant ingen åpne initiative-issues med KL-META i kjent spor blant de siste 100 issue-elementene.");
           meta.textContent = `Sist forsøkt: ${new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
