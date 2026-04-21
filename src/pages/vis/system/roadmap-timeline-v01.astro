@@ -229,9 +229,20 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
       }
     }
     root.innerHTML = "";
-    root.style.backgroundImage = `repeating-linear-gradient(to right, rgba(15,23,42,0.08) 0 1px, transparent 1px calc(100% / ${range.monthCount}))`;
-    root.style.backgroundSize = `calc(100% / ${range.monthCount}) 100%`;
-    root.style.backgroundPosition = "0 0";
+    root.style.backgroundImage = "";
+    root.style.backgroundSize = "";
+    root.style.backgroundPosition = "";
+    root.classList.add("relative");
+
+    const monthMarkers = document.createElement("div");
+    monthMarkers.className = "pointer-events-none absolute inset-0";
+    for (let i = 1; i < range.monthCount; i += 1) {
+      const marker = document.createElement("div");
+      marker.className = "absolute top-0 bottom-0 w-px bg-slate-900/10";
+      marker.style.left = `${(i / range.monthCount) * 100}%`;
+      monthMarkers.appendChild(marker);
+    }
+    root.appendChild(monthMarkers);
     root.appendChild(axis);
 
     for (const lane of sortedGroups) {
