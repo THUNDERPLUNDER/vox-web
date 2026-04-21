@@ -6,8 +6,7 @@ import laneManifest from "../../../../docs/project/roadmap_timeline_lanes.v0.1.j
 const base = import.meta.env.BASE_URL;
 const owner = "THUNDERPLUNDER";
 const repo = "vox-web";
-const curatedInitiativeNumbers = [25, 26];
-const roadmapClientProps = JSON.stringify({ laneManifest, curatedInitiativeNumbers, owner, repo });
+const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
 ---
 
 <PrototypeLayout title="Roadmap timeline v0.2">
@@ -53,7 +52,10 @@ const roadmapClientProps = JSON.stringify({ laneManifest, curatedInitiativeNumbe
         </div>
       </div>
       <p class="mt-2 text-xs text-gray-600">
-        Kuraterte initiativer: #{curatedInitiativeNumbers.join(", #")} fra <code class="font-mono">{owner}/{repo}</code>.
+        Initiativer oppdages fra GitHub-bussen via KL-META (<code class="font-mono">type: initiative</code>) i <code class="font-mono">{owner}/{repo}</code>.
+      </p>
+      <p class="mt-1 text-[11px] text-gray-500">
+        Sikker avgrensning i v0.3: leser de siste 100 issue-elementene fra GitHub API-responsen.
       </p>
       <p id="vis-roadmap-meta" class="mt-1 text-[11px] text-gray-500">Laster…</p>
       <div id="vis-roadmap-root" class="mt-4 space-y-6"></div>
@@ -79,9 +81,8 @@ const roadmapClientProps = JSON.stringify({ laneManifest, curatedInitiativeNumbe
   if (!propsEl?.textContent) {
     throw new Error("vis-roadmap-props mangler");
   }
-  const { laneManifest, curatedInitiativeNumbers, owner, repo } = JSON.parse(propsEl.textContent) as {
+  const { laneManifest, owner, repo } = JSON.parse(propsEl.textContent) as {
     laneManifest: LaneManifestV01;
-    curatedInitiativeNumbers: number[];
     owner: string;
     repo: string;
   };
@@ -98,6 +99,7 @@ const roadmapClientProps = JSON.stringify({ laneManifest, curatedInitiativeNumbe
     "2026-2027": { startYear: 2026, monthCount: 24 },
   };
   const monthNamesNo = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
+  const knownLaneIds = new Set((laneManifest.lanes ?? []).map((lane) => lane.id));
 
   const fmtPlan = (iso: string | null) => {
     if (!iso) return "—";
@@ -237,23 +239,20 @@ const roadmapClientProps = JSON.stringify({ laneManifest, curatedInitiativeNumbe
           renderEmpty("Uventet svar fra GitHub API.");
           return;
         }
-        const filtered = all
-          .filter(
-            (issue): issue is { number: number; title: string; body: string | null; html_url: string; pull_request?: unknown } =>
-              issue &&
-              typeof issue === "object" &&
-              "number" in issue &&
-              typeof (issue as { number: unknown }).number === "number" &&
-              curatedInitiativeNumbers.includes((issue as { number: number }).number) &&
-              !("pull_request" in issue && (issue as { pull_request?: unknown }).pull_request),
-          )
-          .sort(
-            (a, b) => curatedInitiativeNumbers.indexOf(a.number) - curatedInitiativeNumbers.indexOf(b.number),
-          );
+        const issueCandidates = all.filter(
+          (issue): issue is { number: number; title: string; body: string | null; html_url: string; pull_request?: unknown } =>
+            issue &&
+            typeof issue === "object" &&
+            "number" in issue &&
+            typeof (issue as { number: unknown }).number === "number" &&
+            !("pull_request" in issue && (issue as { pull_request?: unknown }).pull_request),
+        );
 
-        initiativesCache = initiativesFromGitHubIssues(filtered);
+        initiativesCache = initiativesFromGitHubIssues(issueCandidates)
+          .filter((initiative) => knownLaneIds.has(initiative.laneId))
+          .sort((a, b) => a.issueNumber - b.issueNumber);
         if (initiativesCache.length === 0) {
-          renderEmpty("Fant ingen initiative-issues med KL-META blant de kuraterte numrene.");
+          renderEmpty("Fant ingen initiative-issues med KL-META i kjent spor blant de siste 100 issue-elementene.");
           meta.textContent = `Sist forsøkt: ${new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
           return;
         }
