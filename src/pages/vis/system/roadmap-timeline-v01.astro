@@ -235,15 +235,18 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
     root.classList.add("relative");
 
     const monthMarkers = document.createElement("div");
-    monthMarkers.className = "pointer-events-none absolute inset-0";
+    monthMarkers.className = "pointer-events-none absolute inset-0 z-0";
     for (let i = 1; i < range.monthCount; i += 1) {
       const marker = document.createElement("div");
       marker.className = "absolute top-0 bottom-0 w-px bg-slate-900/10";
       marker.style.left = `${(i / range.monthCount) * 100}%`;
       monthMarkers.appendChild(marker);
     }
+    const contentLayer = document.createElement("div");
+    contentLayer.className = "relative z-10";
     root.appendChild(monthMarkers);
-    root.appendChild(axis);
+    root.appendChild(contentLayer);
+    contentLayer.appendChild(axis);
 
     for (const lane of sortedGroups) {
       const section = document.createElement("section");
@@ -372,7 +375,7 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
       }
       frag.appendChild(section);
     }
-    root.appendChild(frag);
+    contentLayer.appendChild(frag);
     meta.textContent = `Sist oppdatert: ${new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
   };
 
