@@ -8,26 +8,26 @@ import "../../../styles/article-system.css";
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
 const r1Article = {
-  title: "Naar hoerselen endrer samtalen - og hvordan du kan moete det med mer overskudd",
+  title: "Når hørselen endrer samtalen - og hvordan du kan møte det med mer overskudd",
   ingress:
-    "Denne versjonen setter R1 inn i den nye malen som foerste ekte spoke-test. Maalet er aa teste rytme, struktur og feltbruk med faktisk innhold.",
+    "Når hørselen blir mer krevende i hverdagen, kan samtaler føles tyngre enn før. Her får du en rolig oversikt over hvorfor det skjer, og små grep som kan gjøre det lettere.",
   preset: "standard" as const,
   articleType: "spoke",
   hub: "Bedre lyd i hverdagen",
   sourceTrustType: "redaksjonelt kvalitetssjekket med faglig orientering",
-  relatedTopics: ["Samtaletips", "Hoereliv", "Hverdagskommunikasjon"],
+  relatedTopics: ["Samtaletips", "Høreliv", "Hverdagskommunikasjon"],
   aiSeedGroup: "hearing-conversation-v1",
   body: [
-    "Hoersel handler ikke bare om volum. Det handler ogsaa om hvor mye energi du bruker paa aa fylle inn det du ikke fikk med deg, og hvor raskt du blir sliten av stoy, flere stemmer eller daarlig akustikk.",
-    "For paaaroerende kan dette se ut som manglende interesse. For den som strever med aa hoere, kan det foeles som skam eller frustrasjon over aa maatte spoerre om igjen.",
-    "Et nyttig perspektiv er aa skille mellom intensjon og effekt: du kan oenske aa vaere til stede, men likevel oppleves som distansert fordi du bruker mye kapasitet paa aa foelge med.",
-    "Smaa grep hjelper ofte: senk tempoet, del opp setninger, flytt samtalen til et roligere sted og vaer tydelig paa hva du trenger i oeyeblikket.",
-    "Pause er ikke det samme som aa gi opp. En kort avtale om aa fortsette samtalen senere kan vaere mer omsorgsfullt enn aa presse alt gjennom naar begge er slitne.",
-    "Foerste R1-kobling viser at malen taaler ekte tekst i standard-preset, men den peker ogsaa paa behov for neste trinn: sterkere figurstoette og rikere AI/hub-kobling for pilotpakken.",
+    "Hørsel handler ikke bare om volum. Det handler også om hvor mye energi du bruker på å fylle inn det du ikke fikk med deg, og hvor raskt du blir sliten av støy, flere stemmer eller dårlig akustikk.",
+    "For pårørende kan dette se ut som manglende interesse. For den som strever med å høre, kan det føles som skam eller frustrasjon over å måtte spørre om igjen.",
+    "Et nyttig perspektiv er å skille mellom intensjon og effekt: du kan ønske å være til stede, men likevel oppleves som distansert fordi du bruker mye kapasitet på å følge med.",
+    "Små grep hjelper ofte: senk tempoet, del opp setninger, flytt samtalen til et roligere sted og vær tydelig på hva du trenger i øyeblikket.",
+    "Pause er ikke det samme som å gi opp. En kort avtale om å fortsette samtalen senere kan være mer omsorgsfullt enn å presse alt gjennom når begge er slitne.",
+    "Når samtalen blir tydeligere og tempoet roligere, blir det ofte lettere å forstå hverandre uten at noen må «holde maska».",
   ],
   footerTitle: "Kort oppsummert",
   footerText:
-    "R1 i malen bekrefter at minimumsfeltene, leserytmen og standard-preset fungerer i praksis. Neste steg er aa validere samme flyt for R2 og R3.",
+    "Små justeringer i tempo, plassering og forventninger kan gjøre samtaler mer skånsomme. Start med ett grep om gangen, og bygg videre derfra.",
 };
 ---
 
@@ -40,7 +40,7 @@ const r1Article = {
         <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
         <a href="/no/hubs" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Emnehuber</a>
         <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
-        <span class="text-[rgb(var(--reading-ink))]">R1 spoke v0.1</span>
+        <span class="text-[rgb(var(--reading-ink))]">R1 artikkel</span>
       </nav>
 
       <ArticleTemplateV01 {...r1Article} />
