@@ -1,0 +1,183 @@
+---
+/* CONTRACT: VIS read model v0.1 — initiatives from GitHub KL-META, grouped by repo lane manifest (no Gantt, no task expansion). */
+import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+import laneManifest from "../../../../docs/project/roadmap_timeline_lanes.v0.1.json";
+
+const base = import.meta.env.BASE_URL;
+const owner = "THUNDERPLUNDER";
+const repo = "vox-web";
+const curatedInitiativeNumbers = [25, 26];
+---
+
+<PrototypeLayout title="Roadmap timeline v0.1">
+  <main class="px-4 py-6 sm:px-6 sm:py-8">
+    <h1 class="text-lg font-semibold text-gray-900">Roadmap timeline (v0.1)</h1>
+    <p class="mt-2 max-w-prose text-sm leading-relaxed text-gray-600">
+      Les modell for initiativer fra GitHub-bussen. Metadata hentes fra KL-META i issue body; spor-navn og rekkefølge kommer fra lane-manifest i repo.
+      GitHub er source of truth — VIS viser kun.
+    </p>
+    <p class="mt-2 max-w-prose text-xs leading-relaxed text-gray-500">
+      Operativt board er uendret:{" "}
+      <a
+        href={`${base}vis/${encodeURIComponent("KlarLyd_Live_Board_Roadmap_v01")}`}
+        class="underline underline-offset-2"
+      >
+        Live board
+      </a>
+      ·{" "}
+      <a href={`${base}vis/system/task-bus-live`} class="underline underline-offset-2">
+        Task-bus live
+      </a>
+    </p>
+
+    <section class="mt-6 rounded-md border border-gray-300 bg-white p-4">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Initiativer etter spor</h2>
+        <button
+          type="button"
+          id="vis-roadmap-refresh"
+          class="rounded border border-gray-300 bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100"
+        >
+          Oppdater nå
+        </button>
+      </div>
+      <p class="mt-2 text-xs text-gray-600">
+        Kuraterte initiativer: #{curatedInitiativeNumbers.join(", #")} fra <code class="font-mono">{owner}/{repo}</code>.
+      </p>
+      <p id="vis-roadmap-meta" class="mt-1 text-[11px] text-gray-500">Laster…</p>
+      <div id="vis-roadmap-root" class="mt-4 space-y-6"></div>
+    </section>
+
+    <p class="mt-6 text-xs text-gray-600">
+      Se også <a href={`${base}vis/system`} class="underline underline-offset-2">/vis/system</a>.
+    </p>
+  </main>
+</PrototypeLayout>
+
+<script define:vars={{ laneManifest, curatedInitiativeNumbers, owner, repo }}>
+  import {
+    groupInitiativesByLane,
+    initiativesFromGitHubIssues,
+  } from "../../../lib/roadmap-timeline-v01.ts";
+
+  const endpoint = `https://api.github.com/repos/${owner}/${repo}/issues?state=all&per_page=100`;
+  const root = document.getElementById("vis-roadmap-root");
+  const meta = document.getElementById("vis-roadmap-meta");
+  const refresh = document.getElementById("vis-roadmap-refresh");
+
+  const fmtPlan = (iso: string | null) => {
+    if (!iso) return "—";
+    const parts = iso.split("-").map((x) => Number.parseInt(x, 10));
+    if (parts.length < 3 || parts.some((n) => Number.isNaN(n))) return iso;
+    const [y, m, d] = parts;
+    return new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium" }).format(new Date(y!, m! - 1, d!));
+  };
+
+  const renderEmpty = (message: string) => {
+    if (!root) return;
+    root.innerHTML = `<p class="rounded border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-600">${message}</p>`;
+  };
+
+  const render = () => {
+    if (!root || !meta) return;
+    meta.textContent = "Laster fra GitHub API…";
+    root.innerHTML = "";
+
+    fetch(endpoint, {
+      headers: { Accept: "application/vnd.github+json" },
+      cache: "no-store",
+    })
+      .then((res) => {
+        if (!res.ok) {
+          if (res.status === 403) throw new Error("GitHub API rate limit nådd i dette miljøet.");
+          throw new Error(`GitHub API svarte ${res.status}.`);
+        }
+        return res.json();
+      })
+      .then((all: unknown) => {
+        if (!Array.isArray(all)) {
+          renderEmpty("Uventet svar fra GitHub API.");
+          return;
+        }
+        const filtered = all
+          .filter(
+            (issue): issue is { number: number; title: string; body: string | null; html_url: string; pull_request?: unknown } =>
+              issue &&
+              typeof issue === "object" &&
+              "number" in issue &&
+              typeof (issue as { number: unknown }).number === "number" &&
+              curatedInitiativeNumbers.includes((issue as { number: number }).number) &&
+              !("pull_request" in issue && (issue as { pull_request?: unknown }).pull_request),
+          )
+          .sort(
+            (a, b) => curatedInitiativeNumbers.indexOf(a.number) - curatedInitiativeNumbers.indexOf(b.number),
+          );
+
+        const initiatives = initiativesFromGitHubIssues(filtered);
+        if (initiatives.length === 0) {
+          renderEmpty("Fant ingen initiative-issues med KL-META blant de kuraterte numrene.");
+          meta.textContent = `Sist forsøkt: ${new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
+          return;
+        }
+
+        const groups = groupInitiativesByLane(laneManifest, initiatives);
+        const frag = document.createDocumentFragment();
+        for (const lane of groups) {
+          const section = document.createElement("section");
+          section.className = "rounded-md border border-gray-200 bg-gray-50/80 p-3";
+          section.innerHTML = `
+            <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Spor</p>
+            <h3 class="mt-1 text-base font-semibold text-gray-900">${lane.labelNo}</h3>
+            <ul class="mt-3 space-y-3"></ul>
+          `;
+          const ul = section.querySelector("ul");
+          if (!ul) continue;
+          for (const it of lane.initiatives) {
+            const li = document.createElement("li");
+            li.className = "rounded border border-gray-300 bg-white px-3 py-2.5";
+            li.innerHTML = `
+              <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Initiativ</p>
+              <p class="mt-0.5 text-sm font-semibold text-gray-900">${escapeHtml(it.title)}</p>
+              <p class="mt-2 text-xs leading-relaxed text-gray-700"><span class="font-medium text-gray-800">Oppsummering:</span> ${escapeHtml(it.summaryNo || "—")}</p>
+              ${
+                it.explainerNo
+                  ? `<p class="mt-1 text-xs leading-relaxed text-gray-600"><span class="font-medium text-gray-700">Kort forklart:</span> ${escapeHtml(it.explainerNo)}</p>`
+                  : ""
+              }
+              <dl class="mt-2 grid gap-1 text-xs text-gray-700 sm:grid-cols-2">
+                <div><dt class="inline font-medium text-gray-600">Planlagt start:</dt> <dd class="inline">${fmtPlan(it.planStart)}</dd></div>
+                <div><dt class="inline font-medium text-gray-600">Planlagt slutt:</dt> <dd class="inline">${fmtPlan(it.planEnd)}</dd></div>
+              </dl>
+              <p class="mt-2">
+                <a href="${it.htmlUrl}" target="_blank" rel="noreferrer" class="text-xs font-medium text-gray-900 underline underline-offset-2">
+                  Åpne i GitHub (#${it.issueNumber})
+                </a>
+              </p>
+            `;
+            ul.appendChild(li);
+          }
+          frag.appendChild(section);
+        }
+        root.innerHTML = "";
+        root.appendChild(frag);
+        meta.textContent = `Sist oppdatert: ${new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
+      })
+      .catch((error: unknown) => {
+        renderEmpty("Kunne ikke hente initiativer akkurat nå. Prøv igjen eller åpne GitHub direkte.");
+        meta.textContent = `Feil: ${error instanceof Error ? error.message : "ukjent"}`;
+      });
+  };
+
+  function escapeHtml(s: string) {
+    return s
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  if (root && meta && refresh) {
+    refresh.addEventListener("click", render);
+    render();
+  }
+</script>
