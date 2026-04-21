@@ -86,6 +86,7 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
     tasksFromGitHubIssues,
     type TaskReadModel,
     type LaneManifestV01,
+    type RoadmapLaneGroup,
   } from "../../../lib/roadmap-timeline-v01.ts";
 
   const propsEl = document.getElementById("vis-roadmap-props");
@@ -192,8 +193,23 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
   const renderFromCache = () => {
     if (!root || !meta || !initiativesCache) return;
     const range = activeRange();
-    const groups = groupInitiativesByLane(laneManifest, initiativesCache);
-    const sortedGroups = [...groups].sort((a, b) => {
+    const discoveredGroups = groupInitiativesByLane(laneManifest, initiativesCache);
+    const discoveredByLaneId = new Map(discoveredGroups.map((group) => [group.laneId, group]));
+    const groups: RoadmapLaneGroup[] = laneManifest.lanes
+      .slice()
+      .sort((a, b) => a.order - b.order)
+      .map((lane) => {
+        const discovered = discoveredByLaneId.get(lane.id);
+        return (
+          discovered ?? {
+            laneId: lane.id,
+            labelNo: lane.label_no,
+            order: lane.order,
+            initiatives: [],
+          }
+        );
+      });
+    const sortedGroups = groups.sort((a, b) => {
       const startA = a.initiatives
         .filter((it) => initiativeIsStarted(it))
         .map((it) => it.planStart)
@@ -243,7 +259,7 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
       monthMarkers.appendChild(marker);
     }
     const contentLayer = document.createElement("div");
-    contentLayer.className = "relative z-10";
+    contentLayer.className = "relative z-10 space-y-4";
     root.appendChild(monthMarkers);
     root.appendChild(contentLayer);
     contentLayer.appendChild(axis);
@@ -261,6 +277,10 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
       `;
       const laneItems = section.querySelector("#lane-items");
       if (!laneItems) continue;
+      if (lane.initiatives.length === 0) {
+        laneItems.innerHTML =
+          '<p class="rounded border border-dashed border-gray-300 bg-white/70 px-2.5 py-2 text-xs text-gray-600">Ingen initiativer i dette sporet ennå.</p>';
+      }
 
       for (const it of lane.initiatives) {
         const start = parseIsoDate(it.planStart) ?? parseIsoDate(it.planEnd);
@@ -302,6 +322,7 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
             </p>
             <div class="rounded border border-gray-200 bg-gray-50/70 px-2 py-1.5">
               <p class="text-xs font-medium text-gray-700">Oppgaver (${taskCount})</p>
+              ${taskCount === 0 ? '<p class="mt-1 text-[11px] text-gray-500">Ingen child tasks koblet til dette initiativet ennå.</p>' : ""}
               <div class="mt-2 grid gap-2 md:grid-cols-3" id="task-board">
                 <section class="rounded border border-gray-200 bg-white p-2">
                   <p class="text-[11px] font-semibold text-gray-700">Neste</p>
