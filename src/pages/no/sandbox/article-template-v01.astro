@@ -3,6 +3,7 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Footer from "../../../components/nav/Footer.astro";
 import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.astro";
+import "../../../styles/sandbox-article-master.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
@@ -52,17 +53,17 @@ const previewData = [
 
 <BaseLayout title="Sandbox – Article Template v0.1" currentPath="/no/sandbox/article-template-v01" shellVariant="sandbox-white" headerBrand="klarlyd">
   <meta slot="head" name="robots" content="noindex,follow" />
-  <main class="px-4 py-6 sm:px-6 sm:py-8">
+  <main class="ams pb-16 pt-2 sm:pb-20" data-article-system>
     <div class="mx-auto max-w-6xl">
-      <h1 class="text-2xl font-semibold text-gray-900 sm:text-3xl">Article template v0.1 (preview)</h1>
-      <p class="mt-2 max-w-3xl text-sm leading-relaxed text-gray-600">
+      <h1 class="text-[2rem] font-semibold leading-[1.12] text-[rgb(var(--reading-ink))] sm:text-[2.35rem]">Article template v0.1 (preview)</h1>
+      <p class="ams-lead mt-2 max-w-3xl text-base">
         QA-flate for forste produktkode av artikkelskjelettet. Viser Standard, Faglig Fokus og Minimal med samme minimumsfelt.
       </p>
-      <p class="mt-1 text-xs text-gray-500">
+      <p class="mt-1 text-xs text-[rgb(var(--reading-ink-secondary))]">
         AI-drevet vises som lag/flagg i preview, ikke som egen hovedmal.
       </p>
 
-      <div class="mt-6 space-y-6">
+      <div class="mt-10 space-y-14">
         {previewData.map((example) => (
           <ArticleTemplateV01 {...example} />
         ))}
