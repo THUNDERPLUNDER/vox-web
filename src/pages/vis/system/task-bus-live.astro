@@ -1,57 +1,31 @@
 ---
-/* CONTRACT: VIS read-only live task-bus snapshot via GitHub Issues API; no write/backlog logic in VIS. */
+/* CONTRACT: Retired VIS route notice for former task-bus live page; points to canonical roadmap surface. */
 import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
 
 const base = import.meta.env.BASE_URL;
-const owner = "THUNDERPLUNDER";
-const repo = "vox-web";
-const curatedIssueNumbers = [16, 17, 18];
 ---
 
-<PrototypeLayout title="Task-bus live">
+<PrototypeLayout title="Task-bus live (pensjonert)">
   <main class="px-4 py-6 sm:px-6 sm:py-8">
-    <h1 class="text-lg font-semibold text-gray-900">VIS task-bus live read model (v0.1)</h1>
+    <h1 class="text-lg font-semibold text-gray-900">Task-bus live (pensjonert)</h1>
     <p class="mt-2 max-w-prose text-sm leading-relaxed text-gray-600">
-      Read-only statusvisning fra GitHub Issues for kuratert oppgavesett. GitHub er source of truth.
+      Denne siden er avpublisert fra aktiv VIS-bruk. Operativ roadmapflate er flyttet til roadmap timeline.
     </p>
-    <p class="mt-2 max-w-prose text-xs leading-relaxed text-gray-500">
-      Denne siden er kontroll-/kildeside. Primær operativ flate er live boardet.
-      <a href={`${base}vis/${encodeURIComponent("KlarLyd_Live_Board_Roadmap_v01")}`} class="underline underline-offset-2">Åpne boardet</a>.
-    </p>
-
     <section class="mt-6 rounded-md border border-gray-300 bg-white p-4">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Live issues</h2>
-        <button
-          type="button"
-          id="vis-live-refresh"
-          class="rounded border border-gray-300 bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100"
-        >
-          Oppdater nå
-        </button>
-      </div>
-      <p class="mt-2 text-xs text-gray-600">
-        Viser: #{curatedIssueNumbers.join(", #")} fra <code class="font-mono">{owner}/{repo}</code>.
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Canonical roadmap i VIS</h2>
+      <p class="mt-2 text-sm leading-relaxed text-gray-600">
+        Bruk roadmap timeline som primar inngang for roadmap og task-status i human-layeret.
       </p>
-      <p id="vis-live-meta" class="mt-1 text-[11px] text-gray-500">Laster…</p>
-      <ul id="vis-live-list" class="mt-3 space-y-2"></ul>
-    </section>
-
-    <section class="mt-6 rounded-md border border-gray-300 bg-gray-50 p-4">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Begrensning i v0.1</h2>
-      <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-700">
-        <li>Primært issues-read model (ikke full Projects-felthenting).</li>
-        <li>Status/priority/area leses fra labels når slike labels finnes.</li>
-        <li>GitHub API rate-limits kan gi midlertidig fallback-melding uten token.</li>
-      </ul>
       <a
-        href={`https://github.com/${owner}/${repo}/issues`}
-        target="_blank"
-        rel="noreferrer"
-        class="mt-3 inline-block text-sm underline underline-offset-2"
+        href={`${base}vis/system/roadmap-timeline-v01`}
+        class="mt-3 inline-flex rounded-sm border border-gray-300 bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-800 hover:bg-gray-200"
       >
-        Åpne GitHub issues
+        Apne roadmap timeline
       </a>
+      <p class="mt-3 text-xs text-gray-500">
+        Pensjonert erstatning: <code class="font-mono">/vis/system/task-bus-live</code> ->{" "}
+        <code class="font-mono">/vis/system/roadmap-timeline-v01</code>.
+      </p>
     </section>
 
     <p class="mt-6 text-xs text-gray-600">
@@ -59,101 +33,3 @@ const curatedIssueNumbers = [16, 17, 18];
     </p>
   </main>
 </PrototypeLayout>
-
-<script is:inline>
-  (() => {
-    const owner = "THUNDERPLUNDER";
-    const repo = "vox-web";
-    const issueNumbers = [16, 17, 18];
-    const endpoint = `https://api.github.com/repos/${owner}/${repo}/issues?state=all&per_page=100`;
-    const list = document.getElementById("vis-live-list");
-    const meta = document.getElementById("vis-live-meta");
-    const refresh = document.getElementById("vis-live-refresh");
-
-    if (!list || !meta || !refresh) return;
-
-    const fmtDate = (iso) => {
-      if (!iso) return "ukjent";
-      const date = new Date(iso);
-      if (Number.isNaN(date.getTime())) return "ukjent";
-      return new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeStyle: "short" }).format(date);
-    };
-
-    const getLabelValue = (labels, prefixes) => {
-      const hit = labels.find((label) =>
-        prefixes.some((prefix) => label.name.toLowerCase().startsWith(prefix))
-      );
-      if (!hit) return "—";
-      const [, value] = hit.name.split(":");
-      return value ? value.trim() : hit.name;
-    };
-
-    const badgeClass = (state) =>
-      state === "open"
-        ? "border-emerald-300 bg-emerald-50 text-emerald-700"
-        : "border-gray-300 bg-gray-100 text-gray-700";
-
-    const renderItems = (issues) => {
-      list.innerHTML = "";
-      for (const issue of issues) {
-        const labels = Array.isArray(issue.labels) ? issue.labels.filter((x) => typeof x?.name === "string") : [];
-        const priority = getLabelValue(labels, ["priority:", "prio:"]);
-        const area = getLabelValue(labels, ["area:", "scope:"]);
-        const status = getLabelValue(labels, ["status:", "state:"]);
-        const item = document.createElement("li");
-        item.className = "rounded border border-gray-300 bg-white px-3 py-2";
-        item.innerHTML = `
-          <div class="flex flex-wrap items-center gap-2">
-            <a href="${issue.html_url}" target="_blank" rel="noreferrer" class="text-sm font-semibold text-gray-900 underline underline-offset-2">
-              #${issue.number} ${issue.title}
-            </a>
-            <span class="inline-flex rounded border px-1.5 py-0.5 text-[10px] font-medium uppercase ${badgeClass(issue.state)}">${issue.state}</span>
-          </div>
-          <p class="mt-1 text-xs text-gray-600">
-            Status: ${status} · Priority: ${priority} · Area: ${area} · Oppdatert: ${fmtDate(issue.updated_at)}
-          </p>
-        `;
-        list.appendChild(item);
-      }
-    };
-
-    const renderEmpty = (message) => {
-      list.innerHTML = `<li class="rounded border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-600">${message}</li>`;
-    };
-
-    const load = async () => {
-      meta.textContent = "Laster fra GitHub API…";
-      try {
-        const res = await fetch(endpoint, {
-          headers: {
-            Accept: "application/vnd.github+json",
-          },
-          cache: "no-store",
-        });
-        if (!res.ok) {
-          if (res.status === 403) {
-            throw new Error("GitHub API rate limit nådd i dette miljøet.");
-          }
-          throw new Error(`GitHub API svarte ${res.status}.`);
-        }
-        const all = await res.json();
-        const filtered = all
-          .filter((issue) => !issue.pull_request && issueNumbers.includes(issue.number))
-          .sort((a, b) => issueNumbers.indexOf(a.number) - issueNumbers.indexOf(b.number));
-
-        if (filtered.length === 0) {
-          renderEmpty("Fant ingen av de kuraterte issue-numrene i API-responsen.");
-        } else {
-          renderItems(filtered);
-        }
-        meta.textContent = `Sist oppdatert: ${fmtDate(new Date().toISOString())}`;
-      } catch (error) {
-        renderEmpty("Kunne ikke hente live status akkurat nå. Åpne GitHub-lenken for direkte kilde.");
-        meta.textContent = `Fallback: ${error instanceof Error ? error.message : "ukjent feil"}`;
-      }
-    };
-
-    refresh.addEventListener("click", load);
-    load();
-  })();
-</script>

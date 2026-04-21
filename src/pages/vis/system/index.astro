@@ -15,16 +15,10 @@ const base = import.meta.env.BASE_URL;
       <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Tilgjengelig nå</h2>
       <ul class="mt-3 space-y-2">
         <li>
-          <a href={`${base}vis/system/task-bus-live`} class="text-sm font-medium text-gray-900 underline underline-offset-2">
-            Task-bus live read model v0.1
-          </a>
-          <p class="text-xs text-gray-600">Read-only live status fra GitHub Issues for kuratert sett.</p>
-        </li>
-        <li>
           <a href={`${base}vis/system/roadmap-timeline-v01`} class="text-sm font-medium text-gray-900 underline underline-offset-2">
-            Roadmap timeline read model v0.1
+            Roadmap timeline read model v0.1 (canonical)
           </a>
-          <p class="text-xs text-gray-600">Initiativer fra KL-META gruppert under spor (lane-manifest).</p>
+          <p class="text-xs text-gray-600">Operativ roadmapflate med spor, initiativ og oppgaver fra GitHub-bussen.</p>
         </li>
         <li>
           <a href={`${base}vis/system/article`} class="text-sm font-medium text-gray-900 underline underline-offset-2">
@@ -33,6 +27,11 @@ const base = import.meta.env.BASE_URL;
           <p class="text-xs text-gray-600">Overview, foundations, komponenter, template og changelog/status.</p>
         </li>
       </ul>
+      <p class="mt-3 text-xs text-gray-500">
+        Pensjonert: <code class="font-mono">/vis/system/task-bus-live</code> og{" "}
+        <code class="font-mono">/vis/KlarLyd_Live_Board_Roadmap_v01</code>. Erstattes av{" "}
+        <code class="font-mono">/vis/system/roadmap-timeline-v01</code>.
+      </p>
     </section>
   </main>
 </PrototypeLayout>

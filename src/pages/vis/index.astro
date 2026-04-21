@@ -30,21 +30,15 @@ const chipClassByType = (kind: string) => {
 
 const topIngress = [
   {
+    title: "Roadmap (canonical)",
+    description: "Primar roadmapflate i VIS med spor, initiativ og oppgaver fra GitHub-bussen.",
+    href: `${base}vis/system/roadmap-timeline-v01`,
+    ready: true,
+  },
+  {
     title: "System",
     description: "Lettvekts referanseflater for landede systemsnitt.",
     href: `${base}vis/system`,
-    ready: true,
-  },
-  {
-    title: "Board",
-    description: "Operativ live board/roadmap med GitHub-koblet status.",
-    href: `${base}vis/${encodeURIComponent("KlarLyd_Live_Board_Roadmap_v01")}`,
-    ready: true,
-  },
-  {
-    title: "Roadmap",
-    description: "Overordnet spor og milepæler i arbeid.",
-    href: `${base}vis/${encodeURIComponent("KlarLyd_Sprint_Roadmap_v08")}`,
     ready: true,
   },
   {
@@ -93,6 +87,11 @@ const topIngress = [
                 </a>
               ))}
             </div>
+            <p class="mt-3 text-xs text-gray-500">
+              Pensjonert fra aktiv bruk: <code class="font-mono">/vis/KlarLyd_Live_Board_Roadmap_v01</code> og{" "}
+              <code class="font-mono">/vis/system/task-bus-live</code>. Bruk{" "}
+              <code class="font-mono">/vis/system/roadmap-timeline-v01</code> som canonical roadmap.
+            </p>
           </section>
 
           <section class="mt-7">
