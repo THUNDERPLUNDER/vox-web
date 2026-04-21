@@ -10,9 +10,9 @@ const curatedInitiativeNumbers = [25, 26];
 const roadmapClientProps = JSON.stringify({ laneManifest, curatedInitiativeNumbers, owner, repo });
 ---
 
-<PrototypeLayout title="Roadmap timeline v0.1">
+<PrototypeLayout title="Roadmap timeline v0.2">
   <main class="px-4 py-6 sm:px-6 sm:py-8">
-    <h1 class="text-lg font-semibold text-gray-900">Roadmap timeline (v0.1)</h1>
+    <h1 class="text-lg font-semibold text-gray-900">Roadmap timeline (v0.2)</h1>
     <p class="mt-2 max-w-prose text-sm leading-relaxed text-gray-600">
       Les modell for initiativer fra GitHub-bussen. Metadata hentes fra KL-META i issue body; spor-navn og rekkefølge kommer fra lane-manifest i repo.
       GitHub er source of truth — VIS viser kun.
@@ -34,13 +34,23 @@ const roadmapClientProps = JSON.stringify({ laneManifest, curatedInitiativeNumbe
     <section class="mt-6 rounded-md border border-gray-300 bg-white p-4">
       <div class="flex flex-wrap items-center justify-between gap-2">
         <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Initiativer etter spor</h2>
-        <button
-          type="button"
-          id="vis-roadmap-refresh"
-          class="rounded border border-gray-300 bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100"
-        >
-          Oppdater nå
-        </button>
+        <div class="flex items-center gap-2">
+          <label for="vis-roadmap-range" class="text-xs font-medium text-gray-600">Tidsspenn</label>
+          <select
+            id="vis-roadmap-range"
+            class="rounded border border-gray-300 bg-white px-2 py-1 text-xs text-gray-700"
+          >
+            <option value="2026">2026</option>
+            <option value="2026-2027">2026-2027</option>
+          </select>
+          <button
+            type="button"
+            id="vis-roadmap-refresh"
+            class="rounded border border-gray-300 bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100"
+          >
+            Oppdater nå
+          </button>
+        </div>
       </div>
       <p class="mt-2 text-xs text-gray-600">
         Kuraterte initiativer: #{curatedInitiativeNumbers.join(", #")} fra <code class="font-mono">{owner}/{repo}</code>.
@@ -80,6 +90,14 @@ const roadmapClientProps = JSON.stringify({ laneManifest, curatedInitiativeNumbe
   const root = document.getElementById("vis-roadmap-root");
   const meta = document.getElementById("vis-roadmap-meta");
   const refresh = document.getElementById("vis-roadmap-refresh");
+  const rangeSelect = document.getElementById("vis-roadmap-range") as HTMLSelectElement | null;
+  let initiativesCache: ReturnType<typeof initiativesFromGitHubIssues> | null = null;
+
+  const RANGE_MONTHS: Record<string, { startYear: number; monthCount: number }> = {
+    "2026": { startYear: 2026, monthCount: 12 },
+    "2026-2027": { startYear: 2026, monthCount: 24 },
+  };
+  const monthNamesNo = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
 
   const fmtPlan = (iso: string | null) => {
     if (!iso) return "—";
@@ -94,7 +112,111 @@ const roadmapClientProps = JSON.stringify({ laneManifest, curatedInitiativeNumbe
     root.innerHTML = `<p class="rounded border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-600">${message}</p>`;
   };
 
-  const render = () => {
+  const parseIsoDate = (iso: string | null): Date | null => {
+    if (!iso) return null;
+    const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!m) return null;
+    const y = Number.parseInt(m[1]!, 10);
+    const mo = Number.parseInt(m[2]!, 10);
+    const d = Number.parseInt(m[3]!, 10);
+    if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+    return new Date(y, mo - 1, d);
+  };
+
+  const monthIndex = (date: Date, startYear: number) => (date.getFullYear() - startYear) * 12 + date.getMonth();
+
+  const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
+
+  const activeRange = () => RANGE_MONTHS[rangeSelect?.value ?? "2026"] ?? RANGE_MONTHS["2026"];
+
+  const renderFromCache = () => {
+    if (!root || !meta || !initiativesCache) return;
+    const range = activeRange();
+    const groups = groupInitiativesByLane(laneManifest, initiativesCache);
+    const frag = document.createDocumentFragment();
+
+    const axis = document.createElement("section");
+    axis.className = "rounded-md border border-gray-200 bg-gray-50 p-3";
+    axis.innerHTML = `
+      <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Tidsakse</p>
+      <div id="vis-roadmap-axis-grid" class="mt-2 grid gap-1 text-[11px] text-gray-600"></div>
+    `;
+    const axisGrid = axis.querySelector("#vis-roadmap-axis-grid") as HTMLElement | null;
+    if (axisGrid) {
+      axisGrid.style.gridTemplateColumns = `repeat(${range.monthCount}, minmax(0, 1fr))`;
+      for (let i = 0; i < range.monthCount; i += 1) {
+        const m = document.createElement("div");
+        m.className = "truncate border-r border-gray-200 pr-1";
+        const y = range.startYear + Math.floor(i / 12);
+        m.textContent = `${monthNamesNo[i % 12]} ${y}`;
+        axisGrid.appendChild(m);
+      }
+    }
+    frag.appendChild(axis);
+
+    for (const lane of groups) {
+      const section = document.createElement("section");
+      section.className = "rounded-md border border-gray-200 bg-gray-50/80 p-3";
+      section.innerHTML = `
+        <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Spor</p>
+        <h3 class="mt-1 text-base font-semibold text-gray-900">${lane.labelNo}</h3>
+        <div class="mt-3 space-y-3" id="lane-items"></div>
+      `;
+      const laneItems = section.querySelector("#lane-items");
+      if (!laneItems) continue;
+
+      for (const it of lane.initiatives) {
+        const start = parseIsoDate(it.planStart) ?? parseIsoDate(it.planEnd);
+        const end = parseIsoDate(it.planEnd) ?? parseIsoDate(it.planStart);
+        if (!start || !end) continue;
+        const startCol = clamp(monthIndex(start, range.startYear) + 1, 1, range.monthCount);
+        const rawEndExclusive = monthIndex(end, range.startYear) + 2;
+        const endCol = clamp(rawEndExclusive <= startCol ? startCol + 1 : rawEndExclusive, 2, range.monthCount + 1);
+
+        const item = document.createElement("article");
+        item.className = "rounded border border-gray-300 bg-white px-3 py-2.5";
+        item.innerHTML = `
+          <div class="grid gap-2">
+            <div class="grid gap-1 rounded border border-gray-200 bg-gray-50 p-1" id="bar-grid"></div>
+            <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Initiativ</p>
+            <p class="mt-0.5 text-sm font-semibold text-gray-900">${escapeHtml(it.title)}</p>
+            <p class="mt-1 text-xs leading-relaxed text-gray-700"><span class="font-medium text-gray-800">Oppsummering:</span> ${escapeHtml(it.summaryNo || "—")}</p>
+            ${
+              it.explainerNo
+                ? `<p class="text-xs leading-relaxed text-gray-600"><span class="font-medium text-gray-700">Kort forklart:</span> ${escapeHtml(it.explainerNo)}</p>`
+                : ""
+            }
+            <dl class="mt-1 grid gap-1 text-xs text-gray-700 sm:grid-cols-2">
+              <div><dt class="inline font-medium text-gray-600">Planlagt start:</dt> <dd class="inline">${fmtPlan(it.planStart)}</dd></div>
+              <div><dt class="inline font-medium text-gray-600">Planlagt slutt:</dt> <dd class="inline">${fmtPlan(it.planEnd)}</dd></div>
+            </dl>
+            <p class="mt-1">
+              <a href="${it.htmlUrl}" target="_blank" rel="noreferrer" class="text-xs font-medium text-gray-900 underline underline-offset-2">
+                Åpne i GitHub (#${it.issueNumber})
+              </a>
+            </p>
+          </div>
+        `;
+
+        const barGrid = item.querySelector("#bar-grid") as HTMLElement | null;
+        if (barGrid) {
+          barGrid.style.gridTemplateColumns = `repeat(${range.monthCount}, minmax(0, 1fr))`;
+          const bar = document.createElement("div");
+          bar.className = "h-4 rounded bg-gray-700";
+          bar.style.gridColumn = `${startCol} / ${endCol}`;
+          bar.title = `${it.title}: ${fmtPlan(it.planStart)} -> ${fmtPlan(it.planEnd)}`;
+          barGrid.appendChild(bar);
+        }
+        laneItems.appendChild(item);
+      }
+      frag.appendChild(section);
+    }
+    root.innerHTML = "";
+    root.appendChild(frag);
+    meta.textContent = `Sist oppdatert: ${new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
+  };
+
+  const load = () => {
     if (!root || !meta) return;
     meta.textContent = "Laster fra GitHub API…";
     root.innerHTML = "";
@@ -129,54 +251,13 @@ const roadmapClientProps = JSON.stringify({ laneManifest, curatedInitiativeNumbe
             (a, b) => curatedInitiativeNumbers.indexOf(a.number) - curatedInitiativeNumbers.indexOf(b.number),
           );
 
-        const initiatives = initiativesFromGitHubIssues(filtered);
-        if (initiatives.length === 0) {
+        initiativesCache = initiativesFromGitHubIssues(filtered);
+        if (initiativesCache.length === 0) {
           renderEmpty("Fant ingen initiative-issues med KL-META blant de kuraterte numrene.");
           meta.textContent = `Sist forsøkt: ${new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
           return;
         }
-
-        const groups = groupInitiativesByLane(laneManifest, initiatives);
-        const frag = document.createDocumentFragment();
-        for (const lane of groups) {
-          const section = document.createElement("section");
-          section.className = "rounded-md border border-gray-200 bg-gray-50/80 p-3";
-          section.innerHTML = `
-            <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Spor</p>
-            <h3 class="mt-1 text-base font-semibold text-gray-900">${lane.labelNo}</h3>
-            <ul class="mt-3 space-y-3"></ul>
-          `;
-          const ul = section.querySelector("ul");
-          if (!ul) continue;
-          for (const it of lane.initiatives) {
-            const li = document.createElement("li");
-            li.className = "rounded border border-gray-300 bg-white px-3 py-2.5";
-            li.innerHTML = `
-              <p class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Initiativ</p>
-              <p class="mt-0.5 text-sm font-semibold text-gray-900">${escapeHtml(it.title)}</p>
-              <p class="mt-2 text-xs leading-relaxed text-gray-700"><span class="font-medium text-gray-800">Oppsummering:</span> ${escapeHtml(it.summaryNo || "—")}</p>
-              ${
-                it.explainerNo
-                  ? `<p class="mt-1 text-xs leading-relaxed text-gray-600"><span class="font-medium text-gray-700">Kort forklart:</span> ${escapeHtml(it.explainerNo)}</p>`
-                  : ""
-              }
-              <dl class="mt-2 grid gap-1 text-xs text-gray-700 sm:grid-cols-2">
-                <div><dt class="inline font-medium text-gray-600">Planlagt start:</dt> <dd class="inline">${fmtPlan(it.planStart)}</dd></div>
-                <div><dt class="inline font-medium text-gray-600">Planlagt slutt:</dt> <dd class="inline">${fmtPlan(it.planEnd)}</dd></div>
-              </dl>
-              <p class="mt-2">
-                <a href="${it.htmlUrl}" target="_blank" rel="noreferrer" class="text-xs font-medium text-gray-900 underline underline-offset-2">
-                  Åpne i GitHub (#${it.issueNumber})
-                </a>
-              </p>
-            `;
-            ul.appendChild(li);
-          }
-          frag.appendChild(section);
-        }
-        root.innerHTML = "";
-        root.appendChild(frag);
-        meta.textContent = `Sist oppdatert: ${new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
+        renderFromCache();
       })
       .catch((error: unknown) => {
         renderEmpty("Kunne ikke hente initiativer akkurat nå. Prøv igjen eller åpne GitHub direkte.");
@@ -193,7 +274,8 @@ const roadmapClientProps = JSON.stringify({ laneManifest, curatedInitiativeNumbe
   }
 
   if (root && meta && refresh) {
-    refresh.addEventListener("click", render);
-    render();
+    refresh.addEventListener("click", load);
+    rangeSelect?.addEventListener("change", renderFromCache);
+    load();
   }
 </script>
