@@ -16,6 +16,7 @@ export interface Props {
   body: string[];
   footerTitle?: string;
   footerText?: string;
+  railItems?: Array<{ eyebrow: string; title: string; body: string }>;
 }
 
 const {
@@ -31,6 +32,18 @@ const {
   body,
   footerTitle = "Kort oppsummert",
   footerText = "Dette er en første versjon av templateskjelettet. Innhold og koblinger kan utvides senere.",
+  railItems = [
+    {
+      eyebrow: "Sidespalte",
+      title: "Faglig stotte",
+      body: "Stotteomraade for faglig kontekst, definisjoner og videre lesning. Vises tydelig i Faglig Fokus.",
+    },
+    {
+      eyebrow: "Relasjon",
+      title: "Hub-kobling",
+      body: `Denne artikkelen er koblet til hub: ${hub}.`,
+    },
+  ],
 } = Astro.props;
 
 const presetLabel = preset === "faglig-fokus" ? "Faglig Fokus" : preset === "minimal" ? "Minimal" : "Standard";
@@ -98,20 +111,13 @@ const bodyClass = preset === "minimal" ? "space-y-3 text-base leading-relaxed" :
 
   {preset === "faglig-fokus" ? (
     <ArticleRail class="mt-7 lg:mt-0">
-      <div class="ams-rail__block">
-        <p class="ams-rail__eyebrow">Sidespalte</p>
-        <h3 class="ams-rail__title">Faglig stotte</h3>
-        <p class="text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
-          Stotteomraade for faglig kontekst, definisjoner og videre lesning. Vises tydelig i Faglig Fokus.
-        </p>
-      </div>
-      <div class="ams-rail__block">
-        <p class="ams-rail__eyebrow">Relasjon</p>
-        <h3 class="ams-rail__title">Hub-kobling</h3>
-        <p class="text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
-          Denne artikkelen er koblet til hub: {hub}.
-        </p>
-      </div>
+      {railItems.map((item) => (
+        <div class="ams-rail__block">
+          <p class="ams-rail__eyebrow">{item.eyebrow}</p>
+          <h3 class="ams-rail__title">{item.title}</h3>
+          <p class="text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">{item.body}</p>
+        </div>
+      ))}
     </ArticleRail>
   ) : null}
 </section>
