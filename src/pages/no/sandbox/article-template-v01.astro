@@ -1,0 +1,73 @@
+---
+/* CONTRACT: Product preview route for ArticleTemplateV01; QA surface for v0.1 preset behavior. */
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Footer from "../../../components/nav/Footer.astro";
+import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.astro";
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+
+const previewData = [
+  {
+    title: "Standard: Bedre flyt i hverdagspraten",
+    ingress: "En vanlig artikkelvariant med kjerneblokkene og enkel relasjonskobling.",
+    preset: "standard" as const,
+    articleType: "spoke",
+    hub: "Bedre lyd i hverdagen",
+    sourceTrustType: "redaksjonelt kvalitetssjekket",
+    relatedTopics: ["Samtaletips", "Horetretthet"],
+    body: [
+      "Dette eksempelet viser minste byggbare struktur i Standard. Hodeseksjon, brodtekst og bunnseksjon er alltid til stede.",
+      "Trygghetslaget vises som egen boks i artikkelen, slik at source_trust_type blir synlig uten ekstra logikk.",
+    ],
+  },
+  {
+    title: "Faglig Fokus: Nar stoy gjor samtaler krevende",
+    ingress: "Tyngre variant med samme kjerne, men tydelig stotteomrade i side rail.",
+    preset: "faglig-fokus" as const,
+    articleType: "spoke",
+    hub: "Bedre lyd i hverdagen",
+    sourceTrustType: "faglig forankret",
+    relatedTopics: ["Akustikk", "Kommunikasjon"],
+    body: [
+      "Faglig Fokus bruker samme base som Standard, men gir tydelig plass til ekstra faglig stotte i rail.",
+      "Denne varianten er laget for innhold som trenger mer kontekst uten a lage en ny maltype.",
+    ],
+  },
+  {
+    title: "Minimal: Kort avklaring for raske behov",
+    ingress: "Kompakt variant med kortere rytme og samme minimumsfelt i bunnen.",
+    preset: "minimal" as const,
+    articleType: "spoke",
+    hub: "Bedre lyd i hverdagen",
+    sourceTrustType: "grunnleggende kvalitetssjekk",
+    aiMode: true,
+    aiSeedGroup: "hearing-conversation-v1",
+    body: [
+      "Minimal holder seg til kjerneblokkene, men med komprimert visning og kortere tekstmengde.",
+      "AI-drevet markeres her som hjelpelag over Minimal, ikke som egen artikkeltype.",
+    ],
+  },
+];
+---
+
+<BaseLayout title="Sandbox – Article Template v0.1" currentPath="/no/sandbox/article-template-v01" shellVariant="sandbox-white" headerBrand="klarlyd">
+  <meta slot="head" name="robots" content="noindex,follow" />
+  <main class="px-4 py-6 sm:px-6 sm:py-8">
+    <div class="mx-auto max-w-6xl">
+      <h1 class="text-2xl font-semibold text-gray-900 sm:text-3xl">Article template v0.1 (preview)</h1>
+      <p class="mt-2 max-w-3xl text-sm leading-relaxed text-gray-600">
+        QA-flate for forste produktkode av artikkelskjelettet. Viser Standard, Faglig Fokus og Minimal med samme minimumsfelt.
+      </p>
+      <p class="mt-1 text-xs text-gray-500">
+        AI-drevet vises som lag/flagg i preview, ikke som egen hovedmal.
+      </p>
+
+      <div class="mt-6 space-y-6">
+        {previewData.map((example) => (
+          <ArticleTemplateV01 {...example} />
+        ))}
+      </div>
+    </div>
+  </main>
+  <Footer variant="sandbox-tall" />
+</BaseLayout>
