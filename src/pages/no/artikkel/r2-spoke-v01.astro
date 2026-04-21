@@ -1,0 +1,50 @@
+---
+/* CONTRACT: First real R2 spoke wired into ArticleTemplateV01 using Standard preset for pilot QA. */
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Footer from "../../../components/nav/Footer.astro";
+import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.astro";
+import "../../../styles/article-system.css";
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+
+const r2Article = {
+  title: "Når høreapparatet ikke kobler seg til - en rolig guide i fire steg",
+  ingress:
+    "R2 tester Standard-preset med en mer praktisk og teknisk hjelpeartikkel. Målet er å gi tydelige steg uten at tonen blir kald eller tung.",
+  preset: "standard" as const,
+  articleType: "spoke",
+  hub: "Bedre lyd i hverdagen",
+  sourceTrustType: "praktisk veiledning med redaksjonell kvalitetssjekk",
+  relatedTopics: ["Bluetooth", "Tilkobling", "Feilsøking", "Høreapparat"],
+  aiSeedGroup: "device-troubleshooting-v1",
+  body: [
+    "Start med det enkleste: slå av og på både høreapparat og telefon. Mange tilkoblingsfeil skyldes at enhetene har hengt i en tidligere sesjon.",
+    "Sjekk deretter om høreapparatet fortsatt er registrert i Bluetooth-listen. Hvis det ligger der som «tilkoblet» uten lyd, fjern enheten og koble den opp på nytt.",
+    "Kontroller app-tillatelser før du feilsøker videre. Appen trenger vanligvis Bluetooth-tilgang og ofte plasseringstilgang for å finne enheter stabilt.",
+    "Hvis lyden fortsatt faller ut, test i et roligere miljø uten mange aktive Bluetooth-enheter rundt deg. Tett radiosignal i nærheten kan gi ustabil forbindelse.",
+    "Når feilen vedvarer, noter hva som faktisk skjer: kobler ikke opp, kobler ut etter kort tid, eller gir bare lyd i én side. Denne observasjonen gjør det enklere å få rask hjelp hos audiograf eller support.",
+    "R2 i malen viser at Standard også tåler guidepreget innhold, men peker på et mulig neste behov: enda tydeligere stegvis visualisering når vi senere tester hele pilotpakken.",
+  ],
+  footerTitle: "Kort oppsummert",
+  footerText:
+    "Begynn med omstart, ny tilkobling og sjekk av app-tillatelser. Når du beskriver feilen konkret, blir neste hjelpenivå ofte både raskere og mer treffsikkert.",
+};
+---
+
+<BaseLayout title="VOX - R2 spoke v0.1" currentPath="/no/hubs" shellVariant="article">
+  <meta slot="head" name="robots" content="noindex,follow" />
+  <main class="bg-[rgb(var(--article-page-canvas))] py-8 sm:py-10" data-article-system>
+    <div class="px-4 sm:px-6">
+      <nav class="mx-auto mb-7 max-w-[min(100%,46rem)] text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]" aria-label="Du er her">
+        <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
+        <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
+        <a href="/no/hubs" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Emnehuber</a>
+        <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
+        <span class="text-[rgb(var(--reading-ink))]">R2 artikkel</span>
+      </nav>
+
+      <ArticleTemplateV01 {...r2Article} />
+    </div>
+  </main>
+  <Footer variant="article" />
+</BaseLayout>
