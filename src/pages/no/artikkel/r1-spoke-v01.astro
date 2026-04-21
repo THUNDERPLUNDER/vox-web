@@ -1,0 +1,50 @@
+---
+/* CONTRACT: First real R1 spoke wired into ArticleTemplateV01 for product QA in v0.1. */
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Footer from "../../../components/nav/Footer.astro";
+import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.astro";
+import "../../../styles/article-system.css";
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+
+const r1Article = {
+  title: "Naar hoerselen endrer samtalen - og hvordan du kan moete det med mer overskudd",
+  ingress:
+    "Denne versjonen setter R1 inn i den nye malen som foerste ekte spoke-test. Maalet er aa teste rytme, struktur og feltbruk med faktisk innhold.",
+  preset: "standard" as const,
+  articleType: "spoke",
+  hub: "Bedre lyd i hverdagen",
+  sourceTrustType: "redaksjonelt kvalitetssjekket med faglig orientering",
+  relatedTopics: ["Samtaletips", "Hoereliv", "Hverdagskommunikasjon"],
+  aiSeedGroup: "hearing-conversation-v1",
+  body: [
+    "Hoersel handler ikke bare om volum. Det handler ogsaa om hvor mye energi du bruker paa aa fylle inn det du ikke fikk med deg, og hvor raskt du blir sliten av stoy, flere stemmer eller daarlig akustikk.",
+    "For paaaroerende kan dette se ut som manglende interesse. For den som strever med aa hoere, kan det foeles som skam eller frustrasjon over aa maatte spoerre om igjen.",
+    "Et nyttig perspektiv er aa skille mellom intensjon og effekt: du kan oenske aa vaere til stede, men likevel oppleves som distansert fordi du bruker mye kapasitet paa aa foelge med.",
+    "Smaa grep hjelper ofte: senk tempoet, del opp setninger, flytt samtalen til et roligere sted og vaer tydelig paa hva du trenger i oeyeblikket.",
+    "Pause er ikke det samme som aa gi opp. En kort avtale om aa fortsette samtalen senere kan vaere mer omsorgsfullt enn aa presse alt gjennom naar begge er slitne.",
+    "Foerste R1-kobling viser at malen taaler ekte tekst i standard-preset, men den peker ogsaa paa behov for neste trinn: sterkere figurstoette og rikere AI/hub-kobling for pilotpakken.",
+  ],
+  footerTitle: "Kort oppsummert",
+  footerText:
+    "R1 i malen bekrefter at minimumsfeltene, leserytmen og standard-preset fungerer i praksis. Neste steg er aa validere samme flyt for R2 og R3.",
+};
+---
+
+<BaseLayout title="VOX - R1 spoke v0.1" currentPath="/no/hubs" shellVariant="article">
+  <meta slot="head" name="robots" content="noindex,follow" />
+  <main class="bg-[rgb(var(--article-page-canvas))] py-8 sm:py-10" data-article-system>
+    <div class="px-4 sm:px-6">
+      <nav class="mx-auto mb-7 max-w-[min(100%,46rem)] text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]" aria-label="Du er her">
+        <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
+        <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
+        <a href="/no/hubs" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Emnehuber</a>
+        <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
+        <span class="text-[rgb(var(--reading-ink))]">R1 spoke v0.1</span>
+      </nav>
+
+      <ArticleTemplateV01 {...r1Article} />
+    </div>
+  </main>
+  <Footer variant="article" />
+</BaseLayout>
