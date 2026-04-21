@@ -1,7 +1,7 @@
 {
   "version": "0.1",
   "source_of_truth": "repo-manifest",
-  "description_no": "Niva 1 Spor for VIS roadmap timeline. Initiativ og oppgaver hentes fra GitHub issues metadata.",
+  "description_no": "Nivå 1 Spor for VIS roadmap timeline. Initiativ og oppgaver hentes fra GitHub issues metadata.",
   "lanes": [
     {
       "id": "content",
