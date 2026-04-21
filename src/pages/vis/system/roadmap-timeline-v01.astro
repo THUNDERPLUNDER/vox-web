@@ -407,11 +407,11 @@ const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
             "number" in issue &&
             typeof (issue as { number: unknown }).number === "number" &&
             "state" in issue &&
-            (issue as { state?: unknown }).state === "open" &&
             !("pull_request" in issue && (issue as { pull_request?: unknown }).pull_request),
         );
+        const openIssueCandidates = issueCandidates.filter((issue) => issue.state === "open");
 
-        initiativesCache = initiativesFromGitHubIssues(issueCandidates)
+        initiativesCache = initiativesFromGitHubIssues(openIssueCandidates)
           .filter((initiative) => knownLaneIds.has(initiative.laneId))
           .sort((a, b) => a.issueNumber - b.issueNumber);
 
