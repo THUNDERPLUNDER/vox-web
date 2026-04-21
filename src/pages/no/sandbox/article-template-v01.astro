@@ -6,6 +6,7 @@ import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.a
 import "../../../styles/sandbox-article-master.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+const inspectComponents = Astro.url.searchParams.get("inspect") === "components";
 
 const previewData = [
   {
@@ -65,7 +66,7 @@ const previewData = [
 
       <div class="mt-10 space-y-14">
         {previewData.map((example) => (
-          <ArticleTemplateV01 {...example} />
+          <ArticleTemplateV01 {...example} inspectComponents={inspectComponents} />
         ))}
       </div>
     </div>

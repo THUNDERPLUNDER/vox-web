@@ -6,6 +6,7 @@ import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.a
 import "../../../styles/article-system.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+const inspectComponents = Astro.url.searchParams.get("inspect") === "components";
 
 const r3Article = {
   title: "Når samtaler bryter sammen ved hørselstap - faglig forklaring og praktiske grep",
@@ -60,7 +61,7 @@ const r3Article = {
         <span class="text-[rgb(var(--reading-ink))]">R3 artikkel</span>
       </nav>
 
-      <ArticleTemplateV01 {...r3Article} />
+      <ArticleTemplateV01 {...r3Article} inspectComponents={inspectComponents} />
     </div>
   </main>
   <Footer variant="article" />
