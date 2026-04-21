@@ -6,8 +6,6 @@ import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.a
 import "../../../styles/article-system.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
-const inspectComponents = Astro.url.searchParams.get("inspect") === "components";
-
 const r2Article = {
   title: "Når høreapparatet ikke kobler seg til - en rolig guide i fire steg",
   ingress:
@@ -44,7 +42,7 @@ const r2Article = {
         <span class="text-[rgb(var(--reading-ink))]">R2 artikkel</span>
       </nav>
 
-      <ArticleTemplateV01 {...r2Article} inspectComponents={inspectComponents} />
+      <ArticleTemplateV01 {...r2Article} />
     </div>
   </main>
   <Footer variant="article" />

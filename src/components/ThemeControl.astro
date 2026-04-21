@@ -39,6 +39,7 @@ const { compact = false } = Astro.props;
 <script is:inline>
   (function () {
     var STORAGE_KEY = "vox-theme";
+    var INSPECT_STORAGE_KEY = "vox-inspect-components";
 
     function resolvedColorScheme(mode) {
       if (mode === "light") return "light";
@@ -62,7 +63,7 @@ const { compact = false } = Astro.props;
         var choice = btn.getAttribute("data-theme-choice");
         btn.setAttribute("aria-pressed", choice === mode ? "true" : "false");
       });
-      var inspectOn = new URLSearchParams(window.location.search).get("inspect") === "components";
+      var inspectOn = document.documentElement.getAttribute("data-inspect-components") === "true";
       document.querySelectorAll("[data-inspect-toggle='components']").forEach(function (btn) {
         btn.setAttribute("aria-pressed", inspectOn ? "true" : "false");
       });
@@ -81,18 +82,38 @@ const { compact = false } = Astro.props;
       var url = new URL(window.location.href);
       var params = url.searchParams;
       var enabled = params.get("inspect") === "components";
-      if (enabled) params.delete("inspect");
-      else params.set("inspect", "components");
-      url.search = params.toString();
-      window.location.assign(url.toString());
+      var nextEnabled = !enabled;
+      if (nextEnabled) params.set("inspect", "components");
+      else params.delete("inspect");
+      window.history.replaceState({}, "", url.pathname + (params.toString() ? "?" + params.toString() : "") + url.hash);
+      setInspectState(nextEnabled);
+      syncButtons();
+    }
+
+    function setInspectState(enabled) {
+      document.documentElement.setAttribute("data-inspect-components", enabled ? "true" : "false");
+      try {
+        localStorage.setItem(INSPECT_STORAGE_KEY, enabled ? "true" : "false");
+      } catch (_) {}
+    }
+
+    function resolveInitialInspectState() {
+      var fromQuery = new URLSearchParams(window.location.search).get("inspect") === "components";
+      if (fromQuery) return true;
+      try {
+        return localStorage.getItem(INSPECT_STORAGE_KEY) === "true";
+      } catch (_) {
+        return false;
+      }
     }
 
     window.addEventListener("DOMContentLoaded", function () {
-      syncButtons();
       var enableInspect = supportsInspectToggle(window.location.pathname);
       document.querySelectorAll("[data-inspect-toggle='components']").forEach(function (btn) {
         btn.hidden = !enableInspect;
       });
+      setInspectState(enableInspect ? resolveInitialInspectState() : false);
+      syncButtons();
       document.querySelectorAll("[data-theme-choice]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           applyTheme(btn.getAttribute("data-theme-choice"));

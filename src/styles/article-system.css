@@ -28,6 +28,14 @@ html[data-theme="dark"] :where([data-article-system],[data-article-master-sandbo
   /* (kept local because it is a computed helper, not source-of-truth) */
 }
 
+:where([data-article-system],[data-article-master-sandbox]) [data-component-label] {
+  display: none;
+}
+
+html[data-inspect-components="true"] :where([data-article-system],[data-article-master-sandbox]) [data-component-label] {
+  display: inline-flex;
+}
+
 /* Article column subheads only — rail / UI labels unchanged */
 :where([data-article-system],[data-article-master-sandbox]) article h2,
 :where([data-article-system],[data-article-master-sandbox]) article h3,

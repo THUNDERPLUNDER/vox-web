@@ -17,7 +17,6 @@ export interface Props {
   footerTitle?: string;
   footerText?: string;
   railItems?: Array<{ eyebrow: string; title: string; body: string }>;
-  inspectComponents?: boolean;
 }
 
 const {
@@ -45,7 +44,6 @@ const {
       body: `Denne artikkelen er koblet til hub: ${hub}.`,
     },
   ],
-  inspectComponents = false,
 } = Astro.props;
 
 const presetLabel = preset === "faglig-fokus" ? "Faglig Fokus" : preset === "minimal" ? "Minimal" : "Standard";
@@ -58,13 +56,13 @@ const wrapperClass =
 const articleClass = preset === "minimal" ? "space-y-8" : "space-y-10";
 const bodyClass = preset === "minimal" ? "space-y-3 text-base leading-relaxed" : "space-y-4 text-[1.0625rem] leading-[1.66]";
 const inspectLabelClass =
-  "mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950";
+  "article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950";
 ---
 
 <section class={`ams ${wrapperClass}`.trim()} data-article-system data-component="ArticleTemplate">
   <article class={articleClass} data-component="ArticleContent">
     <header class="ams-zone ams-zone--lead pb-6" data-component="ArticleHeader">
-      {inspectComponents ? <span class={inspectLabelClass}>ArticleHeader</span> : null}
+      <span class={inspectLabelClass} data-component-label>ArticleHeader</span>
       <div class="flex flex-wrap items-center gap-2 text-[11px]">
         <span class="ams-kicker ams-kicker--spread">{presetLabel}</span>
         <span class="text-[rgb(var(--reading-ink-secondary))]">Type: {articleType}</span>
@@ -75,13 +73,13 @@ const inspectLabelClass =
     </header>
 
     <section class="ams-plate px-5 py-5 sm:px-7" data-component="ArticleTrustBlock">
-      {inspectComponents ? <span class={inspectLabelClass}>ArticleTrustBlock</span> : null}
+      <span class={inspectLabelClass} data-component-label>ArticleTrustBlock</span>
       <p class="ams-kicker">Trygghetslag</p>
       <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">Kilde/trygghet: {sourceTrustType}</p>
     </section>
 
     <section class="ams-zone ams-zone--article-body space-y-3" data-component="ArticleBody">
-      {inspectComponents ? <span class={inspectLabelClass}>ArticleBody</span> : null}
+      <span class={inspectLabelClass} data-component-label>ArticleBody</span>
       <h3 class="text-xl font-semibold leading-snug text-[rgb(var(--reading-ink))]">Brødtekst</h3>
       <div class={bodyClass}>
         {body.map((paragraph) => (
@@ -91,13 +89,13 @@ const inspectLabelClass =
     </section>
 
     <section class="ams-zone ams-zone--inline-visual ams-plate px-5 py-4 sm:px-6" data-component="ArticleFigurePlaceholder">
-      {inspectComponents ? <span class={inspectLabelClass}>ArticleFigurePlaceholder</span> : null}
+      <span class={inspectLabelClass} data-component-label>ArticleFigurePlaceholder</span>
       <p class="text-sm font-medium text-[rgb(var(--reading-ink))]">Plassholder: figur / illustrasjon</p>
       <p class="mt-1 text-sm text-[rgb(var(--reading-ink-secondary))]">Kobles inn ved behov i senere iterasjon.</p>
     </section>
 
     <footer class="ams-zone ams-zone--summary ams-plate space-y-4 px-5 py-5 sm:px-6" data-component="ArticleSummary">
-      {inspectComponents ? <span class={inspectLabelClass}>ArticleSummary</span> : null}
+      <span class={inspectLabelClass} data-component-label>ArticleSummary</span>
       <h3 class="text-sm font-semibold uppercase tracking-wide text-[rgb(var(--reading-ink-secondary))]">{footerTitle}</h3>
       <p class="text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">{footerText}</p>
       {relatedTopics.length > 0 ? (
@@ -120,7 +118,7 @@ const inspectLabelClass =
 
   {preset === "faglig-fokus" ? (
     <ArticleRail class="mt-7 lg:mt-0" dataComponent="ArticleRail">
-      {inspectComponents ? <span class={inspectLabelClass}>ArticleRail</span> : null}
+      <span class={inspectLabelClass} data-component-label>ArticleRail</span>
       {railItems.map((item) => (
         <div class="ams-rail__block">
           <p class="ams-rail__eyebrow">{item.eyebrow}</p>
