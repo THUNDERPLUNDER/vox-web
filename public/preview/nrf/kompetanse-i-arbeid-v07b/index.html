@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>NRF prototype v0.7b — Kompetanse i arbeid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* TOKENS */
+    :root {
+      --nrf-dark-blue: #003366;
+      --nrf-navy-soft: #214a71;
+      --nrf-light-blue: #e9f4f6;
+      --nrf-cyan: #0099cc;
+      --text-main: #212224;
+      --text-muted: #5f6268;
+      --bg-white: #ffffff;
+      --surface-soft: #f8fafb;
+      --surface-blue: #f3f8fb;
+      --surface-signal: #f1f6fb;
+      --surface-calm: #f8f8f8;
+      --border-soft: #dde3e8;
+      --border-blue: #c5d4e0;
+      --success-bg: #ecf7f0;
+      --success-border: #b8dbc5;
+      --danger-bg: #fff0ee;
+      --danger-border: #eab8b2;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --container-max: 900px;
+      --shadow-soft: 0 7px 26px -22px rgba(5, 30, 50, 0.4);
+    }
+
+    /* BASE */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text-main);
+      font-family: "Montserrat", sans-serif;
+      background: var(--bg-white);
+      line-height: 1.66;
+    }
+
+    h1, h2, h3, h4 {
+      margin-top: 0;
+      color: var(--text-main);
+      font-family: "Merriweather", serif;
+      font-weight: 400;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: clamp(1.92rem, 3.8vw, 2.45rem);
+      margin-bottom: 0.75rem;
+    }
+
+    h2 {
+      font-size: clamp(1.45rem, 3vw, 1.92rem);
+      margin: 3.2rem 0 1.1rem;
+    }
+
+    h3 {
+      font-size: 1.19rem;
+      margin-bottom: 0.6rem;
+    }
+
+    p {
+      margin: 0 0 1rem;
+    }
+
+    a {
+      color: var(--nrf-dark-blue);
+      text-decoration: underline;
+      text-underline-offset: 0.13em;
+    }
+
+    /* LAYOUT */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 110;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-white);
+      border-bottom: 2px solid var(--nrf-cyan);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .logo-nrf {
+      color: var(--nrf-dark-blue);
+      font-size: 1.55rem;
+      font-weight: 700;
+      font-family: "Merriweather", serif;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text {
+      display: none;
+      color: var(--nrf-dark-blue);
+      font-size: 0.82rem;
+      font-family: "Merriweather", serif;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    @media (min-width: 430px) {
+      .logo-text {
+        display: block;
+      }
+    }
+
+    .menu-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .mode-switch-wrap {
+      position: sticky;
+      top: 62px;
+      z-index: 100;
+      border-bottom: 1px solid var(--border-soft);
+      background: var(--bg-white);
+    }
+
+    .mode-switch {
+      display: flex;
+      background: linear-gradient(90deg, var(--nrf-dark-blue), var(--nrf-navy-soft));
+    }
+
+    .mode-note {
+      margin: 0;
+      padding: 0.68rem 1rem 0.76rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      background: #f6f8fa;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .hero {
+      border-bottom: 1px solid var(--border-soft);
+      background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0.92)),
+        var(--nrf-light-blue);
+      padding: 2.45rem 1.25rem 2.8rem;
+    }
+
+    .hero .hero-content {
+      max-width: var(--container-max);
+      margin: 0 auto;
+    }
+
+    .hero p {
+      max-width: 44rem;
+      font-size: 1.03rem;
+    }
+
+    .container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 1.9rem 1.25rem 5rem;
+    }
+
+    .section-block + .section-block {
+      margin-top: 3rem;
+    }
+
+    .breadcrumbs {
+      margin-bottom: 1.65rem;
+      padding-bottom: 0.68rem;
+      border-bottom: 1px solid #eceff2;
+      color: var(--text-muted);
+      font-size: 0.67rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .view {
+      display: none;
+      animation: fade-in 0.27s ease;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .prototype-note {
+      margin-top: 2.8rem;
+      border-top: 1px solid var(--border-soft);
+      padding-top: 0.9rem;
+      color: var(--text-muted);
+      font-size: 0.74rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* COMPONENTS */
+    .tab-btn {
+      flex: 1;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 0.8rem;
+      background: none;
+      color: #fff;
+      opacity: 0.64;
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.91rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.18s ease, background 0.18s ease;
+    }
+
+    .tab-btn.active {
+      opacity: 1;
+      border-bottom-color: #fff;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .small-note {
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      line-height: 1.52;
+    }
+
+    .btn-inline {
+      display: inline-block;
+      border-bottom: 2px solid var(--nrf-dark-blue);
+      color: var(--text-main);
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      padding: 0.55rem 0 0.4rem;
+    }
+
+    .btn-inline:hover {
+      color: var(--nrf-dark-blue);
+    }
+
+    .panel {
+      border: 1px solid var(--border-soft);
+      border-left: 4px solid var(--nrf-dark-blue);
+      border-radius: var(--radius-sm);
+      background: var(--surface-signal);
+      padding: 1.2rem 1.25rem;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .panel h2, .panel h3 {
+      margin-bottom: 0.65rem;
+    }
+
+    .panel-muted {
+      border-left-color: #7a97b4;
+      background: #f5f8fb;
+    }
+
+    .signal-panel {
+      border: 1px solid #d2dee8;
+      border-left: 4px solid #5f84a6;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(180deg, #f8fbfd, #f4f8fb);
+      padding: 1rem 1.1rem;
+    }
+
+    .section-grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 760px) {
+      .section-grid.cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .section-grid.cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .card {
+      background: var(--bg-white);
+      border: 1px solid #dbe2e8;
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .card h3 {
+      margin-bottom: 0.45rem;
+      font-size: 1.07rem;
+    }
+
+    .card p {
+      font-size: 0.92rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .card ul {
+      margin: 0.35rem 0 0;
+      padding-left: 1rem;
+      font-size: 0.91rem;
+    }
+
+    .module-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.15rem;
+    }
+
+    .module-item {
+      display: flex;
+      gap: 0.8rem;
+      border-bottom: 1px solid #e7ecf0;
+      padding-bottom: 1rem;
+    }
+
+    .module-item:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .module-icon-slot {
+      width: 1.58rem;
+      height: 1.58rem;
+      flex-shrink: 0;
+      margin-top: 0.16rem;
+      color: var(--nrf-dark-blue);
+    }
+
+    .module-icon-slot svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .module-content h3 {
+      margin: 0 0 0.4rem;
+      font-family: "Montserrat", sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .module-content p {
+      margin: 0 0 0.45rem;
+      font-size: 0.9rem;
+    }
+
+    .email-template {
+      margin-top: 1rem;
+      border: 1px solid #d9e1e9;
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, #f9fbfc, #f4f8fb);
+      padding: 1.15rem;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .action-btn {
+      min-width: 10.8rem;
+      border-radius: var(--radius-sm);
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      padding: 0.8rem 1rem;
+      cursor: pointer;
+    }
+
+    .copy-btn {
+      background: var(--bg-white);
+      border: 1px solid var(--nrf-dark-blue);
+      color: var(--nrf-dark-blue);
+    }
+
+    .email-btn {
+      background: var(--nrf-dark-blue);
+      border: 1px solid var(--nrf-dark-blue);
+      color: #fff;
+    }
+
+    .copy-btn:hover {
+      background: #edf5f8;
+    }
+
+    .email-btn:hover {
+      background: #214b74;
+    }
+
+    .email-template blockquote {
+      margin: 0;
+      font-size: 0.92rem;
+    }
+
+    .highlight {
+      padding: 0 0.24rem;
+      background: #fff0c4;
+      border-bottom: 1px dashed #ceac4b;
+    }
+
+    .calculator-box {
+      margin-top: 1rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-blue);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.85)),
+        var(--surface-blue);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .calc-controls {
+      display: grid;
+      gap: 0.85rem;
+      margin-bottom: 0.95rem;
+    }
+
+    @media (min-width: 760px) {
+      .calc-controls {
+        grid-template-columns: 1fr 1fr;
+        align-items: end;
+      }
+    }
+
+    .calc-label {
+      display: block;
+      margin-bottom: 0.34rem;
+      font-size: 0.87rem;
+      font-weight: 600;
+    }
+
+    .calc-select,
+    .calc-slider {
+      width: 100%;
+    }
+
+    .calc-select {
+      padding: 0.6rem 0.65rem;
+      border: 1px solid #b9cad8;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.88rem;
+    }
+
+    .calc-slider {
+      accent-color: var(--nrf-dark-blue);
+    }
+
+    .calc-turnover-result {
+      border: 1px solid var(--danger-border);
+      border-radius: var(--radius-md);
+      background: var(--danger-bg);
+      color: #8f1d1d;
+      padding: 0.9rem 1rem;
+    }
+
+    .calc-turnover-result strong {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: clamp(1.35rem, 4.2vw, 1.95rem);
+      line-height: 1.2;
+      font-family: "Montserrat", sans-serif;
+    }
+
+    .accommodation-grid {
+      margin-top: 0.95rem;
+    }
+
+    .accommodation-card {
+      border: 1px solid var(--success-border);
+      border-radius: var(--radius-sm);
+      background: var(--success-bg);
+    }
+
+    .accommodation-card h3 {
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.99rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .toolkit-section {
+      margin-top: 2.5rem;
+    }
+
+    .toolkit-grid {
+      display: grid;
+      gap: 0.82rem;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 680px) {
+      .toolkit-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1000px) {
+      .toolkit-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .toolkit-card {
+      border: 1px solid #d5dfe8;
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, #ffffff, #f7fafc);
+      padding: 0.95rem 0.95rem 0.88rem;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .toolkit-head {
+      display: flex;
+      gap: 0.65rem;
+      margin-bottom: 0.5rem;
+      align-items: flex-start;
+    }
+
+    .toolkit-icon {
+      width: 1.68rem;
+      height: 1.68rem;
+      color: var(--nrf-dark-blue);
+      flex-shrink: 0;
+    }
+
+    .toolkit-icon svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .toolkit-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 0.98rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .toolkit-desc {
+      font-size: 0.89rem;
+      margin-bottom: 0.64rem;
+    }
+
+    .toolkit-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .toolkit-tag {
+      border: 1px solid #c6d3df;
+      border-radius: 999px;
+      padding: 0.18rem 0.5rem;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: #35506d;
+      background: #f4f8fb;
+    }
+
+    .employee-suggestions {
+      margin-top: 2.2rem;
+    }
+
+    .employee-suggestion-list {
+      display: grid;
+      gap: 0.8rem;
+      margin-top: 0.9rem;
+    }
+
+    @media (min-width: 760px) {
+      .employee-suggestion-list {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .faq-list {
+      margin-top: 0.95rem;
+    }
+
+    .faq-details {
+      margin-bottom: 0.75rem;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      background: linear-gradient(180deg, #fbfcfd, #f6f8fa);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .faq-summary {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      list-style: none;
+      cursor: pointer;
+      padding: 0.82rem 0.95rem;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--nrf-dark-blue);
+    }
+
+    .faq-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-summary::before {
+      content: "+";
+      width: 1rem;
+      text-align: center;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .faq-details[open] .faq-summary::before {
+      content: "−";
+    }
+
+    .faq-content {
+      border-top: 1px solid #dde3e8;
+      background: #fff;
+      padding: 0.74rem 0.95rem 0.9rem;
+      font-size: 0.89rem;
+    }
+
+    .faq-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* UTILITIES */
+    .u-mt-0 { margin-top: 0; }
+    .u-mb-0 { margin-bottom: 0; }
+    .u-muted { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo-container">
+      <div class="logo-nrf">NRF</div>
+      <div class="logo-text">Norsk Revmatikerforbund</div>
+    </div>
+    <div class="menu-btn" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      Meny
+    </div>
+  </header>
+
+  <div class="mode-switch-wrap">
+    <div class="mode-switch" role="tablist" aria-label="Velg perspektiv">
+      <button class="tab-btn active" id="tab-ansatt" data-view="ansatt" role="tab" aria-selected="true" aria-controls="ansatt">Ansatt</button>
+      <button class="tab-btn" id="tab-arbeidsgiver" data-view="arbeidsgiver" role="tab" aria-selected="false" aria-controls="arbeidsgiver">Arbeidsgiver</button>
+    </div>
+    <p class="mode-note">Samme utfordring. To innganger: for deg som arbeidstaker, og for deg som arbeidsgiver.</p>
+  </div>
+
+  <main>
+    <section id="ansatt" class="view active" role="tabpanel" aria-labelledby="tab-ansatt">
+      <div class="hero">
+        <div class="hero-content">
+          <h1>Føler du deg til bry? Det er du ikke.</h1>
+          <p>Du sitter på erfaring og kompetanse som virksomheten trenger. Her får du en trygg inngang til å be om tilrettelegging, slik at du kan stå i jobb med bedre forutsigbarhet.</p>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="breadcrumbs">
+          <a href="#">Forside</a> / <a href="#">Medlemskap</a> / Tilrettelegging
+        </div>
+
+        <section class="section-block">
+          <h2>Send dette forslaget til din leder</h2>
+          <p>Bruk e-postmalen når du vil starte en ryddig samtale. Den holder fokus på løsninger, kontinuitet og hva som kan fungere for begge parter.</p>
+          <div class="email-template">
+            <div class="button-group">
+              <button class="action-btn copy-btn" id="copy-email-btn" type="button">Kopier tekst</button>
+              <button class="action-btn email-btn" id="open-email-btn" type="button">Åpne i e-post</button>
+            </div>
+            <blockquote id="email-text">
+              <strong>Emne:</strong> Forslag til tiltak for å sikre min kontinuitet og leveranse i <span class="highlight">[Avdeling]</span><br><br>
+              Hei <span class="highlight">[Leders navn]</span>,<br><br>
+              Jeg setter stor pris på min rolle her i <span class="highlight">[Bedriftens navn]</span> og ønsker å sikre at jeg kan fortsette å bidra med min kompetanse på best mulig måte fremover.<br><br>
+              Som vi har snakket om, har jeg noen helseutfordringer som gjør at jeg i perioder har behov for visse justeringer i arbeidshverdagen. For å unngå sykefravær og sikre at jeg kan opprettholde min produktivitet, ønsker jeg å foreslå et kort møte for å se på noen enkle tilretteleggingstiltak.<br><br>
+              Jeg har sett på noen løsninger som jeg tror vil fungere godt for både meg og teamet, og som også er i tråd med bedriftens fokus på å beholde erfaring og kontinuitet.<br><br>
+              Ser frem til å høre når det passer for deg.<br><br>
+              Vennlig hilsen,<br>
+              <span class="highlight">[Ditt navn]</span>
+            </blockquote>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <h2>Dette kan du foreslå i samtalen</h2>
+          <p class="small-note">Utvalget under er hentet fra samme tiltaksgrunnlag som arbeidsgiversiden. Målet er å gjøre første samtale mer konkret.</p>
+          <div class="employee-suggestion-list" id="employee-toolkit-list"></div>
+          <p class="small-note u-mb-0">Trenger du å gjøre overgangen enkel? Del arbeidsgiversiden direkte som en «gave til sjefen» med tiltak, kostnadsnivå og praktisk språk.</p>
+        </section>
+
+        <section class="section-block">
+          <h2>Din verktøykasse for møtet</h2>
+          <div class="module-list" id="ansatt-scenarios"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="arbeidsgiver" class="view" role="tabpanel" aria-labelledby="tab-arbeidsgiver">
+      <div class="hero">
+        <div class="hero-content">
+          <h1>Slik beholder du viktig kompetanse</h1>
+          <p>Turnover rammer både drift, kvalitet og kontinuitet. Mange grep for å beholde en erfaren medarbeider er små, praktiske og mulige å teste tidlig.</p>
+          <p class="small-note u-mb-0">Bygger på erfaringene fra NRFs initiativ <strong>Kronisk kompetanse</strong>.</p>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="breadcrumbs">
+          <a href="#">Forside</a> / <a href="#">Næringsliv</a> / Tilrettelegging i arbeid
+        </div>
+
+        <section class="section-block">
+          <h2>Sammenlign risiko ved turnover og nivå for tiltak</h2>
+          <p>Velg rolle og årslønn for å se et scenario. Bruk det som startpunkt for en nøktern samtale om hvilke tiltak som faktisk trengs.</p>
+
+          <section class="calculator-box" aria-label="Turnover og tiltak">
+            <div class="calc-controls">
+              <div>
+                <label for="role-select" class="calc-label">Rolle</label>
+                <select id="role-select" class="calc-select"></select>
+              </div>
+              <div>
+                <label for="salary-slider" class="calc-label">Årslønn: <span id="salary-display">600 000 kr</span></label>
+                <input id="salary-slider" class="calc-slider" type="range" min="400000" max="1500000" step="50000" value="600000">
+              </div>
+            </div>
+
+            <div class="calc-turnover-result">
+              Scenario for turnover-kostnad
+              <strong id="turnover-cost">900 000 kr</strong>
+            </div>
+
+            <div class="section-grid cols-3 accommodation-grid" id="accommodation-grid"></div>
+          </section>
+
+          <div class="signal-panel">
+            <p class="u-mb-0 small-note">
+              <strong>Metode:</strong> Tallene er scenarioer, ikke fasit. Grønn side viser typiske tiltak og kostnadsnivå, ikke et eksakt regnestykke.
+              NAV-relevans må vurderes konkret fra sak til sak.
+            </p>
+          </div>
+        </section>
+
+        <section class="toolkit-section section-block">
+          <h2>Ni konkrete grep som kan gjøre det lettere å beholde kompetanse</h2>
+          <p class="small-note">Tiltakene under er tenkt som en praktisk verktøykasse for leder, medarbeider og HR i samme prosess.</p>
+          <div class="toolkit-grid" id="toolkit-grid"></div>
+        </section>
+
+        <section class="section-block">
+          <h2>Hvorfor turnover blir dyrt</h2>
+          <div class="section-grid cols-3">
+            <article class="card">
+              <h3>Vakans</h3>
+              <p>Når en rolle står tom over tid, øker belastningen i teamet og leveranser kan stoppe opp i kritiske faser.</p>
+            </article>
+            <article class="card">
+              <h3>Onboarding</h3>
+              <p>Opplæring tar tid fra både leder og kolleger. Ny kapasitet kommer gradvis, mens behovet ofte er umiddelbart.</p>
+            </article>
+            <article class="card">
+              <h3>Tapt kontinuitet</h3>
+              <p>Kunnskap om kunder, arbeidsflyt og lokale løsninger forsvinner når en erfaren medarbeider går ut.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel section-block">
+          <h2 class="u-mt-0">Inkludering kan også være et konkurransefortrinn</h2>
+          <p class="u-mb-0">Corporate Inclusive Responsibility (CIR) kan brukes som et praktisk premiss: beholde erfaring, redusere unødig turnover og bygge mer robust drift.</p>
+        </section>
+
+        <section class="panel panel-muted section-block">
+          <h2 class="u-mt-0">Jobber du med HR, bærekraft eller CSRD?</h2>
+          <ul class="u-mb-0">
+            <li>identifisere relevante tiltak</li>
+            <li>strukturere praktiske grep</li>
+            <li>dokumentere at virksomheten jobber med inkludering</li>
+            <li>bygge bro mellom medarbeider, leder og HR</li>
+          </ul>
+        </section>
+
+        <section class="section-block">
+          <h2>FAQ: vanlige spørsmål fra ledere</h2>
+          <div class="faq-list" id="faq-list"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <p class="prototype-note">Konseptutkast / prototype</p>
+  </footer>
+
+  <script>
+    const ROLE_SCENARIOS = [
+      { id: "drift", label: "Driftsrolle", factor: 0.4 },
+      { id: "fag", label: "Fag-/kunnskapsrolle", factor: 1.5 },
+      { id: "leder", label: "Lederrolle", factor: 2.0 },
+    ];
+
+    const ACCOMMODATION_LEVELS = [
+      {
+        title: "Lav direkte kostnad",
+        description: "Grepet kan ofte testes raskt i vanlig drift.",
+        items: ["fleksitid", "hjemmekontor", "pauser", "oppgavejustering"],
+      },
+      {
+        title: "Moderat kostnad",
+        description: "Mindre tilpasninger av fysisk eller teknisk arbeidsmiljø.",
+        items: ["arbeidsstasjon", "skjerming", "mindre fysisk tilpasning"],
+      },
+      {
+        title: "Ved særskilt behov",
+        description: "Tiltak som krever mer bistand eller dokumentasjon.",
+        items: ["ekstern bistand", "hjelpemidler", "merkostnader som i noen tilfeller kan kobles til NAV-ordninger"],
+      },
+    ];
+
+    const TOOLKIT_ITEMS = [
+      {
+        id: "trening-og-toying",
+        title: "Trening og tøying",
+        description: "Legg inn korte, faste bevegelige pauser som avlaster og forebygger stivhet i arbeidsdagen.",
+        tags: ["organisatorisk", "lav kost"],
+      },
+      {
+        id: "fleksitid",
+        title: "Fleksitid",
+        description: "Juster start- og sluttid ved behov, så kapasiteten brukes når medarbeideren fungerer best.",
+        tags: ["organisatorisk", "lav kost"],
+      },
+      {
+        id: "kontor-med-dor",
+        title: "Kontor med dør",
+        description: "Tilby roligere arbeidsplass med mindre avbrytelser når smerte eller tretthet gjør konsentrasjon krevende.",
+        tags: ["fysisk", "moderat kost"],
+      },
+      {
+        id: "parkeringsplass",
+        title: "Parkeringsplass",
+        description: "Kortere vei mellom bil og arbeidsplass kan redusere belastning betydelig i perioder.",
+        tags: ["fysisk", "situasjonsavhengig"],
+      },
+      {
+        id: "hjemmekontor",
+        title: "Hjemmekontor",
+        description: "Gi rom for dager med mer kontroll over pauser, arbeidsstilling og energiutnyttelse.",
+        tags: ["organisatorisk", "lav kost"],
+      },
+      {
+        id: "toalett-naer-arbeidsplassen",
+        title: "Toalett nær arbeidsplassen",
+        description: "Praktisk nærhet kan være avgjørende for trygghet og funksjon i en vanlig arbeidsdag.",
+        tags: ["fysisk", "lav kost"],
+      },
+      {
+        id: "smaa-og-store-oppgaver",
+        title: "Små og store oppgaver",
+        description: "Fordel oppgaver etter dagsform, slik at kvalitet opprettholdes uten at medarbeideren faller ut.",
+        tags: ["organisatorisk", "lav kost"],
+      },
+      {
+        id: "arbeidsstasjon",
+        title: "Arbeidsstasjon",
+        description: "Tilpass stol, bord og utstyr for bedre ergonomi og lavere smertebelastning over tid.",
+        tags: ["fysisk", "moderat kost"],
+      },
+      {
+        id: "hvilerom",
+        title: "Hvilerom",
+        description: "Et enkelt rom for korte pauser kan bidra til å opprettholde arbeidskapasitet gjennom dagen.",
+        tags: ["fysisk", "situasjonsavhengig"],
+      },
+    ];
+
+    const FAQ_ITEMS = [
+      {
+        question: "Er dette urettferdig for andre ansatte?",
+        answer: "Rettferdighet i praksis handler om at medarbeidere får det de trenger for å levere stabilt. Når en nøkkelperson blir i jobb, reduseres også belastning og usikkerhet i resten av teamet.",
+      },
+      {
+        question: "Blir dette dyrt for virksomheten?",
+        answer: "Mange tiltak er enkle å prøve og koster lite. Kostnaden ved å miste kompetanse er ofte høyere enn kostnaden ved å tilpasse arbeidshverdagen.",
+      },
+      {
+        question: "Hvordan vet vi hvilke tiltak som faktisk virker?",
+        answer: "Start med få, konkrete tiltak, avtal evaluering, og juster underveis. Felles oppfølging mellom medarbeider, leder og HR gir best effekt.",
+      },
+    ];
+
+    const EMPLOYEE_SCENARIOS = [
+      {
+        title: "Slik forbereder du deg til samtalen",
+        body: "Beskriv hvilke situasjoner som stjeler energi, og foreslå ett eller to realistiske grep å teste først.",
+        link: "Les veiledningen her",
+      },
+      {
+        title: "Dine rettigheter – kort fortalt",
+        body: "Arbeidsmiljøloven § 4-6 gir rett til individuell tilrettelegging så langt det er mulig.",
+        link: "Se dine rettigheter",
+      },
+      {
+        title: "\"Gaven til sjefen\"",
+        body: "Del arbeidsgiversiden med ni konkrete tiltak. Da blir samtalen enklere og mer løsningsorientert fra start.",
+        link: "Bytt til Arbeidsgiver-visning",
+      },
+    ];
+
+    const EMPLOYEE_TOOLKIT_IDS = [
+      "fleksitid",
+      "hjemmekontor",
+      "kontor-med-dor",
+      "smaa-og-store-oppgaver",
+      "hvilerom",
+    ];
+
+    const tabs = Array.from(document.querySelectorAll(".tab-btn"));
+    const views = Array.from(document.querySelectorAll(".view"));
+    const roleSelect = document.getElementById("role-select");
+    const salarySlider = document.getElementById("salary-slider");
+    const salaryDisplay = document.getElementById("salary-display");
+    const turnoverCost = document.getElementById("turnover-cost");
+    const accommodationGrid = document.getElementById("accommodation-grid");
+    const toolkitGrid = document.getElementById("toolkit-grid");
+    const employeeToolkitList = document.getElementById("employee-toolkit-list");
+    const faqList = document.getElementById("faq-list");
+    const employeeScenarios = document.getElementById("ansatt-scenarios");
+    const copyBtn = document.getElementById("copy-email-btn");
+    const emailBtn = document.getElementById("open-email-btn");
+    const emailText = document.getElementById("email-text");
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat("no-NO").format(Math.round(value)) + " kr";
+    }
+
+    function getSelectedRole() {
+      const selectedId = roleSelect.value;
+      return ROLE_SCENARIOS.find((role) => role.id === selectedId) || ROLE_SCENARIOS[1];
+    }
+
+    function getIconByIndex(index) {
+      const variants = [
+        '<path d="M4 14h16"></path><path d="M6 10h12"></path><path d="M8 6h8"></path>',
+        '<path d="M6 3v18"></path><path d="M18 3v18"></path><path d="M6 12h12"></path>',
+        '<rect x="5" y="4" width="14" height="16" rx="2"></rect><path d="M9 9h6"></path><path d="M9 14h6"></path>',
+      ];
+      return variants[index % variants.length];
+    }
+
+    function updateCalculator() {
+      const salary = Number(salarySlider.value);
+      const role = getSelectedRole();
+      const turnover = salary * role.factor;
+      salaryDisplay.textContent = formatCurrency(salary);
+      turnoverCost.textContent = formatCurrency(turnover);
+    }
+
+    function switchTab(viewId) {
+      views.forEach((view) => {
+        view.classList.toggle("active", view.id === viewId);
+      });
+      tabs.forEach((tab) => {
+        const isActive = tab.dataset.view === viewId;
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-selected", isActive ? "true" : "false");
+      });
+    }
+
+    function renderRoleOptions() {
+      roleSelect.innerHTML = ROLE_SCENARIOS.map(
+        (role) => `<option value="${role.id}">${role.label}</option>`
+      ).join("");
+      roleSelect.value = "fag";
+    }
+
+    function renderAccommodationLevels() {
+      accommodationGrid.innerHTML = ACCOMMODATION_LEVELS.map((level) => `
+        <article class="card accommodation-card">
+          <h3>${level.title}</h3>
+          <p>${level.description}</p>
+          <ul>${level.items.map((item) => `<li>${item}</li>`).join("")}</ul>
+        </article>
+      `).join("");
+    }
+
+    function renderToolkit() {
+      toolkitGrid.innerHTML = TOOLKIT_ITEMS.map((item, index) => `
+        <article class="toolkit-card">
+          <div class="toolkit-head">
+            <span class="toolkit-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                ${getIconByIndex(index)}
+              </svg>
+            </span>
+            <h3 class="toolkit-title">${item.title}</h3>
+          </div>
+          <p class="toolkit-desc">${item.description}</p>
+          <div class="toolkit-tags">${item.tags.map((tag) => `<span class="toolkit-tag">${tag}</span>`).join("")}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderEmployeeToolkit() {
+      const selectedItems = TOOLKIT_ITEMS.filter((item) => EMPLOYEE_TOOLKIT_IDS.includes(item.id));
+      employeeToolkitList.innerHTML = selectedItems.map((item, index) => `
+        <article class="card">
+          <div class="toolkit-head">
+            <span class="toolkit-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                ${getIconByIndex(index + 1)}
+              </svg>
+            </span>
+            <h3 class="toolkit-title">${item.title}</h3>
+          </div>
+          <p>${item.description}</p>
+          <div class="toolkit-tags">${item.tags.map((tag) => `<span class="toolkit-tag">${tag}</span>`).join("")}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderFaq() {
+      faqList.innerHTML = FAQ_ITEMS.map((item) => `
+        <details class="faq-details">
+          <summary class="faq-summary">${item.question}</summary>
+          <div class="faq-content"><p>${item.answer}</p></div>
+        </details>
+      `).join("");
+    }
+
+    function renderEmployeeScenarios() {
+      employeeScenarios.innerHTML = EMPLOYEE_SCENARIOS.map((item, index) => `
+        <article class="module-item">
+          <div class="module-icon-slot" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              ${getIconByIndex(index)}
+            </svg>
+          </div>
+          <div class="module-content">
+            <h3>${item.title}</h3>
+            <p>${item.body}</p>
+            <a href="#" data-tab-target="${index === 2 ? "arbeidsgiver" : ""}">${item.link}</a>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function copyEmail() {
+      navigator.clipboard.writeText(emailText.innerText).then(() => {
+        const original = copyBtn.textContent;
+        copyBtn.textContent = "Kopiert";
+        setTimeout(() => {
+          copyBtn.textContent = original;
+        }, 2000);
+      }).catch(() => {
+        alert("Kunne ikke kopiere teksten. Marker teksten manuelt.");
+      });
+    }
+
+    function openEmail() {
+      const subject = encodeURIComponent("Forslag til tiltak for å sikre min kontinuitet og leveranse i [Avdeling]");
+      const body = encodeURIComponent(emailText.innerText.replace(/\n{3,}/g, "\n\n"));
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => switchTab(tab.dataset.view));
+    });
+
+    roleSelect.addEventListener("change", updateCalculator);
+    salarySlider.addEventListener("input", updateCalculator);
+    copyBtn.addEventListener("click", copyEmail);
+    emailBtn.addEventListener("click", openEmail);
+
+    document.addEventListener("click", (event) => {
+      const target = event.target.closest("[data-tab-target]");
+      if (!target) return;
+      const tabTarget = target.getAttribute("data-tab-target");
+      if (!tabTarget) return;
+      event.preventDefault();
+      switchTab(tabTarget);
+      document.querySelector(".mode-switch-wrap").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    renderRoleOptions();
+    renderAccommodationLevels();
+    renderToolkit();
+    renderEmployeeToolkit();
+    renderFaq();
+    renderEmployeeScenarios();
+    updateCalculator();
+  </script>
+</body>
+</html>
