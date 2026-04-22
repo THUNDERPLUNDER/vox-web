@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>NRF prototype v0.7a — Kompetanse i arbeid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* TOKENS */
+    :root {
+      --nrf-dark-blue: #003366;
+      --nrf-light-blue: #e0f2f5;
+      --nrf-cyan: #0099cc;
+      --text-main: #222222;
+      --text-muted: #666666;
+      --bg-white: #ffffff;
+      --surface-soft: #f9f9f9;
+      --surface-blue: #f4f7fb;
+      --border-soft: #e0e0e0;
+      --border-blue: #d0dbe5;
+      --success-bg: #e6f4ea;
+      --success-border: #bce4c6;
+      --danger-bg: #ffebe9;
+      --danger-border: #ffc1c0;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --container-max: 860px;
+    }
+
+    /* BASE */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Montserrat", sans-serif;
+      margin: 0;
+      color: var(--text-main);
+      line-height: 1.6;
+      background: var(--bg-white);
+    }
+
+    h1, h2, h3 {
+      margin-top: 0;
+      font-family: "Merriweather", serif;
+      font-weight: 400;
+      color: var(--text-main);
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin: 42px 0 18px;
+    }
+
+    h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin: 0 0 16px;
+    }
+
+    a {
+      color: var(--nrf-dark-blue);
+      text-decoration: underline;
+    }
+
+    /* LAYOUT */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--bg-white);
+      border-bottom: 2px solid var(--nrf-cyan);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-nrf {
+      font-family: "Merriweather", serif;
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--nrf-dark-blue);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text {
+      display: none;
+      font-family: "Merriweather", serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--nrf-dark-blue);
+      text-transform: uppercase;
+    }
+
+    @media (min-width: 420px) {
+      .logo-text {
+        display: block;
+      }
+    }
+
+    .menu-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+
+    .mode-switch-wrap {
+      position: sticky;
+      top: 62px;
+      z-index: 80;
+      background: var(--bg-white);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .mode-switch {
+      display: flex;
+      background: var(--nrf-dark-blue);
+    }
+
+    .mode-note {
+      margin: 0;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      background: #f6f6f6;
+    }
+
+    .hero {
+      background: var(--nrf-light-blue);
+      padding: 34px 20px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 28px 20px 70px;
+    }
+
+    .breadcrumbs {
+      margin-bottom: 24px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .view {
+      display: none;
+      animation: fade-in 0.25s ease;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .prototype-note {
+      margin-top: 44px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-soft);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* COMPONENTS */
+    .tab-btn {
+      flex: 1;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 12px;
+      background: none;
+      color: #fff;
+      font-family: "Montserrat", sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0.64;
+      cursor: pointer;
+      transition: opacity 0.2s ease, background-color 0.2s ease;
+    }
+
+    .tab-btn.active {
+      opacity: 1;
+      border-bottom-color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-inline {
+      display: inline-block;
+      padding: 12px 0;
+      border-bottom: 2px solid var(--nrf-dark-blue);
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .panel {
+      margin: 28px 0;
+      padding: 24px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border-soft);
+      border-left: 4px solid var(--nrf-dark-blue);
+    }
+
+    .panel-muted {
+      border-left-color: #9bb7cf;
+      background: #f5f8fb;
+    }
+
+    .small-note {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .section-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    @media (min-width: 720px) {
+      .section-grid.cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .section-grid.cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .card {
+      background: var(--bg-white);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+
+    .card h3 {
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .card p {
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .card ul {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 14px;
+    }
+
+    .module-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .module-item {
+      display: flex;
+      gap: 14px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .module-icon-slot {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      margin-top: 3px;
+      color: var(--nrf-dark-blue);
+    }
+
+    .module-icon-slot svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .module-content h3 {
+      margin: 0 0 8px;
+      font-family: "Montserrat", sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .module-content p {
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+
+    .email-template {
+      margin: 30px 0;
+      border: 1px solid var(--border-soft);
+      background: var(--surface-soft);
+      padding: 24px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .action-btn {
+      min-width: 190px;
+      padding: 13px;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      font-family: "Montserrat", sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .copy-btn {
+      color: var(--nrf-dark-blue);
+      background: var(--bg-white);
+      border: 1px solid var(--nrf-dark-blue);
+    }
+
+    .email-btn {
+      color: #fff;
+      background: var(--nrf-dark-blue);
+      border: 1px solid var(--nrf-dark-blue);
+    }
+
+    .email-template blockquote {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .highlight {
+      padding: 1px 4px;
+      border-bottom: 1px dashed #d4b855;
+      background: #ffeeb2;
+    }
+
+    .calculator-box {
+      margin: 30px 0 16px;
+      padding: 24px;
+      border: 1px solid var(--border-blue);
+      border-radius: var(--radius-md);
+      background: var(--surface-blue);
+    }
+
+    .calc-controls {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 720px) {
+      .calc-controls {
+        grid-template-columns: 1fr 1fr;
+        align-items: end;
+      }
+    }
+
+    .calc-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .calc-select,
+    .calc-slider {
+      width: 100%;
+    }
+
+    .calc-select {
+      padding: 10px;
+      border: 1px solid #bccadb;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      font-family: "Montserrat", sans-serif;
+      font-size: 14px;
+    }
+
+    .calc-slider {
+      accent-color: var(--nrf-dark-blue);
+    }
+
+    .calc-turnover-result {
+      padding: 16px;
+      border: 1px solid var(--danger-border);
+      border-radius: var(--radius-sm);
+      background: var(--danger-bg);
+      color: #9f1414;
+    }
+
+    .calc-turnover-result strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 28px;
+      line-height: 1.2;
+      font-family: "Montserrat", sans-serif;
+    }
+
+    .accommodation-grid {
+      margin-top: 16px;
+    }
+
+    .accommodation-card {
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--success-border);
+      background: var(--success-bg);
+    }
+
+    .accommodation-card h3 {
+      margin-bottom: 6px;
+      font-family: "Montserrat", sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .accommodation-card ul {
+      margin-bottom: 10px;
+    }
+
+    .faq-list {
+      margin-top: 20px;
+    }
+
+    .faq-details {
+      margin-bottom: 14px;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      background: var(--surface-soft);
+    }
+
+    .faq-summary {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      list-style: none;
+      cursor: pointer;
+      padding: 15px 18px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--nrf-dark-blue);
+    }
+
+    .faq-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-summary::before {
+      content: "+";
+      width: 18px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .faq-details[open] .faq-summary::before {
+      content: "−";
+    }
+
+    .faq-content {
+      padding: 14px 18px 18px;
+      border-top: 1px solid #ddd;
+      background: #fff;
+      font-size: 14px;
+    }
+
+    .faq-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* UTILITIES */
+    .u-mt-0 {
+      margin-top: 0;
+    }
+
+    .u-mb-0 {
+      margin-bottom: 0;
+    }
+
+    .u-muted {
+      color: var(--text-muted);
+    }
+
+    .u-uppercase {
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo-container">
+      <div class="logo-nrf">NRF</div>
+      <div class="logo-text">Norsk Revmatikerforbund</div>
+    </div>
+    <div class="menu-btn" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      Meny
+    </div>
+  </header>
+
+  <div class="mode-switch-wrap">
+    <div class="mode-switch" role="tablist" aria-label="Velg perspektiv">
+      <button class="tab-btn active" id="tab-ansatt" data-view="ansatt" role="tab" aria-selected="true" aria-controls="ansatt">
+        Ansatt
+      </button>
+      <button class="tab-btn" id="tab-arbeidsgiver" data-view="arbeidsgiver" role="tab" aria-selected="false" aria-controls="arbeidsgiver">
+        Arbeidsgiver
+      </button>
+    </div>
+    <p class="mode-note">Samme utfordring. To innganger: for deg som arbeidstaker, og for deg som arbeidsgiver.</p>
+  </div>
+
+  <main>
+    <section id="ansatt" class="view active" role="tabpanel" aria-labelledby="tab-ansatt">
+      <div class="hero">
+        <h1>Føler du deg til bry? Det er du ikke.</h1>
+        <p>Du besitter kritisk kompetanse som bedriften din trenger. Her får du verktøyene som gjør det tryggere å be om tilrettelegging, slik at du kan stå i jobb med god helse.</p>
+      </div>
+
+      <div class="container">
+        <div class="breadcrumbs">
+          <a href="#">Forside</a> / <a href="#">Medlemskap</a> / Tilrettelegging
+        </div>
+
+        <h2>Send dette forslaget til din leder</h2>
+        <p>Send denne, så slipper du å ta det vanskelige første steget muntlig. Malen fokuserer på verdi for virksomheten og inviterer til felles problemløsning.</p>
+
+        <div class="email-template">
+          <div class="button-group">
+            <button class="action-btn copy-btn" id="copy-email-btn" type="button">Kopier tekst</button>
+            <button class="action-btn email-btn" id="open-email-btn" type="button">Åpne i e-post</button>
+          </div>
+          <blockquote id="email-text">
+            <strong>Emne:</strong> Forslag til tiltak for å sikre min kontinuitet og leveranse i <span class="highlight">[Avdeling]</span><br><br>
+            Hei <span class="highlight">[Leders navn]</span>,<br><br>
+            Jeg setter stor pris på min rolle her i <span class="highlight">[Bedriftens navn]</span> og ønsker å sikre at jeg kan fortsette å bidra med min kompetanse på best mulig måte fremover.<br><br>
+            Som vi har snakket om, har jeg noen helseutfordringer som gjør at jeg i perioder har behov for visse justeringer i arbeidshverdagen. For å unngå sykefravær og sikre at jeg kan opprettholde min produktivitet, ønsker jeg å foreslå et kort møte for å se på noen enkle tilretteleggingstiltak.<br><br>
+            Jeg har sett på noen løsninger som jeg tror vil fungere godt for både meg og teamet, og som også er i tråd med bedriftens fokus på å beholde erfaring og kontinuitet.<br><br>
+            Ser frem til å høre når det passer for deg.<br><br>
+            Vennlig hilsen,<br>
+            <span class="highlight">[Ditt navn]</span>
+          </blockquote>
+        </div>
+
+        <h2>Din verktøykasse for møtet</h2>
+        <div class="module-list" id="ansatt-scenarios"></div>
+      </div>
+    </section>
+
+    <section id="arbeidsgiver" class="view" role="tabpanel" aria-labelledby="tab-arbeidsgiver">
+      <div class="hero">
+        <h1>Slik beholder du viktig kompetanse</h1>
+        <p>Turnover er dyrt. Mange tiltak for å beholde en erfaren medarbeider er små, praktiske og gjennomførbare i vanlig drift.</p>
+        <p class="small-note u-mb-0">Bygger på erfaringene fra NRFs initiativ <strong>Kronisk kompetanse</strong>.</p>
+      </div>
+
+      <div class="container">
+        <div class="breadcrumbs">
+          <a href="#">Forside</a> / <a href="#">Næringsliv</a> / Tilrettelegging i arbeid
+        </div>
+
+        <h2>Sammenlign risiko ved turnover og nivå for tiltak</h2>
+        <p>Bruk rolle og årslønn for å se et scenario for turnover-kostnad. Sammenlign med tre tiltaksnivåer på grønn side.</p>
+
+        <section class="calculator-box" aria-label="Turnover og tiltak">
+          <div class="calc-controls">
+            <div>
+              <label for="role-select" class="calc-label">Rolle</label>
+              <select id="role-select" class="calc-select"></select>
+            </div>
+            <div>
+              <label for="salary-slider" class="calc-label">Årslønn: <span id="salary-display">600 000 kr</span></label>
+              <input id="salary-slider" class="calc-slider" type="range" min="400000" max="1500000" step="50000" value="600000">
+            </div>
+          </div>
+
+          <div class="calc-turnover-result">
+            Scenario for turnover-kostnad
+            <strong id="turnover-cost">900 000 kr</strong>
+          </div>
+
+          <div class="section-grid cols-3 accommodation-grid" id="accommodation-grid"></div>
+        </section>
+
+        <div class="panel panel-muted">
+          <p class="u-mb-0 small-note">
+            <strong>Metode:</strong> Turnover-tallene over er scenarioer, ikke fasit. Grønn side viser typiske tiltak og kostnadsnivå, ikke et eksakt regnestykke.
+            Relevans mot NAV-ordninger må vurderes konkret i hvert tilfelle.
+          </p>
+        </div>
+
+        <h2>Hvorfor turnover blir dyrt</h2>
+        <div class="section-grid cols-3">
+          <article class="card">
+            <h3>Vakans</h3>
+            <p>Perioden før stillingen fylles gir ofte forsinkelser, ekstra belastning på teamet og lavere leveransekvalitet.</p>
+          </article>
+          <article class="card">
+            <h3>Onboarding</h3>
+            <p>Ny person må lære systemer, kunder og kultur. Tiden hos leder og kolleger er en betydelig indirekte kostnad.</p>
+          </article>
+          <article class="card">
+            <h3>Tapt kontinuitet</h3>
+            <p>Nøkkelkunnskap om relasjoner, arbeidsflyt og historikk forsvinner ut, og må bygges opp igjen over tid.</p>
+          </article>
+        </div>
+
+        <section class="panel">
+          <h2 class="u-mt-0">Inkludering kan også være et konkurransefortrinn</h2>
+          <p class="u-mb-0">
+            Corporate Inclusive Responsibility (CIR) kan forstås som et praktisk styringsgrep: beholde erfarne folk, redusere unødig turnover og bygge mer robust drift over tid.
+          </p>
+        </section>
+
+        <section class="panel panel-muted">
+          <h2 class="u-mt-0">Jobber du med HR, bærekraft eller CSRD?</h2>
+          <ul class="u-mb-0">
+            <li>identifisere relevante tiltak</li>
+            <li>strukturere praktiske grep</li>
+            <li>dokumentere at virksomheten jobber med inkludering</li>
+            <li>bygge bro mellom medarbeider, leder og HR</li>
+          </ul>
+        </section>
+
+        <h2>FAQ: vanlige spørsmål fra ledere</h2>
+        <div class="faq-list" id="faq-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <p class="prototype-note">Konseptutkast / prototype</p>
+  </footer>
+
+  <script>
+    const ROLE_SCENARIOS = [
+      { id: "drift", label: "Driftsrolle", factor: 0.4 },
+      { id: "fag", label: "Fag-/kunnskapsrolle", factor: 1.5 },
+      { id: "leder", label: "Lederrolle", factor: 2.0 },
+    ];
+
+    const ACCOMMODATION_LEVELS = [
+      {
+        title: "Lav direkte kostnad",
+        description: "Typisk grep i ordinær drift med liten eller ingen direkte investering.",
+        items: ["fleksitid", "hjemmekontor", "pauser", "oppgavejustering"],
+      },
+      {
+        title: "Moderat kostnad",
+        description: "Mindre fysiske eller tekniske justeringer i arbeidshverdagen.",
+        items: ["arbeidsstasjon", "skjerming", "mindre fysisk tilpasning"],
+      },
+      {
+        title: "Ved særskilt behov",
+        description: "Tiltak med høyere kostnad eller mer formalisert oppfølging.",
+        items: ["ekstern bistand", "hjelpemidler", "dokumenterbare merkostnader som i noen tilfeller kan kobles til NAV-ordninger"],
+      },
+    ];
+
+    const FAQ_ITEMS = [
+      {
+        question: "Er dette urettferdig for andre ansatte?",
+        answer:
+          "Rettferdighet i praksis handler om at medarbeidere får det de trenger for å kunne levere. Når en erfaren medarbeider blir i jobb, reduseres også belastningen på resten av teamet.",
+      },
+      {
+        question: "Hvem tar regningen?",
+        answer:
+          "Mange tiltak er små og kostnadsnære i drift. Ved større behov kan relevante ordninger vurderes konkret, blant annet opp mot NAV og andre støtteordninger.",
+      },
+    ];
+
+    // Prepared for v0.7b (not fully rendered this round).
+    const TOOLKIT_ITEMS = [
+      { id: "samtaleguide", audience: "arbeidsgiver", status: "prepared" },
+      { id: "tiltaksmal", audience: "arbeidsgiver", status: "prepared" },
+      { id: "dokumentasjonsspor", audience: "hr", status: "prepared" },
+    ];
+
+    const EMPLOYEE_SCENARIOS = [
+      {
+        title: "Slik forbereder du deg til samtalen",
+        body: "Gå inn i møtet med fokus på funksjon og løsning. Identifiser tidstyver og foreslå enkle grep.",
+        link: "Les veiledningen her",
+      },
+      {
+        title: "Dine rettigheter – kort fortalt",
+        body: "Arbeidsmiljøloven § 4-6 gir rett til individuell tilrettelegging så langt det er mulig.",
+        link: "Se dine rettigheter",
+      },
+      {
+        title: "\"Gaven til sjefen\"",
+        body: "Del arbeidsgiversiden i denne prototypen for å gi leder en konkret inngang til tiltak, kostnadsnivå og støtteveier.",
+        link: "Bytt til Arbeidsgiver-visning",
+      },
+    ];
+
+    const tabs = Array.from(document.querySelectorAll(".tab-btn"));
+    const views = Array.from(document.querySelectorAll(".view"));
+    const roleSelect = document.getElementById("role-select");
+    const salarySlider = document.getElementById("salary-slider");
+    const salaryDisplay = document.getElementById("salary-display");
+    const turnoverCost = document.getElementById("turnover-cost");
+    const accommodationGrid = document.getElementById("accommodation-grid");
+    const faqList = document.getElementById("faq-list");
+    const employeeScenarios = document.getElementById("ansatt-scenarios");
+    const copyBtn = document.getElementById("copy-email-btn");
+    const emailBtn = document.getElementById("open-email-btn");
+    const emailText = document.getElementById("email-text");
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat("no-NO").format(Math.round(value)) + " kr";
+    }
+
+    function getSelectedRole() {
+      const selectedId = roleSelect.value;
+      return ROLE_SCENARIOS.find((role) => role.id === selectedId) || ROLE_SCENARIOS[1];
+    }
+
+    function updateCalculator() {
+      const salary = Number(salarySlider.value);
+      const role = getSelectedRole();
+      const turnover = salary * role.factor;
+      salaryDisplay.textContent = formatCurrency(salary);
+      turnoverCost.textContent = formatCurrency(turnover);
+    }
+
+    function switchTab(viewId) {
+      views.forEach((view) => {
+        view.classList.toggle("active", view.id === viewId);
+      });
+      tabs.forEach((tab) => {
+        const isActive = tab.dataset.view === viewId;
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-selected", isActive ? "true" : "false");
+      });
+    }
+
+    function renderRoleOptions() {
+      roleSelect.innerHTML = ROLE_SCENARIOS.map(
+        (role) => `<option value="${role.id}">${role.label}</option>`
+      ).join("");
+      roleSelect.value = "fag";
+    }
+
+    function renderAccommodationLevels() {
+      accommodationGrid.innerHTML = ACCOMMODATION_LEVELS.map((level) => `
+        <article class="card accommodation-card">
+          <h3>${level.title}</h3>
+          <p>${level.description}</p>
+          <ul>${level.items.map((item) => `<li>${item}</li>`).join("")}</ul>
+        </article>
+      `).join("");
+    }
+
+    function renderFaq() {
+      faqList.innerHTML = FAQ_ITEMS.map((item) => `
+        <details class="faq-details">
+          <summary class="faq-summary">${item.question}</summary>
+          <div class="faq-content"><p>${item.answer}</p></div>
+        </details>
+      `).join("");
+    }
+
+    function renderEmployeeScenarios() {
+      employeeScenarios.innerHTML = EMPLOYEE_SCENARIOS.map((item, index) => `
+        <article class="module-item">
+          <div class="module-icon-slot" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              ${
+                index === 0
+                  ? '<path d="M8 3h8l2 2v14l-2 2H8l-2-2V5l2-2z"></path><path d="M9 8h6"></path><path d="M9 12h6"></path><path d="M9 16h4"></path>'
+                  : index === 1
+                  ? '<circle cx="12" cy="12" r="9"></circle><path d="M12 8v4l3 2"></path>'
+                  : '<rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M4 10h16"></path><path d="M12 14v5"></path>'
+              }
+            </svg>
+          </div>
+          <div class="module-content">
+            <h3>${item.title}</h3>
+            <p>${item.body}</p>
+            <a href="#" data-tab-target="${index === 2 ? "arbeidsgiver" : ""}">${item.link}</a>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function copyEmail() {
+      navigator.clipboard.writeText(emailText.innerText).then(() => {
+        const original = copyBtn.textContent;
+        copyBtn.textContent = "Kopiert";
+        setTimeout(() => {
+          copyBtn.textContent = original;
+        }, 2000);
+      }).catch(() => {
+        alert("Kunne ikke kopiere teksten. Marker teksten manuelt.");
+      });
+    }
+
+    function openEmail() {
+      const subject = encodeURIComponent("Forslag til tiltak for å sikre min kontinuitet og leveranse i [Avdeling]");
+      const body = encodeURIComponent(emailText.innerText.replace(/\n{3,}/g, "\n\n"));
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => switchTab(tab.dataset.view));
+    });
+
+    roleSelect.addEventListener("change", updateCalculator);
+    salarySlider.addEventListener("input", updateCalculator);
+    copyBtn.addEventListener("click", copyEmail);
+    emailBtn.addEventListener("click", openEmail);
+
+    document.addEventListener("click", (event) => {
+      const target = event.target.closest("[data-tab-target]");
+      if (!target) return;
+      const tabTarget = target.getAttribute("data-tab-target");
+      if (!tabTarget) return;
+      event.preventDefault();
+      switchTab(tabTarget);
+      document.querySelector(".mode-switch-wrap").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    renderRoleOptions();
+    renderAccommodationLevels();
+    renderFaq();
+    renderEmployeeScenarios();
+    updateCalculator();
+  </script>
+</body>
+</html>
