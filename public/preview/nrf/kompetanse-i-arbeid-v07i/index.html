@@ -803,6 +803,18 @@
       }
     };
 
+    const MEASURE_VISUAL_LEVELS = {
+      low: 5000,
+      mid: 30000,
+      review: 90000,
+    };
+
+    const MEASURE_VISUAL_MAX_PERCENT = {
+      low: 25,
+      mid: 40,
+      review: 50,
+    };
+
     const tabs = Array.from(document.querySelectorAll(".tab-btn"));
     const views = Array.from(document.querySelectorAll(".view"));
     const roleSegment = document.getElementById("role-segment");
@@ -831,9 +843,9 @@
       return new Intl.NumberFormat("no-NO").format(Math.round(value)) + " kr";
     }
 
-    function getRelativeBarWidth(value, turnover, minimumPercent) {
+    function getRelativeBarWidth(value, turnover, minimumPercent, maximumPercent) {
       const ratioPercent = (value / Math.max(turnover, 1)) * 100;
-      const clamped = Math.max(minimumPercent, Math.min(95, ratioPercent));
+      const clamped = Math.max(minimumPercent, Math.min(maximumPercent, ratioPercent));
       return `${clamped.toFixed(2)}%`;
     }
 
@@ -854,18 +866,36 @@
       const salary = Number(salarySlider.value);
       const role = getSelectedRole();
       const turnover = salary * role.factor;
-      const lowMax = 10000;
-      const midMax = 60000;
-      const highMax = 180000;
       salaryDisplay.textContent = formatCurrency(salary);
       turnoverCost.textContent = formatCurrency(turnover);
       if (turnoverCompareValue) turnoverCompareValue.textContent = formatCurrency(turnover);
       if (rangeLowValue) rangeLowValue.textContent = "0–10 000 kr";
       if (rangeMidValue) rangeMidValue.textContent = "10 000–60 000 kr";
       if (rangeHighValue) rangeHighValue.textContent = "60 000–180 000 kr";
-      if (barLow) barLow.style.width = getRelativeBarWidth(lowMax, turnover, 1.5);
-      if (barMid) barMid.style.width = getRelativeBarWidth(midMax, turnover, 2.5);
-      if (barReview) barReview.style.width = getRelativeBarWidth(highMax, turnover, 4);
+      if (barLow) {
+        barLow.style.width = getRelativeBarWidth(
+          MEASURE_VISUAL_LEVELS.low,
+          turnover,
+          1.5,
+          MEASURE_VISUAL_MAX_PERCENT.low
+        );
+      }
+      if (barMid) {
+        barMid.style.width = getRelativeBarWidth(
+          MEASURE_VISUAL_LEVELS.mid,
+          turnover,
+          2.5,
+          MEASURE_VISUAL_MAX_PERCENT.mid
+        );
+      }
+      if (barReview) {
+        barReview.style.width = getRelativeBarWidth(
+          MEASURE_VISUAL_LEVELS.review,
+          turnover,
+          4,
+          MEASURE_VISUAL_MAX_PERCENT.review
+        );
+      }
     }
 
     function switchTab(viewId) {
