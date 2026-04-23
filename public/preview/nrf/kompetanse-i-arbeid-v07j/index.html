@@ -106,8 +106,13 @@
       .module-list { margin-top: 0.76rem; gap: 0.65rem; }
       .module-item { gap: 0.56rem; padding-bottom: 0.7rem; }
       .calculator { padding: 0.96rem; }
-      .role-segment { gap: 0.46rem; }
-      .role-btn { font-size: 0.78rem; padding: 0.58rem 0.64rem; min-width: 130px; }
+      .role-segment { gap: 0.44rem; }
+      .role-btn {
+        font-size: 0.79rem;
+        padding: 0.62rem 0.68rem;
+        min-width: 0;
+        width: 100%;
+      }
       .turnover-box strong { font-size: clamp(1.25rem, 8vw, 1.58rem); }
       .measure-scale { padding: 0.8rem 0.82rem; }
       .measure-scale h3 { font-size: 0.9rem; }
@@ -303,20 +308,14 @@
     }
 
     .role-segment {
-      display: flex;
-      flex-wrap: nowrap;
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 0.52rem;
       margin-bottom: 0.9rem;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 0.1rem;
     }
     @media (min-width: 720px) {
       .role-segment {
-        display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        overflow-x: visible;
-        padding-bottom: 0;
       }
     }
 
@@ -332,8 +331,8 @@
       font-size: 0.84rem;
       font-weight: 600;
       box-shadow: inset 0 0 0 1px rgba(15, 74, 122, 0.12);
-      flex: 0 0 auto;
-      min-width: 146px;
+      width: 100%;
+      min-height: 44px;
     }
 
     .role-btn.active {
