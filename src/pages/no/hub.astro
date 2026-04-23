@@ -17,7 +17,7 @@ const mandate =
 const topTasks = [
   {
     title: "Forstå hvorfor samtaler blir krevende",
-    text: "Få en rolig forklaring på hva som skjer når lyttebelastning bygger seg opp, og hvordan det påvirker overskudd i hverdagen.",
+    text: "Få en tydelig forklaring på hva som skjer når lyttebelastning bygger seg opp, og hvordan det påvirker overskudd i hverdagen.",
     href: "/no/artikkel/r1-spoke-v01",
     cta: "Gå til R1",
   },
@@ -63,37 +63,53 @@ const spokeEntries = [
 <BaseLayout title={`VOX - ${title}`} currentPath="/no/hub">
   <meta slot="head" name="robots" content="noindex,follow" />
 
-  <main class="py-8 sm:py-10">
-    <Section class="!pt-2 !pb-10 sm:!pt-4 sm:!pb-12">
-      <div class="max-w-3xl">
-        <p class="mb-4 text-xs text-[rgb(var(--muted))]">
+  <main class="py-7 sm:py-10">
+    <Section class="!pt-2 !pb-8 sm:!pt-4 sm:!pb-10">
+      <div class="max-w-5xl">
+        <p class="mb-4 text-xs font-medium uppercase tracking-[0.08em] text-[rgb(var(--muted))]">
           <a href="/no/hubs" class="font-medium text-[rgb(var(--text-secondary))] underline-offset-2 hover:text-[rgb(var(--text))] hover:underline">
             ← Alle emnehuber
           </a>
         </p>
-        <div class="vox-surface-calm">
-          <h1 class="font-display text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl">
-            {title}
-          </h1>
-          <p class="mt-4 text-sm font-semibold text-[rgb(var(--text-secondary))]">
-            Første faktiske hub v0.1 under KlarLyds hub-spoke-modell.
-          </p>
-          <p class="vox-lead mt-5">{mandate}</p>
+        <div class="vox-surface-lifted grid gap-6 sm:gap-7 lg:grid-cols-[1.5fr_1fr] lg:items-start">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.1em] text-[rgb(var(--primary))]">KlarLyd · Emnehub v0.1</p>
+            <h1 class="font-display mt-2 text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl">
+              {title}
+            </h1>
+            <p class="mt-4 text-sm font-semibold text-[rgb(var(--text-secondary))]">
+              Første faktiske hub-side i epic #49.
+            </p>
+            <p class="vox-lead mt-4">{mandate}</p>
+          </div>
+          <div class="vox-surface-tech p-5">
+            <h2 class="text-base font-semibold text-[rgb(var(--text))]">Slik bruker du huben</h2>
+            <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">
+              <li>Velg top task som passer situasjonen din.</li>
+              <li>Gå videre til riktig inngangsartikkel (R1, R2 eller R3).</li>
+              <li>Bruk videre hjelp når du vil formulere neste steg.</li>
+            </ol>
+          </div>
         </div>
       </div>
     </Section>
 
-    <Section tone="band" class="!py-8 sm:!py-10">
-      <div class="max-w-3xl">
-        <h2 class="vox-section-title">Top tasks</h2>
-        <ul class="mt-6 grid list-none gap-3 p-0 sm:gap-4" role="list">
-          {topTasks.map((task) => (
-            <li class="vox-surface-tech">
-              <h3 class="text-sm font-semibold text-[rgb(var(--text))]">{task.title}</h3>
-              <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">{task.text}</p>
-              <p class="mt-3">
-                <a href={task.href} class="text-sm font-semibold text-[rgb(var(--text))] underline-offset-2 hover:underline">
-                  {task.cta} →
+    <Section tone="band" class="!py-7 sm:!py-9">
+      <div class="max-w-5xl">
+        <div class="flex items-end justify-between gap-4">
+          <h2 class="vox-section-title">Top tasks</h2>
+          <p class="hidden text-xs font-semibold uppercase tracking-[0.1em] text-[rgb(var(--muted))] sm:block">Prioriterte innganger</p>
+        </div>
+        <ul class="mt-5 grid list-none gap-3 p-0 sm:mt-6 sm:gap-4 lg:grid-cols-3" role="list">
+          {topTasks.map((task, index) => (
+            <li class="vox-surface-lifted p-5">
+              <p class="text-xs font-semibold uppercase tracking-[0.08em] text-[rgb(var(--primary))]">Top task {index + 1}</p>
+              <h3 class="mt-2 text-base font-semibold text-[rgb(var(--text))]">{task.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">{task.text}</p>
+              <p class="mt-4">
+                <a href={task.href} class="inline-flex items-center gap-1 text-sm font-semibold text-[rgb(var(--text))] underline-offset-2 hover:underline">
+                  {task.cta}
+                  <span aria-hidden="true">→</span>
                 </a>
               </p>
             </li>
@@ -102,21 +118,22 @@ const spokeEntries = [
       </div>
     </Section>
 
-    <Section class="!pt-4 !pb-12 sm:!pb-16">
-      <div class="max-w-3xl">
+    <Section class="!pt-4 !pb-10 sm:!pb-14">
+      <div class="max-w-5xl">
         <h2 class="vox-section-title">Innganger til innhold</h2>
-        <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">
+        <p class="mt-2 max-w-3xl text-sm leading-relaxed text-[rgb(var(--text-secondary))]">
           Velg inngangen som passer situasjonen din nå. Du kan alltid gå tilbake hit og bytte spor.
         </p>
-        <ul class="mt-5 grid list-none gap-3 p-0 sm:gap-4" role="list">
+        <ul class="mt-5 grid list-none gap-3 p-0 sm:gap-4 lg:grid-cols-3" role="list">
           {spokeEntries.map((entry) => (
-            <li class="vox-surface-lifted">
+            <li class="vox-surface-tech p-5">
               <p class="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--primary))]">{entry.eyebrow}</p>
-              <h3 class="mt-1.5 text-lg font-semibold text-[rgb(var(--text))]">{entry.title}</h3>
+              <h3 class="mt-2 text-lg font-semibold text-[rgb(var(--text))]">{entry.title}</h3>
               <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">{entry.description}</p>
-              <p class="mt-3">
-                <a href={entry.href} class="text-sm font-semibold text-[rgb(var(--text))] underline-offset-2 hover:underline">
-                  Les artikkel →
+              <p class="mt-4">
+                <a href={entry.href} class="inline-flex items-center gap-1 text-sm font-semibold text-[rgb(var(--text))] underline-offset-2 hover:underline">
+                  Les artikkel
+                  <span aria-hidden="true">→</span>
                 </a>
               </p>
             </li>
@@ -126,17 +143,17 @@ const spokeEntries = [
     </Section>
 
     <Section class="!pt-0 !pb-8 sm:!pb-12">
-      <div class="max-w-3xl">
-        <div class="vox-surface-calm">
+      <div class="max-w-5xl">
+        <div class="vox-surface-lifted">
           <h2 class="vox-section-title text-lg sm:text-xl">Videre hjelp</h2>
-          <p class="mt-2 text-sm text-[rgb(var(--text-secondary))]">
+          <p class="mt-2 max-w-3xl text-sm text-[rgb(var(--text-secondary))]">
             Trenger du å tenke høyt eller få hjelp til å formulere neste steg? Start med et spørsmål under.
           </p>
           {seeds.length ? (
-            <ul class="mt-4 grid list-none gap-3 p-0" role="list">
+            <ul class="mt-4 grid list-none gap-3 p-0 sm:gap-4 lg:grid-cols-3" role="list">
               {seeds.slice(0, 3).map((seed) => (
                 <li>
-                  <a href={buildChatShellHref(seed.question, "hub")} class="vox-surface-calm-tile p-4">
+                  <a href={buildChatShellHref(seed.question, "hub")} class="vox-surface-calm-tile h-full p-4">
                     <p class="text-sm font-semibold text-[rgb(var(--text))]">{seed.question}</p>
                     {seed.shortAnswer ? (
                       <p class="mt-1.5 text-sm text-[rgb(var(--muted))]">{seed.shortAnswer}</p>
