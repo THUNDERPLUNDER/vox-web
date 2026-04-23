@@ -10,16 +10,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --nrf-blue: #0f4a7a;
-      --nrf-ink: #202327;
-      --nrf-muted: #5f666e;
-      --nrf-cyan: #66bccb;
-      --nrf-wash: #edf6f8;
-      --nrf-wash-2: #f4f8fb;
-      --nrf-border: #dbe3ea;
-      --nrf-border-strong: #c8d3de;
-      --radius-sm: 6px;
-      --radius-md: 10px;
+      --nrf-blue: #3e53a4;
+      --nrf-ink: #222222;
+      --nrf-muted: #5f6368;
+      --nrf-cyan: #58bcc8;
+      --nrf-wash: #dceff2;
+      --nrf-wash-2: #ececea;
+      --nrf-page: #f1f1ef;
+      --nrf-border: #d8d8d4;
+      --nrf-border-strong: #cacac6;
+      --nrf-rose: #efc2c8;
+      --radius-sm: 0;
+      --radius-md: 0;
       --container: 900px;
     }
 
@@ -27,7 +29,7 @@
 
     body {
       margin: 0;
-      background: #fff;
+      background: var(--nrf-page);
       color: var(--nrf-ink);
       font-family: "Domine", Georgia, Cambria, "Times New Roman", Times, serif;
       font-size: 1.125rem;
@@ -132,7 +134,7 @@
       justify-content: space-between;
       padding: 0.75rem 1rem;
       background: #fff;
-      border-bottom: 2px solid var(--nrf-cyan);
+      border-bottom: 1px solid var(--nrf-border);
     }
 
     .logo-wrap { display: flex; align-items: center; gap: 0.7rem; }
@@ -148,14 +150,19 @@
       border-bottom: 1px solid var(--nrf-border);
     }
 
-    .mode-tabs { display: flex; background: var(--nrf-blue); }
+    .mode-tabs {
+      display: flex;
+      background: #fff;
+      border-top: 1px solid var(--nrf-border);
+      border-bottom: 1px solid var(--nrf-border);
+    }
 
     .mode-note {
       margin: 0;
       font-family: "Montserrat", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
       font-size: 0.875rem;
       color: var(--nrf-muted);
-      background: #f7f8fa;
+      background: var(--nrf-wash-2);
       padding: 0.62rem 1rem 0.72rem;
     }
 
@@ -203,21 +210,22 @@
     .tab-btn {
       flex: 1;
       border: 0;
-      border-bottom: 3px solid transparent;
-      color: #fff;
-      background: transparent;
+      border-right: 1px solid var(--nrf-border);
+      border-bottom: 0;
+      color: var(--nrf-ink);
+      background: var(--nrf-wash-2);
       font-family: "Montserrat", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
       font-size: 0.875rem;
       font-weight: 600;
-      opacity: 0.65;
+      opacity: 1;
       padding: 0.82rem;
       cursor: pointer;
     }
+    .tab-btn:last-child { border-right: 0; }
 
     .tab-btn.active {
-      opacity: 1;
-      border-bottom-color: #fff;
-      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      background: var(--nrf-blue);
     }
 
     .small-note { font-family: "Montserrat", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-size: 0.875rem; color: var(--nrf-muted); }
@@ -229,7 +237,7 @@
       padding: 1rem;
     }
 
-    .surface-signal { background: #f1f6fa; border-color: var(--nrf-border-strong); }
+    .surface-signal { background: var(--nrf-wash); border-color: var(--nrf-border-strong); }
     .email-template { margin-top: 0.95rem; }
 
     .button-row { display: flex; flex-wrap: wrap; gap: 0.62rem; margin-bottom: 0.9rem; }
@@ -247,7 +255,7 @@
     }
 
     .btn-primary { background: var(--nrf-blue); color: #fff; }
-    .btn-secondary { background: #fff; color: var(--nrf-blue); }
+    .btn-secondary { background: var(--nrf-cyan); border-color: var(--nrf-cyan); color: var(--nrf-ink); }
     .mail-text { font-size: 0.92rem; margin: 0; }
     .hl { background: #fff0c4; border-bottom: 1px dashed #ceac4b; padding: 0 0.25rem; }
 
@@ -260,7 +268,7 @@
     }
 
     .card {
-      background: #fff;
+      background: var(--nrf-wash-2);
       border: 1px solid var(--nrf-border);
       border-radius: var(--radius-sm);
       padding: 0.9rem;
@@ -299,7 +307,7 @@
     .role-btn {
       border: 1px solid var(--nrf-border-strong);
       border-radius: var(--radius-sm);
-      background: #fff;
+      background: #f8f8f6;
       color: var(--nrf-ink);
       padding: 0.6rem 0.74rem;
       text-align: left;
@@ -309,15 +317,15 @@
       font-weight: 500;
     }
 
-    .role-btn.active { border-color: var(--nrf-blue); background: #eaf3f8; color: var(--nrf-blue); font-weight: 600; }
+    .role-btn.active { border-color: var(--nrf-blue); background: var(--nrf-blue); color: #fff; font-weight: 600; }
 
     .calc-label { display: block; margin-bottom: 0.32rem; font-size: 0.84rem; font-weight: 600; }
     .calc-slider { width: 100%; accent-color: var(--nrf-blue); }
 
     .turnover-box {
       margin-top: 0.25rem;
-      border: 1px solid #dcb8b2;
-      background: #fff0ee;
+      border: 1px solid #d7b1b6;
+      background: #f8e4e7;
       border-radius: var(--radius-sm);
       padding: 0.8rem 0.9rem;
       color: #8f1d1d;
@@ -336,7 +344,7 @@
       margin-top: 0.72rem;
       border: 1px solid var(--nrf-border);
       border-radius: var(--radius-sm);
-      background: #fff;
+      background: #f8f8f6;
       padding: 0.76rem 0.82rem;
     }
 
@@ -356,23 +364,23 @@
     .compare-row { margin-bottom: 0.42rem; }
     .compare-row:last-child { margin-bottom: 0; }
     .compare-meta { display: flex; justify-content: space-between; gap: 0.65rem; margin-bottom: 0.18rem; }
-    .compare-label { font-family: "Montserrat", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-size: 0.8rem; font-weight: 600; color: #35506a; }
-    .compare-value { font-family: "Montserrat", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-size: 0.8rem; color: #45607a; }
-    .compare-bar-track { height: 0.56rem; background: #ebf2f6; border-radius: 999px; overflow: hidden; }
-    .compare-bar { display: block; height: 100%; border-radius: 999px; }
+    .compare-label { font-family: "Montserrat", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-size: 0.8rem; font-weight: 600; color: #3f4d66; }
+    .compare-value { font-family: "Montserrat", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-size: 0.8rem; color: #4d5a72; }
+    .compare-bar-track { height: 0.56rem; background: #e5e8e9; border-radius: 0; overflow: hidden; border: 1px solid var(--nrf-border); }
+    .compare-bar { display: block; height: 100%; border-radius: 0; }
     .compare-row.turnover .compare-bar { width: 100%; background: #c87070; }
     .compare-row.low .compare-bar { width: var(--w-low, 5%); min-width: 10px; background: #8fbea0; }
     .compare-row.mid .compare-bar { width: var(--w-mid, 15%); min-width: 14px; background: #6fa380; }
     .compare-row.review .compare-bar { width: var(--w-review, 30%); min-width: 18px; background: #527c61; }
 
     .acc-grid { margin-top: 0.85rem; }
-    .acc-card { background: #edf7f0; border: 1px solid #b8dbc5; }
+    .acc-card { background: #eef6f0; border: 1px solid #b8d0be; }
     .acc-card h3 { color: #355f46; }
-    .acc-card.acc-low { background: #f2f8f4; border-color: #c5dacd; }
+    .acc-card.acc-low { background: #f4f8f4; border-color: #c5d5ca; }
     .acc-card.acc-low h3 { color: #3f6f4f; }
-    .acc-card.acc-mid { background: #eaf4ed; border-color: #afcbb7; }
+    .acc-card.acc-mid { background: #edf4ee; border-color: #b2c8b7; }
     .acc-card.acc-mid h3 { color: #315f41; }
-    .acc-card.acc-review { background: #e2ece5; border-color: #96b29f; }
+    .acc-card.acc-review { background: #e6ece7; border-color: #9eb2a4; }
     .acc-card.acc-review h3 { color: #294f35; }
     .acc-card h3 { font-size: 0.97rem; }
     .acc-card ul { margin: 0.3rem 0 0; padding-left: 1rem; font-size: 0.88rem; }
@@ -381,7 +389,7 @@
       margin-top: 0.95rem;
       border-top: 1px solid var(--nrf-border);
       border-bottom: 1px solid var(--nrf-border);
-      background: #fff;
+      background: #f8f8f6;
     }
 
     .toolkit-item {
@@ -401,15 +409,15 @@
     .toolkit-try strong { font-family: "Montserrat", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-weight: 600; }
 
     .tag-row { display: flex; flex-wrap: wrap; gap: 0.32rem; }
-    .tag { border: 1px solid #c6d3de; border-radius: 999px; font-size: 0.66rem; color: #33506d; background: #f2f7fb; padding: 0.16rem 0.48rem; letter-spacing: 0.02em; }
-    .tagline { font-family: "Montserrat", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-size: 0.78rem; color: #43607a; }
+    .tag { border: 1px solid #c7c9c7; border-radius: 0; font-size: 0.66rem; color: #3f4b5d; background: #efefed; padding: 0.16rem 0.48rem; letter-spacing: 0.02em; }
+    .tagline { font-family: "Montserrat", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif; font-size: 0.78rem; color: #4d5969; }
 
     .source-list { margin: 0.7rem 0 0; padding-left: 1rem; }
     .source-list li { margin-bottom: 0.46rem; }
     .source-list a { word-break: break-word; }
 
     .faq-list { margin-top: 0.9rem; }
-    .faq { border: 1px solid var(--nrf-border); border-radius: var(--radius-sm); background: #f9fbfc; margin-bottom: 0.62rem; }
+    .faq { border: 1px solid var(--nrf-border); border-radius: var(--radius-sm); background: #f8f8f6; margin-bottom: 0.62rem; }
 
     .faq summary { list-style: none; cursor: pointer; color: var(--nrf-blue); font-size: 0.9rem; font-weight: 600; padding: 0.78rem 0.92rem; display: flex; align-items: center; gap: 0.58rem; }
     .faq summary::-webkit-details-marker { display: none; }
@@ -417,7 +425,7 @@
     .faq summary::before { content: "+"; width: 1rem; text-align: center; font-size: 1.12rem; font-weight: 700; }
     .faq[open] summary::before { content: "−"; }
 
-    .faq-body { border-top: 1px solid var(--nrf-border); background: #fff; padding: 0.72rem 0.92rem 0.86rem; font-size: 0.88rem; }
+    .faq-body { border-top: 1px solid var(--nrf-border); background: #fdfdfc; padding: 0.72rem 0.92rem 0.86rem; font-size: 0.88rem; }
     .u-mb-0 { margin-bottom: 0; }
   </style>
 </head>
