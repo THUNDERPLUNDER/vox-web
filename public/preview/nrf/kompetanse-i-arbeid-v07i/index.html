@@ -361,12 +361,19 @@
     .compare-bar-track { height: 0.56rem; background: #ebf2f6; border-radius: 999px; overflow: hidden; }
     .compare-bar { display: block; height: 100%; border-radius: 999px; }
     .compare-row.turnover .compare-bar { width: 100%; background: #c87070; }
-    .compare-row.low .compare-bar { width: 5%; min-width: 10px; background: #78b9ca; }
-    .compare-row.mid .compare-bar { width: 15%; min-width: 14px; background: #4e93af; }
-    .compare-row.review .compare-bar { width: 30%; min-width: 18px; background: #8aa4b7; }
+    .compare-row.low .compare-bar { width: 5%; min-width: 10px; background: #96c8a0; }
+    .compare-row.mid .compare-bar { width: 15%; min-width: 14px; background: #6fae82; }
+    .compare-row.review .compare-bar { width: 30%; min-width: 18px; background: #4f8563; }
 
     .acc-grid { margin-top: 0.85rem; }
     .acc-card { background: #edf7f0; border: 1px solid #b8dbc5; }
+    .acc-card h3 { color: #355f46; }
+    .acc-card.acc-low { background: #f1f8f2; border-color: #c7ddcd; }
+    .acc-card.acc-low h3 { color: #3f7450; }
+    .acc-card.acc-mid { background: #ebf5ee; border-color: #b6d3bf; }
+    .acc-card.acc-mid h3 { color: #346745; }
+    .acc-card.acc-review { background: #e4efe7; border-color: #9fbfa8; }
+    .acc-card.acc-review h3 { color: #2c583a; }
     .acc-card h3 { font-size: 0.97rem; }
     .acc-card ul { margin: 0.3rem 0 0; padding-left: 1rem; font-size: 0.88rem; }
 
@@ -872,8 +879,9 @@
     }
 
     function renderAccommodationLevels() {
-      accommodationGrid.innerHTML = ACCOMMODATION_LEVELS.map((level) => `
-        <article class="card acc-card">
+      const levelClasses = ["acc-low", "acc-mid", "acc-review"];
+      accommodationGrid.innerHTML = ACCOMMODATION_LEVELS.map((level, index) => `
+        <article class="card acc-card ${levelClasses[index] || ""}">
           <h3>${level.title}</h3>
           <p>${level.description}</p>
           <ul>${level.items.map((item) => `<li>${item}</li>`).join("")}</ul>
