@@ -1,20 +1,63 @@
 ---
-/* CONTRACT: Minimal Slice 01 hub page from Storyblok hub_page + ai_seed_question content. */
+/* CONTRACT: First factual MVP hub for "Bedre lyd i hverdagen" with clear spoke entries. */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Section from "../../components/layout/Section.astro";
 import Footer from "../../components/nav/Footer.astro";
 import { buildChatShellHref } from "../../lib/chat-shell";
-import { fetchAiSeedQuestions, fetchPublishingHub } from "../../lib/storyblok-publishing";
+import { fetchAiSeedQuestions } from "../../lib/storyblok-publishing";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
-const hub = await fetchPublishingHub();
 const seeds = await fetchAiSeedQuestions();
 
-const title = hub?.title || "KlarLyd Hub";
-const intro =
-  hub?.intro ||
-  "Et rolig sted å starte når du vil hjelpe noen du bryr deg om.";
+const title = "Bedre lyd i hverdagen";
+const mandate =
+  "Denne huben samler første praktiske innganger for deg som vil forstå utfordringer, løse konkrete situasjoner og finne neste steg uten å starte på nytt hver gang.";
+
+const topTasks = [
+  {
+    title: "Forstå hvorfor samtaler blir krevende",
+    text: "Få en rolig forklaring på hva som skjer når lyttebelastning bygger seg opp, og hvordan det påvirker overskudd i hverdagen.",
+    href: "/no/artikkel/r1-spoke-v01",
+    cta: "Gå til R1",
+  },
+  {
+    title: "Løse praktiske problemer raskt",
+    text: "Følg en enkel steg-for-steg-guide når høreapparat eller telefon ikke samarbeider, så du kommer raskere videre.",
+    href: "/no/artikkel/r2-spoke-v01",
+    cta: "Gå til R2",
+  },
+  {
+    title: "Få faglig overblikk og forklaring",
+    text: "Les en mer faglig inngang som forklarer mønstre over tid og viser hvilke grep som ofte virker i praksis.",
+    href: "/no/artikkel/r3-spoke-v01",
+    cta: "Gå til R3",
+  },
+];
+
+const spokeEntries = [
+  {
+    eyebrow: "R1 · Samtale og overskudd",
+    title: "Når hørselen endrer samtalen",
+    description:
+      "En trygg inngang for å forstå belastning i samtaler og starte med små grep som reduserer friksjon.",
+    href: "/no/artikkel/r1-spoke-v01",
+  },
+  {
+    eyebrow: "R2 · Teknisk guide",
+    title: "Når høreapparatet ikke kobler seg til",
+    description:
+      "Praktisk feilsøking i fire steg for vanlige tilkoblingsutfordringer i hverdagen.",
+    href: "/no/artikkel/r2-spoke-v01",
+  },
+  {
+    eyebrow: "R3 · Faglig fokus",
+    title: "Når samtaler bryter sammen ved hørselstap",
+    description:
+      "Faglig forklaring med praktiske konsekvenser for relasjoner, akustikk og samtalestruktur.",
+    href: "/no/artikkel/r3-spoke-v01",
+  },
+];
 ---
 
 <BaseLayout title={`VOX - ${title}`} currentPath="/no/hub">
@@ -32,81 +75,68 @@ const intro =
           <h1 class="font-display text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl">
             {title}
           </h1>
-          {hub?.kjerne ? <p class="mt-4 text-sm font-semibold text-[rgb(var(--text-secondary))]">{hub.kjerne}</p> : null}
-          <p class="vox-lead mt-5">{intro}</p>
+          <p class="mt-4 text-sm font-semibold text-[rgb(var(--text-secondary))]">
+            Første faktiske hub v0.1 under KlarLyds hub-spoke-modell.
+          </p>
+          <p class="vox-lead mt-5">{mandate}</p>
         </div>
       </div>
     </Section>
 
     <Section tone="band" class="!py-8 sm:!py-10">
       <div class="max-w-3xl">
-        <h2 class="vox-section-title">Dette får du hjelp med</h2>
-        {hub?.helpPoints.length ? (
-          <ul class="mt-6 grid list-none gap-3 p-0 sm:gap-4" role="list">
-            {hub.helpPoints.map((point) => (
-              <li class="vox-surface-tech text-sm font-medium leading-relaxed text-[rgb(var(--text-secondary))]">{point}</li>
+        <h2 class="vox-section-title">Top tasks</h2>
+        <ul class="mt-6 grid list-none gap-3 p-0 sm:gap-4" role="list">
+          {topTasks.map((task) => (
+            <li class="vox-surface-tech">
+              <h3 class="text-sm font-semibold text-[rgb(var(--text))]">{task.title}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">{task.text}</p>
+              <p class="mt-3">
+                <a href={task.href} class="text-sm font-semibold text-[rgb(var(--text))] underline-offset-2 hover:underline">
+                  {task.cta} →
+                </a>
+              </p>
+            </li>
             ))}
-          </ul>
-        ) : (
-          <p class="mt-4 text-sm text-[rgb(var(--muted))]">Vi fyller på denne oversikten fortløpende.</p>
-        )}
-
-        {(hub?.primaryCtaLabel && hub?.primaryCtaTarget) || hub?.secondaryLinks.length ? (
-          <div class="mt-8 space-y-4">
-            {hub?.primaryCtaLabel && hub?.primaryCtaTarget ? (
-              <a
-                href={hub.primaryCtaTarget}
-                class="sonic-pulse-cta inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold transition-shadow"
-              >
-                {hub.primaryCtaLabel}
-              </a>
-            ) : null}
-
-            {hub?.secondaryLinks.length ? (
-              <ul class="grid list-none gap-3 p-0 sm:grid-cols-2" role="list">
-                {hub.secondaryLinks.map((link) => (
-                  <li class="vox-surface-tech">
-                    <a
-                      href={link.href}
-                      class:list={[
-                        "block text-sm text-[rgb(var(--text))] no-underline",
-                        link.comingSoon
-                          ? "pointer-events-none text-[rgb(var(--text-secondary))]"
-                          : "font-medium hover:underline",
-                      ]}
-                      aria-disabled={link.comingSoon ? "true" : undefined}
-                    >
-                      <span class="font-medium">{link.label}</span>
-                      {link.comingSoon ? (
-                        <span class="ml-2 inline-flex rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--surface))/0.6] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[rgb(var(--muted))]">
-                          Kommer snart
-                        </span>
-                      ) : null}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-          </div>
-        ) : null}
+        </ul>
       </div>
     </Section>
 
-    {seeds.length ? (
-      <Section class="!pt-4 !pb-12 sm:!pb-16">
-        <div class="max-w-3xl">
-          <div class="vox-surface-lifted">
-            <h2 class="vox-section-title text-lg sm:text-xl">Smarte spørsmål du kan starte med</h2>
-            <p class="mt-2 text-sm text-[rgb(var(--text-secondary))]">
-              Les i ditt eget tempo, eller bruk ett av spørsmålene for å starte en rolig samtale videre.
-            </p>
+    <Section class="!pt-4 !pb-12 sm:!pb-16">
+      <div class="max-w-3xl">
+        <h2 class="vox-section-title">Innganger til innhold</h2>
+        <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">
+          Velg inngangen som passer situasjonen din nå. Du kan alltid gå tilbake hit og bytte spor.
+        </p>
+        <ul class="mt-5 grid list-none gap-3 p-0 sm:gap-4" role="list">
+          {spokeEntries.map((entry) => (
+            <li class="vox-surface-lifted">
+              <p class="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--primary))]">{entry.eyebrow}</p>
+              <h3 class="mt-1.5 text-lg font-semibold text-[rgb(var(--text))]">{entry.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">{entry.description}</p>
+              <p class="mt-3">
+                <a href={entry.href} class="text-sm font-semibold text-[rgb(var(--text))] underline-offset-2 hover:underline">
+                  Les artikkel →
+                </a>
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Section>
+
+    <Section class="!pt-0 !pb-8 sm:!pb-12">
+      <div class="max-w-3xl">
+        <div class="vox-surface-calm">
+          <h2 class="vox-section-title text-lg sm:text-xl">Videre hjelp</h2>
+          <p class="mt-2 text-sm text-[rgb(var(--text-secondary))]">
+            Trenger du å tenke høyt eller få hjelp til å formulere neste steg? Start med et spørsmål under.
+          </p>
+          {seeds.length ? (
             <ul class="mt-4 grid list-none gap-3 p-0" role="list">
-              {seeds.map((seed) => (
+              {seeds.slice(0, 3).map((seed) => (
                 <li>
-                  <a
-                    href={buildChatShellHref(seed.question, "hub")}
-                    class="vox-surface-calm-tile p-4"
-                  >
+                  <a href={buildChatShellHref(seed.question, "hub")} class="vox-surface-calm-tile p-4">
                     <p class="text-sm font-semibold text-[rgb(var(--text))]">{seed.question}</p>
                     {seed.shortAnswer ? (
                       <p class="mt-1.5 text-sm text-[rgb(var(--muted))]">{seed.shortAnswer}</p>
@@ -115,21 +145,14 @@ const intro =
                 </li>
               ))}
             </ul>
-            <p class="mt-4 text-xs text-[rgb(var(--muted))]">
-              Velg et spørsmål for å åpne samtaleflaten i rolig lesemodus.
+          ) : (
+            <p class="mt-4 text-sm text-[rgb(var(--muted))]">
+              Samtaleforslag fylles på fortløpende. Du kan åpne Hørehjelpen direkte via chat.
             </p>
-          </div>
+          )}
         </div>
-      </Section>
-    ) : null}
-
-    {hub?.trustNote ? (
-      <Section class="!pt-0 !pb-8 sm:!pb-12">
-        <div class="max-w-3xl">
-          <p class="text-sm leading-relaxed text-[rgb(var(--muted))]">{hub.trustNote}</p>
-        </div>
-      </Section>
-    ) : null}
+      </div>
+    </Section>
   </main>
 
   <Footer />
