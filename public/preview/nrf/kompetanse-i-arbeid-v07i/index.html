@@ -361,9 +361,9 @@
     .compare-bar-track { height: 0.56rem; background: #ebf2f6; border-radius: 999px; overflow: hidden; }
     .compare-bar { display: block; height: 100%; border-radius: 999px; }
     .compare-row.turnover .compare-bar { width: 100%; background: #c87070; }
-    .compare-row.low .compare-bar { width: 5%; min-width: 10px; background: #8fbea0; }
-    .compare-row.mid .compare-bar { width: 15%; min-width: 14px; background: #6fa380; }
-    .compare-row.review .compare-bar { width: 30%; min-width: 18px; background: #527c61; }
+    .compare-row.low .compare-bar { width: var(--w-low, 5%); min-width: 10px; background: #8fbea0; }
+    .compare-row.mid .compare-bar { width: var(--w-mid, 15%); min-width: 14px; background: #6fa380; }
+    .compare-row.review .compare-bar { width: var(--w-review, 30%); min-width: 18px; background: #527c61; }
 
     .acc-grid { margin-top: 0.85rem; }
     .acc-card { background: #edf7f0; border: 1px solid #b8dbc5; }
@@ -530,21 +530,21 @@
                   <span class="compare-label">Lav direkte kostnad (illustrativt nivå)</span>
                   <span id="range-low-value" class="compare-value">0–10 000 kr</span>
                 </div>
-                <div class="compare-bar-track"><span class="compare-bar" aria-hidden="true"></span></div>
+                <div class="compare-bar-track"><span id="bar-low" class="compare-bar" aria-hidden="true"></span></div>
               </div>
               <div class="compare-row mid">
                 <div class="compare-meta">
                   <span class="compare-label">Moderat kostnad (illustrativt nivå)</span>
                   <span id="range-mid-value" class="compare-value">10 000–60 000 kr</span>
                 </div>
-                <div class="compare-bar-track"><span class="compare-bar" aria-hidden="true"></span></div>
+                <div class="compare-bar-track"><span id="bar-mid" class="compare-bar" aria-hidden="true"></span></div>
               </div>
               <div class="compare-row review">
                 <div class="compare-meta">
                   <span class="compare-label">Ved særskilt behov (illustrativt nivå)</span>
                   <span id="range-high-value" class="compare-value">60 000–180 000 kr</span>
                 </div>
-                <div class="compare-bar-track"><span class="compare-bar" aria-hidden="true"></span></div>
+                <div class="compare-bar-track"><span id="bar-review" class="compare-bar" aria-hidden="true"></span></div>
               </div>
             </div>
 
@@ -636,22 +636,34 @@
     ];
 
     const ACCOMMODATION_LEVELS = [
-      {
-        title: "Lav direkte kostnad",
-        description: "Grepet kan ofte testes raskt i vanlig drift.",
-        items: ["fleksitid", "hjemmekontor", "pauser", "oppgavejustering"],
-      },
-      {
-        title: "Moderat kostnad",
-        description: "Mindre tilpasninger av fysisk eller teknisk arbeidsmiljø.",
-        items: ["arbeidsstasjon", "skjerming", "mindre fysisk tilpasning"],
-      },
-      {
-        title: "Ved særskilt behov",
-        description: "Tiltak som krever mer bistand eller dokumentasjon.",
-        items: ["ekstern bistand", "hjelpemidler", "merkostnader som i noen tilfeller kan kobles til NAV-ordninger"],
-      },
+      { id: "low", title: "Lav direkte kostnad", description: "Grepet kan ofte testes raskt i vanlig drift." },
+      { id: "mid", title: "Moderat kostnad", description: "Mindre tilpasninger av fysisk eller teknisk arbeidsmiljø." },
+      { id: "review", title: "Ved særskilt behov", description: "Tiltak som krever mer bistand eller dokumentasjon." },
     ];
+
+    const BASE_ACCOMMODATION_ITEMS = {
+      low: ["fleksitid", "hjemmekontor", "pauser", "oppgavejustering"],
+      mid: ["arbeidsstasjon", "skjerming"],
+      review: ["ekstern bistand", "hjelpemidler", "merkostnader som i noen tilfeller kan kobles til NAV-ordninger"],
+    };
+
+    const ROLE_ACCOMMODATION_ITEMS = {
+      drift: {
+        low: ["små og store oppgaver"],
+        mid: ["parkering nær inngang", "toalett nær arbeidsplassen"],
+        review: [],
+      },
+      fag: {
+        low: [],
+        mid: ["kontor med dør", "hjemmekontor ved behov"],
+        review: [],
+      },
+      leder: {
+        low: ["strukturering av arbeidsuke"],
+        mid: ["oppgaveavlastning", "skjermede tidsblokker"],
+        review: ["ekspertbistand i sammensatte saker"],
+      },
+    };
 
     const TOOLKIT_ITEMS = [
       {
@@ -801,6 +813,9 @@
     const rangeLowValue = document.getElementById("range-low-value");
     const rangeMidValue = document.getElementById("range-mid-value");
     const rangeHighValue = document.getElementById("range-high-value");
+    const barLow = document.getElementById("bar-low");
+    const barMid = document.getElementById("bar-mid");
+    const barReview = document.getElementById("bar-review");
     const accommodationGrid = document.getElementById("accommodation-grid");
     const toolkitGrid = document.getElementById("toolkit-grid");
     const employeeToolkitList = document.getElementById("employee-toolkit-list");
@@ -814,6 +829,12 @@
 
     function formatCurrency(value) {
       return new Intl.NumberFormat("no-NO").format(Math.round(value)) + " kr";
+    }
+
+    function getRelativeBarWidth(value, turnover, minimumPercent) {
+      const ratioPercent = (value / Math.max(turnover, 1)) * 100;
+      const clamped = Math.max(minimumPercent, Math.min(95, ratioPercent));
+      return `${clamped.toFixed(2)}%`;
     }
 
     function getSelectedRole() {
@@ -833,12 +854,18 @@
       const salary = Number(salarySlider.value);
       const role = getSelectedRole();
       const turnover = salary * role.factor;
+      const lowMax = 10000;
+      const midMax = 60000;
+      const highMax = 180000;
       salaryDisplay.textContent = formatCurrency(salary);
       turnoverCost.textContent = formatCurrency(turnover);
       if (turnoverCompareValue) turnoverCompareValue.textContent = formatCurrency(turnover);
       if (rangeLowValue) rangeLowValue.textContent = "0–10 000 kr";
       if (rangeMidValue) rangeMidValue.textContent = "10 000–60 000 kr";
       if (rangeHighValue) rangeHighValue.textContent = "60 000–180 000 kr";
+      if (barLow) barLow.style.width = getRelativeBarWidth(lowMax, turnover, 1.5);
+      if (barMid) barMid.style.width = getRelativeBarWidth(midMax, turnover, 2.5);
+      if (barReview) barReview.style.width = getRelativeBarWidth(highMax, turnover, 4);
     }
 
     function switchTab(viewId) {
@@ -863,20 +890,30 @@
         button.addEventListener("click", () => {
           activeRoleId = button.getAttribute("data-role-id") || "fag";
           renderRoleSegment();
+          renderAccommodationLevels();
           updateCalculator();
         });
       });
     }
 
     function renderAccommodationLevels() {
-      const levelClasses = ["acc-low", "acc-mid", "acc-review"];
-      accommodationGrid.innerHTML = ACCOMMODATION_LEVELS.map((level, index) => `
-        <article class="card acc-card ${levelClasses[index] || ""}">
+      const role = getSelectedRole();
+      const roleItems = ROLE_ACCOMMODATION_ITEMS[role.id] || ROLE_ACCOMMODATION_ITEMS.fag;
+      const levelClasses = { low: "acc-low", mid: "acc-mid", review: "acc-review" };
+      accommodationGrid.innerHTML = ACCOMMODATION_LEVELS.map((level) => {
+        const items = [
+          ...(BASE_ACCOMMODATION_ITEMS[level.id] || []),
+          ...(roleItems[level.id] || []),
+        ];
+        const uniqueItems = Array.from(new Set(items));
+        return `
+        <article class="card acc-card ${levelClasses[level.id] || ""}">
           <h3>${level.title}</h3>
           <p>${level.description}</p>
-          <ul>${level.items.map((item) => `<li>${item}</li>`).join("")}</ul>
+          <ul>${uniqueItems.map((item) => `<li>${item}</li>`).join("")}</ul>
         </article>
-      `).join("");
+      `;
+      }).join("");
     }
 
     function renderToolkit() {
