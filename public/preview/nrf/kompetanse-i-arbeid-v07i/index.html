@@ -361,19 +361,19 @@
     .compare-bar-track { height: 0.56rem; background: #ebf2f6; border-radius: 999px; overflow: hidden; }
     .compare-bar { display: block; height: 100%; border-radius: 999px; }
     .compare-row.turnover .compare-bar { width: 100%; background: #c87070; }
-    .compare-row.low .compare-bar { width: 5%; min-width: 10px; background: #96c8a0; }
-    .compare-row.mid .compare-bar { width: 15%; min-width: 14px; background: #6fae82; }
-    .compare-row.review .compare-bar { width: 30%; min-width: 18px; background: #4f8563; }
+    .compare-row.low .compare-bar { width: 5%; min-width: 10px; background: #8fbea0; }
+    .compare-row.mid .compare-bar { width: 15%; min-width: 14px; background: #6fa380; }
+    .compare-row.review .compare-bar { width: 30%; min-width: 18px; background: #527c61; }
 
     .acc-grid { margin-top: 0.85rem; }
     .acc-card { background: #edf7f0; border: 1px solid #b8dbc5; }
     .acc-card h3 { color: #355f46; }
-    .acc-card.acc-low { background: #f1f8f2; border-color: #c7ddcd; }
-    .acc-card.acc-low h3 { color: #3f7450; }
-    .acc-card.acc-mid { background: #ebf5ee; border-color: #b6d3bf; }
-    .acc-card.acc-mid h3 { color: #346745; }
-    .acc-card.acc-review { background: #e4efe7; border-color: #9fbfa8; }
-    .acc-card.acc-review h3 { color: #2c583a; }
+    .acc-card.acc-low { background: #f2f8f4; border-color: #c5dacd; }
+    .acc-card.acc-low h3 { color: #3f6f4f; }
+    .acc-card.acc-mid { background: #eaf4ed; border-color: #afcbb7; }
+    .acc-card.acc-mid h3 { color: #315f41; }
+    .acc-card.acc-review { background: #e2ece5; border-color: #96b29f; }
+    .acc-card.acc-review h3 { color: #294f35; }
     .acc-card h3 { font-size: 0.97rem; }
     .acc-card ul { margin: 0.3rem 0 0; padding-left: 1rem; font-size: 0.88rem; }
 
@@ -517,7 +517,7 @@
 
             <div class="measure-scale" aria-label="Illustrativ sammenligning av turnover og tiltaksnivå">
               <h3>Typisk nivå for tiltak sammenlignet med turnover</h3>
-              <p>Illustrativ sammenligning. Tiltak vurderes konkret fra sak til sak, men ligger ofte i en vesentlig lavere størrelsesorden enn kostnaden ved turnover.</p>
+              <p>Illustrativ sammenligning. Tiltak vurderes konkret fra sak til sak, men tallene under viser typiske størrelsesordener for at mange tiltak ofte er langt billigere enn turnover.</p>
               <div class="compare-row turnover">
                 <div class="compare-meta">
                   <span class="compare-label">Turnoverkostnad (scenario)</span>
@@ -527,22 +527,22 @@
               </div>
               <div class="compare-row low">
                 <div class="compare-meta">
-                  <span class="compare-label">Lav direkte kostnad (ca. 0–5 %)</span>
-                  <span id="range-low-value" class="compare-value">0–45 000 kr</span>
+                  <span class="compare-label">Lav direkte kostnad (illustrativt nivå)</span>
+                  <span id="range-low-value" class="compare-value">0–10 000 kr</span>
                 </div>
                 <div class="compare-bar-track"><span class="compare-bar" aria-hidden="true"></span></div>
               </div>
               <div class="compare-row mid">
                 <div class="compare-meta">
-                  <span class="compare-label">Moderat kostnad (ca. 5–15 %)</span>
-                  <span id="range-mid-value" class="compare-value">45 000–135 000 kr</span>
+                  <span class="compare-label">Moderat kostnad (illustrativt nivå)</span>
+                  <span id="range-mid-value" class="compare-value">10 000–60 000 kr</span>
                 </div>
                 <div class="compare-bar-track"><span class="compare-bar" aria-hidden="true"></span></div>
               </div>
               <div class="compare-row review">
                 <div class="compare-meta">
-                  <span class="compare-label">Ved særskilt behov (ca. 15–30 %)</span>
-                  <span id="range-high-value" class="compare-value">135 000–270 000 kr</span>
+                  <span class="compare-label">Ved særskilt behov (illustrativt nivå)</span>
+                  <span id="range-high-value" class="compare-value">60 000–180 000 kr</span>
                 </div>
                 <div class="compare-bar-track"><span class="compare-bar" aria-hidden="true"></span></div>
               </div>
@@ -552,7 +552,7 @@
           </div>
 
           <div class="surface surface-signal" style="margin-top:0.75rem;">
-            <p class="small-note u-mb-0"><strong>Metode:</strong> Turnover-tallene er scenarioer, ikke fasit. Tiltaksnivåene er illustrative størrelsesordener brukt for å vise prinsippet: mange tiltak kan prøves til en langt lavere kostnad enn turnover. NAV-relevans og eventuelle merkostnader må vurderes konkret i hver sak.</p>
+            <p class="small-note u-mb-0"><strong>Metode:</strong> Turnover-tallene er scenarioer, ikke fasit. Tiltaksnivåene er illustrative størrelsesordener brukt for å vise prinsippet: mange tiltak kan prøves til en langt lavere kostnad enn turnover. Tiltak vurderes konkret fra sak til sak. NAV-relevans og eventuelle merkostnader må vurderes konkret i hver sak.</p>
           </div>
         </section>
 
@@ -816,10 +816,6 @@
       return new Intl.NumberFormat("no-NO").format(Math.round(value)) + " kr";
     }
 
-    function formatRange(minValue, maxValue) {
-      return `${new Intl.NumberFormat("no-NO").format(Math.round(minValue))}–${new Intl.NumberFormat("no-NO").format(Math.round(maxValue))} kr`;
-    }
-
     function getSelectedRole() {
       return ROLE_SCENARIOS.find((role) => role.id === activeRoleId) || ROLE_SCENARIOS[1];
     }
@@ -837,18 +833,12 @@
       const salary = Number(salarySlider.value);
       const role = getSelectedRole();
       const turnover = salary * role.factor;
-      const lowMin = 0;
-      const lowMax = turnover * 0.05;
-      const midMin = turnover * 0.05;
-      const midMax = turnover * 0.15;
-      const highMin = turnover * 0.15;
-      const highMax = turnover * 0.30;
       salaryDisplay.textContent = formatCurrency(salary);
       turnoverCost.textContent = formatCurrency(turnover);
       if (turnoverCompareValue) turnoverCompareValue.textContent = formatCurrency(turnover);
-      if (rangeLowValue) rangeLowValue.textContent = formatRange(lowMin, lowMax);
-      if (rangeMidValue) rangeMidValue.textContent = formatRange(midMin, midMax);
-      if (rangeHighValue) rangeHighValue.textContent = formatRange(highMin, highMax);
+      if (rangeLowValue) rangeLowValue.textContent = "0–10 000 kr";
+      if (rangeMidValue) rangeMidValue.textContent = "10 000–60 000 kr";
+      if (rangeHighValue) rangeHighValue.textContent = "60 000–180 000 kr";
     }
 
     function switchTab(viewId) {
