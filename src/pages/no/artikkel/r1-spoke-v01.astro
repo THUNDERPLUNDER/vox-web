@@ -3,6 +3,7 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Footer from "../../../components/nav/Footer.astro";
 import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.astro";
+import { buildChatShellHref } from "../../../lib/chat-shell";
 import "../../../styles/article-system.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
@@ -28,6 +29,24 @@ const r1Article = {
   footerText:
     "Små justeringer i tempo, plassering og forventninger kan gjøre samtaler mer skånsomme. Start med ett grep om gangen, og bygg videre derfra.",
 };
+
+const bridgeQuestions = [
+  {
+    label: "Forbered første samtale",
+    question:
+      "Hvordan kan jeg forklare mine behov i en samtale uten at det blir konflikt eller misforståelser?",
+  },
+  {
+    label: "Velg ett konkret grep",
+    question:
+      "Hvilket første grep bør vi teste hjemme denne uken for å få roligere og tydeligere samtaler?",
+  },
+  {
+    label: "Lag en enkel plan",
+    question:
+      "Kan du hjelpe meg lage en kort plan for hva vi gjør når samtalen låser seg i støy eller stress?",
+  },
+];
 ---
 
 <BaseLayout title="VOX - R1 spoke v0.1" currentPath="/no/hubs" shellVariant="article">
@@ -41,8 +60,34 @@ const r1Article = {
         <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
         <span class="text-[rgb(var(--reading-ink))]">R1 artikkel</span>
       </nav>
+      <section class="mx-auto mb-7 max-w-[min(100%,46rem)] rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.5] bg-[rgb(var(--surface-elevated))/0.88] px-4 py-4 sm:px-5">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]">Produktanatomi v0.1 test</p>
+        <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
+          Les artikkelen først. Bruk deretter ett av spørsmålene under for å gå direkte videre til hjelp i chat med konteksten fra denne teksten.
+        </p>
+      </section>
 
       <ArticleTemplateV01 {...r1Article} />
+
+      <section class="mx-auto mt-8 max-w-[min(100%,46rem)] rounded-[var(--radius-lg)] border border-[rgb(var(--reading-accent-iris))/0.28] bg-[rgb(var(--reading-inline))/0.72] px-4 py-5 sm:px-5 sm:py-6">
+        <h2 class="text-base font-semibold text-[rgb(var(--reading-ink))] sm:text-lg">Neste steg: få hjelp med din situasjon</h2>
+        <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
+          Velg spørsmålet som ligner mest på situasjonen din. Du sendes videre til chat-shell med spørsmålet ferdig utfylt.
+        </p>
+        <ul class="mt-4 grid list-none gap-2.5 p-0 sm:gap-3" role="list">
+          {bridgeQuestions.map((item) => (
+            <li>
+              <a
+                href={buildChatShellHref(item.question, "article-r1")}
+                class="block rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.5] bg-[rgb(var(--surface-elevated))] px-3.5 py-3 text-sm font-medium text-[rgb(var(--reading-ink))] no-underline transition-colors hover:bg-[rgb(var(--surface-elevated))/0.82]"
+              >
+                <span class="block text-[11px] font-semibold uppercase tracking-[0.08em] text-[rgb(var(--reading-ink-secondary))]">Predefinert spørsmål</span>
+                <span class="mt-1.5 block">{item.label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   </main>
   <Footer variant="article" />
