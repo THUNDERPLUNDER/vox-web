@@ -9,6 +9,8 @@ import { fetchAiSeedQuestions } from "../../lib/storyblok-publishing";
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
 const seeds = await fetchAiSeedQuestions();
+const sanitizeHubCopy = (text: string) =>
+  text.replace(/\brolig\b/gi, "passende").replace(/\s{2,}/g, " ").trim();
 
 const title = "Bedre lyd i hverdagen";
 const mandate =
@@ -154,9 +156,9 @@ const spokeEntries = [
               {seeds.slice(0, 3).map((seed) => (
                 <li>
                   <a href={buildChatShellHref(seed.question, "hub")} class="vox-surface-calm-tile h-full p-4">
-                    <p class="text-sm font-semibold text-[rgb(var(--text))]">{seed.question}</p>
+                    <p class="text-sm font-semibold text-[rgb(var(--text))]">{sanitizeHubCopy(seed.question)}</p>
                     {seed.shortAnswer ? (
-                      <p class="mt-1.5 text-sm text-[rgb(var(--muted))]">{seed.shortAnswer}</p>
+                      <p class="mt-1.5 text-sm text-[rgb(var(--muted))]">{sanitizeHubCopy(seed.shortAnswer)}</p>
                     ) : null}
                   </a>
                 </li>
