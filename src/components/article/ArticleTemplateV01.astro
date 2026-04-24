@@ -21,7 +21,10 @@ export interface Props {
   trustPublished?: string;
   trustUpdated?: string;
   trustShowActions?: boolean;
+  trustAvatarSrc?: string;
+  trustAvatarAlt?: string;
   figureImage?: { src: string; alt: string; caption?: string };
+  figureAfterTrust?: boolean;
 }
 
 const {
@@ -53,7 +56,10 @@ const {
   trustPublished,
   trustUpdated,
   trustShowActions = false,
+  trustAvatarSrc,
+  trustAvatarAlt = "Forfatterbilde",
   figureImage,
+  figureAfterTrust = false,
 } = Astro.props;
 
 const presetLabel = preset === "faglig-fokus" ? "Faglig Fokus" : preset === "minimal" ? "Minimal" : "Standard";
@@ -84,10 +90,18 @@ const inspectLabelClass =
 
     <section class="ams-plate px-5 py-5 sm:px-7" data-component="ArticleTrustBlock">
       <span class={inspectLabelClass} data-component-label>ArticleTrustBlock</span>
-      <p class="ams-kicker">Trygghetslag</p>
-      <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">Kilde/trygghet: {sourceTrustType}</p>
       {trustAuthors.length > 0 ? (
         <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
+          {trustAvatarSrc ? (
+            <img
+              src={trustAvatarSrc}
+              alt={trustAvatarAlt}
+              class="mr-2 inline-block h-5 w-5 rounded-full bg-black object-cover align-[-0.2em]"
+              loading="lazy"
+            />
+          ) : (
+            <span class="mr-2 inline-block h-5 w-5 rounded-full bg-black align-[-0.2em]" aria-hidden="true"></span>
+          )}
           By{" "}
           {trustAuthors.map((author, index) => (
             <>
@@ -101,8 +115,11 @@ const inspectLabelClass =
               {index < trustAuthors.length - 1 ? ", " : ""}
             </>
           ))}
+          <span>, {sourceTrustType}</span>
         </p>
-      ) : null}
+      ) : (
+        <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">{sourceTrustType}</p>
+      )}
       {trustPublished || trustUpdated ? (
         <p class="mt-1.5 text-xs leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
           {trustPublished ? `Publisert ${trustPublished}` : ""}
@@ -114,20 +131,32 @@ const inspectLabelClass =
         <>
           <hr class="mt-3 border-0 border-t border-[rgb(var(--border))/0.35]" />
           <div class="mt-2.5 flex items-center gap-3 text-[rgb(var(--reading-ink-secondary))]">
-            <button type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[rgb(var(--surface-elevated))] text-current" aria-label="Del artikkel">
-              <svg viewBox="0 0 16 16" class="h-4 w-4" fill="none" aria-hidden="true">
-                <path d="M12 5a2 2 0 1 0-1.7-3.1L5.8 4.5a2 2 0 0 0 0 3L10.3 10a2 2 0 1 0 .6-1.1L6.4 6.4a2.1 2.1 0 0 0 0-.8l4.5-2.6A2 2 0 0 0 12 5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <button type="button" class="inline-flex h-8 w-8 items-center justify-center text-current" aria-label="Del artikkel">
+              <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+                <path d="M8.59 13.51 15.42 17.5M15.41 6.5 8.59 10.49M18 22a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm12-7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
-            <button type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[rgb(var(--surface-elevated))] text-current" aria-label="Lagre artikkel">
-              <svg viewBox="0 0 16 16" class="h-4 w-4" fill="none" aria-hidden="true">
-                <path d="M4 2.5h8A1.5 1.5 0 0 1 13.5 4v9l-5.5-2.8L2.5 13V4A1.5 1.5 0 0 1 4 2.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <button type="button" class="inline-flex h-8 w-8 items-center justify-center text-current" aria-label="Lagre artikkel">
+              <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" aria-hidden="true">
+                <path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
           </div>
         </>
       ) : null}
     </section>
+
+    {figureImage && figureAfterTrust ? (
+      <section class="ams-zone ams-zone--inline-visual ams-plate px-5 py-4 sm:px-6" data-component="ArticleFigurePlaceholder">
+        <span class={inspectLabelClass} data-component-label>ArticleFigurePlaceholder</span>
+        <figure>
+          <img src={figureImage.src} alt={figureImage.alt} class="h-auto w-full" loading="lazy" />
+          {figureImage.caption ? (
+            <figcaption class="mt-2 text-xs leading-relaxed text-[rgb(var(--reading-ink-secondary))]">{figureImage.caption}</figcaption>
+          ) : null}
+        </figure>
+      </section>
+    ) : null}
 
     <section class="ams-zone ams-zone--article-body space-y-3" data-component="ArticleBody">
       <span class={inspectLabelClass} data-component-label>ArticleBody</span>
@@ -139,7 +168,8 @@ const inspectLabelClass =
       </div>
     </section>
 
-    <section class="ams-zone ams-zone--inline-visual ams-plate px-5 py-4 sm:px-6" data-component="ArticleFigurePlaceholder">
+    {!figureAfterTrust ? (
+      <section class="ams-zone ams-zone--inline-visual ams-plate px-5 py-4 sm:px-6" data-component="ArticleFigurePlaceholder">
       <span class={inspectLabelClass} data-component-label>ArticleFigurePlaceholder</span>
       {figureImage ? (
         <figure>
@@ -154,7 +184,8 @@ const inspectLabelClass =
           <p class="mt-1 text-sm text-[rgb(var(--reading-ink-secondary))]">Kobles inn ved behov i senere iterasjon.</p>
         </>
       )}
-    </section>
+      </section>
+    ) : null}
 
     <footer class="ams-zone ams-zone--summary ams-plate space-y-4 px-5 py-5 sm:px-6" data-component="ArticleSummary">
       <span class={inspectLabelClass} data-component-label>ArticleSummary</span>
