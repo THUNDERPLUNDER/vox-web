@@ -22,6 +22,7 @@ export interface Props {
   trustUpdated?: string;
   trustShowActions?: boolean;
   trustActionMeta?: string;
+  trustActionLinks?: Array<{ label: string; href?: string }>;
   trustAvatarSrc?: string;
   trustAvatarAlt?: string;
   figureImage?: { src: string; alt: string; caption?: string };
@@ -59,6 +60,7 @@ const {
   trustUpdated,
   trustShowActions = false,
   trustActionMeta,
+  trustActionLinks = [],
   trustAvatarSrc,
   trustAvatarAlt = "Forfatterbilde",
   figureImage,
@@ -149,8 +151,23 @@ const editorialAuthor = trustAuthors[1];
                 <path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
-            {trustActionMeta ? (
-              <p class="ml-auto text-[9px] font-medium uppercase tracking-[0.12em] text-[rgb(var(--reading-ink-secondary))/0.68]">
+            {trustActionLinks.length > 0 ? (
+              <p class="ml-auto text-[8px] font-medium uppercase tracking-[0.12em] text-[rgb(var(--reading-ink-secondary))/0.6]">
+                {trustActionLinks.map((item, index) => (
+                  <>
+                    {item.href ? (
+                      <a href={item.href} class="hover:text-[rgb(var(--reading-ink-secondary))/0.85] hover:underline">
+                        {item.label}
+                      </a>
+                    ) : (
+                      <span>{item.label}</span>
+                    )}
+                    {index < trustActionLinks.length - 1 ? <span class="mx-1">/</span> : null}
+                  </>
+                ))}
+              </p>
+            ) : trustActionMeta ? (
+              <p class="ml-auto text-[8px] font-medium uppercase tracking-[0.12em] text-[rgb(var(--reading-ink-secondary))/0.6]">
                 {trustActionMeta}
               </p>
             ) : null}
