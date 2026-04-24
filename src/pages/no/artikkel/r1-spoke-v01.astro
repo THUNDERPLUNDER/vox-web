@@ -64,7 +64,7 @@ const bridgeQuestions = [
 
 <BaseLayout title="VOX - R1 spoke v0.1" currentPath="/no/hubs" shellVariant="article">
   <meta slot="head" name="robots" content="noindex,follow" />
-  <nav class="mx-auto mb-2 max-w-[min(100%,46rem)] px-4 text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))] sm:px-6" aria-label="Du er her">
+  <nav class="mx-auto mb-2 max-w-[min(100%,46rem)] px-4 text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))] sm:px-6" aria-label="Du er her" data-r1-breadcrumb>
     <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
       BreadcrumbNav
     </span>
@@ -140,6 +140,10 @@ const bridgeQuestions = [
       margin: -0.05rem 0 1.2rem;
     }
 
+    [data-r1-editorial] [data-component="ArticleContent"] > [data-component="ArticleTrustBlock"] {
+      margin-top: 0.5rem !important;
+    }
+
     [data-r1-editorial] [data-component="ArticleTrustBlock"] .ams-kicker {
       font-size: 10px;
       letter-spacing: 0.14em;
@@ -165,7 +169,7 @@ const bridgeQuestions = [
     }
 
     [data-r1-editorial] [data-component="ArticleFigurePlaceholder"] {
-      margin-top: 1.3rem;
+      margin-top: 0.5rem;
       border-top: 0;
       padding-top: 0;
     }
@@ -203,6 +207,14 @@ const bridgeQuestions = [
 
     html[data-inspect-testinfo="true"] [data-r1-editorial] .r1-orientation {
       display: block;
+    }
+
+    [data-r1-breadcrumb] [data-component-label] {
+      display: none;
+    }
+
+    html[data-inspect-components="true"] [data-r1-breadcrumb] [data-component-label] {
+      display: inline-flex;
     }
 
     [data-r1-editorial] .r1-ai-bridge {
