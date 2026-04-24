@@ -28,6 +28,18 @@ const r1Article = {
   footerTitle: "Kort oppsummert",
   footerText:
     "Små justeringer i tempo, plassering og forventninger kan gjøre samtaler mer skånsomme. Start med ett grep om gangen, og bygg videre derfra.",
+  trustAuthors: [
+    { name: "KlarLyd Redaksjon", role: "redaksjonell fagjournalist", href: "#" },
+    { name: "Nora Lysvik", role: "faglig rådgiver", href: "#" },
+  ],
+  trustPublished: "03. feb 2026, 06:30",
+  trustUpdated: "25. mar 2026, 16:04",
+  trustShowActions: true,
+  figureImage: {
+    src: "/images/klarlyd/r1-storlom-test.png",
+    alt: "Storlom i disig fjordlandskap som visualiserer stillhet, fokus og ettertanke.",
+    caption: "Testbilde i editorial layer: storlom i fjordlandskap, brukt for å validere bildeplassering i leserommet.",
+  },
 };
 
 const bridgeQuestions = [
@@ -97,7 +109,7 @@ const bridgeQuestions = [
       background: transparent;
       border-radius: 0;
       padding: 0;
-      margin: -0.2rem 0 0.9rem;
+      margin: -0.05rem 0 1.2rem;
     }
 
     [data-r1-editorial] [data-component="ArticleTrustBlock"] .ams-kicker {
@@ -112,6 +124,10 @@ const bridgeQuestions = [
       line-height: 1.45;
     }
 
+    [data-r1-editorial] [data-component="ArticleTrustBlock"] a {
+      color: rgb(var(--reading-ink));
+    }
+
     [data-r1-editorial] .ams-plate {
       background: transparent;
       border-radius: 0;
@@ -121,9 +137,9 @@ const bridgeQuestions = [
     }
 
     [data-r1-editorial] [data-component="ArticleFigurePlaceholder"] {
-      margin-top: 1.1rem;
+      margin-top: 1.3rem;
       border-top: 1px solid rgb(var(--border) / 0.38);
-      padding-top: 1rem;
+      padding-top: 1.15rem;
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] {
@@ -173,21 +189,21 @@ const bridgeQuestions = [
     }
 
     [data-r1-editorial] .r1-ai-bridge .prompt-group__link {
-      border-radius: 0;
-      margin-left: 0;
-      margin-right: 0;
-      padding-left: 0;
-      padding-right: 0;
+      margin-left: -0.2rem;
+      margin-right: -0.2rem;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+      border-radius: 999px;
+      border-bottom: 0;
       background: transparent;
-      border-bottom: 1px solid rgb(var(--border) / 0.35);
     }
 
     [data-r1-editorial] .r1-ai-bridge .prompt-group__link:hover {
-      background: rgb(var(--reading-inline) / 0.3);
+      background: rgb(var(--reading-inline) / 0.4);
     }
 
     [data-r1-editorial] .r1-ai-bridge .prompt-group__cta {
-      border-radius: 0;
+      border-radius: var(--article-system-radius-button-cta);
       margin-top: 1rem;
     }
 
