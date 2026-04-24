@@ -3,7 +3,7 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Footer from "../../../components/nav/Footer.astro";
 import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.astro";
-import { buildChatShellHref } from "../../../lib/chat-shell";
+import PromptGroup from "../../../components/article/PromptGroup.astro";
 import "../../../styles/article-system.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
@@ -32,17 +32,14 @@ const r1Article = {
 
 const bridgeQuestions = [
   {
-    label: "Forbered første samtale",
     question:
       "Hvordan kan jeg forklare mine behov i en samtale uten at det blir konflikt eller misforståelser?",
   },
   {
-    label: "Velg ett konkret grep",
     question:
       "Hvilket første grep bør vi teste hjemme denne uken for å få roligere og tydeligere samtaler?",
   },
   {
-    label: "Lag en enkel plan",
     question:
       "Kan du hjelpe meg lage en kort plan for hva vi gjør når samtalen låser seg i støy eller stress?",
   },
@@ -69,24 +66,15 @@ const bridgeQuestions = [
 
       <ArticleTemplateV01 {...r1Article} />
 
-      <section class="r1-ai-bridge mx-auto mt-8 max-w-[min(100%,46rem)] px-0.5 py-1">
-        <h2 class="text-base font-semibold text-[rgb(var(--reading-ink))] sm:text-lg">Neste steg: få hjelp med din situasjon</h2>
-        <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
-          Velg spørsmålet som ligner mest på situasjonen din. Du sendes videre til chat-shell med spørsmålet ferdig utfylt.
-        </p>
-        <ul class="mt-4 list-none space-y-2.5 p-0 sm:space-y-3" role="list">
-          {bridgeQuestions.map((item) => (
-            <li>
-              <a
-                href={buildChatShellHref(item.question, "article-r1")}
-                class="r1-bridge-link block px-0 py-0.5 text-sm font-medium text-[rgb(var(--reading-ink))] underline underline-offset-[0.18em] decoration-[rgb(var(--reading-ink-secondary))/0.55] decoration-[1px] transition-colors hover:text-[rgb(var(--reading-ink))]"
-              >
-                <span class="block text-[11px] font-semibold uppercase tracking-[0.08em] text-[rgb(var(--reading-ink-secondary))]">Predefinert spørsmål</span>
-                <span class="mt-1.5 block">{item.label}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+      <section class="r1-ai-bridge mx-auto mt-10 max-w-[min(100%,46rem)] px-0.5 py-1">
+        <PromptGroup
+          title="Fortsett i Hørehjelpen"
+          intro="Velg et predefinert spørsmål for å gå videre fra lesing til handling i samme kontekst."
+          headingId="r1-continue"
+          items={bridgeQuestions}
+          seedFrom="article-r1"
+          ctaLabel="Åpne fri samtale"
+        />
       </section>
     </div>
   </main>
@@ -133,42 +121,76 @@ const bridgeQuestions = [
     }
 
     [data-r1-editorial] [data-component="ArticleFigurePlaceholder"] {
-      margin-top: 0.75rem;
-      border-top: 1px solid rgb(var(--border) / 0.25);
-      padding-top: 0.9rem;
+      margin-top: 1.1rem;
+      border-top: 1px solid rgb(var(--border) / 0.38);
+      padding-top: 1rem;
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] {
-      margin-top: 1rem;
-      border-top: 1px solid rgb(var(--border) / 0.28);
-      padding-top: 1rem;
+      margin-top: 1.25rem;
+      border-top: 1px solid rgb(var(--border) / 0.4);
+      padding-top: 1.15rem;
       padding-bottom: 0;
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] ul li {
-      border: 0;
-      border-radius: 0;
-      padding: 0;
+      border: 1px solid rgb(var(--border) / 0.5);
+      border-radius: 0 !important;
+      padding: 0.18rem 0.44rem;
       font-size: 11px;
       letter-spacing: 0.07em;
       text-transform: uppercase;
       color: rgb(var(--reading-ink-secondary));
+      background: transparent;
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] ul li + li::before {
-      content: "·";
-      margin-right: 0.35rem;
-      color: rgb(var(--reading-ink-secondary) / 0.65);
+      content: none;
+      margin-right: 0;
+      color: transparent;
     }
 
     [data-r1-editorial] .r1-orientation,
     [data-r1-editorial] .r1-ai-bridge {
-      border-top: 1px solid rgb(var(--border) / 0.24);
+      border-top: 1px solid rgb(var(--border) / 0.4);
+      padding-top: 0.95rem;
     }
 
-    [data-r1-editorial] .r1-bridge-link {
-      border-radius: 0;
+    [data-r1-editorial] .r1-orientation {
+      margin-bottom: 2rem;
     }
+
+    [data-r1-editorial] .r1-ai-bridge .prompt-group__header {
+      margin-bottom: 0.95rem;
+    }
+
+    [data-r1-editorial] .r1-ai-bridge .prompt-group__list {
+      max-width: 100%;
+    }
+
+    [data-r1-editorial] .r1-ai-bridge .prompt-group__item + .prompt-group__item {
+      margin-top: 0.22rem;
+    }
+
+    [data-r1-editorial] .r1-ai-bridge .prompt-group__link {
+      border-radius: 0;
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
+      background: transparent;
+      border-bottom: 1px solid rgb(var(--border) / 0.35);
+    }
+
+    [data-r1-editorial] .r1-ai-bridge .prompt-group__link:hover {
+      background: rgb(var(--reading-inline) / 0.3);
+    }
+
+    [data-r1-editorial] .r1-ai-bridge .prompt-group__cta {
+      border-radius: 0;
+      margin-top: 1rem;
+    }
+
   </style>
   <Footer variant="article" />
 </BaseLayout>

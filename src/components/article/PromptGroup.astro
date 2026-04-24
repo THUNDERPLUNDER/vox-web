@@ -31,17 +31,17 @@ const freeChatHref = freeChatHrefProp ?? (base.endsWith("/") ? `${base}no/chat` 
 ---
 
 <section class="prompt-group ams-zone prompt-group--ghost-pill" aria-labelledby={headingId}>
-  <header class="prompt-group__header">
-    <h2 id={headingId} class="prompt-group__title">{title}</h2>
-    <p class="prompt-group__intro">{intro}</p>
+  <header class="prompt-group__header prompt_group__header">
+    <h2 id={headingId} class="prompt-group__title prompt_group__title">{title}</h2>
+    <p class="prompt-group__intro prompt_group__intro">{intro}</p>
   </header>
 
-  <ul class="prompt-group__list" role="list">
+  <ul class="prompt-group__list prompt_group__list" role="list">
     {
       items.map((item) => (
-        <li class="prompt-group__item">
-          <a href={buildChatShellHref(item.question, seedFrom)} class="prompt-group__link">
-            <span class="prompt-group__question">{item.question}</span>
+        <li class="prompt-group__item prompt_group__item">
+          <a href={buildChatShellHref(item.question, seedFrom)} class="prompt-group__link prompt_group__link">
+            <span class="prompt-group__question prompt_group__question">{item.question}</span>
             <span class="prompt-group__hint" aria-hidden="true">
               <svg class="prompt-group__hint-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
