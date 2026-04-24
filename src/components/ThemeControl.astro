@@ -33,6 +33,15 @@ const { compact = false } = Astro.props;
     >
       Komponenter
     </button>
+    <button
+      type="button"
+      class="theme-control__btn"
+      data-inspect-toggle="testinfo"
+      aria-pressed="false"
+      hidden
+    >
+      Testinfo
+    </button>
   </div>
 </div>
 
@@ -40,6 +49,7 @@ const { compact = false } = Astro.props;
   (function () {
     var STORAGE_KEY = "vox-theme";
     var INSPECT_STORAGE_KEY = "vox-inspect-components";
+    var TESTINFO_STORAGE_KEY = "vox-inspect-testinfo";
 
     function resolvedColorScheme(mode) {
       if (mode === "light") return "light";
@@ -67,6 +77,10 @@ const { compact = false } = Astro.props;
       document.querySelectorAll("[data-inspect-toggle='components']").forEach(function (btn) {
         btn.setAttribute("aria-pressed", inspectOn ? "true" : "false");
       });
+      var testInfoOn = document.documentElement.getAttribute("data-inspect-testinfo") === "true";
+      document.querySelectorAll("[data-inspect-toggle='testinfo']").forEach(function (btn) {
+        btn.setAttribute("aria-pressed", testInfoOn ? "true" : "false");
+      });
     }
 
     function supportsInspectToggle(pathname) {
@@ -90,10 +104,29 @@ const { compact = false } = Astro.props;
       syncButtons();
     }
 
+    function toggleTestInfoParam() {
+      var url = new URL(window.location.href);
+      var params = url.searchParams;
+      var enabled = params.get("testinfo") === "true";
+      var nextEnabled = !enabled;
+      if (nextEnabled) params.set("testinfo", "true");
+      else params.delete("testinfo");
+      window.history.replaceState({}, "", url.pathname + (params.toString() ? "?" + params.toString() : "") + url.hash);
+      setTestInfoState(nextEnabled);
+      syncButtons();
+    }
+
     function setInspectState(enabled) {
       document.documentElement.setAttribute("data-inspect-components", enabled ? "true" : "false");
       try {
         localStorage.setItem(INSPECT_STORAGE_KEY, enabled ? "true" : "false");
+      } catch (_) {}
+    }
+
+    function setTestInfoState(enabled) {
+      document.documentElement.setAttribute("data-inspect-testinfo", enabled ? "true" : "false");
+      try {
+        localStorage.setItem(TESTINFO_STORAGE_KEY, enabled ? "true" : "false");
       } catch (_) {}
     }
 
@@ -107,12 +140,26 @@ const { compact = false } = Astro.props;
       }
     }
 
+    function resolveInitialTestInfoState() {
+      var fromQuery = new URLSearchParams(window.location.search).get("testinfo") === "true";
+      if (fromQuery) return true;
+      try {
+        return localStorage.getItem(TESTINFO_STORAGE_KEY) === "true";
+      } catch (_) {
+        return false;
+      }
+    }
+
     window.addEventListener("DOMContentLoaded", function () {
       var enableInspect = supportsInspectToggle(window.location.pathname);
       document.querySelectorAll("[data-inspect-toggle='components']").forEach(function (btn) {
         btn.hidden = !enableInspect;
       });
+      document.querySelectorAll("[data-inspect-toggle='testinfo']").forEach(function (btn) {
+        btn.hidden = !enableInspect;
+      });
       setInspectState(enableInspect ? resolveInitialInspectState() : false);
+      setTestInfoState(enableInspect ? resolveInitialTestInfoState() : false);
       syncButtons();
       document.querySelectorAll("[data-theme-choice]").forEach(function (btn) {
         btn.addEventListener("click", function () {
@@ -122,6 +169,11 @@ const { compact = false } = Astro.props;
       document.querySelectorAll("[data-inspect-toggle='components']").forEach(function (btn) {
         btn.addEventListener("click", function () {
           toggleInspectParam();
+        });
+      });
+      document.querySelectorAll("[data-inspect-toggle='testinfo']").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          toggleTestInfoParam();
         });
       });
     });

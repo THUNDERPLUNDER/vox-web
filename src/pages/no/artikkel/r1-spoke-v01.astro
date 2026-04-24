@@ -69,7 +69,7 @@ const bridgeQuestions = [
       R1PageMain
     </span>
     <div class="px-4 sm:px-6">
-      <nav class="mx-auto mb-7 max-w-[min(100%,46rem)] text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]" aria-label="Du er her">
+      <nav class="mx-auto mb-6 max-w-[min(100%,46rem)] text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]" aria-label="Du er her">
         <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
           BreadcrumbNav
         </span>
@@ -89,21 +89,21 @@ const bridgeQuestions = [
         </p>
       </section>
 
-      <ArticleTemplateV01 {...r1Article} />
-
-      <section class="r1-ai-bridge mx-auto mt-10 max-w-[min(100%,46rem)] px-0.5 py-1">
-        <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
-          PromptBridge
-        </span>
-        <PromptGroup
-          title="Fortsett i Hørehjelpen"
-          intro="Velg et predefinert spørsmål for å gå videre fra lesing til handling i samme kontekst."
-          headingId="r1-continue"
-          items={bridgeQuestions}
-          seedFrom="article-r1"
-          ctaLabel="Åpne fri samtale"
-        />
-      </section>
+      <ArticleTemplateV01 {...r1Article}>
+        <section slot="before-summary" class="r1-ai-bridge ams-zone px-0.5 py-1" data-component="PromptBridgeInArticle">
+          <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
+            PromptBridge
+          </span>
+          <PromptGroup
+            title="Fortsett i Hørehjelpen"
+            intro="Velg et predefinert spørsmål for å gå videre fra lesing til handling i samme kontekst."
+            headingId="r1-continue"
+            items={bridgeQuestions}
+            seedFrom="article-r1"
+            ctaLabel="Åpne fri samtale"
+          />
+        </section>
+      </ArticleTemplateV01>
 
       <aside class="r1-component-inventory mx-auto mt-6 max-w-[min(100%,46rem)]" data-component="ComponentInventory">
         <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
@@ -166,8 +166,8 @@ const bridgeQuestions = [
 
     [data-r1-editorial] [data-component="ArticleFigurePlaceholder"] {
       margin-top: 1.3rem;
-      border-top: 1px solid rgb(var(--border) / 0.38);
-      padding-top: 1.15rem;
+      border-top: 0;
+      padding-top: 0;
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] {
@@ -194,14 +194,22 @@ const bridgeQuestions = [
       color: transparent;
     }
 
-    [data-r1-editorial] .r1-orientation,
-    [data-r1-editorial] .r1-ai-bridge {
-      border-top: 1px solid rgb(var(--border) / 0.4);
+    [data-r1-editorial] .r1-orientation {
+      display: none;
+      border-top: 1px solid rgb(var(--border) / 0.22);
       padding-top: 0.95rem;
+      margin-bottom: 2rem;
     }
 
-    [data-r1-editorial] .r1-orientation {
-      margin-bottom: 2rem;
+    html[data-inspect-testinfo="true"] [data-r1-editorial] .r1-orientation {
+      display: block;
+    }
+
+    [data-r1-editorial] .r1-ai-bridge {
+      border-top: 0;
+      padding-top: 0.35rem;
+      margin-top: 0.55rem;
+      margin-bottom: 0.7rem;
     }
 
     [data-r1-editorial] .r1-ai-bridge .prompt-group__cta {
