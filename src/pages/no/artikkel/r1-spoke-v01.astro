@@ -8,7 +8,7 @@ import "../../../styles/article-system.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 const r1Article = {
-  title: "Når hørselen endrer samtalen - og hvordan du kan møte det med mer overskudd",
+  title: "Når hørselen endrer samtalen, og hvordan du kan møte det med mer overskudd",
   ingress:
     "Når hørselen blir mer krevende i hverdagen, kan samtaler føles tyngre enn før. Her får du en rolig oversikt over hvorfor det skjer, og små grep som kan gjøre det lettere.",
   preset: "standard" as const,
@@ -64,21 +64,21 @@ const bridgeQuestions = [
 
 <BaseLayout title="VOX - R1 spoke v0.1" currentPath="/no/hubs" shellVariant="article">
   <meta slot="head" name="robots" content="noindex,follow" />
+  <nav class="mx-auto mb-2 max-w-[min(100%,46rem)] px-4 text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))] sm:px-6" aria-label="Du er her">
+    <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
+      BreadcrumbNav
+    </span>
+    <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
+    <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
+    <a href="/no/hubs" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Emnehuber</a>
+    <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
+    <span class="text-[rgb(var(--reading-ink))]">R1 artikkel</span>
+  </nav>
   <main class="bg-[rgb(var(--article-page-canvas))] py-8 sm:py-10" data-article-system data-r1-editorial>
     <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
       R1PageMain
     </span>
     <div class="px-4 sm:px-6">
-      <nav class="mx-auto mb-6 max-w-[min(100%,46rem)] text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]" aria-label="Du er her">
-        <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
-          BreadcrumbNav
-        </span>
-        <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
-        <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
-        <a href="/no/hubs" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Emnehuber</a>
-        <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
-        <span class="text-[rgb(var(--reading-ink))]">R1 artikkel</span>
-      </nav>
       <section class="r1-orientation mx-auto mb-7 max-w-[min(100%,46rem)] px-0.5 py-1">
         <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
           OrientationBlock
@@ -215,6 +215,11 @@ const bridgeQuestions = [
     [data-r1-editorial] .r1-ai-bridge .prompt-group__cta {
       border-radius: var(--article-system-radius-button-cta);
       margin-top: 1rem;
+      display: none;
+    }
+
+    html[data-inspect-testinfo="true"] [data-r1-editorial] .r1-ai-bridge .prompt-group__cta {
+      display: inline-flex;
     }
 
     [data-r1-editorial] .r1-component-inventory {
