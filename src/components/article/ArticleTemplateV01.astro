@@ -21,6 +21,7 @@ export interface Props {
   trustPublished?: string;
   trustUpdated?: string;
   trustShowActions?: boolean;
+  trustActionMeta?: string;
   trustAvatarSrc?: string;
   trustAvatarAlt?: string;
   figureImage?: { src: string; alt: string; caption?: string };
@@ -57,6 +58,7 @@ const {
   trustPublished,
   trustUpdated,
   trustShowActions = false,
+  trustActionMeta,
   trustAvatarSrc,
   trustAvatarAlt = "Forfatterbilde",
   figureImage,
@@ -147,6 +149,11 @@ const editorialAuthor = trustAuthors[1];
                 <path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
+            {trustActionMeta ? (
+              <p class="ml-auto text-[10px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]">
+                {trustActionMeta}
+              </p>
+            ) : null}
           </div>
         </>
       ) : null}
