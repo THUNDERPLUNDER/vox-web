@@ -51,7 +51,7 @@ const bridgeQuestions = [
 
 <BaseLayout title="VOX - R1 spoke v0.1" currentPath="/no/hubs" shellVariant="article">
   <meta slot="head" name="robots" content="noindex,follow" />
-  <main class="bg-[rgb(var(--article-page-canvas))] py-8 sm:py-10" data-article-system>
+  <main class="bg-[rgb(var(--article-page-canvas))] py-8 sm:py-10" data-article-system data-r1-editorial>
     <div class="px-4 sm:px-6">
       <nav class="mx-auto mb-7 max-w-[min(100%,46rem)] text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]" aria-label="Du er her">
         <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
@@ -60,7 +60,7 @@ const bridgeQuestions = [
         <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
         <span class="text-[rgb(var(--reading-ink))]">R1 artikkel</span>
       </nav>
-      <section class="mx-auto mb-7 max-w-[min(100%,46rem)] rounded-[var(--radius-lg)] border border-[rgb(var(--border))/0.5] bg-[rgb(var(--surface-elevated))/0.88] px-4 py-4 sm:px-5">
+      <section class="r1-orientation mx-auto mb-7 max-w-[min(100%,46rem)] px-0.5 py-1">
         <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]">Produktanatomi v0.1 test</p>
         <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
           Les artikkelen først. Bruk deretter ett av spørsmålene under for å gå direkte videre til hjelp i chat med konteksten fra denne teksten.
@@ -69,17 +69,17 @@ const bridgeQuestions = [
 
       <ArticleTemplateV01 {...r1Article} />
 
-      <section class="mx-auto mt-8 max-w-[min(100%,46rem)] rounded-[var(--radius-lg)] border border-[rgb(var(--reading-accent-iris))/0.28] bg-[rgb(var(--reading-inline))/0.72] px-4 py-5 sm:px-5 sm:py-6">
+      <section class="r1-ai-bridge mx-auto mt-8 max-w-[min(100%,46rem)] px-0.5 py-1">
         <h2 class="text-base font-semibold text-[rgb(var(--reading-ink))] sm:text-lg">Neste steg: få hjelp med din situasjon</h2>
         <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
           Velg spørsmålet som ligner mest på situasjonen din. Du sendes videre til chat-shell med spørsmålet ferdig utfylt.
         </p>
-        <ul class="mt-4 grid list-none gap-2.5 p-0 sm:gap-3" role="list">
+        <ul class="mt-4 list-none space-y-2.5 p-0 sm:space-y-3" role="list">
           {bridgeQuestions.map((item) => (
             <li>
               <a
                 href={buildChatShellHref(item.question, "article-r1")}
-                class="block rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.5] bg-[rgb(var(--surface-elevated))] px-3.5 py-3 text-sm font-medium text-[rgb(var(--reading-ink))] no-underline transition-colors hover:bg-[rgb(var(--surface-elevated))/0.82]"
+                class="r1-bridge-link block px-0 py-0.5 text-sm font-medium text-[rgb(var(--reading-ink))] underline underline-offset-[0.18em] decoration-[rgb(var(--reading-ink-secondary))/0.55] decoration-[1px] transition-colors hover:text-[rgb(var(--reading-ink))]"
               >
                 <span class="block text-[11px] font-semibold uppercase tracking-[0.08em] text-[rgb(var(--reading-ink-secondary))]">Predefinert spørsmål</span>
                 <span class="mt-1.5 block">{item.label}</span>
@@ -90,5 +90,85 @@ const bridgeQuestions = [
       </section>
     </div>
   </main>
+  <style is:global>
+    [data-r1-editorial] [data-component="ArticleContent"] {
+      background: #fff;
+      border-radius: 0;
+    }
+
+    [data-r1-editorial] [data-component="ArticleHeader"] > div:first-of-type {
+      margin-bottom: 0.1rem;
+    }
+
+    [data-r1-editorial] [data-component="ArticleHeader"] > div:first-of-type .ams-kicker {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+    }
+
+    [data-r1-editorial] [data-component="ArticleTrustBlock"] {
+      background: transparent;
+      border-radius: 0;
+      padding: 0;
+      margin: -0.2rem 0 0.9rem;
+    }
+
+    [data-r1-editorial] [data-component="ArticleTrustBlock"] .ams-kicker {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    [data-r1-editorial] [data-component="ArticleTrustBlock"] p:last-child {
+      margin-top: 0.22rem;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    [data-r1-editorial] .ams-plate {
+      background: transparent;
+      border-radius: 0;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      box-shadow: none;
+    }
+
+    [data-r1-editorial] [data-component="ArticleFigurePlaceholder"] {
+      margin-top: 0.75rem;
+      border-top: 1px solid rgb(var(--border) / 0.25);
+      padding-top: 0.9rem;
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] {
+      margin-top: 1rem;
+      border-top: 1px solid rgb(var(--border) / 0.28);
+      padding-top: 1rem;
+      padding-bottom: 0;
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] ul li {
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] ul li + li::before {
+      content: "·";
+      margin-right: 0.35rem;
+      color: rgb(var(--reading-ink-secondary) / 0.65);
+    }
+
+    [data-r1-editorial] .r1-orientation,
+    [data-r1-editorial] .r1-ai-bridge {
+      border-top: 1px solid rgb(var(--border) / 0.24);
+    }
+
+    [data-r1-editorial] .r1-bridge-link {
+      border-radius: 0;
+    }
+  </style>
   <Footer variant="article" />
 </BaseLayout>
