@@ -1,0 +1,106 @@
+---
+/* CONTRACT: Inline article chat shell with seed starters and in-place CES conversation. */
+export interface PromptItem {
+  question: string;
+}
+
+export interface Props {
+  title: string;
+  intro: string;
+  headingId: string;
+  items: PromptItem[];
+  sourceLabel?: string;
+}
+
+const {
+  title,
+  intro,
+  headingId,
+  items,
+  sourceLabel = "artikkel",
+} = Astro.props;
+---
+
+<section class="inline-chat-shell ams-zone" aria-labelledby={headingId} data-component="ArticleInlineChatShell">
+  <header class="inline-chat-shell__header">
+    <h2 id={headingId} class="inline-chat-shell__title">{title}</h2>
+    <p class="inline-chat-shell__intro">{intro}</p>
+  </header>
+
+  <ul class="inline-chat-shell__seed-list" role="list">
+    {
+      items.map((item) => (
+        <li>
+          <button
+            type="button"
+            class="inline-chat-shell__seed-btn"
+            data-inline-chat-seed={item.question}
+          >
+            {item.question}
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="inline-chat-shell__source text-[11px] text-[rgb(var(--muted))]">
+    Kontekst: {sourceLabel}. Velg et startsporsmal eller skriv fritt i feltet under.
+  </p>
+
+  <div class="vox-surface-embedded-app mt-3" data-kl-surface="embedded-app">
+    <chat-messenger
+      id="article-inline-chat-widget"
+      url-allowlist="*"
+      class="block h-[min(54vh,520px)] w-full overflow-hidden rounded-none bg-[rgb(var(--surface-subtle))]"
+    >
+      <chat-messenger-container
+        chat-title="Horehjelpen"
+        enable-file-upload
+        enable-audio-input
+      ></chat-messenger-container>
+    </chat-messenger>
+  </div>
+</section>
+
+<script is:inline define:vars={{ sourceLabel }}>
+  (() => {
+    const widget = document.getElementById("article-inline-chat-widget");
+    if (!widget) return;
+
+    const pushToWidget = (prompt) => {
+      const seed = (prompt || "").trim();
+      if (!seed || typeof widget.sessionInput !== "function") return false;
+      const wrapped = [
+        "Du er Hørehjelpen, en varm og konkret veileder for hørsel i hverdagen.",
+        "Svar kort og handlingsrettet i norsk.",
+        `Kontekst: brukeren kommer fra ${sourceLabel}.`,
+        "",
+        `Spørsmål: ${seed}`,
+      ].join("\n");
+      widget.open?.();
+      widget.show?.();
+      widget.sessionInput(wrapped);
+      return true;
+    };
+
+    let bridgeReady = pushToWidget("");
+    let tries = 0;
+    const timer = setInterval(() => {
+      tries += 1;
+      bridgeReady = typeof widget.sessionInput === "function";
+      if (bridgeReady || tries > 40) clearInterval(timer);
+    }, 250);
+
+    document.querySelectorAll("[data-inline-chat-seed]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const seed = btn.getAttribute("data-inline-chat-seed") || "";
+        if (pushToWidget(seed)) return;
+        let retry = 0;
+        const retryTimer = setInterval(() => {
+          retry += 1;
+          if (pushToWidget(seed) || retry > 20) clearInterval(retryTimer);
+        }, 250);
+      });
+    });
+  })();
+</script>
