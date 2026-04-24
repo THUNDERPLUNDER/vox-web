@@ -35,6 +35,7 @@ const r1Article = {
   trustPublished: "03. feb 2026, 06:30",
   trustUpdated: "25. mar 2026, 16:04",
   trustShowActions: true,
+  trustAvatarSrc: "/images/klarlyd/r1-byline-profile.png",
   trustAvatarAlt: "Redaksjonell avatar",
   figureAfterTrust: true,
   ingressAfterFigure: true,
@@ -64,8 +65,14 @@ const bridgeQuestions = [
 <BaseLayout title="VOX - R1 spoke v0.1" currentPath="/no/hubs" shellVariant="article">
   <meta slot="head" name="robots" content="noindex,follow" />
   <main class="bg-[rgb(var(--article-page-canvas))] py-8 sm:py-10" data-article-system data-r1-editorial>
+    <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
+      R1PageMain
+    </span>
     <div class="px-4 sm:px-6">
       <nav class="mx-auto mb-7 max-w-[min(100%,46rem)] text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]" aria-label="Du er her">
+        <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
+          BreadcrumbNav
+        </span>
         <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
         <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
         <a href="/no/hubs" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Emnehuber</a>
@@ -73,6 +80,9 @@ const bridgeQuestions = [
         <span class="text-[rgb(var(--reading-ink))]">R1 artikkel</span>
       </nav>
       <section class="r1-orientation mx-auto mb-7 max-w-[min(100%,46rem)] px-0.5 py-1">
+        <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
+          OrientationBlock
+        </span>
         <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]">Produktanatomi v0.1 test</p>
         <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
           Les artikkelen først. Bruk deretter ett av spørsmålene under for å gå direkte videre til hjelp i chat med konteksten fra denne teksten.
@@ -82,6 +92,9 @@ const bridgeQuestions = [
       <ArticleTemplateV01 {...r1Article} />
 
       <section class="r1-ai-bridge mx-auto mt-10 max-w-[min(100%,46rem)] px-0.5 py-1">
+        <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
+          PromptBridge
+        </span>
         <PromptGroup
           title="Fortsett i Hørehjelpen"
           intro="Velg et predefinert spørsmål for å gå videre fra lesing til handling i samme kontekst."
@@ -91,6 +104,18 @@ const bridgeQuestions = [
           ctaLabel="Åpne fri samtale"
         />
       </section>
+
+      <aside class="r1-component-inventory mx-auto mt-6 max-w-[min(100%,46rem)]" data-component="ComponentInventory">
+        <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
+          ComponentInventory
+        </span>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]">Komponenter i bruk</p>
+        <ul class="mt-2 flex flex-wrap gap-1.5 text-[11px] text-[rgb(var(--reading-ink-secondary))]">
+          <li>ArticleTemplate</li><li>ArticleHeader</li><li>ArticleTrustBlock</li><li>ArticleFigurePlaceholder</li>
+          <li>ArticleIngress</li><li>ArticleBody</li><li>ArticleSummary</li><li>PromptGroup</li><li>PromptGroupList</li>
+          <li>PromptGroupCta</li><li>BreadcrumbNav</li><li>OrientationBlock</li><li>PromptBridge</li>
+        </ul>
+      </aside>
     </div>
   </main>
   <style is:global>
@@ -182,6 +207,16 @@ const bridgeQuestions = [
     [data-r1-editorial] .r1-ai-bridge .prompt-group__cta {
       border-radius: var(--article-system-radius-button-cta);
       margin-top: 1rem;
+    }
+
+    [data-r1-editorial] .r1-component-inventory {
+      display: none;
+      border-top: 1px solid rgb(var(--border) / 0.3);
+      padding-top: 0.9rem;
+    }
+
+    html[data-inspect-components="true"] [data-r1-editorial] .r1-component-inventory {
+      display: block;
     }
 
   </style>

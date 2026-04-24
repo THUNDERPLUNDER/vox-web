@@ -28,18 +28,23 @@ const {
 
 const base = import.meta.env.BASE_URL ?? "/";
 const freeChatHref = freeChatHrefProp ?? (base.endsWith("/") ? `${base}no/chat` : `${base}/no/chat`);
+const inspectLabelClass =
+  "article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950";
 ---
 
-<section class="prompt-group ams-zone prompt-group--ghost-pill" aria-labelledby={headingId}>
+<section class="prompt-group ams-zone prompt-group--ghost-pill" aria-labelledby={headingId} data-component="PromptGroup">
+  <span class={inspectLabelClass} data-component-label>PromptGroup</span>
   <header class="prompt-group__header prompt_group__header">
+    <span class={inspectLabelClass} data-component-label>PromptGroupHeader</span>
     <h2 id={headingId} class="prompt-group__title prompt_group__title">{title}</h2>
     <p class="prompt-group__intro prompt_group__intro">{intro}</p>
   </header>
 
-  <ul class="prompt-group__list prompt_group__list" role="list">
+  <span class={inspectLabelClass} data-component-label>PromptGroupList</span>
+  <ul class="prompt-group__list prompt_group__list" role="list" data-component="PromptGroupList">
     {
       items.map((item) => (
-        <li class="prompt-group__item prompt_group__item">
+        <li class="prompt-group__item prompt_group__item" data-component="PromptGroupItem">
           <a href={buildChatShellHref(item.question, seedFrom)} class="prompt-group__link prompt_group__link">
             <span class="prompt-group__question prompt_group__question">{item.question}</span>
             <span class="prompt-group__hint" aria-hidden="true">
@@ -59,5 +64,8 @@ const freeChatHref = freeChatHrefProp ?? (base.endsWith("/") ? `${base}no/chat` 
     }
   </ul>
 
-  <a href={freeChatHref} class="prompt-group__cta">{ctaLabel}</a>
+  <a href={freeChatHref} class="prompt-group__cta" data-component="PromptGroupCta">
+    <span class={inspectLabelClass} data-component-label>PromptGroupCta</span>
+    {ctaLabel}
+  </a>
 </section>
