@@ -152,7 +152,10 @@ const editorialAuthor = trustAuthors[1];
               </svg>
             </button>
             {trustActionLinks.length > 0 ? (
-              <p class="ml-auto text-[6px] font-medium uppercase tracking-[0.1em] text-[rgb(var(--reading-ink-secondary))/0.6]">
+              <p
+                class="ml-auto font-medium uppercase text-[rgb(var(--reading-ink-secondary))/0.6]"
+                style="font-size: 6px; letter-spacing: 0.1em; line-height: 1.15;"
+              >
                 {trustActionLinks.map((item, index) => (
                   <>
                     {item.href ? (
@@ -167,7 +170,10 @@ const editorialAuthor = trustAuthors[1];
                 ))}
               </p>
             ) : trustActionMeta ? (
-              <p class="ml-auto text-[6px] font-medium uppercase tracking-[0.1em] text-[rgb(var(--reading-ink-secondary))/0.6]">
+              <p
+                class="ml-auto font-medium uppercase text-[rgb(var(--reading-ink-secondary))/0.6]"
+                style="font-size: 6px; letter-spacing: 0.1em; line-height: 1.15;"
+              >
                 {trustActionMeta}
               </p>
             ) : null}
