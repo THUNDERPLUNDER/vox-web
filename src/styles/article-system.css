@@ -368,6 +368,17 @@ html[data-inspect-components="true"] :where([data-article-system],[data-article-
   transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
 }
 
+@media (max-width: 639px) {
+  :where([data-article-system],[data-article-master-sandbox]) .prompt-group--ghost-pill .prompt-group__link {
+    max-width: 100%;
+    height: auto;
+    min-height: 40px;
+    white-space: normal;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+}
+
 :where([data-article-system],[data-article-master-sandbox]) .prompt-group--ghost-pill .prompt-group__link:hover {
   background: rgb(var(--article-system-pill-hover-light));
   box-shadow: none;
