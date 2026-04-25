@@ -10,6 +10,8 @@ export interface Props {
   headingId: string;
   items: PromptItem[];
   sourceLabel?: string;
+  mode?: "inline" | "progressive";
+  freeChatLabel?: string;
 }
 
 const {
@@ -18,36 +20,87 @@ const {
   headingId,
   items,
   sourceLabel = "artikkel",
+  mode = "inline",
+  freeChatLabel = "Start fri samtale",
 } = Astro.props;
 ---
 
-<section class="inline-chat-shell ams-zone" aria-labelledby={headingId} data-component="ArticleInlineChatShell">
+<section
+  class="inline-chat-shell ams-zone"
+  aria-labelledby={headingId}
+  data-component="ArticleInlineChatShell"
+  data-inline-chat-mode={mode}
+  data-inline-chat-state={mode === "progressive" ? "idle" : "active"}
+>
   <header class="inline-chat-shell__header">
     <h2 id={headingId} class="inline-chat-shell__title">{title}</h2>
     <p class="inline-chat-shell__intro">{intro}</p>
   </header>
 
-  <ul class="inline-chat-shell__seed-list" role="list">
+  {mode === "progressive" ? (
+    <p
+      class="inline-chat-shell__affordance text-xs font-medium uppercase tracking-[0.12em] text-[rgb(var(--reading-ink-secondary))]"
+      data-inline-chat-affordance
+    >
+      Dialog med Hørehjelpen
+    </p>
+  ) : null}
+
+  <ul
+    class:list={[
+      "inline-chat-shell__seed-list",
+      mode === "progressive" && "prompt-group__list prompt-group--ghost-pill",
+    ]}
+    role="list"
+  >
     {
       items.map((item) => (
         <li>
           <button
             type="button"
-            class="inline-chat-shell__seed-btn"
+            class:list={[
+              "inline-chat-shell__seed-btn",
+              mode === "progressive" && "prompt-group__link",
+            ]}
             data-inline-chat-seed={item.question}
           >
-            {item.question}
+            <span class={mode === "progressive" ? "prompt-group__question" : undefined}>{item.question}</span>
+            {mode === "progressive" ? (
+              <span class="prompt-group__hint" aria-hidden="true">
+                <svg class="prompt-group__hint-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            ) : null}
           </button>
         </li>
       ))
     }
   </ul>
 
+  {mode === "progressive" ? (
+    <button type="button" class="prompt-group__cta inline-chat-shell__free-chat" data-inline-chat-free-trigger>
+      {freeChatLabel}
+    </button>
+  ) : null}
+
   <p class="inline-chat-shell__source text-[11px] text-[rgb(var(--muted))]">
-    Kontekst: {sourceLabel}. Velg et startsporsmal eller skriv fritt i feltet under.
+    Kontekst: {sourceLabel}. Velg et startspørsmål{mode === "progressive" ? " for å åpne samtalen." : " eller skriv fritt i feltet under."}
   </p>
 
-  <div class="vox-surface-embedded-app mt-3" data-kl-surface="embedded-app">
+  <div class="inline-chat-shell__selected mt-3 hidden rounded-[10px] border border-[rgb(var(--border))/0.35] bg-[rgb(var(--surface-subtle))] px-3 py-2.5" data-inline-chat-selected>
+    <p class="text-[11px] font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-ink-secondary))]">Valgt start</p>
+    <p class="mt-1 text-sm leading-relaxed text-[rgb(var(--reading-ink))]" data-inline-chat-selected-text></p>
+  </div>
+
+  <div
+    class:list={[
+      "vox-surface-embedded-app mt-3",
+      mode === "progressive" && "hidden",
+    ]}
+    data-kl-surface="embedded-app"
+    data-inline-chat-surface
+  >
     <chat-messenger
       id="article-inline-chat-widget"
       url-allowlist="*"
@@ -62,10 +115,23 @@ const {
   </div>
 </section>
 
-<script is:inline define:vars={{ sourceLabel }}>
+<script is:inline define:vars={{ sourceLabel, mode }}>
   (() => {
-    const widget = document.getElementById("article-inline-chat-widget");
+    const shell = document.querySelector('[data-component="ArticleInlineChatShell"][data-inline-chat-mode]');
+    const widget = shell?.querySelector("#article-inline-chat-widget");
     if (!widget) return;
+    const progressive = mode === "progressive";
+    const selectedBox = shell?.querySelector("[data-inline-chat-selected]");
+    const selectedText = shell?.querySelector("[data-inline-chat-selected-text]");
+    const surface = shell?.querySelector("[data-inline-chat-surface]");
+    const setState = (next) => {
+      if (!shell) return;
+      shell.setAttribute("data-inline-chat-state", next);
+    };
+    const revealSurface = () => {
+      if (selectedBox) selectedBox.classList.remove("hidden");
+      if (surface) surface.classList.remove("hidden");
+    };
 
     const pushToWidget = (prompt) => {
       const seed = (prompt || "").trim();
@@ -83,7 +149,29 @@ const {
       return true;
     };
 
-    let bridgeReady = pushToWidget("");
+    const startFreeChat = () => {
+      revealSurface();
+      if (selectedText) selectedText.textContent = "Fri samtale";
+      setState("started");
+      widget.open?.();
+      widget.show?.();
+      if (typeof widget.sessionInput === "function") {
+        setState("active");
+        return;
+      }
+      let retry = 0;
+      const freeRetryTimer = setInterval(() => {
+        retry += 1;
+        widget.open?.();
+        widget.show?.();
+        if (typeof widget.sessionInput === "function" || retry > 20) {
+          if (typeof widget.sessionInput === "function") setState("active");
+          clearInterval(freeRetryTimer);
+        }
+      }, 250);
+    };
+
+    let bridgeReady = !progressive && pushToWidget("");
     let tries = 0;
     const timer = setInterval(() => {
       tries += 1;
@@ -91,16 +179,33 @@ const {
       if (bridgeReady || tries > 40) clearInterval(timer);
     }, 250);
 
-    document.querySelectorAll("[data-inline-chat-seed]").forEach((btn) => {
+    shell?.querySelectorAll("[data-inline-chat-seed]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const seed = btn.getAttribute("data-inline-chat-seed") || "";
-        if (pushToWidget(seed)) return;
+        if (progressive) {
+          if (selectedText) selectedText.textContent = seed;
+          revealSurface();
+          setState("started");
+        }
+        if (pushToWidget(seed)) {
+          if (progressive) setState("active");
+          return;
+        }
         let retry = 0;
         const retryTimer = setInterval(() => {
           retry += 1;
-          if (pushToWidget(seed) || retry > 20) clearInterval(retryTimer);
+          const pushed = pushToWidget(seed);
+          if (pushed || retry > 20) {
+            if (pushed && progressive) setState("active");
+            clearInterval(retryTimer);
+          }
         }, 250);
       });
     });
+
+    const freeTrigger = shell?.querySelector("[data-inline-chat-free-trigger]");
+    if (freeTrigger) {
+      freeTrigger.addEventListener("click", startFreeChat);
+    }
   })();
 </script>
