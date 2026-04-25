@@ -159,14 +159,20 @@ const spokeEntries = [
                     <p class="text-sm font-semibold text-[rgb(var(--text))]">{sanitizeHubCopy(seed.question)}</p>
                     {seed.shortAnswer ? (
                       <p class="mt-1.5 text-sm text-[rgb(var(--muted))]">{sanitizeHubCopy(seed.shortAnswer)}</p>
-                    ) : null}
+                    ) : (
+                      <p class="mt-1.5 text-sm text-[rgb(var(--muted))]">Trykk for forslag til neste steg i chat.</p>
+                    )}
                   </a>
                 </li>
               ))}
             </ul>
           ) : (
             <p class="mt-4 text-sm text-[rgb(var(--muted))]">
-              Samtaleforslag fylles på fortløpende. Du kan åpne Hørehjelpen direkte via chat.
+              Vi har ingen forslag klare akkurat nå. Du kan fortsatt{" "}
+              <a href="/no/chat" class="font-medium text-[rgb(var(--text-secondary))] underline underline-offset-2 hover:text-[rgb(var(--text))]">
+                åpne Hørehjelpen
+              </a>{" "}
+              og skrive spørsmålet ditt med egne ord.
             </p>
           )}
         </div>
