@@ -44,6 +44,14 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
             ></chat-messenger-container>
           </chat-messenger>
         </div>
+
+        <div
+          id="no-chat-debug-panel"
+          class="hidden border border-[rgb(var(--border))] bg-[rgb(var(--surface-subtle))] p-3 text-xs text-[rgb(var(--muted))]"
+        >
+          <p class="mb-2 font-semibold uppercase tracking-wide text-[rgb(var(--text))]">No chat debug</p>
+          <pre id="no-chat-debug-output" class="whitespace-pre-wrap break-words font-mono leading-relaxed"></pre>
+        </div>
       </div>
     </Section>
   </main>
@@ -58,24 +66,91 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       const params = new URLSearchParams(window.location.search);
       const initialQuestion = (params.get("seed") || "").trim();
       const from = (params.get("from") || "").trim();
+      const debugEnabled = params.get("debug") === "1";
+      const debugPanel = document.getElementById("no-chat-debug-panel");
+      const debugOutput = document.getElementById("no-chat-debug-output");
+      const debugState = {
+        widgetExists: false,
+        tagName: "(missing)",
+        nodeName: "(missing)",
+        sessionInputType: "undefined",
+        openType: "undefined",
+        showType: "undefined",
+        customElementDefined: false,
+        chatMessengerLoaded: false,
+        voxCesRegister: false,
+        cesMessengerConnected: false,
+        readinessPolls: 0,
+        lastSeedStatus: "Script startet.",
+      };
+
+      const updateDebugState = () => {
+        const currentWidget = document.getElementById("ces-demo-widget");
+        debugState.widgetExists = Boolean(currentWidget);
+        debugState.tagName = currentWidget?.tagName || "(missing)";
+        debugState.nodeName = currentWidget?.nodeName || "(missing)";
+        debugState.sessionInputType = typeof currentWidget?.sessionInput;
+        debugState.openType = typeof currentWidget?.open;
+        debugState.showType = typeof currentWidget?.show;
+        debugState.customElementDefined = Boolean(window.customElements?.get("chat-messenger"));
+      };
+
+      const renderDebug = () => {
+        if (!debugEnabled) return;
+        updateDebugState();
+        if (debugPanel) debugPanel.classList.remove("hidden");
+        if (debugOutput) {
+          debugOutput.textContent = [
+            `#ces-demo-widget finnes: ${debugState.widgetExists}`,
+            `tagName: ${debugState.tagName}`,
+            `nodeName: ${debugState.nodeName}`,
+            `typeof widget.sessionInput: ${debugState.sessionInputType}`,
+            `typeof widget.open: ${debugState.openType}`,
+            `typeof widget.show: ${debugState.showType}`,
+            `customElements.get("chat-messenger"): ${debugState.customElementDefined}`,
+            `chat-messenger-loaded mottatt: ${debugState.chatMessengerLoaded}`,
+            `vox-ces-register mottatt: ${debugState.voxCesRegister}`,
+            `ces-messenger-connected mottatt: ${debugState.cesMessengerConnected}`,
+            `readiness polling ticks: ${debugState.readinessPolls}`,
+            `siste seed-status: ${debugState.lastSeedStatus}`,
+          ].join("\n");
+        }
+        window.__voxNoChatDebug = {
+          ...debugState,
+          refresh: () => {
+            renderDebug();
+            return window.__voxNoChatDebug;
+          },
+        };
+        console.debug("[vox-no-chat-debug]", { ...debugState });
+      };
+
+      const setSeedStatus = (text) => {
+        debugState.lastSeedStatus = text;
+        if (statusEl && initialQuestion) statusEl.textContent = text;
+        renderDebug();
+      };
+
       if (seedStrip && initialQuestion) seedStrip.classList.remove("hidden");
       if (seedTextEl) seedTextEl.textContent = initialQuestion;
       if (seedStartBtn && initialQuestion) seedStartBtn.setAttribute("disabled", "");
       if (statusEl && initialQuestion) {
-        statusEl.textContent = from
+        setSeedStatus(from
           ? `Hentet fra ${from === "article" ? "artikkel" : "hub"}. Kobler til Hørehjelpen ...`
-          : "Kobler til Hørehjelpen ...";
+          : "Kobler til Hørehjelpen ...");
       }
-      if (!widget || !initialQuestion) return;
+      renderDebug();
 
       let isSending = false;
 
       const hasSessionInput = () => typeof widget.sessionInput === "function";
 
       const markReady = () => {
+        renderDebug();
+        if (!widget) return false;
         if (!hasSessionInput()) return false;
         if (!isSending && seedStartBtn) seedStartBtn.removeAttribute("disabled");
-        if (!isSending && statusEl) statusEl.textContent = "Klar til å starte.";
+        if (!isSending) setSeedStatus("Klar til å starte.");
         return true;
       };
 
@@ -84,11 +159,13 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         let tries = 0;
         const timer = setInterval(() => {
           tries += 1;
+          debugState.readinessPolls += 1;
           if (markReady() || tries > 120) clearInterval(timer);
         }, 250);
       };
 
       const sendSeed = () => {
+        if (!widget || !initialQuestion) return false;
         widget.open?.();
         widget.show?.();
         if (!hasSessionInput()) return false;
@@ -103,7 +180,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
           `Spørsmål: ${initialQuestion}`,
         ].join("\n");
         widget.sessionInput(guidedSeedPrompt);
-        if (statusEl) statusEl.textContent = "Startspørsmål sendt til samtalen.";
+        setSeedStatus("Startspørsmål sendt til samtalen.");
         isSending = false;
         return true;
       };
@@ -111,16 +188,17 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       const sendSeedWithRetry = () => {
         isSending = true;
         if (seedStartBtn) seedStartBtn.setAttribute("disabled", "");
-        if (statusEl) statusEl.textContent = "Sender spørsmålet til Hørehjelpen ...";
+        setSeedStatus("Sender spørsmålet til Hørehjelpen ...");
         if (sendSeed()) return;
         let tries = 0;
         const timer = setInterval(() => {
           tries += 1;
+          debugState.readinessPolls += 1;
           if (sendSeed() || tries > 120) {
             clearInterval(timer);
             if (tries > 120) {
               isSending = false;
-              if (statusEl) statusEl.textContent = "Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.";
+              setSeedStatus("Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.");
               if (seedStartBtn) seedStartBtn.removeAttribute("disabled");
             }
           }
@@ -131,12 +209,30 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         seedStartBtn.addEventListener("click", sendSeedWithRetry);
       }
       window.addEventListener("vox-ces-register", (event) => {
+        debugState.voxCesRegister = true;
         const detail = event?.detail || {};
+        renderDebug();
         if (detail.widgetId !== "ces-demo-widget") return;
         if (detail.success) observeReadiness();
       });
-      window.addEventListener("chat-messenger-loaded", observeReadiness, { once: true });
-      window.addEventListener("ces-messenger-connected", observeReadiness, { once: true });
+      window.addEventListener(
+        "chat-messenger-loaded",
+        () => {
+          debugState.chatMessengerLoaded = true;
+          renderDebug();
+          observeReadiness();
+        },
+        { once: true },
+      );
+      window.addEventListener(
+        "ces-messenger-connected",
+        () => {
+          debugState.cesMessengerConnected = true;
+          renderDebug();
+          observeReadiness();
+        },
+        { once: true },
+      );
       observeReadiness();
     })();
   </script>
