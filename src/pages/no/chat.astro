@@ -89,6 +89,32 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         sendQueryResult: "",
         sendQueryError: "",
         lastSeedStatus: "Script startet.",
+        lifecycleEvents: [],
+      };
+
+      const stringifyDebugPayload = (payload) => {
+        if (payload === undefined) return "";
+        if (payload === null) return "null";
+        if (typeof payload === "string") return payload;
+        try {
+          return JSON.stringify(payload);
+        } catch (error) {
+          try {
+            return String(payload);
+          } catch {
+            return "[unserializable payload]";
+          }
+        }
+      };
+
+      const addLifecycleEvent = (name, payload) => {
+        const time = new Date().toISOString();
+        const detail = stringifyDebugPayload(payload);
+        debugState.lifecycleEvents = [
+          ...debugState.lifecycleEvents,
+          detail ? `${time} ${name} ${detail}` : `${time} ${name}`,
+        ].slice(-24);
+        renderDebug();
       };
 
       const updateDebugState = () => {
@@ -128,6 +154,9 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
             `sendQuery result: ${debugState.sendQueryResult || "(none)"}`,
             `sendQuery error: ${debugState.sendQueryError || "(none)"}`,
             `siste seed-status: ${debugState.lastSeedStatus}`,
+            "",
+            "CES lifecycle:",
+            ...(debugState.lifecycleEvents.length ? debugState.lifecycleEvents : ["(none)"]),
           ].join("\n");
         }
         window.__voxNoChatDebug = {
@@ -193,6 +222,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         debugState.startNewSessionCalled = true;
         debugState.startNewSessionResult = "";
         debugState.startNewSessionError = "";
+        addLifecycleEvent("reset/startNewSession called");
         renderDebug();
         const tokenReady = new Promise((resolve) => {
           const timer = setTimeout(() => {
@@ -222,9 +252,11 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         debugState.sendQueryCalled = true;
         debugState.sendQueryResult = "";
         debugState.sendQueryError = "";
+        addLifecycleEvent("sendQuery called", { seedLength: initialQuestion.length });
         renderDebug();
         const result = await widget.sendQuery(initialQuestion);
         debugState.sendQueryResult = result === undefined ? "resolved: undefined" : `resolved: ${String(result)}`;
+        addLifecycleEvent("sendQuery resolved", { result: debugState.sendQueryResult });
         setSeedStatus("Spørsmålet er sendt");
         isSending = false;
         return true;
@@ -240,6 +272,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
           console.error("chat-messenger-error", error);
           debugState.sendQueryResult = "rejected";
           debugState.sendQueryError = String(error?.message || error || "unknown");
+          addLifecycleEvent("sendQuery rejected", { error: debugState.sendQueryError });
           isSending = false;
           setSeedStatus("Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.");
           if (seedStartBtn) seedStartBtn.removeAttribute("disabled");
@@ -257,6 +290,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
               console.error("chat-messenger-error", error);
               debugState.sendQueryResult = "rejected";
               debugState.sendQueryError = String(error?.message || error || "unknown");
+              addLifecycleEvent("sendQuery rejected", { error: debugState.sendQueryError });
               isSending = false;
               setSeedStatus("Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.");
               if (seedStartBtn) seedStartBtn.removeAttribute("disabled");
@@ -274,6 +308,23 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
       if (seedStartBtn) {
         seedStartBtn.addEventListener("click", sendSeedWithRetry);
+      }
+      window.addEventListener("chat-messenger-start-new-session", (event) => {
+        addLifecycleEvent("chat-messenger-start-new-session event", event?.detail);
+      });
+      window.addEventListener("chat-messenger-access-token-resolved", (event) => {
+        addLifecycleEvent("chat-messenger-access-token-resolved event", event?.detail);
+      });
+      window.addEventListener("chat-messenger-response-received", (event) => {
+        addLifecycleEvent("chat-messenger-response-received event", event?.detail);
+      });
+      if (widget) {
+        widget.addEventListener("chat-messenger-error-v2", (event) => {
+          addLifecycleEvent("chat-messenger-error-v2 event", event?.detail);
+        });
+        widget.addEventListener("chat-messenger-error", (event) => {
+          addLifecycleEvent("chat-messenger-error event", event?.detail);
+        });
       }
       window.addEventListener("vox-ces-register", (event) => {
         debugState.voxCesRegister = true;
