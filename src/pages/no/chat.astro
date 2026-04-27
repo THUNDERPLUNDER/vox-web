@@ -81,6 +81,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         voxCesRegister: false,
         cesMessengerConnected: false,
         readinessPolls: 0,
+        sendQueryCalled: false,
+        sendQueryError: "",
         lastSeedStatus: "Script startet.",
       };
 
@@ -112,6 +114,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
             `vox-ces-register mottatt: ${debugState.voxCesRegister}`,
             `ces-messenger-connected mottatt: ${debugState.cesMessengerConnected}`,
             `readiness polling ticks: ${debugState.readinessPolls}`,
+            `sendQuery kalt: ${debugState.sendQueryCalled}`,
+            `sendQuery error: ${debugState.sendQueryError || "(none)"}`,
             `siste seed-status: ${debugState.lastSeedStatus}`,
           ].join("\n");
         }
@@ -167,24 +171,10 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       const sendSeed = async () => {
         if (!widget || !initialQuestion) return false;
         if (!hasSendQuery()) return false;
-        const guidedSeedPrompt = [
-          "Du er Hørehjelpen, en varm og konkret veileder for hørsel i hverdagen.",
-          "Gi et kort første svar på norsk (maks 5 korte punkter).",
-          "Vær konkret med neste steg brukeren kan gjøre nå.",
-          "Ved relasjonsspørsmål: start med en trygg setning brukeren kan si ordrett.",
-          "Ved tekniske spørsmål (f.eks. Bluetooth): gi enkel steg-for-steg-liste uten teknisk sjargong.",
-          "Spør til slutt ett kort oppfølgingsspørsmål som hjelper videre.",
-          "",
-          `Spørsmål: ${initialQuestion}`,
-        ].join("\n");
-        if (typeof widget.renderCustomText === "function") {
-          try {
-            widget.renderCustomText(initialQuestion, false);
-          } catch (error) {
-            console.warn("chat-messenger-render-warning", error);
-          }
-        }
-        await widget.sendQuery(guidedSeedPrompt);
+        debugState.sendQueryCalled = true;
+        debugState.sendQueryError = "";
+        renderDebug();
+        await widget.sendQuery(initialQuestion);
         setSeedStatus("Spørsmålet er sendt");
         isSending = false;
         return true;
@@ -198,6 +188,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
           if (await sendSeed()) return;
         } catch (error) {
           console.error("chat-messenger-error", error);
+          debugState.sendQueryError = String(error?.message || error || "unknown");
           isSending = false;
           setSeedStatus("Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.");
           if (seedStartBtn) seedStartBtn.removeAttribute("disabled");
@@ -213,6 +204,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
               await sendSeed();
             } catch (error) {
               console.error("chat-messenger-error", error);
+              debugState.sendQueryError = String(error?.message || error || "unknown");
               isSending = false;
               setSeedStatus("Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.");
               if (seedStartBtn) seedStartBtn.removeAttribute("disabled");
