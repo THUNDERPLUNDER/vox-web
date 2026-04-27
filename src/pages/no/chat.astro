@@ -51,6 +51,34 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         >
           <p class="mb-2 font-semibold uppercase tracking-wide text-[rgb(var(--text))]">No chat debug</p>
           <pre id="no-chat-debug-output" class="whitespace-pre-wrap break-words font-mono leading-relaxed"></pre>
+          <div class="mt-3 border-t border-[rgb(var(--border))] pt-3">
+            <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
+              <p class="font-semibold uppercase tracking-wide text-[rgb(var(--text))]">Kopierbar status</p>
+              <button
+                id="no-chat-debug-copy"
+                type="button"
+                class="inline-flex items-center justify-center rounded-none border border-[rgb(var(--border))] px-2.5 py-1 text-[11px] font-semibold text-[rgb(var(--text))]"
+              >
+                Kopier debugstatus
+              </button>
+            </div>
+            <textarea
+              id="no-chat-debug-report"
+              class="min-h-[180px] w-full resize-y rounded-none border border-[rgb(var(--border))] bg-[rgb(var(--surface))] p-2 font-mono text-[11px] leading-relaxed text-[rgb(var(--text))]"
+              readonly
+            ></textarea>
+            <p id="no-chat-debug-copy-status" class="mt-1 text-[11px] text-[rgb(var(--muted))]"></p>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button
+            id="no-chat-debug-toggle"
+            type="button"
+            class="inline-flex items-center justify-center rounded-none border border-[rgb(var(--border))] bg-[rgb(var(--surface))] px-2.5 py-1 text-[11px] font-semibold text-[rgb(var(--muted))]"
+            aria-pressed="false"
+          >
+            Debug
+          </button>
         </div>
       </div>
     </Section>
@@ -66,9 +94,13 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       const params = new URLSearchParams(window.location.search);
       const initialQuestion = (params.get("seed") || "").trim();
       const from = (params.get("from") || "").trim();
-      const debugEnabled = params.get("debug") === "1";
+      let debugEnabled = params.get("debug") === "1";
       const debugPanel = document.getElementById("no-chat-debug-panel");
       const debugOutput = document.getElementById("no-chat-debug-output");
+      const debugToggleBtn = document.getElementById("no-chat-debug-toggle");
+      const debugReportEl = document.getElementById("no-chat-debug-report");
+      const debugCopyBtn = document.getElementById("no-chat-debug-copy");
+      const debugCopyStatus = document.getElementById("no-chat-debug-copy-status");
       const debugState = {
         widgetExists: false,
         tagName: "(missing)",
@@ -88,9 +120,14 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         sendQueryCalled: false,
         sendQueryResult: "",
         sendQueryError: "",
+        cooldownUsed: false,
+        cooldownMsWaited: 0,
+        lastSeedSendAt: "",
         lastSeedStatus: "Script startet.",
         lifecycleEvents: [],
       };
+      const seedCooldownMs = 6000;
+      const seedCooldownKey = "vox:no-chat:last-seed-send-at";
 
       const stringifyDebugPayload = (payload) => {
         if (payload === undefined) return "";
@@ -129,8 +166,58 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         debugState.customElementDefined = Boolean(window.customElements?.get("chat-messenger"));
       };
 
+      const getLastSeedSendAt = () => {
+        try {
+          return Number(window.sessionStorage.getItem(seedCooldownKey) || "0") || 0;
+        } catch {
+          return 0;
+        }
+      };
+
+      const setLastSeedSendAt = (value) => {
+        try {
+          window.sessionStorage.setItem(seedCooldownKey, String(value));
+        } catch {
+          // Ignore storage failures; cooldown is a best-effort CES throttle.
+        }
+        debugState.lastSeedSendAt = value ? new Date(value).toISOString() : "";
+      };
+
+      const updateDebugToggle = () => {
+        if (!debugToggleBtn) return;
+        debugToggleBtn.setAttribute("aria-pressed", debugEnabled ? "true" : "false");
+        debugToggleBtn.classList.toggle("text-[rgb(var(--text))]", debugEnabled);
+        debugToggleBtn.classList.toggle("text-[rgb(var(--muted))]", !debugEnabled);
+        debugToggleBtn.classList.toggle("bg-[rgb(var(--surface-subtle))]", debugEnabled);
+      };
+
+      const buildDebugReport = () => [
+        `current URL: ${window.location.href}`,
+        `seed: ${initialQuestion || "(none)"}`,
+        `tidspunkt: ${new Date().toISOString()}`,
+        `typeof widget.sendQuery: ${debugState.sendQueryType}`,
+        `typeof widget.startNewSession: ${debugState.startNewSessionType}`,
+        `startNewSession kalt: ${debugState.startNewSessionCalled}`,
+        `startNewSession result: ${debugState.startNewSessionResult || "(none)"}`,
+        `startNewSession error: ${debugState.startNewSessionError || "(none)"}`,
+        `sendQuery kalt: ${debugState.sendQueryCalled}`,
+        `sendQuery result: ${debugState.sendQueryResult || "(none)"}`,
+        `sendQuery error: ${debugState.sendQueryError || "(none)"}`,
+        `cooldown brukt: ${debugState.cooldownUsed}`,
+        `cooldown ms ventet: ${debugState.cooldownMsWaited}`,
+        `last seed send timestamp: ${debugState.lastSeedSendAt || "(none)"}`,
+        `siste seed-status: ${debugState.lastSeedStatus}`,
+        "",
+        "CES lifecycle-logg:",
+        ...(debugState.lifecycleEvents.length ? debugState.lifecycleEvents : ["(none)"]),
+      ].join("\n");
+
       const renderDebug = () => {
-        if (!debugEnabled) return;
+        updateDebugToggle();
+        if (!debugEnabled) {
+          if (debugPanel) debugPanel.classList.add("hidden");
+          return;
+        }
         updateDebugState();
         if (debugPanel) debugPanel.classList.remove("hidden");
         if (debugOutput) {
@@ -153,12 +240,16 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
             `sendQuery kalt: ${debugState.sendQueryCalled}`,
             `sendQuery result: ${debugState.sendQueryResult || "(none)"}`,
             `sendQuery error: ${debugState.sendQueryError || "(none)"}`,
+            `cooldown brukt: ${debugState.cooldownUsed}`,
+            `cooldown ms ventet: ${debugState.cooldownMsWaited}`,
+            `last seed send timestamp: ${debugState.lastSeedSendAt || "(none)"}`,
             `siste seed-status: ${debugState.lastSeedStatus}`,
             "",
             "CES lifecycle:",
             ...(debugState.lifecycleEvents.length ? debugState.lifecycleEvents : ["(none)"]),
           ].join("\n");
         }
+        if (debugReportEl) debugReportEl.value = buildDebugReport();
         window.__voxNoChatDebug = {
           ...debugState,
           refresh: () => {
@@ -168,6 +259,34 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         };
         console.debug("[vox-no-chat-debug]", { ...debugState });
       };
+
+      const setDebugEnabled = (next) => {
+        debugEnabled = next;
+        const nextUrl = new URL(window.location.href);
+        if (debugEnabled) nextUrl.searchParams.set("debug", "1");
+        else nextUrl.searchParams.delete("debug");
+        window.history.replaceState({}, "", nextUrl);
+        renderDebug();
+      };
+
+      if (debugToggleBtn) {
+        debugToggleBtn.addEventListener("click", () => setDebugEnabled(!debugEnabled));
+      }
+
+      if (debugCopyBtn) {
+        debugCopyBtn.addEventListener("click", async () => {
+          renderDebug();
+          const report = debugReportEl?.value || buildDebugReport();
+          try {
+            await navigator.clipboard?.writeText(report);
+            if (debugCopyStatus) debugCopyStatus.textContent = "Debugstatus kopiert";
+          } catch {
+            debugReportEl?.focus();
+            debugReportEl?.select();
+            if (debugCopyStatus) debugCopyStatus.textContent = "Marker teksten manuelt hvis kopiering ikke virker.";
+          }
+        });
+      }
 
       const setSeedStatus = (text) => {
         debugState.lastSeedStatus = text;
@@ -215,6 +334,20 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         }, 250);
       };
 
+      const waitForSeedCooldown = async () => {
+        const lastSendAt = getLastSeedSendAt();
+        debugState.lastSeedSendAt = lastSendAt ? new Date(lastSendAt).toISOString() : "";
+        const elapsed = lastSendAt ? Date.now() - lastSendAt : seedCooldownMs;
+        const waitMs = Math.max(0, seedCooldownMs - elapsed);
+        debugState.cooldownUsed = waitMs > 0;
+        debugState.cooldownMsWaited = waitMs;
+        renderDebug();
+        if (!waitMs) return;
+        setSeedStatus("Klargjør ny samtale ...");
+        addLifecycleEvent("seed cooldown wait", { waitMs });
+        await new Promise((resolve) => setTimeout(resolve, waitMs));
+      };
+
       const resetSeedSession = async () => {
         if (seedSessionReset) return;
         seedSessionReset = true;
@@ -248,12 +381,14 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       const sendSeed = async () => {
         if (!widget || !initialQuestion) return false;
         if (!hasSendQuery()) return false;
+        await waitForSeedCooldown();
         await resetSeedSession();
         debugState.sendQueryCalled = true;
         debugState.sendQueryResult = "";
         debugState.sendQueryError = "";
         addLifecycleEvent("sendQuery called", { seedLength: initialQuestion.length });
         renderDebug();
+        setLastSeedSendAt(Date.now());
         const result = await widget.sendQuery(initialQuestion);
         debugState.sendQueryResult = result === undefined ? "resolved: undefined" : `resolved: ${String(result)}`;
         addLifecycleEvent("sendQuery resolved", { result: debugState.sendQueryResult });
