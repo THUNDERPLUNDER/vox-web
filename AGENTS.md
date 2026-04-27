@@ -58,3 +58,34 @@ End every task with a Norwegian return ticket:
 - Tester kjørt
 - Hva Thomas bør verifisere
 - Eventuelle risikoer eller åpne punkter
+
+## Agent Workflow v0.1
+Dette er operativ minimumsflyt for Codex og Cursor i dette repoet.
+
+1. **Startgrunnlag**
+   - Arbeid starter fra en GitHub issue eller en tydelig prompt.
+   - Hvis oppgaven er uklar, avklar scope før kodeendring.
+
+2. **Rolle**
+   - Codex/Cursor er utførende kodeagenter.
+   - Agenten implementerer bestilt arbeid, ikke ny strategi.
+
+3. **Scope og endringer**
+   - Hold endringer små, avgrensede og reviewbare.
+   - Unngå brede refaktorer og sideeffekter uten eksplisitt bestilling.
+   - Ikke endre strategi, roadmap eller arkitektur uten eksplisitt mandat.
+
+4. **Les før endring**
+   - Les relevante filer i berørt filscope før du gjør endringer.
+   - Bruk eksisterende mønstre, struktur og navngiving i repoet.
+
+5. **Verifisering før ferdigmelding**
+   - Kjør relevante repo-sjekker for endringen.
+   - Minimum: `npm run build` (eller forklar konkret hvorfor den ikke kan kjøres).
+
+6. **Feilhåndtering ved funn etterpå**
+   - Forklar kort hvorfor feilen ikke ble fanget tidligere.
+   - Foreslå ett konkret QA-punkt eller én instruks som kan hindre samme feiltype.
+
+7. **Avslutning**
+   - Avslutt med Return Ticket ved ferdig arbeid.
