@@ -161,9 +161,9 @@ const {
         awaitingResponse = false;
         if (replyText) {
           replyText.textContent =
-            "Vi fikk ikke hentet svaret inn i artikkelflaten ennå. Prøv fri samtale under hvis du vil fortsette nå.";
+            "Jeg fikk ikke hentet svaret inn i artikkelflaten ennå. Prøv fri samtale under.";
         }
-        setStatus("Svar-event fra chatmotoren ble ikke fanget innen tidsgrensen.");
+        setStatus("");
         setState("fallback");
       }, 14000);
     };
@@ -307,9 +307,9 @@ const {
               clearResponseTimer();
               if (replyText) {
                 replyText.textContent =
-                  "Vi fikk ikke sendt spørsmålet til chatmotoren akkurat nå. Prøv fri samtale under.";
+                  "Kunne ikke koble til Hørehjelpen akkurat nå. Prøv fri samtale under.";
               }
-              setStatus("Kunne ikke sende til chatmotoren akkurat nå.");
+              setStatus("");
             }
             if (pushed && progressive) setState("active");
             clearInterval(retryTimer);
