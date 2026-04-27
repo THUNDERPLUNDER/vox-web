@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Norwegian glossary term page; Storyblok spike for title/description + existing calm layout. */
+/* CONTRACT: Norwegian glossary term page; Storyblok-backed title/description + existing calm layout. */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Section from "../../../components/layout/Section.astro";
 import Footer from "../../../components/nav/Footer.astro";
@@ -63,7 +63,7 @@ export async function getStaticPaths() {
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
 const FALLBACK_LEAD =
-  "Her vises definisjon og forklaring når oppslaget er publisert. Under MVP er dette en mal for hvordan et begrep kan presenteres tydelig og rolig.";
+  "Her finner du en tydelig forklaring av begrepet, skrevet for rolig og praktisk lesning.";
 
 const FALLBACK_BODY =
   "Brødtekst, eksempler og eventuelle «se også»-henvisninger plasseres her med god linjeavstand og tydelig avsnittsrytme — uten tette tabeller eller teknisk PDF-følelse.";
@@ -117,8 +117,8 @@ const bodyText = fromStoryblok && storyDescription ? storyDescription : FALLBACK
         <p class="mt-6 text-sm text-[rgb(var(--muted))]">
           {
             fromStoryblok
-              ? "Innhold hentet fra Storyblok (spike)."
-              : "Når datakilde er koblet til, fylles dette feltet automatisk for hvert begrep."
+              ? "Innholdet er hentet fra ordboken."
+              : "Innhold for dette oppslaget legges til fortløpende."
           }
         </p>
       </div>
