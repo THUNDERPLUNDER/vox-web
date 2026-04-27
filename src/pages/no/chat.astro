@@ -82,6 +82,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         cesMessengerConnected: false,
         readinessPolls: 0,
         sendQueryCalled: false,
+        sendQueryResult: "",
         sendQueryError: "",
         lastSeedStatus: "Script startet.",
       };
@@ -115,6 +116,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
             `ces-messenger-connected mottatt: ${debugState.cesMessengerConnected}`,
             `readiness polling ticks: ${debugState.readinessPolls}`,
             `sendQuery kalt: ${debugState.sendQueryCalled}`,
+            `sendQuery result: ${debugState.sendQueryResult || "(none)"}`,
             `sendQuery error: ${debugState.sendQueryError || "(none)"}`,
             `siste seed-status: ${debugState.lastSeedStatus}`,
           ].join("\n");
@@ -146,6 +148,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       renderDebug();
 
       let isSending = false;
+      let sendQueryReadyAt = 0;
+      const sendQueryStabilizeMs = 700;
 
       const hasSendQuery = () => typeof widget?.sendQuery === "function";
 
@@ -153,6 +157,9 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         renderDebug();
         if (!widget) return false;
         if (!hasSendQuery()) return false;
+        if (!sendQueryReadyAt) sendQueryReadyAt = Date.now();
+        // The hosted widget can expose sendQuery before its session is settled.
+        if (Date.now() - sendQueryReadyAt < sendQueryStabilizeMs) return false;
         if (!isSending && seedStartBtn) seedStartBtn.removeAttribute("disabled");
         if (!isSending) setSeedStatus("Klar til å starte");
         return true;
@@ -172,9 +179,11 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         if (!widget || !initialQuestion) return false;
         if (!hasSendQuery()) return false;
         debugState.sendQueryCalled = true;
+        debugState.sendQueryResult = "";
         debugState.sendQueryError = "";
         renderDebug();
-        await widget.sendQuery(initialQuestion);
+        const result = await widget.sendQuery(initialQuestion);
+        debugState.sendQueryResult = result === undefined ? "resolved: undefined" : `resolved: ${String(result)}`;
         setSeedStatus("Spørsmålet er sendt");
         isSending = false;
         return true;
@@ -188,6 +197,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
           if (await sendSeed()) return;
         } catch (error) {
           console.error("chat-messenger-error", error);
+          debugState.sendQueryResult = "rejected";
           debugState.sendQueryError = String(error?.message || error || "unknown");
           isSending = false;
           setSeedStatus("Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.");
@@ -204,6 +214,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
               await sendSeed();
             } catch (error) {
               console.error("chat-messenger-error", error);
+              debugState.sendQueryResult = "rejected";
               debugState.sendQueryError = String(error?.message || error || "unknown");
               isSending = false;
               setSeedStatus("Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.");
