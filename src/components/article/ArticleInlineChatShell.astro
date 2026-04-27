@@ -88,12 +88,18 @@ const {
     Kontekst: {sourceLabel}. Velg et startspørsmål{mode === "progressive" ? " for å åpne samtalen." : " eller skriv fritt i feltet under."}
   </p>
 
-  <div class="inline-chat-shell__dialog-start mt-3 hidden" data-inline-chat-selected>
-    <div class="inline-chat-shell__start-message">
-      <p class="inline-chat-shell__start-eyebrow">Startspørsmål</p>
-      <p class="inline-chat-shell__start-text" data-inline-chat-selected-text></p>
+  <div class="inline-chat-shell__dialog-thread mt-3 hidden" data-inline-chat-selected>
+    <div class="inline-chat-shell__message inline-chat-shell__message--user">
+      <p class="inline-chat-shell__message-eyebrow">Du valgte</p>
+      <p class="inline-chat-shell__message-text" data-inline-chat-selected-text></p>
     </div>
-    <p class="inline-chat-shell__status" data-inline-chat-status aria-live="polite"></p>
+    <div class="inline-chat-shell__message inline-chat-shell__message--assistant">
+      <p class="inline-chat-shell__message-eyebrow">Hørehjelpen</p>
+      <p class="inline-chat-shell__message-text" data-inline-chat-reply>Hørehjelpen svarer ...</p>
+    </div>
+    <p class="inline-chat-shell__status" data-inline-chat-status aria-live="polite">
+      Vi bruker chatmotoren i bakgrunnen.
+    </p>
   </div>
 
   <div
@@ -129,15 +135,54 @@ const {
     const progressive = mode === "progressive";
     const selectedBox = shell?.querySelector("[data-inline-chat-selected]");
     const selectedText = shell?.querySelector("[data-inline-chat-selected-text]");
+    const replyText = shell?.querySelector("[data-inline-chat-reply]");
     const statusText = shell?.querySelector("[data-inline-chat-status]");
     const surface = shell?.querySelector("[data-inline-chat-surface]");
     const setState = (next) => {
       if (!shell) return;
       shell.setAttribute("data-inline-chat-state", next);
     };
-    const revealSurface = () => {
+    const revealDialog = () => {
       if (selectedBox) selectedBox.classList.remove("hidden");
+    };
+    const revealSurface = () => {
+      revealDialog();
       if (surface) surface.classList.remove("hidden");
+    };
+
+    const asText = (payload) => {
+      if (!payload) return "";
+      if (typeof payload === "string") return payload.trim();
+      if (Array.isArray(payload)) {
+        return payload.map((item) => asText(item)).filter(Boolean).join("\n").trim();
+      }
+      if (typeof payload === "object") {
+        const candidates = [
+          payload.text,
+          payload.transcript,
+          payload.outputText,
+          payload.message,
+          payload.content,
+          payload.payload,
+          payload.raw,
+          payload.data,
+          payload.messages,
+        ];
+        for (const candidate of candidates) {
+          const parsed = asText(candidate);
+          if (parsed) return parsed;
+        }
+      }
+      return "";
+    };
+
+    const handleBotReply = (event) => {
+      if (!progressive) return;
+      const text = asText(event?.detail);
+      if (!text) return;
+      if (replyText) replyText.textContent = text;
+      if (statusText) statusText.textContent = "Svar mottatt.";
+      setState("answered");
     };
 
     const pushToWidget = (prompt) => {
@@ -159,7 +204,8 @@ const {
     const startFreeChat = () => {
       revealSurface();
       if (selectedText) selectedText.textContent = "Fri samtale";
-      if (statusText) statusText.textContent = "Skriv i feltet under når du er klar.";
+      if (replyText) replyText.textContent = "Skriv i feltet under når du er klar.";
+      if (statusText) statusText.textContent = "Fri samtale bruker den synlige chatflaten.";
       setState("started");
       widget.open?.();
       widget.show?.();
@@ -192,11 +238,13 @@ const {
         const seed = btn.getAttribute("data-inline-chat-seed") || "";
         if (progressive) {
           if (selectedText) selectedText.textContent = seed;
+          if (replyText) replyText.textContent = "Hørehjelpen svarer ...";
           if (statusText) statusText.textContent = "Hørehjelpen svarer ...";
-          revealSurface();
+          revealDialog();
           setState("started");
         }
         if (pushToWidget(seed)) {
+          if (progressive && statusText) statusText.textContent = "Sendt til Hørehjelpen. Venter på svar ...";
           if (progressive) setState("active");
           return;
         }
@@ -205,6 +253,10 @@ const {
           retry += 1;
           const pushed = pushToWidget(seed);
           if (pushed || retry > 20) {
+            if (pushed && progressive && statusText) statusText.textContent = "Sendt til Hørehjelpen. Venter på svar ...";
+            if (!pushed && retry > 20 && progressive && statusText) {
+              statusText.textContent = "Kunne ikke sende til chatmotoren akkurat nå. Prøv fri samtale under.";
+            }
             if (pushed && progressive) setState("active");
             clearInterval(retryTimer);
           }
@@ -215,6 +267,10 @@ const {
     const freeTrigger = shell?.querySelector("[data-inline-chat-free-trigger]");
     if (freeTrigger) {
       freeTrigger.addEventListener("click", startFreeChat);
+    }
+
+    for (const eventName of ["ces-text-received", "ces-message-received"]) {
+      widget.addEventListener(eventName, handleBotReply);
     }
   })();
 </script>
