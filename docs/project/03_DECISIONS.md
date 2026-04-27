@@ -82,3 +82,9 @@ Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår 
 - Beslutning: KlarLyd bruker en fast Thread Handoff-mal i `docs/project/08_THREAD_HANDOFF.md` ved naturlige trådskifter.
 - Begrunnelse: Vi trenger et lett og repeterbart mellomlag mellom Return Ticket, repo-state og ny tråd.
 - Konsekvens: Ved nytt hovedspor, lukket pilot eller uklar/blandet tråd skal Thread Handoff vurderes før ny tråd startes.
+
+## 2026-04-27 - Article AI Bridge: embedded artikkeldialog
+- Beslutning: For `#62` / Article AI Bridge skal AI-dialog i spoke-artikler være en embedded fortsettelse av artikkelen, ikke en fullskjerm chat-widget. Direkte AI-modus kan fortsatt bruke full chat-/CES-opplevelse.
+- Begrunnelse: I artikkelmodus skal leseren oppleve at valgt startspørsmål blir første melding i en lokal artikkeldialog. VOX skal eie presentasjonslaget for valgt startspørsmål, brukerboble/startmelding, status som “Hørehjelpen svarer ...” og dialogens plassering under spørsmålet.
+- Konsekvens: CES behandles foreløpig som teknisk motor/bridge, ikke som primær visuell artikkelkomponent. Startspørsmål-mønsteret kalles **Prompt Row** / **Startspørsmål-rad**, og beslutningen styrer videre v0.3+ arbeid på Article AI Bridge.
+- Åpent punkt: Avklare hvordan faktisk CES-respons kan hentes og vises stabilt i VOX-eid artikkeldialog.
