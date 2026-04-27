@@ -49,25 +49,25 @@ const {
   <ul
     class:list={[
       "inline-chat-shell__seed-list",
-      mode === "progressive" && "prompt-group__list prompt-group--ghost-pill",
+      mode === "progressive" && "inline-chat-shell__seed-list--rows",
     ]}
     role="list"
   >
     {
       items.map((item) => (
-        <li>
+        <li class={mode === "progressive" ? "inline-chat-shell__seed-item" : undefined}>
           <button
             type="button"
             class:list={[
               "inline-chat-shell__seed-btn",
-              mode === "progressive" && "prompt-group__link",
+              mode === "progressive" && "inline-chat-shell__seed-row",
             ]}
             data-inline-chat-seed={item.question}
           >
-            <span class={mode === "progressive" ? "prompt-group__question" : undefined}>{item.question}</span>
+            <span class={mode === "progressive" ? "inline-chat-shell__seed-question" : undefined}>{item.question}</span>
             {mode === "progressive" ? (
-              <span class="prompt-group__hint" aria-hidden="true">
-                <svg class="prompt-group__hint-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <span class="inline-chat-shell__seed-icon" aria-hidden="true">
+                <svg class="inline-chat-shell__seed-icon-svg" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
               </span>
@@ -88,9 +88,12 @@ const {
     Kontekst: {sourceLabel}. Velg et startspørsmål{mode === "progressive" ? " for å åpne samtalen." : " eller skriv fritt i feltet under."}
   </p>
 
-  <div class="inline-chat-shell__selected mt-3 hidden rounded-[10px] border border-[rgb(var(--border))/0.35] bg-[rgb(var(--surface-subtle))] px-3 py-2.5" data-inline-chat-selected>
-    <p class="text-[11px] font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-ink-secondary))]">Valgt start</p>
-    <p class="mt-1 text-sm leading-relaxed text-[rgb(var(--reading-ink))]" data-inline-chat-selected-text></p>
+  <div class="inline-chat-shell__dialog-start mt-3 hidden" data-inline-chat-selected>
+    <div class="inline-chat-shell__start-message">
+      <p class="inline-chat-shell__start-eyebrow">Startspørsmål</p>
+      <p class="inline-chat-shell__start-text" data-inline-chat-selected-text></p>
+    </div>
+    <p class="inline-chat-shell__status" data-inline-chat-status aria-live="polite"></p>
   </div>
 
   <div
@@ -104,7 +107,10 @@ const {
     <chat-messenger
       id="article-inline-chat-widget"
       url-allowlist="*"
-      class="block h-[min(54vh,520px)] w-full overflow-hidden rounded-none bg-[rgb(var(--surface-subtle))]"
+      class:list={[
+        "block w-full overflow-hidden rounded-none bg-[rgb(var(--surface-subtle))]",
+        mode === "progressive" ? "h-[min(34vh,360px)] sm:h-[min(42vh,420px)]" : "h-[min(54vh,520px)]",
+      ]}
     >
       <chat-messenger-container
         chat-title="Horehjelpen"
@@ -123,6 +129,7 @@ const {
     const progressive = mode === "progressive";
     const selectedBox = shell?.querySelector("[data-inline-chat-selected]");
     const selectedText = shell?.querySelector("[data-inline-chat-selected-text]");
+    const statusText = shell?.querySelector("[data-inline-chat-status]");
     const surface = shell?.querySelector("[data-inline-chat-surface]");
     const setState = (next) => {
       if (!shell) return;
@@ -152,6 +159,7 @@ const {
     const startFreeChat = () => {
       revealSurface();
       if (selectedText) selectedText.textContent = "Fri samtale";
+      if (statusText) statusText.textContent = "Skriv i feltet under når du er klar.";
       setState("started");
       widget.open?.();
       widget.show?.();
@@ -184,6 +192,7 @@ const {
         const seed = btn.getAttribute("data-inline-chat-seed") || "";
         if (progressive) {
           if (selectedText) selectedText.textContent = seed;
+          if (statusText) statusText.textContent = "Hørehjelpen svarer ...";
           revealSurface();
           setState("started");
         }
