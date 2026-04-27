@@ -123,6 +123,14 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         cooldownUsed: false,
         cooldownMsWaited: 0,
         lastSeedSendAt: "",
+        lastCesErrorAt: "",
+        lastCesErrorTimeMs: 0,
+        lastCesErrorMessage: "",
+        lastCesErrorStatus: "",
+        lastResponseReceivedAt: "",
+        lastResponseReceivedTimeMs: 0,
+        responseReceivedAfterError: false,
+        msFromErrorToResponse: "",
         lastSeedStatus: "Script startet.",
         lifecycleEvents: [],
       };
@@ -206,6 +214,12 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         `cooldown brukt: ${debugState.cooldownUsed}`,
         `cooldown ms ventet: ${debugState.cooldownMsWaited}`,
         `last seed send timestamp: ${debugState.lastSeedSendAt || "(none)"}`,
+        `last CES error at: ${debugState.lastCesErrorAt || "(none)"}`,
+        `last CES error message: ${debugState.lastCesErrorMessage || "(none)"}`,
+        `last CES error status: ${debugState.lastCesErrorStatus || "(none)"}`,
+        `last response received at: ${debugState.lastResponseReceivedAt || "(none)"}`,
+        `response received after error: ${debugState.responseReceivedAfterError}`,
+        `ms from error to response: ${debugState.msFromErrorToResponse || "(none)"}`,
         `siste seed-status: ${debugState.lastSeedStatus}`,
         "",
         "CES lifecycle-logg:",
@@ -243,6 +257,12 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
             `cooldown brukt: ${debugState.cooldownUsed}`,
             `cooldown ms ventet: ${debugState.cooldownMsWaited}`,
             `last seed send timestamp: ${debugState.lastSeedSendAt || "(none)"}`,
+            `last CES error at: ${debugState.lastCesErrorAt || "(none)"}`,
+            `last CES error message: ${debugState.lastCesErrorMessage || "(none)"}`,
+            `last CES error status: ${debugState.lastCesErrorStatus || "(none)"}`,
+            `last response received at: ${debugState.lastResponseReceivedAt || "(none)"}`,
+            `response received after error: ${debugState.responseReceivedAfterError}`,
+            `ms from error to response: ${debugState.msFromErrorToResponse || "(none)"}`,
             `siste seed-status: ${debugState.lastSeedStatus}`,
             "",
             "CES lifecycle:",
@@ -291,6 +311,34 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       const setSeedStatus = (text) => {
         debugState.lastSeedStatus = text;
         if (statusEl && initialQuestion) statusEl.textContent = text;
+        renderDebug();
+      };
+
+      const recordCesError = (detail) => {
+        const now = Date.now();
+        debugState.lastCesErrorAt = new Date(now).toISOString();
+        debugState.lastCesErrorTimeMs = now;
+        debugState.lastCesErrorMessage = String(detail?.message || detail?.error?.message || "unknown");
+        debugState.lastCesErrorStatus = String(detail?.status ?? detail?.error?.status ?? "unknown");
+        debugState.responseReceivedAfterError = false;
+        debugState.msFromErrorToResponse = "";
+        if (debugState.sendQueryCalled && !debugState.lastResponseReceivedAt) {
+          setSeedStatus("Hørehjelpen meldte en midlertidig feil, men vi venter fortsatt på svar ...");
+        } else {
+          renderDebug();
+        }
+      };
+
+      const recordCesResponse = () => {
+        const now = Date.now();
+        debugState.lastResponseReceivedAt = new Date(now).toISOString();
+        debugState.lastResponseReceivedTimeMs = now;
+        if (debugState.lastCesErrorTimeMs && debugState.lastCesErrorTimeMs <= now) {
+          debugState.responseReceivedAfterError = true;
+          debugState.msFromErrorToResponse = String(now - debugState.lastCesErrorTimeMs);
+          setSeedStatus("Svar mottatt etter midlertidig feil.");
+          return;
+        }
         renderDebug();
       };
 
@@ -451,10 +499,12 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         addLifecycleEvent("chat-messenger-access-token-resolved event", event?.detail);
       });
       window.addEventListener("chat-messenger-response-received", (event) => {
+        recordCesResponse();
         addLifecycleEvent("chat-messenger-response-received event", event?.detail);
       });
       if (widget) {
         widget.addEventListener("chat-messenger-error-v2", (event) => {
+          recordCesError(event?.detail || {});
           addLifecycleEvent("chat-messenger-error-v2 event", event?.detail);
         });
         widget.addEventListener("chat-messenger-error", (event) => {
