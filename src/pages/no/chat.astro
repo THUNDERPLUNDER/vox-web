@@ -74,8 +74,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         tagName: "(missing)",
         nodeName: "(missing)",
         sessionInputType: "undefined",
-        openType: "undefined",
-        showType: "undefined",
+        sendQueryType: "undefined",
+        renderCustomTextType: "undefined",
         customElementDefined: false,
         chatMessengerLoaded: false,
         voxCesRegister: false,
@@ -90,8 +90,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         debugState.tagName = currentWidget?.tagName || "(missing)";
         debugState.nodeName = currentWidget?.nodeName || "(missing)";
         debugState.sessionInputType = typeof currentWidget?.sessionInput;
-        debugState.openType = typeof currentWidget?.open;
-        debugState.showType = typeof currentWidget?.show;
+        debugState.sendQueryType = typeof currentWidget?.sendQuery;
+        debugState.renderCustomTextType = typeof currentWidget?.renderCustomText;
         debugState.customElementDefined = Boolean(window.customElements?.get("chat-messenger"));
       };
 
@@ -105,8 +105,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
             `tagName: ${debugState.tagName}`,
             `nodeName: ${debugState.nodeName}`,
             `typeof widget.sessionInput: ${debugState.sessionInputType}`,
-            `typeof widget.open: ${debugState.openType}`,
-            `typeof widget.show: ${debugState.showType}`,
+            `typeof widget.sendQuery: ${debugState.sendQueryType}`,
+            `typeof widget.renderCustomText: ${debugState.renderCustomTextType}`,
             `customElements.get("chat-messenger"): ${debugState.customElementDefined}`,
             `chat-messenger-loaded mottatt: ${debugState.chatMessengerLoaded}`,
             `vox-ces-register mottatt: ${debugState.voxCesRegister}`,
@@ -143,14 +143,14 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
       let isSending = false;
 
-      const hasSessionInput = () => typeof widget.sessionInput === "function";
+      const hasSendQuery = () => typeof widget?.sendQuery === "function";
 
       const markReady = () => {
         renderDebug();
         if (!widget) return false;
-        if (!hasSessionInput()) return false;
+        if (!hasSendQuery()) return false;
         if (!isSending && seedStartBtn) seedStartBtn.removeAttribute("disabled");
-        if (!isSending) setSeedStatus("Klar til å starte.");
+        if (!isSending) setSeedStatus("Klar til å starte");
         return true;
       };
 
@@ -164,11 +164,9 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         }, 250);
       };
 
-      const sendSeed = () => {
+      const sendSeed = async () => {
         if (!widget || !initialQuestion) return false;
-        widget.open?.();
-        widget.show?.();
-        if (!hasSessionInput()) return false;
+        if (!hasSendQuery()) return false;
         const guidedSeedPrompt = [
           "Du er Hørehjelpen, en varm og konkret veileder for hørsel i hverdagen.",
           "Gi et kort første svar på norsk (maks 5 korte punkter).",
@@ -179,28 +177,53 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
           "",
           `Spørsmål: ${initialQuestion}`,
         ].join("\n");
-        widget.sessionInput(guidedSeedPrompt);
-        setSeedStatus("Startspørsmål sendt til samtalen.");
+        if (typeof widget.renderCustomText === "function") {
+          try {
+            widget.renderCustomText(initialQuestion, false);
+          } catch (error) {
+            console.warn("chat-messenger-render-warning", error);
+          }
+        }
+        await widget.sendQuery(guidedSeedPrompt);
+        setSeedStatus("Spørsmålet er sendt");
         isSending = false;
         return true;
       };
 
-      const sendSeedWithRetry = () => {
+      const sendSeedWithRetry = async () => {
         isSending = true;
         if (seedStartBtn) seedStartBtn.setAttribute("disabled", "");
         setSeedStatus("Sender spørsmålet til Hørehjelpen ...");
-        if (sendSeed()) return;
+        try {
+          if (await sendSeed()) return;
+        } catch (error) {
+          console.error("chat-messenger-error", error);
+          isSending = false;
+          setSeedStatus("Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.");
+          if (seedStartBtn) seedStartBtn.removeAttribute("disabled");
+          return;
+        }
         let tries = 0;
-        const timer = setInterval(() => {
+        const timer = setInterval(async () => {
           tries += 1;
           debugState.readinessPolls += 1;
-          if (sendSeed() || tries > 120) {
+          if (hasSendQuery()) {
             clearInterval(timer);
-            if (tries > 120) {
+            try {
+              await sendSeed();
+            } catch (error) {
+              console.error("chat-messenger-error", error);
               isSending = false;
               setSeedStatus("Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.");
               if (seedStartBtn) seedStartBtn.removeAttribute("disabled");
             }
+            return;
+          }
+          if (tries > 120) {
+            clearInterval(timer);
+            isSending = false;
+            setSeedStatus("Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.");
+            if (seedStartBtn) seedStartBtn.removeAttribute("disabled");
           }
         }, 250);
       };
