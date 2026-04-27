@@ -138,9 +138,34 @@ const {
     const replyText = shell?.querySelector("[data-inline-chat-reply]");
     const statusText = shell?.querySelector("[data-inline-chat-status]");
     const surface = shell?.querySelector("[data-inline-chat-surface]");
+    let bridgeReady = false;
+    let responseTimer = null;
+    let awaitingResponse = false;
     const setState = (next) => {
       if (!shell) return;
       shell.setAttribute("data-inline-chat-state", next);
+    };
+    const setStatus = (text) => {
+      if (statusText) statusText.textContent = text;
+    };
+    const clearResponseTimer = () => {
+      if (!responseTimer) return;
+      clearTimeout(responseTimer);
+      responseTimer = null;
+    };
+    const startResponseTimer = () => {
+      clearResponseTimer();
+      awaitingResponse = true;
+      responseTimer = setTimeout(() => {
+        if (!awaitingResponse) return;
+        awaitingResponse = false;
+        if (replyText) {
+          replyText.textContent =
+            "Vi fikk ikke hentet svaret inn i artikkelflaten ennå. Prøv fri samtale under hvis du vil fortsette nå.";
+        }
+        setStatus("Svar-event fra chatmotoren ble ikke fanget innen tidsgrensen.");
+        setState("fallback");
+      }, 14000);
     };
     const revealDialog = () => {
       if (selectedBox) selectedBox.classList.remove("hidden");
@@ -180,9 +205,26 @@ const {
       if (!progressive) return;
       const text = asText(event?.detail);
       if (!text) return;
+      awaitingResponse = false;
+      clearResponseTimer();
       if (replyText) replyText.textContent = text;
-      if (statusText) statusText.textContent = "Svar mottatt.";
+      setStatus("Svar mottatt.");
       setState("answered");
+    };
+
+    const markBridgeReady = () => {
+      if (!widget || typeof widget.sessionInput !== "function") return false;
+      bridgeReady = true;
+      return true;
+    };
+
+    const observeReady = () => {
+      if (markBridgeReady()) return;
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries += 1;
+        if (markBridgeReady() || tries > 40) clearInterval(timer);
+      }, 250);
     };
 
     const pushToWidget = (prompt) => {
@@ -205,7 +247,7 @@ const {
       revealSurface();
       if (selectedText) selectedText.textContent = "Fri samtale";
       if (replyText) replyText.textContent = "Skriv i feltet under når du er klar.";
-      if (statusText) statusText.textContent = "Fri samtale bruker den synlige chatflaten.";
+      setStatus("Fri samtale bruker den synlige chatflaten.");
       setState("started");
       widget.open?.();
       widget.show?.();
@@ -225,7 +267,7 @@ const {
       }, 250);
     };
 
-    let bridgeReady = !progressive && pushToWidget("");
+    bridgeReady = !progressive && pushToWidget("");
     let tries = 0;
     const timer = setInterval(() => {
       tries += 1;
@@ -239,12 +281,15 @@ const {
         if (progressive) {
           if (selectedText) selectedText.textContent = seed;
           if (replyText) replyText.textContent = "Hørehjelpen svarer ...";
-          if (statusText) statusText.textContent = "Hørehjelpen svarer ...";
+          setStatus(bridgeReady ? "Hørehjelpen svarer ..." : "Kobler til Hørehjelpen ...");
           revealDialog();
           setState("started");
         }
         if (pushToWidget(seed)) {
-          if (progressive && statusText) statusText.textContent = "Sendt til Hørehjelpen. Venter på svar ...";
+          if (progressive) {
+            setStatus("Sendt til Hørehjelpen. Venter på svar ...");
+            startResponseTimer();
+          }
           if (progressive) setState("active");
           return;
         }
@@ -253,9 +298,18 @@ const {
           retry += 1;
           const pushed = pushToWidget(seed);
           if (pushed || retry > 20) {
-            if (pushed && progressive && statusText) statusText.textContent = "Sendt til Hørehjelpen. Venter på svar ...";
-            if (!pushed && retry > 20 && progressive && statusText) {
-              statusText.textContent = "Kunne ikke sende til chatmotoren akkurat nå. Prøv fri samtale under.";
+            if (pushed && progressive) {
+              setStatus("Sendt til Hørehjelpen. Venter på svar ...");
+              startResponseTimer();
+            }
+            if (!pushed && retry > 20 && progressive) {
+              awaitingResponse = false;
+              clearResponseTimer();
+              if (replyText) {
+                replyText.textContent =
+                  "Vi fikk ikke sendt spørsmålet til chatmotoren akkurat nå. Prøv fri samtale under.";
+              }
+              setStatus("Kunne ikke sende til chatmotoren akkurat nå.");
             }
             if (pushed && progressive) setState("active");
             clearInterval(retryTimer);
@@ -272,5 +326,18 @@ const {
     for (const eventName of ["ces-text-received", "ces-message-received"]) {
       widget.addEventListener(eventName, handleBotReply);
     }
+
+    window.addEventListener("vox-ces-register", (event) => {
+      const detail = event?.detail || {};
+      if (detail.widgetId !== "article-inline-chat-widget") return;
+      if (detail.success) {
+        observeReady();
+        return;
+      }
+      if (progressive) setStatus("Chatmotoren er ikke klar ennå.");
+    });
+    window.addEventListener("chat-messenger-loaded", observeReady, { once: true });
+    window.addEventListener("ces-messenger-connected", observeReady, { once: true });
+    observeReady();
   })();
 </script>
