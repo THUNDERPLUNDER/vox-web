@@ -60,15 +60,38 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       const from = (params.get("from") || "").trim();
       if (seedStrip && initialQuestion) seedStrip.classList.remove("hidden");
       if (seedTextEl) seedTextEl.textContent = initialQuestion;
+      if (seedStartBtn && initialQuestion) seedStartBtn.setAttribute("disabled", "");
       if (statusEl && initialQuestion) {
         statusEl.textContent = from
-          ? `Hentet fra ${from === "article" ? "artikkel" : "hub"}. Start samtalen når du er klar.`
-          : "Start samtalen når du er klar.";
+          ? `Hentet fra ${from === "article" ? "artikkel" : "hub"}. Kobler til Hørehjelpen ...`
+          : "Kobler til Hørehjelpen ...";
       }
       if (!widget || !initialQuestion) return;
 
+      let isSending = false;
+
+      const hasSessionInput = () => typeof widget.sessionInput === "function";
+
+      const markReady = () => {
+        if (!hasSessionInput()) return false;
+        if (!isSending && seedStartBtn) seedStartBtn.removeAttribute("disabled");
+        if (!isSending && statusEl) statusEl.textContent = "Klar til å starte.";
+        return true;
+      };
+
+      const observeReadiness = () => {
+        if (markReady()) return;
+        let tries = 0;
+        const timer = setInterval(() => {
+          tries += 1;
+          if (markReady() || tries > 120) clearInterval(timer);
+        }, 250);
+      };
+
       const sendSeed = () => {
-        if (typeof widget.sessionInput !== "function") return false;
+        widget.open?.();
+        widget.show?.();
+        if (!hasSessionInput()) return false;
         const guidedSeedPrompt = [
           "Du er Hørehjelpen, en varm og konkret veileder for hørsel i hverdagen.",
           "Gi et kort første svar på norsk (maks 5 korte punkter).",
@@ -79,23 +102,24 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
           "",
           `Spørsmål: ${initialQuestion}`,
         ].join("\n");
-        widget.open?.();
-        widget.show?.();
         widget.sessionInput(guidedSeedPrompt);
         if (statusEl) statusEl.textContent = "Startspørsmål sendt til samtalen.";
+        isSending = false;
         return true;
       };
 
       const sendSeedWithRetry = () => {
+        isSending = true;
         if (seedStartBtn) seedStartBtn.setAttribute("disabled", "");
         if (statusEl) statusEl.textContent = "Sender spørsmålet til Hørehjelpen ...";
         if (sendSeed()) return;
         let tries = 0;
         const timer = setInterval(() => {
           tries += 1;
-          if (sendSeed() || tries > 40) {
+          if (sendSeed() || tries > 120) {
             clearInterval(timer);
-            if (tries > 40) {
+            if (tries > 120) {
+              isSending = false;
               if (statusEl) statusEl.textContent = "Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.";
               if (seedStartBtn) seedStartBtn.removeAttribute("disabled");
             }
@@ -106,6 +130,14 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       if (seedStartBtn) {
         seedStartBtn.addEventListener("click", sendSeedWithRetry);
       }
+      window.addEventListener("vox-ces-register", (event) => {
+        const detail = event?.detail || {};
+        if (detail.widgetId !== "ces-demo-widget") return;
+        if (detail.success) observeReadiness();
+      });
+      window.addEventListener("chat-messenger-loaded", observeReadiness, { once: true });
+      window.addEventListener("ces-messenger-connected", observeReadiness, { once: true });
+      observeReadiness();
     })();
   </script>
 </BaseLayout>
