@@ -76,11 +76,14 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         sessionInputType: "undefined",
         sendQueryType: "undefined",
         renderCustomTextType: "undefined",
+        startNewSessionType: "undefined",
         customElementDefined: false,
         chatMessengerLoaded: false,
         voxCesRegister: false,
         cesMessengerConnected: false,
         readinessPolls: 0,
+        startNewSessionCalled: false,
+        startNewSessionError: "",
         sendQueryCalled: false,
         sendQueryResult: "",
         sendQueryError: "",
@@ -95,6 +98,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         debugState.sessionInputType = typeof currentWidget?.sessionInput;
         debugState.sendQueryType = typeof currentWidget?.sendQuery;
         debugState.renderCustomTextType = typeof currentWidget?.renderCustomText;
+        debugState.startNewSessionType = typeof currentWidget?.startNewSession;
         debugState.customElementDefined = Boolean(window.customElements?.get("chat-messenger"));
       };
 
@@ -110,11 +114,14 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
             `typeof widget.sessionInput: ${debugState.sessionInputType}`,
             `typeof widget.sendQuery: ${debugState.sendQueryType}`,
             `typeof widget.renderCustomText: ${debugState.renderCustomTextType}`,
+            `typeof widget.startNewSession: ${debugState.startNewSessionType}`,
             `customElements.get("chat-messenger"): ${debugState.customElementDefined}`,
             `chat-messenger-loaded mottatt: ${debugState.chatMessengerLoaded}`,
             `vox-ces-register mottatt: ${debugState.voxCesRegister}`,
             `ces-messenger-connected mottatt: ${debugState.cesMessengerConnected}`,
             `readiness polling ticks: ${debugState.readinessPolls}`,
+            `startNewSession kalt: ${debugState.startNewSessionCalled}`,
+            `startNewSession error: ${debugState.startNewSessionError || "(none)"}`,
             `sendQuery kalt: ${debugState.sendQueryCalled}`,
             `sendQuery result: ${debugState.sendQueryResult || "(none)"}`,
             `sendQuery error: ${debugState.sendQueryError || "(none)"}`,
@@ -149,7 +156,9 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
       let isSending = false;
       let sendQueryReadyAt = 0;
+      let seedSessionReset = false;
       const sendQueryStabilizeMs = 700;
+      const seedSessionResetDelayMs = 900;
 
       const hasSendQuery = () => typeof widget?.sendQuery === "function";
 
@@ -175,9 +184,27 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         }, 250);
       };
 
+      const resetSeedSession = async () => {
+        if (seedSessionReset) return;
+        seedSessionReset = true;
+        if (typeof widget?.startNewSession !== "function") return;
+        debugState.startNewSessionCalled = true;
+        debugState.startNewSessionError = "";
+        renderDebug();
+        try {
+          widget.startNewSession();
+          // Let CES settle token/session state before the first seeded query.
+          await new Promise((resolve) => setTimeout(resolve, seedSessionResetDelayMs));
+        } catch (error) {
+          debugState.startNewSessionError = String(error?.message || error || "unknown");
+          renderDebug();
+        }
+      };
+
       const sendSeed = async () => {
         if (!widget || !initialQuestion) return false;
         if (!hasSendQuery()) return false;
+        await resetSeedSession();
         debugState.sendQueryCalled = true;
         debugState.sendQueryResult = "";
         debugState.sendQueryError = "";
