@@ -148,10 +148,10 @@ const {
     let turnId = 0;
     let userNearBottom = true;
     const responseTimeoutMs = 24000;
-    const autoRetryDelayMs = 11000;
-    const countdownStartDelayMs = 1000;
-    const slowStatusDelayMs = 13000;
-    const controlsDelayMs = 12000;
+    const autoRetryDelayMs = 15000;
+    const countdownStartDelayMs = 5000;
+    const slowStatusDelayMs = 17000;
+    const controlsDelayMs = 17000;
     const retryDelayMs = 6000;
 
     const setState = (next) => {
@@ -397,7 +397,7 @@ const {
         if (activeTurn?.id !== turn.id || turn.responseReceived) return;
         renderPending(turn, "Henter fortsatt svaret ...");
         renderTurnActions(turn);
-        setStatus("Dette tar litt lenger tid enn vanlig ...");
+        setStatus("Dette tar litt lengre tid enn vanlig ...");
       }, slowStatusDelayMs);
     };
     const scheduleSilentAutoRetry = (turn) => {
@@ -412,7 +412,11 @@ const {
         const elapsed = Date.now() - retryScheduledAt;
         if (elapsed < countdownStartDelayMs) return;
         const remainingSeconds = Math.max(1, Math.ceil((autoRetryDelayMs - elapsed) / 1000));
-        renderPending(turn, "Henter svaret ...", `Prøver igjen automatisk om ${remainingSeconds} sekunder ...`);
+        renderPending(
+          turn,
+          "Dette tar litt lengre tid enn vanlig ...",
+          `Prøver igjen automatisk om ${remainingSeconds} sekunder ...`
+        );
       }, 1000);
       autoRetryTimer = setTimeout(() => {
         autoRetryTimer = null;
@@ -516,11 +520,11 @@ const {
       if (status === "429" || /fetch error/i.test(message)) {
         renderPending(activeTurn, "Henter fortsatt svaret ...");
         renderTurnActions(activeTurn);
-        setStatus("Dette tar litt lenger tid enn vanlig ...");
+        setStatus("Dette tar litt lengre tid enn vanlig ...");
         scheduleTransientRetry(activeTurn);
         return;
       }
-      setStatus("Dette tar litt lenger tid enn vanlig ...");
+      setStatus("Dette tar litt lengre tid enn vanlig ...");
     };
 
     const markBridgeReady = () => {
