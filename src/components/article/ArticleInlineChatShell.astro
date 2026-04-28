@@ -93,6 +93,10 @@ const {
     <p class="inline-chat-shell__status" data-inline-chat-status aria-live="polite">
       Vi bruker chatmotoren i bakgrunnen.
     </p>
+    <button type="button" class="inline-chat-shell__latest hidden" data-inline-chat-latest>
+      Til siste svar
+    </button>
+    <div class="inline-chat-shell__bottom-anchor" data-inline-chat-bottom aria-hidden="true"></div>
   </div>
 
   <div
@@ -129,6 +133,8 @@ const {
     const selectedBox = shell?.querySelector("[data-inline-chat-selected]");
     const transcriptEl = shell?.querySelector("[data-inline-chat-transcript]");
     const statusText = shell?.querySelector("[data-inline-chat-status]");
+    const latestButton = shell?.querySelector("[data-inline-chat-latest]");
+    const bottomAnchor = shell?.querySelector("[data-inline-chat-bottom]");
     const surface = shell?.querySelector("[data-inline-chat-surface]");
     const seedButtons = Array.from(shell?.querySelectorAll("[data-inline-chat-seed]") || []);
     let bridgeReady = false;
@@ -136,11 +142,14 @@ const {
     let retryTimer = null;
     let slowTimer = null;
     let controlsTimer = null;
+    let autoRetryTimer = null;
     let activeTurn = null;
     let turnId = 0;
-    const responseTimeoutMs = 120000;
-    const slowStatusDelayMs = 10000;
-    const controlsDelayMs = 7000;
+    let userNearBottom = true;
+    const responseTimeoutMs = 24000;
+    const autoRetryDelayMs = 6000;
+    const slowStatusDelayMs = 9000;
+    const controlsDelayMs = 11000;
     const retryDelayMs = 6000;
 
     const setState = (next) => {
@@ -176,11 +185,17 @@ const {
       clearTimeout(controlsTimer);
       controlsTimer = null;
     };
+    const clearAutoRetryTimer = () => {
+      if (!autoRetryTimer) return;
+      clearTimeout(autoRetryTimer);
+      autoRetryTimer = null;
+    };
     const clearTurnTimers = () => {
       clearResponseTimer();
       clearRetryTimer();
       clearSlowTimer();
       clearControlsTimer();
+      clearAutoRetryTimer();
     };
     const escapeHtml = (value) =>
       String(value || "")
@@ -234,10 +249,20 @@ const {
       closeList();
       return html.join("");
     };
-    const scrollToElement = (element) => {
-      if (!element) return;
+    const hideLatestButton = () => latestButton?.classList.add("hidden");
+    const showLatestButton = () => latestButton?.classList.remove("hidden");
+    const scrollToLatest = ({ force = false } = {}) => {
+      const target = bottomAnchor || activeTurn?.assistantText;
+      if (!target) return;
+      if (!force && !userNearBottom) {
+        showLatestButton();
+        return;
+      }
       requestAnimationFrame(() => {
-        element.scrollIntoView({ behavior: "smooth", block: "end" });
+        window.setTimeout(() => {
+          target.scrollIntoView({ behavior: "smooth", block: "end" });
+          hideLatestButton();
+        }, 40);
       });
     };
     const revealDialog = () => {
@@ -272,7 +297,7 @@ const {
         query,
         state: "pending",
         responseReceived: false,
-        retryUsed: false,
+        autoRetryUsed: false,
         manualRetryCount: 0,
         createdAt: Date.now(),
         element: document.createElement("div"),
@@ -346,7 +371,7 @@ const {
       const retryButton = turn.assistantText.querySelector("[data-inline-chat-retry]");
       retryButton?.addEventListener("click", () => retryTurn(turn), { once: true });
       setStatus("");
-      scrollToElement(turn.assistantText);
+      scrollToLatest();
     };
     const startResponseTimer = (turn) => {
       clearResponseTimer();
@@ -363,6 +388,17 @@ const {
         renderTurnActions(turn);
         setStatus("Dette tar litt lenger tid enn vanlig ...");
       }, slowStatusDelayMs);
+    };
+    const scheduleSilentAutoRetry = (turn) => {
+      clearAutoRetryTimer();
+      autoRetryTimer = setTimeout(() => {
+        autoRetryTimer = null;
+        if (activeTurn?.id !== turn.id || turn.responseReceived || turn.state !== "pending" || turn.autoRetryUsed) return;
+        turn.autoRetryUsed = true;
+        renderPending(turn, "Henter fortsatt svaret ...");
+        setStatus("Vi prøver igjen i bakgrunnen.");
+        pushToWidget(turn.query, turn);
+      }, autoRetryDelayMs);
     };
 
     const asText = (payload) => {
@@ -420,7 +456,7 @@ const {
       turn.assistantText.innerHTML = renderFormattedText(text);
       finishActiveTurn("answered");
       setStatus("Svar mottatt.");
-      scrollToElement(turn.assistantText);
+      scrollToLatest();
     };
 
     const pushToWidget = (prompt, turn = activeTurn) => {
@@ -434,8 +470,8 @@ const {
     };
 
     const scheduleTransientRetry = (turn) => {
-      if (!turn || turn.retryUsed || turn.responseReceived || retryTimer) return;
-      turn.retryUsed = true;
+      if (!turn || turn.autoRetryUsed || turn.responseReceived || retryTimer) return;
+      turn.autoRetryUsed = true;
       retryTimer = setTimeout(() => {
         retryTimer = null;
         if (activeTurn?.id !== turn.id || turn.responseReceived) return;
@@ -489,15 +525,16 @@ const {
       turn.query = query;
       turn.state = "pending";
       turn.responseReceived = false;
-      turn.retryUsed = Boolean(options.isManualRetry);
+      turn.autoRetryUsed = false;
       if (options.isManualRetry) turn.manualRetryCount = (turn.manualRetryCount || 0) + 1;
       clearTurnTimers();
       setSeedsBusy(true);
       renderPending(turn, options.isManualRetry ? "Prøver igjen ..." : "Henter svaret ...");
       setStatus(bridgeReady ? "Sendt til Hørehjelpen. Venter på svar ..." : "Kobler til Hørehjelpen ...");
       setState("started");
-      scrollToElement(turn.element);
+      scrollToLatest({ force: true });
       if (pushToWidget(query, turn)) {
+        scheduleSilentAutoRetry(turn);
         scheduleManualControls(turn);
         startSlowTimer(turn);
         startResponseTimer(turn);
@@ -511,6 +548,7 @@ const {
         if (pushed || tries > 20) {
           if (pushed) {
             setStatus("Sendt til Hørehjelpen. Venter på svar ...");
+            scheduleSilentAutoRetry(turn);
             scheduleManualControls(turn);
             startSlowTimer(turn);
             startResponseTimer(turn);
@@ -528,14 +566,14 @@ const {
       activeTurn = turn;
       turn.state = "pending";
       turn.responseReceived = false;
-      turn.retryUsed = true;
+      turn.autoRetryUsed = true;
       turn.manualRetryCount = (turn.manualRetryCount || 0) + 1;
       clearTurnTimers();
       setSeedsBusy(true);
       renderPending(turn, "Prøver igjen ...");
       setStatus("Prøver igjen med samme spørsmål ...");
       setState("active");
-      scrollToElement(turn.assistantText);
+      scrollToLatest({ force: true });
       if (pushToWidget(turn.query, turn)) {
         scheduleManualControls(turn);
         startSlowTimer(turn);
@@ -556,7 +594,7 @@ const {
         "Vi stoppet ventingen her. Du kan velge et nytt spørsmål eller åpne fri samtale."
       );
       setStatus("Avbrutt lokalt. Eventuelle sene svar fra chatmotoren ignoreres her.");
-      scrollToElement(turn.assistantText);
+      scrollToLatest();
     };
 
     const startFreeChat = () => {
@@ -600,6 +638,17 @@ const {
     if (freeTrigger) {
       freeTrigger.addEventListener("click", startFreeChat);
     }
+    latestButton?.addEventListener("click", () => scrollToLatest({ force: true }));
+    if ("IntersectionObserver" in window && bottomAnchor) {
+      const bottomObserver = new IntersectionObserver(
+        ([entry]) => {
+          userNearBottom = Boolean(entry?.isIntersecting);
+          if (userNearBottom) hideLatestButton();
+        },
+        { root: null, rootMargin: "0px 0px 180px 0px", threshold: 0 }
+      );
+      bottomObserver.observe(bottomAnchor);
+    }
 
     widget.addEventListener("chat-messenger-response-received", handleBotReply);
     widget.addEventListener("chat-messenger-error-v2", handleBridgeError);
@@ -625,6 +674,30 @@ const {
   .inline-chat-shell__transcript {
     display: grid;
     gap: 0.9rem;
+  }
+
+  .inline-chat-shell__dialog-thread {
+    padding-bottom: 4.5rem;
+  }
+
+  .inline-chat-shell__bottom-anchor {
+    height: 5.5rem;
+  }
+
+  .inline-chat-shell__latest {
+    background: rgb(var(--surface) / 0.96);
+    border: 1px solid rgb(var(--border) / 0.45);
+    box-shadow: 0 8px 24px rgb(15 23 42 / 0.08);
+    color: rgb(var(--reading-ink));
+    display: inline-flex;
+    font-size: 0.78rem;
+    justify-self: end;
+    margin-top: 0.85rem;
+    padding: 0.34rem 0.62rem;
+  }
+
+  .inline-chat-shell__latest.hidden {
+    display: none;
   }
 
   .inline-chat-shell__turn {
