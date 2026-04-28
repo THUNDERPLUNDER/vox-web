@@ -67,7 +67,7 @@ const bridgeQuestions = [
 ];
 ---
 
-<BaseLayout title="VOX - R1 spoke v0.3" currentPath="/no/hubs" shellVariant="article">
+<BaseLayout title="KLARLYD - R1 spoke v0.3" currentPath="/no/hubs" shellVariant="article" headerBrand="klarlyd">
   <meta slot="head" name="robots" content="noindex,follow" />
   <main class="bg-[rgb(var(--article-page-canvas))] py-2 sm:py-3" data-article-system data-r1-editorial>
     <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
@@ -90,13 +90,12 @@ const bridgeQuestions = [
             PromptBridge
           </span>
           <ArticleInlineChatShell
-            title="Fortsett i Hørehjelpen"
-            intro="Velg et predefinert spørsmål for å starte dialogen i samme artikkelkontekst. Chatten åpnes først etter handling."
+            title="Spør KlarLyd"
+            intro="Velg et spørsmål for å starte i samme artikkelkontekst. Etter første svar kan du spørre videre selv."
             headingId="r1-continue-v03"
             items={bridgeQuestions}
             sourceLabel="r1-spoke-v03"
             mode="progressive"
-            freeChatLabel="Start fri samtale"
           />
         </section>
       </ArticleTemplateV01>

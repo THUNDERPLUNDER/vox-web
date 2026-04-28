@@ -11,7 +11,6 @@ export interface Props {
   items: PromptItem[];
   sourceLabel?: string;
   mode?: "inline" | "progressive";
-  freeChatLabel?: string;
 }
 
 const {
@@ -21,7 +20,6 @@ const {
   items,
   sourceLabel = "artikkel",
   mode = "inline",
-  freeChatLabel = "Start fri samtale",
 } = Astro.props;
 ---
 
@@ -42,7 +40,7 @@ const {
       class="inline-chat-shell__affordance text-xs font-medium uppercase tracking-[0.12em] text-[rgb(var(--reading-ink-secondary))]"
       data-inline-chat-affordance
     >
-      Dialog med Hørehjelpen
+      Dialog med KlarLyd
     </p>
   ) : null}
 
@@ -78,12 +76,6 @@ const {
     }
   </ul>
 
-  {mode === "progressive" ? (
-    <button type="button" class="prompt-group__cta inline-chat-shell__free-chat" data-inline-chat-free-trigger>
-      {freeChatLabel}
-    </button>
-  ) : null}
-
   <p class="inline-chat-shell__source text-[11px] text-[rgb(var(--muted))]">
     Kontekst: {sourceLabel}. Velg et startspørsmål{mode === "progressive" ? " for å åpne samtalen." : " eller skriv fritt i feltet under."}
   </p>
@@ -114,11 +106,12 @@ const {
 
   <div
     class:list={[
-      "vox-surface-embedded-app mt-3",
-      mode === "progressive" && "pointer-events-none absolute h-px w-px overflow-hidden opacity-0",
+      "vox-surface-embedded-app mt-3 inline-chat-shell__ces-bridge",
+      mode === "progressive" && "inline-chat-shell__ces-bridge--hidden",
     ]}
     data-kl-surface="embedded-app"
     data-inline-chat-surface
+    aria-hidden={mode === "progressive" ? "true" : undefined}
   >
     <chat-messenger
       id="article-inline-chat-widget"
@@ -148,7 +141,6 @@ const {
     const statusText = shell?.querySelector("[data-inline-chat-status]");
     const latestButton = shell?.querySelector("[data-inline-chat-latest]");
     const bottomAnchor = shell?.querySelector("[data-inline-chat-bottom]");
-    const surface = shell?.querySelector("[data-inline-chat-surface]");
     const composeForm = shell?.querySelector("[data-inline-chat-compose]");
     const composeInput = shell?.querySelector("[data-inline-chat-compose-input]");
     const composeSend = shell?.querySelector("[data-inline-chat-compose-send]");
@@ -312,10 +304,6 @@ const {
     };
     const revealDialog = () => {
       if (selectedBox) selectedBox.classList.remove("hidden");
-    };
-    const revealSurface = () => {
-      revealDialog();
-      if (surface) surface.classList.remove("hidden");
     };
     const getFallbackHref = (query) => {
       const params = new URLSearchParams();
@@ -698,25 +686,6 @@ const {
       scrollToLatest();
     };
 
-    const startFreeChat = () => {
-      revealSurface();
-      setStatus("Fri samtale bruker den synlige chatflaten.");
-      setState("started");
-      if (surface) surface.classList.remove("pointer-events-none", "absolute", "h-px", "w-px", "overflow-hidden", "opacity-0");
-      if (typeof widget.sendQuery === "function") {
-        setState("active");
-        return;
-      }
-      let tries = 0;
-      const freeRetryTimer = setInterval(() => {
-        tries += 1;
-        if (typeof widget.sendQuery === "function" || tries > 20) {
-          if (typeof widget.sendQuery === "function") setState("active");
-          clearInterval(freeRetryTimer);
-        }
-      }, 250);
-    };
-
     let readinessTries = 0;
     const timer = setInterval(() => {
       readinessTries += 1;
@@ -735,10 +704,6 @@ const {
       });
     });
 
-    const freeTrigger = shell?.querySelector("[data-inline-chat-free-trigger]");
-    if (freeTrigger) {
-      freeTrigger.addEventListener("click", startFreeChat);
-    }
     if (composeInput) {
       composeInput.addEventListener("input", () => {
         resizeComposeInput();
@@ -808,6 +773,28 @@ const {
 
   .inline-chat-shell__bottom-anchor {
     height: 6.75rem;
+  }
+
+  .inline-chat-shell__ces-bridge--hidden {
+    clip-path: inset(50%);
+    height: 1px;
+    left: -200vw;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    position: absolute;
+    top: auto;
+    transform: translateX(-200vw);
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .inline-chat-shell__ces-bridge--hidden chat-messenger {
+    display: block;
+    height: 1px !important;
+    min-height: 1px !important;
+    overflow: hidden;
+    width: 1px !important;
   }
 
   .inline-chat-shell__compose {
