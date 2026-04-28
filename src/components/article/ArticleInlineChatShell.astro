@@ -39,15 +39,6 @@ const inspectLabelClass =
     <p class="inline-chat-shell__intro">{intro}</p>
   </header>
 
-  {mode === "progressive" ? (
-    <p
-      class="inline-chat-shell__affordance text-xs font-medium uppercase tracking-[0.12em] text-[rgb(var(--reading-ink-secondary))]"
-      data-inline-chat-affordance
-    >
-      Dialog med KlarLyd
-    </p>
-  ) : null}
-
   <div class="inline-chat-shell__seed-suggestions" data-component="SeedSuggestions" data-inline-chat-seed-suggestions>
     <span class={inspectLabelClass} data-component-label>SeedSuggestions</span>
     <ul
@@ -81,6 +72,13 @@ const inspectLabelClass =
   </p>
 
   <div class="inline-chat-shell__dialog-thread mt-3 hidden" data-inline-chat-selected>
+    {mode === "progressive" ? (
+      <div class="inline-chat-shell__transcript-divider" data-component="TranscriptDivider" data-inline-chat-transcript-divider>
+        <span class={inspectLabelClass} data-component-label>TranscriptDivider</span>
+        <span class="inline-chat-shell__transcript-divider-line" aria-hidden="true"></span>
+        <span class="inline-chat-shell__transcript-divider-label">Dialog med KlarLyd</span>
+      </div>
+    ) : null}
     <div class="inline-chat-shell__transcript" data-component="Transcript" data-inline-chat-transcript>
       <span class={inspectLabelClass} data-component-label>Transcript</span>
     </div>
@@ -833,6 +831,30 @@ const inspectLabelClass =
 
   .inline-chat-shell__dialog-thread {
     padding-bottom: 8.5rem;
+  }
+
+  .inline-chat-shell__transcript-divider {
+    align-items: center;
+    display: grid;
+    gap: 0.55rem;
+    grid-template-columns: minmax(1.4rem, 1fr) auto;
+    margin: 0.15rem 0 0.75rem;
+  }
+
+  .inline-chat-shell__transcript-divider-line {
+    border-top: 1px solid rgb(var(--border) / 0.48);
+    display: block;
+    min-width: 0;
+  }
+
+  .inline-chat-shell__transcript-divider-label {
+    color: rgb(var(--reading-ink-secondary));
+    font-size: 0.68rem;
+    font-weight: 650;
+    letter-spacing: 0.12em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    white-space: nowrap;
   }
 
   .inline-chat-shell__bottom-anchor {
