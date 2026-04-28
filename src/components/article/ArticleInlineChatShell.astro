@@ -21,6 +21,9 @@ const {
   sourceLabel = "artikkel",
   mode = "inline",
 } = Astro.props;
+
+const inspectLabelClass =
+  "article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950";
 ---
 
 <section
@@ -30,6 +33,7 @@ const {
   data-inline-chat-mode={mode}
   data-inline-chat-state={mode === "progressive" ? "idle" : "active"}
 >
+  <span class={inspectLabelClass} data-component-label>ArticleInlineChatShell</span>
   <header class="inline-chat-shell__header">
     <h2 id={headingId} class="inline-chat-shell__title">{title}</h2>
     <p class="inline-chat-shell__intro">{intro}</p>
@@ -44,37 +48,42 @@ const {
     </p>
   ) : null}
 
-  <ul
-    class:list={[
-      "inline-chat-shell__seed-list",
-      mode === "progressive" && "inline-chat-shell__seed-list--rows",
-    ]}
-    role="list"
-  >
-    {
-      items.map((item) => (
-        <li class={mode === "progressive" ? "inline-chat-shell__seed-item" : undefined}>
-          <button
-            type="button"
-            class:list={[
-              "inline-chat-shell__seed-btn",
-              mode === "progressive" && "inline-chat-shell__seed-row",
-            ]}
-            data-inline-chat-seed={item.question}
-          >
-            <span class={mode === "progressive" ? "inline-chat-shell__seed-question" : undefined}>{item.question}</span>
-          </button>
-        </li>
-      ))
-    }
-  </ul>
+  <div class="inline-chat-shell__seed-suggestions" data-component="SeedSuggestions" data-inline-chat-seed-suggestions>
+    <span class={inspectLabelClass} data-component-label>SeedSuggestions</span>
+    <ul
+      class:list={[
+        "inline-chat-shell__seed-list",
+        mode === "progressive" && "inline-chat-shell__seed-list--rows",
+      ]}
+      role="list"
+    >
+      {
+        items.map((item) => (
+          <li class={mode === "progressive" ? "inline-chat-shell__seed-item" : undefined}>
+            <button
+              type="button"
+              class:list={[
+                "inline-chat-shell__seed-btn",
+                mode === "progressive" && "inline-chat-shell__seed-row",
+              ]}
+              data-inline-chat-seed={item.question}
+            >
+              <span class={mode === "progressive" ? "inline-chat-shell__seed-question" : undefined}>{item.question}</span>
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 
   <p class="inline-chat-shell__source text-[11px] text-[rgb(var(--muted))]">
     Kontekst: {sourceLabel}. Velg et startspørsmål{mode === "progressive" ? " for å åpne samtalen." : " eller skriv fritt i feltet under."}
   </p>
 
   <div class="inline-chat-shell__dialog-thread mt-3 hidden" data-inline-chat-selected>
-    <div class="inline-chat-shell__transcript" data-inline-chat-transcript></div>
+    <div class="inline-chat-shell__transcript" data-component="Transcript" data-inline-chat-transcript>
+      <span class={inspectLabelClass} data-component-label>Transcript</span>
+    </div>
     <p class="inline-chat-shell__status" data-inline-chat-status aria-live="polite">
       Vi bruker chatmotoren i bakgrunnen.
     </p>
@@ -82,7 +91,8 @@ const {
       Til siste svar
     </button>
     <div class="inline-chat-shell__bottom-anchor" data-inline-chat-bottom aria-hidden="true"></div>
-    <form class="inline-chat-shell__compose hidden" data-inline-chat-compose>
+    <form class="inline-chat-shell__compose hidden" data-component="Compose" data-inline-chat-compose>
+      <span class={inspectLabelClass} data-component-label>Compose</span>
       <label class="sr-only" for="article-inline-chat-compose">Spør videre om dette</label>
       <textarea
         id="article-inline-chat-compose"
@@ -103,9 +113,11 @@ const {
       mode === "progressive" && "inline-chat-shell__ces-bridge--hidden",
     ]}
     data-kl-surface="embedded-app"
+    data-component="CESBridgeHidden"
     data-inline-chat-surface
     aria-hidden={mode === "progressive" ? "true" : undefined}
   >
+    <span class={inspectLabelClass} data-component-label>CESBridgeHidden</span>
     <chat-messenger
       id="article-inline-chat-widget"
       url-allowlist="*"
@@ -130,6 +142,7 @@ const {
     if (!widget) return;
     const progressive = mode === "progressive";
     const selectedBox = shell?.querySelector("[data-inline-chat-selected]");
+    const seedSuggestions = shell?.querySelector("[data-inline-chat-seed-suggestions]");
     const transcriptEl = shell?.querySelector("[data-inline-chat-transcript]");
     const statusText = shell?.querySelector("[data-inline-chat-status]");
     const latestButton = shell?.querySelector("[data-inline-chat-latest]");
@@ -165,9 +178,19 @@ const {
     };
     const setSeedsBusy = (busy) => {
       seedButtons.forEach((btn) => {
+        if (!btn.isConnected) return;
         btn.setAttribute("aria-disabled", String(busy));
         btn.toggleAttribute("data-inline-chat-seed-busy", busy);
       });
+    };
+    const removeSeedSuggestion = (query) => {
+      if (!query || !seedSuggestions) return;
+      const normalizedQuery = normalizeQuery(query);
+      const button = seedButtons.find((btn) => btn.isConnected && normalizeQuery(btn.getAttribute("data-inline-chat-seed")) === normalizedQuery);
+      const item = button?.closest("li");
+      if (item) item.remove();
+      const remainingSeeds = seedSuggestions.querySelectorAll("[data-inline-chat-seed]");
+      if (!remainingSeeds.length) seedSuggestions.classList.add("hidden");
     };
     const syncComposeState = () => {
       if (!composeForm || !composeInput || !composeSend) return;
@@ -336,12 +359,13 @@ const {
       turn.element.dataset.inlineChatTurn = String(turn.id);
       turn.element.dataset.inlineChatTurnSource = source;
       turn.element.innerHTML = `
-        <div class="inline-chat-shell__message inline-chat-shell__message--user">
-          <p class="inline-chat-shell__message-eyebrow">${source === "compose" ? "Du spurte" : "Du valgte"}</p>
+        <div class="inline-chat-shell__message inline-chat-shell__message--user" data-component="UserMessage">
+          <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>UserMessage</span>
           <p class="inline-chat-shell__message-text">${escapeHtml(query)}</p>
         </div>
-        <div class="inline-chat-shell__message inline-chat-shell__message--assistant">
-          <p class="inline-chat-shell__message-eyebrow">Hørehjelpen</p>
+        <div class="inline-chat-shell__message inline-chat-shell__message--assistant" data-component="AssistantMessage">
+          <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>AssistantMessage</span>
+          <p class="inline-chat-shell__message-eyebrow">KLARLYD</p>
         </div>
       `;
       turn.assistantText.className = "inline-chat-shell__message-text";
@@ -587,6 +611,7 @@ const {
         setStatus("Et svar hentes allerede. Prøv igjen, avbryt eller åpne fri samtale.");
         return;
       }
+      if (progressive && (options.source || "seed") === "seed" && !options.turn) removeSeedSuggestion(query);
       revealDialog();
       clearTurnTimers();
       const turn = options.turn || createTurn(query, { source: options.source || "seed" });
@@ -602,7 +627,7 @@ const {
       setSeedsBusy(true);
       syncComposeState();
       renderPending(turn, options.isManualRetry ? "Prøver igjen ..." : "Henter svaret ...");
-      setStatus(bridgeReady ? "Sendt til Hørehjelpen. Venter på svar ..." : "Kobler til Hørehjelpen ...");
+      setStatus(bridgeReady ? "Sendt til KlarLyd. Venter på svar ..." : "Kobler til KlarLyd ...");
       setState("started");
       scrollToLatest({ force: true });
       if (pushToWidget(query, turn)) {
@@ -619,7 +644,7 @@ const {
         const pushed = pushToWidget(query, turn);
         if (pushed || tries > 20) {
           if (pushed) {
-            setStatus("Sendt til Hørehjelpen. Venter på svar ...");
+            setStatus("Sendt til KlarLyd. Venter på svar ...");
             scheduleSilentAutoRetry(turn);
             scheduleManualControls(turn);
             startSlowTimer(turn);
@@ -693,7 +718,7 @@ const {
           startTurn(seed);
           return;
         }
-        if (pushToWidget(seed)) setStatus("Sendt til Hørehjelpen.");
+        if (pushToWidget(seed)) setStatus("Sendt til KlarLyd.");
       });
     });
 
