@@ -236,11 +236,21 @@ const bridgeQuestions = [
       display: block;
     }
 
+    [data-r1-editorial] [data-component="ArticleContent"] {
+      display: flex;
+      flex-direction: column;
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] {
+      order: 20;
+    }
+
     [data-r1-editorial] .r1-ai-bridge {
       border-top: 0;
       padding-top: 0.35rem;
       margin-top: 0.55rem;
       margin-bottom: 0.7rem;
+      order: 30;
     }
 
     [data-r1-editorial] .r1-ai-bridge .inline-chat-shell__header {
@@ -418,6 +428,35 @@ const bridgeQuestions = [
 
     html[data-inspect-components="true"] [data-r1-editorial] .r1-component-inventory {
       display: block;
+    }
+
+    @media (min-width: 1024px) {
+      [data-r1-editorial] [data-component="ArticleTemplate"] {
+        max-width: min(100%, 72rem);
+      }
+
+      [data-r1-editorial] [data-component="ArticleContent"] {
+        display: grid;
+        grid-template-columns: minmax(0, 46rem) minmax(14rem, 18rem);
+        column-gap: 3rem;
+        align-items: start;
+      }
+
+      [data-r1-editorial] [data-component="ArticleContent"] > * {
+        grid-column: 1;
+      }
+
+      [data-r1-editorial] [data-component="ArticleSummary"] {
+        grid-column: 2;
+        grid-row: 5 / span 2;
+        margin-top: 0;
+        border-top: 1px solid rgb(var(--border) / 0.35);
+        background: rgb(var(--surface-subtle) / 0.72);
+      }
+
+      [data-r1-editorial] .r1-ai-bridge {
+        grid-column: 1;
+      }
     }
   </style>
   <Footer variant="article" />

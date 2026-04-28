@@ -135,10 +135,12 @@ const {
     let responseTimer = null;
     let retryTimer = null;
     let slowTimer = null;
+    let controlsTimer = null;
     let activeTurn = null;
     let turnId = 0;
-    const responseTimeoutMs = 90000;
-    const slowStatusDelayMs = 12000;
+    const responseTimeoutMs = 120000;
+    const slowStatusDelayMs = 10000;
+    const controlsDelayMs = 7000;
     const retryDelayMs = 6000;
 
     const setState = (next) => {
@@ -148,10 +150,10 @@ const {
     const setStatus = (text) => {
       if (statusText) statusText.textContent = text;
     };
-    const setSeedsDisabled = (disabled) => {
+    const setSeedsBusy = (busy) => {
       seedButtons.forEach((btn) => {
-        btn.disabled = disabled;
-        btn.setAttribute("aria-disabled", String(disabled));
+        btn.setAttribute("aria-disabled", String(busy));
+        btn.toggleAttribute("data-inline-chat-seed-busy", busy);
       });
     };
     const clearResponseTimer = () => {
@@ -169,10 +171,16 @@ const {
       clearTimeout(slowTimer);
       slowTimer = null;
     };
+    const clearControlsTimer = () => {
+      if (!controlsTimer) return;
+      clearTimeout(controlsTimer);
+      controlsTimer = null;
+    };
     const clearTurnTimers = () => {
       clearResponseTimer();
       clearRetryTimer();
       clearSlowTimer();
+      clearControlsTimer();
     };
     const escapeHtml = (value) =>
       String(value || "")
@@ -255,7 +263,6 @@ const {
           </span>
         </span>
       `;
-      scrollToElement(turn.assistantText);
     };
     const createTurn = (query) => {
       if (!transcriptEl) return null;
@@ -266,6 +273,7 @@ const {
         state: "pending",
         responseReceived: false,
         retryUsed: false,
+        manualRetryCount: 0,
         createdAt: Date.now(),
         element: document.createElement("div"),
         assistantText: document.createElement("div"),
@@ -290,8 +298,37 @@ const {
     const finishActiveTurn = (state) => {
       if (activeTurn) activeTurn.state = state;
       clearTurnTimers();
-      setSeedsDisabled(false);
+      setSeedsBusy(false);
       setState(state);
+    };
+    const renderTurnActions = (turn, { includeAbort = true } = {}) => {
+      if (!turn || turn.state !== "pending") return;
+      const href = getFallbackHref(turn.query);
+      const actionHtml = `
+        <p class="inline-chat-shell__turn-actions" data-inline-chat-turn-actions>
+          <button type="button" class="underline decoration-[rgb(var(--reading-ink-secondary))/0.55] underline-offset-2" data-inline-chat-retry>Prøv igjen</button>
+          ${includeAbort ? '<span aria-hidden="true"> · </span><button type="button" class="underline decoration-[rgb(var(--reading-ink-secondary))/0.55] underline-offset-2" data-inline-chat-abort>Avbryt</button>' : ""}
+          <span aria-hidden="true"> · </span>
+          <a href="${href}" class="underline decoration-[rgb(var(--reading-ink-secondary))/0.55] underline-offset-2">Åpne fri samtale</a>
+        </p>
+      `;
+      const existingActions = turn.assistantText.querySelector("[data-inline-chat-turn-actions]");
+      if (existingActions) existingActions.remove();
+      turn.assistantText.insertAdjacentHTML("beforeend", actionHtml);
+      turn.assistantText
+        .querySelector("[data-inline-chat-retry]")
+        ?.addEventListener("click", () => retryTurn(turn), { once: true });
+      turn.assistantText
+        .querySelector("[data-inline-chat-abort]")
+        ?.addEventListener("click", () => abortTurn(turn), { once: true });
+    };
+    const scheduleManualControls = (turn) => {
+      clearControlsTimer();
+      controlsTimer = setTimeout(() => {
+        if (activeTurn?.id !== turn.id || turn.responseReceived || turn.state !== "pending") return;
+        renderTurnActions(turn);
+        setStatus("Du kan prøve igjen, avbryte eller åpne fri samtale.");
+      }, controlsDelayMs);
     };
     const renderFallback = (turn) => {
       if (!turn) return;
@@ -323,6 +360,7 @@ const {
       slowTimer = setTimeout(() => {
         if (activeTurn?.id !== turn.id || turn.responseReceived) return;
         renderPending(turn, "Henter fortsatt svaret ...");
+        renderTurnActions(turn);
         setStatus("Dette tar litt lenger tid enn vanlig ...");
       }, slowStatusDelayMs);
     };
@@ -370,6 +408,7 @@ const {
 
     const handleBotReply = (event) => {
       if (!progressive || !activeTurn) return;
+      if (activeTurn.state !== "pending") return;
       if (activeTurn.responseReceived) return;
       const responseQuery = getResponseQuery(event?.detail);
       if (responseQuery && normalizeQuery(responseQuery) !== normalizeQuery(activeTurn.query)) return;
@@ -406,18 +445,18 @@ const {
     };
 
     const handleBridgeError = (event) => {
-      if (!progressive || !activeTurn || activeTurn.responseReceived) return;
+      if (!progressive || !activeTurn || activeTurn.state !== "pending" || activeTurn.responseReceived) return;
       const detail = event?.detail || {};
       const status = String(detail.status ?? detail?.error?.status ?? "");
       const message = String(detail.message || detail?.error?.message || "");
       if (status === "429" || /fetch error/i.test(message)) {
         renderPending(activeTurn, "Henter fortsatt svaret ...");
+        renderTurnActions(activeTurn);
         setStatus("Dette tar litt lenger tid enn vanlig ...");
         scheduleTransientRetry(activeTurn);
         return;
       }
       setStatus("Dette tar litt lenger tid enn vanlig ...");
-      scrollToElement(activeTurn.assistantText);
     };
 
     const markBridgeReady = () => {
@@ -437,7 +476,12 @@ const {
 
     const startTurn = (seed, options = {}) => {
       const query = (seed || "").trim();
-      if (!query || activeTurn?.state === "pending") return;
+      if (!query) return;
+      if (activeTurn?.state === "pending") {
+        renderTurnActions(activeTurn);
+        setStatus("Et svar hentes allerede. Prøv igjen, avbryt eller åpne fri samtale.");
+        return;
+      }
       revealDialog();
       const turn = options.turn || createTurn(query);
       if (!turn) return;
@@ -446,13 +490,15 @@ const {
       turn.state = "pending";
       turn.responseReceived = false;
       turn.retryUsed = Boolean(options.isManualRetry);
+      if (options.isManualRetry) turn.manualRetryCount = (turn.manualRetryCount || 0) + 1;
       clearTurnTimers();
-      setSeedsDisabled(true);
+      setSeedsBusy(true);
       renderPending(turn, options.isManualRetry ? "Prøver igjen ..." : "Henter svaret ...");
       setStatus(bridgeReady ? "Sendt til Hørehjelpen. Venter på svar ..." : "Kobler til Hørehjelpen ...");
       setState("started");
       scrollToElement(turn.element);
       if (pushToWidget(query, turn)) {
+        scheduleManualControls(turn);
         startSlowTimer(turn);
         startResponseTimer(turn);
         setState("active");
@@ -465,6 +511,7 @@ const {
         if (pushed || tries > 20) {
           if (pushed) {
             setStatus("Sendt til Hørehjelpen. Venter på svar ...");
+            scheduleManualControls(turn);
             startSlowTimer(turn);
             startResponseTimer(turn);
             setState("active");
@@ -476,8 +523,40 @@ const {
     };
 
     const retryTurn = (turn) => {
-      if (!turn || activeTurn?.state === "pending") return;
-      startTurn(turn.query, { turn, isManualRetry: true });
+      if (!turn) return;
+      if (activeTurn?.state === "pending" && activeTurn.id !== turn.id) return;
+      activeTurn = turn;
+      turn.state = "pending";
+      turn.responseReceived = false;
+      turn.retryUsed = true;
+      turn.manualRetryCount = (turn.manualRetryCount || 0) + 1;
+      clearTurnTimers();
+      setSeedsBusy(true);
+      renderPending(turn, "Prøver igjen ...");
+      setStatus("Prøver igjen med samme spørsmål ...");
+      setState("active");
+      scrollToElement(turn.assistantText);
+      if (pushToWidget(turn.query, turn)) {
+        scheduleManualControls(turn);
+        startSlowTimer(turn);
+        startResponseTimer(turn);
+        return;
+      }
+      renderFallback(turn);
+    };
+
+    const abortTurn = (turn) => {
+      if (!turn || activeTurn?.id !== turn.id || turn.state !== "pending") return;
+      turn.state = "cancelled";
+      clearTurnTimers();
+      setSeedsBusy(false);
+      activeTurn = null;
+      setState("cancelled");
+      turn.assistantText.innerHTML = renderFormattedText(
+        "Vi stoppet ventingen her. Du kan velge et nytt spørsmål eller åpne fri samtale."
+      );
+      setStatus("Avbrutt lokalt. Eventuelle sene svar fra chatmotoren ignoreres her.");
+      scrollToElement(turn.assistantText);
     };
 
     const startFreeChat = () => {
