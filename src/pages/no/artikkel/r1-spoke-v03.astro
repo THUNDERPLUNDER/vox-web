@@ -114,6 +114,29 @@ const bridgeQuestions = [
     </div>
   </main>
   <style is:global>
+    [data-r1-editorial] {
+      --r1-ai-dialog-measure: min(100%, 46rem);
+      --r1-ai-user-measure: min(92%, 32rem);
+    }
+
+    html[data-inspect-components="true"] [data-r1-editorial] [data-component] {
+      position: relative;
+    }
+
+    html[data-inspect-components="true"] [data-r1-editorial] [data-component-label] {
+      position: absolute !important;
+      top: 0;
+      left: 0;
+      z-index: 30;
+      margin: 0 !important;
+      pointer-events: none;
+      transform: translateY(-58%);
+      border: 1px solid rgb(161 98 7 / 0.55) !important;
+      background: rgb(254 240 138 / 0.72) !important;
+      box-shadow: 0 6px 18px rgb(120 53 15 / 0.12);
+      backdrop-filter: blur(6px);
+    }
+
     [data-r1-editorial] [data-component="ArticleContent"] {
       background: #fff;
       border-radius: 0;
@@ -252,6 +275,10 @@ const bridgeQuestions = [
       order: 30;
     }
 
+    [data-r1-editorial] .r1-ai-bridge .inline-chat-shell {
+      max-width: var(--r1-ai-dialog-measure);
+    }
+
     [data-r1-editorial] .r1-ai-bridge .inline-chat-shell__header {
       margin-bottom: 0.6rem;
     }
@@ -305,32 +332,39 @@ const bridgeQuestions = [
       margin: 0;
       padding: 0;
       list-style: none;
-      max-width: 36rem;
+      display: grid;
+      gap: 0.42rem;
+      max-width: var(--r1-ai-dialog-measure);
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__seed-item + .inline-chat-shell__seed-item {
-      margin-top: 0.12rem;
+      margin-top: 0;
+    }
+
+    [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__seed-item {
+      display: flex;
+      justify-content: flex-end;
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__seed-row {
       display: flex;
-      width: 100%;
+      width: var(--r1-ai-user-measure);
       align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.8rem;
-      border: 1px solid rgb(var(--border) / 0.42);
+      justify-content: flex-start;
+      border: 1px solid rgb(var(--border) / 0.32);
       border-radius: 0;
-      background: rgb(var(--surface) / 0.72);
-      padding: 0.72rem 0.78rem;
+      background: color-mix(in srgb, rgb(var(--surface-elevated)) 90%, rgb(var(--primary)) 10%);
+      padding: 0.7rem 0.84rem;
       cursor: pointer;
       text-align: left;
       color: rgb(var(--reading-ink));
-      transition: background-color 140ms ease, border-color 140ms ease;
+      transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__seed-row:hover {
-      border-color: rgb(var(--border) / 0.62);
-      background: color-mix(in srgb, rgb(var(--reading-inline)) 92%, rgb(var(--reading-ink)) 8%);
+      border-color: rgb(var(--border) / 0.52);
+      background: color-mix(in srgb, rgb(var(--surface-elevated)) 84%, rgb(var(--primary)) 16%);
+      transform: translateY(-1px);
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__seed-row:focus-visible {
@@ -346,29 +380,12 @@ const bridgeQuestions = [
       letter-spacing: -0.006em;
     }
 
-    [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__seed-icon {
-      display: inline-flex;
-      flex: 0 0 auto;
-      margin-top: 0.15em;
-      color: rgb(var(--reading-ink-secondary) / 0.72);
-    }
-
-    [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__seed-icon-svg {
-      display: block;
-      width: 1rem;
-      height: 1rem;
-    }
-
-    [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__free-chat {
-      margin-top: 1rem;
-    }
-
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__dialog-thread {
-      max-width: 36rem;
+      max-width: var(--r1-ai-dialog-measure);
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__message {
-      max-width: 36rem;
+      max-width: var(--r1-ai-dialog-measure);
       padding: 0.78rem 0.9rem;
     }
 
@@ -378,13 +395,13 @@ const bridgeQuestions = [
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__message--user {
       margin-left: auto;
-      width: min(92%, 32rem);
+      width: var(--r1-ai-user-measure);
       background: color-mix(in srgb, rgb(var(--surface-elevated)) 82%, rgb(var(--primary)) 18%);
       border: 1px solid rgb(var(--border) / 0.28);
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__message--assistant {
-      width: min(92%, 32rem);
+      width: min(100%, 38rem);
       border-left: 2px solid rgb(var(--reading-ink) / 0.32);
       background: color-mix(in srgb, rgb(var(--surface-subtle)) 86%, white 14%);
     }
@@ -406,13 +423,18 @@ const bridgeQuestions = [
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__status {
       margin-top: 0.52rem;
+      max-width: var(--r1-ai-dialog-measure);
       font-size: 0.82rem;
       line-height: 1.45;
       color: rgb(var(--reading-ink-secondary));
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] [data-inline-chat-surface] {
-      max-width: 36rem;
+      max-width: var(--r1-ai-dialog-measure);
+    }
+
+    [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__compose {
+      max-width: var(--r1-ai-dialog-measure);
     }
 
     [data-r1-editorial] .r1-ai-bridge .inline-chat-shell__source {

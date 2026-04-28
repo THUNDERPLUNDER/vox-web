@@ -63,13 +63,6 @@ const {
             data-inline-chat-seed={item.question}
           >
             <span class={mode === "progressive" ? "inline-chat-shell__seed-question" : undefined}>{item.question}</span>
-            {mode === "progressive" ? (
-              <span class="inline-chat-shell__seed-icon" aria-hidden="true">
-                <svg class="inline-chat-shell__seed-icon-svg" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-            ) : null}
           </button>
         </li>
       ))

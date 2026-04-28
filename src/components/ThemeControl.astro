@@ -84,8 +84,10 @@ const { compact = false } = Astro.props;
     }
 
     function supportsInspectToggle(pathname) {
+      pathname = pathname.replace(/\/$/, "");
       return (
         pathname === "/no/artikkel/r1-spoke-v01" ||
+        pathname === "/no/artikkel/r1-spoke-v03" ||
         pathname === "/no/artikkel/r2-spoke-v01" ||
         pathname === "/no/artikkel/r3-spoke-v01" ||
         pathname === "/no/sandbox/article-template-v01"
