@@ -118,8 +118,8 @@ const bridgeQuestions = [
       --r1-ai-dialog-measure: min(100%, 46rem);
       --r1-ai-user-measure: min(92%, 32rem);
       --r1-ai-input-radius: 1.15rem;
-      --r1-ai-input-surface: color-mix(in srgb, rgb(var(--surface-elevated)) 94%, rgb(var(--primary)) 6%);
-      --r1-ai-input-surface-strong: color-mix(in srgb, rgb(var(--surface-elevated)) 86%, rgb(var(--primary)) 14%);
+      --r1-ai-input-surface: color-mix(in srgb, rgb(var(--surface-elevated)) 92%, rgb(var(--border)) 8%);
+      --r1-ai-input-surface-strong: color-mix(in srgb, rgb(var(--surface-elevated)) 84%, rgb(var(--border)) 16%);
     }
 
     html[data-inspect-components="true"] [data-r1-editorial] [data-component] {
@@ -231,6 +231,8 @@ const bridgeQuestions = [
       border-top: 1px solid rgb(var(--border) / 0.4);
       padding-top: 1.15rem;
       padding-bottom: 0;
+      background: transparent !important;
+      box-shadow: none !important;
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] ul li {
@@ -242,6 +244,11 @@ const bridgeQuestions = [
       text-transform: uppercase;
       color: rgb(var(--reading-ink-secondary));
       background: transparent;
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] h2,
+    [data-r1-editorial] [data-component="ArticleSummary"] h3 {
+      color: rgb(var(--reading-ink));
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] ul li + li::before {
@@ -287,7 +294,6 @@ const bridgeQuestions = [
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-seeds-empty="true"].inline-chat-shell .inline-chat-shell__header,
-    [data-r1-editorial] .r1-ai-bridge [data-inline-chat-seeds-empty="true"].inline-chat-shell .inline-chat-shell__affordance,
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-seeds-empty="true"].inline-chat-shell .inline-chat-shell__source {
       display: none;
     }
@@ -330,11 +336,6 @@ const bridgeQuestions = [
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="inline"] .inline-chat-shell__seed-btn:hover {
       background: rgb(var(--surface-subtle) / 0.95);
       border-color: rgb(var(--border) / 0.72);
-    }
-
-    [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__affordance {
-      margin-top: 0.1rem;
-      margin-bottom: 0.55rem;
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__seed-list {
@@ -494,7 +495,8 @@ const bridgeQuestions = [
         grid-row: 5 / span 2;
         margin-top: 0;
         border-top: 1px solid rgb(var(--border) / 0.35);
-        background: rgb(var(--surface-subtle) / 0.72);
+        background: transparent !important;
+        padding-top: 1rem;
       }
 
       [data-r1-editorial] .r1-ai-bridge {

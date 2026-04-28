@@ -580,7 +580,7 @@ const inspectLabelClass =
         if (activeTurn?.id !== turn.id || turn.state !== "revealing") return;
         finishActiveTurn("answered");
         revealCompose();
-        setStatus("Svar mottatt.");
+        setStatus("");
         scrollToLatest();
       });
     };
