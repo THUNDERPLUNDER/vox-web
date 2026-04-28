@@ -143,13 +143,15 @@ const {
     let slowTimer = null;
     let controlsTimer = null;
     let autoRetryTimer = null;
+    let countdownTimer = null;
     let activeTurn = null;
     let turnId = 0;
     let userNearBottom = true;
     const responseTimeoutMs = 24000;
-    const autoRetryDelayMs = 6000;
-    const slowStatusDelayMs = 9000;
-    const controlsDelayMs = 11000;
+    const autoRetryDelayMs = 11000;
+    const countdownStartDelayMs = 1000;
+    const slowStatusDelayMs = 13000;
+    const controlsDelayMs = 12000;
     const retryDelayMs = 6000;
 
     const setState = (next) => {
@@ -190,12 +192,18 @@ const {
       clearTimeout(autoRetryTimer);
       autoRetryTimer = null;
     };
+    const clearCountdownTimer = () => {
+      if (!countdownTimer) return;
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+    };
     const clearTurnTimers = () => {
       clearResponseTimer();
       clearRetryTimer();
       clearSlowTimer();
       clearControlsTimer();
       clearAutoRetryTimer();
+      clearCountdownTimer();
     };
     const escapeHtml = (value) =>
       String(value || "")
@@ -278,7 +286,7 @@ const {
       params.set("from", "article-r1");
       return `/no/chat?${params.toString()}`;
     };
-    const renderPending = (turn, label = "Henter svaret ...") => {
+    const renderPending = (turn, label = "Henter svaret ...", detail = "") => {
       if (!turn?.assistantText) return;
       turn.assistantText.innerHTML = `
         <span class="inline-chat-shell__typing" aria-live="polite">
@@ -287,6 +295,7 @@ const {
             <span></span><span></span><span></span>
           </span>
         </span>
+        ${detail ? `<span class="inline-chat-shell__pending-detail">${escapeHtml(detail)}</span>` : ""}
       `;
     };
     const createTurn = (query) => {
@@ -299,6 +308,7 @@ const {
         responseReceived: false,
         autoRetryUsed: false,
         manualRetryCount: 0,
+        manualRetryInFlight: false,
         createdAt: Date.now(),
         element: document.createElement("div"),
         assistantText: document.createElement("div"),
@@ -322,6 +332,7 @@ const {
     };
     const finishActiveTurn = (state) => {
       if (activeTurn) activeTurn.state = state;
+      if (activeTurn) activeTurn.manualRetryInFlight = false;
       clearTurnTimers();
       setSeedsBusy(false);
       setState(state);
@@ -391,13 +402,30 @@ const {
     };
     const scheduleSilentAutoRetry = (turn) => {
       clearAutoRetryTimer();
+      clearCountdownTimer();
+      const retryScheduledAt = Date.now();
+      countdownTimer = setInterval(() => {
+        if (activeTurn?.id !== turn.id || turn.responseReceived || turn.state !== "pending" || turn.autoRetryUsed) {
+          clearCountdownTimer();
+          return;
+        }
+        const elapsed = Date.now() - retryScheduledAt;
+        if (elapsed < countdownStartDelayMs) return;
+        const remainingSeconds = Math.max(1, Math.ceil((autoRetryDelayMs - elapsed) / 1000));
+        renderPending(turn, "Henter svaret ...", `Prøver igjen automatisk om ${remainingSeconds} sekunder ...`);
+      }, 1000);
       autoRetryTimer = setTimeout(() => {
         autoRetryTimer = null;
         if (activeTurn?.id !== turn.id || turn.responseReceived || turn.state !== "pending" || turn.autoRetryUsed) return;
         turn.autoRetryUsed = true;
-        renderPending(turn, "Henter fortsatt svaret ...");
-        setStatus("Vi prøver igjen i bakgrunnen.");
+        clearCountdownTimer();
+        renderPending(turn, "Prøver igjen nå ...");
+        setStatus("Prøver igjen nå ...");
         pushToWidget(turn.query, turn);
+        window.setTimeout(() => {
+          if (activeTurn?.id !== turn.id || turn.responseReceived || turn.state !== "pending") return;
+          renderPending(turn, "Henter fortsatt svaret ...");
+        }, 1400);
       }, autoRetryDelayMs);
     };
 
@@ -563,10 +591,12 @@ const {
     const retryTurn = (turn) => {
       if (!turn) return;
       if (activeTurn?.state === "pending" && activeTurn.id !== turn.id) return;
+      if (turn.manualRetryInFlight) return;
       activeTurn = turn;
       turn.state = "pending";
       turn.responseReceived = false;
       turn.autoRetryUsed = true;
+      turn.manualRetryInFlight = true;
       turn.manualRetryCount = (turn.manualRetryCount || 0) + 1;
       clearTurnTimers();
       setSeedsBusy(true);
@@ -575,11 +605,15 @@ const {
       setState("active");
       scrollToLatest({ force: true });
       if (pushToWidget(turn.query, turn)) {
+        window.setTimeout(() => {
+          turn.manualRetryInFlight = false;
+        }, 1400);
         scheduleManualControls(turn);
         startSlowTimer(turn);
         startResponseTimer(turn);
         return;
       }
+      turn.manualRetryInFlight = false;
       renderFallback(turn);
     };
 
@@ -593,6 +627,7 @@ const {
       turn.assistantText.innerHTML = renderFormattedText(
         "Vi stoppet ventingen her. Du kan velge et nytt spørsmål eller åpne fri samtale."
       );
+      turn.manualRetryInFlight = false;
       setStatus("Avbrutt lokalt. Eventuelle sene svar fra chatmotoren ignoreres her.");
       scrollToLatest();
     };
@@ -735,6 +770,28 @@ const {
 
   .inline-chat-shell__turn-actions {
     margin-top: 0.85rem;
+  }
+
+  .inline-chat-shell__turn-actions button {
+    cursor: pointer;
+  }
+
+  .inline-chat-shell__turn-actions button:hover {
+    color: rgb(var(--reading-ink));
+    text-decoration-thickness: 2px;
+  }
+
+  .inline-chat-shell__turn-actions button:focus-visible,
+  .inline-chat-shell__latest:focus-visible {
+    outline: 2px solid rgb(var(--reading-accent-iris) / 0.42);
+    outline-offset: 3px;
+  }
+
+  .inline-chat-shell__pending-detail {
+    color: rgb(var(--reading-ink-secondary));
+    display: block;
+    font-size: 0.84em;
+    margin-top: 0.45rem;
   }
 
   .inline-chat-shell__seed-btn:disabled {
