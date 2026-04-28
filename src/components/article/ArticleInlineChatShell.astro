@@ -89,14 +89,7 @@ const {
   </p>
 
   <div class="inline-chat-shell__dialog-thread mt-3 hidden" data-inline-chat-selected>
-    <div class="inline-chat-shell__message inline-chat-shell__message--user">
-      <p class="inline-chat-shell__message-eyebrow">Du valgte</p>
-      <p class="inline-chat-shell__message-text" data-inline-chat-selected-text></p>
-    </div>
-    <div class="inline-chat-shell__message inline-chat-shell__message--assistant">
-      <p class="inline-chat-shell__message-eyebrow">Hørehjelpen</p>
-      <div class="inline-chat-shell__message-text" data-inline-chat-reply>Henter svaret ...</div>
-    </div>
+    <div class="inline-chat-shell__transcript" data-inline-chat-transcript></div>
     <p class="inline-chat-shell__status" data-inline-chat-status aria-live="polite">
       Vi bruker chatmotoren i bakgrunnen.
     </p>
@@ -127,33 +120,39 @@ const {
   </div>
 </section>
 
-<script is:inline define:vars={{ sourceLabel, mode }}>
+<script is:inline define:vars={{ mode }}>
   (() => {
     const shell = document.querySelector('[data-component="ArticleInlineChatShell"][data-inline-chat-mode]');
     const widget = shell?.querySelector("#article-inline-chat-widget");
     if (!widget) return;
     const progressive = mode === "progressive";
     const selectedBox = shell?.querySelector("[data-inline-chat-selected]");
-    const selectedText = shell?.querySelector("[data-inline-chat-selected-text]");
-    const replyText = shell?.querySelector("[data-inline-chat-reply]");
+    const transcriptEl = shell?.querySelector("[data-inline-chat-transcript]");
     const statusText = shell?.querySelector("[data-inline-chat-status]");
     const surface = shell?.querySelector("[data-inline-chat-surface]");
+    const seedButtons = Array.from(shell?.querySelectorAll("[data-inline-chat-seed]") || []);
     let bridgeReady = false;
     let responseTimer = null;
     let retryTimer = null;
-    let awaitingResponse = false;
-    let responseReceived = false;
-    let retryUsed = false;
-    let activeSeed = "";
-    let activeTurnId = 0;
-    const responseTimeoutMs = 45000;
-    const retryDelayMs = 4500;
+    let slowTimer = null;
+    let activeTurn = null;
+    let turnId = 0;
+    const responseTimeoutMs = 90000;
+    const slowStatusDelayMs = 12000;
+    const retryDelayMs = 6000;
+
     const setState = (next) => {
       if (!shell) return;
       shell.setAttribute("data-inline-chat-state", next);
     };
     const setStatus = (text) => {
       if (statusText) statusText.textContent = text;
+    };
+    const setSeedsDisabled = (disabled) => {
+      seedButtons.forEach((btn) => {
+        btn.disabled = disabled;
+        btn.setAttribute("aria-disabled", String(disabled));
+      });
     };
     const clearResponseTimer = () => {
       if (!responseTimer) return;
@@ -164,6 +163,16 @@ const {
       if (!retryTimer) return;
       clearTimeout(retryTimer);
       retryTimer = null;
+    };
+    const clearSlowTimer = () => {
+      if (!slowTimer) return;
+      clearTimeout(slowTimer);
+      slowTimer = null;
+    };
+    const clearTurnTimers = () => {
+      clearResponseTimer();
+      clearRetryTimer();
+      clearSlowTimer();
     };
     const escapeHtml = (value) =>
       String(value || "")
@@ -217,47 +226,11 @@ const {
       closeList();
       return html.join("");
     };
-    const renderPending = (label = "Henter svaret ...") => {
-      if (!replyText) return;
-      replyText.innerHTML = `
-        <span class="inline-chat-shell__typing" aria-live="polite">
-          <span>${escapeHtml(label)}</span>
-          <span class="inline-chat-shell__typing-dots" aria-hidden="true">
-            <span></span><span></span><span></span>
-          </span>
-        </span>
-      `;
-    };
-    const getFallbackHref = () => {
-      const params = new URLSearchParams();
-      if (activeSeed) params.set("seed", activeSeed);
-      params.set("from", "article-r1");
-      return `/no/chat?${params.toString()}`;
-    };
-    const renderFallback = () => {
-      awaitingResponse = false;
-      clearResponseTimer();
-      clearRetryTimer();
-      if (replyText) {
-        replyText.innerHTML = renderFormattedText(
-          "Jeg fikk ikke hentet svaret inn her akkurat nå. Du kan åpne fri samtale og fortsette der."
-        );
-      }
-      if (statusText) {
-        const href = getFallbackHref();
-        statusText.innerHTML = `<a href="${href}" class="underline decoration-[rgb(var(--reading-ink-secondary))/0.55] underline-offset-2">Åpne fri samtale</a> eller <button type="button" class="underline decoration-[rgb(var(--reading-ink-secondary))/0.55] underline-offset-2" data-inline-chat-retry>prøv igjen</button>.`;
-        const retryButton = statusText.querySelector("[data-inline-chat-retry]");
-        retryButton?.addEventListener("click", () => startTurn(activeSeed, { isManualRetry: true }), { once: true });
-      }
-      setState("fallback");
-    };
-    const startResponseTimer = () => {
-      clearResponseTimer();
-      awaitingResponse = true;
-      responseTimer = setTimeout(() => {
-        if (!awaitingResponse) return;
-        renderFallback();
-      }, responseTimeoutMs);
+    const scrollToElement = (element) => {
+      if (!element) return;
+      requestAnimationFrame(() => {
+        element.scrollIntoView({ behavior: "smooth", block: "end" });
+      });
     };
     const revealDialog = () => {
       if (selectedBox) selectedBox.classList.remove("hidden");
@@ -265,6 +238,93 @@ const {
     const revealSurface = () => {
       revealDialog();
       if (surface) surface.classList.remove("hidden");
+    };
+    const getFallbackHref = (query) => {
+      const params = new URLSearchParams();
+      if (query) params.set("seed", query);
+      params.set("from", "article-r1");
+      return `/no/chat?${params.toString()}`;
+    };
+    const renderPending = (turn, label = "Henter svaret ...") => {
+      if (!turn?.assistantText) return;
+      turn.assistantText.innerHTML = `
+        <span class="inline-chat-shell__typing" aria-live="polite">
+          <span>${escapeHtml(label)}</span>
+          <span class="inline-chat-shell__typing-dots" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
+        </span>
+      `;
+      scrollToElement(turn.assistantText);
+    };
+    const createTurn = (query) => {
+      if (!transcriptEl) return null;
+      turnId += 1;
+      const turn = {
+        id: turnId,
+        query,
+        state: "pending",
+        responseReceived: false,
+        retryUsed: false,
+        createdAt: Date.now(),
+        element: document.createElement("div"),
+        assistantText: document.createElement("div"),
+      };
+      turn.element.className = "inline-chat-shell__turn";
+      turn.element.dataset.inlineChatTurn = String(turn.id);
+      turn.element.innerHTML = `
+        <div class="inline-chat-shell__message inline-chat-shell__message--user">
+          <p class="inline-chat-shell__message-eyebrow">Du valgte</p>
+          <p class="inline-chat-shell__message-text">${escapeHtml(query)}</p>
+        </div>
+        <div class="inline-chat-shell__message inline-chat-shell__message--assistant">
+          <p class="inline-chat-shell__message-eyebrow">Hørehjelpen</p>
+        </div>
+      `;
+      turn.assistantText.className = "inline-chat-shell__message-text";
+      turn.element.querySelector(".inline-chat-shell__message--assistant")?.append(turn.assistantText);
+      transcriptEl.append(turn.element);
+      renderPending(turn);
+      return turn;
+    };
+    const finishActiveTurn = (state) => {
+      if (activeTurn) activeTurn.state = state;
+      clearTurnTimers();
+      setSeedsDisabled(false);
+      setState(state);
+    };
+    const renderFallback = (turn) => {
+      if (!turn) return;
+      turn.state = "fallback";
+      finishActiveTurn("fallback");
+      const href = getFallbackHref(turn.query);
+      turn.assistantText.innerHTML = `
+        ${renderFormattedText("Svaret kom ikke helt inn her. Du kan prøve igjen, eller åpne fri samtale.")}
+        <p class="inline-chat-shell__turn-actions">
+          <button type="button" class="underline decoration-[rgb(var(--reading-ink-secondary))/0.55] underline-offset-2" data-inline-chat-retry>Prøv igjen</button>
+          <span aria-hidden="true"> · </span>
+          <a href="${href}" class="underline decoration-[rgb(var(--reading-ink-secondary))/0.55] underline-offset-2">Åpne fri samtale</a>
+        </p>
+      `;
+      const retryButton = turn.assistantText.querySelector("[data-inline-chat-retry]");
+      retryButton?.addEventListener("click", () => retryTurn(turn), { once: true });
+      setStatus("");
+      scrollToElement(turn.assistantText);
+    };
+    const startResponseTimer = (turn) => {
+      clearResponseTimer();
+      responseTimer = setTimeout(() => {
+        if (activeTurn?.id !== turn.id || turn.responseReceived) return;
+        renderFallback(turn);
+      }, responseTimeoutMs);
+    };
+    const startSlowTimer = (turn) => {
+      clearSlowTimer();
+      slowTimer = setTimeout(() => {
+        if (activeTurn?.id !== turn.id || turn.responseReceived) return;
+        renderPending(turn, "Henter fortsatt svaret ...");
+        setStatus("Dette tar litt lenger tid enn vanlig ...");
+      }, slowStatusDelayMs);
     };
 
     const asText = (payload) => {
@@ -293,45 +353,71 @@ const {
       }
       return "";
     };
-
-    const handleBotReply = (event) => {
-      if (!progressive) return;
-      if (responseReceived) return;
-      const text = asText(event?.detail);
-      if (!text) return;
-      awaitingResponse = false;
-      responseReceived = true;
-      clearResponseTimer();
-      clearRetryTimer();
-      if (replyText) replyText.innerHTML = renderFormattedText(text);
-      setStatus("Svar mottatt.");
-      setState("answered");
+    const normalizeQuery = (value) => String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
+    const getResponseQuery = (payload) => {
+      const messages = payload?.raw?.diagnosticInfo?.messages || payload?.diagnosticInfo?.messages || [];
+      if (!Array.isArray(messages)) return "";
+      const userTexts = [];
+      for (const message of messages) {
+        if (!String(message?.role || "").toLowerCase().includes("user")) continue;
+        const chunks = Array.isArray(message?.chunks) ? message.chunks : [];
+        for (const chunk of chunks) {
+          if (typeof chunk?.text === "string" && chunk.text.trim()) userTexts.push(chunk.text.trim());
+        }
+      }
+      return userTexts.at(-1) || "";
     };
 
-    const scheduleTransientRetry = () => {
-      if (!activeSeed || retryUsed || responseReceived || retryTimer) return;
-      retryUsed = true;
-      const retryTurnId = activeTurnId;
+    const handleBotReply = (event) => {
+      if (!progressive || !activeTurn) return;
+      if (activeTurn.responseReceived) return;
+      const responseQuery = getResponseQuery(event?.detail);
+      if (responseQuery && normalizeQuery(responseQuery) !== normalizeQuery(activeTurn.query)) return;
+      const text = asText(event?.detail);
+      if (!text) return;
+      const turn = activeTurn;
+      turn.responseReceived = true;
+      turn.state = "answered";
+      turn.assistantText.innerHTML = renderFormattedText(text);
+      finishActiveTurn("answered");
+      setStatus("Svar mottatt.");
+      scrollToElement(turn.assistantText);
+    };
+
+    const pushToWidget = (prompt, turn = activeTurn) => {
+      const seed = (prompt || "").trim();
+      if (!seed || typeof widget.sendQuery !== "function") return false;
+      widget.sendQuery(seed).catch(() => {
+        if (!progressive || !turn || activeTurn?.id !== turn.id || turn.responseReceived) return;
+        renderFallback(turn);
+      });
+      return true;
+    };
+
+    const scheduleTransientRetry = (turn) => {
+      if (!turn || turn.retryUsed || turn.responseReceived || retryTimer) return;
+      turn.retryUsed = true;
       retryTimer = setTimeout(() => {
         retryTimer = null;
-        if (retryTurnId !== activeTurnId || responseReceived || !awaitingResponse) return;
+        if (activeTurn?.id !== turn.id || turn.responseReceived) return;
         setStatus("Vi prøver én gang til i bakgrunnen ...");
-        pushToWidget(activeSeed);
+        pushToWidget(turn.query, turn);
       }, retryDelayMs);
     };
 
     const handleBridgeError = (event) => {
-      if (!progressive || !awaitingResponse) return;
+      if (!progressive || !activeTurn || activeTurn.responseReceived) return;
       const detail = event?.detail || {};
       const status = String(detail.status ?? detail?.error?.status ?? "");
       const message = String(detail.message || detail?.error?.message || "");
       if (status === "429" || /fetch error/i.test(message)) {
-        renderPending("Henter fortsatt svaret ...");
+        renderPending(activeTurn, "Henter fortsatt svaret ...");
         setStatus("Dette tar litt lenger tid enn vanlig ...");
-        scheduleTransientRetry();
+        scheduleTransientRetry(activeTurn);
         return;
       }
-      setStatus("Hørehjelpen svarer ikke helt ennå, vi venter litt til ...");
+      setStatus("Dette tar litt lenger tid enn vanlig ...");
+      scrollToElement(activeTurn.assistantText);
     };
 
     const markBridgeReady = () => {
@@ -349,57 +435,53 @@ const {
       }, 250);
     };
 
-    const pushToWidget = (prompt) => {
-      const seed = (prompt || "").trim();
-      if (!seed || typeof widget.sendQuery !== "function") return false;
-      widget.sendQuery(seed).catch(() => {
-        if (!progressive || !awaitingResponse) return;
-        renderFallback();
-      });
-      return true;
-    };
-
     const startTurn = (seed, options = {}) => {
-      const currentSeed = (seed || "").trim();
-      if (!currentSeed) return;
-      activeSeed = currentSeed;
-      activeTurnId += 1;
-      responseReceived = false;
-      retryUsed = Boolean(options.isManualRetry);
-      clearResponseTimer();
-      clearRetryTimer();
-      if (selectedText) selectedText.textContent = currentSeed;
-      renderPending(options.isManualRetry ? "Prøver igjen ..." : "Henter svaret ...");
-      setStatus(bridgeReady ? "Sendt til Hørehjelpen. Venter på svar ..." : "Kobler til Hørehjelpen ...");
+      const query = (seed || "").trim();
+      if (!query || activeTurn?.state === "pending") return;
       revealDialog();
+      const turn = options.turn || createTurn(query);
+      if (!turn) return;
+      activeTurn = turn;
+      turn.query = query;
+      turn.state = "pending";
+      turn.responseReceived = false;
+      turn.retryUsed = Boolean(options.isManualRetry);
+      clearTurnTimers();
+      setSeedsDisabled(true);
+      renderPending(turn, options.isManualRetry ? "Prøver igjen ..." : "Henter svaret ...");
+      setStatus(bridgeReady ? "Sendt til Hørehjelpen. Venter på svar ..." : "Kobler til Hørehjelpen ...");
       setState("started");
-      if (pushToWidget(currentSeed)) {
-        startResponseTimer();
+      scrollToElement(turn.element);
+      if (pushToWidget(query, turn)) {
+        startSlowTimer(turn);
+        startResponseTimer(turn);
         setState("active");
         return;
       }
-      let retry = 0;
-      const retryTimer = setInterval(() => {
-        retry += 1;
-        const pushed = pushToWidget(currentSeed);
-        if (pushed || retry > 20) {
+      let tries = 0;
+      const readyTimer = setInterval(() => {
+        tries += 1;
+        const pushed = pushToWidget(query, turn);
+        if (pushed || tries > 20) {
           if (pushed) {
             setStatus("Sendt til Hørehjelpen. Venter på svar ...");
-            startResponseTimer();
+            startSlowTimer(turn);
+            startResponseTimer(turn);
             setState("active");
           }
-          if (!pushed && retry > 20) {
-            renderFallback();
-          }
-          clearInterval(retryTimer);
+          if (!pushed && tries > 20) renderFallback(turn);
+          clearInterval(readyTimer);
         }
       }, 250);
     };
 
+    const retryTurn = (turn) => {
+      if (!turn || activeTurn?.state === "pending") return;
+      startTurn(turn.query, { turn, isManualRetry: true });
+    };
+
     const startFreeChat = () => {
       revealSurface();
-      if (selectedText) selectedText.textContent = "Fri samtale";
-      if (replyText) replyText.textContent = "Skriv i feltet under når du er klar.";
       setStatus("Fri samtale bruker den synlige chatflaten.");
       setState("started");
       if (surface) surface.classList.remove("pointer-events-none", "absolute", "h-px", "w-px", "overflow-hidden", "opacity-0");
@@ -407,28 +489,31 @@ const {
         setState("active");
         return;
       }
-      let retry = 0;
+      let tries = 0;
       const freeRetryTimer = setInterval(() => {
-        retry += 1;
-        if (typeof widget.sendQuery === "function" || retry > 20) {
+        tries += 1;
+        if (typeof widget.sendQuery === "function" || tries > 20) {
           if (typeof widget.sendQuery === "function") setState("active");
           clearInterval(freeRetryTimer);
         }
       }, 250);
     };
 
-    bridgeReady = !progressive && pushToWidget("");
-    let tries = 0;
+    let readinessTries = 0;
     const timer = setInterval(() => {
-      tries += 1;
+      readinessTries += 1;
       bridgeReady = typeof widget.sendQuery === "function";
-      if (bridgeReady || tries > 40) clearInterval(timer);
+      if (bridgeReady || readinessTries > 40) clearInterval(timer);
     }, 250);
 
-    shell?.querySelectorAll("[data-inline-chat-seed]").forEach((btn) => {
+    seedButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
         const seed = btn.getAttribute("data-inline-chat-seed") || "";
-        if (progressive) startTurn(seed);
+        if (progressive) {
+          startTurn(seed);
+          return;
+        }
+        if (pushToWidget(seed)) setStatus("Sendt til Hørehjelpen.");
       });
     });
 
@@ -458,6 +543,16 @@ const {
 </script>
 
 <style is:global>
+  .inline-chat-shell__transcript {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .inline-chat-shell__turn {
+    display: grid;
+    gap: 0.55rem;
+  }
+
   .inline-chat-shell__message-text p {
     margin: 0 0 0.75rem;
   }
@@ -484,6 +579,15 @@ const {
 
   .inline-chat-shell__message-text li + li {
     margin-top: 0.25rem;
+  }
+
+  .inline-chat-shell__turn-actions {
+    margin-top: 0.85rem;
+  }
+
+  .inline-chat-shell__seed-btn:disabled {
+    cursor: wait;
+    opacity: 0.62;
   }
 
   .inline-chat-shell__typing {
