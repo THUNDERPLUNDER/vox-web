@@ -309,6 +309,7 @@ const {
         autoRetryUsed: false,
         manualRetryCount: 0,
         manualRetryInFlight: false,
+        attemptId: 0,
         createdAt: Date.now(),
         element: document.createElement("div"),
         assistantText: document.createElement("div"),
@@ -360,8 +361,9 @@ const {
     };
     const scheduleManualControls = (turn) => {
       clearControlsTimer();
+      const attemptId = turn.attemptId;
       controlsTimer = setTimeout(() => {
-        if (activeTurn?.id !== turn.id || turn.responseReceived || turn.state !== "pending") return;
+        if (!isCurrentAttempt(turn, attemptId)) return;
         renderTurnActions(turn);
         setStatus("Du kan prøve igjen, avbryte eller åpne fri samtale.");
       }, controlsDelayMs);
@@ -386,15 +388,17 @@ const {
     };
     const startResponseTimer = (turn) => {
       clearResponseTimer();
+      const attemptId = turn.attemptId;
       responseTimer = setTimeout(() => {
-        if (activeTurn?.id !== turn.id || turn.responseReceived) return;
+        if (!isCurrentAttempt(turn, attemptId)) return;
         renderFallback(turn);
       }, responseTimeoutMs);
     };
     const startSlowTimer = (turn) => {
       clearSlowTimer();
+      const attemptId = turn.attemptId;
       slowTimer = setTimeout(() => {
-        if (activeTurn?.id !== turn.id || turn.responseReceived) return;
+        if (!isCurrentAttempt(turn, attemptId)) return;
         renderPending(turn, "Henter fortsatt svaret ...");
         renderTurnActions(turn);
         setStatus("Dette tar litt lengre tid enn vanlig ...");
@@ -403,9 +407,10 @@ const {
     const scheduleSilentAutoRetry = (turn) => {
       clearAutoRetryTimer();
       clearCountdownTimer();
+      const attemptId = turn.attemptId;
       const retryScheduledAt = Date.now();
       countdownTimer = setInterval(() => {
-        if (activeTurn?.id !== turn.id || turn.responseReceived || turn.state !== "pending" || turn.autoRetryUsed) {
+        if (!isCurrentAttempt(turn, attemptId) || turn.autoRetryUsed) {
           clearCountdownTimer();
           return;
         }
@@ -420,14 +425,14 @@ const {
       }, 1000);
       autoRetryTimer = setTimeout(() => {
         autoRetryTimer = null;
-        if (activeTurn?.id !== turn.id || turn.responseReceived || turn.state !== "pending" || turn.autoRetryUsed) return;
+        if (!isCurrentAttempt(turn, attemptId) || turn.autoRetryUsed) return;
         turn.autoRetryUsed = true;
         clearCountdownTimer();
         renderPending(turn, "Prøver igjen nå ...");
         setStatus("Prøver igjen nå ...");
         pushToWidget(turn.query, turn);
         window.setTimeout(() => {
-          if (activeTurn?.id !== turn.id || turn.responseReceived || turn.state !== "pending") return;
+          if (!isCurrentAttempt(turn, attemptId)) return;
           renderPending(turn, "Henter fortsatt svaret ...");
         }, 1400);
       }, autoRetryDelayMs);
@@ -494,19 +499,30 @@ const {
     const pushToWidget = (prompt, turn = activeTurn) => {
       const seed = (prompt || "").trim();
       if (!seed || typeof widget.sendQuery !== "function") return false;
+      const attemptId = turn?.attemptId;
       widget.sendQuery(seed).catch(() => {
-        if (!progressive || !turn || activeTurn?.id !== turn.id || turn.responseReceived) return;
+        if (!progressive || !isCurrentAttempt(turn, attemptId)) return;
         renderFallback(turn);
       });
       return true;
     };
 
+    const isCurrentAttempt = (turn, attemptId = turn?.attemptId) =>
+      Boolean(
+        turn &&
+          activeTurn?.id === turn.id &&
+          turn.attemptId === attemptId &&
+          turn.state === "pending" &&
+          !turn.responseReceived
+      );
+
     const scheduleTransientRetry = (turn) => {
       if (!turn || turn.autoRetryUsed || turn.responseReceived || retryTimer) return;
       turn.autoRetryUsed = true;
+      const attemptId = turn.attemptId;
       retryTimer = setTimeout(() => {
         retryTimer = null;
-        if (activeTurn?.id !== turn.id || turn.responseReceived) return;
+        if (!isCurrentAttempt(turn, attemptId)) return;
         setStatus("Vi prøver én gang til i bakgrunnen ...");
         pushToWidget(turn.query, turn);
       }, retryDelayMs);
@@ -551,6 +567,7 @@ const {
         return;
       }
       revealDialog();
+      clearTurnTimers();
       const turn = options.turn || createTurn(query);
       if (!turn) return;
       activeTurn = turn;
@@ -558,8 +575,9 @@ const {
       turn.state = "pending";
       turn.responseReceived = false;
       turn.autoRetryUsed = false;
+      turn.manualRetryInFlight = false;
+      turn.attemptId += 1;
       if (options.isManualRetry) turn.manualRetryCount = (turn.manualRetryCount || 0) + 1;
-      clearTurnTimers();
       setSeedsBusy(true);
       renderPending(turn, options.isManualRetry ? "Prøver igjen ..." : "Henter svaret ...");
       setStatus(bridgeReady ? "Sendt til Hørehjelpen. Venter på svar ..." : "Kobler til Hørehjelpen ...");
@@ -601,6 +619,7 @@ const {
       turn.responseReceived = false;
       turn.autoRetryUsed = true;
       turn.manualRetryInFlight = true;
+      turn.attemptId += 1;
       turn.manualRetryCount = (turn.manualRetryCount || 0) + 1;
       clearTurnTimers();
       setSeedsBusy(true);
