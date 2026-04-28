@@ -101,8 +101,8 @@ const inspectLabelClass =
         placeholder="Spør videre om dette"
         rows="1"
       ></textarea>
-      <button type="submit" class="inline-chat-shell__compose-send" data-inline-chat-compose-send>
-        Send
+      <button type="submit" class="inline-chat-shell__compose-send" data-inline-chat-compose-send aria-label="Send spørsmål">
+        <span aria-hidden="true">↑</span>
       </button>
     </form>
   </div>
@@ -158,6 +158,7 @@ const inspectLabelClass =
     let controlsTimer = null;
     let autoRetryTimer = null;
     let countdownTimer = null;
+    let revealTimers = [];
     let activeTurn = null;
     let turnId = 0;
     let userNearBottom = true;
@@ -176,6 +177,7 @@ const inspectLabelClass =
     const setStatus = (text) => {
       if (statusText) statusText.textContent = text;
     };
+    const isTurnBusy = (turn = activeTurn) => turn?.state === "pending" || turn?.state === "revealing";
     const setSeedsBusy = (busy) => {
       seedButtons.forEach((btn) => {
         if (!btn.isConnected) return;
@@ -190,11 +192,14 @@ const inspectLabelClass =
       const item = button?.closest("li");
       if (item) item.remove();
       const remainingSeeds = seedSuggestions.querySelectorAll("[data-inline-chat-seed]");
-      if (!remainingSeeds.length) seedSuggestions.classList.add("hidden");
+      if (!remainingSeeds.length) {
+        seedSuggestions.classList.add("hidden");
+        shell?.setAttribute("data-inline-chat-seeds-empty", "true");
+      }
     };
     const syncComposeState = () => {
       if (!composeForm || !composeInput || !composeSend) return;
-      const pending = activeTurn?.state === "pending";
+      const pending = isTurnBusy();
       composeInput.disabled = pending;
       composeSend.disabled = pending || !composeInput.value.trim();
       composeForm.toggleAttribute("data-inline-chat-compose-pending", pending);
@@ -242,6 +247,10 @@ const inspectLabelClass =
       clearInterval(countdownTimer);
       countdownTimer = null;
     };
+    const clearRevealTimers = () => {
+      revealTimers.forEach((timer) => clearTimeout(timer));
+      revealTimers = [];
+    };
     const clearTurnTimers = () => {
       clearResponseTimer();
       clearRetryTimer();
@@ -249,6 +258,7 @@ const inspectLabelClass =
       clearControlsTimer();
       clearAutoRetryTimer();
       clearCountdownTimer();
+      clearRevealTimers();
     };
     const escapeHtml = (value) =>
       String(value || "")
@@ -259,16 +269,18 @@ const inspectLabelClass =
         .replace(/'/g, "&#39;");
     const renderInlineMarkdown = (text) =>
       escapeHtml(text).replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-    const renderFormattedText = (text) => {
+    const renderFormattedBlocks = (text) => {
       const normalized = String(text || "").replace(/\r\n/g, "\n").trim();
-      if (!normalized) return "";
+      if (!normalized) return [];
       const lines = normalized.split("\n");
-      const html = [];
+      const blocks = [];
       let listType = "";
+      let listItems = [];
       const closeList = () => {
         if (!listType) return;
-        html.push(`</${listType}>`);
+        blocks.push(`<${listType}>${listItems.join("")}</${listType}>`);
         listType = "";
+        listItems = [];
       };
       for (const rawLine of lines) {
         const line = rawLine.trim();
@@ -281,26 +293,53 @@ const inspectLabelClass =
         if (bullet) {
           if (listType !== "ul") {
             closeList();
-            html.push("<ul>");
             listType = "ul";
           }
-          html.push(`<li>${renderInlineMarkdown(bullet[1])}</li>`);
+          listItems.push(`<li>${renderInlineMarkdown(bullet[1])}</li>`);
           continue;
         }
         if (numbered) {
           if (listType !== "ol") {
             closeList();
-            html.push("<ol>");
             listType = "ol";
           }
-          html.push(`<li value="${escapeHtml(numbered[1])}">${renderInlineMarkdown(numbered[2])}</li>`);
+          listItems.push(`<li value="${escapeHtml(numbered[1])}">${renderInlineMarkdown(numbered[2])}</li>`);
           continue;
         }
         closeList();
-        html.push(`<p>${renderInlineMarkdown(line)}</p>`);
+        blocks.push(`<p>${renderInlineMarkdown(line)}</p>`);
       }
       closeList();
-      return html.join("");
+      return blocks;
+    };
+    const renderFormattedText = (text) => renderFormattedBlocks(text).join("");
+    const revealFormattedText = (turn, text, onComplete) => {
+      const blocks = renderFormattedBlocks(text);
+      const attemptId = turn?.attemptId;
+      const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+      clearRevealTimers();
+      if (!turn?.assistantText) return;
+      turn.assistantText.innerHTML = "";
+      if (!blocks.length || prefersReducedMotion) {
+        turn.assistantText.innerHTML = blocks.join("");
+        onComplete?.();
+        return;
+      }
+      turn.assistantText.setAttribute("data-inline-chat-revealing", "true");
+      const delayMs = Math.max(90, Math.min(220, Math.floor(1400 / Math.max(blocks.length, 1))));
+      const revealNext = (index) => {
+        if (activeTurn?.id !== turn.id || turn.attemptId !== attemptId || turn.state !== "revealing") return;
+        turn.assistantText.insertAdjacentHTML("beforeend", blocks[index]);
+        scrollToLatest();
+        if (index >= blocks.length - 1) {
+          turn.assistantText.removeAttribute("data-inline-chat-revealing");
+          onComplete?.();
+          return;
+        }
+        const timer = window.setTimeout(() => revealNext(index + 1), delayMs);
+        revealTimers.push(timer);
+      };
+      revealNext(0);
     };
     const hideLatestButton = () => latestButton?.classList.add("hidden");
     const showLatestButton = () => latestButton?.classList.remove("hidden");
@@ -533,12 +572,19 @@ const inspectLabelClass =
       if (!text) return;
       const turn = activeTurn;
       turn.responseReceived = true;
-      turn.state = "answered";
-      turn.assistantText.innerHTML = renderFormattedText(text);
-      finishActiveTurn("answered");
-      revealCompose();
-      setStatus("Svar mottatt.");
-      scrollToLatest();
+      turn.state = "revealing";
+      clearTurnTimers();
+      setSeedsBusy(false);
+      setState("answered");
+      syncComposeState();
+      setStatus("KlarLyd svarer ...");
+      revealFormattedText(turn, text, () => {
+        if (activeTurn?.id !== turn.id || turn.state !== "revealing") return;
+        finishActiveTurn("answered");
+        revealCompose();
+        setStatus("Svar mottatt.");
+        scrollToLatest();
+      });
     };
 
     const pushToWidget = (prompt, turn = activeTurn) => {
@@ -606,7 +652,7 @@ const inspectLabelClass =
     const startTurn = (seed, options = {}) => {
       const query = (seed || "").trim();
       if (!query) return;
-      if (activeTurn?.state === "pending") {
+      if (isTurnBusy()) {
         renderTurnActions(activeTurn);
         setStatus("Et svar hentes allerede. Prøv igjen, avbryt eller åpne fri samtale.");
         return;
@@ -736,7 +782,7 @@ const inspectLabelClass =
     composeForm?.addEventListener("submit", (event) => {
       event.preventDefault();
       const query = composeInput?.value.trim() || "";
-      if (!query || activeTurn?.state === "pending") {
+      if (!query || isTurnBusy()) {
         syncComposeState();
         return;
       }
@@ -819,6 +865,7 @@ const inspectLabelClass =
     align-items: flex-end;
     background: rgb(var(--surface) / 0.97);
     border: 1px solid rgb(var(--border) / 0.5);
+    border-radius: 1.15rem;
     box-shadow: 0 16px 42px rgb(15 23 42 / 0.12);
     display: grid;
     gap: 0.55rem;
@@ -863,19 +910,27 @@ const inspectLabelClass =
   .inline-chat-shell__compose-send {
     align-items: center;
     background: rgb(var(--reading-ink));
+    border-radius: 999px;
     color: rgb(var(--surface));
     cursor: pointer;
     display: inline-flex;
     font-size: 0.82rem;
     font-weight: 650;
     justify-content: center;
+    height: 2.35rem;
     min-height: 2.35rem;
-    padding: 0.45rem 0.78rem;
+    padding: 0;
+    width: 2.35rem;
   }
 
   .inline-chat-shell__compose-send:disabled {
     cursor: not-allowed;
     opacity: 0.46;
+  }
+
+  .inline-chat-shell__compose-send:focus-visible {
+    outline: 2px solid rgb(var(--reading-accent-iris) / 0.42);
+    outline-offset: 3px;
   }
 
   .inline-chat-shell__compose:focus-within {
