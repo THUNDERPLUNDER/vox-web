@@ -97,6 +97,19 @@ const {
       Til siste svar
     </button>
     <div class="inline-chat-shell__bottom-anchor" data-inline-chat-bottom aria-hidden="true"></div>
+    <form class="inline-chat-shell__compose hidden" data-inline-chat-compose>
+      <label class="sr-only" for="article-inline-chat-compose">Spør videre om dette</label>
+      <textarea
+        id="article-inline-chat-compose"
+        class="inline-chat-shell__compose-input"
+        data-inline-chat-compose-input
+        placeholder="Spør videre om dette"
+        rows="1"
+      ></textarea>
+      <button type="submit" class="inline-chat-shell__compose-send" data-inline-chat-compose-send>
+        Send
+      </button>
+    </form>
   </div>
 
   <div
@@ -136,6 +149,9 @@ const {
     const latestButton = shell?.querySelector("[data-inline-chat-latest]");
     const bottomAnchor = shell?.querySelector("[data-inline-chat-bottom]");
     const surface = shell?.querySelector("[data-inline-chat-surface]");
+    const composeForm = shell?.querySelector("[data-inline-chat-compose]");
+    const composeInput = shell?.querySelector("[data-inline-chat-compose-input]");
+    const composeSend = shell?.querySelector("[data-inline-chat-compose-send]");
     const seedButtons = Array.from(shell?.querySelectorAll("[data-inline-chat-seed]") || []);
     let bridgeReady = false;
     let responseTimer = null;
@@ -147,6 +163,7 @@ const {
     let activeTurn = null;
     let turnId = 0;
     let userNearBottom = true;
+    let composeVisible = false;
     const responseTimeoutMs = 24000;
     const autoRetryDelayMs = 15000;
     const countdownStartDelayMs = 5000;
@@ -166,6 +183,26 @@ const {
         btn.setAttribute("aria-disabled", String(busy));
         btn.toggleAttribute("data-inline-chat-seed-busy", busy);
       });
+    };
+    const syncComposeState = () => {
+      if (!composeForm || !composeInput || !composeSend) return;
+      const pending = activeTurn?.state === "pending";
+      composeInput.disabled = pending;
+      composeSend.disabled = pending || !composeInput.value.trim();
+      composeForm.toggleAttribute("data-inline-chat-compose-pending", pending);
+      if (pending) composeInput.setAttribute("aria-busy", "true");
+      else composeInput.removeAttribute("aria-busy");
+    };
+    const revealCompose = () => {
+      if (!progressive || composeVisible || !composeForm) return;
+      composeVisible = true;
+      composeForm.classList.remove("hidden");
+      syncComposeState();
+    };
+    const resizeComposeInput = () => {
+      if (!composeInput) return;
+      composeInput.style.height = "auto";
+      composeInput.style.height = `${composeInput.scrollHeight}px`;
     };
     const clearResponseTimer = () => {
       if (!responseTimer) return;
@@ -260,7 +297,7 @@ const {
     const hideLatestButton = () => latestButton?.classList.add("hidden");
     const showLatestButton = () => latestButton?.classList.remove("hidden");
     const scrollToLatest = ({ force = false } = {}) => {
-      const target = bottomAnchor || activeTurn?.assistantText;
+      const target = (composeVisible && composeForm) || bottomAnchor || activeTurn?.assistantText;
       if (!target) return;
       if (!force && !userNearBottom) {
         showLatestButton();
@@ -298,7 +335,7 @@ const {
         ${detail ? `<span class="inline-chat-shell__pending-detail">${escapeHtml(detail)}</span>` : ""}
       `;
     };
-    const createTurn = (query) => {
+    const createTurn = (query, { source = "seed" } = {}) => {
       if (!transcriptEl) return null;
       turnId += 1;
       const turn = {
@@ -316,9 +353,10 @@ const {
       };
       turn.element.className = "inline-chat-shell__turn";
       turn.element.dataset.inlineChatTurn = String(turn.id);
+      turn.element.dataset.inlineChatTurnSource = source;
       turn.element.innerHTML = `
         <div class="inline-chat-shell__message inline-chat-shell__message--user">
-          <p class="inline-chat-shell__message-eyebrow">Du valgte</p>
+          <p class="inline-chat-shell__message-eyebrow">${source === "compose" ? "Du spurte" : "Du valgte"}</p>
           <p class="inline-chat-shell__message-text">${escapeHtml(query)}</p>
         </div>
         <div class="inline-chat-shell__message inline-chat-shell__message--assistant">
@@ -337,6 +375,7 @@ const {
       clearTurnTimers();
       setSeedsBusy(false);
       setState(state);
+      syncComposeState();
     };
     const renderTurnActions = (turn, { includeAbort = true } = {}) => {
       if (!turn || turn.state !== "pending") return;
@@ -492,6 +531,7 @@ const {
       turn.state = "answered";
       turn.assistantText.innerHTML = renderFormattedText(text);
       finishActiveTurn("answered");
+      revealCompose();
       setStatus("Svar mottatt.");
       scrollToLatest();
     };
@@ -568,7 +608,7 @@ const {
       }
       revealDialog();
       clearTurnTimers();
-      const turn = options.turn || createTurn(query);
+      const turn = options.turn || createTurn(query, { source: options.source || "seed" });
       if (!turn) return;
       activeTurn = turn;
       turn.query = query;
@@ -579,6 +619,7 @@ const {
       turn.attemptId += 1;
       if (options.isManualRetry) turn.manualRetryCount = (turn.manualRetryCount || 0) + 1;
       setSeedsBusy(true);
+      syncComposeState();
       renderPending(turn, options.isManualRetry ? "Prøver igjen ..." : "Henter svaret ...");
       setStatus(bridgeReady ? "Sendt til Hørehjelpen. Venter på svar ..." : "Kobler til Hørehjelpen ...");
       setState("started");
@@ -623,6 +664,7 @@ const {
       turn.manualRetryCount = (turn.manualRetryCount || 0) + 1;
       clearTurnTimers();
       setSeedsBusy(true);
+      syncComposeState();
       renderPending(turn, "Prøver igjen ...");
       setStatus("Prøver igjen med samme spørsmål ...");
       setState("active");
@@ -651,6 +693,7 @@ const {
         "Vi stoppet ventingen her. Du kan velge et nytt spørsmål eller åpne fri samtale."
       );
       turn.manualRetryInFlight = false;
+      syncComposeState();
       setStatus("Avbrutt lokalt. Eventuelle sene svar fra chatmotoren ignoreres her.");
       scrollToLatest();
     };
@@ -696,6 +739,31 @@ const {
     if (freeTrigger) {
       freeTrigger.addEventListener("click", startFreeChat);
     }
+    if (composeInput) {
+      composeInput.addEventListener("input", () => {
+        resizeComposeInput();
+        syncComposeState();
+      });
+      composeInput.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" || event.shiftKey) return;
+        event.preventDefault();
+        composeForm?.requestSubmit();
+      });
+    }
+    composeForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const query = composeInput?.value.trim() || "";
+      if (!query || activeTurn?.state === "pending") {
+        syncComposeState();
+        return;
+      }
+      if (composeInput) {
+        composeInput.value = "";
+        resizeComposeInput();
+      }
+      startTurn(query, { source: "compose" });
+      syncComposeState();
+    });
     latestButton?.addEventListener("click", () => scrollToLatest({ force: true }));
     if ("IntersectionObserver" in window && bottomAnchor) {
       const bottomObserver = new IntersectionObserver(
@@ -735,11 +803,79 @@ const {
   }
 
   .inline-chat-shell__dialog-thread {
-    padding-bottom: 4.5rem;
+    padding-bottom: 8.5rem;
   }
 
   .inline-chat-shell__bottom-anchor {
-    height: 5.5rem;
+    height: 6.75rem;
+  }
+
+  .inline-chat-shell__compose {
+    align-items: flex-end;
+    background: rgb(var(--surface) / 0.97);
+    border: 1px solid rgb(var(--border) / 0.5);
+    box-shadow: 0 16px 42px rgb(15 23 42 / 0.12);
+    display: grid;
+    gap: 0.55rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    margin-top: 1rem;
+    max-width: 36rem;
+    padding: 0.58rem;
+    position: sticky;
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    z-index: 4;
+  }
+
+  .inline-chat-shell__compose.hidden {
+    display: none;
+  }
+
+  .inline-chat-shell__compose-input {
+    background: transparent;
+    border: 0;
+    color: rgb(var(--reading-ink));
+    font: inherit;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    max-height: min(9rem, 32vh);
+    min-height: 2.35rem;
+    outline: 0;
+    overflow-y: auto;
+    padding: 0.42rem 0.34rem;
+    resize: none;
+    width: 100%;
+  }
+
+  .inline-chat-shell__compose-input::placeholder {
+    color: rgb(var(--reading-ink-secondary) / 0.72);
+  }
+
+  .inline-chat-shell__compose-input:disabled {
+    cursor: wait;
+    opacity: 0.62;
+  }
+
+  .inline-chat-shell__compose-send {
+    align-items: center;
+    background: rgb(var(--reading-ink));
+    color: rgb(var(--surface));
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 0.82rem;
+    font-weight: 650;
+    justify-content: center;
+    min-height: 2.35rem;
+    padding: 0.45rem 0.78rem;
+  }
+
+  .inline-chat-shell__compose-send:disabled {
+    cursor: not-allowed;
+    opacity: 0.46;
+  }
+
+  .inline-chat-shell__compose:focus-within {
+    border-color: rgb(var(--reading-accent-iris) / 0.46);
+    box-shadow: 0 18px 46px rgb(15 23 42 / 0.14);
   }
 
   .inline-chat-shell__latest {
