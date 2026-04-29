@@ -1,7 +1,7 @@
 ---
-/* CONTRACT: R1 spoke v0.3 progressive AI bridge test with inline shell activation after user intent. */
+/* CONTRACT: R1 spoke v0.3 — dialog-artikkel: Article AI under brødtekst, ingen terminal Footer (compose eier bunnen). */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
-import Footer from "../../../components/nav/Footer.astro";
+import ThemeControl from "../../../components/ThemeControl.astro";
 import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.astro";
 import ArticleInlineChatShell from "../../../components/article/ArticleInlineChatShell.astro";
 import "../../../styles/article-system.css";
@@ -113,6 +113,10 @@ const bridgeQuestions = [
         </ul>
       </aside>
     </div>
+    <!-- Dialog-artikkel: ingen terminal Footer; ThemeControl kun for boot (URL-inspect + tema) — visuelt skjult. -->
+    <div class="r1-dialog-article-theme-boot" aria-hidden="true">
+      <ThemeControl compact />
+    </div>
   </main>
   <script is:inline>
     (() => {
@@ -162,7 +166,21 @@ const bridgeQuestions = [
     })();
   </script>
   <style is:global>
+    [data-r1-editorial] .r1-dialog-article-theme-boot {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+      pointer-events: none;
+    }
+
     [data-r1-editorial] {
+      position: relative;
       --r1-ai-dialog-measure: min(100%, 46rem);
       --r1-ai-user-measure: min(92%, 32rem);
       --r1-ai-input-radius: 1.15rem;
@@ -665,5 +683,5 @@ const bridgeQuestions = [
       }
     }
   </style>
-  <Footer variant="article" />
+  <!-- Dialog-artikkel (#79): ingen terminal Footer — compose/dialog eier bunnen; juridisk/praktisk innhold → app-shell senere. -->
 </BaseLayout>
