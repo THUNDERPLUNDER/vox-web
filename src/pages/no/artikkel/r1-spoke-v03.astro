@@ -26,9 +26,9 @@ const r1Article = {
     "Når samtalen blir tydeligere og tempoet roligere, blir det ofte lettere å forstå hverandre uten at noen må «holde maska».",
   ],
   bodyHeading: "Når hørselen påvirker samtalen",
-  footerTitle: "Kort oppsummert",
+  footerTitle: "Dette kan du ta med deg videre",
   footerText:
-    "Små justeringer i tempo, plassering og forventninger kan gjøre samtaler mer skånsomme. Start med ett grep om gangen, og bygg videre derfra.",
+    "Små justeringer i tempo, plassering og forventninger kan gjøre samtaler mer skånsomme. Start med ett grep om gangen.",
   trustAuthors: [
     { name: "Nora Lysvik", role: "faglig rådgiver", href: "#" },
     { name: "KlarLyd Redaksjon", role: "redaksjonell fagjournalist", href: "#" },
@@ -143,10 +143,10 @@ const bridgeQuestions = [
       if (!summary || summary.querySelector("[data-r1-summary-toggle]")) return;
       summary.setAttribute("data-r1-mobile-summary", "collapsed");
       const heading = summary.querySelector("h3");
-      const originalHeading = heading?.textContent || "Kort oppsummert";
+      const originalHeading = heading?.textContent || "Dette kan du ta med deg videre";
       const mobileQuery = window.matchMedia("(max-width: 1023.98px)");
       const syncHeading = () => {
-        if (heading) heading.textContent = mobileQuery.matches ? "Kortversjonen" : originalHeading;
+        if (heading) heading.textContent = mobileQuery.matches ? "Ta med deg videre" : originalHeading;
       };
       const button = document.createElement("button");
       button.type = "button";
@@ -335,9 +335,10 @@ const bridgeQuestions = [
 
     [data-r1-editorial] [data-component="ArticleSummary"] {
       margin-top: 0.55rem;
-      border: 1px solid rgb(var(--border) / 0.42);
+      border: 0;
+      border-top: 1px solid rgb(var(--border) / 0.26);
       border-radius: 0 !important;
-      padding: 0.86rem 0.95rem 0.92rem !important;
+      padding: 0.62rem 0 0.75rem !important;
       background: transparent !important;
       box-shadow: none !important;
       position: relative;
@@ -345,43 +346,66 @@ const bridgeQuestions = [
 
     [data-r1-editorial] [data-component="ArticleSummary"] h3 {
       padding-right: 5.9rem;
+      font-size: 1rem !important;
+      font-weight: 600 !important;
+      letter-spacing: -0.02em !important;
+      text-transform: none !important;
+      line-height: 1.25;
+      color: rgb(var(--reading-ink));
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] h2 {
+      color: rgb(var(--reading-ink));
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] > p {
-      margin-top: 0.45rem;
+      margin-top: 0.35rem;
+      font-size: 0.94rem;
+      line-height: 1.5;
+      color: rgb(var(--reading-ink-secondary));
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] ul li {
-      border: 1px solid rgb(var(--border) / 0.5);
-      border-radius: 0 !important;
-      padding: 0.18rem 0.44rem;
-      font-size: 11px;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: rgb(var(--reading-ink-secondary));
-      background: transparent;
+      border: 1px solid rgb(var(--border) / 0.28);
+      border-radius: 999px !important;
+      padding: 0.12rem 0.5rem;
+      font-size: 10px;
+      letter-spacing: 0.03em;
+      text-transform: none;
+      color: rgb(var(--reading-ink-secondary) / 0.92);
+      background: rgb(var(--surface-subtle) / 0.35);
     }
 
-    [data-r1-editorial] [data-component="ArticleSummary"] h2,
-    [data-r1-editorial] [data-component="ArticleSummary"] h3 {
-      color: rgb(var(--reading-ink));
+    [data-r1-editorial] [data-component="ArticleSummary"] div:has(ul) > p {
+      margin-top: 0.55rem;
+      font-size: 10px !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.05em !important;
+      text-transform: none !important;
+      color: rgb(var(--reading-ink-secondary) / 0.75) !important;
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] div:has(ul) ul {
+      margin-top: 0.35rem;
+      gap: 0.35rem;
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] .r1-mobile-summary-toggle {
       align-items: center;
-      border: 1px solid rgb(var(--border) / 0.58);
-      color: rgb(var(--reading-ink));
+      border: 1px solid rgb(var(--border) / 0.42);
+      color: rgb(var(--reading-ink-secondary));
       display: inline-flex;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 650;
       justify-content: center;
       line-height: 1;
-      min-height: 2rem;
-      padding: 0 0.52rem;
+      min-height: 1.85rem;
+      padding: 0 0.48rem;
       position: absolute;
-      right: 0.95rem;
-      top: 0.76rem;
+      right: 0;
+      top: 0.55rem;
       white-space: nowrap;
+      background: rgb(var(--surface) / 0.45);
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] .r1-mobile-summary-toggle:hover {
