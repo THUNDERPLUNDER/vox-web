@@ -561,12 +561,6 @@ const bridgeQuestions = [
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__dialog-thread {
       max-width: var(--r1-ai-dialog-measure);
-      /* #77: samme --inline-chat-bottom-reserve som shell (én kilde til sannhet) + safe-area */
-      padding-bottom: max(
-        10.5rem,
-        var(--inline-chat-bottom-reserve, 160px),
-        calc(env(safe-area-inset-bottom, 0px) + 8rem)
-      );
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__message {

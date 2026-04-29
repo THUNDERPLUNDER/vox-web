@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Inline article chat shell with seed starters and in-place CES conversation. #77: --inline-chat-bottom-reserve styrer padding/anchor/scroll-margin + keepAboveCompose mot faktisk compose-top. */
+/* CONTRACT: Inline article chat shell with seed starters and in-place CES conversation. #77: --inline-chat-bottom-reserve; hovedreserve i dialog-thread padding, tynn bottom-anchor for IO. */
 export interface PromptItem {
   question: string;
 }
@@ -206,13 +206,13 @@ const inspectLabelClass =
       else composeInput.removeAttribute("aria-busy");
     };
     const revealBreathingGapPx = () =>
-      window.matchMedia?.("(max-width: 768px)")?.matches ? 128 : 96;
-    /** Én kilde til sannhet for bunnreserve (padding, anchor, scroll-margin) — #77 Phase A. */
+      window.matchMedia?.("(max-width: 768px)")?.matches ? 108 : 72;
+    /** JS → --inline-chat-bottom-reserve. CSS: hovedsakelig dialog-thread padding; anchor er tynn sentinel (#77 Phase A-korreksjon). */
     const rootRemPx = () => {
       const fs = parseFloat(getComputedStyle(document.documentElement).fontSize);
       return Number.isFinite(fs) && fs > 0 ? fs : 16;
     };
-    const minBottomReservePx = () => Math.ceil(8.5 * rootRemPx());
+    const minBottomReservePx = () => Math.ceil(6.5 * rootRemPx());
     const stickyComposerBottomInsetPx = () => Math.max(Math.ceil(0.75 * rootRemPx()), 12);
     const measuredComposeHeightPx = () =>
       composeVisible && composeForm ? composeForm.getBoundingClientRect().height : 0;
@@ -415,6 +415,7 @@ const inspectLabelClass =
     };
     const getDefaultScrollTarget = () => {
       if (activeTurn?.state === "revealing") return activeTurn?.assistantText;
+      if (composeVisible && activeTurn?.assistantText) return activeTurn.assistantText;
       if (composeVisible && bottomAnchor) return bottomAnchor;
       if (activeTurn?.assistantText) return activeTurn.assistantText;
       return bottomAnchor || transcriptEl;
@@ -912,7 +913,7 @@ const inspectLabelClass =
           userNearBottom = Boolean(entry?.isIntersecting);
           if (userNearBottom) hideLatestButton();
         },
-        { root: null, rootMargin: "0px 0px 180px 0px", threshold: 0 }
+        { root: null, rootMargin: "0px 0px 240px 0px", threshold: 0 }
       );
       bottomObserver.observe(bottomAnchor);
     }
@@ -954,7 +955,7 @@ const inspectLabelClass =
   }
 
   .inline-chat-shell__dialog-thread {
-    padding-bottom: max(8.5rem, var(--inline-chat-bottom-reserve, 136px));
+    padding-bottom: calc(var(--inline-chat-bottom-reserve, 120px) + env(safe-area-inset-bottom, 0px) + 0.75rem);
   }
 
   .inline-chat-shell__transcript-divider {
@@ -982,12 +983,12 @@ const inspectLabelClass =
   }
 
   .inline-chat-shell__bottom-anchor {
-    height: max(6.75rem, var(--inline-chat-bottom-reserve, 108px));
-    scroll-margin-bottom: var(--inline-chat-bottom-reserve, 136px);
+    height: clamp(0.5rem, calc(var(--inline-chat-bottom-reserve, 120px) * 0.12), 2.75rem);
+    scroll-margin-bottom: min(3.5rem, var(--inline-chat-bottom-reserve, 120px));
   }
 
   .inline-chat-shell__message-text {
-    scroll-margin-bottom: var(--inline-chat-bottom-reserve, 136px);
+    scroll-margin-bottom: min(4rem, var(--inline-chat-bottom-reserve, 120px));
   }
 
   .inline-chat-shell__reveal-tail {
