@@ -137,7 +137,6 @@ const bridgeQuestions = [
             items={bridgeQuestions}
             sourceLabel="r1-spoke-v03"
             mode="progressive"
-            progressiveLayout="zone"
           />
         </section>
       </ArticleTemplateV01>
@@ -186,9 +185,6 @@ const bridgeQuestions = [
       --r1-ai-input-radius: 1.15rem;
       --r1-ai-user-surface: #f4f5f7;
       --r1-ai-seed-hover-surface: rgb(248 250 252 / 0.72);
-      /* #77 Phase B: tokens for conversation zone (QA-juster her før flere kodeendringer) */
-      --r1-conversation-zone-max-height: min(52dvh, 28rem);
-      --r1-conversation-zone-min-height: clamp(11rem, 28dvh, 18rem);
     }
 
     html[data-inspect-components="true"] [data-r1-editorial] [data-component] {
@@ -670,13 +666,6 @@ const bridgeQuestions = [
 
       [data-r1-editorial] .r1-article-to-klarlyd-divider {
         margin-top: 1rem;
-      }
-    }
-
-    @media (max-width: 1023.98px) {
-      [data-r1-editorial] {
-        --r1-conversation-zone-max-height: min(46dvh, 22rem);
-        --r1-conversation-zone-min-height: clamp(10rem, 32dvh, 15rem);
       }
     }
   </style>
