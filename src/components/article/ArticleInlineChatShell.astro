@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Inline article chat shell. #77: progressive = Active Conversation v0.1 (document scroll + fixed compose når aktiv). */
+/* CONTRACT: Inline article chat shell. #77 progressive: composer-from-start + active fixed chrome. */
 export interface PromptItem {
   question: string;
 }
@@ -75,43 +75,74 @@ const inspectLabelClass =
     Kontekst: {sourceLabel}. Velg et startspørsmål{mode === "progressive" ? " for å åpne samtalen." : " eller skriv fritt i feltet under."}
   </p>
 
-  <div class="inline-chat-shell__dialog-thread mt-3 hidden" data-inline-chat-selected>
-    {
-      mode === "progressive" ? (
-        <div class="inline-chat-shell__transcript-divider" data-component="TranscriptDivider" data-inline-chat-transcript-divider>
-          <span class={inspectLabelClass} data-component-label>TranscriptDivider</span>
-          <span class="inline-chat-shell__transcript-divider-line" aria-hidden="true" />
-          <span
-            class="inline-chat-shell__transcript-divider-label"
-            id={mode === "progressive" ? `${headingId}-dialog-landmark` : undefined}>Dialog med KlarLyd</span>
+  {
+    mode === "progressive" ? (
+      <>
+        <div class="inline-chat-shell__dialog-thread mt-3 hidden" data-inline-chat-selected>
+          <div class="inline-chat-shell__transcript-divider" data-component="TranscriptDivider" data-inline-chat-transcript-divider>
+            <span class={inspectLabelClass} data-component-label>TranscriptDivider</span>
+            <span class="inline-chat-shell__transcript-divider-line" aria-hidden="true" />
+            <span
+              class="inline-chat-shell__transcript-divider-label"
+              id={`${headingId}-dialog-landmark`}>Dialog med KlarLyd</span>
+          </div>
+          <div class="inline-chat-shell__transcript" data-component="Transcript" data-inline-chat-transcript>
+            <span class={inspectLabelClass} data-component-label>Transcript</span>
+          </div>
+          <button type="button" class="inline-chat-shell__latest hidden" data-inline-chat-latest>
+            Til siste svar
+          </button>
+          <div class="inline-chat-shell__bottom-anchor" data-inline-chat-bottom aria-hidden="true" />
         </div>
-      ) : null
-    }
-    <div class="inline-chat-shell__transcript" data-component="Transcript" data-inline-chat-transcript>
-      <span class={inspectLabelClass} data-component-label>Transcript</span>
-    </div>
-    <p class="inline-chat-shell__status" data-inline-chat-status aria-live="polite">
-      Vi bruker chatmotoren i bakgrunnen.
-    </p>
-    <button type="button" class="inline-chat-shell__latest hidden" data-inline-chat-latest>
-      Til siste svar
-    </button>
-    <div class="inline-chat-shell__bottom-anchor" data-inline-chat-bottom aria-hidden="true" />
-    <form class="inline-chat-shell__compose hidden" data-component="Compose" data-inline-chat-compose>
-      <span class={inspectLabelClass} data-component-label>Compose</span>
-      <label class="sr-only" for="article-inline-chat-compose">Spør videre om dette</label>
-      <textarea
-        id="article-inline-chat-compose"
-        class="inline-chat-shell__compose-input"
-        data-inline-chat-compose-input
-        placeholder="Spør videre om dette"
-        rows="1"
-      ></textarea>
-      <button type="submit" class="inline-chat-shell__compose-send" data-inline-chat-compose-send aria-label="Send spørsmål">
-        <span aria-hidden="true">↑</span>
-      </button>
-    </form>
-  </div>
+        <div class="inline-chat-shell__compose-stack mt-3" data-inline-chat-compose-stack>
+          <p class="inline-chat-shell__status inline-chat-shell__status--dock" data-inline-chat-status aria-live="polite">
+            Vi bruker chatmotoren i bakgrunnen.
+          </p>
+          <form class="inline-chat-shell__compose" data-component="Compose" data-inline-chat-compose>
+            <span class={inspectLabelClass} data-component-label>Compose</span>
+            <label class="sr-only" for="article-inline-chat-compose">Spør videre om dette</label>
+            <textarea
+              id="article-inline-chat-compose"
+              class="inline-chat-shell__compose-input"
+              data-inline-chat-compose-input
+              placeholder="Spør videre om dette"
+              rows="1"
+            ></textarea>
+            <button type="submit" class="inline-chat-shell__compose-send" data-inline-chat-compose-send aria-label="Send spørsmål">
+              <span aria-hidden="true">↑</span>
+            </button>
+          </form>
+        </div>
+      </>
+    ) : (
+      <div class="inline-chat-shell__dialog-thread mt-3 hidden" data-inline-chat-selected>
+        <div class="inline-chat-shell__transcript" data-component="Transcript" data-inline-chat-transcript>
+          <span class={inspectLabelClass} data-component-label>Transcript</span>
+        </div>
+        <p class="inline-chat-shell__status" data-inline-chat-status aria-live="polite">
+          Vi bruker chatmotoren i bakgrunnen.
+        </p>
+        <button type="button" class="inline-chat-shell__latest hidden" data-inline-chat-latest>
+          Til siste svar
+        </button>
+        <div class="inline-chat-shell__bottom-anchor" data-inline-chat-bottom aria-hidden="true" />
+        <form class="inline-chat-shell__compose hidden" data-component="Compose" data-inline-chat-compose>
+          <span class={inspectLabelClass} data-component-label>Compose</span>
+          <label class="sr-only" for="article-inline-chat-compose">Spør videre om dette</label>
+          <textarea
+            id="article-inline-chat-compose"
+            class="inline-chat-shell__compose-input"
+            data-inline-chat-compose-input
+            placeholder="Spør videre om dette"
+            rows="1"
+          ></textarea>
+          <button type="submit" class="inline-chat-shell__compose-send" data-inline-chat-compose-send aria-label="Send spørsmål">
+            <span aria-hidden="true">↑</span>
+          </button>
+        </form>
+      </div>
+    )
+  }
 
   <div
     class:list={[
@@ -154,6 +185,7 @@ const inspectLabelClass =
     const statusText = shell?.querySelector("[data-inline-chat-status]");
     const latestButton = shell?.querySelector("[data-inline-chat-latest]");
     const bottomAnchor = shell?.querySelector("[data-inline-chat-bottom]");
+    const composeStack = progressive ? shell?.querySelector("[data-inline-chat-compose-stack]") : null;
     const composeForm = shell?.querySelector("[data-inline-chat-compose]");
     const composeInput = shell?.querySelector("[data-inline-chat-compose-input]");
     const composeSend = shell?.querySelector("[data-inline-chat-compose-send]");
@@ -199,7 +231,7 @@ const inspectLabelClass =
       const headerEl = shell.querySelector("[data-inline-chat-header]");
       headerEl?.classList.add("hidden");
       headerEl?.setAttribute("aria-hidden", "true");
-      const landmarkId = shell.querySelector(".inline-chat-shell__transcript-divider-label")?.id;
+    const landmarkId = shell.querySelector(".inline-chat-shell__transcript-divider-label")?.id;
       if (landmarkId) shell.setAttribute("aria-labelledby", landmarkId);
       const prevDivider = shell.previousElementSibling;
       if (prevDivider?.hasAttribute?.("data-inline-chat-seed-bridge-divider")) {
@@ -223,20 +255,21 @@ const inspectLabelClass =
     };
     const revealBreathingGapPx = () =>
       window.matchMedia?.("(max-width: 768px)")?.matches ? 108 : 72;
-    /** JS → --inline-chat-bottom-reserve. Inline: dialog-thread padding + sticky compose. Progressive aktiv: minimal reserve for fixed compose (#77 v0.1). */
+    /** JS → --inline-chat-bottom-reserve. Inline: dialog-thread + sticky compose. Progressive aktiv: én måling av compose-stack (status + compose). */
     const rootRemPx = () => {
       const fs = parseFloat(getComputedStyle(document.documentElement).fontSize);
       return Number.isFinite(fs) && fs > 0 ? fs : 16;
     };
     const minBottomReservePx = () => Math.ceil(6.5 * rootRemPx());
     const stickyComposerBottomInsetPx = () => Math.max(Math.ceil(0.75 * rootRemPx()), 12);
-    /** Aktiv modus: liten buffer under siste innhold; ikke Phase A-stor min-reserve. */
-    const activeComposeBufferPx = () =>
-      window.matchMedia?.("(max-width: 768px)")?.matches ? 18 : 14;
-    /** Ekstra bunnpust under fixed composer (~40–50px totalt med CSS bottom), uten stor document-padding. */
-    const activeFixedComposerFootroomPx = () => 44;
+    /** Liten luft under fixed stack i dokument-padding (ikke stor Phase A-reserve). */
+    const activeStackDocumentTailPx = () => 16;
     const measuredComposeHeightPx = () =>
       composeVisible && composeForm ? composeForm.getBoundingClientRect().height : 0;
+    const measuredProgressiveStackHeightPx = () => {
+      if (!progressive || !composeStack || shell?.getAttribute("data-inline-chat-conversation") !== "active") return 0;
+      return composeStack.getBoundingClientRect().height;
+    };
     const syncBottomReserve = () => {
       if (!shell) return;
       if (!progressive) {
@@ -252,32 +285,48 @@ const inspectLabelClass =
         shell.style.setProperty("--inline-chat-bottom-reserve", "0px");
         return;
       }
-      const h = measuredComposeHeightPx();
-      if (!composeVisible || !h) {
-        shell.style.setProperty("--inline-chat-bottom-reserve", "10px");
+      const h = measuredProgressiveStackHeightPx();
+      if (!h) {
+        shell.style.setProperty("--inline-chat-bottom-reserve", "12px");
         return;
       }
-      const buf = activeComposeBufferPx();
-      const inset = stickyComposerBottomInsetPx();
-      const foot = activeFixedComposerFootroomPx();
-      const composed = Math.ceil(h + buf + inset + foot);
-      shell.style.setProperty("--inline-chat-bottom-reserve", `${composed}px`);
+      const tail = activeStackDocumentTailPx();
+      shell.style.setProperty("--inline-chat-bottom-reserve", `${Math.ceil(h + tail)}px`);
+    };
+    const getChromeTopForLayout = () => {
+      if (progressive && shell?.getAttribute("data-inline-chat-conversation") === "active" && composeStack) {
+        return composeStack.getBoundingClientRect().top;
+      }
+      if (!progressive && composeVisible && composeForm) return composeForm.getBoundingClientRect().top;
+      if (progressive && composeForm && shell?.getAttribute("data-inline-chat-conversation") !== "active") {
+        return composeStack ? composeStack.getBoundingClientRect().top : composeForm.getBoundingClientRect().top;
+      }
+      return null;
     };
     const getVisibleRevealBottom = () => {
+      const chromeTop = getChromeTopForLayout();
+      if (chromeTop != null) return chromeTop - revealBreathingGapPx();
       if (!composeVisible || !composeForm) return window.innerHeight - revealBreathingGapPx();
-      const composeTop = composeForm.getBoundingClientRect().top;
-      return composeTop - revealBreathingGapPx();
+      return composeForm.getBoundingClientRect().top - revealBreathingGapPx();
     };
-    /** Synlig «bunnlinje» for innhold: over fixed compose (progressive aktiv) eller vindu. */
+    /** Synlig «bunnlinje» for innhold: over compose-stack (progressive aktiv) / inline compose / vindu. */
     const getVisibleContentBottom = () => {
       if (activeTurn?.state === "revealing") return getVisibleRevealBottom();
+      const chromeTop = getChromeTopForLayout();
+      if (chromeTop != null) return chromeTop - 10;
       if (composeVisible && composeForm) {
         return composeForm.getBoundingClientRect().top - 10;
       }
       return window.innerHeight - revealBreathingGapPx();
     };
     const revealCompose = () => {
-      if (!progressive || composeVisible || !composeForm) return;
+      if (!composeForm) return;
+      if (progressive) {
+        syncComposeState();
+        syncBottomReserve();
+        return;
+      }
+      if (composeVisible) return;
       composeVisible = true;
       composeForm.classList.remove("hidden");
       syncComposeState();
@@ -453,8 +502,9 @@ const inspectLabelClass =
     };
     const getDefaultScrollTarget = () => {
       if (activeTurn?.state === "revealing") return activeTurn?.assistantText;
-      if (composeVisible && activeTurn?.assistantText) return activeTurn.assistantText;
-      if (composeVisible && bottomAnchor) return bottomAnchor;
+      const composeShown = progressive || composeVisible;
+      if (composeShown && activeTurn?.assistantText) return activeTurn.assistantText;
+      if (composeShown && bottomAnchor) return bottomAnchor;
       if (activeTurn?.assistantText) return activeTurn.assistantText;
       return bottomAnchor || transcriptEl;
     };
@@ -567,6 +617,9 @@ const inspectLabelClass =
       turn.assistantText
         .querySelector("[data-inline-chat-abort]")
         ?.addEventListener("click", () => abortTurn(turn), { once: true });
+      requestAnimationFrame(() => {
+        if (turn?.assistantText) keepAboveCompose(turn.assistantText, { behavior: "smooth" });
+      });
     };
     const scheduleManualControls = (turn) => {
       clearControlsTimer();
@@ -920,6 +973,10 @@ const inspectLabelClass =
       syncBottomReserve();
       nudgeScrollIfNearBottom();
     };
+    if (composeStack && "ResizeObserver" in window && progressive) {
+      const stackObserver = new ResizeObserver(onComposeLayoutChange);
+      stackObserver.observe(composeStack);
+    }
     if (composeForm && "ResizeObserver" in window) {
       const composeObserver = new ResizeObserver(onComposeLayoutChange);
       composeObserver.observe(composeForm);
@@ -1074,6 +1131,55 @@ const inspectLabelClass =
     width: 1px !important;
   }
 
+  .inline-chat-shell[data-inline-chat-mode="progressive"] .inline-chat-shell__compose-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 36rem;
+    width: 100%;
+  }
+
+  .inline-chat-shell[data-inline-chat-mode="progressive"]:not([data-inline-chat-conversation="active"]) .inline-chat-shell__compose {
+    bottom: auto;
+    margin-top: 0;
+    max-width: 36rem;
+    position: static;
+    z-index: auto;
+  }
+
+  .inline-chat-shell__status--dock {
+    color: rgb(var(--reading-ink-secondary));
+    font-size: 0.8rem;
+    line-height: 1.35;
+    margin: 0;
+  }
+
+  .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"] .inline-chat-shell__compose-stack {
+    background: linear-gradient(to top, rgb(var(--surface) / 0.98) 65%, rgb(var(--surface) / 0.88) 100%);
+    border-top: 1px solid rgb(var(--border) / 0.38);
+    bottom: 0;
+    box-sizing: border-box;
+    gap: 0.55rem;
+    left: 50%;
+    max-width: min(36rem, calc(100vw - 1.25rem));
+    padding: 0.45rem 0.65rem max(0.65rem, env(safe-area-inset-bottom, 0px));
+    position: fixed;
+    transform: translateX(-50%);
+    width: min(36rem, calc(100vw - 1.25rem));
+    z-index: 24;
+  }
+
+  .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"] .inline-chat-shell__compose-stack .inline-chat-shell__compose {
+    bottom: auto;
+    box-shadow: 0 12px 32px rgb(15 23 42 / 0.1);
+    margin-top: 0;
+    max-width: none;
+    position: static;
+    transform: none;
+    width: 100%;
+    z-index: auto;
+  }
+
   .inline-chat-shell__compose {
     align-items: flex-end;
     background: rgb(var(--surface) / 0.97);
@@ -1093,18 +1199,6 @@ const inspectLabelClass =
 
   .inline-chat-shell__compose.hidden {
     display: none;
-  }
-
-  .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"] .inline-chat-shell__compose:not(.hidden) {
-    bottom: max(0.65rem, calc(env(safe-area-inset-bottom, 0px) + 1.35rem));
-    box-sizing: border-box;
-    left: 50%;
-    margin-top: 0;
-    max-width: min(36rem, calc(100vw - 1.25rem));
-    position: fixed;
-    transform: translateX(-50%);
-    width: min(36rem, calc(100vw - 1.25rem));
-    z-index: 24;
   }
 
   .inline-chat-shell__compose-input {
