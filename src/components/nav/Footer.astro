@@ -12,7 +12,9 @@ const isSandboxTall = variant === "sandbox-tall";
 <footer
   class:list={[
     isSandboxTall && "mt-24 py-16 sm:mt-28 sm:py-24",
-    isArticle && !isSandboxTall && "mt-10 py-5 sm:py-6",
+    isArticle &&
+      !isSandboxTall &&
+      "mt-16 border-t border-[rgb(var(--border)/0.38)] pt-9 pb-6 sm:mt-20 sm:pt-10 sm:pb-7",
     !isArticle && !isSandboxTall && "mt-16 py-8 sm:mt-20 sm:py-10",
   ]}
 >
@@ -36,7 +38,7 @@ const isSandboxTall = variant === "sandbox-tall";
       !isArticle && !isSandboxTall && "mt-4 text-xs",
     ]}
   >
-    Hørehjelpen er under utvikling.
+    KlarLyd-redaksjonen · Hørehjelpen er i beta og oppdateres fortløpende.
   </p>
   {
     isSandboxTall ? (
