@@ -213,12 +213,10 @@ const inspectLabelClass =
       const height = composeVisible && composeForm ? composeForm.getBoundingClientRect().height : 0;
       return Math.ceil(height + 32);
     };
-    const isFollowingLatest = () => {
-      const target = bottomAnchor || activeTurn?.assistantText;
-      if (!target) return userNearBottom;
-      const offset = getComposeOffset();
-      const rect = target.getBoundingClientRect();
-      return userNearBottom || rect.top <= window.innerHeight + offset + 180;
+    const getVisibleRevealBottom = () => {
+      if (!composeVisible || !composeForm) return window.innerHeight - 32;
+      const composeTop = composeForm.getBoundingClientRect().top;
+      return Math.min(window.innerHeight, composeTop) - 32;
     };
     const revealCompose = () => {
       if (!progressive || composeVisible || !composeForm) return;
@@ -341,16 +339,22 @@ const inspectLabelClass =
         onComplete?.();
         return;
       }
+      const tail = document.createElement("span");
+      tail.className = "inline-chat-shell__reveal-tail";
+      tail.setAttribute("aria-hidden", "true");
+      turn.revealTail = tail;
+      turn.assistantText.append(tail);
       turn.assistantText.setAttribute("data-inline-chat-revealing", "true");
-      turn.revealShouldFollow = isFollowingLatest();
+      turn.revealShouldFollow = true;
       const delayMs = Math.max(90, Math.min(220, Math.floor(1400 / Math.max(blocks.length, 1))));
       const revealNext = (index) => {
         if (activeTurn?.id !== turn.id || turn.attemptId !== attemptId || turn.state !== "revealing") return;
-        turn.assistantText.insertAdjacentHTML("beforeend", blocks[index]);
-        const latestBlock = turn.assistantText.lastElementChild || turn.assistantText;
-        scrollToLatest({ target: latestBlock });
+        tail.insertAdjacentHTML("beforebegin", blocks[index]);
+        scrollRevealTail(turn);
         if (index >= blocks.length - 1) {
           turn.assistantText.removeAttribute("data-inline-chat-revealing");
+          tail.remove();
+          turn.revealTail = null;
           onComplete?.();
           return;
         }
@@ -361,15 +365,26 @@ const inspectLabelClass =
     };
     const hideLatestButton = () => latestButton?.classList.add("hidden");
     const showLatestButton = () => latestButton?.classList.remove("hidden");
-    const keepAboveCompose = (target, { behavior = "smooth" } = {}) => {
+    const keepAboveCompose = (target, { behavior = "auto" } = {}) => {
       if (!target) return;
-      const offset = getComposeOffset();
-      const visibleBottom = window.innerHeight - offset;
+      const visibleBottom = activeTurn?.state === "revealing" ? getVisibleRevealBottom() : window.innerHeight - getComposeOffset();
       const rect = target.getBoundingClientRect();
       const delta = rect.bottom - visibleBottom;
       if (delta <= 0) return;
       window.scrollBy({ top: Math.ceil(delta), behavior });
       hideLatestButton();
+    };
+    const scrollRevealTail = (turn) => {
+      if (!turn?.revealShouldFollow || !turn.revealTail) {
+        showLatestButton();
+        return;
+      }
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (activeTurn?.id !== turn.id || turn.state !== "revealing" || !turn.revealTail) return;
+          keepAboveCompose(turn.revealTail);
+        });
+      });
     };
     const scrollToLatest = ({ force = false, target: explicitTarget = null } = {}) => {
       const target =
@@ -386,7 +401,7 @@ const inspectLabelClass =
       requestAnimationFrame(() => {
         window.setTimeout(() => {
           if (activeTurn?.state === "revealing") {
-            keepAboveCompose(target);
+            keepAboveCompose(activeTurn.revealTail || target);
             return;
           }
           target.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -834,7 +849,10 @@ const inspectLabelClass =
       startTurn(query, { source: "compose" });
       syncComposeState();
     });
-    latestButton?.addEventListener("click", () => scrollToLatest({ force: true }));
+    latestButton?.addEventListener("click", () => {
+      if (activeTurn?.state === "revealing") activeTurn.revealShouldFollow = true;
+      scrollToLatest({ force: true });
+    });
     if ("IntersectionObserver" in window && bottomAnchor) {
       const bottomObserver = new IntersectionObserver(
         ([entry]) => {
@@ -916,6 +934,12 @@ const inspectLabelClass =
 
   .inline-chat-shell__message-text {
     scroll-margin-bottom: var(--inline-chat-compose-offset, 8.5rem);
+  }
+
+  .inline-chat-shell__reveal-tail {
+    display: block;
+    height: 1px;
+    width: 1px;
   }
 
   .inline-chat-shell__ces-bridge--hidden {
