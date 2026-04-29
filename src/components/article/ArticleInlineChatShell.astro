@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Inline article chat shell with seed starters and in-place CES conversation. */
+/* CONTRACT: Inline article chat shell with seed starters and in-place CES conversation. #77: --inline-chat-bottom-reserve styrer padding/anchor/scroll-margin + keepAboveCompose mot faktisk compose-top. */
 export interface PromptItem {
   question: string;
 }
@@ -207,33 +207,49 @@ const inspectLabelClass =
     };
     const revealBreathingGapPx = () =>
       window.matchMedia?.("(max-width: 768px)")?.matches ? 128 : 96;
-    const syncComposeOffset = () => {
-      if (!shell) return;
-      const height = composeVisible && composeForm ? composeForm.getBoundingClientRect().height : 0;
-      const gap = revealBreathingGapPx();
-      shell.style.setProperty("--inline-chat-compose-offset", `${Math.ceil(height + gap)}px`);
+    /** Én kilde til sannhet for bunnreserve (padding, anchor, scroll-margin) — #77 Phase A. */
+    const rootRemPx = () => {
+      const fs = parseFloat(getComputedStyle(document.documentElement).fontSize);
+      return Number.isFinite(fs) && fs > 0 ? fs : 16;
     };
-    const getComposeOffset = () => {
-      const height = composeVisible && composeForm ? composeForm.getBoundingClientRect().height : 0;
-      return Math.ceil(height + revealBreathingGapPx());
+    const minBottomReservePx = () => Math.ceil(8.5 * rootRemPx());
+    const stickyComposerBottomInsetPx = () => Math.max(Math.ceil(0.75 * rootRemPx()), 12);
+    const measuredComposeHeightPx = () =>
+      composeVisible && composeForm ? composeForm.getBoundingClientRect().height : 0;
+    const syncBottomReserve = () => {
+      if (!shell) return;
+      const h = measuredComposeHeightPx();
+      const gap = revealBreathingGapPx();
+      const stickyBottom = stickyComposerBottomInsetPx();
+      const composed = Math.ceil(h + gap + stickyBottom);
+      const reserve = Math.max(minBottomReservePx(), composed);
+      shell.style.setProperty("--inline-chat-bottom-reserve", `${reserve}px`);
     };
     const getVisibleRevealBottom = () => {
       if (!composeVisible || !composeForm) return window.innerHeight - revealBreathingGapPx();
       const composeTop = composeForm.getBoundingClientRect().top;
       return composeTop - revealBreathingGapPx();
     };
+    /** Synlig «bunnlinje» for innhold: under sticky compose, ellers viewport. */
+    const getVisibleContentBottom = () => {
+      if (activeTurn?.state === "revealing") return getVisibleRevealBottom();
+      if (composeVisible && composeForm) {
+        return composeForm.getBoundingClientRect().top - 10;
+      }
+      return window.innerHeight - revealBreathingGapPx();
+    };
     const revealCompose = () => {
       if (!progressive || composeVisible || !composeForm) return;
       composeVisible = true;
       composeForm.classList.remove("hidden");
       syncComposeState();
-      syncComposeOffset();
+      syncBottomReserve();
     };
     const resizeComposeInput = () => {
       if (!composeInput) return;
       composeInput.style.height = "auto";
       composeInput.style.height = `${composeInput.scrollHeight}px`;
-      syncComposeOffset();
+      syncBottomReserve();
     };
     const clearResponseTimer = () => {
       if (!responseTimer) return;
@@ -376,7 +392,7 @@ const inspectLabelClass =
     };
     const keepAboveCompose = (target, { behavior = "auto" } = {}) => {
       if (!target) return;
-      const visibleBottom = activeTurn?.state === "revealing" ? getVisibleRevealBottom() : window.innerHeight - getComposeOffset();
+      const visibleBottom = getVisibleContentBottom();
       const rect = target.getBoundingClientRect();
       const delta = rect.bottom - visibleBottom;
       if (delta <= 0) return;
@@ -397,31 +413,39 @@ const inspectLabelClass =
         });
       });
     };
+    const getDefaultScrollTarget = () => {
+      if (activeTurn?.state === "revealing") return activeTurn?.assistantText;
+      if (composeVisible && bottomAnchor) return bottomAnchor;
+      if (activeTurn?.assistantText) return activeTurn.assistantText;
+      return bottomAnchor || transcriptEl;
+    };
     const scrollToLatest = ({ force = false, target: explicitTarget = null } = {}) => {
-      const target =
-        explicitTarget ||
-        (activeTurn?.state === "revealing"
-          ? activeTurn?.assistantText
-          : (composeVisible && composeForm) || bottomAnchor || activeTurn?.assistantText);
+      const target = explicitTarget || getDefaultScrollTarget();
       if (!target) return;
       const shouldFollowReveal = activeTurn?.state === "revealing" && activeTurn?.revealShouldFollow;
       if (!force && !userNearBottom && !shouldFollowReveal) {
         showLatestButton();
         return;
       }
+      const behavior = force || userNearBottom || shouldFollowReveal ? "smooth" : "auto";
       requestAnimationFrame(() => {
         window.setTimeout(() => {
           if (activeTurn?.state === "revealing") {
-            keepAboveCompose(getLatestRevealBlock(activeTurn) || activeTurn.revealTail || target);
+            keepAboveCompose(
+              getLatestRevealBlock(activeTurn) || activeTurn.revealTail || activeTurn.assistantText,
+              { behavior: shouldFollowReveal ? "auto" : behavior }
+            );
             return;
           }
-          target.scrollIntoView({ behavior: "smooth", block: "end" });
+          keepAboveCompose(target, { behavior });
+          requestAnimationFrame(() => keepAboveCompose(target, { behavior: "auto" }));
           hideLatestButton();
         }, 40);
       });
     };
     const revealDialog = () => {
       if (selectedBox) selectedBox.classList.remove("hidden");
+      syncBottomReserve();
     };
     const getFallbackHref = (query) => {
       const params = new URLSearchParams();
@@ -842,9 +866,27 @@ const inspectLabelClass =
         composeForm?.requestSubmit();
       });
     }
+    const nudgeScrollIfNearBottom = () => {
+      if (!userNearBottom) return;
+      window.requestAnimationFrame(() => {
+        const t = getDefaultScrollTarget();
+        if (t) keepAboveCompose(t, { behavior: "auto" });
+        window.requestAnimationFrame(() => {
+          const t2 = getDefaultScrollTarget();
+          if (t2) keepAboveCompose(t2, { behavior: "auto" });
+        });
+      });
+    };
+    const onComposeLayoutChange = () => {
+      syncBottomReserve();
+      nudgeScrollIfNearBottom();
+    };
     if (composeForm && "ResizeObserver" in window) {
-      const composeObserver = new ResizeObserver(syncComposeOffset);
+      const composeObserver = new ResizeObserver(onComposeLayoutChange);
       composeObserver.observe(composeForm);
+    }
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", onComposeLayoutChange, { passive: true });
     }
     composeForm?.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -901,6 +943,7 @@ const inspectLabelClass =
     window.addEventListener("chat-messenger-loaded", observeReady, { once: true });
     window.addEventListener("ces-messenger-connected", observeReady, { once: true });
     observeReady();
+    window.requestAnimationFrame(() => syncBottomReserve());
   })();
 </script>
 
@@ -911,7 +954,7 @@ const inspectLabelClass =
   }
 
   .inline-chat-shell__dialog-thread {
-    padding-bottom: max(8.5rem, calc(var(--inline-chat-compose-offset, 0px) + 3.5rem));
+    padding-bottom: max(8.5rem, var(--inline-chat-bottom-reserve, 136px));
   }
 
   .inline-chat-shell__transcript-divider {
@@ -939,12 +982,12 @@ const inspectLabelClass =
   }
 
   .inline-chat-shell__bottom-anchor {
-    height: max(6.75rem, var(--inline-chat-compose-offset, 0px));
-    scroll-margin-bottom: var(--inline-chat-compose-offset, 8.5rem);
+    height: max(6.75rem, var(--inline-chat-bottom-reserve, 108px));
+    scroll-margin-bottom: var(--inline-chat-bottom-reserve, 136px);
   }
 
   .inline-chat-shell__message-text {
-    scroll-margin-bottom: var(--inline-chat-compose-offset, 8.5rem);
+    scroll-margin-bottom: var(--inline-chat-bottom-reserve, 136px);
   }
 
   .inline-chat-shell__reveal-tail {

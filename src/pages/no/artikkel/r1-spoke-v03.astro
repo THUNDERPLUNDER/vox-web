@@ -561,11 +561,11 @@ const bridgeQuestions = [
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__dialog-thread {
       max-width: var(--r1-ai-dialog-measure);
-      /* Demo v0.1: ekstra compose-safe-area uten ny scrollmotor (toppes av shell sin padding) */
+      /* #77: samme --inline-chat-bottom-reserve som shell (én kilde til sannhet) + safe-area */
       padding-bottom: max(
         10.5rem,
-        calc(var(--inline-chat-compose-offset, 0px) + 4.75rem),
-        calc(env(safe-area-inset-bottom, 0px) + 9.5rem)
+        var(--inline-chat-bottom-reserve, 160px),
+        calc(env(safe-area-inset-bottom, 0px) + 8rem)
       );
     }
 
