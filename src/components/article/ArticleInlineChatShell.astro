@@ -6,7 +6,8 @@ export interface PromptItem {
 
 export interface Props {
   title: string;
-  intro: string;
+  /** Når utelatt eller tom, vises ingen undertekst under tittelen (f.eks. rett til seed-liste). */
+  intro?: string;
   headingId: string;
   items: PromptItem[];
   sourceLabel?: string;
@@ -36,7 +37,7 @@ const inspectLabelClass =
   <span class={inspectLabelClass} data-component-label>ArticleInlineChatShell</span>
   <header class="inline-chat-shell__header">
     <h2 id={headingId} class="inline-chat-shell__title">{title}</h2>
-    <p class="inline-chat-shell__intro">{intro}</p>
+    {intro ? <p class="inline-chat-shell__intro">{intro}</p> : null}
   </header>
 
   <div class="inline-chat-shell__seed-suggestions" data-component="SeedSuggestions" data-inline-chat-seed-suggestions>

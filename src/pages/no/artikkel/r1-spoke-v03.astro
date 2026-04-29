@@ -7,6 +7,8 @@ import ArticleInlineChatShell from "../../../components/article/ArticleInlineCha
 import "../../../styles/article-system.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+/** Relaterte tema vises tidlig (etter byline/metadata), ikke i handlingsbroen før Article AI. */
+const r1RelatedTopics = ["Samtaletips", "Høreliv", "Hverdagskommunikasjon"] as const;
 const r1Article = {
   title: "Når hørselen endrer samtalen, og hvordan du kan møte det med mer overskudd",
   ingress:
@@ -15,7 +17,6 @@ const r1Article = {
   articleType: "spoke",
   hub: "Bedre lyd i hverdagen",
   sourceTrustType: "redaksjonelt kvalitetssjekket med faglig orientering",
-  relatedTopics: ["Samtaletips", "Høreliv", "Hverdagskommunikasjon"],
   aiSeedGroup: "hearing-conversation-v1",
   body: [
     "Hørsel handler ikke bare om volum. Det handler også om hvor mye energi du bruker på å fylle inn det du ikke fikk med deg, og hvor raskt du blir sliten av støy, flere stemmer eller dårlig akustikk.",
@@ -108,13 +109,27 @@ const bridgeQuestions = [
       </section>
 
       <ArticleTemplateV01 {...r1Article}>
+        <section
+          slot="after-trust"
+          class="r1-early-topics ams-zone px-0.5 pb-1 pt-0.5"
+          data-component="RelatedTopicsEarly"
+        >
+          <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
+            RelatedTopicsEarly
+          </span>
+          <p id="r1-related-topics-label" class="r1-early-topics__label">Relaterte tema</p>
+          <ul class="r1-early-topics__list" role="list" aria-labelledby="r1-related-topics-label">
+            {r1RelatedTopics.map((topic) => (
+              <li>{topic}</li>
+            ))}
+          </ul>
+        </section>
         <section slot="before-summary" class="r1-ai-bridge ams-zone px-0.5 py-1" data-component="PromptBridgeInArticle">
           <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
             PromptBridge
           </span>
           <ArticleInlineChatShell
-            title="Har du spørsmål?"
-            intro="Her er noen forslag."
+            title="Spør KlarLyd:"
             headingId="r1-continue-v03"
             items={bridgeQuestions}
             sourceLabel="r1-spoke-v03"
@@ -130,7 +145,7 @@ const bridgeQuestions = [
         <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]">Komponenter i bruk</p>
         <ul class="mt-2 flex flex-wrap gap-1.5 text-[11px] text-[rgb(var(--reading-ink-secondary))]">
           <li>ArticleTemplate</li><li>ArticleHeader</li><li>ArticleTrustBlock</li><li>ArticleFigurePlaceholder</li>
-          <li>ArticleIngress</li><li>ArticleBody</li><li>ArticleSummary</li><li>ArticleInlineChatShell</li><li>InlineChatSeeds</li>
+          <li>ArticleIngress</li><li>ArticleBody</li><li>RelatedTopicsEarly</li><li>ArticleSummary</li><li>ArticleInlineChatShell</li><li>InlineChatSeeds</li>
           <li>InlineChatProgressiveState</li><li>InlineChatMessenger</li><li>BreadcrumbNav</li><li>OrientationBlock</li><li>PromptBridge</li>
         </ul>
       </aside>
@@ -333,6 +348,39 @@ const bridgeQuestions = [
       margin-top: 0.15rem !important;
     }
 
+    [data-r1-editorial] [data-component="RelatedTopicsEarly"] {
+      margin-top: 0.12rem;
+      margin-bottom: 0.15rem;
+      padding-bottom: 0.15rem;
+    }
+
+    [data-r1-editorial] [data-component="RelatedTopicsEarly"] .r1-early-topics__label {
+      margin: 0 0 0.32rem;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: rgb(var(--reading-ink-secondary) / 0.78);
+    }
+
+    [data-r1-editorial] [data-component="RelatedTopicsEarly"] .r1-early-topics__list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    [data-r1-editorial] [data-component="RelatedTopicsEarly"] .r1-early-topics__list li {
+      border: 1px solid rgb(var(--border) / 0.28);
+      border-radius: 999px;
+      padding: 0.12rem 0.5rem;
+      font-size: 10px;
+      letter-spacing: 0.03em;
+      color: rgb(var(--reading-ink-secondary) / 0.92);
+      background: rgb(var(--surface-subtle) / 0.35);
+    }
+
     [data-r1-editorial] [data-component="ArticleSummary"] {
       margin-top: 0.55rem;
       border: 0;
@@ -363,31 +411,6 @@ const bridgeQuestions = [
       font-size: 0.94rem;
       line-height: 1.5;
       color: rgb(var(--reading-ink-secondary));
-    }
-
-    [data-r1-editorial] [data-component="ArticleSummary"] ul li {
-      border: 1px solid rgb(var(--border) / 0.28);
-      border-radius: 999px !important;
-      padding: 0.12rem 0.5rem;
-      font-size: 10px;
-      letter-spacing: 0.03em;
-      text-transform: none;
-      color: rgb(var(--reading-ink-secondary) / 0.92);
-      background: rgb(var(--surface-subtle) / 0.35);
-    }
-
-    [data-r1-editorial] [data-component="ArticleSummary"] div:has(ul) > p {
-      margin-top: 0.55rem;
-      font-size: 10px !important;
-      font-weight: 600 !important;
-      letter-spacing: 0.05em !important;
-      text-transform: none !important;
-      color: rgb(var(--reading-ink-secondary) / 0.75) !important;
-    }
-
-    [data-r1-editorial] [data-component="ArticleSummary"] div:has(ul) ul {
-      margin-top: 0.35rem;
-      gap: 0.35rem;
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] .r1-mobile-summary-toggle {
@@ -423,12 +446,6 @@ const bridgeQuestions = [
 
     [data-r1-editorial] [data-component="ArticleSummary"][data-r1-mobile-summary="expanded"] > div {
       display: block;
-    }
-
-    [data-r1-editorial] [data-component="ArticleSummary"] ul li + li::before {
-      content: none;
-      margin-right: 0;
-      color: transparent;
     }
 
     [data-r1-editorial] .r1-orientation {
@@ -472,7 +489,11 @@ const bridgeQuestions = [
     }
 
     [data-r1-editorial] .r1-ai-bridge .inline-chat-shell__header {
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.22rem;
+    }
+
+    [data-r1-editorial] .r1-ai-bridge [data-inline-chat-seed-suggestions] {
+      margin-top: 0;
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-seeds-empty="true"].inline-chat-shell .inline-chat-shell__header,

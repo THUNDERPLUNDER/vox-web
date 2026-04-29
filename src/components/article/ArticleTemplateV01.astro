@@ -184,6 +184,8 @@ const editorialAuthor = trustAuthors[1];
       ) : null}
     </section>
 
+    <slot name="after-trust" />
+
     {figureImage && figureAfterTrust ? (
       <section class="ams-zone ams-zone--inline-visual ams-plate px-5 py-4 sm:px-6" data-component="ArticleFigurePlaceholder">
         <span class={inspectLabelClass} data-component-label>ArticleFigurePlaceholder</span>
