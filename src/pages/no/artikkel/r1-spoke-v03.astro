@@ -68,12 +68,23 @@ const bridgeQuestions = [
 ];
 ---
 
-<BaseLayout title="KLARLYD - R1 spoke v0.3" currentPath="/no/hubs" shellVariant="article" headerBrand="klarlyd">
+<BaseLayout
+  title="KLARLYD - R1 spoke v0.3"
+  currentPath="/no/hubs"
+  shellVariant="article"
+  headerBrand="klarlyd"
+  showHeaderDevtoolsToggle
+>
   <script is:inline slot="head">
     (function () {
       try {
         var q = new URLSearchParams(window.location.search);
-        var on = q.get("inspect") === "components" || q.get("devtools") === "true";
+        var qOn = q.get("inspect") === "components" || q.get("devtools") === "true";
+        var armed = null;
+        try {
+          armed = sessionStorage.getItem("vox-devtools-armed");
+        } catch (e) {}
+        var on = qOn || armed === "1";
         document.documentElement.setAttribute("data-vox-inspect-drawer-active", on ? "true" : "false");
       } catch (e) {
         document.documentElement.setAttribute("data-vox-inspect-drawer-active", "false");

@@ -6,9 +6,10 @@ import { isNavActive } from "../../lib/nav-active";
 type Props = {
   currentPath?: string;
   brand?: "default" | "klarlyd";
+  showDevtoolsToggle?: boolean;
 };
 
-const { currentPath = "", brand = "default" } = Astro.props as Props;
+const { currentPath = "", brand = "default", showDevtoolsToggle = false } = Astro.props as Props;
 const menuTitle = brand === "klarlyd" ? "KLARLYD meny" : "VOX meny";
 ---
 
@@ -53,6 +54,41 @@ const menuTitle = brand === "klarlyd" ? "KLARLYD meny" : "VOX meny";
         })
       }
     </nav>
+    {
+      showDevtoolsToggle ? (
+        <div class="mt-4 border-t border-[rgb(var(--border))/0.35] pt-4">
+          <button
+            type="button"
+            class="flex w-full items-center justify-center rounded-[var(--radius-sm)] border border-dashed border-[rgb(var(--border))/0.55] px-3 py-2.5 text-sm text-[rgb(var(--muted))] transition-colors hover:bg-[rgb(var(--surface-subtle))/0.6] hover:text-[rgb(var(--text-secondary))]"
+            data-vox-header-devtools-toggle
+            data-vox-internal-devtools
+            aria-label="Devtools (intern)"
+            aria-pressed="false"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <path d="M4 21v-7" />
+              <path d="M4 10V3" />
+              <path d="M12 21v-9" />
+              <path d="M12 8V3" />
+              <path d="M20 21v-5" />
+              <path d="M20 12V3" />
+              <path d="M2 14h4" />
+              <path d="M10 8h4" />
+              <path d="M18 16h4" />
+            </svg>
+          </button>
+        </div>
+      ) : null
+    }
   </div>
 </div>
 

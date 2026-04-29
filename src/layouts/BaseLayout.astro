@@ -9,7 +9,15 @@ const {
   currentPath = "",
   shellVariant = "default",
   headerBrand = "default",
-} = Astro.props;
+  showHeaderDevtoolsToggle = false,
+} = Astro.props as {
+  title?: string;
+  currentPath?: string;
+  shellVariant?: string;
+  headerBrand?: "default" | "klarlyd";
+  /** Midlertidig intern devtools (#81) — kun der det eksplisitt slås på (f.eks. r1-spoke-v03). */
+  showHeaderDevtoolsToggle?: boolean;
+};
 const isSandboxWhite = shellVariant === "sandbox-white";
 ---
 
@@ -127,12 +135,12 @@ const isSandboxWhite = shellVariant === "sandbox-white";
         style="box-shadow: var(--shadow-header);"
       >
         <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <Header currentPath={currentPath} brand={headerBrand} />
+          <Header currentPath={currentPath} brand={headerBrand} showDevtoolsToggle={showHeaderDevtoolsToggle} />
         </div>
       </div>
     </header>
 
-    <MobileMenuSheet currentPath={currentPath} brand={headerBrand} />
+    <MobileMenuSheet currentPath={currentPath} brand={headerBrand} showDevtoolsToggle={showHeaderDevtoolsToggle} />
 
     <div class="mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-30 lg:px-8">
       <slot />
@@ -299,5 +307,37 @@ const isSandboxWhite = shellVariant === "sandbox-white";
           });
       });
     </script>
+    {
+      showHeaderDevtoolsToggle ? (
+        <script is:inline>
+          (function () {
+            var STORAGE_KEY = "vox-devtools-armed";
+            function syncDevtoolsTogglePressed() {
+              var on = document.documentElement.getAttribute("data-vox-inspect-drawer-active") === "true";
+              document.querySelectorAll("[data-vox-header-devtools-toggle]").forEach(function (b) {
+                b.setAttribute("aria-pressed", on ? "true" : "false");
+              });
+            }
+            function setDrawerActive(on) {
+              document.documentElement.setAttribute("data-vox-inspect-drawer-active", on ? "true" : "false");
+              try {
+                sessionStorage.setItem(STORAGE_KEY, on ? "1" : "0");
+              } catch (e) {}
+              window.dispatchEvent(new CustomEvent("vox-inspect-drawer-force-close"));
+              syncDevtoolsTogglePressed();
+            }
+            document.addEventListener("DOMContentLoaded", function () {
+              document.querySelectorAll("[data-vox-header-devtools-toggle]").forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                  var cur = document.documentElement.getAttribute("data-vox-inspect-drawer-active") === "true";
+                  setDrawerActive(!cur);
+                });
+              });
+              syncDevtoolsTogglePressed();
+            });
+          })();
+        </script>
+      ) : null
+    }
   </body>
 </html>

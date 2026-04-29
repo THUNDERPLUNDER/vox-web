@@ -74,6 +74,7 @@ import ThemeInspectBootScript from "../ThemeInspectBootScript.astro";
           if (backdrop) backdrop.hidden = true;
         }
         close();
+        window.addEventListener("vox-inspect-drawer-force-close", close);
         tab.addEventListener("click", function () {
           if (isOpen()) close();
           else open();
