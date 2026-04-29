@@ -263,7 +263,7 @@ const inspectLabelClass =
     const minBottomReservePx = () => Math.ceil(6.5 * rootRemPx());
     const stickyComposerBottomInsetPx = () => Math.max(Math.ceil(0.75 * rootRemPx()), 12);
     /** Liten luft under fixed stack i dokument-padding (ikke stor Phase A-reserve). */
-    const activeStackDocumentTailPx = () => 16;
+    const activeStackDocumentTailPx = () => 22;
     const measuredComposeHeightPx = () =>
       composeVisible && composeForm ? composeForm.getBoundingClientRect().height : 0;
     const measuredProgressiveStackHeightPx = () => {
@@ -1135,15 +1135,22 @@ const inspectLabelClass =
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    max-width: 36rem;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: min(100%, var(--r1-ai-dialog-measure, min(100%, 46rem)));
     width: 100%;
   }
 
   .inline-chat-shell[data-inline-chat-mode="progressive"]:not([data-inline-chat-conversation="active"]) .inline-chat-shell__compose {
     bottom: auto;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
     margin-top: 0;
-    max-width: 36rem;
+    max-width: min(100%, var(--r1-ai-dialog-measure, min(100%, 46rem)));
     position: static;
+    width: 100%;
     z-index: auto;
   }
 
@@ -1152,32 +1159,50 @@ const inspectLabelClass =
     font-size: 0.8rem;
     line-height: 1.35;
     margin: 0;
+    max-width: 100%;
   }
 
   .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"] .inline-chat-shell__compose-stack {
-    background: linear-gradient(to top, rgb(var(--surface) / 0.98) 65%, rgb(var(--surface) / 0.88) 100%);
-    border-top: 1px solid rgb(var(--border) / 0.38);
-    bottom: 0;
+    backdrop-filter: saturate(1.08) blur(14px);
+    -webkit-backdrop-filter: saturate(1.08) blur(14px);
+    background: rgb(var(--surface) / 0.52);
+    border-top: 1px solid rgb(var(--border) / 0.32);
+    bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+    box-shadow:
+      0 -12px 40px -14px rgb(15 23 42 / 0.12),
+      0 -1px 0 rgb(255 255 255 / 0.35) inset;
     box-sizing: border-box;
     gap: 0.55rem;
     left: 50%;
-    max-width: min(36rem, calc(100vw - 1.25rem));
-    padding: 0.45rem 0.65rem max(0.65rem, env(safe-area-inset-bottom, 0px));
+    margin: 0;
+    max-width: min(var(--r1-ai-dialog-measure, min(100%, 46rem)), calc(100vw - 1.5rem));
+    padding: 0.42rem 0.55rem 0.55rem;
     position: fixed;
     transform: translateX(-50%);
-    width: min(36rem, calc(100vw - 1.25rem));
+    width: min(var(--r1-ai-dialog-measure, min(100%, 46rem)), calc(100vw - 1.5rem));
     z-index: 24;
   }
 
   .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"] .inline-chat-shell__compose-stack .inline-chat-shell__compose {
+    background: rgb(var(--surface) / 0.94);
+    border-color: rgb(var(--border) / 0.48);
     bottom: auto;
-    box-shadow: 0 12px 32px rgb(15 23 42 / 0.1);
+    box-shadow: 0 6px 22px rgb(15 23 42 / 0.08);
     margin-top: 0;
     max-width: none;
     position: static;
     transform: none;
     width: 100%;
     z-index: auto;
+  }
+
+  .inline-chat-shell[data-inline-chat-mode="progressive"] .inline-chat-shell__compose-send {
+    box-shadow: 0 2px 10px rgb(15 23 42 / 0.2);
+    font-size: 1.02rem;
+    font-weight: 700;
+    height: 2.68rem;
+    min-height: 2.68rem;
+    width: 2.68rem;
   }
 
   .inline-chat-shell__compose {

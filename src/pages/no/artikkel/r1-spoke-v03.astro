@@ -607,10 +607,15 @@ const bridgeQuestions = [
       margin-top: 0;
     }
 
+    [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__compose-stack {
+      max-width: var(--r1-ai-dialog-measure);
+    }
+
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__compose {
       background: rgb(var(--surface));
       border-color: rgb(var(--border) / 0.42);
       border-radius: var(--r1-ai-input-radius);
+      max-width: var(--r1-ai-dialog-measure);
       padding: 1rem;
     }
 
@@ -622,11 +627,11 @@ const bridgeQuestions = [
       color: rgb(var(--reading-ink-secondary));
     }
 
-    [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] [data-inline-chat-surface] {
-      max-width: var(--r1-ai-dialog-measure);
+    [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__status--dock {
+      margin-top: 0;
     }
 
-    [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__compose {
+    [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] [data-inline-chat-surface] {
       max-width: var(--r1-ai-dialog-measure);
     }
 
