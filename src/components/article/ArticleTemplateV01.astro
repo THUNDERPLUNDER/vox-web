@@ -14,6 +14,7 @@ export interface Props {
   aiSeedGroup?: string;
   aiMode?: boolean;
   body: string[];
+  bodyHeading?: string;
   footerTitle?: string;
   footerText?: string;
   railItems?: Array<{ eyebrow: string; title: string; body: string }>;
@@ -41,6 +42,7 @@ const {
   aiSeedGroup,
   aiMode = false,
   body,
+  bodyHeading = "Brødtekst",
   footerTitle = "Kort oppsummert",
   footerText = "Dette er en første versjon av templateskjelettet. Innhold og koblinger kan utvides senere.",
   railItems = [
@@ -203,7 +205,7 @@ const editorialAuthor = trustAuthors[1];
 
     <section class="ams-zone ams-zone--article-body space-y-3" data-component="ArticleBody">
       <span class={inspectLabelClass} data-component-label>ArticleBody</span>
-      <h3 class="text-xl font-semibold leading-snug text-[rgb(var(--reading-ink))]">Brødtekst</h3>
+      <h3 class="text-xl font-semibold leading-snug text-[rgb(var(--reading-ink))]">{bodyHeading}</h3>
       <div class={bodyClass}>
         {body.map((paragraph) => (
           <p class="ams-body-p">{paragraph}</p>

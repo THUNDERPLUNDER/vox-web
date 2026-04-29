@@ -25,6 +25,7 @@ const r1Article = {
     "Pause er ikke det samme som å gi opp. En kort avtale om å fortsette samtalen senere kan være mer omsorgsfullt enn å presse alt gjennom når begge er slitne.",
     "Når samtalen blir tydeligere og tempoet roligere, blir det ofte lettere å forstå hverandre uten at noen må «holde maska».",
   ],
+  bodyHeading: "Når hørselen påvirker samtalen",
   footerTitle: "Kort oppsummert",
   footerText:
     "Små justeringer i tempo, plassering og forventninger kan gjøre samtaler mer skånsomme. Start med ett grep om gangen, og bygg videre derfra.",
@@ -90,8 +91,8 @@ const bridgeQuestions = [
             PromptBridge
           </span>
           <ArticleInlineChatShell
-            title="Spør KlarLyd"
-            intro="Velg et spørsmål for å starte i samme artikkelkontekst. Etter første svar kan du spørre videre selv."
+            title="Har du spørsmål?"
+            intro="Her er noen forslag."
             headingId="r1-continue-v03"
             items={bridgeQuestions}
             sourceLabel="r1-spoke-v03"
@@ -139,6 +140,25 @@ const bridgeQuestions = [
         button.setAttribute("aria-expanded", String(!expanded));
         button.textContent = expanded ? "Vis mer" : "Vis mindre";
       });
+
+      const attachInfo = (selector, text, placement = "top-right") => {
+        const target = document.querySelector(selector);
+        if (!target || target.querySelector("[data-component-info]")) return;
+        const badge = document.createElement("span");
+        badge.className = `r1-inspect-info-badge r1-inspect-info-badge--${placement}`;
+        badge.setAttribute("data-component-info", "");
+        badge.textContent = text;
+        target.append(badge);
+      };
+      attachInfo(
+        '[data-component="ArticleHeader"]',
+        "Standard · Type: spoke · Hub: Bedre lyd i hverdagen"
+      );
+      attachInfo(
+        '[data-component="ArticleInlineChatShell"]',
+        "Kontekst: r1-spoke-v03 · Velg et startspørsmål for å åpne samtalen.",
+        "bottom-left"
+      );
     })();
   </script>
   <style is:global>
@@ -168,13 +188,48 @@ const bridgeQuestions = [
       backdrop-filter: blur(6px);
     }
 
+    [data-r1-editorial] [data-component-info] {
+      display: none;
+    }
+
+    html[data-inspect-components="true"] [data-r1-editorial] [data-component-info] {
+      display: inline-flex;
+      max-width: min(18rem, 82vw);
+      position: absolute;
+      z-index: 29;
+      pointer-events: none;
+      border: 1px solid rgb(190 24 93 / 0.34);
+      background: rgb(252 231 243 / 0.82);
+      box-shadow: 0 8px 24px rgb(131 24 67 / 0.12);
+      backdrop-filter: blur(6px);
+      color: rgb(131 24 67);
+      font-size: 10px;
+      font-weight: 650;
+      letter-spacing: 0.045em;
+      line-height: 1.25;
+      padding: 0.36rem 0.48rem;
+      text-transform: uppercase;
+    }
+
+    html[data-inspect-components="true"] [data-r1-editorial] .r1-inspect-info-badge--top-right {
+      top: 0;
+      right: 0;
+      transform: translateY(-58%);
+    }
+
+    html[data-inspect-components="true"] [data-r1-editorial] .r1-inspect-info-badge--bottom-left {
+      bottom: 0;
+      left: 0;
+      transform: translateY(62%);
+    }
+
     [data-r1-editorial] [data-component="ArticleContent"] {
       background: #fff;
       border-radius: 0;
     }
 
     [data-r1-editorial] [data-component="ArticleHeader"] > div:first-of-type {
-      margin-bottom: 0.1rem;
+      display: none;
     }
 
     [data-r1-editorial] [data-component="ArticleHeader"] {
@@ -389,6 +444,10 @@ const bridgeQuestions = [
       font-size: 0.94rem;
       line-height: 1.48;
       color: rgb(var(--reading-ink-secondary));
+    }
+
+    [data-r1-editorial] .r1-ai-bridge .inline-chat-shell__source {
+      display: none;
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="inline"] .inline-chat-shell__seed-list {

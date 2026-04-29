@@ -204,16 +204,23 @@ const inspectLabelClass =
       if (pending) composeInput.setAttribute("aria-busy", "true");
       else composeInput.removeAttribute("aria-busy");
     };
+    const syncComposeOffset = () => {
+      if (!shell) return;
+      const height = composeVisible && composeForm ? composeForm.getBoundingClientRect().height : 0;
+      shell.style.setProperty("--inline-chat-compose-offset", `${Math.ceil(height + 32)}px`);
+    };
     const revealCompose = () => {
       if (!progressive || composeVisible || !composeForm) return;
       composeVisible = true;
       composeForm.classList.remove("hidden");
       syncComposeState();
+      syncComposeOffset();
     };
     const resizeComposeInput = () => {
       if (!composeInput) return;
       composeInput.style.height = "auto";
       composeInput.style.height = `${composeInput.scrollHeight}px`;
+      syncComposeOffset();
     };
     const clearResponseTimer = () => {
       if (!responseTimer) return;
@@ -342,7 +349,10 @@ const inspectLabelClass =
     const hideLatestButton = () => latestButton?.classList.add("hidden");
     const showLatestButton = () => latestButton?.classList.remove("hidden");
     const scrollToLatest = ({ force = false } = {}) => {
-      const target = (composeVisible && composeForm) || bottomAnchor || activeTurn?.assistantText;
+      const target =
+        activeTurn?.state === "revealing"
+          ? activeTurn?.assistantText
+          : (composeVisible && composeForm) || bottomAnchor || activeTurn?.assistantText;
       if (!target) return;
       if (!force && !userNearBottom) {
         showLatestButton();
@@ -777,6 +787,10 @@ const inspectLabelClass =
         composeForm?.requestSubmit();
       });
     }
+    if (composeForm && "ResizeObserver" in window) {
+      const composeObserver = new ResizeObserver(syncComposeOffset);
+      composeObserver.observe(composeForm);
+    }
     composeForm?.addEventListener("submit", (event) => {
       event.preventDefault();
       const query = composeInput?.value.trim() || "";
@@ -830,7 +844,7 @@ const inspectLabelClass =
   }
 
   .inline-chat-shell__dialog-thread {
-    padding-bottom: 8.5rem;
+    padding-bottom: max(8.5rem, calc(var(--inline-chat-compose-offset, 0px) + 2rem));
   }
 
   .inline-chat-shell__transcript-divider {
@@ -858,7 +872,12 @@ const inspectLabelClass =
   }
 
   .inline-chat-shell__bottom-anchor {
-    height: 6.75rem;
+    height: max(6.75rem, var(--inline-chat-compose-offset, 0px));
+    scroll-margin-bottom: var(--inline-chat-compose-offset, 8.5rem);
+  }
+
+  .inline-chat-shell__message-text {
+    scroll-margin-bottom: var(--inline-chat-compose-offset, 8.5rem);
   }
 
   .inline-chat-shell__ces-bridge--hidden {
