@@ -38,7 +38,7 @@ const inspectLabelClass =
   data-inline-chat-state={mode === "progressive" ? "idle" : "active"}
 >
   <span class={inspectLabelClass} data-component-label>ArticleInlineChatShell</span>
-  <header class="inline-chat-shell__header">
+  <header class="inline-chat-shell__header" data-inline-chat-header>
     <h2 id={headingId} class="inline-chat-shell__title">{title}</h2>
     {intro ? <p class="inline-chat-shell__intro">{intro}</p> : null}
   </header>
@@ -81,7 +81,9 @@ const inspectLabelClass =
         <div class="inline-chat-shell__transcript-divider" data-component="TranscriptDivider" data-inline-chat-transcript-divider>
           <span class={inspectLabelClass} data-component-label>TranscriptDivider</span>
           <span class="inline-chat-shell__transcript-divider-line" aria-hidden="true" />
-          <span class="inline-chat-shell__transcript-divider-label">Dialog med KlarLyd</span>
+          <span
+            class="inline-chat-shell__transcript-divider-label"
+            id={mode === "progressive" ? `${headingId}-dialog-landmark` : undefined}>Dialog med KlarLyd</span>
         </div>
       ) : null
     }
@@ -194,6 +196,16 @@ const inspectLabelClass =
       if (!progressive || !shell) return;
       if (shell.getAttribute("data-inline-chat-conversation") === "active") return;
       shell.setAttribute("data-inline-chat-conversation", "active");
+      const headerEl = shell.querySelector("[data-inline-chat-header]");
+      headerEl?.classList.add("hidden");
+      headerEl?.setAttribute("aria-hidden", "true");
+      const landmarkId = shell.querySelector(".inline-chat-shell__transcript-divider-label")?.id;
+      if (landmarkId) shell.setAttribute("aria-labelledby", landmarkId);
+      const prevDivider = shell.previousElementSibling;
+      if (prevDivider?.hasAttribute?.("data-inline-chat-seed-bridge-divider")) {
+        prevDivider.classList.add("hidden");
+        prevDivider.setAttribute("aria-hidden", "true");
+      }
       seedSuggestions?.classList.add("hidden");
       seedSuggestions?.setAttribute("aria-hidden", "true");
       sourceLine?.classList.add("hidden");
@@ -221,6 +233,8 @@ const inspectLabelClass =
     /** Aktiv modus: liten buffer under siste innhold; ikke Phase A-stor min-reserve. */
     const activeComposeBufferPx = () =>
       window.matchMedia?.("(max-width: 768px)")?.matches ? 18 : 14;
+    /** Ekstra bunnpust under fixed composer (~40–50px totalt med CSS bottom), uten stor document-padding. */
+    const activeFixedComposerFootroomPx = () => 44;
     const measuredComposeHeightPx = () =>
       composeVisible && composeForm ? composeForm.getBoundingClientRect().height : 0;
     const syncBottomReserve = () => {
@@ -245,7 +259,8 @@ const inspectLabelClass =
       }
       const buf = activeComposeBufferPx();
       const inset = stickyComposerBottomInsetPx();
-      const composed = Math.ceil(h + buf + inset);
+      const foot = activeFixedComposerFootroomPx();
+      const composed = Math.ceil(h + buf + inset + foot);
       shell.style.setProperty("--inline-chat-bottom-reserve", `${composed}px`);
     };
     const getVisibleRevealBottom = () => {
@@ -1081,7 +1096,7 @@ const inspectLabelClass =
   }
 
   .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"] .inline-chat-shell__compose:not(.hidden) {
-    bottom: max(0.45rem, env(safe-area-inset-bottom));
+    bottom: max(0.65rem, calc(env(safe-area-inset-bottom, 0px) + 1.35rem));
     box-sizing: border-box;
     left: 50%;
     margin-top: 0;
