@@ -204,19 +204,22 @@ const inspectLabelClass =
       if (pending) composeInput.setAttribute("aria-busy", "true");
       else composeInput.removeAttribute("aria-busy");
     };
+    const revealBreathingGapPx = () =>
+      window.matchMedia?.("(max-width: 768px)")?.matches ? 128 : 96;
     const syncComposeOffset = () => {
       if (!shell) return;
       const height = composeVisible && composeForm ? composeForm.getBoundingClientRect().height : 0;
-      shell.style.setProperty("--inline-chat-compose-offset", `${Math.ceil(height + 32)}px`);
+      const gap = revealBreathingGapPx();
+      shell.style.setProperty("--inline-chat-compose-offset", `${Math.ceil(height + gap)}px`);
     };
     const getComposeOffset = () => {
       const height = composeVisible && composeForm ? composeForm.getBoundingClientRect().height : 0;
-      return Math.ceil(height + 32);
+      return Math.ceil(height + revealBreathingGapPx());
     };
     const getVisibleRevealBottom = () => {
-      if (!composeVisible || !composeForm) return window.innerHeight - 32;
+      if (!composeVisible || !composeForm) return window.innerHeight - revealBreathingGapPx();
       const composeTop = composeForm.getBoundingClientRect().top;
-      return Math.min(window.innerHeight, composeTop) - 32;
+      return composeTop - revealBreathingGapPx();
     };
     const revealCompose = () => {
       if (!progressive || composeVisible || !composeForm) return;
@@ -350,7 +353,7 @@ const inspectLabelClass =
       const revealNext = (index) => {
         if (activeTurn?.id !== turn.id || turn.attemptId !== attemptId || turn.state !== "revealing") return;
         tail.insertAdjacentHTML("beforebegin", blocks[index]);
-        scrollRevealTail(turn);
+        scrollRevealIntoView(turn);
         if (index >= blocks.length - 1) {
           turn.assistantText.removeAttribute("data-inline-chat-revealing");
           tail.remove();
@@ -365,6 +368,11 @@ const inspectLabelClass =
     };
     const hideLatestButton = () => latestButton?.classList.add("hidden");
     const showLatestButton = () => latestButton?.classList.remove("hidden");
+    const getLatestRevealBlock = (turn) => {
+      if (!turn?.revealTail) return turn?.assistantText;
+      const prev = turn.revealTail.previousElementSibling;
+      return prev || turn.assistantText;
+    };
     const keepAboveCompose = (target, { behavior = "auto" } = {}) => {
       if (!target) return;
       const visibleBottom = activeTurn?.state === "revealing" ? getVisibleRevealBottom() : window.innerHeight - getComposeOffset();
@@ -374,15 +382,17 @@ const inspectLabelClass =
       window.scrollBy({ top: Math.ceil(delta), behavior });
       hideLatestButton();
     };
-    const scrollRevealTail = (turn) => {
+    const scrollRevealIntoView = (turn) => {
       if (!turn?.revealShouldFollow || !turn.revealTail) {
         showLatestButton();
         return;
       }
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          if (activeTurn?.id !== turn.id || turn.state !== "revealing" || !turn.revealTail) return;
-          keepAboveCompose(turn.revealTail);
+          requestAnimationFrame(() => {
+            if (activeTurn?.id !== turn.id || turn.state !== "revealing" || !turn.revealTail) return;
+            keepAboveCompose(getLatestRevealBlock(turn));
+          });
         });
       });
     };
@@ -401,7 +411,7 @@ const inspectLabelClass =
       requestAnimationFrame(() => {
         window.setTimeout(() => {
           if (activeTurn?.state === "revealing") {
-            keepAboveCompose(activeTurn.revealTail || target);
+            keepAboveCompose(getLatestRevealBlock(activeTurn) || activeTurn.revealTail || target);
             return;
           }
           target.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -900,7 +910,7 @@ const inspectLabelClass =
   }
 
   .inline-chat-shell__dialog-thread {
-    padding-bottom: max(8.5rem, calc(var(--inline-chat-compose-offset, 0px) + 2rem));
+    padding-bottom: max(8.5rem, calc(var(--inline-chat-compose-offset, 0px) + 3.5rem));
   }
 
   .inline-chat-shell__transcript-divider {
