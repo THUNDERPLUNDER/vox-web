@@ -209,6 +209,17 @@ const inspectLabelClass =
       const height = composeVisible && composeForm ? composeForm.getBoundingClientRect().height : 0;
       shell.style.setProperty("--inline-chat-compose-offset", `${Math.ceil(height + 32)}px`);
     };
+    const getComposeOffset = () => {
+      const height = composeVisible && composeForm ? composeForm.getBoundingClientRect().height : 0;
+      return Math.ceil(height + 32);
+    };
+    const isFollowingLatest = () => {
+      const target = bottomAnchor || activeTurn?.assistantText;
+      if (!target) return userNearBottom;
+      const offset = getComposeOffset();
+      const rect = target.getBoundingClientRect();
+      return userNearBottom || rect.top <= window.innerHeight + offset + 180;
+    };
     const revealCompose = () => {
       if (!progressive || composeVisible || !composeForm) return;
       composeVisible = true;
@@ -331,11 +342,13 @@ const inspectLabelClass =
         return;
       }
       turn.assistantText.setAttribute("data-inline-chat-revealing", "true");
+      turn.revealShouldFollow = isFollowingLatest();
       const delayMs = Math.max(90, Math.min(220, Math.floor(1400 / Math.max(blocks.length, 1))));
       const revealNext = (index) => {
         if (activeTurn?.id !== turn.id || turn.attemptId !== attemptId || turn.state !== "revealing") return;
         turn.assistantText.insertAdjacentHTML("beforeend", blocks[index]);
-        scrollToLatest();
+        const latestBlock = turn.assistantText.lastElementChild || turn.assistantText;
+        scrollToLatest({ target: latestBlock });
         if (index >= blocks.length - 1) {
           turn.assistantText.removeAttribute("data-inline-chat-revealing");
           onComplete?.();
@@ -348,18 +361,34 @@ const inspectLabelClass =
     };
     const hideLatestButton = () => latestButton?.classList.add("hidden");
     const showLatestButton = () => latestButton?.classList.remove("hidden");
-    const scrollToLatest = ({ force = false } = {}) => {
-      const target =
-        activeTurn?.state === "revealing"
-          ? activeTurn?.assistantText
-          : (composeVisible && composeForm) || bottomAnchor || activeTurn?.assistantText;
+    const keepAboveCompose = (target, { behavior = "smooth" } = {}) => {
       if (!target) return;
-      if (!force && !userNearBottom) {
+      const offset = getComposeOffset();
+      const visibleBottom = window.innerHeight - offset;
+      const rect = target.getBoundingClientRect();
+      const delta = rect.bottom - visibleBottom;
+      if (delta <= 0) return;
+      window.scrollBy({ top: Math.ceil(delta), behavior });
+      hideLatestButton();
+    };
+    const scrollToLatest = ({ force = false, target: explicitTarget = null } = {}) => {
+      const target =
+        explicitTarget ||
+        (activeTurn?.state === "revealing"
+          ? activeTurn?.assistantText
+          : (composeVisible && composeForm) || bottomAnchor || activeTurn?.assistantText);
+      if (!target) return;
+      const shouldFollowReveal = activeTurn?.state === "revealing" && activeTurn?.revealShouldFollow;
+      if (!force && !userNearBottom && !shouldFollowReveal) {
         showLatestButton();
         return;
       }
       requestAnimationFrame(() => {
         window.setTimeout(() => {
+          if (activeTurn?.state === "revealing") {
+            keepAboveCompose(target);
+            return;
+          }
           target.scrollIntoView({ behavior: "smooth", block: "end" });
           hideLatestButton();
         }, 40);
@@ -816,6 +845,15 @@ const inspectLabelClass =
       );
       bottomObserver.observe(bottomAnchor);
     }
+    const stopRevealFollow = () => {
+      if (activeTurn?.state === "revealing") activeTurn.revealShouldFollow = false;
+    };
+    window.addEventListener("wheel", stopRevealFollow, { passive: true });
+    window.addEventListener("touchmove", stopRevealFollow, { passive: true });
+    window.addEventListener("keydown", (event) => {
+      if (!["PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown", " "].includes(event.key)) return;
+      stopRevealFollow();
+    });
 
     widget.addEventListener("chat-messenger-response-received", handleBotReply);
     widget.addEventListener("chat-messenger-error-v2", handleBridgeError);
