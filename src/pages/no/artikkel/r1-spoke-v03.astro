@@ -113,13 +113,41 @@ const bridgeQuestions = [
       </aside>
     </div>
   </main>
+  <script is:inline>
+    (() => {
+      const summary = document.querySelector('[data-r1-editorial] [data-component="ArticleSummary"]');
+      if (!summary || summary.querySelector("[data-r1-summary-toggle]")) return;
+      summary.setAttribute("data-r1-mobile-summary", "collapsed");
+      const heading = summary.querySelector("h3");
+      const originalHeading = heading?.textContent || "Kort oppsummert";
+      const mobileQuery = window.matchMedia("(max-width: 1023.98px)");
+      const syncHeading = () => {
+        if (heading) heading.textContent = mobileQuery.matches ? "Kortversjonen" : originalHeading;
+      };
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "r1-mobile-summary-toggle";
+      button.setAttribute("data-r1-summary-toggle", "");
+      button.setAttribute("aria-expanded", "false");
+      button.textContent = "Vis mer";
+      heading?.insertAdjacentElement("afterend", button);
+      syncHeading();
+      mobileQuery.addEventListener?.("change", syncHeading);
+      button.addEventListener("click", () => {
+        const expanded = summary.getAttribute("data-r1-mobile-summary") === "expanded";
+        summary.setAttribute("data-r1-mobile-summary", expanded ? "collapsed" : "expanded");
+        button.setAttribute("aria-expanded", String(!expanded));
+        button.textContent = expanded ? "Vis mer" : "Vis mindre";
+      });
+    })();
+  </script>
   <style is:global>
     [data-r1-editorial] {
       --r1-ai-dialog-measure: min(100%, 46rem);
       --r1-ai-user-measure: min(92%, 32rem);
       --r1-ai-input-radius: 1.15rem;
-      --r1-ai-input-surface: color-mix(in srgb, rgb(var(--surface-elevated)) 92%, rgb(var(--border)) 8%);
-      --r1-ai-input-surface-strong: color-mix(in srgb, rgb(var(--surface-elevated)) 84%, rgb(var(--border)) 16%);
+      --r1-ai-user-surface: #f4f5f7;
+      --r1-ai-seed-hover-surface: rgb(248 250 252 / 0.72);
     }
 
     html[data-inspect-components="true"] [data-r1-editorial] [data-component] {
@@ -227,12 +255,21 @@ const bridgeQuestions = [
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] {
-      margin-top: 1.25rem;
-      border-top: 1px solid rgb(var(--border) / 0.4);
-      padding-top: 1.15rem;
-      padding-bottom: 0;
+      margin-top: 0.55rem;
+      border: 1px solid rgb(var(--border) / 0.42);
+      border-radius: 0 !important;
+      padding: 0.86rem 0.95rem 0.92rem !important;
       background: transparent !important;
       box-shadow: none !important;
+      position: relative;
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] h3 {
+      padding-right: 5.9rem;
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] > p {
+      margin-top: 0.45rem;
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] ul li {
@@ -249,6 +286,40 @@ const bridgeQuestions = [
     [data-r1-editorial] [data-component="ArticleSummary"] h2,
     [data-r1-editorial] [data-component="ArticleSummary"] h3 {
       color: rgb(var(--reading-ink));
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] .r1-mobile-summary-toggle {
+      align-items: center;
+      border: 1px solid rgb(var(--border) / 0.58);
+      color: rgb(var(--reading-ink));
+      display: inline-flex;
+      font-size: 0.72rem;
+      font-weight: 650;
+      justify-content: center;
+      line-height: 1;
+      min-height: 2rem;
+      padding: 0 0.52rem;
+      position: absolute;
+      right: 0.95rem;
+      top: 0.76rem;
+      white-space: nowrap;
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] .r1-mobile-summary-toggle:hover {
+      background: rgb(248 250 252 / 0.72);
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] .r1-mobile-summary-toggle:focus-visible {
+      outline: 2px solid rgb(var(--reading-accent-iris) / 0.34);
+      outline-offset: 2px;
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] > div {
+      display: none;
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"][data-r1-mobile-summary="expanded"] > div {
+      display: block;
     }
 
     [data-r1-editorial] [data-component="ArticleSummary"] ul li + li::before {
@@ -273,7 +344,15 @@ const bridgeQuestions = [
       flex-direction: column;
     }
 
+    [data-r1-editorial] [data-component="ArticleIngress"] {
+      order: 10;
+    }
+
     [data-r1-editorial] [data-component="ArticleSummary"] {
+      order: 11;
+    }
+
+    [data-r1-editorial] [data-component="ArticleBody"] {
       order: 20;
     }
 
@@ -363,7 +442,7 @@ const bridgeQuestions = [
       justify-content: flex-start;
       border: 1px solid rgb(var(--border) / 0.32);
       border-radius: var(--r1-ai-input-radius);
-      background: var(--r1-ai-input-surface);
+      background: transparent;
       padding: 0.7rem 0.84rem;
       cursor: pointer;
       text-align: left;
@@ -373,7 +452,7 @@ const bridgeQuestions = [
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__seed-row:hover {
       border-color: rgb(var(--border) / 0.52);
-      background: var(--r1-ai-input-surface-strong);
+      background: var(--r1-ai-seed-hover-surface);
       box-shadow: 0 12px 28px rgb(15 23 42 / 0.08);
       transform: translateY(-1px);
     }
@@ -408,8 +487,8 @@ const bridgeQuestions = [
       margin-left: auto;
       width: var(--r1-ai-user-measure);
       border-radius: var(--r1-ai-input-radius);
-      background: var(--r1-ai-input-surface-strong);
-      border: 1px solid rgb(var(--border) / 0.3);
+      background: var(--r1-ai-user-surface);
+      border: 0;
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__message--assistant {
@@ -440,8 +519,10 @@ const bridgeQuestions = [
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__compose {
-      background: var(--r1-ai-input-surface);
+      background: rgb(var(--surface));
+      border-color: rgb(var(--border) / 0.42);
       border-radius: var(--r1-ai-input-radius);
+      padding: 1rem;
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__status {
@@ -495,8 +576,23 @@ const bridgeQuestions = [
         grid-row: 5 / span 2;
         margin-top: 0;
         border-top: 1px solid rgb(var(--border) / 0.35);
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 0;
         background: transparent !important;
         padding-top: 1rem;
+      }
+
+      [data-r1-editorial] [data-component="ArticleSummary"] h3 {
+        padding-right: 0;
+      }
+
+      [data-r1-editorial] [data-component="ArticleSummary"] .r1-mobile-summary-toggle {
+        display: none;
+      }
+
+      [data-r1-editorial] [data-component="ArticleSummary"] > div {
+        display: block;
       }
 
       [data-r1-editorial] .r1-ai-bridge {
