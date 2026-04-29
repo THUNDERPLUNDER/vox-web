@@ -1,7 +1,7 @@
 ---
 /* CONTRACT: R1 spoke v0.3 — dialog-artikkel: Article AI under brødtekst, ingen terminal Footer (compose eier bunnen). */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
-import ThemeControl from "../../../components/ThemeControl.astro";
+import InspectToolsDrawer from "../../../components/dev/InspectToolsDrawer.astro";
 import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.astro";
 import ArticleInlineChatShell from "../../../components/article/ArticleInlineChatShell.astro";
 import "../../../styles/article-system.css";
@@ -69,6 +69,17 @@ const bridgeQuestions = [
 ---
 
 <BaseLayout title="KLARLYD - R1 spoke v0.3" currentPath="/no/hubs" shellVariant="article" headerBrand="klarlyd">
+  <script is:inline slot="head">
+    (function () {
+      try {
+        var q = new URLSearchParams(window.location.search);
+        var on = q.get("inspect") === "components" || q.get("devtools") === "true";
+        document.documentElement.setAttribute("data-vox-inspect-drawer-active", on ? "true" : "false");
+      } catch (e) {
+        document.documentElement.setAttribute("data-vox-inspect-drawer-active", "false");
+      }
+    })();
+  </script>
   <meta slot="head" name="robots" content="noindex,follow" />
   <main class="bg-[rgb(var(--article-page-canvas))] py-2 sm:py-3" data-article-system data-r1-editorial>
     <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
@@ -113,11 +124,8 @@ const bridgeQuestions = [
         </ul>
       </aside>
     </div>
-    <!-- Dialog-artikkel: ingen terminal Footer; ThemeControl kun for boot (URL-inspect + tema) — visuelt skjult. -->
-    <div class="r1-dialog-article-theme-boot" aria-hidden="true">
-      <ThemeControl compact />
-    </div>
   </main>
+  <InspectToolsDrawer />
   <script is:inline>
     (() => {
       const summary = document.querySelector('[data-r1-editorial] [data-component="ArticleSummary"]');
@@ -166,19 +174,6 @@ const bridgeQuestions = [
     })();
   </script>
   <style is:global>
-    [data-r1-editorial] .r1-dialog-article-theme-boot {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-      pointer-events: none;
-    }
-
     [data-r1-editorial] {
       position: relative;
       --r1-ai-dialog-measure: min(100%, 46rem);
@@ -683,5 +678,5 @@ const bridgeQuestions = [
       }
     }
   </style>
-  <!-- Dialog-artikkel (#79): ingen terminal Footer — compose/dialog eier bunnen; juridisk/praktisk innhold → app-shell senere. -->
+  <!-- #79 dialog-artikkel: ingen terminal Footer. #81: ?inspect=components | ?devtools=true → floating inspect-drawer (ikke sluttbrukerflate). -->
 </BaseLayout>

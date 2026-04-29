@@ -1,0 +1,225 @@
+---
+/**
+ * CONTRACT: Internal inspect/dev overlay (#81). Not product navigation.
+ * Fixed layers only — no document flow impact.
+ * Visibility gated by `html[data-vox-inspect-drawer-active="true"]` (set early on r1-spoke-v03).
+ */
+import ThemeControl from "../ThemeControl.astro";
+import ThemeInspectBootScript from "../ThemeInspectBootScript.astro";
+---
+
+<>
+  <div class="vox-inspect-drawer-root" data-vox-inspect-drawer-root>
+    <button
+      type="button"
+      class="vox-inspect-drawer__tab"
+      id="vox-inspect-drawer-tab"
+      aria-expanded="false"
+      aria-controls="vox-inspect-drawer-panel"
+      aria-label="Åpne inspect-verktøy (intern)"
+    >
+      <span class="vox-inspect-drawer__tab-inner" aria-hidden="true">
+        dev
+      </span>
+    </button>
+    <div
+      class="vox-inspect-drawer__backdrop"
+      id="vox-inspect-drawer-backdrop"
+      hidden
+      aria-hidden="true"
+    />
+    <div
+      class="vox-inspect-drawer__panel"
+      id="vox-inspect-drawer-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="vox-inspect-drawer-title"
+      data-vox-inspect-drawer
+    >
+      <div class="vox-inspect-drawer__head">
+        <span class="vox-inspect-drawer__title" id="vox-inspect-drawer-title">
+          Inspect
+        </span>
+        <button type="button" class="vox-inspect-drawer__close" id="vox-inspect-drawer-close" aria-label="Lukk">
+          ×
+        </button>
+      </div>
+      <p class="vox-inspect-drawer__hint">Internt lag — ikke sluttbrukerflate.</p>
+      <ThemeControl compact omitScript />
+    </div>
+  </div>
+  <ThemeInspectBootScript />
+  <script is:inline>
+    (function () {
+      function init() {
+        var root = document.querySelector("[data-vox-inspect-drawer-root]");
+        var tab = document.getElementById("vox-inspect-drawer-tab");
+        var panel = document.getElementById("vox-inspect-drawer-panel");
+        var backdrop = document.getElementById("vox-inspect-drawer-backdrop");
+        var closeBtn = document.getElementById("vox-inspect-drawer-close");
+        if (!root || !tab || !panel) return;
+        function isOpen() {
+          return root.getAttribute("data-vox-inspect-drawer-open") === "true";
+        }
+        function open() {
+          root.setAttribute("data-vox-inspect-drawer-open", "true");
+          tab.setAttribute("aria-expanded", "true");
+          panel.classList.add("vox-inspect-drawer__panel--open");
+          if (backdrop) backdrop.hidden = false;
+        }
+        function close() {
+          root.setAttribute("data-vox-inspect-drawer-open", "false");
+          tab.setAttribute("aria-expanded", "false");
+          panel.classList.remove("vox-inspect-drawer__panel--open");
+          if (backdrop) backdrop.hidden = true;
+        }
+        close();
+        tab.addEventListener("click", function () {
+          if (isOpen()) close();
+          else open();
+        });
+        if (closeBtn) closeBtn.addEventListener("click", close);
+        if (backdrop)
+          backdrop.addEventListener("click", function () {
+            close();
+          });
+      }
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+      else init();
+    })();
+  </script>
+  <style is:global>
+    html:not([data-vox-inspect-drawer-active="true"]) [data-vox-inspect-drawer-root] {
+      display: none !important;
+    }
+
+    .vox-inspect-drawer-root {
+      /* above header (z-40) and compose; internal only */
+      --vox-inspect-drawer-z-tab: 110;
+      --vox-inspect-drawer-z-backdrop: 108;
+      --vox-inspect-drawer-z-panel: 109;
+    }
+
+    .vox-inspect-drawer__tab {
+      position: fixed;
+      top: 50%;
+      right: max(0px, env(safe-area-inset-right, 0px));
+      z-index: var(--vox-inspect-drawer-z-tab);
+      transform: translateY(-50%);
+      padding: 0;
+      margin: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .vox-inspect-drawer__tab-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 4.25rem;
+      padding: 0.35rem 0.28rem 0.35rem 0.42rem;
+      border-radius: 0.5rem 0 0 0.5rem;
+      border: 1px solid rgb(var(--border) / 0.45);
+      border-right: 0;
+      background: rgb(var(--surface-elevated) / 0.55);
+      backdrop-filter: blur(10px);
+      color: rgb(var(--muted));
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      box-shadow: -4px 0 18px rgb(15 23 42 / 0.08);
+    }
+
+    .vox-inspect-drawer__tab:hover .vox-inspect-drawer__tab-inner {
+      background: rgb(var(--surface-elevated) / 0.72);
+      color: rgb(var(--text-secondary));
+    }
+
+    .vox-inspect-drawer__backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: var(--vox-inspect-drawer-z-backdrop);
+      background: rgb(15 23 42 / 0.12);
+      backdrop-filter: blur(2px);
+    }
+
+    .vox-inspect-drawer__panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: var(--vox-inspect-drawer-z-panel);
+      height: 100%;
+      height: 100dvh;
+      width: min(17.5rem, 88vw);
+      max-width: 100%;
+      padding-right: max(0px, env(safe-area-inset-right, 0px));
+      transform: translateX(100%);
+      transition: transform 180ms ease;
+      border-left: 1px solid rgb(var(--border) / 0.42);
+      background: rgb(var(--surface-elevated) / 0.92);
+      backdrop-filter: blur(14px);
+      box-shadow: -12px 0 40px rgb(15 23 42 / 0.14);
+      display: flex;
+      flex-direction: column;
+      padding: 0.85rem 1rem 1.25rem;
+      gap: 0.75rem;
+      overflow-y: auto;
+      pointer-events: auto;
+    }
+
+    .vox-inspect-drawer__panel.vox-inspect-drawer__panel--open {
+      transform: translateX(0);
+    }
+
+    .vox-inspect-drawer__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .vox-inspect-drawer__title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .vox-inspect-drawer__close {
+      border: 0;
+      background: transparent;
+      color: rgb(var(--text-secondary));
+      font-size: 1.35rem;
+      line-height: 1;
+      padding: 0.15rem 0.35rem;
+      cursor: pointer;
+      border-radius: 0.35rem;
+    }
+
+    .vox-inspect-drawer__close:hover {
+      background: rgb(var(--surface) / 0.6);
+      color: rgb(var(--text));
+    }
+
+    .vox-inspect-drawer__hint {
+      margin: 0;
+      font-size: 0.65rem;
+      line-height: 1.35;
+      color: rgb(var(--muted));
+    }
+
+    [data-vox-inspect-drawer] .theme-control {
+      margin-top: 0;
+    }
+
+    [data-vox-inspect-drawer] .theme-control--compact .theme-control__btn {
+      font-size: 0.7rem;
+    }
+  </style>
+</>
