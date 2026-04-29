@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: R1 spoke v0.3 — dialog-artikkel: Article AI under brødtekst, ingen terminal Footer (compose eier bunnen). */
+/* CONTRACT: R1 spoke v0.3 — dialog-artikkel (én kolonne #82), Article AI, ingen terminal Footer. */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import InspectToolsDrawer from "../../../components/dev/InspectToolsDrawer.astro";
 import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.astro";
@@ -424,15 +424,15 @@ const bridgeQuestions = [
     }
 
     [data-r1-editorial] [data-component="ArticleIngress"] {
-      order: 10;
-    }
-
-    [data-r1-editorial] [data-component="ArticleSummary"] {
-      order: 11;
+      order: 12;
     }
 
     [data-r1-editorial] [data-component="ArticleBody"] {
-      order: 20;
+      order: 15;
+    }
+
+    [data-r1-editorial] [data-component="ArticleSummary"] {
+      order: 25;
     }
 
     [data-r1-editorial] .r1-ai-bridge {
@@ -440,7 +440,7 @@ const bridgeQuestions = [
       padding-top: 0.35rem;
       margin-top: 0.55rem;
       margin-bottom: 4.25rem;
-      order: 30;
+      order: 35;
     }
 
     [data-r1-editorial] .r1-ai-bridge .inline-chat-shell {
@@ -645,31 +645,19 @@ const bridgeQuestions = [
     }
 
     @media (min-width: 1024px) {
+      /* #82: én kolonne — ingen persistent høyrekolonne; samme vertikale flyt som mobil */
       [data-r1-editorial] [data-component="ArticleTemplate"] {
-        max-width: min(100%, 72rem);
+        max-width: min(100%, 46rem);
       }
 
       [data-r1-editorial] [data-component="ArticleContent"] {
-        display: grid;
-        grid-template-columns: minmax(0, 46rem) minmax(14rem, 18rem);
-        column-gap: 3rem;
-        align-items: start;
-      }
-
-      [data-r1-editorial] [data-component="ArticleContent"] > * {
-        grid-column: 1;
+        display: flex;
+        flex-direction: column;
       }
 
       [data-r1-editorial] [data-component="ArticleSummary"] {
-        grid-column: 2;
-        grid-row: 5 / span 2;
-        margin-top: 0;
-        border-top: 1px solid rgb(var(--border) / 0.35);
-        border-left: 0;
-        border-right: 0;
-        border-bottom: 0;
-        background: transparent !important;
-        padding-top: 1rem;
+        margin-top: 1.35rem;
+        padding-top: 1.1rem !important;
       }
 
       [data-r1-editorial] [data-component="ArticleSummary"] h3 {
@@ -685,7 +673,7 @@ const bridgeQuestions = [
       }
 
       [data-r1-editorial] .r1-ai-bridge {
-        grid-column: 1;
+        margin-top: 1.15rem;
       }
     }
   </style>
