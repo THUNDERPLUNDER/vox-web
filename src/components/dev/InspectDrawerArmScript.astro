@@ -1,0 +1,19 @@
+---
+/* CONTRACT: Early boot for InspectToolsDrawer (#76). Same as r1-spoke-v03: ?inspect=components | ?devtools=true or sessionStorage vox-devtools-armed. */
+---
+<script is:inline slot="head">
+  (function () {
+    try {
+      var q = new URLSearchParams(window.location.search);
+      var qOn = q.get("inspect") === "components" || q.get("devtools") === "true";
+      var armed = null;
+      try {
+        armed = sessionStorage.getItem("vox-devtools-armed");
+      } catch (e) {}
+      var on = qOn || armed === "1";
+      document.documentElement.setAttribute("data-vox-inspect-drawer-active", on ? "true" : "false");
+    } catch (e) {
+      document.documentElement.setAttribute("data-vox-inspect-drawer-active", "false");
+    }
+  })();
+</script>

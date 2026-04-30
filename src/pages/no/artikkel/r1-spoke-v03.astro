@@ -1,6 +1,7 @@
 ---
 /* CONTRACT: R1 spoke v0.3 — dialog-artikkel (én kolonne #82), handlingsbro som artikkelavslutning, divider over Article AI, ingen terminal Footer. */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import InspectDrawerArmScript from "../../../components/dev/InspectDrawerArmScript.astro";
 import InspectToolsDrawer from "../../../components/dev/InspectToolsDrawer.astro";
 import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.astro";
 import ArticleInlineChatShell from "../../../components/article/ArticleInlineChatShell.astro";
@@ -76,22 +77,7 @@ const bridgeQuestions = [
   headerBrand="klarlyd"
   showHeaderDevtoolsToggle
 >
-  <script is:inline slot="head">
-    (function () {
-      try {
-        var q = new URLSearchParams(window.location.search);
-        var qOn = q.get("inspect") === "components" || q.get("devtools") === "true";
-        var armed = null;
-        try {
-          armed = sessionStorage.getItem("vox-devtools-armed");
-        } catch (e) {}
-        var on = qOn || armed === "1";
-        document.documentElement.setAttribute("data-vox-inspect-drawer-active", on ? "true" : "false");
-      } catch (e) {
-        document.documentElement.setAttribute("data-vox-inspect-drawer-active", "false");
-      }
-    })();
-  </script>
+  <InspectDrawerArmScript />
   <meta slot="head" name="robots" content="noindex,follow" />
   <main class="bg-[rgb(var(--article-page-canvas))] py-2 sm:py-3" data-article-system data-r1-editorial>
     <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>

@@ -1,6 +1,8 @@
 ---
 /* CONTRACT: Article Master v1.2 — light-first editorial reading; calm rails; curated AI prompts. */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import InspectDrawerArmScript from "../../../components/dev/InspectDrawerArmScript.astro";
+import InspectToolsDrawer from "../../../components/dev/InspectToolsDrawer.astro";
 import Section from "../../../components/layout/Section.astro";
 import Footer from "../../../components/nav/Footer.astro";
 import { buildChatShellHref } from "../../../lib/chat-shell";
@@ -63,6 +65,7 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
 ---
 
 <BaseLayout title={`VOX - ${article.title}`} currentPath="/no/hubs" shellVariant="article">
+  <InspectDrawerArmScript />
   <meta slot="head" name="robots" content="noindex,follow" />
 
   <main class="bg-[rgb(var(--article-page-canvas))] py-8 sm:py-10">
@@ -290,5 +293,6 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
     </Section>
   </main>
 
-  <Footer variant="article" />
+  <InspectToolsDrawer />
+  <Footer variant="article" withInspectDrawer />
 </BaseLayout>

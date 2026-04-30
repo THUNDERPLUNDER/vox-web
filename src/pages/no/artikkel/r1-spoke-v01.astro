@@ -1,6 +1,8 @@
 ---
 /* CONTRACT: First real R1 spoke wired into ArticleTemplateV01 for product QA in v0.1. */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import InspectDrawerArmScript from "../../../components/dev/InspectDrawerArmScript.astro";
+import InspectToolsDrawer from "../../../components/dev/InspectToolsDrawer.astro";
 import Footer from "../../../components/nav/Footer.astro";
 import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.astro";
 import PromptGroup from "../../../components/article/PromptGroup.astro";
@@ -68,6 +70,7 @@ const bridgeQuestions = [
 ---
 
 <BaseLayout title="VOX - R1 spoke v0.1" currentPath="/no/hubs" shellVariant="article">
+  <InspectDrawerArmScript />
   <meta slot="head" name="robots" content="noindex,follow" />
   <main class="bg-[rgb(var(--article-page-canvas))] py-2 sm:py-3" data-article-system data-r1-editorial>
     <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
@@ -263,5 +266,6 @@ const bridgeQuestions = [
     }
 
   </style>
-  <Footer variant="article" />
+  <InspectToolsDrawer />
+  <Footer variant="article" withInspectDrawer />
 </BaseLayout>

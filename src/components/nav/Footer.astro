@@ -4,7 +4,11 @@ import ThemeControl from "../ThemeControl.astro";
 
 type FooterVariant = "default" | "article" | "sandbox-tall";
 
-const { variant = "default" } = Astro.props as { variant?: FooterVariant };
+const { variant = "default", withInspectDrawer = false } = Astro.props as {
+  variant?: FooterVariant;
+  /** When true, ThemeInspectBootScript lives with InspectToolsDrawer — avoids double boot. */
+  withInspectDrawer?: boolean;
+};
 const isArticle = variant === "article";
 const isSandboxTall = variant === "sandbox-tall";
 ---
@@ -48,6 +52,10 @@ const isSandboxTall = variant === "sandbox-tall";
     ) : null
   }
   <div class:list={[isSandboxTall ? "mt-14" : isArticle ? "mt-3" : "mt-5"]}>
-    <ThemeControl compact={isArticle && !isSandboxTall} includeInspectToggles={isArticle && !isSandboxTall} />
+    <ThemeControl
+      compact={isArticle && !isSandboxTall}
+      includeInspectToggles={false}
+      omitScript={withInspectDrawer}
+    />
   </div>
 </footer>

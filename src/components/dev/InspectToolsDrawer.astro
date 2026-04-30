@@ -1,8 +1,8 @@
 ---
 /**
- * CONTRACT: Internal inspect/dev overlay (#81). Not product navigation.
- * Fixed layers only — no document flow impact.
- * Visibility gated by `html[data-vox-inspect-drawer-active="true"]` (set early on r1-spoke-v03).
+ * CONTRACT: Internal inspect/dev overlay (#76). Not product navigation.
+ * Fixed layers only — no document flow impact when inactive.
+ * Mounted on article/sandbox inspect routes; visibility via `html[data-vox-inspect-drawer-active]`.
  */
 import ThemeControl from "../ThemeControl.astro";
 import ThemeInspectBootScript from "../ThemeInspectBootScript.astro";

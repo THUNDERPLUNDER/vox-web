@@ -1,6 +1,8 @@
 ---
 /* CONTRACT: First real R3 spoke wired into ArticleTemplateV01 using Faglig Fokus preset for pilot QA. */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import InspectDrawerArmScript from "../../../components/dev/InspectDrawerArmScript.astro";
+import InspectToolsDrawer from "../../../components/dev/InspectToolsDrawer.astro";
 import Footer from "../../../components/nav/Footer.astro";
 import ArticleTemplateV01 from "../../../components/article/ArticleTemplateV01.astro";
 import "../../../styles/article-system.css";
@@ -48,6 +50,7 @@ const r3Article = {
 ---
 
 <BaseLayout title="VOX - R3 spoke v0.1" currentPath="/no/hubs" shellVariant="article">
+  <InspectDrawerArmScript />
   <meta slot="head" name="robots" content="noindex,follow" />
   <main class="bg-[rgb(var(--article-page-canvas))] py-8 sm:py-10" data-article-system>
     <div class="px-4 sm:px-6">
@@ -62,5 +65,6 @@ const r3Article = {
       <ArticleTemplateV01 {...r3Article} />
     </div>
   </main>
-  <Footer variant="article" />
+  <InspectToolsDrawer />
+  <Footer variant="article" withInspectDrawer />
 </BaseLayout>
