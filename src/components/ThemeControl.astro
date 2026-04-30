@@ -2,10 +2,16 @@
 ---
 import ThemeInspectBootScript from "./ThemeInspectBootScript.astro";
 
-const { compact = false, omitScript = false } = Astro.props as {
+const {
+  compact = false,
+  omitScript = false,
+  /** Inspect/testinfo toggles: keep in inspect drawer (#76); article footers may still host them until drawer is universal. */
+  includeInspectToggles = true,
+} = Astro.props as {
   compact?: boolean;
   /** When true, markup only — pair with ThemeInspectBootScript once per page. */
   omitScript?: boolean;
+  includeInspectToggles?: boolean;
 };
 ---
 
@@ -30,24 +36,30 @@ const { compact = false, omitScript = false } = Astro.props as {
     <button type="button" class="theme-control__btn" data-theme-choice="dark" aria-pressed="false">
       Mørk
     </button>
-    <button
-      type="button"
-      class="theme-control__btn"
-      data-inspect-toggle="components"
-      aria-pressed="false"
-      hidden
-    >
-      Komponenter
-    </button>
-    <button
-      type="button"
-      class="theme-control__btn"
-      data-inspect-toggle="testinfo"
-      aria-pressed="false"
-      hidden
-    >
-      Testinfo
-    </button>
+    {
+      includeInspectToggles ? (
+        <>
+          <button
+            type="button"
+            class="theme-control__btn"
+            data-inspect-toggle="components"
+            aria-pressed="false"
+            hidden
+          >
+            Komponenter
+          </button>
+          <button
+            type="button"
+            class="theme-control__btn"
+            data-inspect-toggle="testinfo"
+            aria-pressed="false"
+            hidden
+          >
+            Testinfo
+          </button>
+        </>
+      ) : null
+    }
   </div>
 </div>
 

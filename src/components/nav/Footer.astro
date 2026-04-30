@@ -1,4 +1,4 @@
-<!-- CONTRACT: Global footer with utility links; separation via spacing only. -->
+<!-- CONTRACT: Global footer — utility nav + editorial line + theme (inspect toggles only on article variant until #76). -->
 ---
 import ThemeControl from "../ThemeControl.astro";
 
@@ -38,7 +38,7 @@ const isSandboxTall = variant === "sandbox-tall";
       !isArticle && !isSandboxTall && "mt-4 text-xs",
     ]}
   >
-    KlarLyd-redaksjonen · Hørehjelpen er i beta og oppdateres fortløpende.
+    Innhold fra KlarLyd-redaksjonen. Hørehjelpen er i tidlig utgave og utvikles fortløpende.
   </p>
   {
     isSandboxTall ? (
@@ -48,6 +48,6 @@ const isSandboxTall = variant === "sandbox-tall";
     ) : null
   }
   <div class:list={[isSandboxTall ? "mt-14" : isArticle ? "mt-3" : "mt-5"]}>
-    <ThemeControl compact={isArticle && !isSandboxTall} />
+    <ThemeControl compact={isArticle && !isSandboxTall} includeInspectToggles={isArticle && !isSandboxTall} />
   </div>
 </footer>
