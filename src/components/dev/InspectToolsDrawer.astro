@@ -136,6 +136,16 @@ import ThemeInspectBootScript from "../ThemeInspectBootScript.astro";
       box-shadow: -4px 0 18px rgb(15 23 42 / 0.08);
     }
 
+    html[data-theme="dark"] .vox-inspect-drawer__tab-inner {
+      box-shadow: -4px 0 22px rgb(0 0 0 / 0.45);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html[data-theme="system"] .vox-inspect-drawer__tab-inner {
+        box-shadow: -4px 0 22px rgb(0 0 0 / 0.45);
+      }
+    }
+
     .vox-inspect-drawer__tab:hover .vox-inspect-drawer__tab-inner {
       background: rgb(var(--surface-elevated) / 0.72);
       color: rgb(var(--text-secondary));
@@ -147,6 +157,16 @@ import ThemeInspectBootScript from "../ThemeInspectBootScript.astro";
       z-index: var(--vox-inspect-drawer-z-backdrop);
       background: rgb(15 23 42 / 0.12);
       backdrop-filter: blur(2px);
+    }
+
+    html[data-theme="dark"] .vox-inspect-drawer__backdrop {
+      background: rgb(0 0 0 / 0.48);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html[data-theme="system"] .vox-inspect-drawer__backdrop {
+        background: rgb(0 0 0 / 0.48);
+      }
     }
 
     .vox-inspect-drawer__panel {
@@ -171,6 +191,16 @@ import ThemeInspectBootScript from "../ThemeInspectBootScript.astro";
       gap: 0.75rem;
       overflow-y: auto;
       pointer-events: auto;
+    }
+
+    html[data-theme="dark"] .vox-inspect-drawer__panel {
+      box-shadow: -12px 0 48px rgb(0 0 0 / 0.55);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html[data-theme="system"] .vox-inspect-drawer__panel {
+        box-shadow: -12px 0 48px rgb(0 0 0 / 0.55);
+      }
     }
 
     .vox-inspect-drawer__panel.vox-inspect-drawer__panel--open {

@@ -169,8 +169,21 @@ const bridgeQuestions = [
       --r1-ai-dialog-measure: min(100%, 46rem);
       --r1-ai-user-measure: min(92%, 32rem);
       --r1-ai-input-radius: 1.15rem;
-      --r1-ai-user-surface: #f4f5f7;
+      /* Light defaults; dark/system-dark override below (audit #83). */
+      --r1-ai-user-surface: rgb(244 245 247);
       --r1-ai-seed-hover-surface: rgb(248 250 252 / 0.72);
+    }
+
+    html[data-theme="dark"] [data-r1-editorial] {
+      --r1-ai-user-surface: rgb(var(--surface-elevated));
+      --r1-ai-seed-hover-surface: rgb(var(--surface-subtle) / 0.92);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html[data-theme="system"] [data-r1-editorial] {
+        --r1-ai-user-surface: rgb(var(--surface-elevated));
+        --r1-ai-seed-hover-surface: rgb(var(--surface-subtle) / 0.92);
+      }
     }
 
     html[data-inspect-components="true"] [data-r1-editorial] [data-component] {
@@ -227,7 +240,7 @@ const bridgeQuestions = [
     }
 
     [data-r1-editorial] [data-component="ArticleContent"] {
-      background: #fff;
+      background: rgb(var(--reading-paper));
       border-radius: 0;
     }
 
