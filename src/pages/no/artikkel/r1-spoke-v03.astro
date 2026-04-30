@@ -83,7 +83,8 @@ const bridgeQuestions = [
     <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
       R1PageMain
     </span>
-    <div class="px-4 sm:px-6">
+    <!-- cqw: cap fixed Article AI chrome to real column — 100vw ignored shell padding (#83 QA). -->
+    <div class="r1-editorial-container px-4 sm:px-6">
       <section class="r1-orientation mx-auto mb-7 max-w-[min(100%,46rem)] px-0.5 py-1">
         <span class="article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950" data-component-label>
           OrientationBlock
@@ -164,6 +165,11 @@ const bridgeQuestions = [
     })();
   </script>
   <style is:global>
+    .r1-editorial-container {
+      container-type: inline-size;
+      container-name: r1-editorial;
+    }
+
     [data-r1-editorial] {
       position: relative;
       --r1-ai-dialog-measure: min(100%, 46rem);
@@ -616,6 +622,15 @@ const bridgeQuestions = [
       border-radius: var(--r1-ai-input-radius);
       max-width: var(--r1-ai-dialog-measure);
       padding: 1rem;
+    }
+
+    /* Fixed compose was min(..., 100vw-1.5rem) → wider than padded column; dark canvas showed past reading-paper. */
+    [data-r1-editorial]
+      .r1-ai-bridge
+      .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"]
+      .inline-chat-shell__compose-stack {
+      width: min(46rem, 100cqw) !important;
+      max-width: min(46rem, 100cqw) !important;
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__status {
