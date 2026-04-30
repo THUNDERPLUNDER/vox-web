@@ -95,9 +95,7 @@ const inspectLabelClass =
           <div class="inline-chat-shell__bottom-anchor" data-inline-chat-bottom aria-hidden="true" />
         </div>
         <div class="inline-chat-shell__compose-stack mt-3" data-inline-chat-compose-stack>
-          <p class="inline-chat-shell__status inline-chat-shell__status--dock" data-inline-chat-status aria-live="polite">
-            Vi bruker chatmotoren i bakgrunnen.
-          </p>
+          <p class="inline-chat-shell__status inline-chat-shell__status--dock" data-inline-chat-status aria-live="polite"></p>
           <form class="inline-chat-shell__compose" data-component="Compose" data-inline-chat-compose>
             <span class={inspectLabelClass} data-component-label>Compose</span>
             <label class="sr-only" for="article-inline-chat-compose">Spør videre om dette</label>
@@ -119,9 +117,7 @@ const inspectLabelClass =
         <div class="inline-chat-shell__transcript" data-component="Transcript" data-inline-chat-transcript>
           <span class={inspectLabelClass} data-component-label>Transcript</span>
         </div>
-        <p class="inline-chat-shell__status" data-inline-chat-status aria-live="polite">
-          Vi bruker chatmotoren i bakgrunnen.
-        </p>
+        <p class="inline-chat-shell__status" data-inline-chat-status aria-live="polite"></p>
         <button type="button" class="inline-chat-shell__latest hidden" data-inline-chat-latest>
           Til siste svar
         </button>
@@ -213,8 +209,21 @@ const inspectLabelClass =
       if (!shell) return;
       shell.setAttribute("data-inline-chat-state", next);
     };
+    const setDockPending = (active) => {
+      if (!statusText) return;
+      if (active) {
+        statusText.innerHTML =
+          '<span class="sr-only">Venter på svar</span><span class="inline-chat-shell__dock-dots" aria-hidden="true"><span></span><span></span><span></span></span>';
+        statusText.setAttribute("data-inline-chat-dock-pending", "true");
+        return;
+      }
+      statusText.removeAttribute("data-inline-chat-dock-pending");
+      statusText.textContent = "";
+    };
     const setStatus = (text) => {
-      if (statusText) statusText.textContent = text;
+      if (!statusText) return;
+      statusText.removeAttribute("data-inline-chat-dock-pending");
+      statusText.textContent = String(text || "").trim();
     };
     const isTurnBusy = (turn = activeTurn) => turn?.state === "pending" || turn?.state === "revealing";
     const setSeedsBusy = (busy) => {
@@ -542,11 +551,16 @@ const inspectLabelClass =
       params.set("from", "article-r1");
       return `/no/chat?${params.toString()}`;
     };
-    const renderPending = (turn, label = "Henter svaret ...", detail = "") => {
+    const renderPending = (turn, label = "", detail = "") => {
       if (!turn?.assistantText) return;
+      const lab = String(label || "").trim();
+      const dotsOnly = !lab;
+      const labelBlock = lab
+        ? `<span class="inline-chat-shell__typing-label">${escapeHtml(lab)}</span>`
+        : `<span class="sr-only">Venter på svar</span>`;
       turn.assistantText.innerHTML = `
-        <span class="inline-chat-shell__typing" aria-live="polite">
-          <span>${escapeHtml(label)}</span>
+        <span class="inline-chat-shell__typing${dotsOnly ? " inline-chat-shell__typing--dots-only" : ""}" aria-live="polite">
+          ${labelBlock}
           <span class="inline-chat-shell__typing-dots" aria-hidden="true">
             <span></span><span></span><span></span>
           </span>
@@ -661,9 +675,9 @@ const inspectLabelClass =
       const attemptId = turn.attemptId;
       slowTimer = setTimeout(() => {
         if (!isCurrentAttempt(turn, attemptId)) return;
-        renderPending(turn, "Henter fortsatt svaret ...");
+        renderPending(turn);
         renderTurnActions(turn);
-        setStatus("Dette tar litt lengre tid enn vanlig ...");
+        setStatus("Vent litt lenger …");
       }, slowStatusDelayMs);
     };
     const scheduleSilentAutoRetry = (turn) => {
@@ -679,23 +693,19 @@ const inspectLabelClass =
         const elapsed = Date.now() - retryScheduledAt;
         if (elapsed < countdownStartDelayMs) return;
         const remainingSeconds = Math.max(1, Math.ceil((autoRetryDelayMs - elapsed) / 1000));
-        renderPending(
-          turn,
-          "Dette tar litt lengre tid enn vanlig ...",
-          `Prøver igjen automatisk om ${remainingSeconds} sekunder ...`
-        );
+        renderPending(turn, "", `Nytt forsøk om ${remainingSeconds} s`);
       }, 1000);
       autoRetryTimer = setTimeout(() => {
         autoRetryTimer = null;
         if (!isCurrentAttempt(turn, attemptId) || turn.autoRetryUsed) return;
         turn.autoRetryUsed = true;
         clearCountdownTimer();
-        renderPending(turn, "Prøver igjen nå ...");
-        setStatus("Prøver igjen nå ...");
+        renderPending(turn);
+        setDockPending(true);
         pushToWidget(turn.query, turn);
         window.setTimeout(() => {
           if (!isCurrentAttempt(turn, attemptId)) return;
-          renderPending(turn, "Henter fortsatt svaret ...");
+          renderPending(turn);
         }, 1400);
       }, autoRetryDelayMs);
     };
@@ -756,7 +766,7 @@ const inspectLabelClass =
       setSeedsBusy(false);
       setState("answered");
       syncComposeState();
-      setStatus("KlarLyd svarer ...");
+      setStatus("");
       revealFormattedText(turn, text, () => {
         if (activeTurn?.id !== turn.id || turn.state !== "revealing") return;
         finishActiveTurn("answered");
@@ -793,7 +803,7 @@ const inspectLabelClass =
       retryTimer = setTimeout(() => {
         retryTimer = null;
         if (!isCurrentAttempt(turn, attemptId)) return;
-        setStatus("Vi prøver én gang til i bakgrunnen ...");
+        setDockPending(true);
         pushToWidget(turn.query, turn);
       }, retryDelayMs);
     };
@@ -804,13 +814,13 @@ const inspectLabelClass =
       const status = String(detail.status ?? detail?.error?.status ?? "");
       const message = String(detail.message || detail?.error?.message || "");
       if (status === "429" || /fetch error/i.test(message)) {
-        renderPending(activeTurn, "Henter fortsatt svaret ...");
+        renderPending(activeTurn);
         renderTurnActions(activeTurn);
-        setStatus("Dette tar litt lengre tid enn vanlig ...");
+        setStatus("Vent litt. Vi prøver igjen …");
         scheduleTransientRetry(activeTurn);
         return;
       }
-      setStatus("Dette tar litt lengre tid enn vanlig ...");
+      setStatus("Noe nølte. Vent litt, eller prøv igjen.");
     };
 
     const markBridgeReady = () => {
@@ -851,8 +861,8 @@ const inspectLabelClass =
       if (options.isManualRetry) turn.manualRetryCount = (turn.manualRetryCount || 0) + 1;
       setSeedsBusy(true);
       syncComposeState();
-      renderPending(turn, options.isManualRetry ? "Prøver igjen ..." : "Henter svaret ...");
-      setStatus(bridgeReady ? "Sendt til KlarLyd. Venter på svar ..." : "Kobler til KlarLyd ...");
+      renderPending(turn);
+      setDockPending(true);
       setState("started");
       scrollToLatest({ force: true });
       if (pushToWidget(query, turn)) {
@@ -869,7 +879,7 @@ const inspectLabelClass =
         const pushed = pushToWidget(query, turn);
         if (pushed || tries > 20) {
           if (pushed) {
-            setStatus("Sendt til KlarLyd. Venter på svar ...");
+            setDockPending(true);
             scheduleSilentAutoRetry(turn);
             scheduleManualControls(turn);
             startSlowTimer(turn);
@@ -896,8 +906,8 @@ const inspectLabelClass =
       clearTurnTimers();
       setSeedsBusy(true);
       syncComposeState();
-      renderPending(turn, "Prøver igjen ...");
-      setStatus("Prøver igjen med samme spørsmål ...");
+      renderPending(turn);
+      setDockPending(true);
       setState("active");
       scrollToLatest({ force: true });
       if (pushToWidget(turn.query, turn)) {
@@ -925,7 +935,7 @@ const inspectLabelClass =
       );
       turn.manualRetryInFlight = false;
       syncComposeState();
-      setStatus("Avbrutt lokalt. Eventuelle sene svar fra chatmotoren ignoreres her.");
+      setStatus("Avbrutt. Svar som kommer senere, vises ikke her.");
       scrollToLatest();
     };
 
@@ -943,7 +953,7 @@ const inspectLabelClass =
           startTurn(seed);
           return;
         }
-        if (pushToWidget(seed)) setStatus("Sendt til KlarLyd.");
+        if (pushToWidget(seed)) setStatus("Sendt.");
       });
     });
 
@@ -1038,7 +1048,7 @@ const inspectLabelClass =
         observeReady();
         return;
       }
-      if (progressive) setStatus("Chatmotoren er ikke klar ennå.");
+      if (progressive) setStatus("KlarLyd er ikke klar ennå.");
     });
     window.addEventListener("chat-messenger-loaded", observeReady, { once: true });
     window.addEventListener("ces-messenger-connected", observeReady, { once: true });
@@ -1160,13 +1170,19 @@ const inspectLabelClass =
   }
 
   .inline-chat-shell__status--dock {
-    border-bottom: 1px solid rgb(var(--border) / 0.22);
+    border-bottom: 0;
     color: rgb(var(--reading-ink-secondary));
     font-size: 0.8rem;
     line-height: 1.35;
     margin: 0;
     max-width: 100%;
-    padding: 0.1rem 0.35rem 0.4rem;
+    padding: 0.1rem 0.35rem 0.35rem;
+  }
+
+  .inline-chat-shell__status--dock[data-inline-chat-dock-pending="true"] {
+    align-items: center;
+    display: flex;
+    min-height: 1.05rem;
   }
 
   .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"] .inline-chat-shell__compose-stack {
@@ -1188,9 +1204,8 @@ const inspectLabelClass =
   }
 
   .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"] .inline-chat-shell__compose-stack .inline-chat-shell__status--dock {
-    border-bottom-color: rgb(var(--border) / 0.28);
-    margin: 0 -0.12rem 0.35rem;
-    padding: 0.12rem 0.35rem 0.42rem;
+    margin: 0;
+    padding: 0.12rem 0.35rem 0.28rem;
   }
 
   .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"] .inline-chat-shell__compose-stack .inline-chat-shell__compose {
@@ -1380,13 +1395,24 @@ const inspectLabelClass =
     gap: 0.55rem;
   }
 
-  .inline-chat-shell__typing-dots {
+  .inline-chat-shell__typing--dots-only {
+    gap: 0;
+  }
+
+  .inline-chat-shell__typing-label {
+    color: rgb(var(--reading-ink-secondary));
+    font-size: 0.92em;
+  }
+
+  .inline-chat-shell__typing-dots,
+  .inline-chat-shell__dock-dots {
     align-items: center;
     display: inline-flex;
     gap: 0.18rem;
   }
 
-  .inline-chat-shell__typing-dots span {
+  .inline-chat-shell__typing-dots span,
+  .inline-chat-shell__dock-dots span {
     animation: inline-chat-shell-typing 1.1s ease-in-out infinite;
     background: currentColor;
     border-radius: 999px;
@@ -1396,11 +1422,13 @@ const inspectLabelClass =
     width: 0.3rem;
   }
 
-  .inline-chat-shell__typing-dots span:nth-child(2) {
+  .inline-chat-shell__typing-dots span:nth-child(2),
+  .inline-chat-shell__dock-dots span:nth-child(2) {
     animation-delay: 0.16s;
   }
 
-  .inline-chat-shell__typing-dots span:nth-child(3) {
+  .inline-chat-shell__typing-dots span:nth-child(3),
+  .inline-chat-shell__dock-dots span:nth-child(3) {
     animation-delay: 0.32s;
   }
 
@@ -1419,7 +1447,8 @@ const inspectLabelClass =
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .inline-chat-shell__typing-dots span {
+    .inline-chat-shell__typing-dots span,
+    .inline-chat-shell__dock-dots span {
       animation: none;
     }
   }
