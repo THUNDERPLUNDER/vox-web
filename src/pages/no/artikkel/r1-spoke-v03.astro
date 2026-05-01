@@ -170,6 +170,20 @@ const bridgeQuestions = [
       container-name: r1-editorial;
     }
 
+    /*
+     * Dark: full padded column = reading-paper so the sheet is not visually
+     * narrower than the centered 46rem article (canvas was showing in gutters).
+     */
+    html[data-theme="dark"] [data-r1-editorial] .r1-editorial-container {
+      background: rgb(var(--reading-paper));
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html[data-theme="system"] [data-r1-editorial] .r1-editorial-container {
+        background: rgb(var(--reading-paper));
+      }
+    }
+
     [data-r1-editorial] {
       position: relative;
       --r1-ai-dialog-measure: min(100%, 46rem);
@@ -181,13 +195,14 @@ const bridgeQuestions = [
     }
 
     html[data-theme="dark"] [data-r1-editorial] {
-      --r1-ai-user-surface: rgb(var(--surface-elevated));
+      /* User bubble: darker than reading-paper + border (surface-elevated was ~same as paper). */
+      --r1-ai-user-surface: rgb(var(--reading-inline));
       --r1-ai-seed-hover-surface: rgb(var(--surface-subtle) / 0.92);
     }
 
     @media (prefers-color-scheme: dark) {
       html[data-theme="system"] [data-r1-editorial] {
-        --r1-ai-user-surface: rgb(var(--surface-elevated));
+        --r1-ai-user-surface: rgb(var(--reading-inline));
         --r1-ai-seed-hover-surface: rgb(var(--surface-subtle) / 0.92);
       }
     }
@@ -583,6 +598,26 @@ const bridgeQuestions = [
       border-radius: var(--r1-ai-input-radius);
       background: var(--r1-ai-user-surface);
       border: 0;
+    }
+
+    html[data-theme="dark"]
+      [data-r1-editorial]
+      .r1-ai-bridge
+      [data-inline-chat-mode="progressive"]
+      .inline-chat-shell__message--user {
+      border: 1px solid rgb(var(--border) / 0.38);
+      box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html[data-theme="system"]
+        [data-r1-editorial]
+        .r1-ai-bridge
+        [data-inline-chat-mode="progressive"]
+        .inline-chat-shell__message--user {
+        border: 1px solid rgb(var(--border) / 0.38);
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+      }
     }
 
     [data-r1-editorial] .r1-ai-bridge [data-inline-chat-mode="progressive"] .inline-chat-shell__message--assistant {
