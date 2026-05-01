@@ -27,6 +27,14 @@
 | Påstand som trenger kilde | Må løftes til kilde eller tones ned / parkeres |
 | Kun muntlig / pitch | OK i muntlig eller dedikert pitch-slide; ikke som hardt faktum i trykk |
 
+### Kilde- og relevansregel
+
+- En claim er ikke klar for ekstern bruk før den har Claim Bank-ID, trygg formulering, kilde, direktelenke, datagrunnlagets år, begrensning, relevansstatus og sist verifisert dato.
+- Gamle tall skal ikke forkastes automatisk. De skal merkes som historiske, og vurderes etter om de fortsatt er relevante for argumentet.
+- Et historisk tall kan brukes hvis det er tydelig datert og ikke presenteres som nåsituasjon.
+- Samfunnsøkonomiske beregninger, QALY og sykdomsbyrde er anerkjente metoder når de brukes innenfor riktig kategori, men skal ikke blandes med budsjett- eller regnskapstall.
+- Retoriske formuleringer skal kobles til underliggende Claim Bank-ID-er eller merkes som illustrativ/pathos.
+
 ---
 
 ## 1. Kort pitch
@@ -269,15 +277,53 @@ _[Plassholder + status.]_
 
 ## 11. Claim Bank — evidence layer
 
-Statusverdier: **Grønn** | **Gul** | **Rød** | **Trenger kilde** | **Parkert**
+Claim Bank er referanseregisteret for alle tall, fakta og påstander som kan brukes i deck, VIS, søknader og ekstern dialog. Ingen eksterne claims skal brukes uten at de finnes her eller er eksplisitt merket som retorisk formulering i §12.
 
-| ID | Claim | Evidence status | Trygg formulering | Kilde | Brukes i slide | Kommentar |
-| --- | --- | --- | --- | --- | --- | --- |
-| C-001 | _[Eksempel]_ Første hub i MVP er «Bedre lyd i hverdagen». | Grønn | Som i IA v1.0 | `KlarLyd_MVP_IA_og_innholdsarkitektur_v1.0.md` | _[slide-ID]_ | Canonical produktbeslutning |
-| C-002 | _[Plassholder]_ | Trenger kilde | _[etter verifikasjon]_ | _[TBD]_ | — | — |
-| C-003 | _[Plassholder]_ | Parkert | — | — | — | — |
+**Status:**
 
-_[Utvid tabellen etter hvert som claims låses — ikke bruk tomme celler som fakta.]_
+- Grønn
+- Gul
+- Rød
+- Trenger kilde
+- Parkert
+
+**Dokumentasjonsgrad:**
+
+- Direkte dokumentert
+- Delvis dokumentert
+- Estimat
+- Samfunnsøkonomisk beregning
+- Faglig tolkning
+- Motstridende kilder
+- Ikke funnet dokumentasjon
+- Krever videre undersøkelse
+
+**Relevansstatus:**
+
+- Aktuell
+- Historisk, fortsatt relevant
+- Historisk, bør oppdateres
+- Utdatert
+- Uavklart
+
+**Bruksstatus:**
+
+- Draft
+- Verifisert internt
+- Klar for deck
+- Klar for søknad
+- Kun muntlig pitch
+- Kun appendix
+- Parkert
+- Utdatert
+
+| ID | Claim | Status | Dokumentasjonsgrad | Trygg formulering | Kilde-ID | Kilde | Kildetype | Datagrunnlagets år | Direktelenke | Sitat / datapunkt | Begrensning | Relevansstatus | Relevansnotat | Sist verifisert | Eier | Bruksstatus | Brukes i | Kommentar |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| CB-001 | NAV bruker over 1 mrd kroner på høreapparat | Gul | Direkte dokumentert | NAV oppga utgifter til høreapparat på 1 083,8 mill. kroner i 2024. | SRC-001 | NAV årsrapport 2024 | Primær offentlig | 2024 | https://www.nav.no/_/en/attachment/inline/e89e93e3-3056-47ce-b374-de424818be8a%3A88d6d362b3654d28c3661c2c23c520251b9d2e47/%C3%85rsrapport%202024%20NAV.pdf | 1 083,8 mill. kr | Gjelder høreapparat som rapportgruppe, ikke hele hørselsomsorgen. | Aktuell | — | 2026-05-01 | @navigator | Draft | Deck problem/samfunnsnytte, appendix | _Foreløpig eksempel._ Avventer smalresearch på kostnader/volum før endelig grønn status. |
+| CB-002 | NAVs prisgrense for digitale høreapparater er 6 605 kr per enhet | Gul | Direkte dokumentert | NAVs prisgrense for digitale høreapparater er 6 605 kroner per enhet i 2024–2026. | SRC-002 | NAV høreapparat-side | Primær offentlig | 2024–2026 | https://www.nav.no/horeapparat | 6 605 kr per enhet | Dette er stønadsgrense, ikke faktisk gjennomsnittspris eller total kostnad. | Aktuell | — | 2026-05-01 | @navigator | Draft | Appendix / kostnadsforklaring | _Foreløpig eksempel._ Må ikke forveksles med gjennomsnittskostnad. |
+| CB-003 | En betydelig andel høreapparateiere bruker apparatet svært lite | Gul | Delvis dokumentert | EuroTrak Norway 2019 viste at 22 % av høreapparateiere oppga 0–1 time bruk per dag, og 7 % oppga 0 timer per dag. | SRC-003 | EuroTrak Norway 2019 | Sekundær / bransjeundersøkelse | 2019 | https://www.ehima.com/wp-content/uploads/2019/05/EuroTrak_2019_NORWAY.pdf | 22 % 0–1 time/dag; 7 % 0 timer/dag | Surveydata; selvrapportert; gjelder eiere/respondenter, ikke nødvendigvis alle utleverte apparater. | Historisk, fortsatt relevant | Brukes som dokumentert surveyfunn fra 2019 inntil nyere norsk brukstidsdata finnes. Må ikke formuleres som nåtidsregistertall. | 2026-05-01 | @navigator | Draft | Problem / underbruk / appendix | _Foreløpig eksempel._ Godt pitchpoeng, men må formuleres presist. |
+
+Neste ledige ID: **CB-004**. Utvid tabellen etter hvert som claims låses; ikke bruk tomme celler som fakta.
 
 ---
 
@@ -293,7 +339,7 @@ Retorisk rolle: **Logos** | **Ethos** | **Pathos** | **Logos + Pathos** | **Etho
 | R-002 | «Vi holder brukerne fast i et analogt oppsett rundt digital teknologi.» | Pathos + Logos | _[C-xxx brukeropplevelse]_ | Deck narrativ; ikke som statistikk | Kan oppleves polariserende | Merkes som retorikk; koble til konkrete observasjoner |
 | R-003 | «KlarLyd flytter fokus fra utstyr til mestring.» | Ethos + Pathos | Produkttese; jfr. hub-mandat | Pitch, VIS «Hva er KlarLyd?» | Konkurranse mot apparatfokus | Trygg som posisjonering; presiser ikke erstatning for apparat |
 | R-004 | «Ingen skal måtte vente på hjelp til å forstå teknologien de allerede har fått.» | Pathos | _[C-xxx kapasitet/kø]_ | Søknad, emosjonell slide | Absolutt «ingen» er sterkt | Behold med Etikett *Kun muntlig / pitch* eller myk form i trykk |
-| R-005 | «Fra høreapparat i skuffen til lydglede i hverdagen.» | Pathos | Underbruk / motivasjon — **Trenger kilde** for tall | Illustrativ slide; ikke som prevalens | Metafor tatt for bokstavelig | Illustrativ formulering; ikke rapporter som studie |
+| R-005 | «Fra høreapparat i skuffen til lydglede i hverdagen.» | Pathos | Illustrativ; tall om underbruk jfr. **CB-003** (presis formulering) | Illustrativ slide; ikke som prevalens | Metafor tatt for bokstavelig | Illustrativ formulering; ikke rapporter som studie |
 
 _[Legg til flere R-ID etter behov; hold logikk: hver sterk setning har støtte-ID eller er eksplisitt illustrativ.]_
 
@@ -473,29 +519,15 @@ _[Kryssreferanser til faktiske VIS-dokument-IDer når de finnes.]_
 
 ## 20. Kildebank
 
-### Offentlige kilder
+Kildebanken er registeret over kilder som brukes i Claim Bank. Hver kilde får en Kilde-ID, slik at claims kan peke til kilder uten å kopiere full referanse hver gang.
 
-_[Plassholder — liste med URL/referanse.]_
+| Kilde-ID | Tittel | Utgiver | År | URL | Kildetype | Brukes av claims | Sist åpnet/verifisert | Arkivert kopi | Kommentar |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| SRC-001 | Årsrapport 2024 NAV | NAV | 2025 / datagrunnlag 2024 | https://www.nav.no/_/en/attachment/inline/e89e93e3-3056-47ce-b374-de424818be8a%3A88d6d362b3654d28c3661c2c23c520251b9d2e47/%C3%85rsrapport%202024%20NAV.pdf | Primær offentlig | CB-001 | 2026-05-01 | Ikke avklart | Brukes for NAV-utgifter til høreapparat som rapportgruppe. |
+| SRC-002 | Høreapparat | NAV | 2024–2026 / løpende nettside | https://www.nav.no/horeapparat | Primær offentlig | CB-002 | 2026-05-01 | Ikke avklart | Brukes for prisgrenser/stønadsgrenser. Sjekkes ved større søknad/deckrevisjon. |
+| SRC-003 | EuroTrak Norway 2019 | EHIMA / Anovum | 2019 | https://www.ehima.com/wp-content/uploads/2019/05/EuroTrak_2019_NORWAY.pdf | Sekundær / bransjeundersøkelse | CB-003 | 2026-05-01 | Ikke avklart | Brukes for surveydata om brukstid, adopsjon og tilfredshet. Må merkes som selvrapportert og bransjeinitiert. |
 
-### Bransjekilder
-
-_[Plassholder.]_
-
-### Forskning
-
-_[Plassholder.]_
-
-### Egne intervjuer
-
-_[Plassholder — dato, metode, samtykke.]_
-
-### Egne tester
-
-_[Plassholder — hypotese, metode, resultat.]_
-
-### Usikre kilder
-
-_[Plassholder — bruk kun med merking; ikke til eksterne hard claims.]_
+Neste ledige ID: **SRC-004**. Eldre struktur (offentlige kilder, bransje, forskning, egne intervjuer/tester, usikre kilder) kan fortsatt brukes som *tag* i Kommentar-feltet eller utvides med flere rader i tabellen.
 
 ---
 
