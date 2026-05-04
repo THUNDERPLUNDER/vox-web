@@ -263,6 +263,27 @@
     .mail-text { font-size: 0.92rem; margin: 0; }
     .hl { background: #fff0c4; border-bottom: 1px dashed #ceac4b; padding: 0 0.25rem; }
 
+    .next-step-card { background: var(--nrf-panel-blue-soft); }
+    .next-step-intro { max-width: 42rem; }
+    .next-step-grid { margin-top: 1rem; }
+    .next-step-role {
+      margin: 0 0 0.28rem;
+      font-family: "Montserrat", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #35506a;
+    }
+    .next-step-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.35rem;
+      text-decoration: none;
+    }
+    .next-step-note { margin-top: 1rem; }
+
     .grid { display: grid; gap: 0.8rem; }
     .grid.two { grid-template-columns: 1fr; }
     .grid.three { grid-template-columns: 1fr; }
@@ -519,6 +540,34 @@
           <h2>Din verktøykasse for møtet</h2>
           <div id="ansatt-scenarios" class="surface module-list"></div>
         </section>
+
+        <section class="section" aria-labelledby="ansatt-neste-steg-title">
+          <div class="surface next-step-card">
+            <h2 id="ansatt-neste-steg-title">Vil du ha hjelp til å ta samtalen videre?</h2>
+            <p class="next-step-intro">Du kan bruke e-postmalen, sende arbeidsgiversiden videre eller be NRF om støtte til en første samtale.</p>
+            <div class="grid three next-step-grid">
+              <article class="card">
+                <p class="next-step-role">Arbeidstaker eller medlem</p>
+                <h3>Be om veiledning</h3>
+                <p>Få støtte fra NRF til å sortere hva du vil ta opp, og hvordan du kan formulere behovet uten å gjøre samtalen større enn nødvendig.</p>
+                <a class="btn btn-primary next-step-action" href="#">Be om veiledning</a>
+              </article>
+              <article class="card">
+                <p class="next-step-role">Leder eller arbeidsgiver</p>
+                <h3>Send arbeidsgiversiden videre</h3>
+                <p>Del den praktiske arbeidsgiversiden med leder eller HR, slik at samtalen handler om tiltak, kontinuitet og hva dere kan teste først.</p>
+                <a class="btn btn-secondary next-step-action" href="#" data-tab-target="arbeidsgiver">Send arbeidsgiversiden videre</a>
+              </article>
+              <article class="card">
+                <p class="next-step-role">NRF som støtte</p>
+                <h3>Foreslå bedriftsbesøk</h3>
+                <p>Hvis dere trenger en felles start, kan NRF bidra med et første møte eller bedriftsbesøk sammen med deg og arbeidsgiver.</p>
+                <a class="btn btn-secondary next-step-action" href="#">Foreslå bedriftsbesøk</a>
+              </article>
+            </div>
+            <p class="small-note next-step-note u-mb-0">Velg det steget som passer situasjonen din nå. Målet er å gjøre første samtale enklere, ikke å løse alt på én gang.</p>
+          </div>
+        </section>
       </div>
     </section>
 
@@ -656,6 +705,34 @@
             </ul>
           </div>
         </section>
+
+        <section class="section" aria-labelledby="arbeidsgiver-neste-steg-title">
+          <div class="surface next-step-card">
+            <h2 id="arbeidsgiver-neste-steg-title">Vil dere teste Kronisk kompetanse i egen virksomhet?</h2>
+            <p class="next-step-intro">NRF kan bidra med introduksjon, webinar eller en første samtale med HR/ledergruppe.</p>
+            <div class="grid three next-step-grid">
+              <article class="card">
+                <p class="next-step-role">Arbeidsgiver eller HR</p>
+                <h3>Be om bedriftsbesøk</h3>
+                <p>Inviter NRF inn til en praktisk introduksjon for HR, tillitsvalgte eller relevante ledere om hvordan dere kan starte trygt.</p>
+                <a class="btn btn-primary next-step-action" href="#">Be om bedriftsbesøk</a>
+              </article>
+              <article class="card">
+                <p class="next-step-role">Ledergruppe</p>
+                <h3>Registrer dere for webinar</h3>
+                <p>Få en kort gjennomgang av hvorfor kompetansebevaring lønner seg, og hvilke tiltak ledergruppen kan prøve først.</p>
+                <a class="btn btn-secondary next-step-action" href="#">Registrer deg for webinar</a>
+              </article>
+              <article class="card">
+                <p class="next-step-role">Deltakende bedrift</p>
+                <h3>Meld interesse som deltakende bedrift</h3>
+                <p>Bruk Kronisk kompetanse som arbeidsflate for å teste ett eller flere tiltak, følge opp erfaringene og lære hva som virker hos dere.</p>
+                <a class="btn btn-secondary next-step-action" href="#">Meld interesse som deltakende bedrift</a>
+              </article>
+            </div>
+            <p class="small-note next-step-note u-mb-0">Dette er en praktisk inngang til samtale og oppfølging. Juridiske vurderinger, NAV-avklaringer og individuelle saker må håndteres konkret.</p>
+          </div>
+        </section>
       </div>
     </section>
   </main>
@@ -783,7 +860,7 @@
     ];
 
     const EMPLOYEE_SCENARIOS = [
-      { title: "Slik forbereder du deg til samtalen", body: "Beskriv hvilke situasjoner som stjeler energi, og foreslå ett eller to realistiske grep å teste først.", link: "Les veiledningen her" },
+      { title: "Slik forbereder du deg til samtalen", body: "Beskriv hvilke situasjoner som stjeler energi, og foreslå ett eller to realistiske grep å teste først.", link: "Forbered samtalen" },
       { title: "Dine rettigheter – kort fortalt", body: "Arbeidsmiljøloven § 4-6 gir rett til individuell tilrettelegging så langt det er mulig.", link: "Se dine rettigheter" },
       { title: "Gaven til sjefen", body: "Del arbeidsgiversiden med ni konkrete tiltak. Da blir samtalen enklere og mer løsningsorientert.", link: "Bytt til Arbeidsgiver-visning" },
     ];
