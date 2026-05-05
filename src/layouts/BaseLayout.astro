@@ -5,16 +5,16 @@ import Header from "../components/nav/Header.astro";
 import MobileMenuSheet from "../components/nav/MobileMenuSheet.astro";
 
 const {
-  title = "VOX",
+  title = "Viddel",
   currentPath = "",
   shellVariant = "default",
-  headerBrand = "default",
+  headerBrand = "viddel",
   showHeaderDevtoolsToggle = false,
 } = Astro.props as {
   title?: string;
   currentPath?: string;
   shellVariant?: string;
-  headerBrand?: "default" | "klarlyd";
+  headerBrand?: "default" | "klarlyd" | "viddel";
   /** Midlertidig intern devtools (#81) — kun der det eksplisitt slås på (f.eks. r1-spoke-v03). */
   showHeaderDevtoolsToggle?: boolean;
 };

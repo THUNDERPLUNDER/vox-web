@@ -6,8 +6,8 @@ import { isNavActive } from "../../lib/nav-active";
 
 type Props = {
   currentPath?: string;
-  /** Sandbox wordmark test — default keeps VOX · Hørehjelpen */
-  brand?: "default" | "klarlyd";
+  /** default = VOX · Hørehjelpen; viddel = MVP product wordmark; klarlyd = legacy/test */
+  brand?: "default" | "klarlyd" | "viddel";
   /** Midlertidig intern devtools (#81) — vis diskret toggle etter «Om». */
   showDevtoolsToggle?: boolean;
 };
@@ -32,6 +32,8 @@ const chatHref = `${base}no/chat`;
               LYD
             </span>
           </span>
+        ) : brand === "viddel" ? (
+          <span class="font-display text-base font-semibold tracking-[-0.02em] text-[rgb(var(--text))] sm:text-lg">Viddel</span>
         ) : (
           <>
             <span class="font-semibold">VOX</span>

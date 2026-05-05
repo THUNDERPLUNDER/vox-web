@@ -5,12 +5,13 @@ import { isNavActive } from "../../lib/nav-active";
 
 type Props = {
   currentPath?: string;
-  brand?: "default" | "klarlyd";
+  brand?: "default" | "klarlyd" | "viddel";
   showDevtoolsToggle?: boolean;
 };
 
 const { currentPath = "", brand = "default", showDevtoolsToggle = false } = Astro.props as Props;
-const menuTitle = brand === "klarlyd" ? "KLARLYD meny" : "VOX meny";
+const menuTitle =
+  brand === "klarlyd" ? "KLARLYD meny" : brand === "viddel" ? "Viddel meny" : "VOX meny";
 ---
 
 <div
