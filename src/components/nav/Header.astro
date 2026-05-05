@@ -25,7 +25,7 @@ try {
   const raw = fs.readFileSync(viddelWordmarkPath, "utf-8").trim();
   viddelWordmarkSvg = raw.replace(/^<!--[\s\S]*?-->\s*/, "").replace(
     "<svg viewBox=",
-    '<svg class="block h-[1.25rem] w-auto shrink-0 self-center sm:h-[1.5rem]" focusable="false" aria-hidden="true" viewBox=',
+    '<svg class="block h-[1.25rem] w-auto shrink-0 self-center antialiased sm:h-[1.5rem]" focusable="false" aria-hidden="true" viewBox=',
   );
 } catch {
   viddelWordmarkSvg = "";

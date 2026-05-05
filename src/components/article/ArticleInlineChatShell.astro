@@ -84,7 +84,7 @@ const inspectLabelClass =
             <span class="inline-chat-shell__transcript-divider-line" aria-hidden="true" />
             <span
               class="inline-chat-shell__transcript-divider-label"
-              id={`${headingId}-dialog-landmark`}>Dialog med KlarLyd</span>
+              id={`${headingId}-dialog-landmark`}>Dialog med Hørehjelpen</span>
           </div>
           <div class="inline-chat-shell__transcript" data-component="Transcript" data-inline-chat-transcript>
             <span class={inspectLabelClass} data-component-label>Transcript</span>
@@ -1055,7 +1055,7 @@ const inspectLabelClass =
         observeReady();
         return;
       }
-      if (progressive) setStatus("KlarLyd er ikke klar ennå.");
+      if (progressive) setStatus("Hørehjelpen er ikke klar ennå.");
     });
     window.addEventListener("chat-messenger-loaded", observeReady, { once: true });
     window.addEventListener("ces-messenger-connected", observeReady, { once: true });
