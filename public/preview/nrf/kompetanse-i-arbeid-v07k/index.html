@@ -514,11 +514,11 @@
               <button id="open-email-btn" type="button" class="btn btn-primary">Åpne i e-post</button>
             </div>
             <blockquote id="email-text" class="mail-text">
-              <strong>Emne:</strong> Forslag til tiltak for å sikre min kontinuitet og leveranse i <span class="hl">[Avdeling]</span><br><br>
+              <strong>Emne:</strong> Forslag til tiltak for å fortsette å bidra godt i <span class="hl">[Avdeling]</span><br><br>
               Hei <span class="hl">[Leders navn]</span>,<br><br>
               Jeg ønsker et kort møte for å se på noen enkle grep som kan gjøre det lettere for meg å fortsette å bidra godt i <span class="hl">[Bedriftens navn]</span>.<br><br>
               Jeg har noen helseutfordringer som i perioder påvirker arbeidshverdagen. Derfor vil jeg gjerne foreslå ett eller to konkrete tiltak vi kan teste i en avgrenset periode.<br><br>
-              Målet er å finne løsninger som fungerer for både meg, teamet og leveransene våre.<br><br>
+              Målet er å finne løsninger som fungerer for både meg, teamet og arbeidet vi skal gjøre.<br><br>
               Når passer det å ta en kort prat?<br><br>
               Vennlig hilsen,<br>
               <span class="hl">[Ditt navn]</span>
@@ -546,9 +546,9 @@
             <div class="grid three next-step-grid">
               <article class="card">
                 <p class="next-step-role">Arbeidstaker eller medlem</p>
-                <h3>Be NRF om støtte til første samtale</h3>
-                <p>NRF kan hjelpe deg å sortere hva du vil ta opp, og hvordan du kan formulere behovet uten å gjøre samtalen større enn nødvendig.</p>
-                <a class="btn btn-primary next-step-action" href="#">Be NRF om støtte til første samtale</a>
+                <h3>Be NRF om veiledning</h3>
+                <p>NRF kan hjelpe deg å sortere hva du vil ta opp, og hvordan du kan formulere behovet på en trygg og konkret måte.</p>
+                <a class="btn btn-primary next-step-action" href="#">Be om veiledning</a>
               </article>
               <article class="card">
                 <p class="next-step-role">Leder eller arbeidsgiver</p>
@@ -640,8 +640,8 @@
         </section>
 
         <section class="section">
-          <h2>Test praktiske grep før problemet vokser</h2>
-          <p>Start med tiltak som er enkle å prøve og lette å følge opp. De fleste handler om organisering, fleksibilitet og små justeringer i arbeidshverdagen.</p>
+          <h2>Test små grep som får kompetansen til å virke</h2>
+          <p>Start med tiltak som gjør det lettere for medarbeideren å bidra godt. De fleste handler om organisering, fleksibilitet og små justeringer i arbeidshverdagen.</p>
           <p class="small-note">Bygger på erfaringene fra NRFs initiativ Kronisk kompetanse.</p>
           <div id="toolkit-grid" class="toolkit-list"></div>
         </section>
@@ -711,9 +711,9 @@
             <div class="grid three next-step-grid">
               <article class="card">
                 <p class="next-step-role">Arbeidsgiver eller HR</p>
-                <h3>Be om bedriftsbesøk</h3>
-                <p>Inviter NRF inn til en praktisk introduksjon for HR, tillitsvalgte eller relevante ledere om hvordan dere kan starte trygt.</p>
-                <a class="btn btn-primary next-step-action" href="#">Be om bedriftsbesøk</a>
+                <h3>Be om introduksjon</h3>
+                <p>Inviter NRF til en praktisk introduksjon for HR, tillitsvalgte eller nærmeste leder. Introduksjonen kan være digital eller fysisk.</p>
+                <a class="btn btn-primary next-step-action" href="#">Be om introduksjon</a>
               </article>
               <article class="card">
                 <p class="next-step-role">Ledergruppe</p>
@@ -1140,7 +1140,7 @@
     }
 
     function openEmail() {
-      const subject = encodeURIComponent("Forslag til tiltak for å sikre min kontinuitet og leveranse i [Avdeling]");
+      const subject = encodeURIComponent("Forslag til tiltak for å fortsette å bidra godt i [Avdeling]");
       const body = encodeURIComponent(emailText.innerText.replace(/\n{3,}/g, "\n\n"));
       window.location.href = `mailto:?subject=${subject}&body=${body}`;
     }
