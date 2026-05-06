@@ -1,7 +1,5 @@
 <!-- CONTRACT: Global site header with desktop nav and mobile menu trigger. -->
 ---
-import fs from "node:fs";
-import path from "node:path";
 import MobileMenuTrigger from "./MobileMenuTrigger.astro";
 import { NO_NAV_LINKS } from "../../lib/no-nav-links";
 import { isNavActive } from "../../lib/nav-active";
@@ -18,18 +16,6 @@ const { currentPath = "", brand = "default", showDevtoolsToggle = false } = Astr
 const base = import.meta.env.BASE_URL;
 const homeHref = `${base}no`;
 const chatHref = `${base}no/chat`;
-
-const viddelWordmarkPath = path.join(process.cwd(), "public/brand/viddel-wordmark.svg");
-let viddelWordmarkSvg = "";
-try {
-  const raw = fs.readFileSync(viddelWordmarkPath, "utf-8").trim();
-  viddelWordmarkSvg = raw.replace(/^<!--[\s\S]*?-->\s*/, "").replace(
-    "<svg viewBox=",
-    '<svg class="block h-[1.25rem] w-auto shrink-0 self-center antialiased sm:h-[1.5rem]" focusable="false" aria-hidden="true" viewBox=',
-  );
-} catch {
-  viddelWordmarkSvg = "";
-}
 ---
 
 <header class="h-16 sm:h-[4.5rem]">
@@ -48,11 +34,9 @@ try {
             </span>
           </span>
         ) : brand === "viddel" ? (
-          viddelWordmarkSvg ? (
-            <span class="inline-flex shrink-0 items-center leading-none" set:html={viddelWordmarkSvg} />
-          ) : (
-            <span class="font-display text-base font-semibold tracking-[-0.02em] text-[rgb(var(--text))] sm:text-lg">Viddel</span>
-          )
+          <span class="font-display text-[1.05rem] font-semibold tracking-[-0.025em] text-[rgb(var(--text))] antialiased sm:text-[1.25rem]">
+            Viddel
+          </span>
         ) : (
           <>
             <span class="font-semibold">VOX</span>
