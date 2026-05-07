@@ -1,16 +1,17 @@
 ---
-/* CONTRACT: Article Master v1.2 — light-first editorial reading; calm rails; curated AI prompts. */
+/* CONTRACT: Storyblok article_page — dialog-artikkel som r1-spoke-v03: én kolonne, ArticleInlineChatShell progressive, ingen seed-lenker til chat-shell, ingen terminal Footer når seeds finnes. */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import InspectDrawerArmScript from "../../../components/dev/InspectDrawerArmScript.astro";
 import InspectToolsDrawer from "../../../components/dev/InspectToolsDrawer.astro";
-import Section from "../../../components/layout/Section.astro";
+import ArticleInlineChatShell from "../../../components/article/ArticleInlineChatShell.astro";
 import Footer from "../../../components/nav/Footer.astro";
-import { buildChatShellHref } from "../../../lib/chat-shell";
 import {
   fetchAiSeedQuestions,
   fetchPublishingArticleBySlug,
   fetchPublishingArticleSlugs,
 } from "../../../lib/storyblok-publishing";
+import "../../../styles/article-system.css";
+import "../../../styles/r1-dialog-article.css";
 
 type ArticleProps = {
   slug: string;
@@ -30,9 +31,12 @@ if (!article) {
   throw new Error(`[publishing] Missing article_page for slug: ${slug}`);
 }
 
-const seeds = (await fetchAiSeedQuestions()).filter((seed) =>
-  !seed.relatedArticle || seed.relatedArticle === article.slug,
-);
+const bridgeItems = (await fetchAiSeedQuestions())
+  .filter((seed) => seed.relatedArticle === article.slug && seed.question?.trim())
+  .map((seed) => ({ question: seed.question.trim() }));
+
+const showDialogBridge = bridgeItems.length > 0;
+const aiHeadingId = `sb-article-${slug.replace(/[^a-zA-Z0-9_-]/g, "-")}-ai`;
 
 const updatedLabel = article.updatedAt
   ? (() => {
@@ -67,231 +71,204 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
   <InspectDrawerArmScript />
   <meta slot="head" name="robots" content="noindex,follow" />
 
-  <main class="bg-[rgb(var(--article-page-canvas))] py-8 sm:py-10">
-    <Section class="!bg-transparent !py-6 sm:!py-10">
-      <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-12 xl:gap-14">
-        <article class="vox-reading-sheet">
-          <nav class="mb-7 text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]" aria-label="Du er her">
-            <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
-            <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
-            <a href="/no/hubs" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Emnehuber</a>
-            <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
-            <a href="/no/hub" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Hub</a>
-            <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
-            <span class="text-[rgb(var(--reading-ink))]">Artikkel</span>
-          </nav>
-          <header class="border-b border-[rgb(var(--border))/0.28] pb-9">
-            {article.categoryLabel ? (
-              <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-accent-iris))]">
-                {article.categoryLabel}
-              </p>
-            ) : null}
-            <h1 class="font-display mt-3 text-[2.25rem] font-bold leading-[1.1] tracking-[-0.045em] text-balance text-[rgb(var(--reading-ink))] sm:text-[2.75rem]">
-              {article.title}
-            </h1>
-            {article.ingress ? (
-              <p class="mt-6 max-w-2xl text-lg leading-[1.65] text-[rgb(var(--reading-ink-secondary))]">{article.ingress}</p>
-            ) : null}
-          </header>
+  <main class="bg-[rgb(var(--article-page-canvas))] py-2 sm:py-3" data-article-system data-r1-editorial>
+    <div class="r1-editorial-container px-4 sm:px-6">
+      <article class="vox-reading-sheet mx-auto max-w-[min(100%,46rem)] px-0.5">
+        <nav class="mb-7 text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]" aria-label="Du er her">
+          <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
+          <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
+          <a href="/no/hubs" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Emnehuber</a>
+          <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
+          <a href="/no/hub" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Hub</a>
+          <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
+          <span class="text-[rgb(var(--reading-ink))]">Artikkel</span>
+        </nav>
+        <header class="border-b border-[rgb(var(--border))/0.28] pb-9">
+          {article.categoryLabel ? (
+            <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-accent-iris))]">
+              {article.categoryLabel}
+            </p>
+          ) : null}
+          <h1 class="font-display mt-3 text-[2.25rem] font-bold leading-[1.1] tracking-[-0.045em] text-balance text-[rgb(var(--reading-ink))] sm:text-[2.75rem]">
+            {article.title}
+          </h1>
+          {article.ingress ? (
+            <p class="mt-6 max-w-2xl text-lg leading-[1.65] text-[rgb(var(--reading-ink-secondary))]">{article.ingress}</p>
+          ) : null}
+        </header>
 
-          <div class="vox-reading-article-body mt-11 space-y-10">
-            {article.sections.length ? (
-              article.sections.map((section) => (
-                <section class="space-y-4">
-                  {section.heading ? (
-                    <h2 class="font-display text-xl font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))] sm:text-2xl">
-                      {section.heading}
-                    </h2>
-                  ) : null}
-                  {bodyToParagraphs(section.body).length ? (
-                    <div class="space-y-5">
-                      {bodyToParagraphs(section.body).map((para) => (
-                        <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">{para}</p>
-                      ))}
-                    </div>
-                  ) : null}
-                </section>
-              ))
-            ) : (
-              <p class="text-sm text-[rgb(var(--reading-ink-secondary))]">Ingen sections publisert ennå.</p>
-            )}
+        <div class="vox-reading-article-body mt-11 space-y-10">
+          {article.sections.length ? (
+            article.sections.map((section) => (
+              <section class="space-y-4">
+                {section.heading ? (
+                  <h2 class="font-display text-xl font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))] sm:text-2xl">
+                    {section.heading}
+                  </h2>
+                ) : null}
+                {bodyToParagraphs(section.body).length ? (
+                  <div class="space-y-5">
+                    {bodyToParagraphs(section.body).map((para) => (
+                      <p class="text-[1.0625rem] leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">{para}</p>
+                    ))}
+                  </div>
+                ) : null}
+              </section>
+            ))
+          ) : (
+            <p class="text-sm text-[rgb(var(--reading-ink-secondary))]">Ingen sections publisert ennå.</p>
+          )}
 
-            {article.moduleBlocks.map((block, modIndex) => {
-              if (block.component === "module_phrase_cards") {
-                return (
-                  <section class="space-y-4 border-l-2 border-[rgb(var(--reading-accent-iris))/0.45] pl-5">
-                    <h3 class="font-display text-lg font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))]">
-                      {block.title || "Eksempelfraser"}
-                    </h3>
-                    <ul class="list-disc space-y-2.5 pl-5 text-base leading-[1.8] text-[rgb(var(--reading-ink-secondary))]" role="list">
-                      {block.cards.map((card) => (
-                        <li>{card}</li>
-                      ))}
-                    </ul>
-                  </section>
-                );
-              }
-
-              if (block.component === "related_link") {
-                return (
-                  <p class="text-base leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
-                    <a
-                      href={block.href}
-                      class:list={[
-                        "font-medium text-[rgb(var(--reading-ink))] underline-offset-[3px] transition-colors",
-                        block.comingSoon
-                          ? "pointer-events-none opacity-60"
-                          : "hover:text-[rgb(var(--reading-accent-iris))] hover:underline",
-                      ]}
-                      aria-disabled={block.comingSoon ? "true" : undefined}
-                    >
-                      {block.label}
-                    </a>
-                    {block.comingSoon ? (
-                      <span class="ml-2 text-xs font-medium uppercase tracking-wide text-[rgb(var(--reading-ink-secondary))]">
-                        (kommer snart)
-                      </span>
-                    ) : null}
-                  </p>
-                );
-              }
-
-              const isObservationCallout =
-                block.component === "module_observation_box" && modIndex === firstObservationCalloutIndex;
-
-              if (isObservationCallout) {
-                return (
-                  <aside class="vox-reading-inline" aria-label="Observasjon">
-                    <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-accent-iris))]">
-                      {moduleToneLabel[block.component]}
-                    </p>
-                    {block.title ? (
-                      <h3 class="mt-2 font-display text-lg font-semibold tracking-[-0.02em] text-[rgb(var(--reading-ink))]">
-                        {block.title}
-                      </h3>
-                    ) : null}
-                    {block.body ? (
-                      <p class="mt-3 text-base leading-[1.75] text-[rgb(var(--reading-ink-secondary))]">{block.body}</p>
-                    ) : null}
-                    {block.points.length ? (
-                      <ul class="mt-4 list-disc space-y-2 pl-5 text-base leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
-                        {block.points.map((point) => (
-                          <li>{point}</li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </aside>
-                );
-              }
-
+          {article.moduleBlocks.map((block, modIndex) => {
+            if (block.component === "module_phrase_cards") {
               return (
-                <section class="space-y-3">
+                <section class="space-y-4 border-l-2 border-[rgb(var(--reading-accent-iris))/0.45] pl-5">
+                  <h3 class="font-display text-lg font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))]">
+                    {block.title || "Eksempelfraser"}
+                  </h3>
+                  <ul class="list-disc space-y-2.5 pl-5 text-base leading-[1.8] text-[rgb(var(--reading-ink-secondary))]" role="list">
+                    {block.cards.map((card) => (
+                      <li>{card}</li>
+                    ))}
+                  </ul>
+                </section>
+              );
+            }
+
+            if (block.component === "related_link") {
+              return (
+                <p class="text-base leading-[1.8] text-[rgb(var(--reading-ink-secondary))]">
+                  <a
+                    href={block.href}
+                    class:list={[
+                      "font-medium text-[rgb(var(--reading-ink))] underline-offset-[3px] transition-colors",
+                      block.comingSoon
+                        ? "pointer-events-none opacity-60"
+                        : "hover:text-[rgb(var(--reading-accent-iris))] hover:underline",
+                    ]}
+                    aria-disabled={block.comingSoon ? "true" : undefined}
+                  >
+                    {block.label}
+                  </a>
+                  {block.comingSoon ? (
+                    <span class="ml-2 text-xs font-medium uppercase tracking-wide text-[rgb(var(--reading-ink-secondary))]">
+                      (kommer snart)
+                    </span>
+                  ) : null}
+                </p>
+              );
+            }
+
+            const isObservationCallout =
+              block.component === "module_observation_box" && modIndex === firstObservationCalloutIndex;
+
+            if (isObservationCallout) {
+              return (
+                <aside class="vox-reading-inline" aria-label="Observasjon">
                   <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-accent-iris))]">
                     {moduleToneLabel[block.component]}
                   </p>
                   {block.title ? (
-                    <h3 class="font-display text-lg font-semibold tracking-[-0.02em] text-[rgb(var(--reading-ink))]">
+                    <h3 class="mt-2 font-display text-lg font-semibold tracking-[-0.02em] text-[rgb(var(--reading-ink))]">
                       {block.title}
                     </h3>
                   ) : null}
                   {block.body ? (
-                    <p class="text-base leading-[1.75] text-[rgb(var(--reading-ink-secondary))]">{block.body}</p>
+                    <p class="mt-3 text-base leading-[1.75] text-[rgb(var(--reading-ink-secondary))]">{block.body}</p>
                   ) : null}
                   {block.points.length ? (
-                    <ul class="mt-2 list-disc space-y-2 pl-6 text-base leading-[1.75] text-[rgb(var(--reading-ink-secondary))]">
+                    <ul class="mt-4 list-disc space-y-2 pl-5 text-base leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
                       {block.points.map((point) => (
                         <li>{point}</li>
                       ))}
                     </ul>
                   ) : null}
-                </section>
+                </aside>
               );
-            })}
+            }
 
-            {article.nextSteps.length ? (
-              <aside class="vox-reading-inline" aria-label="Neste steg">
-                <h2 class="font-display text-lg font-semibold tracking-[-0.02em] text-[rgb(var(--reading-ink))] sm:text-xl">
-                  Neste steg
-                </h2>
-                <ul class="mt-4 list-disc space-y-2 pl-5 text-base leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
-                  {article.nextSteps.map((step) => (
-                    <li>{step}</li>
-                  ))}
-                </ul>
-              </aside>
-            ) : null}
-
-            {seeds.length ? (
-              <footer class="mt-14 border-t border-[rgb(var(--border))/0.3] pt-11" aria-labelledby="article-ai-continue">
-                <h2 id="article-ai-continue" class="font-display text-xl font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))] sm:text-2xl">
-                  Fortsett i Hørehjelpen
-                </h2>
-                <p class="mt-3 max-w-xl text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
-                  Velg et spørsmål — samtalen åpner med dette som utgangspunkt.
+            return (
+              <section class="space-y-3">
+                <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-accent-iris))]">
+                  {moduleToneLabel[block.component]}
                 </p>
-                <ul class="article-seed-list mt-6 list-none p-0" role="list">
-                  {seeds.map((seed) => (
-                    <li>
-                      <a href={buildChatShellHref(seed.question, "article")} class="article-seed-link">
-                        {seed.question}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-                <p class="mt-8 flex flex-wrap items-baseline gap-x-2 gap-y-2 text-xs leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
-                  <span>Uten forslag:</span>
-                  <a href="/no/chat" class="article-master-btn-primary no-underline">
-                    Åpne fri samtale
-                  </a>
-                </p>
-              </footer>
-            ) : null}
-          </div>
-        </article>
+                {block.title ? (
+                  <h3 class="font-display text-lg font-semibold tracking-[-0.02em] text-[rgb(var(--reading-ink))]">
+                    {block.title}
+                  </h3>
+                ) : null}
+                {block.body ? (
+                  <p class="text-base leading-[1.75] text-[rgb(var(--reading-ink-secondary))]">{block.body}</p>
+                ) : null}
+                {block.points.length ? (
+                  <ul class="mt-2 list-disc space-y-2 pl-6 text-base leading-[1.75] text-[rgb(var(--reading-ink-secondary))]">
+                    {block.points.map((point) => (
+                      <li>{point}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </section>
+            );
+          })}
 
-        <aside class="flex flex-col gap-3 lg:sticky lg:top-28 lg:self-start">
-          <div class="vox-reading-rail-card">
-            <h2 class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]">
-              Faglig forankret
-            </h2>
-            <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
-              Innholdet bygger på etablerte råd for hørehelse og samtale i nære relasjoner.
-            </p>
-            <ul class="mt-3 space-y-1.5 text-sm text-[rgb(var(--reading-ink-secondary))]">
-              <li>HLF - erfaring fra brukere og pårørende</li>
-              <li>FHI - helsefaglig kunnskapsgrunnlag</li>
-              <li>Helsedirektoratet - nasjonale råd og veiledning</li>
-            </ul>
-          </div>
+          {article.nextSteps.length ? (
+            <aside class="vox-reading-inline" aria-label="Neste steg">
+              <h2 class="font-display text-lg font-semibold tracking-[-0.02em] text-[rgb(var(--reading-ink))] sm:text-xl">
+                Neste steg
+              </h2>
+              <ul class="mt-4 list-disc space-y-2 pl-5 text-base leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
+                {article.nextSteps.map((step) => (
+                  <li>{step}</li>
+                ))}
+              </ul>
+            </aside>
+          ) : null}
 
-          <div class="vox-reading-rail-card">
-            <h2 class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]">Om innholdet</h2>
-            <ul class="mt-3 space-y-2 text-sm text-[rgb(var(--reading-ink-secondary))]">
-              {article.authorName ? <li><strong class="font-medium text-[rgb(var(--reading-ink))]">Forfatter:</strong> {article.authorName}{article.authorRole ? `, ${article.authorRole}` : ""}</li> : null}
-              {article.reviewerName ? <li><strong class="font-medium text-[rgb(var(--reading-ink))]">Faglig sjekk:</strong> {article.reviewerName}{article.reviewerRole ? `, ${article.reviewerRole}` : ""}</li> : null}
-              {updatedLabel ? <li><strong class="font-medium text-[rgb(var(--reading-ink))]">Oppdatert:</strong> {updatedLabel}</li> : null}
-            </ul>
-            {article.methodNote ? <p class="mt-3 text-xs leading-relaxed text-[rgb(var(--reading-ink-secondary))]">{article.methodNote}</p> : null}
-          </div>
+          {article.authorName || article.reviewerName || updatedLabel || article.methodNote ? (
+            <aside class="border-t border-[rgb(var(--border))/0.2] pt-8 text-sm text-[rgb(var(--reading-ink-secondary))]" aria-label="Om innholdet">
+              <h2 class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]">Om innholdet</h2>
+              <ul class="mt-3 space-y-2">
+                {article.authorName ? (
+                  <li>
+                    <strong class="font-medium text-[rgb(var(--reading-ink))]">Forfatter:</strong>{" "}
+                    {article.authorName}
+                    {article.authorRole ? `, ${article.authorRole}` : ""}
+                  </li>
+                ) : null}
+                {article.reviewerName ? (
+                  <li>
+                    <strong class="font-medium text-[rgb(var(--reading-ink))]">Faglig sjekk:</strong>{" "}
+                    {article.reviewerName}
+                    {article.reviewerRole ? `, ${article.reviewerRole}` : ""}
+                  </li>
+                ) : null}
+                {updatedLabel ? (
+                  <li>
+                    <strong class="font-medium text-[rgb(var(--reading-ink))]">Oppdatert:</strong> {updatedLabel}
+                  </li>
+                ) : null}
+              </ul>
+              {article.methodNote ? <p class="mt-3 text-xs leading-relaxed">{article.methodNote}</p> : null}
+            </aside>
+          ) : null}
 
-          <div class="vox-reading-rail-card">
-            <h2 class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]">Samtale</h2>
-            <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
-              Forslagene nederst i teksten leder inn i Hørehjelpen. Du kan også gå direkte til{" "}
-              <a
-                href="/no/chat"
-                class="font-medium text-[rgb(var(--reading-ink))] underline-offset-2 hover:text-[rgb(var(--reading-accent-iris))]"
-              >
-                fri samtale
-              </a>
-              .
-            </p>
-          </div>
-        </aside>
-      </div>
-    </Section>
+          {showDialogBridge ? (
+            <section class="r1-ai-bridge ams-zone px-0.5 py-1" data-component="PromptBridgeInArticle">
+              <hr class="r1-article-to-klarlyd-divider" aria-hidden="true" data-inline-chat-seed-bridge-divider />
+              <ArticleInlineChatShell
+                title="Spør Hørehjelpen:"
+                headingId={aiHeadingId}
+                items={bridgeItems}
+                sourceLabel={slug}
+                mode="progressive"
+              />
+            </section>
+          ) : null}
+        </div>
+      </article>
+    </div>
   </main>
 
   <InspectToolsDrawer />
-  <Footer variant="article" withInspectDrawer />
+  {showDialogBridge ? null : <Footer variant="article" withInspectDrawer />}
 </BaseLayout>
