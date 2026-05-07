@@ -17,9 +17,8 @@ type ArticleProps = {
 };
 
 export async function getStaticPaths() {
-  const allSlugs = await fetchPublishingArticleSlugs();
-  const target = "slik-tar-du-praten";
-  const slugs = allSlugs.includes(target) ? [target] : [];
+  /** Alle publiserte `article_page`-stories i Storyblok (CDN). Uten token returnerer lista [] og ingen HTML genereres for denne ruta. */
+  const slugs = await fetchPublishingArticleSlugs();
   return slugs.map((slug) => ({ params: { slug }, props: { slug } satisfies ArticleProps }));
 }
 
@@ -64,7 +63,7 @@ function bodyToParagraphs(body: string | undefined): string[] {
 const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.component === "module_observation_box");
 ---
 
-<BaseLayout title={`Viddel - ${article.title}`} currentPath="/no/hubs" shellVariant="article">
+<BaseLayout title={`Viddel - ${article.title}`} currentPath={`/no/artikkel/${slug}`} shellVariant="article">
   <InspectDrawerArmScript />
   <meta slot="head" name="robots" content="noindex,follow" />
 
