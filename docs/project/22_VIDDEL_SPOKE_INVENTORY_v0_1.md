@@ -55,7 +55,7 @@ Hver kandidat har **anbefalt arbeidstittel**, **alternativ** og **begrunnelse**.
 
 | | |
 |---|---|
-| **Anbefalt arbeidstittel** | Slutt med pipen: vanlige årsaker og raske grep |
+| **Anbefalt arbeidstittel** | Få slutt på pipingen: vanlige årsaker og raske grep |
 | **Alternativ tittel** | Når høreapparatet piper |
 | **Hvorfor anbefalt** | Lovet **utfall** (mindre pip); alternativ matcher daglig talemål. |
 
@@ -104,7 +104,7 @@ Hver kandidat har **anbefalt arbeidstittel**, **alternativ** og **begrunnelse**.
 2. Hvor mye bør jeg bruke apparatet den første uka?  
 3. Når skal jeg booke ny time hos audiograf i oppstartsfasen?
 
-**RAG-/kildebehov:** Pasientorientert materiale om tilvenning; ikke erstatte individuell JBL-plan.  
+**RAG-/kildebehov:** Pasientorientert materiale om tilvenning; ikke erstatte individuell tilvenningsplan fra audiograf.  
 **Visuelt anker:** Enkel tidslinje uke 1–4 med 3–4 milepæler (ikke medisinsk presisjonstall i UI).
 
 ---
@@ -171,7 +171,7 @@ Hver kandidat har **anbefalt arbeidstittel**, **alternativ** og **begrunnelse**.
 
 | | |
 |---|---|
-| **Anbefalt arbeidstittel** | Appen finner ikke høreapparatet: sjekkliste du kan gå nå |
+| **Anbefalt arbeidstittel** | Appen finner ikke høreapparatet: sjekkliste du kan gå gjennom nå |
 | **Alternativ tittel** | Når appen ikke finner høreapparatet |
 | **Hvorfor anbefalt** | **Sjekkliste** matcher Google/søk-intent og chat; «Når …» som ALT. |
 
@@ -200,7 +200,7 @@ Hver kandidat har **anbefalt arbeidstittel**, **alternativ** og **begrunnelse**.
 
 | | |
 |---|---|
-| **Anbefalt arbeidstittel** | Bare lyd på én øre: før du ringer audiograf |
+| **Anbefalt arbeidstittel** | Bare lyd i ett øre: før du ringer audiograf |
 | **Alternativ tittel** | Når høreapparatet bare virker på én side |
 | **Hvorfor anbefalt** | **«Før du …»** setter forventning og trygge første grep; alternativ er ren situasjonsbeskrivelse. |
 
@@ -258,25 +258,25 @@ Hver kandidat har **anbefalt arbeidstittel**, **alternativ** og **begrunnelse**.
 
 | | |
 |---|---|
-| **Anbefalt arbeidstittel** | Stemmen din høres annerledes ut: hva som ofte ligger bak |
-| **Alternativ tittel** | Når stemmen din høres rar ut i høreapparatet |
-| **Hvorfor anbefalt** | **Forklarer** uten alarm; unngår «Når …» som åpningsord. |
+| **Anbefalt arbeidstittel** | Egen stemme høres annerledes ut: hva som ofte ligger bak |
+| **Alternativ tittel** | Når egen stemme høres rar ut i høreapparatet |
+| **Hvorfor anbefalt** | **Egen stemme / egen tale** er eksplisitt i tittelen (ikke «stemme» som uklar kategori); forklarer uten alarm; «Når …» kun i alternativ. |
 
 **Hub:** Ny med høreapparat  
 **Artikkeltype:** Explainer kort + grep
 
-**Brukersituasjon:** Egen stemme høres «metallisk», boksete eller fremmed.  
+**Brukersituasjon:** Du hører **din egen tale** (egen stemme) som «metallisk», boksete eller fremmed gjennom apparatet — altså **selvlytting**, ikke andres stemmer eller generell musikk.  
 **Problem brukeren prøver å løse:** Forstå om det er tilvenning eller innstilling.  
 **Hva brukeren skal forstå:** Occlusion, åpen/lukket oppsett og tilvenning er vanlige forklaringer.  
 **Hva brukeren skal gjøre:** Notere når det er verst; teste enkle program eller domes-justering **med** audiografplan.  
-**Første praktiske steg:** Snakk høyt i rolig rom 5 minutter daglig for tilvenning (hvis ikke smerte).  
+**Første praktiske steg:** Snakk høyt i rolig rom 5 minutter daglig for tilvenning til **egen stemme** i apparatet (hvis ikke smerte).  
 **Når menneskelig hjelp bør anbefales:** Smerte, trykk, eller lukt/flyt fra øre.
 
 **AI-seedspørsmål (3):**
 
-1. Hvorfor hører jeg meg selv så annerledes med apparat?  
-2. Hvor lenge varer det før egen stemme føles naturlig?  
-3. Kan domes- eller ørestykkevalg fikse metallisk lyd?
+1. Hvorfor hører jeg **meg selv** (egen stemme) så annerledes med apparat?  
+2. Hvor lenge varer det før **egen stemme** føles naturlig?  
+3. Kan domes- eller ørestykkevalg dempe «rar» **egen stemme** eller metallisk selvlytting?
 
 **RAG-/kildebehov:** Audiolog forklaring på occlusion og egeneffekt; grense mot medisinsk.  
 **Visuelt anker:** Enkel side‑ved‑side «før/etter» **konsept** (ikke lydløfte-markedsføring).
