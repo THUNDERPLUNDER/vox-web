@@ -9,9 +9,9 @@ import "../../../styles/article-system.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 const r2Article = {
-  title: "Når høreapparatet ikke kobler seg til - en rolig guide i fire steg",
+  title: "Når høreapparatet ikke kobler seg til - en praktisk guide i fire steg",
   ingress:
-    "R2 tester Standard-preset med en mer praktisk og teknisk hjelpeartikkel. Målet er å gi tydelige steg uten at tonen blir kald eller tung.",
+    "Praktisk hjelp når høreapparat og telefon ikke vil samarbeide — med tydelige steg du kan prøve selv før du tar kontakt med support eller audiograf.",
   preset: "standard" as const,
   articleType: "spoke",
   hub: "Bedre lyd i hverdagen",
@@ -24,7 +24,7 @@ const r2Article = {
     "Kontroller app-tillatelser før du feilsøker videre. Appen trenger vanligvis Bluetooth-tilgang og ofte plasseringstilgang for å finne enheter stabilt.",
     "Hvis lyden fortsatt faller ut, test i et roligere miljø uten mange aktive Bluetooth-enheter rundt deg. Tett radiosignal i nærheten kan gi ustabil forbindelse.",
     "Når feilen vedvarer, noter hva som faktisk skjer: kobler ikke opp, kobler ut etter kort tid, eller gir bare lyd i én side. Denne observasjonen gjør det enklere å få rask hjelp hos audiograf eller support.",
-    "R2 i malen viser at Standard også tåler guidepreget innhold, men peker på et mulig neste behov: enda tydeligere stegvis visualisering når vi senere tester hele pilotpakken.",
+    "Start gjerne med stegene over én gang til i rolig rekkefølge — mange tilkoblingsproblemer løses før du trenger mer avansert hjelp.",
   ],
   footerTitle: "Kort oppsummert",
   footerText:
@@ -32,7 +32,7 @@ const r2Article = {
 };
 ---
 
-<BaseLayout title="Viddel - R2 spoke v0.1" currentPath="/no/hubs" shellVariant="article">
+<BaseLayout title="Viddel - R2 spoke v0.1" currentPath="/no/artikkel/r2-spoke-v01" shellVariant="article">
   <InspectDrawerArmScript />
   <meta slot="head" name="robots" content="noindex,follow" />
   <main class="bg-[rgb(var(--article-page-canvas))] py-8 sm:py-10" data-article-system>

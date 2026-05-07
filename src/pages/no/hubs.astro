@@ -8,13 +8,14 @@ import { fetchPublishingHub } from "../../lib/storyblok-publishing";
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
 const hub = await fetchPublishingHub();
-const hub1Title = hub?.title || "Relasjoner og samtale";
+/** MVP: live hub er alltid «Bedre lyd i hverdagen» (samme tittel som `/no/hub`); ikke CMS-fallback som «Relasjoner og samtale». */
+const hub1Title = "Bedre lyd i hverdagen";
 const hub1Intro =
   hub?.intro && hub.intro.length > 0
     ? hub.intro.length > 220
       ? `${hub.intro.slice(0, 217).trim()}…`
       : hub.intro
-    : "Et rolig sted å starte når du vil hjelpe noen du bryr deg om — og finne artikler som bygger videre.";
+    : "Praktiske innganger for å forstå utfordringer, løse situasjoner og finne neste steg — med artikler og kort vei til Hørehjelpen.";
 ---
 
 <BaseLayout title="Viddel - Emnehuber" currentPath="/no/hubs">
@@ -37,6 +38,7 @@ const hub1Intro =
           <a
             href="/no/hub"
             class="vox-surface-lifted flex flex-col gap-2 no-underline transition-opacity hover:opacity-[0.98] sm:flex-row sm:items-start sm:justify-between"
+            aria-label="Bedre lyd i hverdagen — åpne hub"
           >
             <div>
               <p class="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--primary))]">Hub 1 · live</p>
