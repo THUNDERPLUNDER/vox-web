@@ -8,6 +8,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "storyblok:bootstrap:slice01": "node scripts/storyblok-bootstrap-slice-01.mjs",
+    "storyblok:import:viddel-mvp": "node scripts/storyblok-import-viddel-mvp-content-pack.mjs",
     "kl:tasks": "node scripts/kl-task-layer.mjs",
     "vis:github:snapshot": "node scripts/vis-github-live-snapshot.mjs"
   },

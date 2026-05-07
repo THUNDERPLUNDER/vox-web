@@ -3,6 +3,8 @@
  * Usage:
  *   STORYBLOK_SPACE_ID=12345 STORYBLOK_PERSONAL_TOKEN=xxx node scripts/storyblok-bootstrap-slice-01.mjs
  *
+ * Stories bygges via `scripts/map-viddel-mvp-pack-to-storyblok.mjs` fra `content/viddel/articles/viddel-mvp-content-pack-v0-1.mjs`.
+ *
  * Required env:
  * - STORYBLOK_SPACE_ID
  * - STORYBLOK_PERSONAL_TOKEN or STORYBLOK_OAUTH_TOKEN
@@ -11,11 +13,12 @@
  * - STORYBLOK_MANAGEMENT_BASE_URL (default: https://mapi.storyblok.com/v1)
  */
 
+import { allPublishingStories } from "./map-viddel-mvp-pack-to-storyblok.mjs";
+import { createStoryblokManagementClient } from "./storyblok-management-client.mjs";
+
 const SPACE_ID = process.env.STORYBLOK_SPACE_ID;
 const TOKEN = process.env.STORYBLOK_PERSONAL_TOKEN || process.env.STORYBLOK_OAUTH_TOKEN;
 const BASE_URL = process.env.STORYBLOK_MANAGEMENT_BASE_URL || "https://mapi.storyblok.com/v1";
-const WRITE_DELAY_MS = 300;
-const MAX_429_RETRIES = 3;
 
 if (!SPACE_ID) {
   console.error("Missing env: STORYBLOK_SPACE_ID");
@@ -26,66 +29,11 @@ if (!TOKEN) {
   process.exit(1);
 }
 
-const apiBase = `${BASE_URL}/spaces/${SPACE_ID}`;
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function retryDelayMsFromAttempt(attempt) {
-  // 1s, 2s, 4s
-  return 1000 * Math.pow(2, attempt - 1);
-}
-
-function retryAfterToMs(value) {
-  if (!value) return null;
-  const asNumber = Number(value);
-  if (Number.isFinite(asNumber) && asNumber > 0) return Math.ceil(asNumber * 1000);
-  const parsedDate = Date.parse(value);
-  if (Number.isFinite(parsedDate)) {
-    const delta = parsedDate - Date.now();
-    return delta > 0 ? delta : null;
-  }
-  return null;
-}
-
-async function sb(path, options = {}) {
-  const { method = "GET", body } = options;
-  const isWrite = method === "POST" || method === "PUT" || method === "PATCH" || method === "DELETE";
-  let attempt = 0;
-
-  while (true) {
-    const res = await fetch(`${apiBase}${path}`, {
-      method,
-      headers: {
-        Authorization: TOKEN,
-        "Content-Type": "application/json",
-      },
-      body: body ? JSON.stringify(body) : undefined,
-    });
-
-    if (res.status === 429 && attempt < MAX_429_RETRIES) {
-      attempt += 1;
-      const retryAfterHeader = res.headers.get("retry-after");
-      const retryAfterMs = retryAfterToMs(retryAfterHeader);
-      const waitMs = retryAfterMs ?? retryDelayMsFromAttempt(attempt);
-      await sleep(waitMs);
-      continue;
-    }
-
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`${method} ${path} failed (${res.status}): ${text}`);
-    }
-
-    if (isWrite) {
-      await sleep(WRITE_DELAY_MS);
-    }
-
-    if (res.status === 204) return null;
-    return await res.json();
-  }
-}
+const { sb, apiBase } = createStoryblokManagementClient({
+  spaceId: SPACE_ID,
+  token: TOKEN,
+  baseUrl: BASE_URL,
+});
 
 function textField(pos) {
   return { type: "text", pos };
@@ -263,205 +211,6 @@ const componentSpecs = [
   },
 ];
 
-const hubStory = {
-  name: "Når du tror noen du er glad i hører dårlig",
-  slug: "hub",
-  content: {
-    component: "hub_page",
-    title: "Når du tror noen du er glad i hører dårlig",
-    slug: "hub",
-    kjerne: "Et rolig utgangspunkt for den første praten.",
-    intro:
-      "Denne huben samler første publiserte innholdspakke for hvordan man kan starte en vanskelig samtale på en trygg og respektfull måte.",
-    help_points: [
-      "Hvordan ta opp temaet uten å trigge motstand.",
-      "Setninger du kan bruke i praksis.",
-      "Hva du gjør når praten låser seg.",
-      "Neste steg hvis dere trenger støtte.",
-    ].join("\n"),
-    primary_cta_label: "Les: Slik tar du praten",
-    primary_cta_target: "/no/artikkel/slik-tar-du-praten",
-    secondary_links: [
-      {
-        component: "related_link",
-        label: "Hva gjør du når svaret er nei?",
-        href: "/no/artikkel/hva-gjor-du-nar-svaret-er-nei",
-        coming_soon: true,
-      },
-      {
-        component: "related_link",
-        label: "Slik følger du opp etterpå",
-        href: "/no/artikkel/slik-folger-du-opp",
-        coming_soon: true,
-      },
-    ],
-    trust_note:
-      "Innholdet er laget som en første praktisk versjon for live-test, og oppdateres fortløpende etter innsikt.",
-    status: "published",
-  },
-};
-
-const articleStory = {
-  name: "Slik tar du praten",
-  slug: "slik-tar-du-praten",
-  content: {
-    component: "article_page",
-    title: "Slik tar du praten",
-    slug: "slik-tar-du-praten",
-    category_label: "Samtaleguide",
-    parent_hub: "hub",
-    ingress:
-      "Når du er bekymret for hørselen til noen du er glad i, er timingen og tonen avgjørende. Her er en enkel struktur som gjør praten lettere å starte.",
-    sections: [
-      {
-        component: "article_section",
-        heading: "Start med omsorg, ikke diagnose",
-        body: "Snakk om hva du ser i hverdagen, ikke hva du mener de 'har'. Fokuser på situasjoner der det blir slitsomt eller frustrerende.",
-      },
-      {
-        component: "article_section",
-        heading: "Velg riktig øyeblikk",
-        body: "Ta praten når dere begge har tid og ro. Unngå å ta det opp midt i en konflikt eller i en setting med andre til stede.",
-      },
-      {
-        component: "article_section",
-        heading: "Gjør det til et samarbeid",
-        body: "Bruk 'vi'-språk: Hva kan vi teste? Hvordan kan vi gjøre hverdagen enklere sammen?",
-      },
-    ],
-    module_blocks: [
-      {
-        component: "module_observation_box",
-        title: "Observasjon",
-        body: "Typiske signaler som kan være verdt å snakke om:",
-        points: [
-          "Mange misforståelser i samtaler.",
-          "TV-volumet blir stadig høyere.",
-          "Sosiale settinger blir oftere unngått.",
-        ].join("\n"),
-      },
-      {
-        component: "module_friction_box",
-        title: "Vanlige friksjoner",
-        body: "Dette gjør praten vanskelig:",
-        points: [
-          "Temaet føles skambelagt.",
-          "Begge parter blir fort defensive.",
-          "Man mangler konkrete ord i øyeblikket.",
-        ].join("\n"),
-      },
-      {
-        component: "module_phrase_cards",
-        title: "Setninger du kan bruke",
-        cards: [
-          "Jeg sier dette fordi jeg bryr meg om deg.",
-          "Jeg ser at noen situasjoner tapper deg mer enn før.",
-          "Kan vi teste noen små grep sammen?",
-          "Vi trenger ikke løse alt nå.",
-        ].join("\n"),
-      },
-      {
-        component: "module_response_block",
-        title: "Hvis du møter motstand",
-        body: "Målet er å bevare relasjonen, ikke vinne diskusjonen.",
-        points: [
-          "Bekreft følelsen: 'Jeg skjønner at dette er vanskelig å snakke om.'",
-          "Gå tilbake til omsorg: 'Jeg vil bare at du skal ha det lettere i hverdagen.'",
-          "Foreslå et lite neste steg i stedet for stor beslutning.",
-        ].join("\n"),
-      },
-      {
-        component: "module_reassurance_block",
-        title: "Trygghet i prosessen",
-        body: "Små steg er ofte nok i starten. En god første prat kan være viktigere enn en perfekt plan.",
-        points: ["Du gjør allerede noe viktig ved å ta temaet på alvor."].join("\n"),
-      },
-      {
-        component: "related_link",
-        label: "Til hub: første støttepakke",
-        href: "/no/hub",
-        coming_soon: false,
-      },
-    ],
-    next_steps: [
-      "Velg én situasjon dere vil gjøre lettere denne uken.",
-      "Bli enige om én setning dere kan bruke når det blir vanskelig.",
-      "Vurder om dere vil utforske mer støtte sammen.",
-    ].join("\n"),
-    author_name: "KlarLyd Redaksjon",
-    author_role: "Innholdsutvikling",
-    reviewer_name: "Faglig rådgiver",
-    reviewer_role: "Hørsel og kommunikasjon",
-    updated_at: "2026-04-15",
-    ai_note: "Denne artikkelen er redigert av mennesker og støttet av AI i idéfasen.",
-    method_note: "Bygger på praktiske samtalemønstre, observasjoner og iterativ forbedring.",
-    status: "published",
-  },
-};
-
-const seedStories = [
-  {
-    name: "Seed 01: starte praten",
-    slug: "seed-starte-praten",
-    content: {
-      component: "ai_seed_question",
-      question: "Hvordan kan jeg ta opp hørsel på en måte som ikke føles kritisk?",
-      short_answer: "Start med omsorg og konkrete hverdagssituasjoner i stedet for diagnoser.",
-      followup_question: "Kan du gi meg tre formuleringer jeg kan bruke ordrett?",
-      related_article: "slik-tar-du-praten",
-      status: "published",
-    },
-  },
-  {
-    name: "Seed 02: møte motstand",
-    slug: "seed-mote-motstand",
-    content: {
-      component: "ai_seed_question",
-      question: "Hva gjør jeg når personen blir irritert og avviser hele temaet?",
-      short_answer: "Bekreft følelsen, senk tempoet og foreslå et mindre neste steg.",
-      followup_question: "Hvordan kan jeg svare rolig i selve øyeblikket?",
-      related_article: "slik-tar-du-praten",
-      status: "published",
-    },
-  },
-  {
-    name: "Seed 03: timing",
-    slug: "seed-riktig-timing",
-    content: {
-      component: "ai_seed_question",
-      question: "Når er riktig tidspunkt å ta en slik samtale?",
-      short_answer: "Velg et rolig tidspunkt uten publikum, stress eller tidspress.",
-      followup_question: "Hvilke situasjoner bør jeg unngå?",
-      related_article: "slik-tar-du-praten",
-      status: "published",
-    },
-  },
-  {
-    name: "Seed 04: konkrete setninger",
-    slug: "seed-konkrete-setninger",
-    content: {
-      component: "ai_seed_question",
-      question: "Kan du gi meg forslag til setninger som høres varme og tydelige ut?",
-      short_answer: "Ja, bruk korte formuleringer med 'jeg bryr meg' og 'kan vi teste sammen'.",
-      followup_question: "Kan du tilpasse setningene til ektefelle/barn/venn?",
-      related_article: "slik-tar-du-praten",
-      status: "published",
-    },
-  },
-  {
-    name: "Seed 05: neste steg",
-    slug: "seed-neste-steg",
-    content: {
-      component: "ai_seed_question",
-      question: "Hva er et realistisk neste steg etter den første praten?",
-      short_answer: "Bli enige om ett lite tiltak dere kan prøve i hverdagen først.",
-      followup_question: "Kan du hjelpe oss velge ett tiltak basert på vår situasjon?",
-      related_article: "slik-tar-du-praten",
-      status: "published",
-    },
-  },
-];
-
 async function listAllComponents() {
   const data = await sb("/components");
   return Array.isArray(data?.components) ? data.components : [];
@@ -540,7 +289,7 @@ async function main() {
     componentResults.push(result);
   }
 
-  const storySpecs = [hubStory, articleStory, ...seedStories];
+  const storySpecs = allPublishingStories();
   const existingStories = await listAllStories();
   const storyMap = new Map(existingStories.map((s) => [s.slug, s]));
   const storyResults = [];
