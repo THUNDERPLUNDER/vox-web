@@ -40,7 +40,7 @@ async function listAllStories() {
   const perPage = 100;
 
   while (true) {
-    const data = await sb(`/stories?page=${page}&per_page=${perPage}`);
+    const data = await sb(`/stories?page=${page}&per_page=${perPage}&story_only=1`);
     const batch = Array.isArray(data?.stories) ? data.stories : [];
     stories.push(...batch);
     if (batch.length < perPage) break;
@@ -48,6 +48,16 @@ async function listAllStories() {
   }
 
   return stories;
+}
+
+/** Liste-kall returnerer noen ganger tynn `content`; hent enkeltstory ved behov (read-only). */
+async function getStoryContent(story) {
+  if (story?.content?.component) {
+    return story.content;
+  }
+  if (!story?.id) return null;
+  const data = await sb(`/stories/${story.id}`);
+  return data?.story?.content ?? null;
 }
 
 async function main() {
@@ -83,7 +93,8 @@ async function main() {
   let remoteSeed = 0;
 
   for (const story of remoteStories) {
-    const comp = story.content?.component;
+    const content = story.content?.component ? story.content : await getStoryContent(story);
+    const comp = content?.component;
     if (comp === "hub_page") remoteHub += 1;
     else if (comp === "article_page") remoteArticle += 1;
     else if (comp === "ai_seed_question") remoteSeed += 1;
@@ -120,7 +131,8 @@ async function main() {
   for (const slug of expectedSeedSlugs) {
     const story = bySlug.get(slug);
     if (!story) continue;
-    const ra = story.content?.related_article;
+    const content = story.content?.component ? story.content : await getStoryContent(story);
+    const ra = content?.related_article;
     if (typeof ra !== "string" || !ra.trim()) {
       seedsMissingRelated.push(slug);
     } else if (!expectedArticleSlugs.has(ra.trim())) {
