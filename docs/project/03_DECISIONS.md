@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-05-06 - Privacy-first metrics & State v0.1 dokumentert i repo (#99 → #105)
+- Beslutning: Arbeidsmodell for **event-vokabular**, **payload-grenser**, **State v0.1**, **fire datadeler** og **pilot vs. senere** er landet i `docs/project/20_VIDDEL_PRIVACY_FIRST_METRICS_AND_STATE_v0_1.md`, i tråd med GitHub **#99**. Større lagring og stackvalg forankres videre i **#105**.
+- Begrunnelse: MVP trenger et skriftlig, privacy-first grunnlag før måling og «Min side light» skaleres; dokumentet skiller hjelpedata fra uttrekk og henter inn safe-read av faktisk kodebase (Article AI Bridge, CES, mangel på sentral analytics i dag).
+- Konsekvens: Nye telemetri- eller state-oppgaver skal referere til §3–8 i det dokumentet til arkitektur i #105 er lukket. Ingen CES-widget-endring følger av dette vedtaket alene.
+
 ## 2026-03-27 - MVP først
 - Beslutning: Vi bygger en enkel og testbar MVP før vi utvider scope.
 - Begrunnelse: Målet nå er å teste verdi, nytte og gjennomførbarhet med minst mulig friksjon.

@@ -16,7 +16,7 @@
 - **Sonic Resonance:** Eksplisitt token-baseline i `tokens.css` (brand + gradient + surface light/dark); ref. commit **`4d5fd53`**. `.sonic-pulse-cta` og gradientaksen er koblet til `--accent-gradient-start/end`.
 - **Flater:** Content surfaces og **`Section` `tone="band"`** — band bruker **tonal gradient-separasjon**, ikke hard 1px divider mellom seksjoner.
 - **Landing:** `/no` og `/no/info` er **visuelt oppdatert i samme familie** (gradient tydeligere, inkrementelt — ikke full redesign). `/no`-layout: desktop innhold venstre + sticky chat høyre; mobil innhold først, chat senere (uendret prinsipp).
-- **Dokumentasjon:** `DESIGN.md`, `00_STATE.md`, `03_DECISIONS.md` skal speile denne baseline; videre arbeid bygger oppå, ikke forutsetter gammel «kun lys palett»-tilstand.
+- **Dokumentasjon:** `DESIGN.md`, `00_STATE.md`, `03_DECISIONS.md` skal speile denne baseline; videre arbeid bygger oppå, ikke forutsetter gammel «kun lys palett»-tilstand. **Privacy-first måling / State v0.1** (GitHub **#99**): `docs/project/20_VIDDEL_PRIVACY_FIRST_METRICS_AND_STATE_v0_1.md` (arkitektur-port **#105**).
 
 ## Status (repo, faktisk landet)
 - **Frontend:** Astro **5** med statisk output der det passer.
@@ -61,5 +61,5 @@
 - Publiseringsflyt CMS (MVP): Storyblok publish -> webhook -> Vercel deploy hook -> ny production build (`docs/project/04_PUBLISHING.md`) — testet og verifisert i praksis.
 
 ## Sist oppdatert
-- Dato: 2026-04-11
-- Oppdatert av: docs-lukking chat shell Step 1 + eksisterende baseline (Sonic Resonance ref. fortsatt `4d5fd53` der relevant)
+- Dato: 2026-05-06
+- Oppdatert av: Referanse til privacy-first metrics / State v0.1 dokument (**#99**) i `20_VIDDEL_PRIVACY_FIRST_METRICS_AND_STATE_v0_1.md`; øvrig baseline uendret
