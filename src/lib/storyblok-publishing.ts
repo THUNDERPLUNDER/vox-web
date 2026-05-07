@@ -262,10 +262,22 @@ async function getStoryblokApiSafe() {
   }
 }
 
+/** Når flere `hub_page`-stories finnes, hent denne først (slug fra Viddel MVP content pack). Ellers faller vi tilbake til første treff. */
+const PRIMARY_HUB_SLUG = "bedre-lyd-i-hverdagen";
+
 export async function fetchPublishingHub(): Promise<HubPageContent | null> {
   const api = await getStoryblokApiSafe();
   if (!api) return null;
   try {
+    const { data: preferredData } = await api.get("cdn/stories", {
+      version: getStoryblokVersion(),
+      filter_query: { component: { in: "hub_page" } },
+      by_slugs: PRIMARY_HUB_SLUG,
+      per_page: 1,
+    });
+    const preferredStory = Array.isArray(preferredData?.stories) ? preferredData.stories[0] : null;
+    if (preferredStory) return normalizeHubStory(preferredStory);
+
     const { data } = await api.get("cdn/stories", {
       version: getStoryblokVersion(),
       filter_query: { component: { in: "hub_page" } },
