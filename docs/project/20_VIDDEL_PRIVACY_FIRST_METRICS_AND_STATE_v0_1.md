@@ -125,19 +125,61 @@ trackViddelEvent("seed_question_clicked", {
 
 ---
 
-## 5. Hørehjelpen / Google CES — første avklaringsnivå (åpent)
+## 5. Hørehjelpen / Google Cloud (CES) — data og avklaring (#99)
 
-Før produksjonslogging rundt samtale:
+Dette avsnittet **avklarer på første tekniske nivå** hvordan Hørehjelpen er koblet i `vox-web`, hva som sannsynligvis behandles i **Google Cloud**, og hvilke **oppgaver som gjenstår** i konsoll, avtaleverk og juridisk vurdering. Det er **ikke** juridisk rådgivning.
 
-| Tema | Spørsmål |
-|------|----------|
-| Eierskap | Hva logges i **VOX-eid kode** vs. i **CES-widget / Google**? |
-| Article AI Bridge | Hvilke hendelser kan vi pålitelig utlede fra `ArticleInlineChatShell` uten å lese meldingsinnhold? |
-| CES platform | Finnes conversation logs, eksport, analytics, Cloud Logging? |
-| Retention | Oppbevaringstid og sletting? |
-| Lov | GDPR / samtykke / behandlingsgrunnlag for både VOX og underleverandør |
+### 5.1 Produktnavn og dokumentasjon (offentlig)
 
-**.cursorrules:** Rør ikke `<chat-messenger>` / CES-widget uten eksplisitt mandat; avklaringene over er **prosjekt-/juridisk**, ikke kodeendring her.
+Googles kundekontakt-/AI-agentplattform omtales i nyere offentlige kilder blant annet som **Gemini Enterprise for Customer Experience** og **Customer Engagement Suite** (blogg/produkttekster). I kodebasen brukes fortsatt **CES**-SDK og `chatSdk.prebuilts.ces`. Ved avtale og support: bruk **prosjektnummer, faktureringskonto og produktnavn** som står i din GCP-kontrakt, og kryssjekk mot:
+
+- Gemini Enterprise for Customer Experience — *Essentials* terms (oppdatert avtaletekst): [cloud.google.com/terms/gecx](https://cloud.google.com/terms/gecx)
+- Rolle- og IAM-oversikt (intern tilgang i *ditt* GCP-prosjekt): [cloud.google.com/iam/docs/roles-permissions/ces](https://cloud.google.com/iam/docs/roles-permissions/ces)
+- Produkt-/løsningsside (markedsføring + pekere til sikkerhet/personvern): [cloud.google.com/solutions/customer-engagement-ai](https://cloud.google.com/solutions/customer-engagement-ai)
+
+**Viktig:** Retention, eksport, logger og eksakt databehandlerroller må **bekreftes** mot (1) kontraktsversjon du har signert, (2) aktuelle produktnotater fra Google-konto-team, (3) innstillinger i **din** agent-/deployment-konfigurasjon — dette varierer med SKU og region.
+
+### 5.2 Hva kodebasen faktisk gjør (teknisk grenseflate)
+
+| Komponent | Funksjon | Data som *berører* Google |
+|-----------|----------|---------------------------|
+| `BaseLayout.astro` (inline script) | Laster widget-API, kaller `chatSdk.registerContext(chatSdk.prebuilts.ces.createContext({ deploymentName, tokenBroker: … }))` | `deploymentName` peker på **EU**-deployment i prosjekt `1088102295663` (jfr. `02_LINKS.md`). **Token broker** er påslått (`enableTokenBroker: true`). Recaptcha av i denne registreringen. |
+| `chat-messenger` (web component) | Samtale-UI; lastes fra `gstatic.com/ces-console/fast/chat-messenger/prod/v1.15/` | Brukerens **spørsmål og assistentens svar** går via Googles klient/motor — **ikke** persistert av den statiske Astro-appen som egen database. |
+| `ArticleInlineChatShell.astro` | Skjult `chat-messenger` + VOX-eid transcript-lag for artikkelopplevelsen | Samme CES-motor; VOX styrer **presentasjon** og kan lese DOM for UX — **skal ikke** logge fritekst som produkttelemetri (jf. §4). |
+| `/no/chat.astro` | Full widget + **debug**-lyttere på `chat-messenger-*`, `vox-ces-register`, `ces-messenger-connected` | Kun **nettleser-konsoll** / kopierbar debug — ikke en definert dataflyt til VOX-backend. |
+
+**Konklusjon for «hvem eier hva» (MVP-nivå):** Samtale**innhold** og agent**kjøring** behandles i **Googles kontrollerte miljø** knyttet til deployment; **VOX-eid kode** sender ikke samtaler til egen server i denne arkitekturen, men **host** (f.eks. Vercel/GitHub Pages) kan likevel ha **tilgangslogger** for HTTP-forespørsler til siden.
+
+### 5.3 Datatyper i praksis (skille for DPIA)
+
+1. **Samtaleinnhold (bruker + modell)** — behandling hos **Google** som del av CES/Agent-tjenesten; omfang og lagring styres av **Google DPA / produktvilkår** og innstillinger i prosjektet.
+2. **Drifts- og sikkerhetsdata («Service data»)** — Google beskriver i essentials-avtalen egen behandling av bl.a. konto, fakturering og teknisk driftsinformasjon; dette er **adskilt** fra «Your Content» i avtaleteksten — **verifiser definisjon** i gjeldende versjon.
+3. **VOX-first-party** (når `trackViddelEvent` innføres) — kun **forhåndsdefinerte** hendelser uten fritekst (jf. §3–4), under eget samtykke/behandlingsgrunnlag.
+4. **Nettverkslogger hos host** — IP, User-Agent, tid; reguleres av host-avtale og informasjonsplikt.
+
+### 5.4 Konkrete avklaringsoppgaver i Google Cloud (sjekkliste)
+
+Disse bør gjøres av noen med **Organization/Project Owner** eller avtalt sikkerhetsrolle på `hearing-aid-mvp` / prosjekt `1088102295663`:
+
+- [ ] **Deployment / Agent Builder:** Finn i konsollen agenten som matcher `deploymentName` i `BaseLayout.astro` — noter **region** (allerede `eu` i stien), **logging/ history**-innstillinger hvis eksponert i UI.
+- [ ] **Logging:** Avklar om **Cloud Logging** i prosjektet fanger agent- eller gateway-kall (filtre på relevante API-er), og **hvem** som har lesetilgang. Avklar **retention** på loggbuckets.
+- [ ] **Eksport / hendelsesarkiv:** Finnes det støtte for eksport av samtalemetadata eller full historikk for **compliance** — kun gjennom **konto-/supportkanal** hvis ikke synlig i UI.
+- [ ] **DPA og underleverandører:** Bekreft signert **Google Cloud Data Processing Addendum** og at **Gemini Enterprise for Customer Experience** / CES er innenfor avtalt bruksområde.
+- [ ] **Roller:** Kartlegg IAM-prinsipp «minste privilegium» mot [CES-relaterte roller](https://cloud.google.com/iam/docs/roles-permissions/ces) for teammedlemmer og CI.
+
+### 5.5 Hva som *ikke* kan avklares fra repo alene
+
+- Eksakt **oppbevaringstid** for samtaler og **sletterutiner** i Googles miljø.
+- Om **full transkripsjon** lagres som standard i deres SKU, eller kun aggregerte **metrics**.
+- Hvilke **under-prosessorer** og **overføringer** som utløses av *deres* konfig (f.eks. bestemte Gemini-modeller eller regioner).
+
+Disse punktene skal innhentes skriftlig (support ticket / Customer Engineer / juridisk) og inn i **DPIA** med referanse til **#99** og **#105**.
+
+### 5.6 Konsekvens for VOX-implementering (uendret mandat)
+
+- **.cursorrules:** Rør ikke `<chat-messenger>` / CES-widget uten eksplisitt mandat.
+- **Produkttelemetri:** Bygg på `trackViddelEvent` med whitelist (§4) **uten** samtaletekst; korreler ikke mot CES conversation-id før avtale og grunnlag er på plass.
+- **Article AI Bridge:** Fortsett å utlede hendelser fra **UI** (seed-klikk, tilstandsskifte, feilkoder), ikke fra rå meldingspayload.
 
 ---
 
@@ -223,7 +265,7 @@ Før produksjonslogging rundt samtale:
 | State v0.1 definert godt nok til testing | Ja — se §1 |
 | Event-vokabular dokumentert | Ja — se §3 |
 | Payload-regler + «ikke send» | Ja — se §4 |
-| CES/Hørehjelpen muligheter kartlagt (nivå 1) | Delvis — åpne spørsmål §5 |
+| CES/Hørehjelpen / Google Cloud dataskille | Ja — teknisk grenseflate og sjekkliste §5; konsoll + avtale må fylle hullene |
 | Skille fire statedata-typer | Ja — se §2 |
 | Samtykke/personvern identifisert | Ja — se §9 |
 | Anbefaling før pilot vs. vent | Ja — se §8 |
@@ -242,4 +284,4 @@ Før produksjonslogging rundt samtale:
 ## Sist oppdatert
 
 - Dato: 2026-05-06
-- Grunnlag: GitHub issue #99 + safe-read av `vox-web`
+- Grunnlag: GitHub issue #99 + safe-read av `vox-web` + offentlige Google Cloud-lenker for GECX/CES (§5.1)
