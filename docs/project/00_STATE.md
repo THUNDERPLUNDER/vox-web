@@ -44,6 +44,7 @@
 
 ## Aktivt spor
 - **Artikler / spokes:** `docs/project/21_VIDDEL_ARTICLE_BRIEF_v0_1.md` (**Viddel Article Brief v0.1**) er canonical redaksjonell standard for nye artikler og MVP‑spokes.
+- **Spoke Inventory v0.1** i `docs/project/22_VIDDEL_SPOKE_INVENTORY_v0_1.md` er arbeidsgrunnlag for neste artikkelproduksjon og for senere hub- og forside-design (ikke roadmap).
 - Utvide innhold og testbarhet i tråd med MVP-målene, med stabil shell og hybrid styling som utgangspunkt.
 
 ## Neste konkrete steg (forslag)
