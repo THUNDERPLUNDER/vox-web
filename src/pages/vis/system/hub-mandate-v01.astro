@@ -1,0 +1,844 @@
+---
+/* CONTRACT: VIS Hub Mandate v0.1 — canonical mandat for første Viddel-hub. Intern styringsside, ikke public content. Rolig dokumentasjonsuttrykk lik øvrig /vis/system. */
+import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+const base = import.meta.env.BASE_URL;
+
+const topTasks = [
+  "Stoppe piping",
+  "Koble høreapparatet til mobilen",
+  "Fikse app eller Bluetooth",
+  "Sjekke batteri og lading",
+  "Rense filter, propp eller dome",
+  "Forstå om lyden er feil eller normal",
+  "Vite når audiograf bør kontaktes",
+];
+
+type ArticleStatus = "finnes" | "gap" | "avklaring" | "delvis";
+
+const articleMapping: Array<{
+  topTask: string;
+  article: string | null;
+  status: ArticleStatus;
+  note?: string;
+}> = [
+  { topTask: "Stoppe piping", article: "Få slutt på pipingen", status: "finnes" },
+  { topTask: "Koble høreapparatet til mobilen", article: "Koble høreapparatet til mobilen", status: "finnes" },
+  { topTask: "Fikse app eller Bluetooth", article: null, status: "avklaring", note: "Delvis dekket av mobilartikkelen" },
+  { topTask: "Sjekke batteri og lading", article: null, status: "gap" },
+  { topTask: "Rense filter, propp eller dome", article: null, status: "gap" },
+  { topTask: "Forstå om lyden er feil eller normal", article: null, status: "gap", note: "Mulig delvis i oppstartartikkel" },
+  { topTask: "Vite når audiograf bør kontaktes", article: "Audiograf når det haster", status: "finnes", note: "Eskaleringskandidat" },
+  { topTask: "Komme i gang med høreapparat", article: "De første ukene med høreapparat", status: "delvis", note: "Hører sannsynligvis hjemme i egen oppstartshub" },
+  { topTask: "Samtaler / støy", article: "Når hørselen endrer samtalen", status: "delvis", note: "Trolig egen samtalehub" },
+];
+
+const statusLabel: Record<ArticleStatus, string> = {
+  finnes: "Finnes",
+  gap: "Content gap",
+  avklaring: "Trenger avklaring",
+  delvis: "Delvis / annen hub",
+};
+
+const statusClass: Record<ArticleStatus, string> = {
+  finnes: "hm-status--ok",
+  gap: "hm-status--gap",
+  avklaring: "hm-status--warn",
+  delvis: "hm-status--soft",
+};
+---
+
+<PrototypeLayout title="Hub Mandate v0.1">
+  <main class="hm-page">
+    <nav class="hm-breadcrumb">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={`${base}vis/system`}>System</a>
+      <span aria-hidden="true">/</span>
+      <span>Hub Mandate</span>
+    </nav>
+
+    <header class="hm-hero">
+      <p class="hm-kicker">Viddel · hub-mandat</p>
+      <h1>Hub Mandate v0.1</h1>
+      <p>
+        Canonical mandat for første Viddel-hub, <em>Få høreapparatet til å fungere</em>.
+        Intern styringsside — ikke public UI. Bygger på <a href={`${base}vis/system/ia-principles-v01`}>IA-prinsipper v0.1</a>.
+      </p>
+    </header>
+
+    <section class="hm-section">
+      <div class="hm-section-head">
+        <p class="hm-kicker">01</p>
+        <h2>Første hub</h2>
+      </div>
+      <div class="hm-hub-def">
+        <div class="hm-hub-def__meta">
+          <dl class="hm-def-list">
+            <div>
+              <dt>Strategisk område</dt>
+              <dd>Daglig bruk, optimering og restart</dd>
+            </div>
+            <div>
+              <dt>Brukerrettet hubnavn</dt>
+              <dd><strong>Få høreapparatet til å fungere</strong></dd>
+            </div>
+            <div>
+              <dt>Støttetekst</dt>
+              <dd>Vanlige problemer og hjelp</dd>
+            </div>
+            <div>
+              <dt>Engasjementstype</dt>
+              <dd>Akutt hjelp</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="hm-hub-def__mandate">
+          <p class="hm-label">Mandat</p>
+          <p>
+            Hubben skal hjelpe brukeren å finne riktig guide når noe ikke virker med høreapparat,
+            app, lyd, lading eller vedlikehold.
+          </p>
+          <p>
+            En Viddel-hub er en behovsstyrt inngang til konkrete hjelpesituasjoner. Den samler
+            top tasks, artikler og AI-overganger slik at brukeren raskt kan kjenne igjen
+            situasjonen, forstå hva som er normalt, finne relevant guide og gå videre til
+            AI-dialog eller menneskelig hjelp.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hm-section">
+      <div class="hm-section-head">
+        <p class="hm-kicker">02</p>
+        <h2>IA-prinsipper — låste regler</h2>
+      </div>
+      <ul class="hm-rule-list">
+        <li>Navigasjon og hubstruktur styres av <strong>behov / top tasks</strong>.</li>
+        <li>Segmenter brukes til analyse, prioritering og vinkling — <strong>ikke til nav</strong>.</li>
+        <li>Hubben er <strong>ikke</strong> en målgruppeforside.</li>
+        <li>«For deg som hjelper noen» skal <strong>ikke</strong> være hub nå.</li>
+      </ul>
+    </section>
+
+    <section class="hm-section">
+      <div class="hm-section-head">
+        <p class="hm-kicker">03</p>
+        <h2>Språkprinsipp</h2>
+        <p>Tillit skapes gjennom nytte, ikke betryggende adjektiver.</p>
+      </div>
+      <div class="hm-lang-grid">
+        <div class="hm-lang-avoid">
+          <p class="hm-label">Unngå</p>
+          <ul>
+            <li>første trygge steg</li>
+            <li>på en rolig måte</li>
+            <li>trygg og enkel</li>
+            <li>skånsom</li>
+          </ul>
+        </div>
+        <div class="hm-lang-use">
+          <p class="hm-label">Bruk heller</p>
+          <p>Direkte språk som sier hva brukeren konkret kan gjøre.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hm-section">
+      <div class="hm-section-head">
+        <p class="hm-kicker">04</p>
+        <h2>Top tasks — første MVP-scope</h2>
+      </div>
+      <ol class="hm-task-list">
+        {topTasks.map((task) => (
+          <li>{task}</li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="hm-section">
+      <div class="hm-section-head">
+        <p class="hm-kicker">05</p>
+        <h2>Article / spoke mapping</h2>
+        <p>Oversikt over dekningsgrad per top task.</p>
+      </div>
+      <div class="hm-table-wrap">
+        <table class="hm-table">
+          <thead>
+            <tr>
+              <th>Top task</th>
+              <th>Artikkel</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {articleMapping.map((row) => (
+              <tr>
+                <td>{row.topTask}</td>
+                <td>{row.article ?? <span class="hm-empty">—</span>}{row.note ? <span class="hm-note"> · {row.note}</span> : null}</td>
+                <td><span class:list={["hm-status", statusClass[row.status]]}>{statusLabel[row.status]}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="hm-section">
+      <div class="hm-section-head">
+        <p class="hm-kicker">06</p>
+        <h2>AI-rolle</h2>
+        <p>AI støtter ruting og fallback — ikke dominerende.</p>
+      </div>
+      <div class="hm-ai-grid">
+        <div>
+          <p class="hm-label">Hub-level</p>
+          <p class="hm-ai-role">Finn riktig hjelp</p>
+          <p class="hm-ai-prompt">Mulig prompt: <em>Skriv hva som ikke fungerer.</em></p>
+        </div>
+        <div>
+          <p class="hm-label">Article-level</p>
+          <p>Skarpere, kontekstbundet opplevelse per artikkelmandat (se <a href={`${base}vis/system/ia-principles-v01`}>IA-prinsipper</a>).</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hm-section">
+      <div class="hm-section-head">
+        <p class="hm-kicker">07</p>
+        <h2>Design-system guardrails</h2>
+      </div>
+      <div class="hm-guardrail-box">
+        <p class="hm-guardrail-lead">
+          Første hub er sannsynligvis en <strong>Editorial-led surface</strong>, ikke en Chrome-/dashboardflate.
+        </p>
+        <div class="hm-guardrail-cols">
+          <div>
+            <p class="hm-label">Arbeidshypotese</p>
+            <ul>
+              <li>Header/nav kan ha Chrome-rolle (glass/elevated)</li>
+              <li>Hovedflaten bør være Editorial (reading-paper, rolig)</li>
+              <li>Task- og artikkelinnganger bruker hvite/reading-paper flater</li>
+              <li>Unngå dashboardpreg og bokser-i-bokser</li>
+              <li>Ikke bygg huben som generisk kortgrid</li>
+              <li>AI tilgjengelig, men ikke dominerende</li>
+            </ul>
+          </div>
+          <div>
+            <p class="hm-label">Sannsynlige nye patterns</p>
+            <ul>
+              <li>Editorial top task entry</li>
+              <li>Editorial article card</li>
+              <li>Task-to-article mapping row/card</li>
+              <li>Escalation area</li>
+              <li>AI fallback entry</li>
+            </ul>
+            <p class="hm-guardrail-note">
+              Nye hub-patterns dokumenteres i <a href={`${base}vis/system/design-system-v01`}>Design System Overview</a> når public hub bygges.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hm-section">
+      <div class="hm-section-head">
+        <p class="hm-kicker">08</p>
+        <h2>Kjernemodell</h2>
+      </div>
+      <dl class="hm-core-list">
+        <div>
+          <dt>Brukeroppgave</dt>
+          <dd>Få høreapparatet til å fungere</dd>
+        </div>
+        <div>
+          <dt>Innganger</dt>
+          <dd>Søk, forside, artikkel, delt lenke, Hørehjelpen</dd>
+        </div>
+        <div>
+          <dt>Sideløfte</dt>
+          <dd>Finne relevant problem og riktig hjelp</dd>
+        </div>
+        <div>
+          <dt>Hovedinnhold</dt>
+          <dd>Top task-innganger + utvalgte artikler</dd>
+        </div>
+        <div>
+          <dt>Videre</dt>
+          <dd>Artikkel, Article AI, Hørehjelpen, audiograf ved behov</dd>
+        </div>
+        <div>
+          <dt>Produktmål</dt>
+          <dd>Teste om behovsstyrt navigasjon gir raskere første handling</dd>
+        </div>
+        <div>
+          <dt>Målesignal</dt>
+          <dd>Task-klikk, artikkelklikk, AI-open/start, seed-klikk, oppfølgingsspørsmål, escalation-klikk</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="hm-section">
+      <div class="hm-section-head">
+        <p class="hm-kicker">09</p>
+        <h2>Ikke-mål</h2>
+        <p>Hva som eksplisitt <strong>ikke</strong> er scope for denne oppgaven.</p>
+      </div>
+      <ul class="hm-nongoal-list">
+        <li>Public hub UI i denne oppgaven</li>
+        <li>Målgruppebasert navigasjon</li>
+        <li>Full hjelpermodus</li>
+        <li>Full «Mine sider»</li>
+        <li>Analytics-dashboard</li>
+        <li>Storyblok schema-refaktor</li>
+        <li>Forside-redesign</li>
+        <li>Nye claims eller pitchspråk</li>
+      </ul>
+    </section>
+
+    <section class="hm-section hm-section--soft">
+      <div class="hm-section-head">
+        <p class="hm-kicker">Referanser</p>
+        <h2>Videre lesing</h2>
+      </div>
+      <div class="hm-links">
+        <a href={`${base}vis/system`}>← Systemreferanse</a>
+        <a href={`${base}vis/system/ia-principles-v01`}>IA-prinsipper v0.1</a>
+        <a href={`${base}vis/system/design-system-v01`}>Design System Overview</a>
+      </div>
+      <p class="hm-footnote">
+        Repo-dokument: <code>docs/project/VIDDEL_HUB_MANDATE_v0_1.md</code>
+      </p>
+    </section>
+  </main>
+
+  <style>
+    .hm-page {
+      min-height: 100vh;
+      background: rgb(var(--article-page-canvas, 250 250 248));
+      color: rgb(var(--reading-ink, 24 24 27));
+      padding: 1.5rem 1rem 3rem;
+      font-family: var(--font-body, ui-sans-serif, system-ui, sans-serif);
+    }
+
+    .hm-page > * {
+      max-width: 72rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hm-breadcrumb {
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      font-size: 0.72rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .hm-breadcrumb a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      color: inherit;
+    }
+
+    .hm-hero {
+      border-bottom: 1px solid rgb(var(--border, 220 220 225) / 0.24);
+      padding: 1.5rem 0 2rem;
+    }
+
+    .hm-hero h1 {
+      margin-top: 0.4rem;
+      max-width: 52rem;
+      font-size: clamp(2.15rem, 6vw, 4.2rem);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+      font-weight: 700;
+    }
+
+    .hm-hero p {
+      max-width: 44rem;
+      margin-top: 0.8rem;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      font-size: 0.96rem;
+      line-height: 1.68;
+    }
+
+    .hm-hero a {
+      color: rgb(var(--reading-accent-iris, 99 102 241));
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .hm-kicker {
+      color: rgb(var(--reading-accent-iris, 99 102 241));
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .hm-label {
+      margin: 0 0 0.45rem;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .hm-section {
+      padding: 2.4rem 0;
+      border-bottom: 1px solid rgb(var(--border, 220 220 225) / 0.18);
+    }
+
+    .hm-section-head {
+      margin-bottom: 1.25rem;
+    }
+
+    .hm-section-head > p:not(.hm-kicker) {
+      max-width: 44rem;
+      margin-top: 0.6rem;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .hm-section h2 {
+      margin-top: 0.15rem;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.12;
+      letter-spacing: -0.035em;
+      font-weight: 700;
+    }
+
+    /* Hub definition */
+    .hm-hub-def {
+      display: grid;
+      gap: 1.5rem;
+      max-width: 56rem;
+    }
+
+    .hm-def-list {
+      display: grid;
+      gap: 0.75rem;
+      margin: 0;
+    }
+
+    .hm-def-list div {
+      min-width: 0;
+    }
+
+    .hm-def-list dt {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-ink-secondary, 100 100 110) / 0.75);
+    }
+
+    .hm-def-list dd {
+      margin: 0.15rem 0 0;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      color: rgb(var(--reading-ink, 24 24 27));
+    }
+
+    .hm-hub-def__mandate {
+      border-left: 2px solid rgb(var(--border, 220 220 225) / 0.45);
+      padding-left: 0.85rem;
+    }
+
+    .hm-hub-def__mandate p:not(.hm-label) {
+      margin: 0 0 0.65rem;
+      font-size: 0.9rem;
+      line-height: 1.62;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+    }
+
+    /* Rule list */
+    .hm-rule-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 52rem;
+      border: 1px solid rgb(var(--border, 220 220 225) / 0.22);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .hm-rule-list li {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgb(var(--border, 220 220 225) / 0.16);
+      background: rgb(var(--reading-paper, 255 255 255));
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+    }
+
+    .hm-rule-list li:last-child {
+      border-bottom: 0;
+    }
+
+    .hm-rule-list strong {
+      color: rgb(var(--reading-ink, 24 24 27));
+    }
+
+    /* Language grid */
+    .hm-lang-grid {
+      display: grid;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid rgb(var(--border, 220 220 225) / 0.22);
+      border-radius: 8px;
+      background: rgb(var(--border, 220 220 225) / 0.22);
+      max-width: 44rem;
+    }
+
+    .hm-lang-avoid,
+    .hm-lang-use {
+      background: rgb(var(--reading-paper, 255 255 255));
+      padding: 1rem;
+    }
+
+    .hm-lang-avoid ul,
+    .hm-lang-use p:not(.hm-label) {
+      margin: 0;
+      font-size: 0.86rem;
+      line-height: 1.58;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+    }
+
+    .hm-lang-avoid ul {
+      padding-left: 1rem;
+    }
+
+    .hm-lang-avoid li {
+      margin-bottom: 0.2rem;
+    }
+
+    /* Top task list */
+    .hm-task-list {
+      margin: 0;
+      padding-left: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 38rem;
+    }
+
+    .hm-task-list li {
+      padding: 0.55rem 0;
+      border-bottom: 1px solid rgb(var(--border, 220 220 225) / 0.14);
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: rgb(var(--reading-ink, 24 24 27));
+    }
+
+    /* Table */
+    .hm-table-wrap {
+      overflow-x: auto;
+      border: 1px solid rgb(var(--border, 220 220 225) / 0.22);
+      border-radius: 8px;
+    }
+
+    .hm-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+
+    .hm-table th {
+      padding: 0.6rem 0.85rem;
+      text-align: left;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      background: rgb(var(--reading-paper, 255 255 255));
+      border-bottom: 1px solid rgb(var(--border, 220 220 225) / 0.22);
+    }
+
+    .hm-table td {
+      padding: 0.6rem 0.85rem;
+      border-bottom: 1px solid rgb(var(--border, 220 220 225) / 0.14);
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      background: rgb(var(--reading-paper, 255 255 255));
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .hm-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .hm-table td:first-child {
+      color: rgb(var(--reading-ink, 24 24 27));
+      font-weight: 500;
+    }
+
+    .hm-empty {
+      color: rgb(var(--reading-ink-secondary, 100 100 110) / 0.45);
+    }
+
+    .hm-note {
+      font-size: 0.78rem;
+      color: rgb(var(--reading-ink-secondary, 100 100 110) / 0.75);
+    }
+
+    .hm-status {
+      display: inline-block;
+      border-radius: 3px;
+      padding: 0.12rem 0.38rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .hm-status--ok {
+      background: rgb(220 252 231);
+      color: rgb(22 101 52);
+    }
+
+    .hm-status--gap {
+      background: rgb(254 226 226);
+      color: rgb(153 27 27);
+    }
+
+    .hm-status--warn {
+      background: rgb(254 243 199);
+      color: rgb(120 53 15);
+    }
+
+    .hm-status--soft {
+      background: rgb(var(--border, 220 220 225) / 0.35);
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+    }
+
+    /* AI grid */
+    .hm-ai-grid {
+      display: grid;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid rgb(var(--border, 220 220 225) / 0.22);
+      border-radius: 8px;
+      background: rgb(var(--border, 220 220 225) / 0.22);
+      max-width: 52rem;
+    }
+
+    .hm-ai-grid > div {
+      background: rgb(var(--reading-paper, 255 255 255));
+      padding: 1rem;
+    }
+
+    .hm-ai-role {
+      margin: 0 0 0.35rem;
+      font-size: 1rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      color: rgb(var(--reading-ink, 24 24 27));
+    }
+
+    .hm-ai-prompt {
+      margin: 0;
+      font-size: 0.82rem;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+    }
+
+    .hm-ai-grid p:not(.hm-label):not(.hm-ai-role):not(.hm-ai-prompt) {
+      margin: 0;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+    }
+
+    .hm-ai-grid a {
+      color: rgb(var(--reading-accent-iris, 99 102 241));
+    }
+
+    /* Guardrail box */
+    .hm-guardrail-box {
+      border: 1px solid rgb(var(--border, 220 220 225) / 0.3);
+      border-radius: 8px;
+      padding: 1.25rem;
+      background: rgb(var(--reading-paper, 255 255 255));
+      max-width: 60rem;
+    }
+
+    .hm-guardrail-lead {
+      margin: 0 0 1.1rem;
+      font-size: 0.96rem;
+      line-height: 1.6;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+    }
+
+    .hm-guardrail-lead strong {
+      color: rgb(var(--reading-ink, 24 24 27));
+    }
+
+    .hm-guardrail-cols {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .hm-guardrail-cols ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .hm-guardrail-cols li {
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+    }
+
+    .hm-guardrail-note {
+      margin: 0.85rem 0 0;
+      font-size: 0.78rem;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+    }
+
+    .hm-guardrail-note a {
+      color: rgb(var(--reading-accent-iris, 99 102 241));
+    }
+
+    /* Core model */
+    .hm-core-list {
+      display: grid;
+      gap: 0;
+      margin: 0;
+      max-width: 56rem;
+      border: 1px solid rgb(var(--border, 220 220 225) / 0.22);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .hm-core-list div {
+      display: grid;
+      grid-template-columns: 11rem 1fr;
+      gap: 0.5rem 1rem;
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid rgb(var(--border, 220 220 225) / 0.16);
+      background: rgb(var(--reading-paper, 255 255 255));
+    }
+
+    .hm-core-list div:last-child {
+      border-bottom: 0;
+    }
+
+    .hm-core-list dt {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-ink-secondary, 100 100 110) / 0.75);
+      padding-top: 0.1rem;
+    }
+
+    .hm-core-list dd {
+      margin: 0;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: rgb(var(--reading-ink, 24 24 27));
+    }
+
+    /* Non-goal list */
+    .hm-nongoal-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 44rem;
+      border: 1px solid rgb(var(--border, 220 220 225) / 0.22);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .hm-nongoal-list li {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid rgb(var(--border, 220 220 225) / 0.14);
+      background: rgb(var(--reading-paper, 255 255 255));
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      text-decoration: line-through;
+      text-decoration-color: rgb(var(--reading-ink-secondary, 100 100 110) / 0.35);
+    }
+
+    .hm-nongoal-list li:last-child {
+      border-bottom: 0;
+    }
+
+    /* Links / footer */
+    .hm-section--soft {
+      border-bottom: 0;
+      padding-bottom: 1rem;
+    }
+
+    .hm-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .hm-links a {
+      display: inline-flex;
+      border: 1px solid rgb(var(--border, 220 220 225) / 0.38);
+      border-radius: 999px;
+      padding: 0.45rem 0.7rem;
+      color: rgb(var(--reading-ink, 24 24 27));
+      background: rgb(var(--reading-paper, 255 255 255));
+      font-size: 0.82rem;
+      text-decoration: none;
+    }
+
+    .hm-links a:hover {
+      border-color: rgb(var(--border, 220 220 225) / 0.65);
+    }
+
+    .hm-footnote {
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      font-size: 0.78rem;
+    }
+
+    .hm-footnote code {
+      font-family: ui-monospace, monospace;
+    }
+
+    @media (min-width: 640px) {
+      .hm-lang-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hm-ai-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hm-guardrail-cols {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hm-hub-def {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 720px) {
+      .hm-page {
+        padding: 2rem 1.5rem 4rem;
+      }
+    }
+  </style>
+</PrototypeLayout>
