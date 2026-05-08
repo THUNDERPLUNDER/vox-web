@@ -21,6 +21,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Refresh GitHub runtime status (navigator feed)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/generate-github-runtime-status.mjs
+
       - name: Install, build, and upload
         uses: withastro/action@v5
 

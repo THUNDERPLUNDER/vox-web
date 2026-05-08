@@ -1,0 +1,40 @@
+# CONTRACT: Periodisk oppdatering av GitHub runtime-status for @navigator (#107). Commiter markdown til repo; push trigger vanlig Pages-deploy.
+name: GitHub runtime status (navigator)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Hverdager ~07:00 Europe/Oslo (vinter: 06 UTC ≈ +1; justér ved behov)
+    - cron: "0 6 * * 1-5"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: github-runtime-status
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Generate runtime status markdown
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node scripts/generate-github-runtime-status.mjs
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/vis/runtime/00_GITHUB_RUNTIME_STATUS.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore(vis): refresh GitHub runtime status for navigator"
+            git push
+          fi

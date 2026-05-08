@@ -21,6 +21,14 @@ const base = import.meta.env.BASE_URL;
           <p class="text-xs text-gray-600">Operativ roadmapflate med spor, initiativ og oppgaver fra GitHub-bussen.</p>
         </li>
         <li>
+          <a href={`${base}vis/system/github-runtime-status`} class="text-sm font-medium text-gray-900 underline underline-offset-2">
+            GitHub runtime status (navigator)
+          </a>
+          <p class="text-xs text-gray-600">
+            Generert feed fra GitHub API — epics/initiative, siste 24t, blockers; egen sannhet separat fra kuratert /vis.
+          </p>
+        </li>
+        <li>
           <a href={`${base}vis/system/article-system`} class="text-sm font-medium text-gray-900 underline underline-offset-2">
             Article System v0.1 (oversikt)
           </a>
