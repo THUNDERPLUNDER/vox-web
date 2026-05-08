@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: VIS system landing that routes to lightweight article-system references. */
+/* CONTRACT: VIS system landing — routes to canonical system references, runtime feeds and explicitly experimental sandboxes. */
 import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
 const base = import.meta.env.BASE_URL;
 ---
@@ -8,45 +8,57 @@ const base = import.meta.env.BASE_URL;
   <main class="px-4 py-6 sm:px-6 sm:py-8">
     <h1 class="text-lg font-semibold text-gray-900">Systemreferanse i VIS</h1>
     <p class="mt-2 max-w-prose text-sm leading-relaxed text-gray-600">
-      Dette laget viser landet systemarbeid i lesbar form for beslutning og orientering. VIS er visning/referanse, ikke backlog.
+      Dette laget viser landet systemarbeid i lesbar form for beslutning og orientering. Canonical design- og article-referanser bor her;
+      sandbox er fortsatt et eksperimentrom.
     </p>
 
-    <section class="mt-6 rounded-md border border-gray-300 bg-white p-4">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Tilgjengelig nå</h2>
-      <ul class="mt-3 space-y-2">
-        <li>
-          <a href={`${base}vis/system/design-system-v01`} class="text-sm font-medium text-gray-900 underline underline-offset-2">
-            Design System Overview v0.1
-          </a>
-          <p class="text-xs text-gray-600">
-            Visuelt arbeidskart over tokens, surfaces og patterns som faktisk brukes nå.
-          </p>
-        </li>
-        <li>
-          <a href={`${base}vis/system/roadmap-timeline-v01`} class="text-sm font-medium text-gray-900 underline underline-offset-2">
-            Roadmap timeline read model v0.1 (canonical)
-          </a>
-          <p class="text-xs text-gray-600">Operativ roadmapflate med spor, initiativ og oppgaver fra GitHub-bussen.</p>
-        </li>
-        <li>
-          <a href={`${base}vis/system/github-runtime-status`} class="text-sm font-medium text-gray-900 underline underline-offset-2">
-            GitHub runtime status (navigator)
-          </a>
-          <p class="text-xs text-gray-600">
-            Generert feed fra GitHub API — epics/initiative, siste 24t, blockers; egen sannhet separat fra kuratert /vis.
-          </p>
-        </li>
-        <li>
-          <a href={`${base}vis/system/article-system`} class="text-sm font-medium text-gray-900 underline underline-offset-2">
-            Article System v0.1 (oversikt)
-          </a>
-          <p class="text-xs text-gray-600">Menneskelig oversiktslag for blokker, oppsett, felt, status og kilder.</p>
-        </li>
-      </ul>
-      <p class="mt-3 text-xs text-gray-500">
+    <section class="mt-6">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Design system / article references</h2>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <a href={`${base}vis/system/design-system-v01`} class="rounded-md border border-gray-300 bg-white p-3 hover:bg-gray-50">
+          <p class="text-sm font-semibold text-gray-900">Design System Overview</p>
+          <p class="mt-1 text-xs leading-relaxed text-gray-600">Kart over tokens, surfaces, editorial patterns og Action-AI.</p>
+        </a>
+        <a href={`${base}vis/system/article/foundations`} class="rounded-md border border-gray-300 bg-white p-3 hover:bg-gray-50">
+          <p class="text-sm font-semibold text-gray-900">Foundations</p>
+          <p class="mt-1 text-xs leading-relaxed text-gray-600">Article tokens, prinsipper og grunnrytme.</p>
+        </a>
+        <a href={`${base}vis/system/article/components`} class="rounded-md border border-gray-300 bg-white p-3 hover:bg-gray-50">
+          <p class="text-sm font-semibold text-gray-900">Components / patterns</p>
+          <p class="mt-1 text-xs leading-relaxed text-gray-600">Landede artikkelkomponenter og preview-referanser.</p>
+        </a>
+        <a href={`${base}vis/system/article/templates`} class="rounded-md border border-gray-300 bg-white p-3 hover:bg-gray-50">
+          <p class="text-sm font-semibold text-gray-900">Template reference</p>
+          <p class="mt-1 text-xs leading-relaxed text-gray-600">Oppskrift og canonical artikkelstruktur.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="mt-8">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Runtime / prosjektstatus</h2>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2">
+        <a href={`${base}vis/system/roadmap-timeline-v01`} class="rounded-md border border-gray-300 bg-white p-3 hover:bg-gray-50">
+          <p class="text-sm font-semibold text-gray-900">Roadmap timeline read model</p>
+          <p class="mt-1 text-xs leading-relaxed text-gray-600">Operativ roadmapflate med spor, initiativ og oppgaver fra GitHub-bussen.</p>
+        </a>
+        <a href={`${base}vis/system/github-runtime-status`} class="rounded-md border border-gray-300 bg-white p-3 hover:bg-gray-50">
+          <p class="text-sm font-semibold text-gray-900">GitHub runtime status</p>
+          <p class="mt-1 text-xs leading-relaxed text-gray-600">Generert feed fra GitHub API for @navigator / Daily Sync.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="mt-8 rounded-md border border-dashed border-gray-300 bg-gray-50 p-4">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Sandbox / experimental</h2>
+      <p class="mt-2 max-w-prose text-sm leading-relaxed text-gray-600">
+        Sandbox kan brukes til å se og teste rå byggeklosser, men er ikke primær canonical dokumentasjon.
+      </p>
+      <a href={`${base}no/sandbox`} class="mt-3 inline-flex rounded border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100">
+        Åpne /no/sandbox
+      </a>
+      <p class="mt-4 text-xs text-gray-500">
         Pensjonert: <code class="font-mono">/vis/system/task-bus-live</code> og{" "}
-        <code class="font-mono">/vis/KlarLyd_Live_Board_Roadmap_v01</code>. Erstattes av{" "}
-        <code class="font-mono">/vis/system/roadmap-timeline-v01</code>.
+        <code class="font-mono">/vis/KlarLyd_Live_Board_Roadmap_v01</code>.
       </p>
     </section>
   </main>
