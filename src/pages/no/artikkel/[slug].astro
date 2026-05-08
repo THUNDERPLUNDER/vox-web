@@ -1,8 +1,6 @@
 ---
 /* CONTRACT: Storyblok article_page — dialog-artikkel som r1-spoke-v03: én kolonne, ArticleInlineChatShell progressive, ingen seed-lenker til chat-shell, ingen terminal Footer når seeds finnes. ai_note/method_note kun i inspect-modus. Neste steg: r1-editorial-next-steps (lett redaksjonell, ikke vox-reading-inline). */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
-import InspectDrawerArmScript from "../../../components/dev/InspectDrawerArmScript.astro";
-import InspectToolsDrawer from "../../../components/dev/InspectToolsDrawer.astro";
 import ArticleInlineChatShell from "../../../components/article/ArticleInlineChatShell.astro";
 import Footer from "../../../components/nav/Footer.astro";
 import {
@@ -53,6 +51,54 @@ const displayPublisherName = article.reviewerName || "Viddel-redaksjonen";
 const displayPublisherRole = article.reviewerRole || "redaksjonelt kvalitetssjekket med faglig orientering";
 const bylineAvatarSrc = "/images/klarlyd/r1-byline-profile.png";
 const relatedTopics = ["Samtaletips", "Høreliv", "Hverdagskommunikasjon"];
+const articleMandateFallbacks: Record<string, NonNullable<typeof article.mandate>> = {
+  "fa-slutt-pa-pipingen": {
+    needTopTask: "Stoppe piping",
+    primarySegment: "Daglig bruker",
+    secondarySegment: "Hjelper",
+    stadium: "Feilsøking",
+    mode: "Mestre",
+    aiRole: "Første steg + når be om hjelp",
+    onward: "Audiograf hvis vedvarer",
+  },
+  "koble-horeapparatet-til-mobilen": {
+    needTopTask: "Koble høreapparat til mobilen",
+    primarySegment: "Daglig bruker",
+    secondarySegment: "Hjelper",
+    stadium: "Feilsøking",
+    mode: "Gjøre",
+    aiRole: "Stegvis sjekk + eskalering",
+    onward: "App/support eller audiograf",
+  },
+  "de-forste-ukene-med-horeapparat": {
+    needTopTask: "Komme i gang med høreapparat",
+    primarySegment: "Ny bruker",
+    secondarySegment: "Hjelper",
+    stadium: "Tilvenning",
+    mode: "Forstå + mestre",
+    aiRole: "Normalisere + foreslå neste grep",
+    onward: "Justering hos audiograf",
+  },
+  "audiograf-nar-det-haster": {
+    needTopTask: "Vite når det haster",
+    primarySegment: "Daglig bruker",
+    secondarySegment: "Hjelper",
+    stadium: "Avklaring",
+    mode: "Beslutte",
+    aiRole: "Triage + trygg eskalering",
+    onward: "Kontakt audiograf/helsehjelp",
+  },
+};
+const articleMandate = { ...articleMandateFallbacks[article.slug], ...article.mandate };
+const articleMandateRows = [
+  ["Behov / top task", articleMandate.needTopTask],
+  ["Primærsegment", articleMandate.primarySegment],
+  ["Sekundærsegment", articleMandate.secondarySegment],
+  ["Stadium", articleMandate.stadium],
+  ["Modus", articleMandate.mode],
+  ["AI-rolle", articleMandate.aiRole],
+  ["Videre", articleMandate.onward],
+].filter((row): row is [string, string] => Boolean(row[1]));
 const trustlineItems = [
   publishedLabel ? { label: "Publisert", value: publishedLabel } : null,
   updatedLabel && updatedLabel !== publishedLabel ? { label: "Oppdatert", value: updatedLabel } : null,
@@ -81,7 +127,6 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
 ---
 
 <BaseLayout title={`Viddel - ${article.title}`} currentPath={`/no/artikkel/${slug}`} shellVariant="article">
-  <InspectDrawerArmScript />
   <meta slot="head" name="robots" content="noindex,follow" />
 
   <main class="bg-[rgb(var(--article-page-canvas))] py-2 sm:py-3" data-article-system data-r1-editorial>
@@ -307,6 +352,20 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
             </aside>
           ) : null}
 
+          {articleMandateRows.length ? (
+            <aside class="vox-article-mandate" aria-label="Artikkelmandat (vises kun i inspect-modus)">
+              <p class="vox-article-mandate__eyebrow">Artikkelmandat / inspect</p>
+              <dl class="vox-article-mandate__grid">
+                {articleMandateRows.map(([label, value]) => (
+                  <div>
+                    <dt>{label}</dt>
+                    <dd>{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </aside>
+          ) : null}
+
           {article.aiNote || article.methodNote ? (
             <aside
               class="vox-article-publishing-notes mt-4 rounded-[var(--radius-sm)] border border-dashed border-[rgb(var(--border))/0.55] bg-[rgb(var(--surface-subtle))/0.35] p-3 text-xs text-[rgb(var(--reading-ink-secondary))]"
@@ -347,6 +406,5 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
     </div>
   </main>
 
-  <InspectToolsDrawer />
   {showDialogBridge ? null : <Footer variant="article" withInspectDrawer />}
 </BaseLayout>

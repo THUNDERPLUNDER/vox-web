@@ -3,13 +3,15 @@
 import "../styles/global.css";
 import Header from "../components/nav/Header.astro";
 import MobileMenuSheet from "../components/nav/MobileMenuSheet.astro";
+import InspectDrawerArmScript from "../components/dev/InspectDrawerArmScript.astro";
+import InspectToolsDrawer from "../components/dev/InspectToolsDrawer.astro";
 
 const {
   title = "Viddel",
   currentPath = "",
   shellVariant = "default",
   headerBrand = "viddel",
-  showHeaderDevtoolsToggle = false,
+  showHeaderDevtoolsToggle = true,
 } = Astro.props as {
   title?: string;
   currentPath?: string;
@@ -53,6 +55,7 @@ const isSandboxWhite = shellVariant === "sandbox-white";
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
     />
+    <InspectDrawerArmScript />
     <slot name="head" />
     <script defer src="https://www.gstatic.com/ces-console/fast/chat-messenger/prod/v1.15/chat-messenger.js"></script>
     <link rel="stylesheet" href="https://www.gstatic.com/ces-console/fast/chat-messenger/prod/v1.15/themes/chat-messenger.css">
@@ -307,36 +310,37 @@ const isSandboxWhite = shellVariant === "sandbox-white";
           });
       });
     </script>
+    {showHeaderDevtoolsToggle ? <InspectToolsDrawer /> : null}
     {
       showHeaderDevtoolsToggle ? (
-        <script is:inline>
-          (function () {
-            var STORAGE_KEY = "vox-devtools-armed";
-            function syncDevtoolsTogglePressed() {
-              var on = document.documentElement.getAttribute("data-vox-inspect-drawer-active") === "true";
-              document.querySelectorAll("[data-vox-header-devtools-toggle]").forEach(function (b) {
-                b.setAttribute("aria-pressed", on ? "true" : "false");
-              });
-            }
-            function setDrawerActive(on) {
-              document.documentElement.setAttribute("data-vox-inspect-drawer-active", on ? "true" : "false");
-              try {
-                sessionStorage.setItem(STORAGE_KEY, on ? "1" : "0");
-              } catch (e) {}
-              window.dispatchEvent(new CustomEvent("vox-inspect-drawer-force-close"));
-              syncDevtoolsTogglePressed();
-            }
-            document.addEventListener("DOMContentLoaded", function () {
-              document.querySelectorAll("[data-vox-header-devtools-toggle]").forEach(function (btn) {
-                btn.addEventListener("click", function () {
-                  var cur = document.documentElement.getAttribute("data-vox-inspect-drawer-active") === "true";
-                  setDrawerActive(!cur);
-                });
-              });
-              syncDevtoolsTogglePressed();
+      <script is:inline>
+        (function () {
+          var STORAGE_KEY = "vox-devtools-armed";
+          function syncDevtoolsTogglePressed() {
+            var on = document.documentElement.getAttribute("data-vox-inspect-drawer-active") === "true";
+            document.querySelectorAll("[data-vox-header-devtools-toggle]").forEach(function (b) {
+              b.setAttribute("aria-pressed", on ? "true" : "false");
             });
-          })();
-        </script>
+          }
+          function setDrawerActive(on) {
+            document.documentElement.setAttribute("data-vox-inspect-drawer-active", on ? "true" : "false");
+            try {
+              sessionStorage.setItem(STORAGE_KEY, on ? "1" : "0");
+            } catch (e) {}
+            window.dispatchEvent(new CustomEvent("vox-inspect-drawer-force-close"));
+            syncDevtoolsTogglePressed();
+          }
+          document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll("[data-vox-header-devtools-toggle]").forEach(function (btn) {
+              btn.addEventListener("click", function () {
+                var cur = document.documentElement.getAttribute("data-vox-inspect-drawer-active") === "true";
+                setDrawerActive(!cur);
+              });
+            });
+            syncDevtoolsTogglePressed();
+          });
+        })();
+      </script>
       ) : null
     }
   </body>

@@ -1,0 +1,621 @@
+---
+/* CONTRACT: VIS IA-prinsipper v0.1 — canonical forklaring av need-led IA, segmenter og artikkelmandat for Viddel. Rolig dokumentasjonsuttrykk, lik øvrig /vis/system. */
+import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+const base = import.meta.env.BASE_URL;
+---
+
+<PrototypeLayout title="IA-prinsipper v0.1">
+  <main class="ia-doc-page">
+    <nav class="ia-doc-breadcrumb">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={`${base}vis/system`}>System</a>
+      <span aria-hidden="true">/</span>
+      <span>IA-prinsipper</span>
+    </nav>
+
+    <header class="ia-doc-hero">
+      <p class="ia-doc-kicker">Viddel · IA-grunnmur</p>
+      <h1>IA-prinsipper v0.1</h1>
+      <p>
+        Canonical grunnmur for Viddels informasjonsarkitektur. Navigasjon styres av behov og top tasks,
+        ikke av segmenter eller målgrupper.
+      </p>
+    </header>
+
+    <section class="ia-doc-section">
+      <div class="ia-doc-section-head">
+        <p class="ia-doc-kicker">01</p>
+        <h2>Nøkkelbegreper</h2>
+        <p>Disse begrepene brukes konsistent i arkitektur, artikkelarbeid og agentprompting.</p>
+      </div>
+
+      <div class="ia-concept-grid">
+
+        <article class="ia-concept-card">
+          <header>
+            <span class="ia-concept-tag">navigasjon</span>
+            <h3>Behov / top task</h3>
+          </header>
+          <p>
+            Den konkrete oppgaven eller det konkrete behovet brukeren kommer til Viddel for å løse.
+            Top tasks er de behovene flest brukere bærer med seg — og de som navigasjonen skal
+            reflektere.
+          </p>
+          <div class="ia-concept-example">
+            <p class="ia-concept-example__label">Eksempel</p>
+            <p>«Stoppe piping» er et behov og kan være en top task. Det er den faktiske oppgaven brukeren sitter med — ikke en beskrivelse av hvem brukeren er.</p>
+          </div>
+          <div class="ia-concept-rule">
+            <strong>Styringsregel:</strong> Navigasjon og hubstruktur speiler behov, aldri segmenter.
+          </div>
+        </article>
+
+        <article class="ia-concept-card">
+          <header>
+            <span class="ia-concept-tag">analyse · vinkling</span>
+            <h3>Segment</h3>
+          </header>
+          <p>
+            Et segment beskriver hvem som eier behovet sterkest, og hvordan artikkelen bør vinkles.
+            Segmenter er ikke navigasjonsnoder — de er interne analyse- og vinklingsverktøy.
+          </p>
+          <div class="ia-concept-example">
+            <p class="ia-concept-example__label">Kjente segmenter</p>
+            <ul>
+              <li><strong>Daglig bruker</strong> — den som bærer høreapparatet</li>
+              <li><strong>Ny bruker</strong> — nettopp startet med høreapparat</li>
+              <li><strong>Hjelper</strong> — pårørende / ledsager som bistår</li>
+            </ul>
+          </div>
+          <div class="ia-concept-rule">
+            <strong>Styringsregel:</strong> Segmenter brukes til artikkelmandat og prioritering — aldri til å lage egne nav-kategorier.
+          </div>
+        </article>
+
+        <article class="ia-concept-card">
+          <header>
+            <span class="ia-concept-tag">artikkelmandat</span>
+            <h3>Stadium</h3>
+          </header>
+          <p>
+            Stadiet beskriver hvor i sin reise brukeren befinner seg når de leser artikkelen.
+            Hjelper oss å tone innholdet riktig.
+          </p>
+          <div class="ia-concept-example">
+            <p class="ia-concept-example__label">Typiske stadier</p>
+            <ul>
+              <li><strong>Tilvenning</strong> — ny og usikker</li>
+              <li><strong>Feilsøking</strong> — noe funker ikke</li>
+              <li><strong>Avklaring</strong> — vil forstå situasjonen</li>
+              <li><strong>Mestring</strong> — vil bli bedre</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="ia-concept-card">
+          <header>
+            <span class="ia-concept-tag">artikkelmandat</span>
+            <h3>Modus</h3>
+          </header>
+          <p>
+            Modus beskriver hva brukeren prøver å gjøre — ikke hva som er galt, men hva slags
+            hjelp de søker. Styrer tone og struktur i artikkelen.
+          </p>
+          <div class="ia-concept-example">
+            <p class="ia-concept-example__label">Typiske moduser</p>
+            <ul>
+              <li><strong>Gjøre</strong> — utføre en konkret handling</li>
+              <li><strong>Forstå</strong> — få oversikt og mening</li>
+              <li><strong>Mestre</strong> — lære og bli tryggere</li>
+              <li><strong>Beslutte</strong> — ta et valg</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="ia-concept-card">
+          <header>
+            <span class="ia-concept-tag">artikkelmandat · AI</span>
+            <h3>AI-rolle</h3>
+          </header>
+          <p>
+            Hva AI-broen (Hørehjelpen) bør bidra med <em>i kontekst av denne artikkelen</em>.
+            Ikke en generell AI-beskrivelse, men et spesifikt bidrag per side.
+          </p>
+          <div class="ia-concept-example">
+            <p class="ia-concept-example__label">Eksempler</p>
+            <ul>
+              <li>Første steg + når be om hjelp</li>
+              <li>Stegvis sjekk + eskalering</li>
+              <li>Normalisere + foreslå neste grep</li>
+              <li>Triage + trygg eskalering</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="ia-concept-card">
+          <header>
+            <span class="ia-concept-tag">artikkelmandat · IA</span>
+            <h3>Videre / neste destinasjon</h3>
+          </header>
+          <p>
+            Det naturlige neste steget etter artikkelen. Enten for brukeren som løste problemet,
+            eller som ikke fikk løst det. Hjelper oss å knytte spoke-artikler til videre reise.
+          </p>
+          <div class="ia-concept-example">
+            <p class="ia-concept-example__label">Eksempel</p>
+            <p>«Audiograf hvis vedvarer» — hvis artikkelen om piping ikke løste problemet, er neste steg profesjonell hjelp.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="ia-doc-section">
+      <div class="ia-doc-section-head">
+        <p class="ia-doc-kicker">02</p>
+        <h2>Artikkelmandat — eksempel</h2>
+        <p>
+          Komplett mandateksempel for artikkelen «Stoppe piping».
+          Mandatet er synlig per artikkel i dev/inspect-kontekst.
+        </p>
+      </div>
+
+      <div class="ia-mandate-example">
+        <div class="ia-mandate-header">
+          <p class="ia-doc-kicker">artikkelmandat / inspect</p>
+          <p class="ia-mandate-title">Fa slutt på pipingen</p>
+        </div>
+        <dl class="ia-mandate-grid">
+          <div>
+            <dt>Behov / top task</dt>
+            <dd>Stoppe piping</dd>
+          </div>
+          <div>
+            <dt>Primærsegment</dt>
+            <dd>Daglig bruker</dd>
+          </div>
+          <div>
+            <dt>Sekundærsegment</dt>
+            <dd>Hjelper</dd>
+          </div>
+          <div>
+            <dt>Stadium</dt>
+            <dd>Feilsøking</dd>
+          </div>
+          <div>
+            <dt>Modus</dt>
+            <dd>Mestre</dd>
+          </div>
+          <div>
+            <dt>AI-rolle</dt>
+            <dd>Første steg + når be om hjelp</dd>
+          </div>
+          <div>
+            <dt>Videre</dt>
+            <dd>Audiograf hvis vedvarer</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="ia-doc-note-block">
+        <p>
+          Mandate-felter kan legges direkte i Storyblok-content-modellen
+          (<code>need_top_task</code>, <code>primary_segment</code>, <code>stadium</code> osv.).
+          Inntil Storyblok-modellen er utvidet, brukes fallback-data per kjent artikkelslug
+          i <code>[slug].astro</code>.
+        </p>
+      </div>
+    </section>
+
+    <section class="ia-doc-section">
+      <div class="ia-doc-section-head">
+        <p class="ia-doc-kicker">03</p>
+        <h2>Styringsregler — kort</h2>
+      </div>
+
+      <div class="ia-rules-list">
+        <div class="ia-rule">
+          <span class="ia-rule__icon" aria-hidden="true">✓</span>
+          <div>
+            <strong>Navigasjon = behov / top tasks</strong>
+            <p>Hubbenes navn og struktur reflekterer hva brukerne kommer for å gjøre.</p>
+          </div>
+        </div>
+        <div class="ia-rule">
+          <span class="ia-rule__icon" aria-hidden="true">✓</span>
+          <div>
+            <strong>Segmenter er analyse, ikke nav</strong>
+            <p>«Daglig bruker», «Hjelper» osv. brukes i artikkelmandat — ikke som URL-kategorier.</p>
+          </div>
+        </div>
+        <div class="ia-rule">
+          <span class="ia-rule__icon" aria-hidden="true">✓</span>
+          <div>
+            <strong>Én behov kan gi to artikler</strong>
+            <p>Hvis behovet arter seg svært ulikt mellom segmenter kan vi lage søsterartikler.</p>
+          </div>
+        </div>
+        <div class="ia-rule ia-rule--no">
+          <span class="ia-rule__icon" aria-hidden="true">✗</span>
+          <div>
+            <strong>«For deg som hjelper noen» er ikke hub nå</strong>
+            <p>Hjelper er segment og potensiell fremtidig produktspor. Ikke en nav-kategori.</p>
+          </div>
+        </div>
+        <div class="ia-rule ia-rule--no">
+          <span class="ia-rule__icon" aria-hidden="true">✗</span>
+          <div>
+            <strong>Ikke speile organisasjonslogikk i nav</strong>
+            <p>Strukturen er brukerens, ikke Viddels interne organisering.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ia-doc-section ia-doc-section--soft">
+      <div class="ia-doc-section-head">
+        <p class="ia-doc-kicker">Referanser</p>
+        <h2>Videre lesing</h2>
+      </div>
+      <div class="ia-doc-links">
+        <a href={`${base}vis/system`}>← Tilbake til systemreferanse</a>
+        <a href={`${base}vis/system/design-system-v01`}>Design System Overview</a>
+      </div>
+      <p class="ia-doc-footnote">
+        Fullstendig referansedokument:
+        <code>docs/project/VIDDEL_IA_PRINCIPLES_v0_1.md</code>
+      </p>
+    </section>
+  </main>
+
+  <style>
+    .ia-doc-page {
+      min-height: 100vh;
+      background: rgb(var(--article-page-canvas, 250 250 248));
+      color: rgb(var(--reading-ink, 24 24 27));
+      padding: 1.5rem 1rem 3rem;
+      font-family: var(--font-body, ui-sans-serif, system-ui, sans-serif);
+    }
+
+    .ia-doc-page > * {
+      max-width: 72rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .ia-doc-breadcrumb {
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      font-size: 0.72rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .ia-doc-breadcrumb a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      color: inherit;
+    }
+
+    .ia-doc-hero {
+      border-bottom: 1px solid rgb(var(--border, 220 220 225) / 0.24);
+      padding: 1.5rem 0 2rem;
+    }
+
+    .ia-doc-hero h1 {
+      margin-top: 0.4rem;
+      max-width: 52rem;
+      font-size: clamp(2.15rem, 6vw, 4.2rem);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+      font-weight: 700;
+    }
+
+    .ia-doc-hero p {
+      max-width: 44rem;
+      margin-top: 0.8rem;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      font-size: 0.96rem;
+      line-height: 1.68;
+    }
+
+    .ia-doc-kicker {
+      color: rgb(var(--reading-accent-iris, 99 102 241));
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .ia-doc-section {
+      padding: 2.4rem 0;
+      border-bottom: 1px solid rgb(var(--border, 220 220 225) / 0.18);
+    }
+
+    .ia-doc-section-head {
+      margin-bottom: 1.75rem;
+    }
+
+    .ia-doc-section-head > p:not(.ia-doc-kicker) {
+      max-width: 44rem;
+      margin-top: 0.8rem;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      font-size: 0.96rem;
+      line-height: 1.68;
+    }
+
+    .ia-doc-section h2 {
+      margin-top: 0.15rem;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.12;
+      letter-spacing: -0.035em;
+      font-weight: 700;
+    }
+
+    /* Concept cards grid */
+    .ia-concept-grid {
+      display: grid;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid rgb(var(--border, 220 220 225) / 0.22);
+      border-radius: 8px;
+      background: rgb(var(--border, 220 220 225) / 0.22);
+    }
+
+    .ia-concept-card {
+      background: rgb(var(--reading-paper, 255 255 255));
+      padding: 1.25rem 1rem;
+    }
+
+    .ia-concept-card header {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.45rem 0.65rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .ia-concept-card h3 {
+      margin: 0;
+      font-size: 1.0625rem;
+      font-weight: 650;
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+      color: rgb(var(--reading-ink, 24 24 27));
+    }
+
+    .ia-concept-tag {
+      color: rgb(var(--reading-accent-iris, 99 102 241));
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .ia-concept-card > p {
+      margin: 0 0 0.9rem;
+      font-size: 0.88rem;
+      line-height: 1.62;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+    }
+
+    .ia-concept-example {
+      border-left: 2px solid rgb(var(--border, 220 220 225) / 0.55);
+      padding-left: 0.65rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .ia-concept-example__label {
+      margin: 0 0 0.35rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-ink-secondary, 100 100 110) / 0.7);
+    }
+
+    .ia-concept-example p:not(.ia-concept-example__label),
+    .ia-concept-example ul {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.58;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+    }
+
+    .ia-concept-example ul {
+      padding-left: 1rem;
+    }
+
+    .ia-concept-example li {
+      margin-bottom: 0.15rem;
+    }
+
+    .ia-concept-rule {
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      border-top: 1px solid rgb(var(--border, 220 220 225) / 0.24);
+      padding-top: 0.65rem;
+    }
+
+    .ia-concept-rule strong {
+      color: rgb(var(--reading-ink, 24 24 27));
+    }
+
+    /* Mandate example */
+    .ia-mandate-example {
+      border: 1px dashed rgb(var(--border, 220 220 225) / 0.55);
+      border-radius: 6px;
+      background: rgb(var(--surface-subtle, 246 246 248) / 0.35);
+      padding: 0.9rem;
+      max-width: 44rem;
+      margin-bottom: 1rem;
+    }
+
+    .ia-mandate-header {
+      margin-bottom: 0.85rem;
+    }
+
+    .ia-mandate-header .ia-doc-kicker {
+      font-size: 0.62rem;
+    }
+
+    .ia-mandate-title {
+      margin: 0.2rem 0 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: rgb(var(--reading-ink, 24 24 27));
+    }
+
+    .ia-mandate-grid {
+      display: grid;
+      gap: 0.55rem 0.9rem;
+      margin: 0;
+    }
+
+    .ia-mandate-grid div {
+      min-width: 0;
+    }
+
+    .ia-mandate-grid dt {
+      color: rgb(var(--reading-ink-secondary, 100 100 110) / 0.75);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .ia-mandate-grid dd {
+      margin: 0.1rem 0 0;
+      color: rgb(var(--reading-ink, 24 24 27));
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .ia-doc-note-block {
+      max-width: 44rem;
+      padding: 0.75rem 0.9rem;
+      border-left: 2px solid rgb(var(--border, 220 220 225) / 0.45);
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+
+    .ia-doc-note-block code {
+      font-family: ui-monospace, monospace;
+      font-size: 0.78rem;
+    }
+
+    /* Rules list */
+    .ia-rules-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid rgb(var(--border, 220 220 225) / 0.22);
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 52rem;
+    }
+
+    .ia-rule {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid rgb(var(--border, 220 220 225) / 0.18);
+      background: rgb(var(--reading-paper, 255 255 255));
+    }
+
+    .ia-rule:last-child {
+      border-bottom: 0;
+    }
+
+    .ia-rule__icon {
+      flex: 0 0 auto;
+      margin-top: 0.1rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: rgb(99 133 99);
+    }
+
+    .ia-rule--no .ia-rule__icon {
+      color: rgb(160 80 80);
+    }
+
+    .ia-rule strong {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 650;
+      line-height: 1.3;
+      color: rgb(var(--reading-ink, 24 24 27));
+      margin-bottom: 0.2rem;
+    }
+
+    .ia-rule p {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+    }
+
+    /* Links / footer */
+    .ia-doc-section--soft {
+      border-bottom: 0;
+      padding-bottom: 1rem;
+    }
+
+    .ia-doc-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .ia-doc-links a {
+      display: inline-flex;
+      border: 1px solid rgb(var(--border, 220 220 225) / 0.38);
+      border-radius: 999px;
+      padding: 0.45rem 0.7rem;
+      color: rgb(var(--reading-ink, 24 24 27));
+      background: rgb(var(--reading-paper, 255 255 255));
+      font-size: 0.82rem;
+      text-decoration: none;
+    }
+
+    .ia-doc-links a:hover {
+      border-color: rgb(var(--border, 220 220 225) / 0.65);
+    }
+
+    .ia-doc-footnote {
+      color: rgb(var(--reading-ink-secondary, 100 100 110));
+      font-size: 0.78rem;
+    }
+
+    .ia-doc-footnote code {
+      font-family: ui-monospace, monospace;
+    }
+
+    @media (min-width: 720px) {
+      .ia-doc-page {
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      .ia-concept-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .ia-mandate-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1080px) {
+      .ia-concept-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
+</PrototypeLayout>

@@ -67,7 +67,18 @@ export type ArticlePageContent = {
   updatedAt?: string;
   aiNote?: string;
   methodNote?: string;
+  mandate?: ArticleMandateMetadata;
   status?: string;
+};
+
+export type ArticleMandateMetadata = {
+  needTopTask?: string;
+  primarySegment?: string;
+  secondarySegment?: string;
+  stadium?: string;
+  mode?: string;
+  aiRole?: string;
+  onward?: string;
 };
 
 export type AiSeedQuestion = {
@@ -219,6 +230,15 @@ function normalizeHubStory(story: AnyRecord): HubPageContent {
 function normalizeArticleStory(story: AnyRecord): ArticlePageContent {
   const content = toRecord(story.content);
   const slug = asString(story.slug) || asString(story.full_slug) || "artikkel";
+  const mandate: ArticleMandateMetadata = {
+    needTopTask: asString(content.need_top_task) || asString(content.top_task) || asString(content.behov_top_task),
+    primarySegment: asString(content.primary_segment) || asString(content.primaersegment),
+    secondarySegment: asString(content.secondary_segment) || asString(content.sekundaersegment),
+    stadium: asString(content.stadium),
+    mode: asString(content.mode) || asString(content.modus),
+    aiRole: asString(content.ai_role) || asString(content.ai_rolle),
+    onward: asString(content.onward) || asString(content.videre) || asString(content.next_destination),
+  };
   return {
     title: asString(content.title) || asString(story.name) || "Artikkel",
     slug,
@@ -236,6 +256,7 @@ function normalizeArticleStory(story: AnyRecord): ArticlePageContent {
     updatedAt: asString(content.updated_at) || asString(story.published_at) || asString(story.updated_at),
     aiNote: asString(content.ai_note),
     methodNote: asString(content.method_note),
+    mandate,
     status: asString(content.status),
   };
 }

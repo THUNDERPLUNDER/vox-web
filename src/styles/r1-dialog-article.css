@@ -785,13 +785,63 @@
       display: block;
     }
 
-    /* Storyblok ai_note / method_note: aldri ordinær leserflate; kun når inspect er armert (#76). */
-    [data-r1-editorial] .vox-article-publishing-notes {
+    /* Storyblok inspect metadata: aldri ordinær leserflate; kun når inspect er armert (#76/#110). */
+    [data-r1-editorial] .vox-article-publishing-notes,
+    [data-r1-editorial] .vox-article-mandate {
       display: none;
     }
 
-    html[data-vox-inspect-drawer-active="true"] [data-r1-editorial] .vox-article-publishing-notes {
+    html[data-vox-inspect-drawer-active="true"] [data-r1-editorial] .vox-article-publishing-notes,
+    html[data-vox-inspect-drawer-active="true"] [data-r1-editorial] .vox-article-mandate {
       display: block;
+    }
+
+    [data-r1-editorial] .vox-article-mandate {
+      border: 1px dashed rgb(var(--border) / 0.55);
+      border-radius: var(--radius-sm);
+      background: rgb(var(--surface-subtle) / 0.35);
+      padding: 0.9rem;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.78rem;
+    }
+
+    [data-r1-editorial] .vox-article-mandate__eyebrow {
+      margin: 0 0 0.65rem;
+      color: rgb(var(--muted));
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    [data-r1-editorial] .vox-article-mandate__grid {
+      display: grid;
+      gap: 0.55rem 0.9rem;
+      margin: 0;
+    }
+
+    [data-r1-editorial] .vox-article-mandate__grid div {
+      min-width: 0;
+    }
+
+    [data-r1-editorial] .vox-article-mandate__grid dt {
+      color: rgb(var(--reading-ink-secondary) / 0.75);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    [data-r1-editorial] .vox-article-mandate__grid dd {
+      margin: 0.1rem 0 0;
+      color: rgb(var(--reading-ink));
+      line-height: 1.45;
+    }
+
+    @media (min-width: 640px) {
+      [data-r1-editorial] .vox-article-mandate__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     @media (min-width: 1024px) {
