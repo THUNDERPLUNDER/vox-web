@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Calm VIS design-system map v0.2 — overview of current Viddel/KlarLyd tokens, surfaces and patterns; sandbox remains experimental. */
+/* CONTRACT: Calm VIS design-system map v0.2 — overview of current Viddel tokens, surfaces and patterns; sandbox remains experimental. */
 import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
 import "../../../styles/article-system.css";
 import "../../../styles/r1-dialog-article.css";
@@ -162,9 +162,9 @@ const patternRows: Array<{
     name: "Article header / editorial intro",
     layer: "Editorial",
     purpose: "Setter kontekst, tone og tittelhierarki før lesing.",
-    source: "r1-spoke-v03, [slug]",
-    status: "needs parity",
-    note: "r1 har preset/type/hub; Storyblok har enklere categoryLabel.",
+    source: "r1-spoke-v03, [slug], r1-dialog-article.css",
+    status: "needs review",
+    note: "Storyblok [slug] har nå r1-nærere tittel/lead/trustline; preset/type/hub og full trust-blokk gjenstår.",
   },
   {
     name: "Ingress / lead",
@@ -274,7 +274,7 @@ const referenceLinks = [
     </nav>
 
     <header class="ds-hero">
-      <p class="ds-kicker">Viddel / KlarLyd · arbeidskart</p>
+      <p class="ds-kicker">Viddel · arbeidskart</p>
       <h1>Design System Overview v0.1</h1>
       <p>
         En tidlig VIS-oversikt over tokens, surfaces og patterns slik de faktisk brukes nå.

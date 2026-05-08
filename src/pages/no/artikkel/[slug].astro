@@ -74,7 +74,7 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
   <main class="bg-[rgb(var(--article-page-canvas))] py-2 sm:py-3" data-article-system data-r1-editorial>
     <div class="r1-editorial-container px-4 sm:px-6">
       <article class="vox-reading-sheet mx-auto max-w-[min(100%,46rem)] px-0.5">
-        <nav class="mb-7 text-[11px] font-medium uppercase tracking-[0.14em] text-[rgb(var(--reading-ink-secondary))]" aria-label="Du er her">
+        <nav class="r1-storyblok-breadcrumb" aria-label="Du er her">
           <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
           <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
           <a href="/no/hubs" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Emnehuber</a>
@@ -83,21 +83,36 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
           <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
           <span class="text-[rgb(var(--reading-ink))]">Artikkel</span>
         </nav>
-        <header class="border-b border-[rgb(var(--border))/0.28] pb-9">
+        <header class="r1-storyblok-article-header" data-component="StoryblokArticleHeader">
           {article.categoryLabel ? (
-            <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-accent-iris))]">
-              {article.categoryLabel}
-            </p>
+            <div class="r1-storyblok-kicker-row">
+              <p>{article.categoryLabel}</p>
+            </div>
           ) : null}
-          <h1 class="font-display mt-3 text-[2.25rem] font-bold leading-[1.1] tracking-[-0.045em] text-balance text-[rgb(var(--reading-ink))] sm:text-[2.75rem]">
+          <h1>
             {article.title}
           </h1>
           {article.ingress ? (
-            <p class="mt-6 max-w-2xl text-lg leading-[1.65] text-[rgb(var(--reading-ink-secondary))]">{article.ingress}</p>
+            <p class="r1-storyblok-lead">{article.ingress}</p>
+          ) : null}
+          {article.authorName || article.reviewerName || updatedLabel ? (
+            <div class="r1-storyblok-trustline" aria-label="Artikkelmetadata">
+              {article.authorName ? (
+                <span>
+                  Av <strong>{article.authorName}</strong>{article.authorRole ? `, ${article.authorRole}` : ""}
+                </span>
+              ) : null}
+              {article.reviewerName ? (
+                <span>
+                  Faglig sjekk <strong>{article.reviewerName}</strong>{article.reviewerRole ? `, ${article.reviewerRole}` : ""}
+                </span>
+              ) : null}
+              {updatedLabel ? <span>Oppdatert {updatedLabel}</span> : null}
+            </div>
           ) : null}
         </header>
 
-        <div class="vox-reading-article-body mt-11 space-y-10">
+        <div class="vox-reading-article-body r1-storyblok-article-body">
           {article.sections.length ? (
             article.sections.map((section) => (
               <section class="space-y-4">
