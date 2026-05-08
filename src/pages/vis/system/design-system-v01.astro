@@ -151,6 +151,7 @@ const surfaceRows: Array<{
 ];
 
 const patternRows: Array<{
+  id?: string;
   name: string;
   layer: Layer;
   purpose: string;
@@ -159,12 +160,13 @@ const patternRows: Array<{
   note: string;
 }> = [
   {
+    id: "pattern-article-header",
     name: "Article header / editorial intro",
     layer: "Editorial",
     purpose: "Setter kontekst, tone og tittelhierarki før lesing.",
     source: "r1-spoke-v03, [slug], r1-dialog-article.css",
     status: "needs review",
-    note: "Storyblok [slug] har r1-nærere tittel/lead/trustline fra story-metadata; preset/type/hub og full trust-blokk gjenstår.",
+    note: "Storyblok [slug] har r1-nærere tittel/lead/trustlag/actions/related topics med fallback-data; full Storyblok-modell gjenstår.",
   },
   {
     name: "Ingress / lead",
@@ -183,6 +185,7 @@ const patternRows: Array<{
     note: "Bør harmoniseres videre med editorial grammar.",
   },
   {
+    id: "pattern-next-steps",
     name: "Next steps",
     layer: "Editorial",
     purpose: "Overgang fra forståelse til handling.",
@@ -286,6 +289,18 @@ const referenceLinks = [
         <a href={`${base}no/artikkel/r1-spoke-v03`}>Editorial ideal</a>
       </div>
     </header>
+
+    <section class="ds-under-review" aria-labelledby="under-review-title">
+      <div>
+        <p class="ds-kicker">Under arbeid</p>
+        <h2 id="under-review-title">Needs review</h2>
+        <p>Mønstre som er i produksjonsnær QA, men ikke låst som canonical.</p>
+      </div>
+      <nav aria-label="Mønstre under review">
+        <a href="#pattern-article-header">Article header / editorial intro</a>
+        <a href="#pattern-next-steps">Next steps</a>
+      </nav>
+    </section>
 
     <section class="ds-section">
       <div class="ds-section-head">
@@ -395,11 +410,11 @@ const referenceLinks = [
         <h2>Editorial patterns</h2>
         <p>Patterns som bærer lesing og forståelse. <span class="ds-status ds-status--needs-parity">needs parity</span> betyr at r1-idealet ikke er fullt koblet i Storyblok-renderer.</p>
       </div>
-      <article class="ds-header-showcase">
+      <article class="ds-header-showcase" id="pattern-article-header">
         <div class="ds-row">
           <div>
             <h3>Article header / editorial intro</h3>
-            <p>Production pattern under review: Storyblok-header med kicker, stor display-tittel, ingress og kompakt trustline.</p>
+            <p>Production pattern under review: Storyblok-header med kicker, stor display-tittel, ingress, byline/trustlag, actions, breadcrumb og relaterte tema.</p>
           </div>
           <span class:list={["ds-status", statusClass["needs review"]]}>needs review</span>
         </div>
@@ -413,16 +428,45 @@ const referenceLinks = [
               Når høreapparatet ikke kobler til mobilen, er det lett å bli usikker på hva som faktisk er feil.
               Start med de enkle grepene først.
             </p>
-            <div class="r1-storyblok-trustline" aria-label="Eksempel på artikkelmetadata">
-              <span>Publisert <strong>08.05.2026</strong></span>
-              <span>Oppdatert <strong>08.05.2026</strong></span>
+            <section class="r1-storyblok-trustblock" aria-label="Eksempel på artikkelmetadata">
+              <img src="/images/klarlyd/r1-byline-profile.png" alt="" class="r1-storyblok-avatar" loading="lazy" />
+              <div class="r1-storyblok-trustcopy">
+                <p>Av <strong>Nora Lysvik</strong>, faglig rådgiver</p>
+                <p>For <strong>Viddel-redaksjonen</strong>, redaksjonelt kvalitetssjekket med faglig orientering</p>
+                <p class="r1-storyblok-dates">Publisert 08.05.2026</p>
+              </div>
+            </section>
+            <div class="r1-storyblok-header-tools">
+              <nav class="r1-storyblok-breadcrumb" aria-label="Eksempel på brødsmule">
+                <span>Forside</span><span aria-hidden="true">/</span><span>Emnehuber</span><span aria-hidden="true">/</span><span>Artikkel</span>
+              </nav>
+              <div class="r1-storyblok-actions" aria-label="Eksempel på artikkelhandlinger">
+                <button type="button" aria-label="Del artikkel">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8.59 13.51 15.42 17.5M15.41 6.5 8.59 10.49M18 22a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm12-7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                  </svg>
+                </button>
+                <button type="button" aria-label="Lagre artikkel">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="r1-storyblok-related-topics" role="group" aria-label="Eksempel på relaterte tema">
+              <span>Relaterte tema</span>
+              <ul role="list">
+                <li>Samtaletips</li>
+                <li>Høreliv</li>
+                <li>Hverdagskommunikasjon</li>
+              </ul>
             </div>
           </header>
         </div>
       </article>
       <div class="ds-table-like">
         {patternRows.map((item) => (
-          <article>
+          <article id={item.id === "pattern-article-header" ? undefined : item.id}>
             <div>
               <h3>{item.name}</h3>
               <p>{item.purpose}</p>
@@ -586,6 +630,44 @@ const referenceLinks = [
 
     .ds-section--compact {
       padding-bottom: 1.8rem;
+    }
+
+    .ds-under-review {
+      display: grid;
+      gap: 1rem;
+      border-bottom: 1px solid rgb(var(--border) / 0.18);
+      padding: 1.25rem 0 1.45rem;
+    }
+
+    .ds-under-review h2 {
+      margin-top: 0.15rem;
+      font-size: clamp(1.28rem, 2.7vw, 1.85rem);
+      line-height: 1.12;
+      letter-spacing: -0.035em;
+    }
+
+    .ds-under-review p {
+      max-width: 42rem;
+      margin-top: 0.45rem;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .ds-under-review nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .ds-under-review a {
+      border: 1px solid rgb(var(--border) / 0.38);
+      border-radius: 999px;
+      padding: 0.46rem 0.68rem;
+      color: rgb(var(--reading-ink));
+      background: rgb(var(--reading-paper));
+      font-size: 0.8rem;
+      text-decoration: none;
     }
 
     .ds-section-head {

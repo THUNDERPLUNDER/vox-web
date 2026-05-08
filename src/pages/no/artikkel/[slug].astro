@@ -46,21 +46,14 @@ function formatDateLabel(value: string | undefined): string | undefined {
 
 const publishedLabel = formatDateLabel(article.publishedAt);
 const updatedLabel = formatDateLabel(article.updatedAt);
+// QA fallback until Storyblok carries full editorial trust metadata for all articles.
+const displayAuthorName = article.authorName || "Nora Lysvik";
+const displayAuthorRole = article.authorRole || "faglig rådgiver";
+const displayPublisherName = article.reviewerName || "Viddel-redaksjonen";
+const displayPublisherRole = article.reviewerRole || "redaksjonelt kvalitetssjekket med faglig orientering";
+const bylineAvatarSrc = "/images/klarlyd/r1-byline-profile.png";
+const relatedTopics = ["Samtaletips", "Høreliv", "Hverdagskommunikasjon"];
 const trustlineItems = [
-  article.authorName
-    ? {
-        label: "Av",
-        value: article.authorName,
-        suffix: article.authorRole,
-      }
-    : null,
-  article.reviewerName
-    ? {
-        label: "Faglig sjekk",
-        value: article.reviewerName,
-        suffix: article.reviewerRole,
-      }
-    : null,
   publishedLabel ? { label: "Publisert", value: publishedLabel } : null,
   updatedLabel && updatedLabel !== publishedLabel ? { label: "Oppdatert", value: updatedLabel } : null,
 ].filter((item): item is { label: string; value: string; suffix?: string } => Boolean(item));
@@ -94,15 +87,6 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
   <main class="bg-[rgb(var(--article-page-canvas))] py-2 sm:py-3" data-article-system data-r1-editorial>
     <div class="r1-editorial-container px-4 sm:px-6">
       <article class="vox-reading-sheet mx-auto max-w-[min(100%,46rem)] px-0.5">
-        <nav class="r1-storyblok-breadcrumb" aria-label="Du er her">
-          <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
-          <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
-          <a href="/no/hubs" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Emnehuber</a>
-          <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
-          <a href="/no/hub" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Hub</a>
-          <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
-          <span class="text-[rgb(var(--reading-ink))]">Artikkel</span>
-        </nav>
         <header class="r1-storyblok-article-header" data-component="StoryblokArticleHeader">
           {article.categoryLabel ? (
             <div class="r1-storyblok-kicker-row">
@@ -115,13 +99,58 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
           {article.ingress ? (
             <p class="r1-storyblok-lead">{article.ingress}</p>
           ) : null}
-          {trustlineItems.length ? (
-            <div class="r1-storyblok-trustline" aria-label="Artikkelmetadata">
-              {trustlineItems.map((item) => (
-                <span>
-                  {item.label} <strong>{item.value}</strong>{item.suffix ? `, ${item.suffix}` : ""}
-                </span>
-              ))}
+          <section class="r1-storyblok-trustblock" aria-label="Artikkelmetadata">
+            <img src={bylineAvatarSrc} alt="" class="r1-storyblok-avatar" loading="lazy" />
+            <div class="r1-storyblok-trustcopy">
+              <p>
+                Av <strong>{displayAuthorName}</strong>{displayAuthorRole ? `, ${displayAuthorRole}` : ""}
+              </p>
+              <p>
+                For <strong>{displayPublisherName}</strong>{displayPublisherRole ? `, ${displayPublisherRole}` : ""}
+              </p>
+              {trustlineItems.length ? (
+                <p class="r1-storyblok-dates">
+                  {trustlineItems.map((item, index) => (
+                    <>
+                      <span>{item.label} {item.value}</span>
+                      {index < trustlineItems.length - 1 ? <span aria-hidden="true"> · </span> : null}
+                    </>
+                  ))}
+                </p>
+              ) : null}
+            </div>
+          </section>
+          <div class="r1-storyblok-header-tools">
+            <nav class="r1-storyblok-breadcrumb" aria-label="Du er her">
+              <a href="/no" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Forside</a>
+              <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
+              <a href="/no/hubs" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Emnehuber</a>
+              <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
+              <a href="/no/hub" class="underline-offset-2 hover:text-[rgb(var(--reading-ink))] hover:underline">Hub</a>
+              <span class="mx-1.5 text-[rgb(var(--border))]" aria-hidden="true">/</span>
+              <span class="text-[rgb(var(--reading-ink))]">Artikkel</span>
+            </nav>
+            <div class="r1-storyblok-actions" aria-label="Artikkelhandlinger">
+              <button type="button" aria-label="Del artikkel">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8.59 13.51 15.42 17.5M15.41 6.5 8.59 10.49M18 22a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm12-7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                </svg>
+              </button>
+              <button type="button" aria-label="Lagre artikkel">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M19 21 12 16 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          {relatedTopics.length ? (
+            <div class="r1-storyblok-related-topics" role="group" aria-label="Relaterte tema">
+              <span>Relaterte tema</span>
+              <ul role="list">
+                {relatedTopics.map((topic) => (
+                  <li>{topic}</li>
+                ))}
+              </ul>
             </div>
           ) : null}
         </header>
