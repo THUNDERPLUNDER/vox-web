@@ -532,6 +532,15 @@
       display: block;
     }
 
+    /* Storyblok ai_note / method_note: aldri ordinær leserflate; kun når inspect er armert (#76). */
+    [data-r1-editorial] .vox-article-publishing-notes {
+      display: none;
+    }
+
+    html[data-vox-inspect-drawer-active="true"] [data-r1-editorial] .vox-article-publishing-notes {
+      display: block;
+    }
+
     @media (min-width: 1024px) {
       /* #82: én kolonne — ingen persistent høyrekolonne; samme vertikale flyt som mobil */
       [data-r1-editorial] [data-component="ArticleTemplate"] {
