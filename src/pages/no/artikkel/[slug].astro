@@ -406,5 +406,17 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
     </div>
   </main>
 
+  {/* Mandate data for InspectToolsDrawer — hidden from public, read by drawer JS */}
+  {articleMandateRows.length ? (
+    <script
+      type="application/json"
+      id="vox-article-mandate-data"
+      set:html={JSON.stringify({
+        rows: articleMandateRows.map(([label, value]) => ({ label, value })),
+        slug: article.slug,
+      })}
+    />
+  ) : null}
+
   {showDialogBridge ? null : <Footer variant="article" withInspectDrawer />}
 </BaseLayout>

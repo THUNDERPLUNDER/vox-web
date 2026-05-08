@@ -45,6 +45,10 @@ import ThemeInspectBootScript from "../ThemeInspectBootScript.astro";
         </button>
       </div>
       <p class="vox-inspect-drawer__hint">Internt lag — ikke sluttbrukerflate.</p>
+      <div class="vox-inspect-drawer__mandate" id="vox-inspect-drawer-mandate" hidden aria-label="Artikkelmandat">
+        <p class="vox-inspect-drawer__mandate-eyebrow">Artikkelmandat</p>
+        <dl class="vox-inspect-drawer__mandate-grid" id="vox-inspect-drawer-mandate-grid"></dl>
+      </div>
       <ThemeControl compact omitScript includeInspectToggles />
     </div>
   </div>
@@ -61,11 +65,40 @@ import ThemeInspectBootScript from "../ThemeInspectBootScript.astro";
         function isOpen() {
           return root.getAttribute("data-vox-inspect-drawer-open") === "true";
         }
+        function hydrateMandate() {
+          var mandateEl = document.getElementById("vox-inspect-drawer-mandate");
+          var mandateGrid = document.getElementById("vox-inspect-drawer-mandate-grid");
+          if (!mandateEl || !mandateGrid) return;
+          var src = document.getElementById("vox-article-mandate-data");
+          if (!src) { mandateEl.hidden = true; return; }
+          try {
+            var data = JSON.parse(src.textContent || "");
+            if (!data.rows || !data.rows.length) { mandateEl.hidden = true; return; }
+            mandateGrid.innerHTML = "";
+            data.rows.forEach(function (row) {
+              var div = document.createElement("div");
+              var dt = document.createElement("dt");
+              dt.textContent = row.label;
+              var dd = document.createElement("dd");
+              dd.textContent = row.value;
+              div.appendChild(dt);
+              div.appendChild(dd);
+              mandateGrid.appendChild(div);
+            });
+            if (data.slug) {
+              mandateEl.setAttribute("data-mandate-slug", data.slug);
+            }
+            mandateEl.hidden = false;
+          } catch (e) {
+            mandateEl.hidden = true;
+          }
+        }
         function open() {
           root.setAttribute("data-vox-inspect-drawer-open", "true");
           tab.setAttribute("aria-expanded", "true");
           panel.classList.add("vox-inspect-drawer__panel--open");
           if (backdrop) backdrop.hidden = false;
+          hydrateMandate();
         }
         function close() {
           root.setAttribute("data-vox-inspect-drawer-open", "false");
@@ -251,6 +284,49 @@ import ThemeInspectBootScript from "../ThemeInspectBootScript.astro";
 
     [data-vox-inspect-drawer] .theme-control--compact .theme-control__btn {
       font-size: 0.7rem;
+    }
+
+    /* Article mandate block inside drawer */
+    .vox-inspect-drawer__mandate {
+      border: 1px dashed rgb(var(--border) / 0.5);
+      border-radius: 6px;
+      padding: 0.65rem 0.75rem 0.75rem;
+      background: rgb(var(--surface-subtle) / 0.35);
+    }
+
+    .vox-inspect-drawer__mandate-eyebrow {
+      margin: 0 0 0.55rem;
+      color: rgb(var(--muted));
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .vox-inspect-drawer__mandate-grid {
+      display: grid;
+      gap: 0.45rem;
+      margin: 0;
+    }
+
+    .vox-inspect-drawer__mandate-grid div {
+      min-width: 0;
+    }
+
+    .vox-inspect-drawer__mandate-grid dt {
+      margin: 0;
+      color: rgb(var(--text-secondary));
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .vox-inspect-drawer__mandate-grid dd {
+      margin: 0.08rem 0 0;
+      color: rgb(var(--text));
+      font-size: 0.78rem;
+      line-height: 1.4;
     }
   </style>
 </>
