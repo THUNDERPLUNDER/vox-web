@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Storyblok article_page — dialog-artikkel som r1-spoke-v03: én kolonne, ArticleInlineChatShell progressive, ingen seed-lenker til chat-shell, ingen terminal Footer når seeds finnes. ai_note/method_note kun i inspect-modus (ikke public «Om innholdet»). */
+/* CONTRACT: Storyblok article_page — dialog-artikkel som r1-spoke-v03: én kolonne, ArticleInlineChatShell progressive, ingen seed-lenker til chat-shell, ingen terminal Footer når seeds finnes. ai_note/method_note kun i inspect-modus. Neste steg: r1-editorial-next-steps (lett redaksjonell, ikke vox-reading-inline). */
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import InspectDrawerArmScript from "../../../components/dev/InspectDrawerArmScript.astro";
 import InspectToolsDrawer from "../../../components/dev/InspectToolsDrawer.astro";
@@ -212,11 +212,9 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
           })}
 
           {article.nextSteps.length ? (
-            <aside class="vox-reading-inline" aria-label="Neste steg">
-              <h2 class="font-display text-lg font-semibold tracking-[-0.02em] text-[rgb(var(--reading-ink))] sm:text-xl">
-                Neste steg
-              </h2>
-              <ul class="mt-4 list-disc space-y-2 pl-5 text-base leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
+            <aside class="r1-editorial-next-steps" aria-label="Neste steg">
+              <h2 class="r1-editorial-next-steps__heading">Neste steg</h2>
+              <ul class="r1-editorial-next-steps__list">
                 {article.nextSteps.map((step) => (
                   <li>{step}</li>
                 ))}
