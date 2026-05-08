@@ -30,6 +30,12 @@ const chipClassByType = (kind: string) => {
 
 const topIngress = [
   {
+    title: "Designsystem v0.1",
+    description: "Visuelt arbeidskart for tokens, surfaces, editorial patterns og Action-AI.",
+    href: `${base}vis/system/design-system-v01`,
+    ready: true,
+  },
+  {
     title: "Roadmap (canonical)",
     description: "Primar roadmapflate i VIS med spor, initiativ og oppgaver fra GitHub-bussen.",
     href: `${base}vis/system/roadmap-timeline-v01`,
@@ -77,7 +83,7 @@ const topIngress = [
               <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-800">Operativt nå</h2>
               <span class="text-[10px] font-medium uppercase tracking-wide text-gray-500">Kontrollsenter</span>
             </div>
-            <div class="mt-3 grid gap-2.5 sm:grid-cols-3">
+            <div class="mt-3 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
               {topIngress.map((item) => (
                 <a
                   href={item.href}

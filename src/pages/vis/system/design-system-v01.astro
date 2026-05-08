@@ -1,0 +1,537 @@
+---
+/* CONTRACT: VIS design-system overview v0.1 — practical map of existing tokens, surfaces and article/AI patterns; not a production component library. */
+import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+import "../../../styles/article-system.css";
+import "../../../styles/r1-dialog-article.css";
+
+const base = import.meta.env.BASE_URL;
+
+type Status = "canonical" | "experimental" | "needs review" | "needs parity" | "deprecated";
+
+const statusClass: Record<Status, string> = {
+  canonical: "border-emerald-300 bg-emerald-50 text-emerald-800",
+  experimental: "border-sky-300 bg-sky-50 text-sky-800",
+  "needs review": "border-amber-300 bg-amber-50 text-amber-800",
+  "needs parity": "border-violet-300 bg-violet-50 text-violet-800",
+  deprecated: "border-gray-300 bg-gray-100 text-gray-600",
+};
+
+const anatomy = [
+  {
+    title: "Chrome / orientering",
+    role: "Hjelper brukeren å vite hvor de er og hvor de kan gå videre.",
+    examples: "Global header, breadcrumb, VIS-systemnav, inspeksjonskontroller.",
+    appliesTo: "Alle ruter; tydeligst i BaseLayout og VIS.",
+    status: "canonical" as Status,
+  },
+  {
+    title: "Editorial / lesing",
+    role: "Bærer forståelse, rytme, tillit og redaksjonell tyngde.",
+    examples: "Article header, ingress, brødtekst, callouts, trust, next steps.",
+    appliesTo: "Artikler, spoke-sider og fremtidige kunnskapsflater.",
+    status: "needs review" as Status,
+  },
+  {
+    title: "Action-AI / hjelp videre",
+    role: "Overgangen fra lesing til handling i samme kontekst.",
+    examples: "Article AI bridge, seedspørsmål, progressive compose, terminal bottom.",
+    appliesTo: "Dialog-artikler og senere hub/hjelpeflyt.",
+    status: "canonical" as Status,
+  },
+];
+
+const tokens = [
+  {
+    name: "--vox-brand-primary",
+    role: "Sonic primary / handlingsfarge",
+    source: "tokens.css",
+    preview: "bg-[rgb(var(--vox-brand-primary))]",
+  },
+  {
+    name: "--vox-brand-gradient-start",
+    role: "Start i Sonic-gradient",
+    source: "tokens.css",
+    preview: "bg-[rgb(var(--vox-brand-gradient-start))]",
+  },
+  {
+    name: "--vox-brand-gradient-end",
+    role: "Slutt / magenta aksent i Sonic-gradient",
+    source: "tokens.css",
+    preview: "bg-[rgb(var(--vox-brand-gradient-end))]",
+  },
+  {
+    name: "--reading-paper",
+    role: "Papirflaten for editorial layer",
+    source: "tokens.css",
+    preview: "bg-[rgb(var(--reading-paper))]",
+  },
+  {
+    name: "--reading-ink",
+    role: "Primær editorial tekst",
+    source: "tokens.css",
+    preview: "bg-[rgb(var(--reading-ink))]",
+  },
+  {
+    name: "--reading-accent-iris",
+    role: "Editorial aksent for callouts, seeds og next steps",
+    source: "tokens.css",
+    preview: "bg-[rgb(var(--reading-accent-iris))]",
+  },
+  {
+    name: "--vox-surface-light / dark",
+    role: "Lys og mørk app-canvas",
+    source: "tokens.css",
+    preview: "bg-gradient-to-r from-[rgb(var(--vox-surface-light))] to-[rgb(var(--vox-surface-dark))]",
+  },
+  {
+    name: "--radius-sm / md / lg",
+    role: "Avrundingsfamilie for kontroller, cards og flater",
+    source: "tokens.css",
+    preview: "bg-[rgb(var(--surface-subtle))]",
+  },
+  {
+    name: "--font-display / --font-sans",
+    role: "Epilogue for overskrifter, Inter for brødtekst",
+    source: "tokens.css",
+    preview: "bg-white",
+  },
+];
+
+const links = [
+  { label: "/no/sandbox", href: `${base}no/sandbox`, note: "Visuelt showroom for rå byggeklosser." },
+  { label: "/no/artikkel/r1-spoke-v03", href: `${base}no/artikkel/r1-spoke-v03`, note: "Editorial ideal for dialog-artikkel." },
+  {
+    label: "/no/artikkel/koble-horeapparatet-til-mobilen",
+    href: `${base}no/artikkel/koble-horeapparatet-til-mobilen`,
+    note: "Storyblok [slug] eksempel.",
+  },
+  {
+    label: "/no/artikkel/fa-slutt-pa-pipingen",
+    href: `${base}no/artikkel/fa-slutt-pa-pipingen`,
+    note: "Storyblok [slug] eksempel.",
+  },
+  { label: "/vis/system", href: `${base}vis/system`, note: "VIS systemindeks." },
+  { label: "/vis/system/article", href: `${base}vis/system/article`, note: "Article System v0.1 referanse." },
+  { label: "/vis/system/article/components", href: `${base}vis/system/article/components`, note: "Landede artikkelkomponenter." },
+  { label: "/vis/system/article/foundations", href: `${base}vis/system/article/foundations`, note: "Article foundations og tokensnapshot." },
+];
+---
+
+<PrototypeLayout title="Design System Overview v0.1">
+  <main class="bg-gray-50 px-4 py-6 text-gray-900 sm:px-6 sm:py-8">
+    <nav class="text-xs text-gray-500">
+      <a href={`${base}vis/system`} class="underline underline-offset-2">System</a>
+      <span aria-hidden="true"> / </span>
+      <span class="text-gray-800">Design System Overview v0.1</span>
+    </nav>
+
+    <header class="mt-4 rounded-xl border border-gray-300 bg-white p-5 sm:p-6">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div class="max-w-3xl">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-500">VIS / arbeidskart</p>
+          <h1 class="mt-2 text-2xl font-semibold tracking-[-0.03em] text-gray-950 sm:text-3xl">Design System Overview v0.1</h1>
+          <p class="mt-3 text-sm leading-relaxed text-gray-600">
+            Dette er en tidlig VIS-oversikt over Viddel/KlarLyds voksende designsystem. Den viser tokens,
+            surfaces og patterns slik de faktisk brukes nå.
+          </p>
+          <p class="mt-2 text-sm leading-relaxed text-gray-600">
+            Dette er et arbeidskart, ikke en ferdig designsystemportal. <code class="rounded bg-gray-100 px-1 py-0.5 font-mono text-xs">/no/sandbox</code>
+            er fortsatt visuelt showroom for rå byggeklosser.
+          </p>
+        </div>
+        <div class="grid min-w-[15rem] gap-2 text-xs">
+          <a href={`${base}no/sandbox`} class="rounded-md border border-gray-300 bg-gray-50 px-3 py-2 font-medium text-gray-900 hover:bg-gray-100">Åpne showroom</a>
+          <a href={`${base}no/artikkel/r1-spoke-v03`} class="rounded-md border border-gray-300 bg-gray-50 px-3 py-2 font-medium text-gray-900 hover:bg-gray-100">Åpne editorial ideal</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="mt-7">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-gray-800">Produktanatomi</h2>
+          <p class="mt-1 text-sm text-gray-600">Tre lag som hjelper oss å sortere patterns uten å gjøre VIS til backlog.</p>
+        </div>
+      </div>
+      <div class="mt-3 grid gap-3 lg:grid-cols-3">
+        {anatomy.map((item, index) => (
+          <article class="rounded-xl border border-gray-300 bg-white p-4">
+            <div class="flex items-center justify-between gap-3">
+              <span class="flex h-7 w-7 items-center justify-center rounded-full border border-gray-300 bg-gray-50 text-xs font-semibold text-gray-700">
+                {index + 1}
+              </span>
+              <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass[item.status]]}>
+                {item.status}
+              </span>
+            </div>
+            <h3 class="mt-3 text-base font-semibold text-gray-950">{item.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-700">{item.role}</p>
+            <dl class="mt-4 space-y-2 text-xs text-gray-600">
+              <div>
+                <dt class="font-semibold uppercase tracking-wide text-gray-500">Patterns</dt>
+                <dd class="mt-0.5">{item.examples}</dd>
+              </div>
+              <div>
+                <dt class="font-semibold uppercase tracking-wide text-gray-500">Gjelder</dt>
+                <dd class="mt-0.5">{item.appliesTo}</dd>
+              </div>
+            </dl>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="mt-9">
+      <h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-gray-800">Tokens / primitives</h2>
+      <p class="mt-1 max-w-3xl text-sm text-gray-600">
+        Kompakt snapshot av tokens som forklarer systemet best. Full kilde er <code class="font-mono text-xs">src/styles/tokens.css</code>.
+      </p>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {tokens.map((token) => (
+          <article class="rounded-xl border border-gray-300 bg-white p-3">
+            <div class="flex gap-3">
+              <div
+                class:list={[
+                  "h-14 w-14 shrink-0 border border-gray-300",
+                  token.name.includes("radius") ? "rounded-[var(--radius-lg)]" : "rounded-md",
+                  token.preview,
+                ]}
+                aria-hidden="true"
+              >
+                {token.name.includes("font") ? (
+                  <div class="flex h-full items-center justify-center text-center text-[10px] leading-none text-gray-900">
+                    <span class="font-display">Aa</span>/<span>Aa</span>
+                  </div>
+                ) : null}
+              </div>
+              <div class="min-w-0">
+                <h3 class="font-mono text-xs font-semibold text-gray-950">{token.name}</h3>
+                <p class="mt-1 text-sm leading-snug text-gray-700">{token.role}</p>
+                <p class="mt-2 text-[11px] uppercase tracking-wide text-gray-500">Kilde: {token.source}</p>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="mt-9">
+      <h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-gray-800">Surfaces</h2>
+      <p class="mt-1 max-w-3xl text-sm text-gray-600">
+        Pattern-kort for globale surface hooks og Storyblok/R1-spesifikke editorial flater.
+      </p>
+      <div class="mt-3 grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="font-mono text-sm font-semibold">.vox-surface-calm</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass.canonical]}>canonical</span>
+          </div>
+          <div class="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <div class="vox-surface-calm">
+              <p class="text-sm font-semibold text-[rgb(var(--text))]">Rolig forklaringsflate</p>
+              <p class="mt-1 text-xs text-[rgb(var(--muted))]">Intro, støtte og kontekst.</p>
+            </div>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Formål: rolig informasjonsflate uten hard chrome-ramme.</p>
+          <p class="mt-2 text-xs text-gray-500">Hvor: /no/sandbox, ordbok-mønstre. Kilde: global.css</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="font-mono text-sm font-semibold">.vox-surface-lifted</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass.canonical]}>canonical</span>
+          </div>
+          <div class="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <div class="vox-surface-lifted">
+              <p class="text-sm font-semibold text-[rgb(var(--text))]">Løftet kort</p>
+              <p class="mt-1 text-xs text-[rgb(var(--muted))]">Premium / videre lesning.</p>
+            </div>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Formål: synlig, men myk støtteflate når en seksjon trenger egen tyngde.</p>
+          <p class="mt-2 text-xs text-gray-500">Hvor: /no/sandbox, ordbok-indeks. Kilde: global.css</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="font-mono text-sm font-semibold">.vox-surface-tech</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass["needs review"]]}>needs review</span>
+          </div>
+          <div class="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <div class="vox-surface-tech">
+              <p class="text-sm font-semibold text-[rgb(var(--text))]">Teknisk lenkeflate</p>
+              <p class="mt-1 text-xs text-[rgb(var(--muted))]">Venstreaksent og struktur.</p>
+            </div>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Formål: kompakte kort og begrepsflater; bør vurderes mot editorial retning.</p>
+          <p class="mt-2 text-xs text-gray-500">Hvor: /no/sandbox, ordbok. Kilde: global.css</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="font-mono text-sm font-semibold">.vox-reading-sheet</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass["needs review"]]}>needs review</span>
+          </div>
+          <div class="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <div class="vox-reading-sheet !max-w-none !px-5 !py-5">
+              <p class="font-display text-lg font-semibold text-[rgb(var(--reading-ink))]">Reading sheet</p>
+              <p class="mt-2 text-sm text-[rgb(var(--reading-ink-secondary))]">Papir, tekst og lesbarhet.</p>
+            </div>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Formål: redaksjonell papirflate; i Storyblok fjernes hairline via R1-overstyring.</p>
+          <p class="mt-2 text-xs text-gray-500">Hvor: Storyblok [slug]. Kilde: global.css + r1-dialog-article.css</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="font-mono text-sm font-semibold">.vox-reading-inline</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass["needs review"]]}>needs review</span>
+          </div>
+          <div class="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <div class="vox-reading-inline">
+              <p class="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--reading-accent-iris))]">Observasjon</p>
+              <p class="mt-2 text-sm text-[rgb(var(--reading-ink-secondary))]">Kort støtte i artikkelflyten.</p>
+            </div>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Formål: callout på lesearket. Brukes sparsomt; Neste steg er flyttet til lettere variant.</p>
+          <p class="mt-2 text-xs text-gray-500">Hvor: første observasjonsboks i [slug]. Kilde: global.css</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="font-mono text-sm font-semibold">.r1-editorial-next-steps</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass.experimental]}>experimental</span>
+          </div>
+          <div class="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <div data-r1-editorial>
+              <aside class="r1-editorial-next-steps !mt-0">
+                <h4 class="r1-editorial-next-steps__heading">Neste steg</h4>
+                <ul class="r1-editorial-next-steps__list">
+                  <li>Test ett grep i rolig situasjon.</li>
+                  <li>Ta med spørsmålet inn i Hørehjelpen.</li>
+                </ul>
+              </aside>
+            </div>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Formål: editorial overgang fra lesing til handling uten CTA-kortfølelse.</p>
+          <p class="mt-2 text-xs text-gray-500">Hvor: Storyblok [slug]. Kilde: r1-dialog-article.css</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="mt-9">
+      <h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-gray-800">Editorial patterns</h2>
+      <div class="mt-3 grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-sm font-semibold">Article header / editorial intro</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass["needs parity"]]}>needs parity</span>
+          </div>
+          <div class="mt-3 border-b border-gray-200 pb-4">
+            <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--reading-accent-iris))]">Standard · Type: spoke</p>
+            <p class="font-display mt-2 text-2xl font-semibold leading-tight tracking-[-0.03em] text-gray-950">Editorial tittel med tydelig rytme</p>
+            <p class="mt-3 text-sm leading-relaxed text-gray-600">Ingressen leder innholdet uten å bli produkt-CTA.</p>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">r1 har preset/type/hub; Storyblok har categoryLabel og enklere header.</p>
+          <p class="mt-2 text-xs text-gray-500">Kilde: r1-spoke-v03, [slug].</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-sm font-semibold">Ingress / lead</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass.canonical]}>canonical</span>
+          </div>
+          <div class="mt-3 rounded-lg bg-white p-2">
+            <p class="text-lg leading-[1.65] text-[rgb(var(--reading-ink-secondary))]">Kort, varm inngang som gjør artikkelen lesbar før detaljene begynner.</p>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Formål: leseløfte og kontekst. Finnes både i r1 og Storyblok.</p>
+          <p class="mt-2 text-xs text-gray-500">Kilde: [slug] header, ArticleTemplateV01.</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-sm font-semibold">Observation / callout</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass["needs review"]]}>needs review</span>
+          </div>
+          <div class="mt-3 vox-reading-inline">
+            <p class="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--reading-accent-iris))]">Observasjon</p>
+            <p class="mt-2 text-sm text-[rgb(var(--reading-ink-secondary))]">Støttepunkt som ikke skal dominere hovedløpet.</p>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Brukes i Storyblok-moduler; bør harmoniseres med ny editorial retning senere.</p>
+          <p class="mt-2 text-xs text-gray-500">Kilde: global.css, [slug].</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-sm font-semibold">Next steps</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass.experimental]}>experimental</span>
+          </div>
+          <div class="mt-3" data-r1-editorial>
+            <aside class="r1-editorial-next-steps !mt-0">
+              <h4 class="r1-editorial-next-steps__heading">Neste steg</h4>
+              <ul class="r1-editorial-next-steps__list">
+                <li>Velg ett grep å prøve først.</li>
+              </ul>
+            </aside>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Nylig ryddet for Storyblok [slug]; fungerer som bro før AI-flaten.</p>
+          <p class="mt-2 text-xs text-gray-500">Kilde: r1-dialog-article.css.</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-sm font-semibold">Seed question list</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass.deprecated]}>deprecated</span>
+          </div>
+          <div class="mt-3 article-seed-list">
+            <span class="article-seed-link">Hvordan starter jeg?</span>
+            <span class="article-seed-link">Hva bør jeg prøve først?</span>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Gammel lenkeliste. Storyblok [slug] bruker nå inline Article AI bridge i stedet.</p>
+          <p class="mt-2 text-xs text-gray-500">Kilde: global.css; ikke primær på [slug].</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-sm font-semibold">Kort oppsummert / ArticleSummary</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass["needs parity"]]}>needs parity</span>
+          </div>
+          <div class="mt-3 border-t border-gray-200 pt-4">
+            <p class="font-display text-lg font-semibold tracking-[-0.02em]">Dette kan du ta med deg videre</p>
+            <p class="mt-2 text-sm leading-relaxed text-gray-700">Rolig redaksjonell oppsummering etter hovedløpet.</p>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Finnes i r1 via ArticleSummary. Storyblok bruker next_steps; parity må avklares.</p>
+          <p class="mt-2 text-xs text-gray-500">Kilde: ArticleTemplateV01 / r1-spoke-v03.</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-sm font-semibold">Related topics</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass["needs parity"]]}>needs parity</span>
+          </div>
+          <div class="mt-3 flex flex-wrap items-center gap-1.5">
+            <span class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Relaterte tema</span>
+            <span class="rounded-sm border border-gray-300 px-1.5 py-0.5 text-[10px] text-gray-700">Samtaletips</span>
+            <span class="rounded-sm border border-gray-300 px-1.5 py-0.5 text-[10px] text-gray-700">Høreliv</span>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Finnes i r1-spoke-v03 som tidlig trust-nært mønster; ikke koblet i Storyblok [slug].</p>
+          <p class="mt-2 text-xs text-gray-500">Kilde: r1-dialog-article.css, r1-spoke-v03.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="mt-9">
+      <h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-gray-800">Action / AI bridge patterns</h2>
+      <p class="mt-1 max-w-3xl text-sm text-gray-600">AI/action skal visuelt slekte på editorial layer, ikke konkurrere som egen appflate.</p>
+      <div class="mt-3 grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-sm font-semibold">Article AI bridge</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass.canonical]}>canonical</span>
+          </div>
+          <div class="mt-3" data-r1-editorial>
+            <section class="r1-ai-bridge !mb-0 !mt-0">
+              <hr class="r1-article-to-klarlyd-divider" aria-hidden="true" />
+              <p class="font-display text-[1.08rem] font-semibold tracking-[-0.01em] text-[rgb(var(--reading-ink))]">Spør Hørehjelpen:</p>
+            </section>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Terminal handlingsflate etter artikkelinnholdet.</p>
+          <p class="mt-2 text-xs text-gray-500">Kilde: ArticleInlineChatShell + r1-dialog-article.css.</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-sm font-semibold">Seed questions</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass.canonical]}>canonical</span>
+          </div>
+          <div class="mt-3 grid gap-2" data-r1-editorial>
+            <button type="button" class="w-full rounded-[1.15rem] border border-[rgb(var(--border))/0.32] px-3 py-2 text-left text-sm text-[rgb(var(--reading-ink))]">
+              Hva bør jeg prøve først?
+            </button>
+            <button type="button" class="w-full rounded-[1.15rem] border border-[rgb(var(--border))/0.32] px-3 py-2 text-left text-sm text-[rgb(var(--reading-ink))]">
+              Hvorfor piper høreapparatet?
+            </button>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Storyblok seeds filtreres per artikkel og åpner inline dialog.</p>
+          <p class="mt-2 text-xs text-gray-500">Kilde: [slug], fetchAiSeedQuestions(), ArticleInlineChatShell.</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-sm font-semibold">Compose after first answer</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass.canonical]}>canonical</span>
+          </div>
+          <div class="mt-3 rounded-[1.15rem] border border-gray-300 bg-white p-3 shadow-sm">
+            <div class="flex items-center gap-2">
+              <div class="min-h-10 flex-1 rounded-xl bg-gray-50 px-3 py-2 text-sm text-gray-500">Spør videre om dette</div>
+              <span class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-white">↑</span>
+            </div>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Composer ligger i artikkelkontekst og følger progressiv samtale.</p>
+          <p class="mt-2 text-xs text-gray-500">Kilde: ArticleInlineChatShell. Ikke endret i #109.</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-sm font-semibold">Terminal surface / article bottom</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass.canonical]}>canonical</span>
+          </div>
+          <div class="mt-3 rounded-lg border-t border-gray-300 pt-3">
+            <p class="text-sm text-gray-700">Artikkel → AI-bro → ingen konkurrerende footer når seeds finnes.</p>
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Holder handlingen i artikkelflaten, ikke i global chrome.</p>
+          <p class="mt-2 text-xs text-gray-500">Kilde: [slug] Footer-logikk, r1-spoke-v03.</p>
+        </article>
+
+        <article class="rounded-xl border border-gray-300 bg-white p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h3 class="text-sm font-semibold">Inspect / dev notes</h3>
+            <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass.experimental]}>experimental</span>
+          </div>
+          <div class="mt-3 rounded-md border border-dashed border-amber-300 bg-amber-50 p-3 text-xs text-amber-900">
+            Storyblok / intern (inspect)
+          </div>
+          <p class="mt-3 text-sm text-gray-700">Interne felt kan vises i inspect, men ikke i public artikkel.</p>
+          <p class="mt-2 text-xs text-gray-500">Kilde: InspectDrawerArmScript, [slug], r1-dialog-article.css.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="mt-9 rounded-xl border border-gray-300 bg-white p-4">
+      <h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-gray-800">Statusforklaring</h2>
+      <dl class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+        {(Object.keys(statusClass) as Status[]).map((status) => (
+          <div class="rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <dt>
+              <span class:list={["rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide", statusClass[status]]}>
+                {status}
+              </span>
+            </dt>
+            <dd class="mt-2 text-xs leading-relaxed text-gray-600">
+              {status === "canonical"
+                ? "Brukes aktivt og bør videreføres."
+                : status === "experimental"
+                  ? "Testet, men ikke låst."
+                  : status === "needs review"
+                    ? "Fungerer, men trenger vurdering."
+                    : status === "needs parity"
+                      ? "Finnes i ideal/reference, men ikke i Storyblok-renderer ennå."
+                      : "Bør ikke brukes videre."}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <section class="mt-9 rounded-xl border border-gray-300 bg-white p-4">
+      <h2 class="text-sm font-semibold uppercase tracking-[0.14em] text-gray-800">Lenker</h2>
+      <div class="mt-3 grid gap-2 md:grid-cols-2">
+        {links.map((link) => (
+          <a href={link.href} class="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 hover:bg-gray-100">
+            <span class="font-mono text-xs font-semibold text-gray-950">{link.label}</span>
+            <span class="mt-1 block text-xs leading-relaxed text-gray-600">{link.note}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+</PrototypeLayout>
