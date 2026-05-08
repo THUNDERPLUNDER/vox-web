@@ -460,6 +460,19 @@ const referenceLinks = [
 
     <section class="ds-section ds-section--compact">
       <div class="ds-section-head">
+        <p class="ds-kicker">07</p>
+        <h2>Vedlikehold</h2>
+        <p>Dette kartet skal vise faktisk bruk, ikke bare ønsket retning.</p>
+      </div>
+      <ul class="ds-maintenance-list">
+        <li>Når nye production-patterns introduseres, skal de inn i denne oversikten eller eksplisitt merkes som ikke-dokumentert.</li>
+        <li>Return Ticket for visuelle endringer skal si om <code>/vis/system/design-system-v01</code> må oppdateres.</li>
+        <li>Status skal følge faktisk bruk i kode og ruter: canonical, experimental, needs review, needs parity eller deprecated.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section ds-section--compact">
+      <div class="ds-section-head">
         <p class="ds-kicker">Status</p>
         <h2>Legend</h2>
       </div>
@@ -890,6 +903,16 @@ const referenceLinks = [
     .ds-legend {
       display: grid;
       gap: 0.85rem;
+    }
+
+    .ds-maintenance-list {
+      display: grid;
+      gap: 0.65rem;
+      max-width: 52rem;
+      padding-left: 1.1rem;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.92rem;
+      line-height: 1.6;
     }
 
     .ds-legend dd {

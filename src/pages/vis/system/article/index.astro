@@ -5,37 +5,195 @@ const base = import.meta.env.BASE_URL;
 ---
 
 <PrototypeLayout title="Article System">
-  <main class="px-4 py-6 sm:px-6 sm:py-8">
-    <h1 class="text-lg font-semibold text-gray-900">Article System v0.1</h1>
-    <p class="mt-2 max-w-prose text-sm leading-relaxed text-gray-600">
-      Et lett canonical referanselag for landet artikkelsystem. Formål: hjelpe Thomas og Vibeke med orientering og review.
-    </p>
+  <main class="article-doc-page">
+    <nav class="article-doc-breadcrumb">
+      <a href={`${base}vis/system`}>System</a>
+      <span aria-hidden="true">/</span>
+      <span>Article System</span>
+    </nav>
 
-    <section class="mt-6 rounded-md border border-gray-300 bg-gray-50 px-3 py-3">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Hva er dette</h2>
-      <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-700">
-        <li>Kodet, gjenbrukbar artikkelstruktur (ikke ny designrunde).</li>
-        <li>Canonical VIS-referanser: foundations, components og template recipe under denne seksjonen.</li>
-        <li>Sandbox er eksperiment/showroom, ikke primær dokumentasjonskilde.</li>
-      </ul>
-      <p class="mt-2 text-xs text-gray-600">
-        VIS er referanseflate. Oppgaveflyt/backlog ligger fortsatt i GitHub Projects og issue-laget.
+    <header class="article-doc-hero">
+      <p class="article-doc-kicker">Canonical article reference</p>
+      <h1>Article System v0.1</h1>
+      <p>
+        Et lett referanselag for landet artikkelsystem. Her bor foundations, components/patterns og
+        template recipe. Sandbox er eksperiment/showroom, ikke primær dokumentasjonskilde.
       </p>
+    </header>
+
+    <section class="article-doc-section">
+      <div class="article-doc-section-head">
+        <p class="article-doc-kicker">01</p>
+        <h2>Reference map</h2>
+        <p>Velg etter hva du trenger: foundations, konkrete patterns, template recipe eller endringsstatus.</p>
+      </div>
+      <nav class="article-doc-grid" aria-label="Article System referanser">
+        <a href={`${base}vis/system/article/foundations`}>
+          <span>foundation</span>
+          <b>Foundations</b>
+          <p>Article tokens, prinsipper, typehierarki og grunnrytme.</p>
+        </a>
+        <a href={`${base}vis/system/article/components`}>
+          <span>components / patterns</span>
+          <b>Components</b>
+          <p>Landede artikkelkomponenter med små previews og brukskontekst.</p>
+        </a>
+        <a href={`${base}vis/system/article/templates`}>
+          <span>template reference</span>
+          <b>Template</b>
+          <p>Canonical recipe og anatomi for artikkelmalen.</p>
+        </a>
+        <a href={`${base}vis/system/article/changelog`}>
+          <span>status</span>
+          <b>Changelog / status</b>
+          <p>Hva som er landet og hva som fortsatt bør vurderes.</p>
+        </a>
+      </nav>
     </section>
 
-    <nav class="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-      <a href={`${base}vis/system/article/foundations`} class="rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 hover:bg-gray-50">
-        Foundations
-      </a>
-      <a href={`${base}vis/system/article/components`} class="rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 hover:bg-gray-50">
-        Components
-      </a>
-      <a href={`${base}vis/system/article/templates`} class="rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 hover:bg-gray-50">
-        Template
-      </a>
-      <a href={`${base}vis/system/article/changelog`} class="rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 hover:bg-gray-50">
-        Changelog / status
-      </a>
-    </nav>
+    <section class="article-doc-section article-doc-section--soft">
+      <div class="article-doc-section-head">
+        <p class="article-doc-kicker">02</p>
+        <h2>Editorial ideal and sandbox</h2>
+        <p>
+          <a href={`${base}no/artikkel/r1-spoke-v03`}>r1-spoke-v03</a> er nåværende editorial ideal for dialog-artikkel.
+          <a href={`${base}no/sandbox`}>/no/sandbox</a> er et eksperimentrom for å teste rå byggeklosser.
+        </p>
+      </div>
+      <p class="article-doc-note">VIS er referanseflate. Oppgaveflyt/backlog ligger fortsatt i GitHub Projects og issue-laget.</p>
+    </section>
   </main>
+
+  <style>
+    .article-doc-page {
+      min-height: 100vh;
+      background: rgb(var(--article-page-canvas));
+      color: rgb(var(--reading-ink));
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .article-doc-page > * {
+      max-width: 72rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .article-doc-breadcrumb {
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.72rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .article-doc-breadcrumb a,
+    .article-doc-section a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .article-doc-hero {
+      border-bottom: 1px solid rgb(var(--border) / 0.24);
+      padding: 1.5rem 0 2rem;
+    }
+
+    .article-doc-hero h1 {
+      margin-top: 0.4rem;
+      max-width: 52rem;
+      font-size: clamp(2.15rem, 6vw, 4.2rem);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+    }
+
+    .article-doc-hero p,
+    .article-doc-section-head > p,
+    .article-doc-note {
+      max-width: 44rem;
+      margin-top: 0.8rem;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.96rem;
+      line-height: 1.68;
+    }
+
+    .article-doc-kicker {
+      color: rgb(var(--reading-accent-iris));
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .article-doc-section {
+      padding: 2.4rem 0;
+      border-bottom: 1px solid rgb(var(--border) / 0.18);
+    }
+
+    .article-doc-section--soft {
+      border-bottom: 0;
+    }
+
+    .article-doc-section h2 {
+      margin-top: 0.15rem;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.12;
+      letter-spacing: -0.035em;
+    }
+
+    .article-doc-grid {
+      display: grid;
+      gap: 1px;
+      overflow: hidden;
+      margin-top: 1.25rem;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: var(--radius-md);
+      background: rgb(var(--border) / 0.22);
+    }
+
+    .article-doc-grid a {
+      min-height: 8.25rem;
+      padding: 1rem;
+      color: rgb(var(--reading-ink));
+      background: rgb(var(--reading-paper));
+      text-decoration: none;
+    }
+
+    .article-doc-grid span {
+      color: rgb(var(--reading-accent-iris));
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .article-doc-grid b {
+      display: block;
+      margin-top: 0.45rem;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .article-doc-grid p {
+      margin-top: 0.55rem;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+
+    @media (min-width: 720px) {
+      .article-doc-page {
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      .article-doc-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1080px) {
+      .article-doc-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+  </style>
 </PrototypeLayout>

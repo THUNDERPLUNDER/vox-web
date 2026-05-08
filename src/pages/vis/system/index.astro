@@ -5,61 +5,241 @@ const base = import.meta.env.BASE_URL;
 ---
 
 <PrototypeLayout title="System">
-  <main class="px-4 py-6 sm:px-6 sm:py-8">
-    <h1 class="text-lg font-semibold text-gray-900">Systemreferanse i VIS</h1>
-    <p class="mt-2 max-w-prose text-sm leading-relaxed text-gray-600">
-      Dette laget viser landet systemarbeid i lesbar form for beslutning og orientering. Canonical design- og article-referanser bor her;
-      sandbox er fortsatt et eksperimentrom.
-    </p>
+  <main class="system-doc-page">
+    <nav class="system-doc-breadcrumb">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <span>System</span>
+    </nav>
 
-    <section class="mt-6">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Design system / article references</h2>
-      <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <a href={`${base}vis/system/design-system-v01`} class="rounded-md border border-gray-300 bg-white p-3 hover:bg-gray-50">
-          <p class="text-sm font-semibold text-gray-900">Design System Overview</p>
-          <p class="mt-1 text-xs leading-relaxed text-gray-600">Kart over tokens, surfaces, editorial patterns og Action-AI.</p>
+    <header class="system-doc-hero">
+      <p class="system-doc-kicker">VIS / systemreferanse</p>
+      <h1>Systemreferanse</h1>
+      <p>
+        Canonical design- og article-referanser bor her. Runtime/status er eget operativt lag,
+        og sandbox er fortsatt et eksperimentrom for rå byggeklosser.
+      </p>
+    </header>
+
+    <section class="system-doc-section">
+      <div class="system-doc-section-head">
+        <p class="system-doc-kicker">01</p>
+        <h2>Canonical design / article references</h2>
+        <p>Rolige referanseflater for det som faktisk finnes og skal forvaltes videre.</p>
+      </div>
+      <div class="system-doc-grid system-doc-grid--four">
+        <a href={`${base}vis/system/design-system-v01`}>
+          <span>overview</span>
+          <b>Design System Overview</b>
+          <p>Kart over tokens, surfaces, editorial patterns og Action-AI.</p>
         </a>
-        <a href={`${base}vis/system/article/foundations`} class="rounded-md border border-gray-300 bg-white p-3 hover:bg-gray-50">
-          <p class="text-sm font-semibold text-gray-900">Foundations</p>
-          <p class="mt-1 text-xs leading-relaxed text-gray-600">Article tokens, prinsipper og grunnrytme.</p>
+        <a href={`${base}vis/system/article/foundations`}>
+          <span>foundations</span>
+          <b>Article foundations</b>
+          <p>Article tokens, prinsipper og grunnrytme.</p>
         </a>
-        <a href={`${base}vis/system/article/components`} class="rounded-md border border-gray-300 bg-white p-3 hover:bg-gray-50">
-          <p class="text-sm font-semibold text-gray-900">Components / patterns</p>
-          <p class="mt-1 text-xs leading-relaxed text-gray-600">Landede artikkelkomponenter og preview-referanser.</p>
+        <a href={`${base}vis/system/article/components`}>
+          <span>components / patterns</span>
+          <b>Article components</b>
+          <p>Landede artikkelkomponenter og preview-referanser.</p>
         </a>
-        <a href={`${base}vis/system/article/templates`} class="rounded-md border border-gray-300 bg-white p-3 hover:bg-gray-50">
-          <p class="text-sm font-semibold text-gray-900">Template reference</p>
-          <p class="mt-1 text-xs leading-relaxed text-gray-600">Oppskrift og canonical artikkelstruktur.</p>
+        <a href={`${base}vis/system/article/templates`}>
+          <span>template</span>
+          <b>Template reference</b>
+          <p>Oppskrift og canonical artikkelstruktur.</p>
         </a>
       </div>
     </section>
 
-    <section class="mt-8">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Runtime / prosjektstatus</h2>
-      <div class="mt-3 grid gap-3 sm:grid-cols-2">
-        <a href={`${base}vis/system/roadmap-timeline-v01`} class="rounded-md border border-gray-300 bg-white p-3 hover:bg-gray-50">
-          <p class="text-sm font-semibold text-gray-900">Roadmap timeline read model</p>
-          <p class="mt-1 text-xs leading-relaxed text-gray-600">Operativ roadmapflate med spor, initiativ og oppgaver fra GitHub-bussen.</p>
+    <section class="system-doc-section">
+      <div class="system-doc-section-head">
+        <p class="system-doc-kicker">02</p>
+        <h2>Runtime / prosjektstatus</h2>
+        <p>Operative flater som kan ha et annet uttrykk enn design-dokumentasjonen.</p>
+      </div>
+      <div class="system-doc-grid">
+        <a href={`${base}vis/system/roadmap-timeline-v01`}>
+          <span>runtime</span>
+          <b>Roadmap timeline read model</b>
+          <p>Operativ roadmapflate med spor, initiativ og oppgaver fra GitHub-bussen.</p>
         </a>
-        <a href={`${base}vis/system/github-runtime-status`} class="rounded-md border border-gray-300 bg-white p-3 hover:bg-gray-50">
-          <p class="text-sm font-semibold text-gray-900">GitHub runtime status</p>
-          <p class="mt-1 text-xs leading-relaxed text-gray-600">Generert feed fra GitHub API for @navigator / Daily Sync.</p>
+        <a href={`${base}vis/system/github-runtime-status`}>
+          <span>runtime</span>
+          <b>GitHub runtime status</b>
+          <p>Generert feed fra GitHub API for @navigator / Daily Sync.</p>
         </a>
       </div>
     </section>
 
-    <section class="mt-8 rounded-md border border-dashed border-gray-300 bg-gray-50 p-4">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Sandbox / experimental</h2>
-      <p class="mt-2 max-w-prose text-sm leading-relaxed text-gray-600">
+    <section class="system-doc-section system-doc-section--soft">
+      <div class="system-doc-section-head">
+        <p class="system-doc-kicker">03</p>
+        <h2>Sandbox / experimental</h2>
+      </div>
+      <p>
         Sandbox kan brukes til å se og teste rå byggeklosser, men er ikke primær canonical dokumentasjon.
       </p>
-      <a href={`${base}no/sandbox`} class="mt-3 inline-flex rounded border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100">
+      <a href={`${base}no/sandbox`} class="system-doc-pill">
         Åpne /no/sandbox
       </a>
-      <p class="mt-4 text-xs text-gray-500">
+      <p class="system-doc-note">
         Pensjonert: <code class="font-mono">/vis/system/task-bus-live</code> og{" "}
         <code class="font-mono">/vis/KlarLyd_Live_Board_Roadmap_v01</code>.
       </p>
     </section>
   </main>
+
+  <style>
+    .system-doc-page {
+      min-height: 100vh;
+      background: rgb(var(--article-page-canvas));
+      color: rgb(var(--reading-ink));
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .system-doc-page > * {
+      max-width: 72rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .system-doc-breadcrumb {
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.72rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .system-doc-breadcrumb a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .system-doc-hero {
+      border-bottom: 1px solid rgb(var(--border) / 0.24);
+      padding: 1.5rem 0 2rem;
+    }
+
+    .system-doc-hero h1 {
+      margin-top: 0.4rem;
+      max-width: 52rem;
+      font-size: clamp(2.15rem, 6vw, 4.2rem);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+    }
+
+    .system-doc-hero p,
+    .system-doc-section-head > p,
+    .system-doc-section--soft > p {
+      max-width: 44rem;
+      margin-top: 0.8rem;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.96rem;
+      line-height: 1.68;
+    }
+
+    .system-doc-kicker {
+      color: rgb(var(--reading-accent-iris));
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .system-doc-section {
+      padding: 2.4rem 0;
+      border-bottom: 1px solid rgb(var(--border) / 0.18);
+    }
+
+    .system-doc-section-head {
+      margin-bottom: 1.25rem;
+    }
+
+    .system-doc-section h2 {
+      margin-top: 0.15rem;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.12;
+      letter-spacing: -0.035em;
+    }
+
+    .system-doc-grid {
+      display: grid;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: var(--radius-md);
+      background: rgb(var(--border) / 0.22);
+    }
+
+    .system-doc-grid a {
+      min-height: 8.25rem;
+      padding: 1rem;
+      color: rgb(var(--reading-ink));
+      background: rgb(var(--reading-paper));
+      text-decoration: none;
+    }
+
+    .system-doc-grid span {
+      color: rgb(var(--reading-accent-iris));
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .system-doc-grid b {
+      display: block;
+      margin-top: 0.45rem;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .system-doc-grid p {
+      margin-top: 0.55rem;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+
+    .system-doc-section--soft {
+      border-bottom: 0;
+      padding-bottom: 1rem;
+    }
+
+    .system-doc-pill {
+      display: inline-flex;
+      margin-top: 1rem;
+      border: 1px solid rgb(var(--border) / 0.38);
+      border-radius: 999px;
+      padding: 0.48rem 0.72rem;
+      color: rgb(var(--reading-ink));
+      background: rgb(var(--reading-paper));
+      font-size: 0.82rem;
+      text-decoration: none;
+    }
+
+    .system-doc-note {
+      margin-top: 1rem;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.78rem;
+    }
+
+    @media (min-width: 720px) {
+      .system-doc-page {
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      .system-doc-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1080px) {
+      .system-doc-grid--four {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+  </style>
 </PrototypeLayout>
