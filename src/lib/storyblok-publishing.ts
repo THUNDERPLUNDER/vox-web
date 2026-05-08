@@ -63,6 +63,7 @@ export type ArticlePageContent = {
   authorRole?: string;
   reviewerName?: string;
   reviewerRole?: string;
+  publishedAt?: string;
   updatedAt?: string;
   aiNote?: string;
   methodNote?: string;
@@ -231,7 +232,8 @@ function normalizeArticleStory(story: AnyRecord): ArticlePageContent {
     authorRole: asString(content.author_role),
     reviewerName: asString(content.reviewer_name),
     reviewerRole: asString(content.reviewer_role),
-    updatedAt: asString(content.updated_at),
+    publishedAt: asString(content.published_at) || asString(story.first_published_at) || asString(story.published_at),
+    updatedAt: asString(content.updated_at) || asString(story.published_at) || asString(story.updated_at),
     aiNote: asString(content.ai_note),
     methodNote: asString(content.method_note),
     status: asString(content.status),

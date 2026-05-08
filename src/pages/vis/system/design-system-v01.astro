@@ -164,7 +164,7 @@ const patternRows: Array<{
     purpose: "Setter kontekst, tone og tittelhierarki før lesing.",
     source: "r1-spoke-v03, [slug], r1-dialog-article.css",
     status: "needs review",
-    note: "Storyblok [slug] har nå r1-nærere tittel/lead/trustline; preset/type/hub og full trust-blokk gjenstår.",
+    note: "Storyblok [slug] har r1-nærere tittel/lead/trustline fra story-metadata; preset/type/hub og full trust-blokk gjenstår.",
   },
   {
     name: "Ingress / lead",
@@ -395,6 +395,31 @@ const referenceLinks = [
         <h2>Editorial patterns</h2>
         <p>Patterns som bærer lesing og forståelse. <span class="ds-status ds-status--needs-parity">needs parity</span> betyr at r1-idealet ikke er fullt koblet i Storyblok-renderer.</p>
       </div>
+      <article class="ds-header-showcase">
+        <div class="ds-row">
+          <div>
+            <h3>Article header / editorial intro</h3>
+            <p>Production pattern under review: Storyblok-header med kicker, stor display-tittel, ingress og kompakt trustline.</p>
+          </div>
+          <span class:list={["ds-status", statusClass["needs review"]]}>needs review</span>
+        </div>
+        <div class="ds-header-preview" data-r1-editorial>
+          <header class="r1-storyblok-article-header">
+            <div class="r1-storyblok-kicker-row">
+              <p>Praktisk guide</p>
+            </div>
+            <h1>Koble høreapparatet til mobilen: steg som løser det meste</h1>
+            <p class="r1-storyblok-lead">
+              Når høreapparatet ikke kobler til mobilen, er det lett å bli usikker på hva som faktisk er feil.
+              Start med de enkle grepene først.
+            </p>
+            <div class="r1-storyblok-trustline" aria-label="Eksempel på artikkelmetadata">
+              <span>Publisert <strong>08.05.2026</strong></span>
+              <span>Oppdatert <strong>08.05.2026</strong></span>
+            </div>
+          </header>
+        </div>
+      </article>
       <div class="ds-table-like">
         {patternRows.map((item) => (
           <article>
@@ -796,6 +821,51 @@ const referenceLinks = [
       display: grid;
       gap: 0;
       border-top: 1px solid rgb(var(--border) / 0.22);
+    }
+
+    .ds-header-showcase {
+      margin-bottom: 1.35rem;
+      border-top: 1px solid rgb(var(--border) / 0.22);
+      border-bottom: 1px solid rgb(var(--border) / 0.18);
+      padding: 1.2rem 0 1.45rem;
+    }
+
+    .ds-header-showcase > .ds-row {
+      align-items: flex-start;
+    }
+
+    .ds-header-showcase h3 {
+      font-size: 1rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .ds-header-showcase p {
+      max-width: 42rem;
+      margin-top: 0.45rem;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.9rem;
+      line-height: 1.58;
+    }
+
+    .ds-header-preview {
+      max-width: 54rem;
+      margin-top: 1rem;
+      border-radius: var(--radius-md);
+      background: rgb(var(--reading-paper));
+      padding: clamp(1rem, 3vw, 1.5rem);
+    }
+
+    .ds-header-preview .r1-storyblok-article-header {
+      padding-bottom: clamp(1.5rem, 4vw, 2.25rem);
+    }
+
+    .ds-header-preview .r1-storyblok-article-header h1 {
+      font-size: clamp(2.05rem, 6.5vw, 3.65rem);
+    }
+
+    .ds-header-preview .r1-storyblok-lead {
+      font-size: clamp(1.05rem, 2.8vw, 1.32rem);
     }
 
     .ds-table-like article {

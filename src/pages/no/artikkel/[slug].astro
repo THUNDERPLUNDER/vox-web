@@ -38,12 +38,32 @@ const bridgeItems = (await fetchAiSeedQuestions())
 const showDialogBridge = bridgeItems.length > 0;
 const aiHeadingId = `sb-article-${slug.replace(/[^a-zA-Z0-9_-]/g, "-")}-ai`;
 
-const updatedLabel = article.updatedAt
-  ? (() => {
-      const d = new Date(article.updatedAt);
-      return Number.isNaN(d.getTime()) ? article.updatedAt : d.toLocaleDateString("no-NO");
-    })()
-  : undefined;
+function formatDateLabel(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? value : d.toLocaleDateString("no-NO");
+}
+
+const publishedLabel = formatDateLabel(article.publishedAt);
+const updatedLabel = formatDateLabel(article.updatedAt);
+const trustlineItems = [
+  article.authorName
+    ? {
+        label: "Av",
+        value: article.authorName,
+        suffix: article.authorRole,
+      }
+    : null,
+  article.reviewerName
+    ? {
+        label: "Faglig sjekk",
+        value: article.reviewerName,
+        suffix: article.reviewerRole,
+      }
+    : null,
+  publishedLabel ? { label: "Publisert", value: publishedLabel } : null,
+  updatedLabel && updatedLabel !== publishedLabel ? { label: "Oppdatert", value: updatedLabel } : null,
+].filter((item): item is { label: string; value: string; suffix?: string } => Boolean(item));
 
 const moduleToneLabel: Record<
   "module_observation_box" | "module_friction_box" | "module_response_block" | "module_reassurance_block",
@@ -95,19 +115,13 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
           {article.ingress ? (
             <p class="r1-storyblok-lead">{article.ingress}</p>
           ) : null}
-          {article.authorName || article.reviewerName || updatedLabel ? (
+          {trustlineItems.length ? (
             <div class="r1-storyblok-trustline" aria-label="Artikkelmetadata">
-              {article.authorName ? (
+              {trustlineItems.map((item) => (
                 <span>
-                  Av <strong>{article.authorName}</strong>{article.authorRole ? `, ${article.authorRole}` : ""}
+                  {item.label} <strong>{item.value}</strong>{item.suffix ? `, ${item.suffix}` : ""}
                 </span>
-              ) : null}
-              {article.reviewerName ? (
-                <span>
-                  Faglig sjekk <strong>{article.reviewerName}</strong>{article.reviewerRole ? `, ${article.reviewerRole}` : ""}
-                </span>
-              ) : null}
-              {updatedLabel ? <span>Oppdatert {updatedLabel}</span> : null}
+              ))}
             </div>
           ) : null}
         </header>
