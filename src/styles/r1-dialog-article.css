@@ -28,6 +28,15 @@
       --r1-ai-seed-hover-surface: rgb(248 250 252 / 0.72);
     }
 
+    /*
+     * Storyblok [slug] brukte .vox-reading-sheet (global "hairline" card).
+     * r1-spoke-v03 har ikke den rammen — fjern border/shadow her, behold papir/bakgrunn.
+     */
+    [data-r1-editorial] .vox-reading-sheet {
+      border: 0;
+      box-shadow: none;
+    }
+
     html[data-theme="dark"] [data-r1-editorial] {
       /* User bubble: darker than reading-paper + border (surface-elevated was ~same as paper). */
       --r1-ai-user-surface: rgb(var(--reading-inline));
