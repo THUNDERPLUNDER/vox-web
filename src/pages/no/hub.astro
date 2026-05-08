@@ -1,181 +1,476 @@
 ---
-/* CONTRACT: First factual MVP hub for "Bedre lyd i hverdagen" with clear spoke entries. */
+/* CONTRACT: First public hub — «Få høreapparatet til å fungere».
+   Need-led, Editorial-led surface. Top tasks first. No segment-based nav.
+   Mandate: docs/project/VIDDEL_HUB_MANDATE_v0_1.md / #112.
+*/
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Section from "../../components/layout/Section.astro";
 import Footer from "../../components/nav/Footer.astro";
-import { buildChatShellHref } from "../../lib/chat-shell";
 import { fetchAiSeedQuestions } from "../../lib/storyblok-publishing";
+import "../../styles/r1-dialog-article.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
 const seeds = await fetchAiSeedQuestions();
-const sanitizeHubCopy = (text: string) =>
-  text.replace(/\brolig\b/gi, "passende").replace(/\s{2,}/g, " ").trim();
 
-const title = "Bedre lyd i hverdagen";
-const mandate =
-  "Denne huben samler første praktiske innganger for deg som vil forstå utfordringer, løse konkrete situasjoner og finne neste steg uten å starte på nytt hver gang.";
+const hubTitle = "Få høreapparatet til å fungere";
+const hubSupport = "Vanlige problemer og hjelp";
 
-const topTasks = [
+type TaskStatus = "finnes" | "gap";
+
+const topTasks: Array<{
+  label: string;
+  href?: string;
+  status: TaskStatus;
+}> = [
+  { label: "Stoppe piping", href: "/no/artikkel/fa-slutt-pa-pipingen", status: "finnes" },
+  { label: "Koble høreapparatet til mobilen", href: "/no/artikkel/koble-horeapparatet-til-mobilen", status: "finnes" },
+  { label: "Fikse app eller Bluetooth", href: "/no/artikkel/appen-finner-ikke-horeapparatet", status: "finnes" },
+  { label: "Sjekke batteri og lading", status: "gap" },
+  { label: "Rense filter, propp eller dome", href: "/no/artikkel/bytte-filter-uten-stress", status: "finnes" },
+  { label: "Forstå om lyden er feil eller normal", href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen", status: "finnes" },
+  { label: "Vite når audiograf bør kontaktes", href: "/no/artikkel/audiograf-nar-det-haster", status: "finnes" },
+];
+
+const articles = [
   {
-    title: "Forstå hvorfor samtaler blir krevende",
-    text: "Få en tydelig forklaring på hva som skjer når lyttebelastning bygger seg opp, og hvordan det påvirker overskudd i hverdagen.",
-    href: "/no/artikkel/r1-spoke-v01",
-    cta: "Gå til R1",
+    categoryLabel: "Feilsøking",
+    title: "Få slutt på pipingen",
+    ingress: "Høreapparatet piper fordi lyd lekker tilbake til mikrofonen. Her er grepene som løser det.",
+    href: "/no/artikkel/fa-slutt-pa-pipingen",
   },
   {
-    title: "Løse praktiske problemer raskt",
-    text: "Følg en enkel steg-for-steg-guide når høreapparat eller telefon ikke samarbeider, så du kommer raskere videre.",
-    href: "/no/artikkel/r2-spoke-v01",
-    cta: "Gå til R2",
+    categoryLabel: "Tilkobling",
+    title: "Koble høreapparatet til mobilen",
+    ingress: "Når Bluetooth ikke finner hverandre. Stegvis feilsøking for iOS og Android.",
+    href: "/no/artikkel/koble-horeapparatet-til-mobilen",
   },
   {
-    title: "Få faglig overblikk og forklaring",
-    text: "Les en mer faglig inngang som forklarer mønstre over tid og viser hvilke grep som ofte virker i praksis.",
-    href: "/no/artikkel/r3-spoke-v01",
-    cta: "Gå til R3",
+    categoryLabel: "App og Bluetooth",
+    title: "Appen finner ikke høreapparatet",
+    ingress: "Sjekk disse punktene når appen ikke kobler til, selv om Bluetooth er på.",
+    href: "/no/artikkel/appen-finner-ikke-horeapparatet",
+  },
+  {
+    categoryLabel: "Vedlikehold",
+    title: "Bytte filter uten stress",
+    ingress: "Slik bytter du filter, propp eller dome — og hva du bør sjekke først.",
+    href: "/no/artikkel/bytte-filter-uten-stress",
+  },
+  {
+    categoryLabel: "Lyd og tilpasning",
+    title: "Lyden blir slitsom utpå dagen",
+    ingress: "Hva som kan ligge bak støytretthet og lyttebelastning, og hva du kan gjøre.",
+    href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
+  },
+  {
+    categoryLabel: "Audiograf",
+    title: "Audiograf når det haster",
+    ingress: "Tegn på at du bør bestille time raskt — og hva som kan vente.",
+    href: "/no/artikkel/audiograf-nar-det-haster",
   },
 ];
 
-const spokeEntries = [
-  {
-    eyebrow: "R1 · Samtale og overskudd",
-    title: "Når hørselen endrer samtalen",
-    description:
-      "En trygg inngang for å forstå belastning i samtaler og starte med små grep som reduserer friksjon.",
-    href: "/no/artikkel/r1-spoke-v01",
-  },
-  {
-    eyebrow: "R2 · Teknisk guide",
-    title: "Når høreapparatet ikke kobler seg til",
-    description:
-      "Praktisk feilsøking i fire steg for vanlige tilkoblingsutfordringer i hverdagen.",
-    href: "/no/artikkel/r2-spoke-v01",
-  },
-  {
-    eyebrow: "R3 · Faglig fokus",
-    title: "Når samtaler bryter sammen ved hørselstap",
-    description:
-      "Faglig forklaring med praktiske konsekvenser for relasjoner, akustikk og samtalestruktur.",
-    href: "/no/artikkel/r3-spoke-v01",
-  },
-];
+// Hub-level seed questions for AI fallback (filter to hub-relevant ones if available)
+const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
 ---
 
-<BaseLayout title={`Viddel - ${title}`} currentPath="/no/hub">
+<BaseLayout title={`Viddel - ${hubTitle}`} currentPath="/no/hub" shellVariant="article">
   <meta slot="head" name="robots" content="noindex,follow" />
 
-  <main class="py-7 sm:py-10">
-    <Section class="!pt-2 !pb-8 sm:!pt-4 sm:!pb-10">
-      <div class="max-w-5xl">
-        <p class="mb-4 text-xs font-medium uppercase tracking-[0.08em] text-[rgb(var(--muted))]">
-          <a href="/no/hubs" class="font-medium text-[rgb(var(--text-secondary))] underline-offset-2 hover:text-[rgb(var(--text))] hover:underline">
-            ← Alle emnehuber
-          </a>
-        </p>
-        <div class="vox-surface-lifted grid gap-6 sm:gap-7 lg:grid-cols-[1.5fr_1fr] lg:items-start">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.1em] text-[rgb(var(--primary))]">Viddel · Emnehub v0.1</p>
-            <h1 class="font-display mt-2 text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl">
-              {title}
-            </h1>
-            <p class="vox-lead mt-4">{mandate}</p>
-          </div>
-          <div class="vox-surface-tech p-5">
-            <h2 class="text-base font-semibold text-[rgb(var(--text))]">Slik bruker du huben</h2>
-            <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">
-              <li>Velg top task som passer situasjonen din.</li>
-              <li>Gå videre til riktig inngangsartikkel (R1, R2 eller R3).</li>
-              <li>Bruk videre hjelp når du vil formulere neste steg.</li>
-            </ol>
-          </div>
-        </div>
-      </div>
-    </Section>
+  <main class="hub-page" data-hub-editorial>
+    <div class="hub-container">
 
-    <Section tone="band" class="!py-7 sm:!py-9">
-      <div class="max-w-5xl">
-        <div class="flex items-end justify-between gap-4">
-          <h2 class="vox-section-title">Top tasks</h2>
-          <p class="hidden text-xs font-semibold uppercase tracking-[0.1em] text-[rgb(var(--muted))] sm:block">Prioriterte innganger</p>
-        </div>
-        <ul class="mt-5 grid list-none gap-3 p-0 sm:mt-6 sm:gap-4 lg:grid-cols-3" role="list">
-          {topTasks.map((task, index) => (
-            <li class="vox-surface-lifted p-5">
-              <p class="text-xs font-semibold uppercase tracking-[0.08em] text-[rgb(var(--primary))]">Top task {index + 1}</p>
-              <h3 class="mt-2 text-base font-semibold text-[rgb(var(--text))]">{task.title}</h3>
-              <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">{task.text}</p>
-              <p class="mt-4">
-                <a href={task.href} class="inline-flex items-center gap-1 text-sm font-semibold text-[rgb(var(--text))] underline-offset-2 hover:underline">
-                  {task.cta}
-                  <span aria-hidden="true">→</span>
-                </a>
-              </p>
-            </li>
-            ))}
-        </ul>
-      </div>
-    </Section>
+      <!-- Header -->
+      <header class="hub-header">
+        <nav class="hub-breadcrumb" aria-label="Du er her">
+          <a href="/no">Forside</a>
+          <span aria-hidden="true">/</span>
+          <span>Hjelp</span>
+        </nav>
+        <p class="hub-kicker">Emnehub</p>
+        <h1>{hubTitle}</h1>
+        <p class="hub-lead">{hubSupport}</p>
+      </header>
 
-    <Section class="!pt-4 !pb-10 sm:!pb-14">
-      <div class="max-w-5xl">
-        <h2 class="vox-section-title">Innganger til innhold</h2>
-        <p class="mt-2 max-w-3xl text-sm leading-relaxed text-[rgb(var(--text-secondary))]">
-          Velg inngangen som passer situasjonen din nå. Du kan alltid gå tilbake hit og bytte spor.
-        </p>
-        <ul class="mt-5 grid list-none gap-3 p-0 sm:gap-4 lg:grid-cols-3" role="list">
-          {spokeEntries.map((entry) => (
-            <li class="vox-surface-tech p-5">
-              <p class="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--primary))]">{entry.eyebrow}</p>
-              <h3 class="mt-2 text-lg font-semibold text-[rgb(var(--text))]">{entry.title}</h3>
-              <p class="mt-2 text-sm leading-relaxed text-[rgb(var(--text-secondary))]">{entry.description}</p>
-              <p class="mt-4">
-                <a href={entry.href} class="inline-flex items-center gap-1 text-sm font-semibold text-[rgb(var(--text))] underline-offset-2 hover:underline">
-                  Les artikkel
-                  <span aria-hidden="true">→</span>
+      <!-- Top tasks -->
+      <section class="hub-section" aria-labelledby="top-tasks-heading">
+        <h2 id="top-tasks-heading" class="hub-section-title">Hva trenger du hjelp til?</h2>
+        <ul class="hub-task-list" role="list">
+          {topTasks.map((task) => (
+            <li class:list={["hub-task-row", task.status === "gap" && "hub-task-row--gap"]}>
+              {task.href ? (
+                <a href={task.href} class="hub-task-row__link">
+                  <span class="hub-task-row__label">{task.label}</span>
+                  <span class="hub-task-row__arrow" aria-hidden="true">→</span>
                 </a>
-              </p>
+              ) : (
+                <span class="hub-task-row__coming">
+                  <span class="hub-task-row__label">{task.label}</span>
+                  <span class="hub-task-row__badge">Kommer</span>
+                </span>
+              )}
             </li>
           ))}
         </ul>
-      </div>
-    </Section>
+      </section>
 
-    <Section class="!pt-0 !pb-8 sm:!pb-12">
-      <div class="max-w-5xl">
-        <div class="vox-surface-lifted">
-          <h2 class="vox-section-title text-lg sm:text-xl">Videre hjelp</h2>
-          <p class="mt-2 max-w-3xl text-sm text-[rgb(var(--text-secondary))]">
-            Trenger du å tenke høyt eller få hjelp til å formulere neste steg? Start med et spørsmål under.
-          </p>
-          {seeds.length ? (
-            <ul class="mt-4 grid list-none gap-3 p-0 sm:gap-4 lg:grid-cols-3" role="list">
-              {seeds.slice(0, 3).map((seed) => (
+      <!-- Articles -->
+      <section class="hub-section" aria-labelledby="articles-heading">
+        <h2 id="articles-heading" class="hub-section-title">Guider</h2>
+        <ul class="hub-article-list" role="list">
+          {articles.map((article) => (
+            <li>
+              <a href={article.href} class="hub-article-card">
+                <p class="hub-article-card__category">{article.categoryLabel}</p>
+                <h3 class="hub-article-card__title">{article.title}</h3>
+                <p class="hub-article-card__ingress">{article.ingress}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- AI fallback -->
+      <section class="hub-section hub-section--ai" aria-labelledby="ai-heading">
+        <h2 id="ai-heading" class="hub-section-title">Finn riktig hjelp</h2>
+        <p class="hub-ai-intro">
+          Finner du ikke det du leter etter? Skriv hva som ikke fungerer, så hjelper Hørehjelpen deg videre.
+        </p>
+        <div class="hub-ai-entry">
+          {hubSeeds.length ? (
+            <ul class="hub-ai-seeds" role="list">
+              {hubSeeds.map((seed) => (
                 <li>
-                  <a href={buildChatShellHref(seed.question, "hub")} class="vox-surface-calm-tile h-full p-4">
-                    <p class="text-sm font-semibold text-[rgb(var(--text))]">{sanitizeHubCopy(seed.question)}</p>
-                    {seed.shortAnswer ? (
-                      <p class="mt-1.5 text-sm text-[rgb(var(--muted))]">{sanitizeHubCopy(seed.shortAnswer)}</p>
-                    ) : (
-                      <p class="mt-1.5 text-sm text-[rgb(var(--muted))]">Trykk for forslag til neste steg i chat.</p>
-                    )}
+                  <a href={`/no/chat?seed=${encodeURIComponent(seed.question)}&from=hub`} class="hub-ai-seed-btn">
+                    {seed.question}
                   </a>
                 </li>
               ))}
             </ul>
-          ) : (
-            <p class="mt-4 text-sm text-[rgb(var(--muted))]">
-              Vi har ingen forslag klare akkurat nå. Du kan fortsatt{" "}
-              <a href="/no/chat" class="font-medium text-[rgb(var(--text-secondary))] underline underline-offset-2 hover:text-[rgb(var(--text))]">
-                åpne Hørehjelpen
-              </a>{" "}
-              og skrive spørsmålet ditt med egne ord.
-            </p>
-          )}
+          ) : null}
+          <a href="/no/chat" class="hub-ai-cta">
+            Åpne Hørehjelpen
+            <span aria-hidden="true">→</span>
+          </a>
         </div>
-      </div>
-    </Section>
+      </section>
+
+      <!-- Escalation -->
+      <section class="hub-section hub-section--escalation" aria-labelledby="escalation-heading">
+        <h2 id="escalation-heading" class="hub-section-title">Når bør du kontakte audiograf?</h2>
+        <p class="hub-escalation-text">
+          Noen problemer krever faglig vurdering. Hvis lyden plutselig forverres, høreapparatet ikke svarer,
+          eller du er usikker — ta kontakt med klinikken din.
+        </p>
+        <a href="/no/artikkel/audiograf-nar-det-haster" class="hub-escalation-link">
+          Les: Audiograf når det haster
+          <span aria-hidden="true">→</span>
+        </a>
+      </section>
+
+    </div>
   </main>
 
-  <Footer />
+  <Footer variant="article" />
 </BaseLayout>
+
+<style>
+  /* ── Hub editorial surface ── */
+  [data-hub-editorial] {
+    background: rgb(var(--article-page-canvas));
+    min-height: 100vh;
+  }
+
+  .hub-container {
+    max-width: min(100%, 46rem);
+    margin: 0 auto;
+    padding: 0 1rem 4rem;
+  }
+
+  /* Header */
+  .hub-header {
+    padding: clamp(2rem, 6vw, 3.5rem) 0 clamp(2rem, 5vw, 3rem);
+    border-bottom: 1px solid rgb(var(--border) / 0.2);
+  }
+
+  .hub-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgb(var(--reading-ink-secondary) / 0.7);
+  }
+
+  .hub-breadcrumb a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .hub-kicker {
+    margin: 0 0 0.55rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgb(var(--reading-accent-iris));
+  }
+
+  [data-hub-editorial] h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 8vw, 4.2rem);
+    font-weight: 650;
+    line-height: 0.99;
+    letter-spacing: -0.065em;
+    text-wrap: balance;
+    color: rgb(var(--reading-ink));
+  }
+
+  .hub-lead {
+    margin: clamp(0.9rem, 2.5vw, 1.35rem) 0 0;
+    font-size: clamp(1.1rem, 3vw, 1.4rem);
+    line-height: 1.48;
+    letter-spacing: -0.01em;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  /* Sections */
+  .hub-section {
+    padding: clamp(2rem, 5vw, 2.8rem) 0;
+    border-bottom: 1px solid rgb(var(--border) / 0.14);
+  }
+
+  .hub-section:last-child {
+    border-bottom: 0;
+  }
+
+  .hub-section-title {
+    margin: 0 0 1.15rem;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    color: rgb(var(--reading-ink));
+  }
+
+  /* Top task list */
+  .hub-task-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid rgb(var(--border) / 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgb(var(--reading-paper));
+  }
+
+  .hub-task-row {
+    border-bottom: 1px solid rgb(var(--border) / 0.14);
+  }
+
+  .hub-task-row:last-child {
+    border-bottom: 0;
+  }
+
+  .hub-task-row__link,
+  .hub-task-row__coming {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    text-decoration: none;
+  }
+
+  .hub-task-row__link {
+    color: rgb(var(--reading-ink));
+    transition: background-color 120ms ease;
+  }
+
+  .hub-task-row__link:hover {
+    background: rgb(var(--reading-inline));
+  }
+
+  .hub-task-row__coming {
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .hub-task-row--gap .hub-task-row__label {
+    color: rgb(var(--reading-ink-secondary) / 0.65);
+  }
+
+  .hub-task-row__label {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  .hub-task-row__arrow {
+    flex-shrink: 0;
+    color: rgb(var(--reading-accent-iris));
+    font-size: 0.9rem;
+  }
+
+  .hub-task-row__badge {
+    flex-shrink: 0;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(var(--muted));
+    border: 1px solid rgb(var(--border) / 0.35);
+    border-radius: 3px;
+    padding: 0.12rem 0.38rem;
+  }
+
+  /* Article cards */
+  .hub-article-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    border: 1px solid rgb(var(--border) / 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgb(var(--border) / 0.2);
+  }
+
+  .hub-article-card {
+    display: block;
+    padding: 1rem;
+    background: rgb(var(--reading-paper));
+    text-decoration: none;
+    transition: background-color 120ms ease;
+  }
+
+  .hub-article-card:hover {
+    background: rgb(var(--reading-inline));
+  }
+
+  .hub-article-card__category {
+    margin: 0 0 0.3rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgb(var(--reading-accent-iris));
+  }
+
+  .hub-article-card__title {
+    margin: 0 0 0.35rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    color: rgb(var(--reading-ink));
+  }
+
+  .hub-article-card__ingress {
+    margin: 0;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  /* AI section */
+  .hub-section--ai {
+    background: transparent;
+  }
+
+  .hub-ai-intro {
+    margin: 0 0 1rem;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .hub-ai-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .hub-ai-seeds {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .hub-ai-seed-btn {
+    display: block;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid rgb(var(--border) / 0.38);
+    border-radius: 999px;
+    background: rgb(var(--reading-paper));
+    color: rgb(var(--reading-ink));
+    font-size: 0.88rem;
+    line-height: 1.4;
+    text-decoration: none;
+    transition: border-color 120ms ease, background-color 120ms ease;
+  }
+
+  .hub-ai-seed-btn:hover {
+    border-color: rgb(var(--border) / 0.6);
+    background: rgb(var(--reading-inline));
+  }
+
+  .hub-ai-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: rgb(var(--reading-ink));
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .hub-ai-cta:hover {
+    color: rgb(var(--reading-accent-iris));
+  }
+
+  /* Escalation */
+  .hub-escalation-text {
+    margin: 0 0 1rem;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .hub-escalation-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: rgb(var(--reading-ink));
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .hub-escalation-link:hover {
+    color: rgb(var(--reading-accent-iris));
+  }
+
+  @media (min-width: 640px) {
+    .hub-container {
+      padding: 0 1.5rem 5rem;
+    }
+
+    .hub-article-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
