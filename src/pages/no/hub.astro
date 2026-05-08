@@ -1,6 +1,7 @@
 ---
 /* CONTRACT: First public hub — «Få høreapparatet til å fungere».
    Need-led, Editorial-led surface. Top tasks first. No segment-based nav.
+   v0.2: Featured + secondary guide cards with abstract thumbnails.
    Mandate: docs/project/VIDDEL_HUB_MANDATE_v0_1.md / #112.
 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -31,46 +32,50 @@ const topTasks: Array<{
   { label: "Vite når audiograf bør kontaktes", href: "/no/artikkel/audiograf-nar-det-haster", status: "finnes" },
 ];
 
-const articles = [
+// Guide cards — first is featured, next 4 are secondary, last is escalation
+const featuredGuide = {
+  thumb: "piping",
+  categoryLabel: "Feilsøking",
+  title: "Få slutt på pipingen",
+  deck: "Høreapparatet piper fordi lyd lekker tilbake til mikrofonen. Her er grepene som løser det.",
+  href: "/no/artikkel/fa-slutt-pa-pipingen",
+  cta: "Les guide",
+};
+
+const secondaryGuides = [
   {
-    categoryLabel: "Feilsøking",
-    title: "Få slutt på pipingen",
-    ingress: "Høreapparatet piper fordi lyd lekker tilbake til mikrofonen. Her er grepene som løser det.",
-    href: "/no/artikkel/fa-slutt-pa-pipingen",
-  },
-  {
+    thumb: "bluetooth",
     categoryLabel: "Tilkobling",
     title: "Koble høreapparatet til mobilen",
-    ingress: "Når Bluetooth ikke finner hverandre. Stegvis feilsøking for iOS og Android.",
     href: "/no/artikkel/koble-horeapparatet-til-mobilen",
   },
   {
+    thumb: "app",
     categoryLabel: "App og Bluetooth",
     title: "Appen finner ikke høreapparatet",
-    ingress: "Sjekk disse punktene når appen ikke kobler til, selv om Bluetooth er på.",
     href: "/no/artikkel/appen-finner-ikke-horeapparatet",
   },
   {
+    thumb: "filter",
     categoryLabel: "Vedlikehold",
     title: "Bytte filter uten stress",
-    ingress: "Slik bytter du filter, propp eller dome — og hva du bør sjekke først.",
     href: "/no/artikkel/bytte-filter-uten-stress",
   },
   {
+    thumb: "sound",
     categoryLabel: "Lyd og tilpasning",
     title: "Lyden blir slitsom utpå dagen",
-    ingress: "Hva som kan ligge bak støytretthet og lyttebelastning, og hva du kan gjøre.",
     href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
-  },
-  {
-    categoryLabel: "Audiograf",
-    title: "Audiograf når det haster",
-    ingress: "Tegn på at du bør bestille time raskt — og hva som kan vente.",
-    href: "/no/artikkel/audiograf-nar-det-haster",
   },
 ];
 
-// Hub-level seed questions for AI fallback (filter to hub-relevant ones if available)
+const escalationGuide = {
+  categoryLabel: "Audiograf",
+  title: "Audiograf når det haster",
+  deck: "Tegn på at du bør bestille time raskt — og hva som trygt kan vente.",
+  href: "/no/artikkel/audiograf-nar-det-haster",
+};
+
 const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
 ---
 
@@ -114,20 +119,49 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
         </ul>
       </section>
 
-      <!-- Articles -->
-      <section class="hub-section" aria-labelledby="articles-heading">
-        <h2 id="articles-heading" class="hub-section-title">Guider</h2>
-        <ul class="hub-article-list" role="list">
-          {articles.map((article) => (
+      <!-- Guides -->
+      <section class="hub-section hub-section--guides" aria-labelledby="guides-heading">
+        <h2 id="guides-heading" class="hub-section-title">Guider</h2>
+
+        <!-- Featured guide -->
+        <a href={featuredGuide.href} class="hub-guide-featured" data-thumb={featuredGuide.thumb}>
+          <div class="hub-guide-thumb hub-guide-thumb--featured" aria-hidden="true">
+            <div class="hub-guide-thumb__shape"></div>
+          </div>
+          <div class="hub-guide-featured__body">
+            <p class="hub-guide__category">{featuredGuide.categoryLabel}</p>
+            <h3 class="hub-guide-featured__title">{featuredGuide.title}</h3>
+            <p class="hub-guide-featured__deck">{featuredGuide.deck}</p>
+            <span class="hub-guide-featured__cta">{featuredGuide.cta} <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <!-- Secondary guides grid -->
+        <ul class="hub-guide-grid" role="list">
+          {secondaryGuides.map((guide) => (
             <li>
-              <a href={article.href} class="hub-article-card">
-                <p class="hub-article-card__category">{article.categoryLabel}</p>
-                <h3 class="hub-article-card__title">{article.title}</h3>
-                <p class="hub-article-card__ingress">{article.ingress}</p>
+              <a href={guide.href} class="hub-guide-secondary" data-thumb={guide.thumb}>
+                <div class="hub-guide-thumb hub-guide-thumb--secondary" aria-hidden="true">
+                  <div class="hub-guide-thumb__shape"></div>
+                </div>
+                <div class="hub-guide-secondary__body">
+                  <p class="hub-guide__category">{guide.categoryLabel}</p>
+                  <h3 class="hub-guide-secondary__title">{guide.title}</h3>
+                </div>
               </a>
             </li>
           ))}
         </ul>
+
+        <!-- Escalation card -->
+        <a href={escalationGuide.href} class="hub-guide-escalation">
+          <div class="hub-guide-escalation__body">
+            <p class="hub-guide__category hub-guide__category--escalation">{escalationGuide.categoryLabel}</p>
+            <h3 class="hub-guide-escalation__title">{escalationGuide.title}</h3>
+            <p class="hub-guide-escalation__deck">{escalationGuide.deck}</p>
+          </div>
+          <span class="hub-guide-escalation__arrow" aria-hidden="true">→</span>
+        </a>
       </section>
 
       <!-- AI fallback -->
@@ -155,19 +189,6 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
         </div>
       </section>
 
-      <!-- Escalation -->
-      <section class="hub-section hub-section--escalation" aria-labelledby="escalation-heading">
-        <h2 id="escalation-heading" class="hub-section-title">Når bør du kontakte audiograf?</h2>
-        <p class="hub-escalation-text">
-          Noen problemer krever faglig vurdering. Hvis lyden plutselig forverres, høreapparatet ikke svarer,
-          eller du er usikker — ta kontakt med klinikken din.
-        </p>
-        <a href="/no/artikkel/audiograf-nar-det-haster" class="hub-escalation-link">
-          Les: Audiograf når det haster
-          <span aria-hidden="true">→</span>
-        </a>
-      </section>
-
     </div>
   </main>
 
@@ -182,15 +203,15 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
   }
 
   .hub-container {
-    max-width: min(100%, 46rem);
+    max-width: min(100%, 52rem);
     margin: 0 auto;
     padding: 0 1rem 4rem;
   }
 
-  /* Header */
+  /* ── Header ── */
   .hub-header {
     padding: clamp(2rem, 6vw, 3.5rem) 0 clamp(2rem, 5vw, 3rem);
-    border-bottom: 1px solid rgb(var(--border) / 0.2);
+    border-bottom: 1px solid rgb(var(--border) / 0.22);
   }
 
   .hub-breadcrumb {
@@ -202,7 +223,7 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgb(var(--reading-ink-secondary) / 0.7);
+    color: rgb(var(--reading-ink-secondary) / 0.6);
   }
 
   .hub-breadcrumb a {
@@ -233,16 +254,16 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
 
   .hub-lead {
     margin: clamp(0.9rem, 2.5vw, 1.35rem) 0 0;
-    font-size: clamp(1.1rem, 3vw, 1.4rem);
+    font-size: clamp(1.05rem, 2.8vw, 1.3rem);
     line-height: 1.48;
     letter-spacing: -0.01em;
     color: rgb(var(--reading-ink-secondary));
   }
 
-  /* Sections */
+  /* ── Sections ── */
   .hub-section {
     padding: clamp(2rem, 5vw, 2.8rem) 0;
-    border-bottom: 1px solid rgb(var(--border) / 0.14);
+    border-bottom: 1px solid rgb(var(--border) / 0.15);
   }
 
   .hub-section:last-child {
@@ -250,7 +271,7 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
   }
 
   .hub-section-title {
-    margin: 0 0 1.15rem;
+    margin: 0 0 1.25rem;
     font-family: var(--font-display);
     font-size: 1.0625rem;
     font-weight: 650;
@@ -258,19 +279,19 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
     color: rgb(var(--reading-ink));
   }
 
-  /* Top task list */
+  /* ── Top task list ── */
   .hub-task-list {
     margin: 0;
     padding: 0;
     list-style: none;
-    border: 1px solid rgb(var(--border) / 0.2);
-    border-radius: 8px;
+    border: 1px solid rgb(var(--border) / 0.3);
+    border-radius: 10px;
     overflow: hidden;
     background: rgb(var(--reading-paper));
   }
 
   .hub-task-row {
-    border-bottom: 1px solid rgb(var(--border) / 0.14);
+    border-bottom: 1px solid rgb(var(--border) / 0.18);
   }
 
   .hub-task-row:last-child {
@@ -283,17 +304,18 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    padding: 0.85rem 1rem;
+    padding: 0.9rem 1.1rem;
     text-decoration: none;
   }
 
   .hub-task-row__link {
     color: rgb(var(--reading-ink));
-    transition: background-color 120ms ease;
+    transition: background-color 100ms ease;
   }
 
+  /* More visible hover — warm gray lift */
   .hub-task-row__link:hover {
-    background: rgb(var(--reading-inline));
+    background: rgb(var(--border) / 0.22);
   }
 
   .hub-task-row__coming {
@@ -301,7 +323,7 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
   }
 
   .hub-task-row--gap .hub-task-row__label {
-    color: rgb(var(--reading-ink-secondary) / 0.65);
+    color: rgb(var(--reading-ink-secondary) / 0.6);
   }
 
   .hub-task-row__label {
@@ -313,7 +335,12 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
   .hub-task-row__arrow {
     flex-shrink: 0;
     color: rgb(var(--reading-accent-iris));
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    transition: transform 100ms ease;
+  }
+
+  .hub-task-row__link:hover .hub-task-row__arrow {
+    transform: translateX(2px);
   }
 
   .hub-task-row__badge {
@@ -323,72 +350,265 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: rgb(var(--muted));
-    border: 1px solid rgb(var(--border) / 0.35);
+    border: 1px solid rgb(var(--border) / 0.4);
     border-radius: 3px;
     padding: 0.12rem 0.38rem;
   }
 
-  /* Article cards */
-  .hub-article-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  /* ── Guides section ── */
+  .hub-section--guides {
     display: flex;
     flex-direction: column;
-    gap: 1px;
-    border: 1px solid rgb(var(--border) / 0.2);
-    border-radius: 8px;
-    overflow: hidden;
-    background: rgb(var(--border) / 0.2);
+    gap: 0;
   }
 
-  .hub-article-card {
-    display: block;
-    padding: 1rem;
-    background: rgb(var(--reading-paper));
-    text-decoration: none;
-    transition: background-color 120ms ease;
+  .hub-section--guides .hub-section-title {
+    margin-bottom: 1rem;
   }
 
-  .hub-article-card:hover {
-    background: rgb(var(--reading-inline));
-  }
-
-  .hub-article-card__category {
-    margin: 0 0 0.3rem;
-    font-size: 0.62rem;
+  /* Shared guide category label */
+  .hub-guide__category {
+    margin: 0 0 0.35rem;
+    font-size: 0.625rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.13em;
     text-transform: uppercase;
     color: rgb(var(--reading-accent-iris));
   }
 
-  .hub-article-card__title {
-    margin: 0 0 0.35rem;
+  .hub-guide__category--escalation {
+    color: rgb(var(--muted));
+  }
+
+  /* ── Abstract thumbnails ── */
+  .hub-guide-thumb {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .hub-guide-thumb--featured {
+    height: 168px;
+  }
+
+  .hub-guide-thumb--secondary {
+    height: 96px;
+  }
+
+  /* Shape overlay — a soft abstract disc */
+  .hub-guide-thumb__shape {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Piping — sound wave abstraction, iris/purple */
+  [data-thumb="piping"] .hub-guide-thumb {
+    background:
+      radial-gradient(ellipse 55% 55% at 18% 75%, rgb(95 82 220 / 0.15) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 60% at 78% 22%, rgb(96 165 250 / 0.12) 0%, transparent 60%),
+      linear-gradient(145deg, rgb(238 235 255) 0%, rgb(248 247 255) 55%, rgb(252 252 255) 100%);
+  }
+
+  [data-thumb="piping"] .hub-guide-thumb__shape {
+    background-image:
+      radial-gradient(circle at 30% 65%, transparent 22%, rgb(95 82 220 / 0.06) 22%, rgb(95 82 220 / 0.06) 23%, transparent 23%),
+      radial-gradient(circle at 30% 65%, transparent 34%, rgb(95 82 220 / 0.05) 34%, rgb(95 82 220 / 0.05) 35%, transparent 35%),
+      radial-gradient(circle at 30% 65%, transparent 46%, rgb(95 82 220 / 0.04) 46%, rgb(95 82 220 / 0.04) 47%, transparent 47%);
+  }
+
+  /* Bluetooth — signal rings, sky blue */
+  [data-thumb="bluetooth"] .hub-guide-thumb {
+    background:
+      radial-gradient(ellipse 60% 50% at 60% 50%, rgb(14 165 233 / 0.13) 0%, transparent 65%),
+      radial-gradient(ellipse 35% 45% at 25% 30%, rgb(96 165 250 / 0.10) 0%, transparent 60%),
+      linear-gradient(155deg, rgb(234 246 255) 0%, rgb(245 251 255) 55%, rgb(252 252 255) 100%);
+  }
+
+  [data-thumb="bluetooth"] .hub-guide-thumb__shape {
+    background-image:
+      radial-gradient(circle at 60% 55%, transparent 18%, rgb(14 165 233 / 0.07) 18%, rgb(14 165 233 / 0.07) 19%, transparent 19%),
+      radial-gradient(circle at 60% 55%, transparent 30%, rgb(14 165 233 / 0.05) 30%, rgb(14 165 233 / 0.05) 31%, transparent 31%),
+      radial-gradient(circle at 60% 55%, transparent 43%, rgb(14 165 233 / 0.04) 43%, rgb(14 165 233 / 0.04) 44%, transparent 44%);
+  }
+
+  /* App — digital/grid suggestion, indigo */
+  [data-thumb="app"] .hub-guide-thumb {
+    background:
+      radial-gradient(ellipse 50% 65% at 75% 30%, rgb(95 82 220 / 0.11) 0%, transparent 60%),
+      radial-gradient(ellipse 45% 40% at 20% 70%, rgb(14 165 233 / 0.09) 0%, transparent 55%),
+      linear-gradient(160deg, rgb(240 239 255) 0%, rgb(248 250 255) 50%, rgb(252 253 255) 100%);
+  }
+
+  [data-thumb="app"] .hub-guide-thumb__shape {
+    background-image:
+      radial-gradient(circle at 75% 30%, transparent 15%, rgb(95 82 220 / 0.055) 15%, rgb(95 82 220 / 0.055) 16%, transparent 16%),
+      radial-gradient(circle at 75% 30%, transparent 27%, rgb(95 82 220 / 0.04) 27%, rgb(95 82 220 / 0.04) 28%, transparent 28%);
+  }
+
+  /* Filter — warm organic, neutral tones */
+  [data-thumb="filter"] .hub-guide-thumb {
+    background:
+      radial-gradient(ellipse 65% 55% at 55% 60%, rgb(200 192 176 / 0.28) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 50% at 20% 25%, rgb(200 192 176 / 0.15) 0%, transparent 55%),
+      linear-gradient(130deg, rgb(252 250 245) 0%, rgb(255 252 248) 50%, rgb(255 253 250) 100%);
+  }
+
+  [data-thumb="filter"] .hub-guide-thumb__shape {
+    background-image:
+      radial-gradient(ellipse 50% 50% at 55% 60%, rgb(180 170 155 / 0.14) 0%, transparent 70%);
+  }
+
+  /* Sound — layered waves, soft lavender-to-iris */
+  [data-thumb="sound"] .hub-guide-thumb {
+    background:
+      radial-gradient(ellipse 75% 40% at 50% 80%, rgb(95 82 220 / 0.10) 0%, transparent 70%),
+      radial-gradient(ellipse 45% 55% at 20% 30%, rgb(96 165 250 / 0.08) 0%, transparent 60%),
+      linear-gradient(140deg, rgb(243 241 255) 0%, rgb(249 251 255) 55%, rgb(252 252 255) 100%);
+  }
+
+  /* ── Featured guide card ── */
+  .hub-guide-featured {
+    display: block;
+    border: 1px solid rgb(var(--border) / 0.28);
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgb(var(--reading-paper));
+    text-decoration: none;
+    transition: box-shadow 150ms ease, border-color 150ms ease;
+    margin-bottom: 1rem;
+  }
+
+  .hub-guide-featured:hover {
+    border-color: rgb(var(--border) / 0.5);
+    box-shadow: 0 4px 20px rgb(var(--reading-ink) / 0.06);
+  }
+
+  .hub-guide-featured__body {
+    padding: 1.25rem 1.4rem 1.5rem;
+  }
+
+  .hub-guide-featured__title {
+    margin: 0 0 0.65rem;
     font-family: var(--font-display);
-    font-size: 1rem;
+    font-size: clamp(1.4rem, 4vw, 1.85rem);
     font-weight: 650;
-    letter-spacing: -0.02em;
-    line-height: 1.25;
+    letter-spacing: -0.04em;
+    line-height: 1.08;
     color: rgb(var(--reading-ink));
   }
 
-  .hub-article-card__ingress {
+  .hub-guide-featured__deck {
+    margin: 0 0 1.1rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: rgb(var(--reading-ink-secondary));
+    max-width: 38rem;
+  }
+
+  .hub-guide-featured__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.875rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    color: rgb(var(--reading-accent-iris));
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* ── Secondary guide grid ── */
+  .hub-guide-grid {
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .hub-guide-secondary {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgb(var(--border) / 0.25);
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgb(var(--reading-paper));
+    text-decoration: none;
+    height: 100%;
+    transition: box-shadow 150ms ease, border-color 150ms ease;
+  }
+
+  .hub-guide-secondary:hover {
+    border-color: rgb(var(--border) / 0.5);
+    box-shadow: 0 3px 14px rgb(var(--reading-ink) / 0.05);
+  }
+
+  .hub-guide-secondary__body {
+    padding: 0.9rem 1rem 1.1rem;
+  }
+
+  .hub-guide-secondary__title {
     margin: 0;
-    font-size: 0.86rem;
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    color: rgb(var(--reading-ink));
+  }
+
+  /* ── Escalation card ── */
+  .hub-guide-escalation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid rgb(var(--border) / 0.25);
+    border-radius: 10px;
+    background: rgb(252 250 247);
+    text-decoration: none;
+    transition: background-color 120ms ease, border-color 120ms ease;
+  }
+
+  .hub-guide-escalation:hover {
+    background: rgb(250 247 242);
+    border-color: rgb(var(--border) / 0.4);
+  }
+
+  .hub-guide-escalation__body {
+    flex: 1;
+  }
+
+  .hub-guide-escalation__title {
+    margin: 0 0 0.3rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    color: rgb(var(--reading-ink));
+  }
+
+  .hub-guide-escalation__deck {
+    margin: 0;
+    font-size: 0.82rem;
     line-height: 1.55;
     color: rgb(var(--reading-ink-secondary));
   }
 
-  /* AI section */
-  .hub-section--ai {
-    background: transparent;
+  .hub-guide-escalation__arrow {
+    flex-shrink: 0;
+    font-size: 1rem;
+    color: rgb(var(--muted));
   }
 
+  /* ── AI section ── */
   .hub-ai-intro {
     margin: 0 0 1rem;
-    font-size: 0.92rem;
-    line-height: 1.6;
+    font-size: 0.9rem;
+    line-height: 1.65;
     color: rgb(var(--reading-ink-secondary));
   }
 
@@ -409,27 +629,27 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
 
   .hub-ai-seed-btn {
     display: block;
-    padding: 0.6rem 0.85rem;
-    border: 1px solid rgb(var(--border) / 0.38);
+    padding: 0.6rem 1rem;
+    border: 1px solid rgb(var(--border) / 0.4);
     border-radius: 999px;
     background: rgb(var(--reading-paper));
     color: rgb(var(--reading-ink));
-    font-size: 0.88rem;
+    font-size: 0.875rem;
     line-height: 1.4;
     text-decoration: none;
     transition: border-color 120ms ease, background-color 120ms ease;
   }
 
   .hub-ai-seed-btn:hover {
-    border-color: rgb(var(--border) / 0.6);
-    background: rgb(var(--reading-inline));
+    border-color: rgb(var(--border) / 0.65);
+    background: rgb(var(--border) / 0.1);
   }
 
   .hub-ai-cta {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: 0.88rem;
+    font-size: 0.875rem;
     font-weight: 600;
     color: rgb(var(--reading-ink));
     text-decoration: underline;
@@ -440,37 +660,31 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
     color: rgb(var(--reading-accent-iris));
   }
 
-  /* Escalation */
-  .hub-escalation-text {
-    margin: 0 0 1rem;
-    font-size: 0.92rem;
-    line-height: 1.65;
-    color: rgb(var(--reading-ink-secondary));
+  /* ── Responsive ── */
+  @media (max-width: 479px) {
+    .hub-guide-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hub-guide-escalation {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .hub-guide-escalation__arrow {
+      display: none;
+    }
   }
 
-  .hub-escalation-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: rgb(var(--reading-ink));
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  .hub-escalation-link:hover {
-    color: rgb(var(--reading-accent-iris));
+  @media (min-width: 480px) {
+    .hub-container {
+      padding: 0 1.25rem 4.5rem;
+    }
   }
 
   @media (min-width: 640px) {
     .hub-container {
-      padding: 0 1.5rem 5rem;
-    }
-
-    .hub-article-list {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      padding: 0 1.75rem 5.5rem;
     }
   }
 </style>
