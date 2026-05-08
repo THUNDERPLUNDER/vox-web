@@ -89,7 +89,12 @@ const articleMandateFallbacks: Record<string, NonNullable<typeof article.mandate
     onward: "Kontakt audiograf/helsehjelp",
   },
 };
-const articleMandate = { ...articleMandateFallbacks[article.slug], ...article.mandate };
+// Only let Storyblok mandate fields win if they have a real value —
+// undefined fields must not stomp the dev fallback data.
+const storyblokMandate = Object.fromEntries(
+  Object.entries(article.mandate ?? {}).filter(([, v]) => v !== undefined && v !== null && v !== "")
+) as typeof article.mandate;
+const articleMandate = { ...articleMandateFallbacks[article.slug], ...storyblokMandate };
 const articleMandateRows = [
   ["Behov / top task", articleMandate.needTopTask],
   ["Primærsegment", articleMandate.primarySegment],
@@ -406,12 +411,13 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
     </div>
   </main>
 
-  {/* Mandate data for InspectToolsDrawer — hidden from public, read by drawer JS */}
+  {/* Mandate data for InspectToolsDrawer — hidden from public, read by drawer JS via data attribute */}
   {articleMandateRows.length ? (
-    <script
-      type="application/json"
+    <div
       id="vox-article-mandate-data"
-      set:html={JSON.stringify({
+      hidden
+      aria-hidden="true"
+      data-mandate={JSON.stringify({
         rows: articleMandateRows.map(([label, value]) => ({ label, value })),
         slug: article.slug,
       })}

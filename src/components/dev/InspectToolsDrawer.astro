@@ -72,7 +72,7 @@ import ThemeInspectBootScript from "../ThemeInspectBootScript.astro";
           var src = document.getElementById("vox-article-mandate-data");
           if (!src) { mandateEl.hidden = true; return; }
           try {
-            var data = JSON.parse(src.textContent || "");
+            var data = JSON.parse(src.getAttribute("data-mandate") || "");
             if (!data.rows || !data.rows.length) { mandateEl.hidden = true; return; }
             mandateGrid.innerHTML = "";
             data.rows.forEach(function (row) {
@@ -107,6 +107,8 @@ import ThemeInspectBootScript from "../ThemeInspectBootScript.astro";
           if (backdrop) backdrop.hidden = true;
         }
         close();
+        // Hydrate immediately in case inspect was already active from sessionStorage
+        hydrateMandate();
         window.addEventListener("vox-inspect-drawer-force-close", close);
         tab.addEventListener("click", function () {
           if (isOpen()) close();
