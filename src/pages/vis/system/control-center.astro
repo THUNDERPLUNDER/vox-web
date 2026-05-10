@@ -1,0 +1,67 @@
+---
+/* CONTRACT: VIS Control Center — readable front door for Viddel canonical project knowledge. */
+import fs from "node:fs";
+import path from "node:path";
+import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+
+const base = import.meta.env.BASE_URL;
+const mdPath = path.join(process.cwd(), "docs", "project", "VIDDEL_PROJECT_CONTROL_CENTER_v0_1.md");
+let raw = "";
+try {
+  raw = fs.readFileSync(mdPath, "utf8");
+} catch {
+  raw = "# Mangler Control Center\n\nFant ikke `docs/project/VIDDEL_PROJECT_CONTROL_CENTER_v0_1.md`.";
+}
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;");
+}
+const safe = escapeHtml(raw);
+---
+
+<PrototypeLayout title="Viddel Control Center">
+  <main class="px-4 py-6 sm:px-6 sm:py-8">
+    <nav class="text-xs text-gray-500">
+      <a href={`${base}vis`} class="underline underline-offset-2">VIS</a>
+      <span aria-hidden="true"> / </span>
+      <a href={`${base}vis/system`} class="underline underline-offset-2">System</a>
+      <span aria-hidden="true"> / </span>
+      <span class="text-gray-800">Control Center</span>
+    </nav>
+
+    <header class="mt-4 max-w-4xl border-b border-gray-200 pb-5">
+      <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-500">Project Control Center</p>
+      <h1 class="mt-2 text-3xl font-semibold tracking-tight text-gray-950 sm:text-5xl">Viddel Control Center</h1>
+      <p class="mt-3 max-w-2xl text-sm leading-relaxed text-gray-600">
+        Felles inngang til canonical prosjektkunnskap, agentroller, standarder og aktive strategiske spor.
+        Bruk denne først når en ny tråd, agent eller arbeidsøkt trenger Viddel-kontekst.
+      </p>
+    </header>
+
+    <section class="mt-5 grid gap-3 sm:grid-cols-3">
+      <a href={`${base}vis/system/github-runtime-status`} class="rounded-md border border-gray-200 bg-white p-3 hover:bg-gray-50">
+        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Runtime</p>
+        <p class="mt-1 text-sm font-semibold text-gray-900">GitHub status</p>
+        <p class="mt-1 text-xs leading-relaxed text-gray-600">Ferskt nåbilde fra GitHub-bussen.</p>
+      </a>
+      <a href={`${base}vis/system/roadmap-timeline-v01`} class="rounded-md border border-gray-200 bg-white p-3 hover:bg-gray-50">
+        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Roadmap</p>
+        <p class="mt-1 text-sm font-semibold text-gray-900">Timeline read model</p>
+        <p class="mt-1 text-xs leading-relaxed text-gray-600">Operativ visning av spor og initiativer.</p>
+      </a>
+      <a href="https://github.com/THUNDERPLUNDER/vox-web/blob/main/docs/project/VIDDEL_PROJECT_CONTROL_CENTER_v0_1.md" class="rounded-md border border-gray-200 bg-white p-3 hover:bg-gray-50">
+        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Repo master</p>
+        <p class="mt-1 text-sm font-semibold text-gray-900">Markdown source</p>
+        <p class="mt-1 text-xs leading-relaxed text-gray-600">Repo-dokumentet er canonical master.</p>
+      </a>
+    </section>
+
+    <article class="mt-6 max-w-5xl overflow-x-auto rounded-md border border-gray-200 bg-white p-4 text-sm leading-relaxed text-gray-900">
+      <pre class="whitespace-pre-wrap break-words font-mono text-[13px]">{safe}</pre>
+    </article>
+  </main>
+</PrototypeLayout>
