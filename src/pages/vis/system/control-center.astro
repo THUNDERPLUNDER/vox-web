@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: VIS Control Center — readable front door for Viddel canonical project knowledge. */
+/* CONTRACT: VIS Control Center — human-readable front door for Viddel canonical project knowledge. */
 import fs from "node:fs";
 import path from "node:path";
 import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
@@ -21,47 +21,460 @@ function escapeHtml(s: string): string {
     .replace(/\"/g, "&quot;");
 }
 const safe = escapeHtml(raw);
+
+const canonicalDocs = [
+  {
+    title: "Project Control Center Architecture",
+    label: "Arkitektur",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/docs/project/PROJECT_CONTROL_CENTER_ARCHITECTURE_v0_1.md",
+    description: "Mønsteret som gjør Control Center gjenbrukbart i Viddel og senere prosjekter.",
+  },
+  {
+    title: "Viddel Project Control Center",
+    label: "Master",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/docs/project/VIDDEL_PROJECT_CONTROL_CENTER_v0_1.md",
+    description: "Repo-dokumentet som er canonical master for denne siden.",
+  },
+  {
+    title: "Hearing Aid Data Ecosystem",
+    label: "Strategi",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/docs/project/VIDDEL_HEARING_AID_DATA_ECOSYSTEM_v0_1.md",
+    description: "Langsiktig mulighetsrom for brukerinnsikt, dataøkosystem og brukerleverage.",
+  },
+  {
+    title: "Manufacturer Data Source QA",
+    label: "Standard",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/docs/project/VIDDEL_MANUFACTURER_DATA_MATRIX_SOURCE_QA_v0_1.md",
+    description: "Brukes før produsent-, app- eller apparatdatapåstander formuleres som fakta.",
+  },
+  {
+    title: "Deep Research Prompt",
+    label: "Research",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/docs/project/VIDDEL_DEEP_RESEARCH_PROMPT_MANUFACTURER_DATA_v0_1.md",
+    description: "Kopiklar prompt for egen Deep Research-tråd om produsentdata og diagnostikk.",
+  },
+];
+
+const activeTracks = [
+  {
+    number: "#114",
+    title: "Dataøkosystem og brukerleverage",
+    description: "Langsiktig retning: aggregert, samtykkebasert innsikt som gir brukergruppen større synlighet.",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/issues/114",
+  },
+  {
+    number: "#115",
+    title: "Kilde-QA for produsentdata",
+    description: "Skiller fakta, hypoteser og uavklarte funn før ekstern bruk.",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/issues/115",
+  },
+  {
+    number: "#116",
+    title: "Deep Research-prompt",
+    description: "Researchgrunnlag for produsentenes datainnsamling, diagnostikk og remote care.",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/issues/116",
+  },
+  {
+    number: "#117",
+    title: "Interessentpresentasjon",
+    description: "Tidlig, læringsorientert presentasjon for norske, brukernære interessenter.",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/issues/117",
+  },
+  {
+    number: "#118",
+    title: "Project Control Center",
+    description: "Arkitektur og VIS-front door for felles prosjektkunnskap på tvers av agenter.",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/issues/118",
+  },
+];
 ---
 
 <PrototypeLayout title="Viddel Control Center">
-  <main class="px-4 py-6 sm:px-6 sm:py-8">
-    <nav class="text-xs text-gray-500">
-      <a href={`${base}vis`} class="underline underline-offset-2">VIS</a>
-      <span aria-hidden="true"> / </span>
-      <a href={`${base}vis/system`} class="underline underline-offset-2">System</a>
-      <span aria-hidden="true"> / </span>
-      <span class="text-gray-800">Control Center</span>
+  <main class="control-page">
+    <nav class="control-breadcrumb">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={`${base}vis/system`}>System</a>
+      <span aria-hidden="true">/</span>
+      <span>Control Center</span>
     </nav>
 
-    <header class="mt-4 max-w-4xl border-b border-gray-200 pb-5">
-      <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-500">Project Control Center</p>
-      <h1 class="mt-2 text-3xl font-semibold tracking-tight text-gray-950 sm:text-5xl">Viddel Control Center</h1>
-      <p class="mt-3 max-w-2xl text-sm leading-relaxed text-gray-600">
-        Felles inngang til canonical prosjektkunnskap, agentroller, standarder og aktive strategiske spor.
-        Bruk denne først når en ny tråd, agent eller arbeidsøkt trenger Viddel-kontekst.
+    <header class="control-hero">
+      <p class="control-kicker">Project Control Center</p>
+      <h1>Viddel Control Center</h1>
+      <p>
+        Start her når en ny tråd, agent eller arbeidsøkt trenger Viddel-kontekst.
+        Denne siden gir oversikt først, og peker videre til detaljer når det trengs.
       </p>
     </header>
 
-    <section class="mt-5 grid gap-3 sm:grid-cols-3">
-      <a href={`${base}vis/system/github-runtime-status`} class="rounded-md border border-gray-200 bg-white p-3 hover:bg-gray-50">
-        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Runtime</p>
-        <p class="mt-1 text-sm font-semibold text-gray-900">GitHub status</p>
-        <p class="mt-1 text-xs leading-relaxed text-gray-600">Ferskt nåbilde fra GitHub-bussen.</p>
+    <section class="control-glance" aria-label="Kort status">
+      <article class="control-status-card control-status-card--primary">
+        <p class="control-kicker">Nåfase</p>
+        <h2>MVP shaping og tidlig validering</h2>
+        <p>
+          Første public hub og artikkel/AI-reise skal bli testbar. Neste store verdi er læring fra riktige samtaler, ikke mer kompleks bygging.
+        </p>
+      </article>
+      <article class="control-status-card">
+        <p class="control-kicker">Produktkjerne</p>
+        <h2>Innhold + AI + mestring</h2>
+        <p>
+          Viddel starter med konkret hjelp i hverdagen. Over tid kan hjelpesituasjonene gi samtykkebasert innsikt på tvers av økosystemet.
+        </p>
+      </article>
+      <article class="control-status-card">
+        <p class="control-kicker">Viktig regel</p>
+        <h2>Produsentdata må kilde-QA-es</h2>
+        <p>
+          Påstander om app-, apparat-, klinikk- eller produsentdata skal ikke brukes eksternt som fakta før de er kildebekreftet.
+        </p>
+      </article>
+    </section>
+
+    <section class="control-section control-section--actions">
+      <div class="control-section-head">
+        <p class="control-kicker">Neste gode bruk</p>
+        <h2>Hva gjør vi med denne siden?</h2>
+      </div>
+      <div class="control-action-grid">
+        <article>
+          <span>01</span>
+          <b>Ny tråd eller agent</b>
+          <p>Si: “Start fra Viddel Control Center.”</p>
+        </article>
+        <article>
+          <span>02</span>
+          <b>Produsentdata</b>
+          <p>Bruk kilde-QA-standarden før noe blir fakta.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <b>Interessentmøte</b>
+          <p>Skill tydelig mellom MVP, hypotese, fakta og langsiktig visjon.</p>
+        </article>
+        <article>
+          <span>04</span>
+          <b>Gemini/@navigator</b>
+          <p>Speil denne til Google Doc før Gemini skal bruke den aktivt.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="control-section">
+      <div class="control-section-head">
+        <p class="control-kicker">Aktive spor</p>
+        <h2>Dette er de viktige trådene nå</h2>
+      </div>
+      <div class="control-track-list">
+        {activeTracks.map((track) => (
+          <a href={track.href}>
+            <span>{track.number}</span>
+            <div>
+              <b>{track.title}</b>
+              <p>{track.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="control-section">
+      <div class="control-section-head">
+        <p class="control-kicker">Canonical docs</p>
+        <h2>Dokumentene som bærer kunnskapen</h2>
+      </div>
+      <div class="control-doc-grid">
+        {canonicalDocs.map((doc) => (
+          <a href={doc.href}>
+            <span>{doc.label}</span>
+            <b>{doc.title}</b>
+            <p>{doc.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="control-section control-section--split">
+      <div>
+        <p class="control-kicker">Agentroller</p>
+        <h2>Hvem bruker hva?</h2>
+      </div>
+      <div class="control-role-list">
+        <article>
+          <b>ChatGPT / @rigger</b>
+          <p>Strategi, struktur, syntese, GitHub-arbeid, presentasjoner og kryss-tråd-kontinuitet.</p>
+        </article>
+        <article>
+          <b>Cursor</b>
+          <p>Repo-endringer. Skal safe-reade Control Center før større Viddel-oppgaver.</p>
+        </article>
+        <article>
+          <b>Gemini / @navigator</b>
+          <p>Gmail, kalender, Workspace og møteforberedelser. Trenger Google Doc-speil.</p>
+        </article>
+        <article>
+          <b>VIS</b>
+          <p>Operativ visningsflate. Ikke backlog og ikke eneste source of truth.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="control-section control-section--links">
+      <a href={`${base}vis/system/github-runtime-status`}>
+        <span>Runtime</span>
+        <b>GitHub status</b>
+        <p>Ferskt nåbilde fra GitHub-bussen.</p>
       </a>
-      <a href={`${base}vis/system/roadmap-timeline-v01`} class="rounded-md border border-gray-200 bg-white p-3 hover:bg-gray-50">
-        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Roadmap</p>
-        <p class="mt-1 text-sm font-semibold text-gray-900">Timeline read model</p>
-        <p class="mt-1 text-xs leading-relaxed text-gray-600">Operativ visning av spor og initiativer.</p>
+      <a href={`${base}vis/system/roadmap-timeline-v01`}>
+        <span>Roadmap</span>
+        <b>Timeline read model</b>
+        <p>Operativ visning av spor og initiativer.</p>
       </a>
-      <a href="https://github.com/THUNDERPLUNDER/vox-web/blob/main/docs/project/VIDDEL_PROJECT_CONTROL_CENTER_v0_1.md" class="rounded-md border border-gray-200 bg-white p-3 hover:bg-gray-50">
-        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Repo master</p>
-        <p class="mt-1 text-sm font-semibold text-gray-900">Markdown source</p>
-        <p class="mt-1 text-xs leading-relaxed text-gray-600">Repo-dokumentet er canonical master.</p>
+      <a href="https://github.com/THUNDERPLUNDER/vox-web/blob/main/docs/project/VIDDEL_PROJECT_CONTROL_CENTER_v0_1.md">
+        <span>Repo master</span>
+        <b>Markdown source</b>
+        <p>Repo-dokumentet er canonical master.</p>
       </a>
     </section>
 
-    <article class="mt-6 max-w-5xl overflow-x-auto rounded-md border border-gray-200 bg-white p-4 text-sm leading-relaxed text-gray-900">
-      <pre class="whitespace-pre-wrap break-words font-mono text-[13px]">{safe}</pre>
-    </article>
+    <details class="control-raw">
+      <summary>Vis rå markdown fra repoet</summary>
+      <pre>{safe}</pre>
+    </details>
   </main>
+
+  <style>
+    .control-page {
+      min-height: 100vh;
+      padding: 1.5rem 1rem 3rem;
+      background: rgb(var(--article-page-canvas));
+      color: rgb(var(--reading-ink));
+    }
+
+    .control-page > * {
+      max-width: 72rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .control-breadcrumb {
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .control-breadcrumb a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .control-kicker {
+      color: rgb(var(--reading-accent-iris));
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .control-hero {
+      padding: 1rem 0 2rem;
+      border-bottom: 1px solid rgb(var(--border) / 0.22);
+    }
+
+    .control-hero h1 {
+      max-width: 54rem;
+      margin-top: 0.35rem;
+      font-size: clamp(2.55rem, 8vw, 5rem);
+      line-height: 0.96;
+      letter-spacing: -0.065em;
+    }
+
+    .control-hero p {
+      max-width: 44rem;
+      margin-top: 1rem;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: clamp(1rem, 2vw, 1.18rem);
+      line-height: 1.65;
+    }
+
+    .control-glance {
+      display: grid;
+      gap: 1px;
+      overflow: hidden;
+      margin-top: 1.4rem;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: 1rem;
+      background: rgb(var(--border) / 0.22);
+    }
+
+    .control-status-card {
+      min-height: 14rem;
+      padding: 1.15rem;
+      background: rgb(var(--reading-paper));
+    }
+
+    .control-status-card--primary {
+      background: rgb(var(--surface-subtle));
+    }
+
+    .control-status-card h2,
+    .control-section h2 {
+      margin-top: 0.4rem;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.08;
+      letter-spacing: -0.045em;
+    }
+
+    .control-status-card p:not(.control-kicker),
+    .control-section-head p:not(.control-kicker),
+    .control-action-grid p,
+    .control-track-list p,
+    .control-doc-grid p,
+    .control-role-list p,
+    .control-section--links p {
+      margin-top: 0.65rem;
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .control-section {
+      padding: 2.4rem 0;
+      border-bottom: 1px solid rgb(var(--border) / 0.18);
+    }
+
+    .control-section-head {
+      margin-bottom: 1.2rem;
+    }
+
+    .control-action-grid,
+    .control-doc-grid,
+    .control-section--links {
+      display: grid;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: 1rem;
+      background: rgb(var(--border) / 0.22);
+    }
+
+    .control-action-grid article,
+    .control-doc-grid a,
+    .control-section--links a {
+      min-height: 9.5rem;
+      padding: 1rem;
+      background: rgb(var(--reading-paper));
+      color: rgb(var(--reading-ink));
+      text-decoration: none;
+    }
+
+    .control-action-grid span,
+    .control-doc-grid span,
+    .control-section--links span,
+    .control-track-list span {
+      display: inline-flex;
+      color: rgb(var(--reading-accent-iris));
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .control-action-grid b,
+    .control-doc-grid b,
+    .control-section--links b,
+    .control-role-list b,
+    .control-track-list b {
+      display: block;
+      margin-top: 0.4rem;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .control-track-list {
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .control-track-list a {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.9rem;
+      padding: 1rem;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: 0.85rem;
+      background: rgb(var(--reading-paper));
+      color: rgb(var(--reading-ink));
+      text-decoration: none;
+    }
+
+    .control-section--split {
+      display: grid;
+      gap: 1.4rem;
+    }
+
+    .control-role-list {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .control-role-list article {
+      padding: 1rem;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: 0.85rem;
+      background: rgb(var(--reading-paper));
+    }
+
+    .control-raw {
+      margin-top: 2rem;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: 0.85rem;
+      background: rgb(var(--reading-paper));
+    }
+
+    .control-raw summary {
+      cursor: pointer;
+      padding: 1rem;
+      color: rgb(var(--reading-ink));
+      font-weight: 700;
+    }
+
+    .control-raw pre {
+      overflow-x: auto;
+      margin: 0;
+      border-top: 1px solid rgb(var(--border) / 0.16);
+      padding: 1rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: rgb(var(--reading-ink));
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+    }
+
+    @media (min-width: 720px) {
+      .control-page {
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      .control-glance,
+      .control-action-grid,
+      .control-doc-grid,
+      .control-section--links {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .control-action-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .control-section--split {
+        grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+      }
+    }
+  </style>
 </PrototypeLayout>
