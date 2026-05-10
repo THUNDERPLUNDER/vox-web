@@ -21,6 +21,21 @@ const base = import.meta.env.BASE_URL;
       </p>
     </header>
 
+    <section class="system-doc-section system-doc-section--featured">
+      <div class="system-doc-section-head">
+        <p class="system-doc-kicker">00</p>
+        <h2>Project Control Center</h2>
+        <p>Felles inngang til canonical prosjektkunnskap, agentroller, standarder og aktive spor.</p>
+      </div>
+      <div class="system-doc-grid">
+        <a href={`${base}vis/system/control-center`}>
+          <span>front door</span>
+          <b>Viddel Control Center</b>
+          <p>Start her når ny tråd, agent eller arbeidsøkt trenger Viddel-kontekst.</p>
+        </a>
+      </div>
+    </section>
+
     <section class="system-doc-section">
       <div class="system-doc-section-head">
         <p class="system-doc-kicker">01</p>
@@ -161,6 +176,10 @@ const base = import.meta.env.BASE_URL;
     .system-doc-section {
       padding: 2.4rem 0;
       border-bottom: 1px solid rgb(var(--border) / 0.18);
+    }
+
+    .system-doc-section--featured {
+      padding-top: 1.7rem;
     }
 
     .system-doc-section-head {
