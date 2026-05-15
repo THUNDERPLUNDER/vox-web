@@ -60,11 +60,42 @@ Disse kan bygges inn nå.
 - Lydbuen som bredt UI- og behavior-språk parkeres.
 - Buen kan fortsatt være inspirasjon i logoarbeid eller motion senere, men skal ikke styre MVP-komponentene nå.
 
-### Logoarbeid
+### Logo decision v0.1
 
-- Logoarbeid går videre med **wordmark + lydstolpe-/signal-motiv**.
-- Lydstolper skal testes særlig rundt dobbel-d i Viddel.
-- Målet nå er en operativ MVP-logo, ikke endelig merkevaremanual.
+Status: **Låst for MVP**
+
+Viddel MVP-logo bruker wordmark med integrert femstolpers lydsignal mellom og inn i de to d-ene.
+
+Logoen skal leses som **VIDDEL**, ikke **VID DEL**. Lydsignalet skal inngå i dobbel-d-strukturen og ikke skape ordbrudd.
+
+AI-genererte bilder er beslutningsgrunnlag, ikke masterfiler. Endelig MVP-logo må produseres som ren vektor-master og eksporteres som kontrollerte assets før implementering.
+
+Primærvariant:
+
+- `VDL-BLU-PRM`: mørk wordmark + blått femstolpers signalmerke på hvit / lys bakgrunn
+
+Godkjente varianter:
+
+- `VDL-BLK-PRM`: monokrom sort / mørk på hvit eller lys grå
+- `VDL-GRY-PRM`: grå nøytralvariant på hvit / lys bakgrunn
+- `VDL-WHT-INV`: hvit variant på mørk bakgrunn
+- `VDL-YEL-INV`: gul signalvariant på mørk bakgrunn
+- `VDL-GRN-INV`: grønn signalvariant på mørk bakgrunn
+
+Godkjenningskrav før implementering:
+
+- ren vektor-master skal produseres
+- bitmap-eksporter skal produseres fra samme vektor-master
+- Thomas skal ha en egen godkjenningsrunde på asset pack før Cursor implementerer
+- små logostørrelser skal testes med litt fetere vekt / optisk justering for lesbarhet
+
+Ikke godkjent:
+
+- logo der lydsignalet deler ordet som `VID DEL`
+- seks stolper i signalmerket
+- løs equalizer-dekor uten integrasjon i dobbel-d
+- bue som primært logoelement i MVP
+- at Cursor eller AI-verktøy improviserer ny logoform ved implementering
 
 ## Arbeidsbeslutninger
 
@@ -72,10 +103,11 @@ Disse brukes nå, men kan justeres etter test og implementering.
 
 ### Logo
 
-- Arbeidsretning: Viddel wordmark med integrert lydstolpe-/signal-motiv.
-- Dobbel-d-området er primært testområde for integrasjon.
-- Symbolet skal kunne trekkes ut til favicon/appikon/AI-status dersom det fungerer.
+- Arbeidsretning: Viddel wordmark med integrert femstolpers lydstolpe-/signal-motiv.
+- Dobbel-d-området er låst som primært integrasjonspunkt.
+- Symbolet kan trekkes ut til favicon/appikon/AI-status dersom det fungerer etter småstørrelse-test.
 - Logoen må fungere monokromt.
+- Ren vektor-master og bitmap-eksporter skal godkjennes før implementering.
 
 ### Farger / tokens
 
@@ -124,7 +156,7 @@ Redaksjonell arv:
 
 Disse skal ikke overbygges før de er modne.
 
-- Endelig logoform
+- Endelig produksjonsasset for logo
 - Endelig symbol / favicon
 - Eksakt displayfont
 - Eksakt sans-font
@@ -212,8 +244,10 @@ Aksept:
 - én liten header-variant
 - én favicon/appikon-hypotese
 - testet på hvit og lys grå
-- lydstolpe-/signal-motiv vurdert i dobbel-d
+- femstolpers lydstolpe-/signal-motiv integrert i dobbel-d
+- logoen leses som VIDDEL, ikke VID DEL
 - operativ eksport klar for implementering
+- godkjenningsrunde gjennomført etter produksjon av vektor-master og bitmap-eksporter
 
 Avgrensning:
 
