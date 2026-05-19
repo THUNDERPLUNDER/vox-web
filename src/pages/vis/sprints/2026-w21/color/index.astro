@@ -1,0 +1,875 @@
+---
+/* CONTRACT: VIS-only Color Lab for #122 — restrained signal system review.
+   Parent: #126 sprint preview / #120 Design Lock. Not production design.
+   Typography premiss from #123: Epilogue display proxy + Inter body/UI (no new fonts).
+*/
+import PrototypeLayout from "../../../../../layouts/PrototypeLayout.astro";
+import "../../../../../styles/global.css";
+
+const base = import.meta.env.BASE_URL;
+const sprintPath = `${base}vis/sprints/2026-w21`;
+
+const evalCriteria = [
+  "Lesbarhet",
+  "Tillit",
+  "Viddel-særpreg",
+  "Hverdagsenergi",
+  "Ikke-spa / ikke-wellness",
+  "UI-kontroll",
+];
+
+const articleContent = {
+  kicker: "BESLUTNINGSSTØTTE",
+  h1: "Audiograf: når det haster, og hva du kan forberede",
+  ingress:
+    "Noen høreapparatproblemer kan du feilsøke rolig selv. Andre bør vurderes raskt.",
+};
+
+const aiTransition = {
+  label: "ETTER LESING",
+  title: "Hva bør jeg gjøre nå?",
+  text: "Beskriv hva som ikke fungerer, så hjelper Viddel deg videre.",
+  button: "Få hjelp nå",
+};
+
+const heroContent = {
+  headline: "Få verden tydeligere tilbake.",
+  subline:
+    "Viddel hjelper deg å forstå, feilsøke og mestre høreapparatet i hverdagen.",
+};
+
+const colorSets = [
+  {
+    id: "a",
+    anchor: "set-a",
+    label: "SET A",
+    name: "Dyp Nordisk",
+    role: "Trygg, autoritær, nordisk og helsefaglig forankret uten å bli klinisk.",
+    tokens: [
+      { key: "background", label: "background", value: "#FFFFFF" },
+      { key: "text", label: "text", value: "#111827" },
+      { key: "surface", label: "surface", value: "#F3F4F6" },
+      { key: "border", label: "border", value: "#E5E7EB" },
+      { key: "primary", label: "primary signal", value: "#0F4C81" },
+      { key: "secondary", label: "secondary/focus signal", value: "#0EA5E9" },
+    ],
+  },
+  {
+    id: "b",
+    anchor: "set-b",
+    label: "SET B",
+    name: "Skarp Kontrast",
+    role: "Høy kontrast, teknisk, presis, svært tydelig.",
+    tokens: [
+      { key: "background", label: "background", value: "#FFFFFF" },
+      { key: "text", label: "text", value: "#000000" },
+      { key: "surface", label: "surface", value: "#F4F5F7" },
+      { key: "border", label: "border", value: "#D1D5DB" },
+      { key: "primary", label: "primary signal", value: "#0055FF" },
+      { key: "secondary", label: "secondary/success signal", value: "#10B981" },
+    ],
+  },
+  {
+    id: "c",
+    anchor: "set-c",
+    label: "SET C",
+    name: "Monokrom + Varm Action",
+    role: "Utfordrer helse-blå. Stram, monokrom base med varm aksent for handling.",
+    tokens: [
+      { key: "background", label: "background", value: "#FFFFFF" },
+      { key: "text", label: "text", value: "#18181B" },
+      { key: "surface", label: "surface", value: "#F4F4F5" },
+      { key: "border", label: "border", value: "#E4E4E7" },
+      { key: "primary", label: "primary signal", value: "#EA580C" },
+    ],
+  },
+  {
+    id: "d",
+    anchor: "set-d",
+    label: "SET D",
+    name: "Deep Teal + Magenta Signal",
+    role: "Magnific-inspirert utfordrer. Dyp blå/teal base og sterk magenta som energisk signal-linje — ikke creative AI platform.",
+    tokens: [
+      { key: "background", label: "background", value: "#FFFFFF" },
+      { key: "text", label: "text", value: "#111827" },
+      { key: "surface", label: "surface", value: "#F3F4F6" },
+      { key: "border", label: "border", value: "#E5E7EB" },
+      { key: "primary", label: "primary deep signal", value: "#0F4C5C" },
+      { key: "secondary", label: "kinetic signal", value: "#EC4899" },
+      { key: "tertiary", label: "warm energy (optional)", value: "#F97316" },
+    ],
+    signalNote: "Magenta used as line/marker only — not fill or gradient.",
+  },
+];
+---
+
+<PrototypeLayout title="Color Lab — #122">
+  <main class="clab" data-color-lab>
+    <nav class="clab__breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={sprintPath}>2026-W21</a>
+      <span aria-hidden="true">/</span>
+      <span>Color</span>
+    </nav>
+
+    <header class="clab__hero">
+      <p class="clab__kicker">VIS-only · #122</p>
+      <h1>Color Lab — #122</h1>
+      <p class="clab__subtitle">Monochrome base + restrained signal systems</p>
+      <p class="clab__note">
+        Color is under evaluation. This lab tests restrained signal systems in the W21 VIS preview.
+        No production tokens are changed.
+      </p>
+
+      <dl class="clab__meta">
+        <div><dt>Sprint</dt><dd>2026-W21</dd></div>
+        <div><dt>Parent</dt><dd>#120</dd></div>
+        <div><dt>Preview</dt><dd>#126</dd></div>
+        <div><dt>Issue</dt><dd>#122</dd></div>
+        <div><dt>Status</dt><dd>Open evaluation</dd></div>
+      </dl>
+
+      <div class="clab__criteria">
+        <p class="clab__criteria-label">Evaluation criteria</p>
+        <ul class="clab__criteria-list" role="list">
+          {evalCriteria.map((c) => <li>{c}</li>)}
+        </ul>
+      </div>
+    </header>
+
+    <div class="clab__sets">
+      {colorSets.map((set) => (
+        <article id={set.anchor} class="clab__set" data-set={set.id}>
+          <header class="clab__set-head">
+            <p class="clab__set-label">{set.label}</p>
+            <h2>{set.name}</h2>
+            <p class="clab__set-role">{set.role}</p>
+            {set.signalNote && <p class="clab__set-note">{set.signalNote}</p>}
+          </header>
+
+          <!-- 1. Token swatches -->
+          <section class="clab__panel" aria-label="Token swatches">
+            <p class="clab__panel-label">Token swatches</p>
+            <ul class="clab__swatches" role="list">
+              {set.tokens.map((token) => (
+                <li class="clab__swatch">
+                  <div
+                    class="clab__swatch-color"
+                    style={`background: ${token.value}`}
+                    aria-hidden="true"
+                  />
+                  <div class="clab__swatch-meta">
+                    <strong>{token.label}</strong>
+                    <code>{token.value}</code>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <div class="clab__samples">
+            <!-- 2. Article intro -->
+            <section class="clab__panel clab__article" aria-label="Article intro">
+              <p class="clab__panel-label">Article intro</p>
+              <p class="clab__kicker-sample">{articleContent.kicker}</p>
+              <h3 class="clab__h1">{articleContent.h1}</h3>
+              <p class="clab__ingress">{articleContent.ingress}</p>
+            </section>
+
+            <!-- 3. AI transition block -->
+            <section class="clab__panel clab__ai" aria-label="AI transition block">
+              <p class="clab__panel-label">AI transition block</p>
+              <p class="clab__ai-label">{aiTransition.label}</p>
+              <p class="clab__ai-title">{aiTransition.title}</p>
+              <p class="clab__ai-text">{aiTransition.text}</p>
+              <button type="button" class="clab__btn clab__btn--primary">
+                {aiTransition.button}
+              </button>
+            </section>
+
+            <!-- 4. UI primitives -->
+            <section class="clab__panel clab__ui" aria-label="UI primitives">
+              <p class="clab__panel-label">UI primitives</p>
+              <div class="clab__ui-row">
+                <button type="button" class="clab__btn clab__btn--primary">Primary button</button>
+                <button type="button" class="clab__btn clab__btn--secondary">Secondary button</button>
+              </div>
+              <div class="clab__ui-row">
+                <a href="#" class="clab__link" onclick="return false">Text link</a>
+                <span class="clab__pill">Feilsøking</span>
+              </div>
+              <input
+                type="text"
+                class="clab__input"
+                placeholder="Beskriv problemet kort …"
+                aria-label="Input sample"
+              />
+            </section>
+
+            <!-- 5. Signal marker -->
+            <section class="clab__panel clab__marker" aria-label="Signal marker sample">
+              <p class="clab__panel-label">Signal marker</p>
+              <div class="clab__marker-demo">
+                <span class="clab__marker-line" aria-hidden="true" />
+                <div class="clab__marker-bars" aria-hidden="true">
+                  <span /><span /><span /><span /><span />
+                </div>
+                <span class="clab__marker-dot" aria-hidden="true" />
+              </div>
+              <p class="clab__marker-caption">Signal used as line, bar or dot — not fill.</p>
+            </section>
+
+            <!-- 6. Mini hero light/dark -->
+            <section class="clab__panel clab__hero-pair" aria-label="Mini hero preview">
+              <p class="clab__panel-label">Mini hero light / dark</p>
+              <div class="clab__hero-grid">
+                <div class="clab__hero clab__hero--light">
+                  <p class="clab__hero-tag">Light hero</p>
+                  <p class="clab__hero-headline">{heroContent.headline}</p>
+                  <p class="clab__hero-subline">{heroContent.subline}</p>
+                </div>
+                <div class="clab__hero clab__hero--dark">
+                  <p class="clab__hero-tag">Dark hero</p>
+                  <p class="clab__hero-headline">{heroContent.headline}</p>
+                  <p class="clab__hero-subline">{heroContent.subline}</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <footer class="clab__footer">
+      <p>
+        Color direction is under evaluation. No production tokens changed in #122.
+        Typography premiss from #123: Existing Bold Display — moderated + Inter for body/UI.
+      </p>
+      <p><a href={sprintPath}>← Back to Sprint Preview 2026-W21</a></p>
+    </footer>
+  </main>
+
+  <style>
+    [data-color-lab] {
+      --clab-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --clab-display: var(--font-display);
+
+      min-height: 100vh;
+      background: rgb(var(--article-page-canvas));
+      color: rgb(var(--reading-ink));
+      padding: 1.5rem 1rem 3rem;
+      max-width: 72rem;
+      margin: 0 auto;
+      font-family: var(--clab-sans);
+    }
+
+    .clab__breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      margin-bottom: 1.1rem;
+      font-size: 0.72rem;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__breadcrumb a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      color: inherit;
+    }
+
+    .clab__hero {
+      padding: 1.5rem 0 2rem;
+      border-bottom: 1px solid rgb(var(--border) / 0.24);
+    }
+
+    .clab__kicker {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-accent-iris));
+    }
+
+    .clab__hero > h1 {
+      margin: 0.4rem 0 0;
+      max-width: 52rem;
+      font-family: var(--clab-display);
+      font-size: clamp(1.85rem, 5vw, 2.75rem);
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+    }
+
+    .clab__subtitle {
+      margin: 0.65rem 0 0;
+      font-size: 1rem;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__note {
+      margin: 0.75rem 0 0;
+      max-width: 44rem;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+      gap: 0.65rem 1rem;
+      margin: 1.15rem 0 0;
+      padding: 0.85rem 1rem;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: 8px;
+      background: rgb(var(--reading-paper));
+    }
+
+    .clab__meta dt {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .clab__meta dd {
+      margin: 0.15rem 0 0;
+      font-size: 0.84rem;
+    }
+
+    .clab__criteria {
+      margin-top: 1rem;
+    }
+
+    .clab__criteria-label {
+      margin: 0;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .clab__criteria-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 0.65rem;
+      margin: 0.45rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .clab__criteria-list li {
+      padding: 0.25rem 0.55rem;
+      border: 1px solid rgb(var(--border) / 0.35);
+      border-radius: 999px;
+      font-size: 0.72rem;
+      color: rgb(var(--reading-ink-secondary));
+      background: rgb(var(--reading-paper));
+    }
+
+    .clab__sets {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      padding-top: 2rem;
+    }
+
+    .clab__set {
+      scroll-margin-top: 4rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgb(var(--border) / 0.2);
+    }
+
+    .clab__set:last-child {
+      border-bottom: 0;
+    }
+
+    .clab__set-head h2 {
+      margin: 0.2rem 0 0;
+      font-family: var(--clab-display);
+      font-size: clamp(1.25rem, 3vw, 1.65rem);
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+    }
+
+    .clab__set-label {
+      margin: 0;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .clab__set-role {
+      margin: 0.45rem 0 0;
+      max-width: 44rem;
+      font-size: 0.86rem;
+      line-height: 1.6;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__set-note {
+      margin: 0.5rem 0 0;
+      max-width: 44rem;
+      padding: 0.5rem 0.75rem;
+      border-left: 3px solid rgb(var(--border) / 0.45);
+      font-size: 0.78rem;
+      font-style: italic;
+      line-height: 1.55;
+      color: rgb(var(--muted));
+    }
+
+    .clab__panel {
+      margin-top: 1.15rem;
+    }
+
+    .clab__panel-label {
+      margin: 0 0 0.55rem;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .clab__swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+      gap: 0.55rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .clab__swatch {
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: 6px;
+      overflow: hidden;
+      background: rgb(var(--reading-paper));
+    }
+
+    .clab__swatch-color {
+      height: 2.75rem;
+      border-bottom: 1px solid rgb(0 0 0 / 0.06);
+    }
+
+    .clab__swatch-meta {
+      padding: 0.45rem 0.55rem;
+    }
+
+    .clab__swatch-meta strong {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+
+    .clab__swatch-meta code {
+      display: block;
+      margin-top: 0.15rem;
+      font-size: 0.62rem;
+      color: rgb(var(--muted));
+    }
+
+    .clab__samples {
+      display: grid;
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    .clab__kicker-sample {
+      margin: 0 0 0.35rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .clab__h1 {
+      margin: 0 0 0.45rem;
+      font-family: var(--clab-display);
+      font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+      font-weight: 650;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+    }
+
+    .clab__ingress {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .clab__ai {
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+    }
+
+    .clab__ai-label {
+      margin: 0 0 0.3rem;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .clab__ai-title {
+      margin: 0 0 0.25rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .clab__ai-text {
+      margin: 0 0 0.65rem;
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    .clab__ui-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.55rem;
+    }
+
+    .clab__btn {
+      padding: 0.48rem 0.95rem;
+      border-radius: 6px;
+      font-family: var(--clab-sans);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: default;
+    }
+
+    .clab__btn--secondary {
+      background: transparent;
+    }
+
+    .clab__link {
+      font-size: 0.84rem;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .clab__pill {
+      display: inline-flex;
+      padding: 0.22rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .clab__input {
+      width: 100%;
+      max-width: 20rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-family: var(--clab-sans);
+      font-size: 0.84rem;
+    }
+
+    .clab__input:focus {
+      outline: 2px solid var(--clab-focus);
+      outline-offset: 1px;
+    }
+
+    .clab__marker-demo {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .clab__marker-line {
+      display: block;
+      width: 2.5rem;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--clab-signal);
+    }
+
+    .clab__marker-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 1.25rem;
+    }
+
+    .clab__marker-bars span {
+      display: block;
+      width: 4px;
+      border-radius: 2px;
+      background: var(--clab-signal);
+    }
+
+    .clab__marker-bars span:nth-child(1) { height: 35%; }
+    .clab__marker-bars span:nth-child(2) { height: 65%; }
+    .clab__marker-bars span:nth-child(3) { height: 100%; }
+    .clab__marker-bars span:nth-child(4) { height: 55%; }
+    .clab__marker-bars span:nth-child(5) { height: 80%; }
+
+    .clab__marker-dot {
+      display: block;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--clab-signal);
+    }
+
+    .clab__marker-caption {
+      margin: 0.45rem 0 0;
+      font-size: 0.72rem;
+      color: rgb(var(--muted));
+    }
+
+    .clab__hero-grid {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .clab__hero {
+      padding: 1rem 1.1rem;
+      border-radius: 8px;
+    }
+
+    .clab__hero-tag {
+      margin: 0 0 0.5rem;
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .clab__hero-headline {
+      margin: 0;
+      font-family: var(--clab-display);
+      font-size: clamp(1.15rem, 3vw, 1.45rem);
+      font-weight: 650;
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+      max-width: 14em;
+    }
+
+    .clab__hero-subline {
+      margin: 0.4rem 0 0;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      max-width: 22em;
+    }
+
+    .clab__footer {
+      margin-top: 2rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgb(var(--border) / 0.18);
+      font-size: 0.82rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__footer p {
+      margin: 0.35rem 0 0;
+    }
+
+    .clab__footer a {
+      color: rgb(var(--reading-ink));
+      font-weight: 600;
+    }
+
+    /* ── Per-set token application ── */
+    .clab__set[data-set="a"] {
+      --clab-bg: #ffffff;
+      --clab-text: #111827;
+      --clab-text-muted: #4b5563;
+      --clab-surface: #f3f4f6;
+      --clab-border: #e5e7eb;
+      --clab-signal: #0f4c81;
+      --clab-signal-secondary: #0ea5e9;
+      --clab-focus: #0ea5e9;
+      --clab-dark-bg: #0a1628;
+      --clab-dark-text: #f9fafb;
+      --clab-dark-muted: #9ca3af;
+    }
+
+    .clab__set[data-set="b"] {
+      --clab-bg: #ffffff;
+      --clab-text: #000000;
+      --clab-text-muted: #374151;
+      --clab-surface: #f4f5f7;
+      --clab-border: #d1d5db;
+      --clab-signal: #0055ff;
+      --clab-signal-secondary: #10b981;
+      --clab-focus: #0055ff;
+      --clab-dark-bg: #0a0a0a;
+      --clab-dark-text: #ffffff;
+      --clab-dark-muted: #a3a3a3;
+    }
+
+    .clab__set[data-set="c"] {
+      --clab-bg: #ffffff;
+      --clab-text: #18181b;
+      --clab-text-muted: #52525b;
+      --clab-surface: #f4f4f5;
+      --clab-border: #e4e4e7;
+      --clab-signal: #ea580c;
+      --clab-signal-secondary: #18181b;
+      --clab-focus: #ea580c;
+      --clab-dark-bg: #18181b;
+      --clab-dark-text: #fafafa;
+      --clab-dark-muted: #a1a1aa;
+    }
+
+    .clab__set[data-set="d"] {
+      --clab-bg: #ffffff;
+      --clab-text: #111827;
+      --clab-text-muted: #4b5563;
+      --clab-surface: #f3f4f6;
+      --clab-border: #e5e7eb;
+      --clab-signal: #ec4899;
+      --clab-signal-deep: #0f4c5c;
+      --clab-signal-secondary: #f97316;
+      --clab-focus: #ec4899;
+      --clab-dark-bg: #0a1418;
+      --clab-dark-text: #f9fafb;
+      --clab-dark-muted: #9ca3af;
+    }
+
+    /* Shared set styling */
+    .clab__set .clab__article,
+    .clab__set .clab__ui,
+    .clab__set .clab__marker {
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--clab-border);
+      border-radius: 8px;
+      background: var(--clab-bg);
+      color: var(--clab-text);
+    }
+
+    .clab__set .clab__kicker-sample {
+      color: var(--clab-signal);
+    }
+
+    .clab__set .clab__ingress,
+    .clab__set .clab__ai-text {
+      color: var(--clab-text-muted);
+    }
+
+    .clab__set .clab__ai {
+      background: var(--clab-surface);
+      border: 1px solid var(--clab-border);
+      color: var(--clab-text);
+    }
+
+    .clab__set .clab__ai-label {
+      color: var(--clab-text-muted);
+    }
+
+    .clab__set .clab__btn--primary {
+      border: 0;
+      background: var(--clab-text);
+      color: var(--clab-bg);
+    }
+
+    .clab__set[data-set="c"] .clab__btn--primary {
+      background: var(--clab-signal);
+      color: #ffffff;
+    }
+
+    .clab__set .clab__btn--secondary {
+      border: 1px solid var(--clab-border);
+      color: var(--clab-text);
+    }
+
+    .clab__set .clab__link {
+      color: var(--clab-signal);
+    }
+
+    .clab__set .clab__pill {
+      border: 1px solid var(--clab-border);
+      color: var(--clab-signal);
+      background: var(--clab-bg);
+    }
+
+    .clab__set .clab__input {
+      border: 1px solid var(--clab-border);
+      background: var(--clab-bg);
+      color: var(--clab-text);
+    }
+
+    .clab__set[data-set="d"] .clab__kicker-sample {
+      color: var(--clab-signal-deep);
+    }
+
+    .clab__set[data-set="d"] .clab__link {
+      color: var(--clab-signal-deep);
+    }
+
+    .clab__set[data-set="d"] .clab__pill {
+      color: var(--clab-signal-deep);
+      border-color: var(--clab-signal-deep);
+    }
+
+    .clab__set .clab__hero--light {
+      background: var(--clab-bg);
+      border: 1px solid var(--clab-border);
+      color: var(--clab-text);
+    }
+
+    .clab__set .clab__hero--light .clab__hero-tag {
+      color: var(--clab-text-muted);
+    }
+
+    .clab__set .clab__hero--light .clab__hero-subline {
+      color: var(--clab-text-muted);
+    }
+
+    .clab__set .clab__hero--dark {
+      background: var(--clab-dark-bg);
+      border: 1px solid rgb(255 255 255 / 0.08);
+      color: var(--clab-dark-text);
+    }
+
+    .clab__set .clab__hero--dark .clab__hero-tag {
+      color: var(--clab-dark-muted);
+    }
+
+    .clab__set .clab__hero--dark .clab__hero-subline {
+      color: var(--clab-dark-muted);
+    }
+
+    .clab__set[data-set="d"] .clab__hero--light .clab__hero-headline {
+      border-left: 3px solid var(--clab-signal);
+      padding-left: 0.65rem;
+    }
+
+    .clab__set[data-set="d"] .clab__hero--dark .clab__hero-headline {
+      border-left: 3px solid var(--clab-signal);
+      padding-left: 0.65rem;
+    }
+
+    @media (min-width: 640px) {
+      [data-color-lab] {
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      .clab__samples {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .clab__hero-pair {
+        grid-column: 1 / -1;
+      }
+
+      .clab__hero-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</PrototypeLayout>

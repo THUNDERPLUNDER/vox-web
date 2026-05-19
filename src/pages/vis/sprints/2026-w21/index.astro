@@ -47,15 +47,11 @@ const anatomyZones = [
   },
 ];
 
-const colorTokens = [
-  { name: "base background", token: "--article-page-canvas", sample: "bg" },
-  { name: "text primary", token: "--reading-ink", sample: "text" },
-  { name: "text secondary", token: "--reading-ink-secondary", sample: "text-secondary" },
-  { name: "surface subtle", token: "--surface-subtle", sample: "surface-subtle" },
-  { name: "surface elevated", token: "--surface-elevated", sample: "surface-elevated" },
-  { name: "action / button", token: "--reading-ink", sample: "action" },
-  { name: "focus state", token: "--focus", sample: "focus" },
-  { name: "divider / border", token: "--border", sample: "border" },
+const colorLabSets = [
+  "A. Dyp Nordisk",
+  "B. Skarp Kontrast",
+  "C. Monokrom + Varm Action",
+  "D. Deep Teal + Magenta Signal",
 ];
 
 const typographyLabDirections = [
@@ -176,24 +172,25 @@ const typographyLabDirections = [
       </div>
     </section>
 
-    <!-- 6. Color tokens preview -->
+    <!-- 6. Color tokens — #122 summary → Color Lab -->
     <section class="sprint-preview__section" aria-labelledby="tokens-heading">
       <div class="sprint-preview__section-head">
-        <p class="sprint-preview__kicker">05</p>
-        <h2 id="tokens-heading">Color tokens preview</h2>
-        <p>Eksisterende tokens — ingen ny palett introdusert.</p>
+        <p class="sprint-preview__kicker">05 · #122</p>
+        <h2 id="tokens-heading">Color tokens — #122</h2>
+        <p>Restrained signal systems tested in full Color Lab.</p>
       </div>
-      <ul class="sprint-preview__token-grid" role="list">
-        {colorTokens.map((token) => (
-          <li class="sprint-preview__token">
-            <div class="sprint-preview__token-swatch" data-sample={token.sample} aria-hidden="true"></div>
-            <div class="sprint-preview__token-meta">
-              <strong>{token.name}</strong>
-              <code>{token.token}</code>
-            </div>
-          </li>
-        ))}
-      </ul>
+
+      <div class="sprint-preview__typo-summary">
+        <p class="sprint-preview__typo-status">
+          <strong>Status:</strong> #122 Color Lab open
+        </p>
+        <ul class="sprint-preview__list sprint-preview__list--compact">
+          {colorLabSets.map((set) => <li>{set}</li>)}
+        </ul>
+        <a href={`${base}vis/sprints/2026-w21/color/`} class="sprint-preview__typo-link">
+          Open full Color Lab →
+        </a>
+      </div>
     </section>
 
     <!-- 7. Primitives preview -->
