@@ -66,6 +66,16 @@ const secondaryAlternates = [
       "Hero-orientert serif/display inspirert av elegante lys/mørk-mockups — primært brand/hero, ikke nødvendigvis standard artikkel-H1.",
     fontStack: 'Cormorant Garamond 500/600 · VIS-only · "Cormorant Garamond", Georgia, serif',
   },
+  {
+    id: "mockup-playfair",
+    anchor: "sec-mockup-playfair",
+    name: "Mockup Hero Serif — Playfair Display",
+    testingFor:
+      "Proxy for earlier Image 2.0 light/dark hero mockup. Elegant serif contrast for brand/hero use only.",
+    fontStack: 'Playfair Display 500/600 · VIS-only · "Playfair Display", Georgia, serif',
+    proxyNote:
+      "Image 2.0 mockups do not guarantee a real font match. This is a practical webfont proxy for comparison.",
+  },
 ];
 
 const directions = [
@@ -121,7 +131,7 @@ const directions = [
   },
 ];
 const tlabFontStylesheet =
-  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Epilogue:wght@600;700&family=Inter:wght@400;500;600&family=Roboto+Condensed:wght@700&family=Sora:wght@500;600;700&family=Source+Serif+4:wght@500;600;700&display=swap";
+  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Epilogue:wght@600;700&family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&family=Roboto+Condensed:wght@700&family=Sora:wght@500;600;700&family=Source+Serif+4:wght@500;600;700&display=swap";
 ---
 
 <PrototypeLayout title="Typography Lab — #123">
@@ -287,6 +297,9 @@ const tlabFontStylesheet =
               <p class="tlab__stack">
                 <strong>Font / stack:</strong> {alt.fontStack}
               </p>
+              {alt.proxyNote && (
+                <p class="tlab__proxy-note">{alt.proxyNote}</p>
+              )}
             </header>
 
             <div class="tlab__hero-pair">
@@ -1150,6 +1163,49 @@ const tlabFontStylesheet =
     }
 
     .tlab__secondary-alt[data-secondary="hero-serif"] .tlab__h2 {
+      font-family: "Inter", ui-sans-serif, sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .tlab__proxy-note {
+      margin: 0.5rem 0 0;
+      max-width: 44rem;
+      padding: 0.55rem 0.75rem;
+      border-left: 3px solid rgb(var(--border) / 0.45);
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: rgb(var(--muted));
+      font-style: italic;
+    }
+
+    /* D: Mockup Hero Serif — Playfair Display */
+    .tlab__secondary-alt[data-secondary="mockup-playfair"] .tlab__hero-headline {
+      font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+      font-size: clamp(1.85rem, 4.8vw, 2.85rem);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+
+    .tlab__secondary-alt[data-secondary="mockup-playfair"] .tlab__hero-sample--light .tlab__hero-headline {
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__secondary-alt[data-secondary="mockup-playfair"] .tlab__hero-sample--dark .tlab__hero-headline {
+      color: rgb(255 255 255 / 0.95);
+    }
+
+    .tlab__secondary-alt[data-secondary="mockup-playfair"] .tlab__h1 {
+      font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+      font-size: clamp(1.7rem, 4vw, 2.45rem);
+      font-weight: 600;
+      letter-spacing: -0.008em;
+      line-height: 1.12;
+    }
+
+    .tlab__secondary-alt[data-secondary="mockup-playfair"] .tlab__h2 {
       font-family: "Inter", ui-sans-serif, sans-serif;
       font-size: 1rem;
       font-weight: 600;
