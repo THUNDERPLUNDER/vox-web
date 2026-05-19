@@ -4,8 +4,8 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## Siste sync
 
-- **generated_at (UTC):** 2026-05-18T10:09:06.302Z
-- **generated_at (Europe/Oslo):** 18.5.2026, 12:09:06
+- **generated_at (UTC):** 2026-05-19T09:49:46.059Z
+- **generated_at (Europe/Oslo):** 19.5.2026, 11:49:46
 - **timezone:** Europe/Oslo
 - **repo:** THUNDERPLUNDER/vox-web
 - **data_warnings:** (ingen)
@@ -76,7 +76,7 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## SISTE 24T
 
-Vindu: commits/issues lukket/oppdatert etter **2026-05-17T10:09:06Z** (sirket ~24 timer).
+Vindu: commits/issues lukket/oppdatert etter **2026-05-18T09:49:46Z** (sirket ~24 timer).
 
 ### Lukkede issues
 
@@ -84,11 +84,20 @@ _Ingen._
 
 ### Kommentarer (Return Ticket-lignende)
 
-_Ingen treff i søkt utsnitt._
+- **#123** kommentar av **THUNDERPLUNDER** (2026-05-19T08:54:59Z): _## Return Ticket — #123 Typography v0.1 (direction test) **Status:** ✅ Ferdig – bygger grønt, pushet --- ### Hva ble gjort Erstattet placeholder «Typography preview» med **Typography direction test — #123** på `/vis/spri…_
+- **#123** kommentar av **THUNDERPLUNDER** (2026-05-19T09:13:20Z): _## Return Ticket — #123 Typography Lab (revision) **Status:** ✅ Ferdig – bygger grønt, pushet --- ### Hva ble gjort **Ny underside:** `/vis/sprints/2026-w21/typography/` Fullverdig Typography Lab med: - Header, metadata,…_
+- **#123** kommentar av **THUNDERPLUNDER** (2026-05-19T09:22:44Z): _## Return Ticket — #123 Typography Lab font-loading fix **Status:** ✅ Ferdig – bygger grønt, pushet --- ### Rotårsak 1. **Font-lenker utenfor `<head>`:** `PrototypeLayout` rendrer eget HTML-dokument uten head-slot. Lenke…_
+- **#126** kommentar av **THUNDERPLUNDER** (2026-05-19T07:42:58Z): _## Return Ticket — #126 VIS design preview (sprint shell v0.1) **Status:** ✅ Ferdig – bygger grønt, pushet --- ### Hva ble gjort Etablert tomt, skalerbart VIS-skall for sprint **2026-W21** som testbenk for #122, #123 og …_
+- **#126** kommentar av **THUNDERPLUNDER** (2026-05-19T08:16:22Z): _## QA verification — #126 VIS design preview Status: Verified / accepted as W21 sprint testbench. What was checked: - `/vis/sprints/2026-w21/` is live and visually verified. - The page contains the expected sprint-previe…_
+- **#120** kommentar av **THUNDERPLUNDER** (2026-05-19T06:59:00Z): _## Monday Commit W21 — MVP Design Lock Sprint: **2026-W21** Dato: **2026-05-19** Type: **Sprint planning / Monday Commit** Rolle: **@rigger** Status: **Committed** ## Sprint focus **#120 MVP Design Lock v0.1** ## Sprintm…_
 
 ### Commits
 
-_Ingen eller ikke tilgjengelig._
+- **3c8ca5c** (2026-05-19T09:22:36Z) fix(#123): Typography Lab font loading — head slot + valid Google URL
+- **2ff2ce8** (2026-05-19T09:13:09Z) feat(#123): Typography Lab — full-width direction review
+- **cc70ca8** (2026-05-19T08:54:51Z) feat(#123): Typography direction test in sprint preview
+- **f9e03b6** (2026-05-19T07:41:44Z) feat(#126): Sprint preview shell for 2026-W21
+- **d58ed42** (2026-05-18T10:09:08Z) chore(vis): refresh GitHub runtime status for navigator
 
 ## BLOCKERS
 
