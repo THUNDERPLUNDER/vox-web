@@ -27,6 +27,47 @@ const testContent = {
   charset: "ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ\nabcdefghijklmnopqrstuvwxyzæøå\n0123456789",
 };
 
+const heroContent = {
+  headline: "Sound, shaped with precision.",
+  subline: "Clarity for life's most important moments.",
+};
+
+const secondaryArticleContent = {
+  kicker: "BESLUTNINGSSTØTTE",
+  h1: "Audiograf: når det haster, og hva du kan forberede",
+  ingress:
+    "Noen høreapparatproblemer kan du feilsøke rolig selv. Andre bør vurderes raskt. Her får du hjelp til å skille mellom det som haster, det som bør bookes, og hva du kan forberede før du tar kontakt.",
+  h2: "Vanlige problemer og hjelp",
+  body: "Viddel hjelper deg med vanlige problemer, enkle forklaringer og raske grep som gjør høreapparatet lettere å bruke i hverdagen.",
+};
+
+const secondaryAlternates = [
+  {
+    id: "signal-light",
+    anchor: "sec-signal-light",
+    name: "Signal Sans — light/refined",
+    testingFor:
+      "Lettere, mer elegant signal/sans — moderne og tydelig uten tung SaaS-følelse. Skal tåle hero bedre enn tyngre signalvariant.",
+    fontStack: 'Sora 500/600 · VIS-only · "Sora", "Inter", sans-serif',
+  },
+  {
+    id: "editorial-light",
+    anchor: "sec-editorial-light",
+    name: "Editorial Serif — light/refined",
+    testingFor:
+      "Lettere, luftig serif inspirert av editorial-retningen — tillit og eleganse uten spa, retreat eller luksusmagasin.",
+    fontStack: 'Source Serif 4 500/600 · VIS-only · "Source Serif 4", Georgia, serif',
+  },
+  {
+    id: "hero-serif",
+    anchor: "sec-hero-serif",
+    name: "Hero Serif — elegant contrast",
+    testingFor:
+      "Hero-orientert serif/display inspirert av elegante lys/mørk-mockups — primært brand/hero, ikke nødvendigvis standard artikkel-H1.",
+    fontStack: 'Cormorant Garamond 500/600 · VIS-only · "Cormorant Garamond", Georgia, serif',
+  },
+];
+
 const directions = [
   {
     id: "existing",
@@ -80,7 +121,7 @@ const directions = [
   },
 ];
 const tlabFontStylesheet =
-  "https://fonts.googleapis.com/css2?family=Epilogue:wght@600;700&family=Inter:wght@400;500;600&family=Roboto+Condensed:wght@700&family=Sora:wght@700&family=Source+Serif+4:wght@600;700&display=swap";
+  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Epilogue:wght@600;700&family=Inter:wght@400;500;600&family=Roboto+Condensed:wght@700&family=Sora:wght@500;600;700&family=Source+Serif+4:wght@500;600;700&display=swap";
 ---
 
 <PrototypeLayout title="Typography Lab — #123">
@@ -214,6 +255,63 @@ const tlabFontStylesheet =
           </li>
         ))}
       </ul>
+    </section>
+
+    <!-- Secondary alternates — lighter display studies -->
+    <section class="tlab__secondary" id="secondary-alternates" aria-labelledby="secondary-heading">
+      <header class="tlab__secondary-head">
+        <p class="tlab__kicker">Exploration only</p>
+        <h2 id="secondary-heading">Secondary alternates — lighter display studies</h2>
+        <p class="tlab__secondary-intro">
+          These are secondary, lighter display explorations inspired by earlier Viddel display studies.
+          They do not replace the current working decision.
+        </p>
+        <ul class="tlab__secondary-notes" role="list">
+          <li><strong>Working decision remains:</strong> Existing Bold Display — moderated</li>
+          <li>These lighter variants are exploratory only</li>
+          <li>Final display font is still not locked</li>
+        </ul>
+      </header>
+
+      <div class="tlab__secondary-list">
+        {secondaryAlternates.map((alt) => (
+          <article id={alt.anchor} class="tlab__secondary-alt" data-secondary={alt.id}>
+            <header class="tlab__secondary-alt-head">
+              <div class="tlab__direction-title-row">
+                <h3>{alt.name}</h3>
+                <span class="tlab__badge tlab__badge--exploration">Secondary exploration</span>
+              </div>
+              <p class="tlab__testing">
+                <strong>Testing for:</strong> {alt.testingFor}
+              </p>
+              <p class="tlab__stack">
+                <strong>Font / stack:</strong> {alt.fontStack}
+              </p>
+            </header>
+
+            <div class="tlab__hero-pair">
+              <div class="tlab__hero-sample tlab__hero-sample--light">
+                <p class="tlab__hero-label">Light hero</p>
+                <p class="tlab__hero-headline">{heroContent.headline}</p>
+                <p class="tlab__hero-subline">{heroContent.subline}</p>
+              </div>
+              <div class="tlab__hero-sample tlab__hero-sample--dark">
+                <p class="tlab__hero-label">Dark hero</p>
+                <p class="tlab__hero-headline">{heroContent.headline}</p>
+                <p class="tlab__hero-subline">{heroContent.subline}</p>
+              </div>
+            </div>
+
+            <article class="tlab__article-start tlab__article-start--compact">
+              <p class="tlab__kicker-sample">{secondaryArticleContent.kicker}</p>
+              <h4 class="tlab__h1">{secondaryArticleContent.h1}</h4>
+              <p class="tlab__ingress">{secondaryArticleContent.ingress}</p>
+              <h5 class="tlab__h2">{secondaryArticleContent.h2}</h5>
+              <p class="tlab__body">{secondaryArticleContent.body}</p>
+            </article>
+          </article>
+        ))}
+      </div>
     </section>
 
     <footer class="tlab__footer">
@@ -822,6 +920,242 @@ const tlabFontStylesheet =
       letter-spacing: -0.028em;
     }
 
+    /* ── Secondary alternates ── */
+    .tlab__secondary {
+      margin-top: 3.5rem;
+      padding-top: 2.5rem;
+      border-top: 2px dashed rgb(var(--border) / 0.45);
+    }
+
+    .tlab__secondary-head {
+      margin-bottom: 2rem;
+    }
+
+    .tlab__secondary-head > h2 {
+      margin: 0.35rem 0 0;
+      font-family: var(--tlab-sans);
+      font-size: clamp(1.2rem, 3vw, 1.55rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .tlab__secondary-intro {
+      margin: 0.65rem 0 0;
+      max-width: 44rem;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .tlab__secondary-notes {
+      margin: 0.75rem 0 0;
+      padding-left: 1.15rem;
+      max-width: 44rem;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .tlab__secondary-notes strong {
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__secondary-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .tlab__secondary-alt {
+      scroll-margin-top: 5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid rgb(var(--border) / 0.18);
+    }
+
+    .tlab__secondary-alt:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .tlab__secondary-alt-head h3 {
+      margin: 0;
+      font-family: var(--tlab-sans);
+      font-size: 0.98rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .tlab__badge--exploration {
+      border: 1px solid rgb(var(--border) / 0.45);
+      color: rgb(var(--muted));
+      background: rgb(var(--surface-subtle) / 0.5);
+    }
+
+    .tlab__hero-pair {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1.15rem;
+    }
+
+    .tlab__hero-sample {
+      padding: clamp(1.5rem, 4vw, 2.25rem) clamp(1.25rem, 3vw, 1.75rem);
+      border-radius: 10px;
+    }
+
+    .tlab__hero-sample--light {
+      background: rgb(var(--reading-paper));
+      border: 1px solid rgb(var(--border) / 0.22);
+    }
+
+    .tlab__hero-sample--dark {
+      background: rgb(10 12 18);
+      border: 1px solid rgb(255 255 255 / 0.08);
+    }
+
+    .tlab__hero-label {
+      margin: 0 0 0.85rem;
+      font-family: var(--tlab-sans);
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .tlab__hero-sample--light .tlab__hero-label {
+      color: rgb(var(--muted));
+    }
+
+    .tlab__hero-sample--dark .tlab__hero-label {
+      color: rgb(255 255 255 / 0.45);
+    }
+
+    .tlab__hero-headline {
+      margin: 0;
+      max-width: 12em;
+      text-wrap: balance;
+    }
+
+    .tlab__hero-subline {
+      margin: 0.65rem 0 0;
+      max-width: 22em;
+      font-family: var(--tlab-sans);
+      font-size: clamp(0.88rem, 2vw, 1rem);
+      line-height: 1.55;
+    }
+
+    .tlab__hero-sample--light .tlab__hero-subline {
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .tlab__hero-sample--dark .tlab__hero-subline {
+      color: rgb(255 255 255 / 0.62);
+    }
+
+    .tlab__article-start--compact {
+      margin-top: 1rem;
+      padding: clamp(1.15rem, 3vw, 1.75rem);
+    }
+
+    .tlab__article-start--compact .tlab__ingress {
+      font-size: clamp(0.95rem, 2vw, 1.08rem);
+    }
+
+    /* A: Signal Sans — light/refined */
+    .tlab__secondary-alt[data-secondary="signal-light"] .tlab__hero-headline {
+      font-family: "Sora", "Inter", ui-sans-serif, sans-serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.65rem);
+      font-weight: 500;
+      letter-spacing: -0.022em;
+      line-height: 1.12;
+    }
+
+    .tlab__secondary-alt[data-secondary="signal-light"] .tlab__hero-sample--light .tlab__hero-headline {
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__secondary-alt[data-secondary="signal-light"] .tlab__hero-sample--dark .tlab__hero-headline {
+      color: rgb(255 255 255 / 0.96);
+    }
+
+    .tlab__secondary-alt[data-secondary="signal-light"] .tlab__h1 {
+      font-family: "Sora", "Inter", ui-sans-serif, sans-serif;
+      font-size: clamp(1.65rem, 4vw, 2.35rem);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.12;
+    }
+
+    .tlab__secondary-alt[data-secondary="signal-light"] .tlab__h2 {
+      font-family: "Sora", "Inter", ui-sans-serif, sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -0.018em;
+    }
+
+    /* B: Editorial Serif — light/refined */
+    .tlab__secondary-alt[data-secondary="editorial-light"] .tlab__hero-headline {
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+      font-size: clamp(1.7rem, 4.2vw, 2.55rem);
+      font-weight: 500;
+      letter-spacing: -0.012em;
+      line-height: 1.18;
+    }
+
+    .tlab__secondary-alt[data-secondary="editorial-light"] .tlab__hero-sample--light .tlab__hero-headline {
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__secondary-alt[data-secondary="editorial-light"] .tlab__hero-sample--dark .tlab__hero-headline {
+      color: rgb(255 255 255 / 0.95);
+    }
+
+    .tlab__secondary-alt[data-secondary="editorial-light"] .tlab__h1 {
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+      font-size: clamp(1.6rem, 3.8vw, 2.25rem);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.16;
+    }
+
+    .tlab__secondary-alt[data-secondary="editorial-light"] .tlab__h2 {
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+
+    /* C: Hero Serif — elegant contrast */
+    .tlab__secondary-alt[data-secondary="hero-serif"] .tlab__hero-headline {
+      font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 500;
+      letter-spacing: -0.008em;
+      line-height: 1.08;
+    }
+
+    .tlab__secondary-alt[data-secondary="hero-serif"] .tlab__hero-sample--light .tlab__hero-headline {
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__secondary-alt[data-secondary="hero-serif"] .tlab__hero-sample--dark .tlab__hero-headline {
+      color: rgb(255 255 255 / 0.94);
+    }
+
+    .tlab__secondary-alt[data-secondary="hero-serif"] .tlab__h1 {
+      font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      font-size: clamp(1.75rem, 4.2vw, 2.5rem);
+      font-weight: 600;
+      letter-spacing: -0.006em;
+      line-height: 1.1;
+    }
+
+    .tlab__secondary-alt[data-secondary="hero-serif"] .tlab__h2 {
+      font-family: "Inter", ui-sans-serif, sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
     .tlab__footer {
       margin-top: 2.5rem;
       padding-top: 1.25rem;
@@ -849,6 +1183,10 @@ const tlabFontStylesheet =
         flex-direction: row;
         flex-wrap: wrap;
         gap: 0.5rem 1rem;
+      }
+
+      .tlab__hero-pair {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
   </style>
