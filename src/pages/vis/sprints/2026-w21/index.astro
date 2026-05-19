@@ -2,6 +2,7 @@
 /* CONTRACT: Sprint-specific VIS preview shell for 2026-W21 (#126).
    Test bench for #122 Color tokens, #123 Typography, #124 Primitives.
    #123: Typography Lab at /typography/ — full-width direction review.
+   #124: Primitives Lab at /primitives/ — VIS-only primitive candidates.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
 import PrototypeLayout from "../../../../layouts/PrototypeLayout.astro";
@@ -196,9 +197,17 @@ const typographyLabDirections = [
     <!-- 7. Primitives preview -->
     <section class="sprint-preview__section" aria-labelledby="primitives-heading">
       <div class="sprint-preview__section-head">
-        <p class="sprint-preview__kicker">06</p>
+        <p class="sprint-preview__kicker">06 · #124</p>
         <h2 id="primitives-heading">Primitives preview</h2>
-        <p>Placeholders for #124 — eksisterende tokens der mulig.</p>
+        <p>Primitive candidates now live in the full Primitives Lab.</p>
+      </div>
+      <div class="sprint-preview__typo-summary">
+        <p class="sprint-preview__typo-status">
+          <strong>Status:</strong> #124 Primitives Lab open
+        </p>
+        <a href={`${base}vis/sprints/2026-w21/primitives/`} class="sprint-preview__typo-link">
+          Open full Primitives Lab →
+        </a>
       </div>
       <div class="sprint-preview__primitives">
         <div class="sprint-preview__primitive-group">

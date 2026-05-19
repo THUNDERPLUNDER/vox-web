@@ -1,0 +1,1136 @@
+---
+/* CONTRACT: VIS-only Primitives Lab for #124 - translates #122 color and #123 typography
+   into reviewable primitive candidates before #125 MVP surface reskin.
+   Parent: #126 sprint preview / #120 Design Lock. Not production design.
+*/
+import PrototypeLayout from "../../../../../layouts/PrototypeLayout.astro";
+import "../../../../../styles/global.css";
+
+const base = import.meta.env.BASE_URL;
+const sprintPath = `${base}vis/sprints/2026-w21`;
+
+const meta = [
+  ["Sprint", "2026-W21"],
+  ["Parent", "#120 MVP Design Lock v0.1"],
+  ["Issue", "#124 Primitives v0.1"],
+  ["Scope", "VIS-only"],
+];
+
+const guardrails = [
+  "VIS-only decision support",
+  "No production pages",
+  "No global token implementation",
+  "No Storyblok schema changes",
+  "No #125 MVP reskin",
+  "Magenta = high-character / low-quantity",
+  "Glass = chrome/material, not editorial default",
+  "Editorial = light, clean and readable",
+];
+
+const anatomyLayers = [
+  {
+    id: "chrome",
+    title: "Chrome / orientation",
+    copy: "Navigation, location, toolbars and product orientation.",
+    supports: ["Glass chrome", "solid fallback", "focusable controls", "low-noise signals"],
+  },
+  {
+    id: "editorial",
+    title: "Editorial / reading and help",
+    copy: "Article, hub and guidance surfaces where reading comfort matters most.",
+    supports: ["light surfaces", "clean hierarchy", "article cards", "quiet helper boxes"],
+  },
+  {
+    id: "action",
+    title: "Action / AI and next step",
+    copy: "The bridge from reading to concrete help, not a detached chatbot widget.",
+    supports: ["action buttons", "AI seed cards", "prompt inputs", "dark action panels"],
+  },
+];
+
+const surfaces = [
+  { name: "Editorial base", value: "#FFFFFF", note: "Reading/help default", tone: "light" },
+  { name: "Elevated editorial surface", value: "#F8FAFC / #F3F4F6", note: "Cards and helper areas", tone: "elevated" },
+  { name: "Deep Nordic Blue identity surface", value: "#134D6A", note: "Identity depth, dark fields", tone: "deep" },
+  { name: "Ink / near-black action surface", value: "#111827 / #020617", note: "Primary action and dark panels", tone: "ink" },
+  { name: "Glass chrome surface", value: "rgba + blur", note: "Chrome material only", tone: "glass" },
+  { name: "Subtle signal / ghost surface", value: "rgba(255 85 176 / 0.08)", note: "Micro-signal only", tone: "signal" },
+];
+
+const radii = [
+  ["sharp", "0px"],
+  ["small", "4px"],
+  ["medium", "8px"],
+  ["large", "16px"],
+  ["pill", "999px"],
+];
+
+const strokes = [
+  ["no stroke", "none", "No border for quiet surfaces"],
+  ["subtle stroke", "#E5E7EB", "Separation on light surfaces"],
+  ["identity stroke", "#134D6A", "Deep blue identity detail"],
+  ["focus stroke", "#0EA5E9", "Functional keyboard/focus"],
+  ["signal edge", "#FF55B0", "Tiny kinetic detail only"],
+];
+
+const pills = [
+  ["Neutral", "neutral"],
+  ["Identity blue", "identity"],
+  ["Cyan functional", "cyan"],
+  ["Magenta micro-signal", "magenta"],
+  ["Status tag", "status"],
+];
+
+const signalAllowed = ["Small dots", "Ghost halo", "Micro audio bars in small quantity", "Edge/detail"];
+const signalNotAllowed = ["Large pink fills", "Long structural pink layout lines", "Decorative pink gradient as main move"];
+
+const checklist = [
+  {
+    title: "Recommended for v0.1",
+    items: [
+      "Light editorial surfaces as default",
+      "Deep Nordic Blue for identity/dark surfaces",
+      "Ink primary action with deep blue dark-action alternate",
+      "Cyan as functional focus",
+      "Magenta only as ghost/micro-signal",
+    ],
+  },
+  {
+    title: "Needs review",
+    items: [
+      "Exact radius values for large/hero primitives",
+      "Glass blur/opacity and solid fallback values",
+      "AI/action block balance between editorial and dark identity",
+      "Whether signal edge should appear on cards or only signal marks",
+    ],
+  },
+  {
+    title: "Parked",
+    items: ["Orange/green system roles", "Full semantic token names", "Final display font lock"],
+  },
+  {
+    title: "Do not use",
+    items: [
+      "Magenta as large fill",
+      "Magenta as long structural line",
+      "Glass for every editorial card",
+      "Heavy display in small UI headings",
+    ],
+  },
+];
+---
+
+<PrototypeLayout title="Primitives Lab - #124">
+  <main class="plab" data-primitives-lab>
+    <nav class="plab__breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={sprintPath}>2026-W21</a>
+      <span aria-hidden="true">/</span>
+      <span>Primitives</span>
+    </nav>
+
+    <header class="plab__hero">
+      <p class="plab__kicker">VIS-only · #124</p>
+      <h1>Primitives Lab - #124</h1>
+      <p class="plab__subtitle">
+        Turning color, typography and product anatomy into reviewable primitive rules before #125.
+      </p>
+      <dl class="plab__meta">
+        {meta.map(([label, value]) => (
+          <div>
+            <dt>{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </header>
+
+    <section class="plab__section" aria-labelledby="guardrails-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">01</p>
+        <h2 id="guardrails-heading">Guardrails</h2>
+      </div>
+      <ul class="plab__guardrails" role="list">
+        {guardrails.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+
+    <section class="plab__section" aria-labelledby="anatomy-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">02</p>
+        <h2 id="anatomy-heading">Product anatomy mapping</h2>
+        <p>Primitives should support three different product layers without making them look identical.</p>
+      </div>
+      <div class="plab__anatomy">
+        {anatomyLayers.map((layer) => (
+          <article class="plab__anatomy-card" data-layer={layer.id}>
+            <h3>{layer.title}</h3>
+            <p>{layer.copy}</p>
+            <ul role="list">
+              {layer.supports.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="plab__section" aria-labelledby="surfaces-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">03</p>
+        <h2 id="surfaces-heading">Surface system</h2>
+        <p>Candidate primitives only - not locked tokens.</p>
+      </div>
+      <div class="plab__surface-grid">
+        {surfaces.map((surface) => (
+          <article class="plab__surface" data-tone={surface.tone}>
+            <p class="plab__surface-label">Candidate primitive</p>
+            <h3>{surface.name}</h3>
+            <code>{surface.value}</code>
+            <p>{surface.note}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="plab__section" aria-labelledby="radius-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">04</p>
+        <h2 id="radius-heading">Radius scale</h2>
+      </div>
+      <div class="plab__scale-grid">
+        {radii.map(([label, value]) => (
+          <article class="plab__radius-item">
+            <div class="plab__radius-sample" style={`border-radius: ${value}`}></div>
+            <strong>{label}</strong>
+            <code>{value}</code>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="plab__section" aria-labelledby="stroke-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">05</p>
+        <h2 id="stroke-heading">Stroke scale</h2>
+      </div>
+      <div class="plab__stroke-list">
+        {strokes.map(([label, color, note]) => (
+          <article class="plab__stroke-item" data-stroke={label}>
+            <span class="plab__stroke-sample" style={color === "none" ? undefined : `--stroke-color: ${color}`}></span>
+            <div>
+              <strong>{label}</strong>
+              <p>{note}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="plab__section" aria-labelledby="buttons-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">06</p>
+        <h2 id="buttons-heading">Buttons</h2>
+      </div>
+      <div class="plab__button-grid">
+        <button class="plab__btn plab__btn--primary" type="button">Primary action</button>
+        <button class="plab__btn plab__btn--secondary" type="button">Secondary action</button>
+        <button class="plab__btn plab__btn--ghost" type="button">Ghost action</button>
+        <a class="plab__inline-action" href="#" onclick="return false">Editorial inline action</a>
+        <button class="plab__btn plab__btn--ai" type="button">AI/action button</button>
+        <button class="plab__btn plab__btn--disabled" type="button" disabled>Loading / disabled</button>
+      </div>
+    </section>
+
+    <section class="plab__section" aria-labelledby="cards-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">07</p>
+        <h2 id="cards-heading">Cards / boxes</h2>
+      </div>
+      <div class="plab__card-grid">
+        <article class="plab__box plab__box--article"><p>Article card</p><strong>Få slutt på pipingen</strong></article>
+        <article class="plab__box plab__box--hub"><p>Hub card</p><strong>Kom i gang med høreapparat</strong></article>
+        <article class="plab__box plab__box--info"><p>Info box</p><strong>Prøv dette før du kontakter audiograf.</strong></article>
+        <article class="plab__box plab__box--decision"><p>Decision box</p><strong>Haster det, eller kan du vente?</strong></article>
+        <article class="plab__box plab__box--seed"><p>AI seed card</p><strong>Beskriv hva som ikke fungerer.</strong></article>
+        <article class="plab__box plab__box--dark"><p>Dark action card</p><strong>Få hjelp videre nå.</strong></article>
+      </div>
+    </section>
+
+    <section class="plab__section" aria-labelledby="inputs-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">08</p>
+        <h2 id="inputs-heading">Inputs</h2>
+      </div>
+      <div class="plab__input-grid">
+        <label class="plab__field">
+          <span>Default</span>
+          <input type="text" value="Piping i venstre apparat" readonly />
+        </label>
+        <label class="plab__field plab__field--focus">
+          <span>Hover/focus</span>
+          <input type="text" value="Appen finner ikke apparatet" readonly />
+        </label>
+        <label class="plab__field">
+          <span>Helper text</span>
+          <input type="text" value="Lyden blir skarp utpå dagen" readonly />
+          <small>Beskriv situasjonen kort. Ikke del sensitive opplysninger.</small>
+        </label>
+        <label class="plab__prompt">
+          <span>AI prompt input candidate</span>
+          <textarea readonly>Jeg hører piping når jeg setter inn apparatet.</textarea>
+          <button type="button">Få hjelp</button>
+        </label>
+      </div>
+    </section>
+
+    <section class="plab__section" aria-labelledby="pills-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">09</p>
+        <h2 id="pills-heading">Pills / tags / chips</h2>
+      </div>
+      <div class="plab__pill-row">
+        {pills.map(([label, tone]) => <span class="plab__pill" data-tone={tone}>{label}</span>)}
+      </div>
+    </section>
+
+    <section class="plab__section" aria-labelledby="focus-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">10</p>
+        <h2 id="focus-heading">Focus states</h2>
+        <p>Cyan is the primary functional focus. Magenta can appear as a micro-signal, not as default focus everywhere.</p>
+      </div>
+      <div class="plab__focus-grid">
+        <button class="plab__focus-sample plab__focus-sample--button" type="button">Focused button</button>
+        <input class="plab__focus-sample plab__focus-sample--input" value="Focused input" readonly />
+        <a class="plab__focus-sample plab__focus-sample--card" href="#" onclick="return false">Focused card/link</a>
+      </div>
+    </section>
+
+    <section class="plab__section" aria-labelledby="glass-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">11</p>
+        <h2 id="glass-heading">Glass chrome primitive</h2>
+        <p>Glass is chrome/material behavior and should not become the standard editorial content surface.</p>
+      </div>
+      <div class="plab__glass-grid">
+        <article class="plab__glass-scene plab__glass-scene--nav">
+          <nav class="plab__glass-bar" aria-label="Glass header sample">
+            <strong>Viddel</strong><span>Artikler</span><span>Hjelp</span>
+          </nav>
+          <p>Header/nav sample over light editorial base.</p>
+        </article>
+        <article class="plab__glass-scene plab__glass-scene--toolbar">
+          <div class="plab__glass-toolbar" aria-label="Glass toolbar sample">
+            <span>Filter</span><span>Feilsøking</span><span>4 min</span>
+          </div>
+          <p>Toolbar/chip sample for orientation only.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="plab__section" aria-labelledby="signals-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">12</p>
+        <h2 id="signals-heading">Signal primitives</h2>
+      </div>
+      <div class="plab__signal-grid">
+        <article class="plab__signal-samples" aria-label="Signal primitive samples">
+          <span class="plab__dot"></span>
+          <span class="plab__halo"></span>
+          <span class="plab__bars"><i></i><i></i><i></i></span>
+          <span class="plab__edge">edge/detail</span>
+          <span class="plab__ghost">ghost signal</span>
+        </article>
+        <article class="plab__signal-rule">
+          <h3>Allowed</h3>
+          <ul>{signalAllowed.map((item) => <li>{item}</li>)}</ul>
+        </article>
+        <article class="plab__signal-rule plab__signal-rule--no">
+          <h3>Not allowed</h3>
+          <ul>{signalNotAllowed.map((item) => <li>{item}</li>)}</ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="plab__section" aria-labelledby="ai-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">13</p>
+        <h2 id="ai-heading">AI / action blocks</h2>
+        <p>AI/action should feel like a continuation from editorial content to concrete help, not a detached chatbot widget.</p>
+      </div>
+      <div class="plab__ai-grid">
+        <article class="plab__ai-block plab__ai-block--transition"><p>Article-to-AI transition</p><strong>Har du fortsatt piping?</strong><button>Få hjelp nå</button></article>
+        <article class="plab__ai-block plab__ai-block--seed"><p>Preseeded question</p><strong>Hvorfor blir lyden skarp utpå dagen?</strong></article>
+        <article class="plab__ai-block plab__ai-block--helper"><p>Inline helper</p><strong>Du kan beskrive lyd, app eller situasjon.</strong></article>
+        <article class="plab__ai-block plab__ai-block--dark"><p>Dark action panel</p><strong>Ta neste steg med Viddel.</strong><button>Start</button></article>
+      </div>
+    </section>
+
+    <section class="plab__section" aria-labelledby="checklist-heading">
+      <div class="plab__section-head">
+        <p class="plab__kicker">14</p>
+        <h2 id="checklist-heading">Decision checklist</h2>
+      </div>
+      <div class="plab__checklist-grid">
+        {checklist.map((group) => (
+          <article class="plab__checklist">
+            <h3>{group.title}</h3>
+            <ul>{group.items.map((item) => <li>{item}</li>)}</ul>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <footer class="plab__footer">
+      <p>This is VIS-only decision support for #124. No production tokens, production routes or Storyblok schemas are changed.</p>
+      <p><a href={sprintPath}>Back to Sprint Preview 2026-W21</a></p>
+    </footer>
+  </main>
+
+  <style>
+    [data-primitives-lab] {
+      --p-deep: #134d6a;
+      --p-magenta: #ff55b0;
+      --p-cyan: #0ea5e9;
+      --p-ink: #111827;
+      --p-dark: #020617;
+      --p-dark-panel: #071827;
+      --p-muted: #6b7280;
+      --p-border: #e5e7eb;
+      --p-border-strong: #d1d5db;
+      --p-light: #ffffff;
+      --p-subtle: #f8fafc;
+      --p-elevated: #f3f4f6;
+
+      min-height: 100vh;
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+      background: var(--p-light);
+      color: var(--p-ink);
+      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+
+    .plab__breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      margin-bottom: 1.1rem;
+      font-size: 0.72rem;
+      color: var(--p-muted);
+    }
+
+    .plab__breadcrumb a,
+    .plab__footer a {
+      color: inherit;
+      text-underline-offset: 2px;
+    }
+
+    .plab__hero {
+      padding: 1.5rem 0 2rem;
+      border-bottom: 1px solid rgb(17 24 39 / 0.12);
+    }
+
+    .plab__kicker {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--p-deep);
+    }
+
+    .plab__hero h1,
+    .plab__section-head h2 {
+      margin: 0.35rem 0 0;
+      font-family: var(--font-display);
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+    }
+
+    .plab__hero h1 {
+      max-width: 48rem;
+      font-size: clamp(2rem, 5.5vw, 3.4rem);
+    }
+
+    .plab__subtitle {
+      max-width: 46rem;
+      margin: 0.8rem 0 0;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--p-muted);
+    }
+
+    .plab__meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+      gap: 0.75rem;
+      margin: 1.35rem 0 0;
+      padding: 1rem;
+      border: 1px solid rgb(17 24 39 / 0.12);
+      border-radius: 12px;
+      background: var(--p-subtle);
+    }
+
+    .plab__meta dt {
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--p-muted);
+    }
+
+    .plab__meta dd {
+      margin: 0.2rem 0 0;
+      font-size: 0.85rem;
+    }
+
+    .plab__section {
+      padding: 2.25rem 0;
+      border-bottom: 1px solid rgb(17 24 39 / 0.1);
+    }
+
+    .plab__section-head {
+      margin-bottom: 1.1rem;
+    }
+
+    .plab__section-head h2 {
+      font-size: clamp(1.3rem, 3vw, 1.85rem);
+    }
+
+    .plab__section-head p:not(.plab__kicker) {
+      max-width: 46rem;
+      margin: 0.55rem 0 0;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: var(--p-muted);
+    }
+
+    .plab__guardrails,
+    .plab__anatomy-card ul,
+    .plab__signal-rule ul,
+    .plab__checklist ul {
+      margin: 0;
+      padding-left: 1.15rem;
+      line-height: 1.65;
+      color: var(--p-muted);
+      font-size: 0.86rem;
+    }
+
+    .plab__guardrails {
+      display: grid;
+      gap: 0.35rem 1.2rem;
+    }
+
+    .plab__anatomy,
+    .plab__surface-grid,
+    .plab__scale-grid,
+    .plab__card-grid,
+    .plab__input-grid,
+    .plab__focus-grid,
+    .plab__glass-grid,
+    .plab__signal-grid,
+    .plab__ai-grid,
+    .plab__checklist-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .plab__anatomy-card,
+    .plab__surface,
+    .plab__radius-item,
+    .plab__box,
+    .plab__field,
+    .plab__prompt,
+    .plab__focus-sample,
+    .plab__glass-scene,
+    .plab__signal-rule,
+    .plab__ai-block,
+    .plab__checklist {
+      border: 1px solid rgb(17 24 39 / 0.12);
+      border-radius: 12px;
+      background: var(--p-light);
+    }
+
+    .plab__anatomy-card,
+    .plab__surface,
+    .plab__radius-item,
+    .plab__box,
+    .plab__field,
+    .plab__prompt,
+    .plab__signal-rule,
+    .plab__ai-block,
+    .plab__checklist {
+      padding: 1rem;
+    }
+
+    .plab__anatomy-card[data-layer="chrome"] {
+      background: linear-gradient(180deg, rgb(255 255 255 / 0.74), rgb(248 250 252 / 0.9));
+      box-shadow: 0 8px 28px rgb(2 6 23 / 0.06);
+    }
+
+    .plab__anatomy-card[data-layer="editorial"] {
+      background: var(--p-light);
+    }
+
+    .plab__anatomy-card[data-layer="action"] {
+      background: linear-gradient(145deg, var(--p-deep), var(--p-dark-panel));
+      color: #fff;
+    }
+
+    .plab__anatomy-card h3,
+    .plab__surface h3,
+    .plab__box strong,
+    .plab__ai-block strong,
+    .plab__checklist h3 {
+      margin: 0;
+      font-size: 0.94rem;
+      line-height: 1.25;
+    }
+
+    .plab__anatomy-card p,
+    .plab__surface p,
+    .plab__box p,
+    .plab__ai-block p {
+      margin: 0.5rem 0 0;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: var(--p-muted);
+    }
+
+    .plab__anatomy-card[data-layer="action"] p,
+    .plab__anatomy-card[data-layer="action"] ul {
+      color: rgb(255 255 255 / 0.72);
+    }
+
+    .plab__surface {
+      min-height: 8rem;
+    }
+
+    .plab__surface[data-tone="light"] {
+      background: #fff;
+    }
+
+    .plab__surface[data-tone="elevated"] {
+      background: var(--p-elevated);
+    }
+
+    .plab__surface[data-tone="deep"] {
+      background: var(--p-deep);
+      color: #fff;
+    }
+
+    .plab__surface[data-tone="ink"] {
+      background: var(--p-dark);
+      color: #fff;
+    }
+
+    .plab__surface[data-tone="glass"] {
+      background: linear-gradient(135deg, rgb(255 255 255 / 0.75), rgb(248 250 252 / 0.35));
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.7), 0 12px 34px rgb(2 6 23 / 0.08);
+    }
+
+    .plab__surface[data-tone="signal"] {
+      border-color: rgb(255 85 176 / 0.32);
+      background: rgb(255 85 176 / 0.07);
+    }
+
+    .plab__surface-label {
+      margin: 0 0 0.45rem;
+      font-size: 0.58rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.72;
+    }
+
+    .plab__surface code,
+    .plab__radius-item code {
+      display: inline-block;
+      margin-top: 0.45rem;
+      font-size: 0.68rem;
+    }
+
+    .plab__radius-sample {
+      height: 3rem;
+      margin-bottom: 0.7rem;
+      border: 1px solid var(--p-border);
+      background: var(--p-subtle);
+    }
+
+    .plab__radius-item strong {
+      display: block;
+      text-transform: capitalize;
+    }
+
+    .plab__stroke-list {
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .plab__stroke-item {
+      display: grid;
+      grid-template-columns: 6rem minmax(0, 1fr);
+      gap: 0.8rem;
+      align-items: center;
+      padding: 0.75rem;
+      border-radius: 10px;
+      background: var(--p-subtle);
+    }
+
+    .plab__stroke-sample {
+      height: 2rem;
+      border-radius: 8px;
+      border: 2px solid var(--stroke-color, transparent);
+      background: #fff;
+    }
+
+    .plab__stroke-item[data-stroke="signal edge"] .plab__stroke-sample {
+      border-color: rgb(17 24 39 / 0.1);
+      box-shadow: inset 3px 0 0 var(--p-magenta);
+    }
+
+    .plab__stroke-item strong,
+    .plab__stroke-item p {
+      margin: 0;
+    }
+
+    .plab__stroke-item p {
+      margin-top: 0.2rem;
+      font-size: 0.78rem;
+      color: var(--p-muted);
+    }
+
+    .plab__button-grid,
+    .plab__pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+    }
+
+    .plab__btn,
+    .plab__inline-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.45rem;
+      padding: 0.55rem 0.95rem;
+      border-radius: 10px;
+      font: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .plab__btn--primary {
+      border: 0;
+      background: var(--p-ink);
+      color: #fff;
+    }
+
+    .plab__btn--secondary {
+      border: 1px solid var(--p-border-strong);
+      background: #fff;
+      color: var(--p-ink);
+    }
+
+    .plab__btn--ghost {
+      border: 1px solid rgb(19 77 106 / 0.28);
+      background: transparent;
+      color: var(--p-deep);
+    }
+
+    .plab__inline-action {
+      min-height: auto;
+      padding: 0;
+      color: var(--p-deep);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .plab__btn--ai {
+      border: 0;
+      background: var(--p-deep);
+      color: #fff;
+      box-shadow: 0 0 0 4px rgb(255 85 176 / 0.09);
+    }
+
+    .plab__btn--disabled {
+      border: 1px solid var(--p-border);
+      background: var(--p-elevated);
+      color: var(--p-muted);
+    }
+
+    .plab__box {
+      min-height: 7rem;
+    }
+
+    .plab__box--article,
+    .plab__box--hub {
+      background: #fff;
+    }
+
+    .plab__box--info {
+      border-left: 3px solid var(--p-border-strong);
+      background: var(--p-subtle);
+    }
+
+    .plab__box--decision {
+      border-color: rgb(19 77 106 / 0.28);
+      background: rgb(19 77 106 / 0.05);
+    }
+
+    .plab__box--seed {
+      border-color: rgb(14 165 233 / 0.32);
+      background: rgb(14 165 233 / 0.06);
+    }
+
+    .plab__box--dark {
+      background: linear-gradient(145deg, var(--p-deep), var(--p-dark));
+      color: #fff;
+    }
+
+    .plab__box--dark p {
+      color: rgb(255 255 255 / 0.66);
+    }
+
+    .plab__field,
+    .plab__prompt {
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .plab__field span,
+    .plab__prompt span {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--p-muted);
+    }
+
+    .plab__field input,
+    .plab__prompt textarea {
+      width: 100%;
+      border: 1px solid var(--p-border-strong);
+      border-radius: 10px;
+      padding: 0.65rem 0.75rem;
+      font: inherit;
+      font-size: 0.85rem;
+      color: var(--p-ink);
+      background: #fff;
+    }
+
+    .plab__field--focus input,
+    .plab__focus-sample {
+      outline: 3px solid rgb(14 165 233 / 0.28);
+      border-color: var(--p-cyan);
+    }
+
+    .plab__field small {
+      color: var(--p-muted);
+      line-height: 1.45;
+    }
+
+    .plab__prompt {
+      background: var(--p-subtle);
+    }
+
+    .plab__prompt textarea {
+      min-height: 5rem;
+      resize: none;
+    }
+
+    .plab__prompt button {
+      justify-self: start;
+      border: 0;
+      border-radius: 999px;
+      padding: 0.45rem 0.8rem;
+      background: var(--p-ink);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .plab__pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.28rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid var(--p-border);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .plab__pill[data-tone="identity"] {
+      border-color: rgb(19 77 106 / 0.28);
+      color: var(--p-deep);
+    }
+
+    .plab__pill[data-tone="cyan"] {
+      border-color: rgb(14 165 233 / 0.35);
+      color: #0369a1;
+      background: rgb(14 165 233 / 0.06);
+    }
+
+    .plab__pill[data-tone="magenta"]::before {
+      content: "";
+      width: 0.35rem;
+      height: 0.35rem;
+      border-radius: 50%;
+      background: var(--p-magenta);
+      box-shadow: 0 0 0 3px rgb(255 85 176 / 0.12);
+    }
+
+    .plab__pill[data-tone="status"] {
+      color: var(--p-muted);
+      background: var(--p-elevated);
+    }
+
+    .plab__focus-sample {
+      min-height: 4.2rem;
+      padding: 1rem;
+      color: var(--p-ink);
+      background: #fff;
+      text-decoration: none;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .plab__focus-sample--card {
+      display: flex;
+      align-items: center;
+      box-shadow: inset 4px 0 0 rgb(255 85 176 / 0.8);
+    }
+
+    .plab__glass-scene {
+      position: relative;
+      min-height: 9rem;
+      padding: 4rem 1rem 1rem;
+      overflow: hidden;
+      background: linear-gradient(180deg, #fff, var(--p-subtle));
+    }
+
+    .plab__glass-scene--toolbar {
+      background: linear-gradient(145deg, var(--p-deep), var(--p-dark));
+      color: #fff;
+    }
+
+    .plab__glass-bar,
+    .plab__glass-toolbar {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      right: 0.75rem;
+      display: flex;
+      gap: 0.65rem;
+      align-items: center;
+      padding: 0.55rem 0.7rem;
+      border-radius: 12px;
+      border: 1px solid rgb(17 24 39 / 0.1);
+      background: rgb(255 255 255 / 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 28px rgb(2 6 23 / 0.08);
+      font-size: 0.75rem;
+    }
+
+    .plab__glass-bar strong {
+      margin-right: auto;
+    }
+
+    .plab__glass-toolbar {
+      border-color: rgb(255 255 255 / 0.14);
+      background: rgb(2 6 23 / 0.72);
+    }
+
+    .plab__glass-scene p {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--p-muted);
+    }
+
+    .plab__glass-scene--toolbar p {
+      color: rgb(255 255 255 / 0.7);
+    }
+
+    .plab__signal-samples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      align-items: center;
+      padding: 1rem;
+      border-radius: 12px;
+      background: var(--p-dark-panel);
+      color: #fff;
+    }
+
+    .plab__dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: var(--p-magenta);
+    }
+
+    .plab__halo {
+      width: 1.2rem;
+      height: 1.2rem;
+      border-radius: 50%;
+      border: 1px solid rgb(255 85 176 / 0.55);
+      box-shadow: 0 0 0 8px rgb(255 85 176 / 0.1);
+    }
+
+    .plab__bars {
+      display: inline-flex;
+      gap: 0.18rem;
+      align-items: end;
+      height: 1.5rem;
+    }
+
+    .plab__bars i {
+      display: block;
+      width: 0.18rem;
+      border-radius: 999px;
+      background: var(--p-magenta);
+    }
+
+    .plab__bars i:nth-child(1) { height: 0.7rem; }
+    .plab__bars i:nth-child(2) { height: 1.25rem; }
+    .plab__bars i:nth-child(3) { height: 0.95rem; }
+
+    .plab__edge {
+      padding-left: 0.55rem;
+      border-left: 3px solid var(--p-magenta);
+      font-size: 0.75rem;
+    }
+
+    .plab__ghost {
+      padding: 0.35rem 0.65rem;
+      border: 1px solid rgb(255 85 176 / 0.48);
+      border-radius: 999px;
+      color: rgb(255 255 255 / 0.82);
+      box-shadow: 0 0 18px rgb(255 85 176 / 0.16);
+      font-size: 0.75rem;
+    }
+
+    .plab__signal-rule--no {
+      border-color: rgb(255 85 176 / 0.28);
+      background: rgb(255 85 176 / 0.04);
+    }
+
+    .plab__ai-block {
+      display: flex;
+      min-height: 8rem;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .plab__ai-block button {
+      align-self: start;
+      margin-top: 0.8rem;
+      border: 0;
+      border-radius: 999px;
+      padding: 0.45rem 0.8rem;
+      background: var(--p-ink);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .plab__ai-block--transition {
+      border-top: 3px solid var(--p-deep);
+      background: var(--p-subtle);
+    }
+
+    .plab__ai-block--seed {
+      border-color: rgb(14 165 233 / 0.28);
+      background: rgb(14 165 233 / 0.05);
+    }
+
+    .plab__ai-block--helper {
+      border-left: 3px solid var(--p-border-strong);
+      background: #fff;
+    }
+
+    .plab__ai-block--dark {
+      background: linear-gradient(145deg, var(--p-deep), var(--p-dark));
+      color: #fff;
+    }
+
+    .plab__ai-block--dark p {
+      color: rgb(255 255 255 / 0.68);
+    }
+
+    .plab__ai-block--dark button {
+      background: #fff;
+      color: var(--p-ink);
+      box-shadow: 0 0 0 4px rgb(255 85 176 / 0.12);
+    }
+
+    .plab__checklist {
+      background: var(--p-subtle);
+    }
+
+    .plab__checklist h3 {
+      margin-bottom: 0.6rem;
+    }
+
+    .plab__footer {
+      padding-top: 1.5rem;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      color: var(--p-muted);
+    }
+
+    .plab__footer p {
+      margin: 0.35rem 0 0;
+    }
+
+    @media (min-width: 640px) {
+      [data-primitives-lab] {
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      .plab__guardrails {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .plab__anatomy,
+      .plab__surface-grid,
+      .plab__card-grid,
+      .plab__input-grid,
+      .plab__focus-grid,
+      .plab__ai-grid,
+      .plab__checklist-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .plab__scale-grid,
+      .plab__glass-grid,
+      .plab__signal-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .plab__prompt,
+      .plab__signal-samples {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (min-width: 900px) {
+      .plab__anatomy,
+      .plab__surface-grid,
+      .plab__card-grid,
+      .plab__ai-grid,
+      .plab__checklist-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .plab__checklist-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+  </style>
+</PrototypeLayout>
