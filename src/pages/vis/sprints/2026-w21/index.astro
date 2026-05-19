@@ -1,7 +1,7 @@
 ---
 /* CONTRACT: Sprint-specific VIS preview shell for 2026-W21 (#126).
    Test bench for #122 Color tokens, #123 Typography, #124 Primitives.
-   #123: Typography direction test — five display directions, no final lock.
+   #123: Typography Lab at /typography/ — full-width direction review.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
 import PrototypeLayout from "../../../../layouts/PrototypeLayout.astro";
@@ -58,58 +58,12 @@ const colorTokens = [
   { name: "divider / border", token: "--border", sample: "border" },
 ];
 
-const typeTestContent = {
-  label: "BESLUTNINGSSTØTTE",
-  h1: "Audiograf: når det haster, og hva du kan forberede",
-  ingress:
-    "Noen høreapparatproblemer kan du feilsøke rolig selv. Andre bør vurderes raskt. Her får du hjelp til å skille mellom det som haster, det som bør bookes, og hva du kan forberede før du tar kontakt.",
-  h2: "Vanlige problemer og hjelp",
-  body: "Viddel hjelper deg med vanlige problemer, enkle forklaringer og raske grep som gjør høreapparatet lettere å bruke i hverdagen.",
-  aiLabel: "SKRIV HVA SOM IKKE FUNGERER",
-  inputPlaceholder: "Beskriv problemet kort …",
-  button: "Få hjelp nå",
-  microcopy: "Oppdatert: 19. mai 2026 · 4 min lesing",
-  norwegian: "Ærlig tilbakekobling om lyd, ørhet og å gjøre hverdagen enklere.",
-};
-
-const typeEvalCriteria = ["Lesbarhet", "Viddel-særpreg", "Tillit", "Hverdagsenergi"];
-
-const typographyDirections = [
-  {
-    id: "existing",
-    number: "0",
-    name: "Existing Bold Display — moderated",
-    testingFor: "Tester om dagens brede, tunge displayenergi kan bevares med mer luft og kontroll.",
-    stackNote: "Epilogue via --font-display · visual test only",
-  },
-  {
-    id: "signal",
-    number: "1",
-    name: "Signal Sans",
-    testingFor: "Tester aktiv, presis og produktnær tydelighet.",
-    stackNote: "Inter display treatment · visual test only",
-  },
-  {
-    id: "tight",
-    number: "2",
-    name: "Tight Sans",
-    testingFor: "Tester kompakt, fokusert og anvendelig MVP-retning.",
-    stackNote: "Inter compact display · visual test only",
-  },
-  {
-    id: "serif",
-    number: "3",
-    name: "Editorial Serif",
-    testingFor: "Tester redaksjonell varme og tillit som mulig editorial accent.",
-    stackNote: "System serif stack · visual test only",
-  },
-  {
-    id: "precision",
-    number: "4",
-    name: "Editorial Precision Display",
-    testingFor: "Tester strammere redaksjonell presisjon uten for mye mykhet.",
-    stackNote: "System precision serif · visual test only",
-  },
+const typographyLabDirections = [
+  "0. Existing Bold Display — moderated",
+  "1. Signal Sans",
+  "2. Tight Sans",
+  "3. Editorial Serif",
+  "4. Editorial Precision Display",
 ];
 ---
 
@@ -193,58 +147,27 @@ const typographyDirections = [
       </blockquote>
     </section>
 
-    <!-- 5. Typography direction test — #123 -->
+    <!-- 5. Typography — #123 summary → Typography Lab -->
     <section class="sprint-preview__section" aria-labelledby="typography-heading">
       <div class="sprint-preview__section-head">
         <p class="sprint-preview__kicker">04 · #123</p>
-        <h2 id="typography-heading">Typography direction test — #123</h2>
-        <p>
-          Same content across five display directions. Viddel Sans = Inter. Viddel Display is still open.
+        <h2 id="typography-heading">Typography — #123</h2>
+        <p>Typography direction test moved to full Typography Lab.</p>
+      </div>
+
+      <div class="sprint-preview__typo-summary">
+        <p class="sprint-preview__typo-status">
+          <strong>Status:</strong> Working decision
         </p>
+        <ul class="sprint-preview__list sprint-preview__list--compact">
+          {typographyLabDirections.map((dir) => (
+            <li>{dir}</li>
+          ))}
+        </ul>
+        <a href={`${base}vis/sprints/2026-w21/typography/`} class="sprint-preview__typo-link">
+          Open full Typography Lab →
+        </a>
       </div>
-
-      <ul class="type-dir-criteria" role="list" aria-label="Vurderingskriterier">
-        {typeEvalCriteria.map((criterion) => (
-          <li>{criterion}</li>
-        ))}
-      </ul>
-
-      <div class="type-dir-grid">
-        {typographyDirections.map((direction) => (
-          <article class="type-dir-card" data-direction={direction.id}>
-            <header class="type-dir-card__head">
-              <p class="type-dir-card__number">{direction.number}. {direction.name}</p>
-              <p class="type-dir-card__testing">
-                <span>Testing for:</span> {direction.testingFor}
-              </p>
-              <p class="type-dir-card__stack">{direction.stackNote}</p>
-            </header>
-            <div class="type-dir-card__sample">
-              <p class="type-dir__label">{typeTestContent.label}</p>
-              <h3 class="type-dir__h1">{typeTestContent.h1}</h3>
-              <p class="type-dir__ingress">{typeTestContent.ingress}</p>
-              <h4 class="type-dir__h2">{typeTestContent.h2}</h4>
-              <p class="type-dir__body">{typeTestContent.body}</p>
-              <p class="type-dir__ai-label">{typeTestContent.aiLabel}</p>
-              <input
-                type="text"
-                class="type-dir__input"
-                placeholder={typeTestContent.inputPlaceholder}
-                aria-label={typeTestContent.inputPlaceholder}
-                readonly
-              />
-              <button type="button" class="type-dir__button">{typeTestContent.button}</button>
-              <p class="type-dir__micro">{typeTestContent.microcopy}</p>
-              <p class="type-dir__norwegian">{typeTestContent.norwegian}</p>
-            </div>
-          </article>
-        ))}
-      </div>
-
-      <p class="type-dir-note">
-        Typography direction is under evaluation. This preview compares behavior and tone.
-        Final font selection is not locked in #123.
-      </p>
     </section>
 
     <!-- 6. Color tokens preview -->
@@ -534,300 +457,36 @@ const typographyDirections = [
       background: rgb(var(--surface-subtle) / 0.5);
     }
 
-    .type-dir-criteria {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin: 0 0 1.25rem;
-      padding: 0;
-      list-style: none;
+    .sprint-preview__typo-summary {
+      max-width: 44rem;
     }
 
-    .type-dir-criteria li {
-      padding: 0.28rem 0.55rem;
-      border: 1px solid rgb(var(--border) / 0.35);
-      border-radius: 999px;
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
+    .sprint-preview__typo-status {
+      margin: 0 0 0.75rem;
+      font-size: 0.9rem;
       color: rgb(var(--reading-ink-secondary));
-      background: rgb(var(--reading-paper));
     }
 
-    .type-dir-grid {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: 1fr;
-    }
-
-    .type-dir-card {
-      border: 1px solid rgb(var(--border) / 0.28);
-      border-radius: var(--radius-md);
-      background: rgb(var(--reading-paper));
-      overflow: hidden;
-    }
-
-    .type-dir-card__head {
-      padding: 0.85rem 1rem;
-      border-bottom: 1px solid rgb(var(--border) / 0.18);
-      background: rgb(var(--surface-subtle) / 0.35);
-    }
-
-    .type-dir-card__number {
-      margin: 0;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
+    .sprint-preview__typo-status strong {
       color: rgb(var(--reading-ink));
     }
 
-    .type-dir-card__testing {
-      margin: 0.45rem 0 0;
-      font-size: 0.78rem;
-      line-height: 1.55;
-      color: rgb(var(--reading-ink-secondary));
-    }
-
-    .type-dir-card__testing span {
-      font-weight: 600;
-      color: rgb(var(--reading-ink));
-    }
-
-    .type-dir-card__stack {
-      margin: 0.35rem 0 0;
-      font-size: 0.65rem;
-      font-style: italic;
-      color: rgb(var(--muted));
-    }
-
-    .type-dir-card__sample {
-      padding: 1rem 1rem 1.15rem;
-    }
-
-    /* Shared UI layer — Inter (Viddel Sans) for all directions */
-    .type-dir__label,
-    .type-dir__ai-label {
-      margin: 0;
-      font-family: var(--font-sans);
-      font-size: 0.62rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgb(var(--reading-accent-iris));
-    }
-
-    .type-dir__ingress,
-    .type-dir__body,
-    .type-dir__micro,
-    .type-dir__norwegian {
-      font-family: var(--font-sans);
-    }
-
-    .type-dir__ingress {
-      margin: 0.65rem 0 0;
-      font-size: 0.88rem;
-      line-height: 1.6;
-      color: rgb(var(--reading-ink-secondary));
-    }
-
-    .type-dir__body {
-      margin: 0.55rem 0 0;
-      font-size: 0.875rem;
-      line-height: 1.65;
-      color: rgb(var(--reading-ink-secondary));
-    }
-
-    .type-dir__ai-label {
-      margin: 0.85rem 0 0.35rem;
-      color: rgb(var(--muted));
-    }
-
-    .type-dir__input {
-      display: block;
-      width: 100%;
-      margin: 0;
-      padding: 0.5rem 0.75rem;
-      border: 1px solid rgb(var(--border) / 0.4);
-      border-radius: var(--radius-md);
-      font-family: var(--font-sans);
-      font-size: 0.82rem;
-      background: rgb(var(--article-page-canvas));
-      color: rgb(var(--reading-ink));
-    }
-
-    .type-dir__button {
+    .sprint-preview__typo-link {
       display: inline-flex;
-      margin-top: 0.55rem;
-      padding: 0.45rem 0.85rem;
-      border: 0;
+      margin-top: 1rem;
+      padding: 0.55rem 0.9rem;
+      border: 1px solid rgb(var(--border) / 0.38);
       border-radius: var(--radius-md);
-      font-family: var(--font-sans);
-      font-size: 0.82rem;
+      font-size: 0.875rem;
       font-weight: 600;
-      background: rgb(var(--reading-ink));
-      color: rgb(var(--reading-paper));
-      cursor: default;
-    }
-
-    .type-dir__micro {
-      margin: 0.65rem 0 0;
-      font-size: 0.68rem;
-      letter-spacing: 0.03em;
-      color: rgb(var(--muted));
-    }
-
-    .type-dir__norwegian {
-      margin: 0.45rem 0 0;
-      font-size: 0.82rem;
-      line-height: 1.55;
-      color: rgb(var(--reading-ink-secondary));
-    }
-
-    /* Direction 0: Existing Bold Display — moderated (Epilogue, less massive) */
-    .type-dir-card[data-direction="existing"] .type-dir__h1 {
-      margin: 0.45rem 0 0;
-      max-width: 18em;
-      font-family: var(--font-display);
-      font-size: clamp(1.65rem, 3.6vw, 2.15rem);
-      font-weight: 650;
-      letter-spacing: -0.042em;
-      line-height: 1.14;
-      text-wrap: balance;
       color: rgb(var(--reading-ink));
+      background: rgb(var(--reading-paper));
+      text-decoration: none;
     }
 
-    .type-dir-card[data-direction="existing"] .type-dir__h2 {
-      margin: 0.75rem 0 0;
-      font-family: var(--font-display);
-      font-size: 1.05rem;
-      font-weight: 650;
-      letter-spacing: -0.028em;
-      line-height: 1.2;
-      color: rgb(var(--reading-ink));
-    }
-
-    /* Direction 1: Signal Sans — active, precise Inter display */
-    .type-dir-card[data-direction="signal"] .type-dir__h1 {
-      margin: 0.45rem 0 0;
-      max-width: 17.5em;
-      font-family: var(--font-sans);
-      font-size: clamp(1.55rem, 3.4vw, 2rem);
-      font-weight: 700;
-      letter-spacing: -0.032em;
-      line-height: 1.08;
-      text-wrap: balance;
-      color: rgb(var(--reading-ink));
-    }
-
-    .type-dir-card[data-direction="signal"] .type-dir__h2 {
-      margin: 0.75rem 0 0;
-      font-family: var(--font-sans);
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.15;
-      color: rgb(var(--reading-ink));
-    }
-
-    /* Direction 2: Tight Sans — compact MVP candidate */
-    .type-dir-card[data-direction="tight"] .type-dir__h1 {
-      margin: 0.45rem 0 0;
-      max-width: 16.5em;
-      font-family: var(--font-sans);
-      font-size: clamp(1.4rem, 3vw, 1.85rem);
-      font-weight: 700;
-      letter-spacing: -0.022em;
-      line-height: 1.04;
-      text-wrap: balance;
-      color: rgb(var(--reading-ink));
-    }
-
-    .type-dir-card[data-direction="tight"] .type-dir__h2 {
-      margin: 0.7rem 0 0;
-      font-family: var(--font-sans);
-      font-size: 0.9375rem;
-      font-weight: 700;
-      letter-spacing: -0.015em;
-      line-height: 1.12;
-      color: rgb(var(--reading-ink));
-    }
-
-    /* Direction 3: Editorial Serif — warm editorial accent */
-    .type-dir-card[data-direction="serif"] .type-dir__h1 {
-      margin: 0.45rem 0 0;
-      max-width: 19em;
-      font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
-      font-size: clamp(1.55rem, 3.5vw, 2.05rem);
-      font-weight: 600;
-      letter-spacing: -0.018em;
-      line-height: 1.18;
-      text-wrap: balance;
-      color: rgb(var(--reading-ink));
-    }
-
-    .type-dir-card[data-direction="serif"] .type-dir__h2 {
-      margin: 0.75rem 0 0;
-      font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
-      font-size: 1.05rem;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      line-height: 1.22;
-      color: rgb(var(--reading-ink));
-    }
-
-    /* Direction 4: Editorial Precision Display — tighter editorial weight */
-    .type-dir-card[data-direction="precision"] .type-dir__h1 {
-      margin: 0.45rem 0 0;
-      max-width: 18em;
-      font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-      font-size: clamp(1.5rem, 3.3vw, 1.95rem);
-      font-weight: 650;
-      letter-spacing: -0.038em;
-      line-height: 1.1;
-      text-wrap: balance;
-      color: rgb(var(--reading-ink));
-    }
-
-    .type-dir-card[data-direction="precision"] .type-dir__h2 {
-      margin: 0.72rem 0 0;
-      font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-      font-size: 1rem;
-      font-weight: 650;
-      letter-spacing: -0.028em;
-      line-height: 1.14;
-      color: rgb(var(--reading-ink));
-    }
-
-    .type-dir__h1,
-    .type-dir__h2 {
-      margin: 0;
-    }
-
-    .type-dir-note {
-      margin: 1.1rem 0 0;
-      padding: 0.75rem 0.9rem;
-      border-left: 3px solid rgb(var(--border) / 0.5);
-      font-size: 0.82rem;
-      line-height: 1.6;
-      color: rgb(var(--reading-ink-secondary));
-      background: rgb(var(--surface-subtle) / 0.35);
-    }
-
-    @media (min-width: 640px) {
-      .type-dir-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (min-width: 1080px) {
-      .type-dir-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-
-      .type-dir-card[data-direction="existing"],
-      .type-dir-card[data-direction="signal"] {
-        grid-column: span 1;
-      }
+    .sprint-preview__typo-link:hover {
+      border-color: rgb(var(--border) / 0.55);
+      background: rgb(var(--surface-subtle) / 0.5);
     }
 
     .sprint-preview__token-grid {

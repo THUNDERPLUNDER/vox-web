@@ -1,0 +1,745 @@
+---
+/* CONTRACT: VIS-only Typography Lab for #123 — full-width display direction review.
+   Parent: #126 sprint preview / #120 Design Lock. Not production design.
+   VIS-only font loading — does not affect global design system.
+*/
+import PrototypeLayout from "../../../../../layouts/PrototypeLayout.astro";
+import "../../../../../styles/global.css";
+
+const base = import.meta.env.BASE_URL;
+const sprintPath = `${base}vis/sprints/2026-w21`;
+
+const evalCriteria = ["Lesbarhet", "Viddel-særpreg", "Tillit", "Hverdagsenergi"];
+
+const testContent = {
+  kicker: "BESLUTNINGSSTØTTE",
+  h1: "Audiograf: når det haster, og hva du kan forberede",
+  ingress:
+    "Noen høreapparatproblemer kan du feilsøke rolig selv. Andre bør vurderes raskt. Her får du hjelp til å skille mellom det som haster, det som bør bookes, og hva du kan forberede før du tar kontakt.",
+  meta: "Oppdatert: 19. mai 2026 · 4 min lesing",
+  h2: "Vanlige problemer og hjelp",
+  body: "Viddel hjelper deg med vanlige problemer, enkle forklaringer og raske grep som gjør høreapparatet lettere å bruke i hverdagen. Målet er å gjøre det enklere å vite hva du kan prøve selv, og når du bør kontakte audiograf.",
+  aiLabel: "SKRIV HVA SOM IKKE FUNGERER",
+  inputPlaceholder: "Beskriv problemet kort …",
+  button: "Få hjelp nå",
+  aiHelper: "Du kan beskrive lyd, piping, app-problemer eller situasjoner der det blir vanskelig å høre.",
+  norwegian: "Ærlig tilbakekobling om lyd, ørhet, støy og å gjøre hverdagen enklere.",
+  charset: "ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ\nabcdefghijklmnopqrstuvwxyzæøå\n0123456789",
+};
+
+const directions = [
+  {
+    id: "existing",
+    anchor: "dir-existing",
+    number: "0",
+    name: "Existing Bold Display — moderated",
+    testingFor: "Tester om dagens brede, tunge displayenergi kan bevares med mer luft, bedre tracking og kontroll på lange norske overskrifter.",
+    fontStack: 'Epilogue 650 · VIS-only font test · "Epilogue", ui-sans-serif, sans-serif',
+    cssVar: "--tlab-display-existing",
+  },
+  {
+    id: "signal",
+    anchor: "dir-signal",
+    number: "1",
+    name: "Signal Sans",
+    testingFor: "Tester aktiv, presis og produktnær tydelighet — tydelig skilt fra Inter body/UI.",
+    fontStack: 'Sora 700 · VIS-only font test · "Sora", ui-sans-serif, sans-serif',
+    cssVar: "--tlab-display-signal",
+  },
+  {
+    id: "tight",
+    anchor: "dir-tight",
+    number: "2",
+    name: "Tight Sans",
+    testingFor: "Tester kompakt, fokusert MVP-retning — condensed sans som mulig Viddel Display.",
+    fontStack: 'Archivo Condensed 700 · VIS-only font test · "Archivo Condensed", ui-sans-serif, sans-serif',
+    cssVar: "--tlab-display-tight",
+  },
+  {
+    id: "serif",
+    anchor: "dir-serif",
+    number: "3",
+    name: "Editorial Serif",
+    testingFor: "Tester redaksjonell varme og tillit som mulig editorial accent — ikke spa eller luksusmagasin.",
+    fontStack: 'Georgia / Iowan Old Style · system serif · no webfont import',
+    cssVar: "--tlab-display-serif",
+  },
+  {
+    id: "precision",
+    anchor: "dir-precision",
+    number: "4",
+    name: "Editorial Precision Display",
+    testingFor: "Tester strammere redaksjonell presisjon — tyngde uten mykhet, produktpresisjon beholdt.",
+    fontStack: 'Source Serif 4 650 · VIS-only font test · "Source Serif 4", Georgia, serif',
+    cssVar: "--tlab-display-precision",
+  },
+];
+---
+
+<!-- VIS-only font test — hoisted to head by Astro, scoped to this page only -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Archivo+Condensed:wght@600;700&family=Epilogue:wght@500;600;700&family=Inter:wght@400;500;600&family=Sora:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,600;650&display=swap"
+  rel="stylesheet"
+/>
+
+<PrototypeLayout title="Typography Lab — #123">
+  <main class="tlab" data-typography-lab>
+    <nav class="tlab__breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={sprintPath}>2026-W21</a>
+      <span aria-hidden="true">/</span>
+      <span>Typography</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="tlab__hero">
+      <p class="tlab__kicker">VIS-only · #123</p>
+      <h1>Typography Lab — #123</h1>
+      <p class="tlab__subtitle">Viddel Display directions tested on article-start content</p>
+
+      <dl class="tlab__meta">
+        <div><dt>Sprint</dt><dd>2026-W21</dd></div>
+        <div><dt>Parent</dt><dd>#120</dd></div>
+        <div><dt>Preview</dt><dd>#126</dd></div>
+        <div><dt>Issue</dt><dd>#123</dd></div>
+        <div><dt>Status</dt><dd>Working decision</dd></div>
+      </dl>
+
+      <p class="tlab__note">
+        Viddel Sans = Inter. Viddel Display is under evaluation. This lab is VIS-only.
+      </p>
+    </header>
+
+    <!-- Sticky nav -->
+    <nav class="tlab__nav" aria-label="Typografiske retninger">
+      <p class="tlab__nav-label">Directions</p>
+      <ol class="tlab__nav-list">
+        {directions.map((d) => (
+          <li>
+            <a href={`#${d.anchor}`}>{d.number}. {d.name}</a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+
+    <!-- Full-width stacked directions -->
+    <div class="tlab__sections">
+      {directions.map((direction) => (
+        <section id={direction.anchor} class="tlab__direction" data-direction={direction.id}>
+          <header class="tlab__direction-head">
+            <h2>{direction.number}. {direction.name}</h2>
+            <p class="tlab__testing">
+              <strong>Testing for:</strong> {direction.testingFor}
+            </p>
+            <p class="tlab__stack">
+              <strong>Font / stack:</strong> {direction.fontStack}
+            </p>
+            <ul class="tlab__criteria" role="list" aria-label="Vurderingskriterier">
+              {evalCriteria.map((c) => <li>{c}</li>)}
+            </ul>
+          </header>
+
+          <article class="tlab__article-start">
+            <p class="tlab__kicker-sample">{testContent.kicker}</p>
+            <h3 class="tlab__h1">{testContent.h1}</h3>
+            <p class="tlab__ingress">{testContent.ingress}</p>
+            <p class="tlab__meta-line">{testContent.meta}</p>
+            <h4 class="tlab__h2">{testContent.h2}</h4>
+            <p class="tlab__body">{testContent.body}</p>
+
+            <div class="tlab__ai-block">
+              <p class="tlab__ai-label">{testContent.aiLabel}</p>
+              <input
+                type="text"
+                class="tlab__input"
+                placeholder={testContent.inputPlaceholder}
+                aria-label={testContent.inputPlaceholder}
+                readonly
+              />
+              <button type="button" class="tlab__button">{testContent.button}</button>
+              <p class="tlab__ai-helper">{testContent.aiHelper}</p>
+            </div>
+
+            <p class="tlab__norwegian">{testContent.norwegian}</p>
+            <pre class="tlab__charset" aria-label="Character set">{testContent.charset}</pre>
+          </article>
+        </section>
+      ))}
+    </div>
+
+    <!-- Compact comparison strip -->
+    <section class="tlab__strip" aria-labelledby="strip-heading">
+      <h2 id="strip-heading">Compact comparison strip</h2>
+      <p class="tlab__strip-note">Supplement only — full sections above are primary review surface.</p>
+      <ul class="tlab__strip-list" role="list">
+        {directions.map((direction) => (
+          <li class="tlab__strip-item" data-direction={direction.id}>
+            <p class="tlab__strip-name">{direction.number}. {direction.name}</p>
+            <p class="tlab__strip-h1">{testContent.h1}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <footer class="tlab__footer">
+      <p>
+        Typography direction is under evaluation. Final font selection is not locked in #123.
+        Fonts loaded on this page are VIS-only tests.
+      </p>
+      <p><a href={sprintPath}>← Back to Sprint Preview 2026-W21</a></p>
+    </footer>
+  </main>
+
+  <style>
+    [data-typography-lab] {
+      --tlab-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --tlab-display-existing: "Epilogue", var(--tlab-sans);
+      --tlab-display-signal: "Sora", var(--tlab-sans);
+      --tlab-display-tight: "Archivo Condensed", var(--tlab-sans);
+      --tlab-display-serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+      --tlab-display-precision: "Source Serif 4", Georgia, "Times New Roman", serif;
+
+      min-height: 100vh;
+      background: rgb(var(--article-page-canvas));
+      color: rgb(var(--reading-ink));
+      padding: 1.5rem 1rem 4rem;
+      max-width: 52rem;
+      margin: 0 auto;
+      font-family: var(--tlab-sans);
+    }
+
+    .tlab__breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      font-size: 0.72rem;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .tlab__breadcrumb a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .tlab__hero {
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgb(var(--border) / 0.24);
+    }
+
+    .tlab__kicker {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-accent-iris));
+    }
+
+    .tlab__hero > h1 {
+      margin: 0.45rem 0 0;
+      font-family: var(--tlab-sans);
+      font-size: clamp(1.75rem, 4.5vw, 2.5rem);
+      font-weight: 650;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    .tlab__subtitle {
+      margin: 0.6rem 0 0;
+      font-size: 0.95rem;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .tlab__meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+      gap: 0.65rem 1rem;
+      margin: 1.1rem 0 0;
+      padding: 0.85rem 1rem;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: var(--radius-md);
+      background: rgb(var(--reading-paper));
+    }
+
+    .tlab__meta dt {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .tlab__meta dd {
+      margin: 0.15rem 0 0;
+      font-size: 0.84rem;
+    }
+
+    .tlab__note {
+      margin: 0.85rem 0 0;
+      padding: 0.65rem 0.85rem;
+      border-left: 3px solid rgb(var(--reading-accent-iris) / 0.45);
+      font-size: 0.86rem;
+      line-height: 1.6;
+      color: rgb(var(--reading-ink-secondary));
+      background: rgb(var(--surface-subtle) / 0.35);
+    }
+
+    /* Sticky nav */
+    .tlab__nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: 1.25rem 0;
+      padding: 0.75rem 0.9rem;
+      border: 1px solid rgb(var(--border) / 0.28);
+      border-radius: var(--radius-md);
+      background: rgb(var(--reading-paper) / 0.95);
+      backdrop-filter: blur(8px);
+    }
+
+    .tlab__nav-label {
+      margin: 0 0 0.45rem;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .tlab__nav-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .tlab__nav-list a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: rgb(var(--reading-ink));
+      text-decoration: none;
+    }
+
+    .tlab__nav-list a:hover {
+      color: rgb(var(--reading-accent-iris));
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* Direction sections */
+    .tlab__sections {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .tlab__direction {
+      scroll-margin-top: 5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgb(var(--border) / 0.2);
+    }
+
+    .tlab__direction:last-child {
+      border-bottom: 0;
+    }
+
+    .tlab__direction-head h2 {
+      margin: 0;
+      font-family: var(--tlab-sans);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .tlab__testing,
+    .tlab__stack {
+      margin: 0.5rem 0 0;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .tlab__testing strong,
+    .tlab__stack strong {
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__criteria {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin: 0.75rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tlab__criteria li {
+      padding: 0.22rem 0.5rem;
+      border: 1px solid rgb(var(--border) / 0.35);
+      border-radius: 999px;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    /* Article-start preview — shared UI layer */
+    .tlab__article-start {
+      margin-top: 1.25rem;
+      padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 3vw, 2rem);
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: 10px;
+      background: rgb(var(--reading-paper));
+    }
+
+    .tlab__kicker-sample,
+    .tlab__ai-label {
+      margin: 0;
+      font-family: var(--tlab-sans);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-accent-iris));
+    }
+
+    .tlab__ingress,
+    .tlab__body,
+    .tlab__meta-line,
+    .tlab__norwegian,
+    .tlab__ai-helper {
+      font-family: var(--tlab-sans);
+    }
+
+    .tlab__ingress {
+      margin: clamp(0.85rem, 2vw, 1.15rem) 0 0;
+      max-width: 38rem;
+      font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+      line-height: 1.58;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .tlab__meta-line {
+      margin: 0.75rem 0 0;
+      font-size: 0.72rem;
+      letter-spacing: 0.03em;
+      color: rgb(var(--muted));
+    }
+
+    .tlab__body {
+      margin: 0.85rem 0 0;
+      max-width: 38rem;
+      font-size: 0.9375rem;
+      line-height: 1.68;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .tlab__ai-block {
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgb(var(--border) / 0.18);
+    }
+
+    .tlab__ai-label {
+      margin-bottom: 0.45rem;
+      color: rgb(var(--muted));
+    }
+
+    .tlab__input {
+      display: block;
+      width: 100%;
+      max-width: 24rem;
+      padding: 0.55rem 0.85rem;
+      border: 1px solid rgb(var(--border) / 0.4);
+      border-radius: var(--radius-md);
+      font-family: var(--tlab-sans);
+      font-size: 0.875rem;
+      background: rgb(var(--article-page-canvas));
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__button {
+      display: inline-flex;
+      margin-top: 0.55rem;
+      padding: 0.5rem 1rem;
+      border: 0;
+      border-radius: var(--radius-md);
+      font-family: var(--tlab-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      background: rgb(var(--reading-ink));
+      color: rgb(var(--reading-paper));
+      cursor: default;
+    }
+
+    .tlab__ai-helper {
+      margin: 0.55rem 0 0;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .tlab__norwegian {
+      margin: 1.25rem 0 0;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .tlab__charset {
+      margin: 0.85rem 0 0;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid rgb(var(--border) / 0.2);
+      border-radius: 6px;
+      font-family: var(--tlab-sans);
+      font-size: 0.72rem;
+      line-height: 1.5;
+      color: rgb(var(--muted));
+      background: rgb(var(--surface-subtle) / 0.3);
+      white-space: pre-wrap;
+    }
+
+    /* ── Display treatments per direction ── */
+
+    /* 0: Existing Bold Display — moderated Epilogue */
+    .tlab__direction[data-direction="existing"] .tlab__h1 {
+      margin: 0.55rem 0 0;
+      max-width: 14em;
+      font-family: var(--tlab-display-existing);
+      font-size: clamp(2rem, 5.5vw, 3.4rem);
+      font-weight: 650;
+      letter-spacing: -0.038em;
+      line-height: 1.1;
+      text-wrap: balance;
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__direction[data-direction="existing"] .tlab__h2 {
+      margin: 1.1rem 0 0;
+      max-width: 20em;
+      font-family: var(--tlab-display-existing);
+      font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+      font-weight: 650;
+      letter-spacing: -0.028em;
+      line-height: 1.18;
+      color: rgb(var(--reading-ink));
+    }
+
+    /* 1: Signal Sans — Sora */
+    .tlab__direction[data-direction="signal"] .tlab__h1 {
+      margin: 0.55rem 0 0;
+      max-width: 13.5em;
+      font-family: var(--tlab-display-signal);
+      font-size: clamp(1.85rem, 5vw, 3.1rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.06;
+      text-wrap: balance;
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__direction[data-direction="signal"] .tlab__h2 {
+      margin: 1.05rem 0 0;
+      font-family: var(--tlab-display-signal);
+      font-size: clamp(1.1rem, 2.3vw, 1.35rem);
+      font-weight: 700;
+      letter-spacing: -0.022em;
+      line-height: 1.14;
+      color: rgb(var(--reading-ink));
+    }
+
+    /* 2: Tight Sans — Archivo Condensed */
+    .tlab__direction[data-direction="tight"] .tlab__h1 {
+      margin: 0.55rem 0 0;
+      max-width: 12.5em;
+      font-family: var(--tlab-display-tight);
+      font-size: clamp(1.9rem, 5.2vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      line-height: 1.02;
+      text-wrap: balance;
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__direction[data-direction="tight"] .tlab__h2 {
+      margin: 1rem 0 0;
+      font-family: var(--tlab-display-tight);
+      font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      color: rgb(var(--reading-ink));
+    }
+
+    /* 3: Editorial Serif — Georgia/Iowan */
+    .tlab__direction[data-direction="serif"] .tlab__h1 {
+      margin: 0.55rem 0 0;
+      max-width: 15em;
+      font-family: var(--tlab-display-serif);
+      font-size: clamp(1.9rem, 5vw, 3.15rem);
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1.16;
+      text-wrap: balance;
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__direction[data-direction="serif"] .tlab__h2 {
+      margin: 1.05rem 0 0;
+      font-family: var(--tlab-display-serif);
+      font-size: clamp(1.15rem, 2.4vw, 1.4rem);
+      font-weight: 600;
+      letter-spacing: -0.008em;
+      line-height: 1.22;
+      color: rgb(var(--reading-ink));
+    }
+
+    /* 4: Editorial Precision — Source Serif 4 */
+    .tlab__direction[data-direction="precision"] .tlab__h1 {
+      margin: 0.55rem 0 0;
+      max-width: 14em;
+      font-family: var(--tlab-display-precision);
+      font-size: clamp(1.85rem, 4.8vw, 3rem);
+      font-weight: 650;
+      letter-spacing: -0.032em;
+      line-height: 1.1;
+      text-wrap: balance;
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__direction[data-direction="precision"] .tlab__h2 {
+      margin: 1rem 0 0;
+      font-family: var(--tlab-display-precision);
+      font-size: clamp(1.1rem, 2.3vw, 1.35rem);
+      font-weight: 650;
+      letter-spacing: -0.024em;
+      line-height: 1.16;
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__h1,
+    .tlab__h2 {
+      margin: 0;
+    }
+
+    /* Compact strip */
+    .tlab__strip {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgb(var(--border) / 0.24);
+    }
+
+    .tlab__strip > h2 {
+      margin: 0;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .tlab__strip-note {
+      margin: 0.35rem 0 1rem;
+      font-size: 0.78rem;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .tlab__strip-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .tlab__strip-item {
+      padding: 0.75rem 0.9rem;
+      border: 1px solid rgb(var(--border) / 0.2);
+      border-radius: 6px;
+      background: rgb(var(--reading-paper));
+    }
+
+    .tlab__strip-name {
+      margin: 0 0 0.35rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .tlab__strip-h1 {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.25;
+      color: rgb(var(--reading-ink));
+    }
+
+    .tlab__strip-item[data-direction="existing"] .tlab__strip-h1 {
+      font-family: var(--tlab-display-existing);
+      font-weight: 650;
+      letter-spacing: -0.03em;
+    }
+
+    .tlab__strip-item[data-direction="signal"] .tlab__strip-h1 {
+      font-family: var(--tlab-display-signal);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .tlab__strip-item[data-direction="tight"] .tlab__strip-h1 {
+      font-family: var(--tlab-display-tight);
+      font-weight: 700;
+    }
+
+    .tlab__strip-item[data-direction="serif"] .tlab__strip-h1 {
+      font-family: var(--tlab-display-serif);
+      font-weight: 600;
+    }
+
+    .tlab__strip-item[data-direction="precision"] .tlab__strip-h1 {
+      font-family: var(--tlab-display-precision);
+      font-weight: 650;
+      letter-spacing: -0.028em;
+    }
+
+    .tlab__footer {
+      margin-top: 2.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgb(var(--border) / 0.18);
+      font-size: 0.82rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .tlab__footer p {
+      margin: 0.35rem 0 0;
+    }
+
+    .tlab__footer a {
+      color: rgb(var(--reading-ink));
+      font-weight: 600;
+    }
+
+    @media (min-width: 640px) {
+      [data-typography-lab] {
+        padding: 2rem 1.5rem 4.5rem;
+      }
+
+      .tlab__nav-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem 1rem;
+      }
+    }
+  </style>
+</PrototypeLayout>
