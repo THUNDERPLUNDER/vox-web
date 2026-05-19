@@ -39,6 +39,10 @@ const heroContent = {
     "Viddel hjelper deg å forstå, feilsøke og mestre høreapparatet i hverdagen.",
 };
 
+const hybridDeep = "#134D6A";
+const hybridMagenta = "#FF55B0";
+const hybridDarkBase = "#071827";
+
 const colorSets = [
   {
     id: "a",
@@ -107,19 +111,18 @@ const hierarchyBar = [
   {
     id: "light",
     label: "White / Clean Light Gray",
-    share: "52%",
+    share: "55%",
     color: "#FFFFFF",
     text: "#111827",
-    border: true,
-    flex: 52,
+    flex: 55,
   },
   {
     id: "deep",
-    label: "Deep Nordic Blue / Teal",
-    share: "30%",
-    color: "#0F4C5C",
+    label: "Deep Nordic Blue",
+    share: "25%",
+    color: hybridDeep,
     text: "#FFFFFF",
-    flex: 30,
+    flex: 25,
   },
   {
     id: "ink",
@@ -141,7 +144,7 @@ const hierarchyBar = [
     id: "magenta",
     label: "Kinetic Magenta",
     share: "1.5%",
-    color: "#EC4899",
+    color: hybridMagenta,
     text: "#FFFFFF",
     flex: 1.5,
   },
@@ -154,20 +157,20 @@ const hierarchyParked = [
 
 const hierarchyUsage = [
   {
-    name: "Deep Nordic Blue / Teal",
+    name: "Deep Nordic Blue",
     role: "Primary identity depth, dark surfaces, chrome moments, hero contrast.",
-    share: "25–35%",
+    share: "20–30%",
     doUse: "Dark hero, chrome/nav, dark AI transition, footer/dark editorial bands.",
     doNot: "Decorative fills across reading surfaces or large layout blocks.",
-    colors: "#0F4C81 · #0F4C5C · #071827",
+    colors: `${hybridDeep} · ${hybridDarkBase}`,
   },
   {
     name: "White / Clean Light Gray",
     role: "Editorial base, reading space, help space.",
-    share: "45–60%",
+    share: "50–60%",
     doUse: "Page background, article surfaces, content + AI help layer.",
     doNot: "Tinted wellness base or cream/powder editorial wash.",
-    colors: "#FFFFFF · #F3F4F6 · #F8FAFC",
+    colors: "#FFFFFF · #F8FAFC · #F3F4F6",
   },
   {
     name: "Near Black / Ink",
@@ -179,7 +182,7 @@ const hierarchyUsage = [
   },
   {
     name: "Cyan Focus",
-    role: "Functional focus, active link, precise interaction signal.",
+    role: "Functional focus, active link, precise interaction signal (secondary).",
     share: "1–3%",
     doUse: "Focus rings, active link, small UI state.",
     doNot: "Brand hero fill or decorative accent bands.",
@@ -187,11 +190,11 @@ const hierarchyUsage = [
   },
   {
     name: "Kinetic Magenta",
-    role: "Ghost signal, motion/sound marker, small energy pulse.",
+    role: "High-character, low-quantity ghost signal, motion/sound marker, small energy pulse.",
     share: "under 1–2%",
-    doUse: "Audio bars, small dots, subtle halo, dark-surface ghost outline.",
-    doNot: "Long lines, large fills, gradients, decorative pink wash.",
-    colors: "#EC4899 · muted tint optional",
+    doUse: "Audio bars, small dots, subtle halo, dark-surface ghost outline, dynamic stroke.",
+    doNot: "Long structural lines, large fills, gradients, decorative pink wash.",
+    colors: `${hybridMagenta} · muted tint optional`,
   },
   {
     name: "Warm / Success",
@@ -202,6 +205,29 @@ const hierarchyUsage = [
     colors: "#F97316 · #EA580C · #10B981",
     parked: true,
   },
+];
+
+const strokeScale = [
+  { id: "hairline", label: "Hairline / UI", size: "1px", surface: "light" },
+  { id: "signal", label: "Signal / icon", size: "2px", surface: "light" },
+  { id: "strong", label: "Strong signal", size: "3px", surface: "dark" },
+  { id: "hero", label: "Hero / dynamic stroke", size: "6px", surface: "dark" },
+];
+
+const toolboxDo = [
+  "Use magenta as ghost, pulse, signal, halo, motion",
+  "Use deep blue for depth, identity and dark surfaces",
+  "Use light surfaces for reading/help",
+  "Use cyan for functional focus/active states",
+  "Use stronger strokes in hero, icon and illustration contexts",
+];
+
+const toolboxDoNot = [
+  "Use magenta as long structural layout lines",
+  "Use magenta as large fill",
+  "Use decorative pink gradients",
+  "Use teal/SaaS green as primary identity",
+  "Make all buttons colorful",
 ];
 ---
 
@@ -362,8 +388,8 @@ const hierarchyUsage = [
         <li><strong>text</strong><code>#111827</code></li>
         <li><strong>surface</strong><code>#F3F4F6</code></li>
         <li><strong>border</strong><code>#E5E7EB</code></li>
-        <li><strong>primary deep</strong><code>#0F4C81 / #0F4C5C</code></li>
-        <li><strong>signal magenta</strong><code>#EC4899</code></li>
+        <li><strong>primary deep</strong><code>{hybridDeep}</code></li>
+        <li><strong>signal magenta</strong><code>{hybridMagenta}</code></li>
         <li><strong>focus cyan</strong><code>#0EA5E9 optional</code></li>
         <li><strong>action button</strong><code>monochrome / near-black</code></li>
       </ul>
@@ -567,7 +593,7 @@ const hierarchyUsage = [
               Få verden tydeligere tilbake.
               <span class="clab__hierarchy-ghost-dot" aria-hidden="true"></span>
             </p>
-            <p class="clab__hierarchy-mini-copy">Deep blue/teal carries identity. Magenta stays a ghost pulse.</p>
+            <p class="clab__hierarchy-mini-copy">Deep Nordic Blue carries identity. Magenta stays a ghost pulse.</p>
           </article>
 
           <article class="clab__hierarchy-mini clab__hierarchy-mini--editorial">
@@ -576,7 +602,7 @@ const hierarchyUsage = [
             <p class="clab__hierarchy-mini-headline clab__hierarchy-mini-headline--display">
               Audiograf: når det haster
             </p>
-            <p class="clab__hierarchy-mini-copy">Clean white reading base with deep blue micro-accent only.</p>
+            <p class="clab__hierarchy-mini-copy">Clean white reading base with tiny deep blue accent only.</p>
           </article>
 
           <article class="clab__hierarchy-mini clab__hierarchy-mini--ai">
@@ -595,7 +621,138 @@ const hierarchyUsage = [
       <p class="clab__hierarchy-guardrail">
         Magenta should behave like a signal in the air, not a layout structure.
         Long lines, large fills and decorative gradients should remain avoided.
+        Kinetic Magenta is high-character, low-quantity.
       </p>
+    </section>
+
+    <section class="clab__toolbox" aria-labelledby="toolbox-heading">
+      <header class="clab__toolbox-head">
+        <p class="clab__kicker">Signal & atmosphere</p>
+        <h2 id="toolbox-heading">Signal & atmosphere toolbox</h2>
+        <p>
+          This toolbox explores how color behaves as atmosphere, motion and signal.
+          It is for future primitives, icons, illustrations and background treatment — not final production tokens.
+        </p>
+        <p class="clab__toolbox-repo-note">
+          Existing orb/background treatments on production surfaces (e.g. hub card gradients) should be compared
+          against these VIS-only samples in a later production pass.
+        </p>
+      </header>
+
+      <!-- A. Gradient / orb samples -->
+      <section class="clab__toolbox-panel" aria-label="Gradient and orb samples">
+        <p class="clab__panel-label">A. Gradient / orb samples</p>
+        <div class="clab__orb-grid">
+          <article class="clab__orb clab__orb--dark-nordic">
+            <p class="clab__orb-label">Dark Nordic orb</p>
+            <p class="clab__orb-copy">Deep blue atmosphere with faint magenta glow and warm depth far back.</p>
+          </article>
+          <article class="clab__orb clab__orb--light-editorial">
+            <p class="clab__orb-label">Light editorial orb</p>
+            <p class="clab__orb-copy">White/light gray with soft blue/cyan orb and very subtle magenta halo.</p>
+          </article>
+          <article class="clab__orb clab__orb--motion-horizon">
+            <p class="clab__orb-label">Motion horizon</p>
+            <p class="clab__orb-copy">Magnific-inspired atmosphere — signal in the air, not decorative wash.</p>
+            <span class="clab__orb-stroke" aria-hidden="true"></span>
+          </article>
+        </div>
+      </section>
+
+      <!-- B. Stroke scale -->
+      <section class="clab__toolbox-panel" aria-label="Stroke scale">
+        <p class="clab__panel-label">B. Stroke scale</p>
+        <div class="clab__stroke-grid">
+          {strokeScale.map((stroke) => (
+            <article class="clab__stroke-item" data-surface={stroke.surface}>
+              <p class="clab__stroke-label">{stroke.label}</p>
+              <p class="clab__stroke-size">{stroke.size}</p>
+              <div class="clab__stroke-demo" style={`--stroke-w: ${stroke.size}`}>
+                <span class="clab__stroke-line clab__stroke-line--deep"></span>
+                <span class="clab__stroke-line clab__stroke-line--ink"></span>
+                <span class="clab__stroke-line clab__stroke-line--cyan"></span>
+                <span class="clab__stroke-line clab__stroke-line--magenta"></span>
+                <span class="clab__stroke-arc" aria-hidden="true"></span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <!-- C. Button strength test -->
+      <section class="clab__toolbox-panel" aria-label="Button strength test">
+        <p class="clab__panel-label">C. Button strength test</p>
+        <div class="clab__btn-test-grid">
+          <button type="button" class="clab__btn-test clab__btn-test--ink">Solid ink</button>
+          <button type="button" class="clab__btn-test clab__btn-test--deep">Deep blue</button>
+          <button type="button" class="clab__btn-test clab__btn-test--ghost">Ghost magenta</button>
+          <button type="button" class="clab__btn-test clab__btn-test--outline">Large outline 2px</button>
+        </div>
+        <p class="clab__toolbox-caption">Large CTAs can use more radius and stronger stroke. Small buttons stay restrained.</p>
+      </section>
+
+      <!-- D. Signal marks -->
+      <section class="clab__toolbox-panel" aria-label="Signal marks">
+        <p class="clab__panel-label">D. Signal marks</p>
+        <div class="clab__marks-grid">
+          <div class="clab__marks-bars" aria-label="Audio bars">
+            <span /><span /><span /><span /><span />
+          </div>
+          <div class="clab__marks-dots" aria-label="Dot cluster">
+            <span /><span /><span /><span />
+          </div>
+          <span class="clab__marks-slash" aria-hidden="true"></span>
+          <span class="clab__marks-ring" aria-label="Focus ring"></span>
+          <span class="clab__marks-pill">AI signal</span>
+        </div>
+      </section>
+
+      <!-- E. Do / do not -->
+      <section class="clab__toolbox-panel clab__toolbox-rules" aria-label="Do and do not">
+        <p class="clab__panel-label">E. Do / do not</p>
+        <div class="clab__toolbox-rules-grid">
+          <div>
+            <p class="clab__toolbox-rules-title">Do</p>
+            <ul role="list">
+              {toolboxDo.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+          <div>
+            <p class="clab__toolbox-rules-title">Do not</p>
+            <ul role="list">
+              {toolboxDoNot.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Applied examples -->
+      <section class="clab__toolbox-panel" aria-label="Applied toolbox examples">
+        <p class="clab__panel-label">Applied examples</p>
+        <div class="clab__toolbox-applied">
+          <article class="clab__toolbox-applied-item clab__toolbox-applied-item--dark">
+            <p class="clab__toolbox-applied-label">Dark hero</p>
+            <p class="clab__toolbox-applied-headline">
+              Få verden tydeligere tilbake.
+              <span class="clab__toolbox-applied-dot" aria-hidden="true"></span>
+            </p>
+          </article>
+          <article class="clab__toolbox-applied-item clab__toolbox-applied-item--light">
+            <p class="clab__toolbox-applied-label">Editorial</p>
+            <p class="clab__toolbox-applied-kicker">BESLUTNINGSSTØTTE</p>
+            <p class="clab__toolbox-applied-headline clab__toolbox-applied-headline--display">Audiograf: når det haster</p>
+          </article>
+          <article class="clab__toolbox-applied-item clab__toolbox-applied-item--ai">
+            <p class="clab__toolbox-applied-label">Article → AI</p>
+            <p class="clab__toolbox-applied-kicker">ETTER LESING</p>
+            <p class="clab__toolbox-applied-headline">Hva bør jeg gjøre nå?</p>
+            <div class="clab__toolbox-applied-signals" aria-hidden="true">
+              <span></span><span></span>
+            </div>
+            <button type="button" class="clab__toolbox-applied-btn">Få hjelp nå</button>
+          </article>
+        </div>
+      </section>
     </section>
 
     <footer class="clab__footer">
@@ -1029,9 +1186,9 @@ const hierarchyUsage = [
       --hybrid-muted: #4b5563;
       --hybrid-surface: #f3f4f6;
       --hybrid-border: #e5e7eb;
-      --hybrid-deep: #0f4c81;
-      --hybrid-teal: #0f4c5c;
-      --hybrid-magenta: #ec4899;
+      --hybrid-deep: #134d6a;
+      --hybrid-dark: #071827;
+      --hybrid-magenta: #ff55b0;
       --hybrid-cyan: #0ea5e9;
       --hybrid-action: #111827;
 
@@ -1062,7 +1219,7 @@ const hierarchyUsage = [
       max-width: 46rem;
       padding: 0.65rem 0.8rem;
       border: 1px solid rgb(var(--border) / 0.28);
-      border-left: 3px solid var(--hybrid-teal);
+      border-left: 3px solid var(--hybrid-deep);
       border-radius: 8px;
       background: rgb(var(--surface-subtle) / 0.45);
       font-size: 0.82rem;
@@ -1145,7 +1302,7 @@ const hierarchyUsage = [
       border: 1px solid var(--hybrid-border);
       border-radius: 8px;
       background: var(--hybrid-bg);
-      box-shadow: inset 0 -2px 0 rgb(15 76 129 / 0.16);
+      box-shadow: inset 0 -2px 0 rgb(19 77 106 / 0.18);
     }
 
     .clab__wordmark {
@@ -1187,7 +1344,7 @@ const hierarchyUsage = [
       height: 5px;
       border-radius: 999px;
       background: var(--hybrid-magenta);
-      box-shadow: 0 0 0 4px rgb(236 72 153 / 0.08);
+      box-shadow: 0 0 0 4px rgb(255 85 176 / 0.08);
     }
 
     .clab__mock-action {
@@ -1213,7 +1370,7 @@ const hierarchyUsage = [
       width: 3px;
       height: 1.85rem;
       border-radius: 999px;
-      background: var(--hybrid-magenta);
+      background: var(--hybrid-deep);
     }
 
     .clab__hybrid-editorial .clab__kicker-sample {
@@ -1227,7 +1384,7 @@ const hierarchyUsage = [
 
     .clab__hybrid-ai {
       border-color: rgb(255 255 255 / 0.08);
-      background: #0a1628;
+      background: var(--hybrid-dark);
       color: #ffffff;
     }
 
@@ -1237,7 +1394,7 @@ const hierarchyUsage = [
       margin-bottom: 0.75rem;
       border-radius: 999px;
       background: var(--hybrid-magenta);
-      box-shadow: 0 0 0 6px rgb(236 72 153 / 0.1);
+      box-shadow: 0 0 0 6px rgb(255 85 176 / 0.1);
     }
 
     .clab__hybrid-ai .clab__ai-label {
@@ -1263,7 +1420,7 @@ const hierarchyUsage = [
 
     .clab__hybrid .clab__input:focus {
       outline-color: var(--hybrid-cyan);
-      box-shadow: 0 0 0 4px rgb(14 165 233 / 0.12), 0 0 18px rgb(236 72 153 / 0.1);
+      box-shadow: 0 0 0 4px rgb(14 165 233 / 0.12), 0 0 18px rgb(255 85 176 / 0.1);
     }
 
     .clab__hybrid .clab__btn--primary {
@@ -1296,7 +1453,7 @@ const hierarchyUsage = [
     }
 
     .clab__hub-card--active {
-      border-color: rgb(15 76 129 / 0.28);
+      border-color: rgb(19 77 106 / 0.28);
       box-shadow: inset 3px 0 0 var(--hybrid-deep);
     }
 
@@ -1341,7 +1498,7 @@ const hierarchyUsage = [
       position: absolute;
       inset: auto 0 0;
       height: 32%;
-      background: linear-gradient(180deg, transparent, rgb(15 76 129 / 0.18));
+      background: linear-gradient(180deg, transparent, rgb(19 77 106 / 0.18));
     }
 
     .clab__photo-placeholder span {
@@ -1352,7 +1509,7 @@ const hierarchyUsage = [
       height: 0.65rem;
       border-radius: 999px;
       background: var(--hybrid-magenta);
-      box-shadow: 0 0 0 7px rgb(236 72 153 / 0.1);
+      box-shadow: 0 0 0 7px rgb(255 85 176 / 0.1);
     }
 
     .clab__photo-copy p {
@@ -1431,7 +1588,7 @@ const hierarchyUsage = [
       height: 1.65rem;
       border: 2px solid var(--hybrid-cyan);
       border-radius: 999px;
-      box-shadow: 0 0 0 5px rgb(14 165 233 / 0.12), 0 0 16px rgb(236 72 153 / 0.08);
+      box-shadow: 0 0 0 5px rgb(14 165 233 / 0.12), 0 0 16px rgb(255 85 176 / 0.08);
     }
 
     .clab__ai-spark {
@@ -1440,7 +1597,7 @@ const hierarchyUsage = [
       justify-content: center;
       width: 1.8rem;
       height: 1.8rem;
-      border: 1px solid rgb(236 72 153 / 0.42);
+      border: 1px solid rgb(255 85 176 / 0.42);
       border-radius: 999px;
       color: var(--hybrid-magenta);
       font-size: 0.62rem;
@@ -1450,25 +1607,25 @@ const hierarchyUsage = [
 
     .clab__ghost-pill {
       padding: 0.4rem 0.7rem;
-      border: 1px solid rgb(236 72 153 / 0.24);
+      border: 1px solid rgb(255 85 176 / 0.24);
       border-radius: 999px;
       background: transparent;
       color: var(--hybrid-deep);
       font-family: var(--clab-sans);
       font-size: 0.72rem;
       font-weight: 700;
-      box-shadow: 0 0 0 4px rgb(236 72 153 / 0.05);
+      box-shadow: 0 0 0 4px rgb(255 85 176 / 0.05);
     }
 
     .clab__ghost-orb {
       width: 1.9rem;
       height: 1.9rem;
-      border: 1px solid rgb(236 72 153 / 0.32);
+      border: 1px solid rgb(255 85 176 / 0.32);
       border-radius: 999px;
       background:
-        radial-gradient(circle, rgb(236 72 153 / 0.24) 0 2px, transparent 3px),
-        var(--hybrid-teal);
-      box-shadow: 0 0 0 6px rgb(236 72 153 / 0.07), 0 0 18px rgb(236 72 153 / 0.1);
+        radial-gradient(circle, rgb(255 85 176 / 0.28) 0 2px, transparent 3px),
+        var(--hybrid-dark);
+      box-shadow: 0 0 0 6px rgb(255 85 176 / 0.07), 0 0 18px rgb(255 85 176 / 0.12);
     }
 
     .clab__contrast-strip {
@@ -1489,7 +1646,7 @@ const hierarchyUsage = [
 
     .clab__contrast--dark {
       border: 1px solid rgb(255 255 255 / 0.08);
-      background: #0a1628;
+      background: var(--hybrid-dark);
       color: #ffffff;
     }
 
@@ -1500,7 +1657,7 @@ const hierarchyUsage = [
 
     .clab__contrast--dark .clab__hero-headline {
       border-left-color: rgb(255 255 255 / 0.16);
-      text-shadow: 0 0 22px rgb(236 72 153 / 0.18);
+      text-shadow: 0 0 22px rgb(255 85 176 / 0.18);
     }
 
     .clab__contrast--dark .clab__hero-headline::after {
@@ -1511,7 +1668,7 @@ const hierarchyUsage = [
       margin-left: 0.45rem;
       border-radius: 999px;
       background: var(--hybrid-magenta);
-      box-shadow: 0 0 0 6px rgb(236 72 153 / 0.1);
+      box-shadow: 0 0 0 6px rgb(255 85 176 / 0.1);
       vertical-align: middle;
     }
 
@@ -1527,13 +1684,13 @@ const hierarchyUsage = [
 
     /* ── Color hierarchy ── */
     .clab__hierarchy {
-      --hier-deep: #0f4c5c;
+      --hier-deep: #134d6a;
       --hier-deep-dark: #071827;
       --hier-light: #ffffff;
       --hier-surface: #f3f4f6;
       --hier-ink: #111827;
       --hier-cyan: #0ea5e9;
-      --hier-magenta: #ec4899;
+      --hier-magenta: #ff55b0;
 
       margin-top: 3rem;
       padding-top: 2.5rem;
@@ -1762,7 +1919,7 @@ const hierarchyUsage = [
     }
 
     .clab__hierarchy-mini--dark-hero {
-      background: var(--hier-deep-dark);
+      background: linear-gradient(145deg, var(--hier-deep-dark) 0%, var(--hier-deep) 100%);
       color: #ffffff;
     }
 
@@ -1781,7 +1938,7 @@ const hierarchyUsage = [
       margin-left: 0.35rem;
       border-radius: 999px;
       background: var(--hier-magenta);
-      box-shadow: 0 0 0 6px rgb(236 72 153 / 0.12);
+      box-shadow: 0 0 0 6px rgb(255 85 176 / 0.12);
       vertical-align: middle;
     }
 
@@ -1801,13 +1958,22 @@ const hierarchyUsage = [
     }
 
     .clab__hierarchy-mini--ai {
-      background: var(--hier-surface);
-      border: 1px solid #e5e7eb;
-      color: var(--hier-ink);
+      background: var(--hier-deep);
+      border: 1px solid rgb(255 255 255 / 0.1);
+      color: #ffffff;
     }
 
     .clab__hierarchy-mini--ai .clab__hierarchy-mini-kicker {
-      color: #6b7280;
+      color: rgb(255 255 255 / 0.52);
+    }
+
+    .clab__hierarchy-mini--ai .clab__hierarchy-mini-headline {
+      color: #ffffff;
+    }
+
+    .clab__hierarchy-mini--ai .clab__hierarchy-mini-btn {
+      background: #ffffff;
+      color: var(--hier-ink);
     }
 
     .clab__hierarchy-mini-signals {
@@ -1824,7 +1990,7 @@ const hierarchyUsage = [
 
     .clab__hierarchy-signal-dot--magenta {
       background: var(--hier-magenta);
-      box-shadow: 0 0 0 4px rgb(236 72 153 / 0.08);
+      box-shadow: 0 0 0 4px rgb(255 85 176 / 0.08);
     }
 
     .clab__hierarchy-signal-dot--cyan {
@@ -1853,6 +2019,440 @@ const hierarchyUsage = [
       font-size: 0.82rem;
       line-height: 1.6;
       color: rgb(var(--reading-ink-secondary));
+    }
+
+    /* ── Signal & atmosphere toolbox ── */
+    .clab__toolbox {
+      --tool-deep: #134d6a;
+      --tool-dark: #071827;
+      --tool-magenta: #ff55b0;
+      --tool-cyan: #0ea5e9;
+      --tool-ink: #111827;
+
+      margin-top: 3rem;
+      padding-top: 2.5rem;
+      border-top: 2px dashed rgb(var(--border) / 0.45);
+    }
+
+    .clab__toolbox-head h2 {
+      margin: 0.35rem 0 0;
+      max-width: 44rem;
+      font-family: var(--clab-display);
+      font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+    }
+
+    .clab__toolbox-head p:not(.clab__kicker) {
+      margin: 0.65rem 0 0;
+      max-width: 48rem;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__toolbox-repo-note {
+      padding: 0.55rem 0.75rem;
+      border: 1px solid rgb(var(--border) / 0.24);
+      border-radius: 8px;
+      background: rgb(var(--surface-subtle) / 0.4);
+      font-size: 0.78rem;
+      font-style: italic;
+    }
+
+    .clab__toolbox-panel {
+      margin-top: 1.25rem;
+      padding: 1rem;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: 10px;
+      background: rgb(var(--reading-paper));
+    }
+
+    .clab__orb-grid {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .clab__orb {
+      position: relative;
+      min-height: 8.5rem;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      overflow: hidden;
+      color: #ffffff;
+    }
+
+    .clab__orb-label {
+      margin: 0;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.72;
+    }
+
+    .clab__orb-copy {
+      margin: 0.45rem 0 0;
+      max-width: 18rem;
+      font-size: 0.72rem;
+      line-height: 1.5;
+      opacity: 0.88;
+    }
+
+    .clab__orb--dark-nordic {
+      background:
+        radial-gradient(circle at 72% 28%, rgb(255 85 176 / 0.22) 0%, transparent 42%),
+        radial-gradient(circle at 18% 82%, rgb(249 115 22 / 0.12) 0%, transparent 38%),
+        linear-gradient(145deg, var(--tool-dark) 0%, var(--tool-deep) 55%, #0a3045 100%);
+    }
+
+    .clab__orb--light-editorial {
+      color: var(--tool-ink);
+      background:
+        radial-gradient(circle at 78% 22%, rgb(255 85 176 / 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 24% 68%, rgb(14 165 233 / 0.14) 0%, transparent 45%),
+        linear-gradient(160deg, #ffffff 0%, #f8fafc 55%, #f3f4f6 100%);
+    }
+
+    .clab__orb--light-editorial .clab__orb-label,
+    .clab__orb--light-editorial .clab__orb-copy {
+      opacity: 1;
+      color: #4b5563;
+    }
+
+    .clab__orb--light-editorial .clab__orb-label {
+      color: var(--tool-deep);
+    }
+
+    .clab__orb--motion-horizon {
+      background:
+        linear-gradient(125deg, var(--tool-dark) 0%, #1e3a5f 35%, #4c1d95 62%, rgb(249 115 22 / 0.35) 100%);
+    }
+
+    .clab__orb-stroke {
+      position: absolute;
+      right: 12%;
+      top: 38%;
+      width: 38%;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--tool-magenta);
+      transform: rotate(-18deg);
+      box-shadow: 0 0 22px rgb(255 85 176 / 0.45);
+    }
+
+    .clab__stroke-grid {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .clab__stroke-item {
+      padding: 0.75rem;
+      border: 1px solid rgb(var(--border) / 0.2);
+      border-radius: 8px;
+    }
+
+    .clab__stroke-item[data-surface="light"] {
+      background: #ffffff;
+    }
+
+    .clab__stroke-item[data-surface="dark"] {
+      background: var(--tool-dark);
+      color: #ffffff;
+    }
+
+    .clab__stroke-label {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .clab__stroke-size {
+      margin: 0.15rem 0 0.55rem;
+      font-size: 0.62rem;
+      opacity: 0.72;
+    }
+
+    .clab__stroke-demo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      align-items: center;
+    }
+
+    .clab__stroke-line {
+      display: block;
+      width: 2.5rem;
+      height: var(--stroke-w);
+      border-radius: 999px;
+    }
+
+    .clab__stroke-line--deep { background: var(--tool-deep); }
+    .clab__stroke-line--ink { background: var(--tool-ink); }
+    .clab__stroke-line--cyan { background: var(--tool-cyan); }
+    .clab__stroke-line--magenta { background: var(--tool-magenta); }
+
+    .clab__stroke-item[data-surface="dark"] .clab__stroke-line--magenta {
+      box-shadow: 0 0 14px rgb(255 85 176 / 0.45);
+    }
+
+    .clab__stroke-arc {
+      width: 2rem;
+      height: 1rem;
+      border-top: var(--stroke-w) solid var(--tool-magenta);
+      border-radius: 100% 100% 0 0;
+    }
+
+    .clab__btn-test-grid {
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .clab__btn-test {
+      padding: 0.65rem 1.1rem;
+      border-radius: 999px;
+      font-family: var(--clab-sans);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: default;
+    }
+
+    .clab__btn-test--ink {
+      border: 0;
+      background: var(--tool-ink);
+      color: #ffffff;
+    }
+
+    .clab__btn-test--deep {
+      border: 0;
+      background: var(--tool-deep);
+      color: #ffffff;
+    }
+
+    .clab__btn-test--ghost {
+      border: 2px solid rgb(255 85 176 / 0.45);
+      background: var(--tool-dark);
+      color: #ffffff;
+      box-shadow: 0 0 0 6px rgb(255 85 176 / 0.08);
+    }
+
+    .clab__btn-test--outline {
+      padding: 0.75rem 1.25rem;
+      border: 2px solid var(--tool-deep);
+      border-radius: 14px;
+      background: transparent;
+      color: var(--tool-deep);
+    }
+
+    .clab__toolbox-caption {
+      margin: 0.55rem 0 0;
+      font-size: 0.72rem;
+      color: rgb(var(--muted));
+    }
+
+    .clab__marks-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      align-items: center;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: var(--tool-dark);
+    }
+
+    .clab__marks-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 1.75rem;
+    }
+
+    .clab__marks-bars span {
+      display: block;
+      width: 4px;
+      border-radius: 2px;
+      background: var(--tool-magenta);
+    }
+
+    .clab__marks-bars span:nth-child(1) { height: 35%; background: var(--tool-deep); }
+    .clab__marks-bars span:nth-child(2) { height: 70%; }
+    .clab__marks-bars span:nth-child(3) { height: 100%; }
+    .clab__marks-bars span:nth-child(4) { height: 55%; background: var(--tool-cyan); }
+    .clab__marks-bars span:nth-child(5) { height: 82%; }
+
+    .clab__marks-dots {
+      display: flex;
+      gap: 0.3rem;
+    }
+
+    .clab__marks-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgb(255 255 255 / 0.2);
+    }
+
+    .clab__marks-dots span:nth-child(2) { background: var(--tool-cyan); }
+    .clab__marks-dots span:nth-child(4) { background: var(--tool-magenta); }
+
+    .clab__marks-slash {
+      width: 1.25rem;
+      height: 3px;
+      background: var(--tool-magenta);
+      transform: rotate(-24deg);
+      border-radius: 999px;
+    }
+
+    .clab__marks-ring {
+      width: 1.5rem;
+      height: 1.5rem;
+      border: 2px solid var(--tool-cyan);
+      border-radius: 999px;
+      box-shadow: 0 0 0 4px rgb(14 165 233 / 0.12);
+    }
+
+    .clab__marks-pill {
+      padding: 0.28rem 0.55rem;
+      border: 1px solid rgb(255 85 176 / 0.4);
+      border-radius: 999px;
+      color: var(--tool-magenta);
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+
+    .clab__toolbox-rules-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .clab__toolbox-rules-title {
+      margin: 0 0 0.4rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .clab__toolbox-rules ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__toolbox-applied {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .clab__toolbox-applied-item {
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+    }
+
+    .clab__toolbox-applied-label {
+      margin: 0 0 0.4rem;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .clab__toolbox-applied-headline {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .clab__toolbox-applied-headline--display {
+      font-family: var(--clab-display);
+      font-size: 1.05rem;
+      font-weight: 650;
+      letter-spacing: -0.03em;
+    }
+
+    .clab__toolbox-applied-kicker {
+      margin: 0 0 0.25rem;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .clab__toolbox-applied-item--dark {
+      background: linear-gradient(145deg, var(--tool-dark) 0%, var(--tool-deep) 100%);
+      color: #ffffff;
+    }
+
+    .clab__toolbox-applied-item--dark .clab__toolbox-applied-label {
+      color: rgb(255 255 255 / 0.48);
+    }
+
+    .clab__toolbox-applied-dot {
+      display: inline-block;
+      width: 0.42rem;
+      height: 0.42rem;
+      margin-left: 0.35rem;
+      border-radius: 999px;
+      background: var(--tool-magenta);
+      box-shadow: 0 0 0 6px rgb(255 85 176 / 0.14);
+      vertical-align: middle;
+    }
+
+    .clab__toolbox-applied-item--light {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      color: var(--tool-ink);
+      box-shadow: inset 3px 0 0 var(--tool-deep);
+    }
+
+    .clab__toolbox-applied-item--light .clab__toolbox-applied-kicker {
+      color: var(--tool-deep);
+    }
+
+    .clab__toolbox-applied-item--ai {
+      background: var(--tool-deep);
+      color: #ffffff;
+    }
+
+    .clab__toolbox-applied-item--ai .clab__toolbox-applied-kicker {
+      color: rgb(255 255 255 / 0.52);
+    }
+
+    .clab__toolbox-applied-signals {
+      display: flex;
+      gap: 0.35rem;
+      margin: 0.45rem 0;
+    }
+
+    .clab__toolbox-applied-signals span {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 999px;
+    }
+
+    .clab__toolbox-applied-signals span:first-child {
+      background: var(--tool-magenta);
+      box-shadow: 0 0 0 4px rgb(255 85 176 / 0.1);
+    }
+
+    .clab__toolbox-applied-signals span:last-child {
+      background: var(--tool-cyan);
+    }
+
+    .clab__toolbox-applied-btn {
+      padding: 0.4rem 0.75rem;
+      border: 0;
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--tool-ink);
+      font-family: var(--clab-sans);
+      font-size: 0.72rem;
+      font-weight: 700;
     }
 
     .clab__footer {
@@ -2121,6 +2721,26 @@ const hierarchyUsage = [
       }
 
       .clab__hierarchy-mini-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .clab__orb-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .clab__stroke-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .clab__btn-test-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .clab__toolbox-rules-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .clab__toolbox-applied {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
