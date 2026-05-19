@@ -1,0 +1,896 @@
+---
+/* CONTRACT: Sprint-specific VIS preview shell for 2026-W21 (#126).
+   Test bench for #122 Color tokens, #123 Typography, #124 Primitives.
+   No design decisions — placeholders only. Parent sprint: #120 MVP Design Lock v0.1.
+*/
+import PrototypeLayout from "../../../../layouts/PrototypeLayout.astro";
+import "../../../../styles/global.css";
+
+const base = import.meta.env.BASE_URL;
+
+const sprintMeta = {
+  sprint: "2026-W21",
+  date: "2026-05-19",
+  type: "Work note / Preview shell",
+  role: "@rigger / Cursor",
+  issue: "#126",
+  status: "Working preview",
+  focus: "MVP Design Lock v0.1",
+};
+
+const guardrails = [
+  "Viddel Sans = Inter",
+  "Viddel Display er åpent",
+  "Baseflate = hvit / helt lys ren grå",
+  "Varme kommer fra foto og innhold, ikke baseflate",
+  "Monokrome knapper fungerer som UI-retning",
+  "Lydbuen som bredt UI-/behavior-språk er parkert",
+  "Logo-retning er konseptuelt låst, vektor-master utsettes",
+];
+
+const anatomyZones = [
+  {
+    id: "chrome",
+    label: "Chrome / navigasjon",
+    items: ["header", "global navigasjon", "overordnet orientering"],
+  },
+  {
+    id: "editorial",
+    label: "Editorial / innholdsrom",
+    items: ["hub", "artikkel", "fagstoff", "lesehierarki"],
+  },
+  {
+    id: "action",
+    label: "Action / AI-dialog",
+    items: ["seed-spørsmål", "dialoginngang", "hjelpekort", "neste steg"],
+  },
+];
+
+const colorTokens = [
+  { name: "base background", token: "--article-page-canvas", sample: "bg" },
+  { name: "text primary", token: "--reading-ink", sample: "text" },
+  { name: "text secondary", token: "--reading-ink-secondary", sample: "text-secondary" },
+  { name: "surface subtle", token: "--surface-subtle", sample: "surface-subtle" },
+  { name: "surface elevated", token: "--surface-elevated", sample: "surface-elevated" },
+  { name: "action / button", token: "--reading-ink", sample: "action" },
+  { name: "focus state", token: "--focus", sample: "focus" },
+  { name: "divider / border", token: "--border", sample: "border" },
+];
+
+const typographySamples = [
+  { label: "Display sample", tag: "display", text: "Få høreapparatet til å fungere", note: "Viddel Display — Open" },
+  { label: "H1", tag: "h1", text: "Vanlige problemer og hjelp" },
+  { label: "H2", tag: "h2", text: "Hva trenger du hjelp til?" },
+  { label: "H3", tag: "h3", text: "Få slutt på pipingen" },
+  { label: "Ingress", tag: "ingress", text: "Høreapparatet piper fordi lyd lekker tilbake til mikrofonen." },
+  { label: "Brødtekst", tag: "body", text: "Start med å sjekke om proppen sitter riktig. Juster volumet forsiktig og prøv igjen." },
+  { label: "Microcopy", tag: "micro", text: "Oppdatert 19. mai 2026 · 4 min lesing" },
+  { label: "Button label", tag: "button", text: "Les guide" },
+  { label: "AI prompt label", tag: "ai", text: "Skriv hva som ikke fungerer" },
+  { label: "Norsk testtekst", tag: "body", text: "Ærlig tilbakemelding om lyd, ører og å gjøre hverdagen enklere." },
+];
+---
+
+<PrototypeLayout title="Sprint Preview — 2026-W21">
+  <main class="sprint-preview" data-sprint-preview>
+    <nav class="sprint-preview__breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <span>Sprints</span>
+      <span aria-hidden="true">/</span>
+      <span>2026-W21</span>
+    </nav>
+
+    <!-- 1. Header / status -->
+    <header class="sprint-preview__hero">
+      <p class="sprint-preview__kicker">VIS / sprint preview</p>
+      <h1>Viddel Sprint Preview — 2026-W21</h1>
+      <p class="sprint-preview__subtitle">VIS reviewflate for #120 / #126</p>
+      <p class="sprint-preview__focus">
+        <span>Sprint focus:</span> {sprintMeta.focus}
+      </p>
+
+      <dl class="sprint-preview__meta">
+        <div><dt>Sprint</dt><dd>{sprintMeta.sprint}</dd></div>
+        <div><dt>Dato</dt><dd>{sprintMeta.date}</dd></div>
+        <div><dt>Type</dt><dd>{sprintMeta.type}</dd></div>
+        <div><dt>Rolle</dt><dd>{sprintMeta.role}</dd></div>
+        <div><dt>Gjelder issue</dt><dd>{sprintMeta.issue}</dd></div>
+        <div><dt>Status</dt><dd>{sprintMeta.status}</dd></div>
+      </dl>
+
+      <p class="sprint-preview__purpose">
+        Teste typography, color tokens og primitives samlet før MVP-reskin.
+      </p>
+    </header>
+
+    <!-- 2. Sprint scope -->
+    <section class="sprint-preview__section" aria-labelledby="scope-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">01</p>
+        <h2 id="scope-heading">Sprint scope</h2>
+      </div>
+      <ul class="sprint-preview__list">
+        <li><strong>Parent issue:</strong> #120 MVP Design Lock v0.1</li>
+        <li><strong>Preview issue:</strong> #126 VIS design preview</li>
+        <li><strong>Testes i preview:</strong> #123 Typography v0.1 · #122 Color tokens v0.1 · #124 Primitives v0.1</li>
+        <li><strong>Senere bruk:</strong> #125 Reskin MVP Surfaces etter at byggeklossene er testet</li>
+      </ul>
+    </section>
+
+    <!-- 3. Design lock guardrails -->
+    <section class="sprint-preview__section" aria-labelledby="guardrails-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">02</p>
+        <h2 id="guardrails-heading">Design lock guardrails</h2>
+      </div>
+      <ul class="sprint-preview__list sprint-preview__list--compact">
+        {guardrails.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+
+    <!-- 4. Produktanatomi -->
+    <section class="sprint-preview__section" aria-labelledby="anatomy-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">03</p>
+        <h2 id="anatomy-heading">Produktanatomi</h2>
+      </div>
+      <div class="sprint-preview__anatomy">
+        {anatomyZones.map((zone) => (
+          <article class="sprint-preview__anatomy-zone" data-zone={zone.id}>
+            <h3>{zone.label}</h3>
+            <ul role="list">
+              {zone.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+      <blockquote class="sprint-preview__quote">
+        Chrome bærer orientering. Editorial layer bærer lesing. AI bærer handling videre fra lesing,
+        og skal derfor visuelt slekte på editorial layer, ikke på chrome.
+      </blockquote>
+    </section>
+
+    <!-- 5. Typography preview -->
+    <section class="sprint-preview__section" aria-labelledby="typography-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">04</p>
+        <h2 id="typography-heading">Typography preview</h2>
+        <p>Placeholder-samples med nåværende fontoppsett. Ingen ny displayfont valgt.</p>
+      </div>
+      <div class="sprint-preview__type-grid">
+        {typographySamples.map((sample) => (
+          <div class="sprint-preview__type-row">
+            <span class="sprint-preview__type-label">{sample.label}</span>
+            <div class="sprint-preview__type-sample" data-type={sample.tag}>
+              {sample.text}
+            </div>
+            {sample.note ? <span class="sprint-preview__type-note">{sample.note}</span> : null}
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 6. Color tokens preview -->
+    <section class="sprint-preview__section" aria-labelledby="tokens-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">05</p>
+        <h2 id="tokens-heading">Color tokens preview</h2>
+        <p>Eksisterende tokens — ingen ny palett introdusert.</p>
+      </div>
+      <ul class="sprint-preview__token-grid" role="list">
+        {colorTokens.map((token) => (
+          <li class="sprint-preview__token">
+            <div class="sprint-preview__token-swatch" data-sample={token.sample} aria-hidden="true"></div>
+            <div class="sprint-preview__token-meta">
+              <strong>{token.name}</strong>
+              <code>{token.token}</code>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- 7. Primitives preview -->
+    <section class="sprint-preview__section" aria-labelledby="primitives-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">06</p>
+        <h2 id="primitives-heading">Primitives preview</h2>
+        <p>Placeholders for #124 — eksisterende tokens der mulig.</p>
+      </div>
+      <div class="sprint-preview__primitives">
+        <div class="sprint-preview__primitive-group">
+          <p class="sprint-preview__primitive-label">Buttons</p>
+          <div class="sprint-preview__primitive-row">
+            <button type="button" class="sprint-preview__btn sprint-preview__btn--primary">Primary button</button>
+            <button type="button" class="sprint-preview__btn sprint-preview__btn--secondary">Secondary button</button>
+            <button type="button" class="sprint-preview__btn sprint-preview__btn--ghost">Ghost / text button</button>
+          </div>
+        </div>
+        <div class="sprint-preview__primitive-group">
+          <p class="sprint-preview__primitive-label">Tag / pill · link · chip</p>
+          <div class="sprint-preview__primitive-row">
+            <span class="sprint-preview__pill">Feilsøking</span>
+            <a href="#" class="sprint-preview__link" onclick="return false">Les mer om piping</a>
+            <span class="sprint-preview__chip">Hvorfor piper høreapparatet?</span>
+          </div>
+        </div>
+        <div class="sprint-preview__primitive-group">
+          <p class="sprint-preview__primitive-label">Card · input · info box</p>
+          <div class="sprint-preview__primitive-stack">
+            <div class="sprint-preview__card">
+              <p class="sprint-preview__card-kicker">Guide</p>
+              <p class="sprint-preview__card-title">Koble høreapparatet til mobilen</p>
+            </div>
+            <input type="search" class="sprint-preview__input" placeholder="Søk etter problem…" aria-label="Søk placeholder" />
+            <div class="sprint-preview__infobox">
+              Sjekk batterinivået før du starter feilsøking av Bluetooth.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Surface composition preview -->
+    <section class="sprint-preview__section" aria-labelledby="composition-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">07</p>
+        <h2 id="composition-heading">Surface composition preview</h2>
+        <p>Statiske komposisjoner — ikke produksjonsdesign.</p>
+      </div>
+      <div class="sprint-preview__compositions">
+        <article class="sprint-preview__composition">
+          <h3>Hub card cluster</h3>
+          <div class="sprint-preview__hub-cluster">
+            <div class="sprint-preview__hub-card sprint-preview__hub-card--featured">
+              <p class="sprint-preview__hub-card-kicker">Feilsøking</p>
+              <p class="sprint-preview__hub-card-title">Få slutt på pipingen</p>
+            </div>
+            <div class="sprint-preview__hub-card">
+              <p class="sprint-preview__hub-card-title">Koble til mobilen</p>
+            </div>
+            <div class="sprint-preview__hub-card">
+              <p class="sprint-preview__hub-card-title">Bytte filter</p>
+            </div>
+          </div>
+        </article>
+        <article class="sprint-preview__composition">
+          <h3>Article intro block</h3>
+          <div class="sprint-preview__article-intro">
+            <p class="sprint-preview__article-kicker">Feilsøking</p>
+            <p class="sprint-preview__article-h1">Få slutt på pipingen</p>
+            <p class="sprint-preview__article-lead">Høreapparatet piper fordi lyd lekker tilbake til mikrofonen.</p>
+          </div>
+        </article>
+        <article class="sprint-preview__composition">
+          <h3>Article → AI transition block</h3>
+          <div class="sprint-preview__ai-transition">
+            <p class="sprint-preview__ai-transition-label">Etter lesing</p>
+            <p class="sprint-preview__ai-transition-text">Har du fortsatt piping etter disse stegene?</p>
+            <span class="sprint-preview__chip">Spør Hørehjelpen</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 9. Future sprint scalability -->
+    <footer class="sprint-preview__footer">
+      <p class="sprint-preview__kicker">Note</p>
+      <p>This page is a sprint-specific VIS preview.</p>
+      <p>Future previews should follow the same pattern: <code>/vis/sprints/YYYY-wXX/</code></p>
+      <p>Sprint focus can change from week to week.</p>
+    </footer>
+  </main>
+
+  <style>
+    [data-sprint-preview] {
+      min-height: 100vh;
+      background: rgb(var(--article-page-canvas));
+      color: rgb(var(--reading-ink));
+      padding: 1.5rem 1rem 3rem;
+      max-width: 72rem;
+      margin: 0 auto;
+    }
+
+    .sprint-preview__breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      margin-bottom: 1.1rem;
+      font-size: 0.72rem;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__breadcrumb a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      color: inherit;
+    }
+
+    .sprint-preview__hero {
+      padding: 1.5rem 0 2rem;
+      border-bottom: 1px solid rgb(var(--border) / 0.24);
+    }
+
+    .sprint-preview__kicker {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-accent-iris));
+    }
+
+    .sprint-preview__hero h1 {
+      margin: 0.4rem 0 0;
+      max-width: 52rem;
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5.5vw, 3.5rem);
+      line-height: 1.02;
+      letter-spacing: -0.055em;
+    }
+
+    .sprint-preview__subtitle,
+    .sprint-preview__focus {
+      margin: 0.75rem 0 0;
+      font-size: 0.95rem;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__focus span {
+      font-weight: 600;
+      color: rgb(var(--reading-ink));
+    }
+
+    .sprint-preview__meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+      gap: 0.75rem 1.25rem;
+      margin: 1.25rem 0 0;
+      padding: 1rem;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: var(--radius-md);
+      background: rgb(var(--reading-paper));
+    }
+
+    .sprint-preview__meta dt {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .sprint-preview__meta dd {
+      margin: 0.2rem 0 0;
+      font-size: 0.86rem;
+      color: rgb(var(--reading-ink));
+    }
+
+    .sprint-preview__purpose {
+      margin: 1rem 0 0;
+      max-width: 44rem;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__section {
+      padding: 2.2rem 0;
+      border-bottom: 1px solid rgb(var(--border) / 0.18);
+    }
+
+    .sprint-preview__section-head {
+      margin-bottom: 1.1rem;
+    }
+
+    .sprint-preview__section-head h2 {
+      margin: 0.15rem 0 0;
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 3vw, 1.85rem);
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+    }
+
+    .sprint-preview__section-head > p {
+      margin: 0.55rem 0 0;
+      max-width: 44rem;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__list {
+      margin: 0;
+      padding-left: 1.2rem;
+      max-width: 44rem;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__list--compact {
+      list-style: disc;
+    }
+
+    .sprint-preview__list strong {
+      color: rgb(var(--reading-ink));
+      font-weight: 600;
+    }
+
+    .sprint-preview__anatomy {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .sprint-preview__anatomy-zone {
+      padding: 1rem 1.1rem;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: var(--radius-md);
+      background: rgb(var(--reading-paper));
+    }
+
+    .sprint-preview__anatomy-zone h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-accent-iris));
+    }
+
+    .sprint-preview__anatomy-zone ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.86rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__quote {
+      margin: 1.1rem 0 0;
+      padding: 0.85rem 1rem;
+      border-left: 3px solid rgb(var(--reading-accent-iris) / 0.5);
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+      background: rgb(var(--surface-subtle) / 0.5);
+    }
+
+    .sprint-preview__type-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .sprint-preview__type-row {
+      display: grid;
+      gap: 0.35rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgb(var(--border) / 0.14);
+    }
+
+    .sprint-preview__type-row:last-child {
+      border-bottom: 0;
+    }
+
+    .sprint-preview__type-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .sprint-preview__type-sample[data-type="display"] {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 650;
+      letter-spacing: -0.05em;
+      line-height: 1.05;
+    }
+
+    .sprint-preview__type-sample[data-type="h1"] {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 650;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+    }
+
+    .sprint-preview__type-sample[data-type="h2"] {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 650;
+      letter-spacing: -0.03em;
+    }
+
+    .sprint-preview__type-sample[data-type="h3"] {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .sprint-preview__type-sample[data-type="ingress"] {
+      font-size: 1.05rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__type-sample[data-type="body"] {
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__type-sample[data-type="micro"] {
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      color: rgb(var(--muted));
+    }
+
+    .sprint-preview__type-sample[data-type="button"] {
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .sprint-preview__type-sample[data-type="ai"] {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: rgb(var(--reading-ink));
+    }
+
+    .sprint-preview__type-note {
+      font-size: 0.72rem;
+      font-style: italic;
+      color: rgb(var(--reading-accent-iris));
+    }
+
+    .sprint-preview__token-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+      gap: 0.75rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .sprint-preview__token {
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: rgb(var(--reading-paper));
+    }
+
+    .sprint-preview__token-swatch {
+      height: 3.5rem;
+    }
+
+    .sprint-preview__token-swatch[data-sample="bg"] {
+      background: rgb(var(--article-page-canvas));
+      border-bottom: 1px solid rgb(var(--border) / 0.2);
+    }
+
+    .sprint-preview__token-swatch[data-sample="text"] {
+      background: rgb(var(--reading-ink));
+    }
+
+    .sprint-preview__token-swatch[data-sample="text-secondary"] {
+      background: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__token-swatch[data-sample="surface-subtle"] {
+      background: rgb(var(--surface-subtle));
+    }
+
+    .sprint-preview__token-swatch[data-sample="surface-elevated"] {
+      background: rgb(var(--surface-elevated));
+      border: 1px solid rgb(var(--border) / 0.2);
+    }
+
+    .sprint-preview__token-swatch[data-sample="action"] {
+      background: rgb(var(--reading-ink));
+    }
+
+    .sprint-preview__token-swatch[data-sample="focus"] {
+      background: rgb(var(--focus));
+    }
+
+    .sprint-preview__token-swatch[data-sample="border"] {
+      background: rgb(var(--border));
+    }
+
+    .sprint-preview__token-meta {
+      padding: 0.6rem 0.7rem;
+    }
+
+    .sprint-preview__token-meta strong {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .sprint-preview__token-meta code {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 0.68rem;
+      color: rgb(var(--muted));
+    }
+
+    .sprint-preview__primitives {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .sprint-preview__primitive-label {
+      margin: 0 0 0.5rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .sprint-preview__primitive-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .sprint-preview__primitive-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      max-width: 22rem;
+    }
+
+    .sprint-preview__btn {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: default;
+    }
+
+    .sprint-preview__btn--primary {
+      border: 0;
+      background: rgb(var(--reading-ink));
+      color: rgb(var(--reading-paper));
+    }
+
+    .sprint-preview__btn--secondary {
+      border: 1px solid rgb(var(--border) / 0.5);
+      background: rgb(var(--reading-paper));
+      color: rgb(var(--reading-ink));
+    }
+
+    .sprint-preview__btn--ghost {
+      border: 0;
+      background: transparent;
+      color: rgb(var(--reading-ink));
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .sprint-preview__pill {
+      display: inline-flex;
+      padding: 0.25rem 0.6rem;
+      border: 1px solid rgb(var(--border) / 0.4);
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-accent-iris));
+    }
+
+    .sprint-preview__link {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: rgb(var(--reading-ink));
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .sprint-preview__chip {
+      display: inline-flex;
+      padding: 0.45rem 0.85rem;
+      border: 1px solid rgb(var(--border) / 0.38);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      background: rgb(var(--reading-paper));
+      color: rgb(var(--reading-ink));
+    }
+
+    .sprint-preview__card {
+      padding: 0.85rem 1rem;
+      border: 1px solid rgb(var(--border) / 0.25);
+      border-radius: var(--radius-md);
+      background: rgb(var(--reading-paper));
+    }
+
+    .sprint-preview__card-kicker {
+      margin: 0 0 0.25rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-accent-iris));
+    }
+
+    .sprint-preview__card-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .sprint-preview__input {
+      width: 100%;
+      padding: 0.55rem 0.85rem;
+      border: 1px solid rgb(var(--border) / 0.4);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      background: rgb(var(--reading-paper));
+      color: rgb(var(--reading-ink));
+    }
+
+    .sprint-preview__infobox {
+      padding: 0.75rem 0.9rem;
+      border-left: 3px solid rgb(var(--border) / 0.5);
+      font-size: 0.85rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+      background: rgb(var(--surface-subtle) / 0.4);
+    }
+
+    .sprint-preview__compositions {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .sprint-preview__composition {
+      padding: 1rem;
+      border: 1px dashed rgb(var(--border) / 0.45);
+      border-radius: var(--radius-md);
+      background: rgb(var(--reading-paper));
+    }
+
+    .sprint-preview__composition h3 {
+      margin: 0 0 0.75rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .sprint-preview__hub-cluster {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .sprint-preview__hub-card {
+      padding: 0.65rem 0.85rem;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: 6px;
+      background: rgb(var(--article-page-canvas));
+    }
+
+    .sprint-preview__hub-card--featured {
+      padding: 0.85rem 1rem;
+      border-color: rgb(var(--border) / 0.35);
+    }
+
+    .sprint-preview__hub-card-kicker {
+      margin: 0 0 0.2rem;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-accent-iris));
+    }
+
+    .sprint-preview__hub-card-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 0.88rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .sprint-preview__article-intro {
+      max-width: 20rem;
+    }
+
+    .sprint-preview__article-kicker {
+      margin: 0 0 0.3rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-accent-iris));
+    }
+
+    .sprint-preview__article-h1 {
+      margin: 0 0 0.4rem;
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 650;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+    }
+
+    .sprint-preview__article-lead {
+      margin: 0;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__ai-transition {
+      padding: 0.75rem;
+      border-top: 1px solid rgb(var(--border) / 0.25);
+      background: rgb(var(--surface-subtle) / 0.3);
+    }
+
+    .sprint-preview__ai-transition-label {
+      margin: 0 0 0.35rem;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .sprint-preview__ai-transition-text {
+      margin: 0 0 0.55rem;
+      font-size: 0.85rem;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__footer {
+      padding: 1.5rem 0 0.5rem;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__footer p {
+      margin: 0.35rem 0 0;
+    }
+
+    .sprint-preview__footer code {
+      font-size: 0.78rem;
+      color: rgb(var(--muted));
+    }
+
+    @media (min-width: 640px) {
+      [data-sprint-preview] {
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      .sprint-preview__anatomy {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .sprint-preview__compositions {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .sprint-preview__hub-cluster {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .sprint-preview__hub-card--featured {
+        grid-column: 1 / -1;
+      }
+    }
+  </style>
+</PrototypeLayout>
