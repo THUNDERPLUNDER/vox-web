@@ -250,6 +250,10 @@ const colorSets = [
           Combines the trust and Nordic authority of Set A with the kinetic signal energy of Set D.
           Magenta is used only as a restrained motion/sound marker, not as a decorative palette.
         </p>
+        <p class="clab__hybrid-usage-note">
+          Updated usage test: magenta is evaluated as a restrained ghost/micro-signal,
+          especially on dark surfaces, rather than as a structural line color.
+        </p>
       </header>
 
       <ul class="clab__hybrid-tokens" role="list" aria-label="Hybrid tokens">
@@ -267,16 +271,17 @@ const colorSets = [
         <div>
           <p class="clab__panel-label">Magenta allowed</p>
           <ul role="list">
-            <li>signal line</li>
+            <li>ghost halo</li>
             <li>audio bars</li>
             <li>focus accent</li>
             <li>tiny dot/marker</li>
-            <li>edge/transition indicator</li>
+            <li>short edge/transition indicator</li>
           </ul>
         </div>
         <div>
           <p class="clab__panel-label">Magenta not allowed</p>
           <ul role="list">
+            <li>long structural line</li>
             <li>large filled button</li>
             <li>large background</li>
             <li>full gradient</li>
@@ -373,6 +378,8 @@ const colorSets = [
             <span class="clab__short-line" aria-hidden="true"></span>
             <span class="clab__focus-ring" aria-label="Focus ring sample"></span>
             <span class="clab__ai-spark" aria-label="AI marker sample">AI</span>
+            <button type="button" class="clab__ghost-pill">Ghost pill</button>
+            <span class="clab__ghost-orb" aria-label="Ghost halo marker"></span>
           </div>
         </section>
 
@@ -855,6 +862,16 @@ const colorSets = [
       color: rgb(var(--reading-ink-secondary));
     }
 
+    .clab__hybrid-head .clab__hybrid-usage-note {
+      max-width: 46rem;
+      padding: 0.65rem 0.8rem;
+      border: 1px solid rgb(var(--border) / 0.28);
+      border-left: 3px solid var(--hybrid-teal);
+      border-radius: 8px;
+      background: rgb(var(--surface-subtle) / 0.45);
+      font-size: 0.82rem;
+    }
+
     .clab__hybrid-tokens {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
@@ -932,7 +949,7 @@ const colorSets = [
       border: 1px solid var(--hybrid-border);
       border-radius: 8px;
       background: var(--hybrid-bg);
-      box-shadow: inset 0 -2px 0 var(--hybrid-magenta);
+      box-shadow: inset 0 -2px 0 rgb(15 76 129 / 0.16);
     }
 
     .clab__wordmark {
@@ -958,10 +975,23 @@ const colorSets = [
     }
 
     .clab__mock-nav a:first-child {
+      position: relative;
       color: var(--hybrid-text);
       text-decoration: underline;
       text-decoration-color: var(--hybrid-cyan);
       text-underline-offset: 4px;
+    }
+
+    .clab__mock-nav a:first-child::after {
+      content: "";
+      position: absolute;
+      right: -0.35rem;
+      top: -0.15rem;
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--hybrid-magenta);
+      box-shadow: 0 0 0 4px rgb(236 72 153 / 0.08);
     }
 
     .clab__mock-action {
@@ -1000,19 +1030,26 @@ const colorSets = [
     }
 
     .clab__hybrid-ai {
-      background: var(--hybrid-surface);
+      border-color: rgb(255 255 255 / 0.08);
+      background: #0a1628;
+      color: #ffffff;
     }
 
     .clab__transition-line {
-      width: 3.75rem;
-      height: 3px;
+      width: 0.7rem;
+      height: 0.7rem;
       margin-bottom: 0.75rem;
       border-radius: 999px;
       background: var(--hybrid-magenta);
+      box-shadow: 0 0 0 6px rgb(236 72 153 / 0.1);
     }
 
     .clab__hybrid-ai .clab__ai-label {
-      color: var(--hybrid-muted);
+      color: rgb(255 255 255 / 0.52);
+    }
+
+    .clab__hybrid-ai .clab__ai-text {
+      color: rgb(255 255 255 / 0.68);
     }
 
     .clab__ai-form {
@@ -1023,20 +1060,20 @@ const colorSets = [
 
     .clab__hybrid .clab__input {
       max-width: none;
-      border: 1px solid var(--hybrid-border);
-      background: var(--hybrid-bg);
-      color: var(--hybrid-text);
+      border: 1px solid rgb(255 255 255 / 0.16);
+      background: rgb(255 255 255 / 0.06);
+      color: #ffffff;
     }
 
     .clab__hybrid .clab__input:focus {
       outline-color: var(--hybrid-cyan);
-      box-shadow: 0 0 0 4px rgb(14 165 233 / 0.12);
+      box-shadow: 0 0 0 4px rgb(14 165 233 / 0.12), 0 0 18px rgb(236 72 153 / 0.1);
     }
 
     .clab__hybrid .clab__btn--primary {
       border: 0;
-      background: var(--hybrid-action);
-      color: #ffffff;
+      background: #ffffff;
+      color: var(--hybrid-action);
     }
 
     .clab__hub-cluster {
@@ -1064,7 +1101,7 @@ const colorSets = [
 
     .clab__hub-card--active {
       border-color: rgb(15 76 129 / 0.28);
-      box-shadow: inset 3px 0 0 var(--hybrid-magenta);
+      box-shadow: inset 3px 0 0 var(--hybrid-deep);
     }
 
     .clab__hub-card--active > span {
@@ -1115,10 +1152,11 @@ const colorSets = [
       position: absolute;
       left: 1rem;
       bottom: 1rem;
-      width: 3rem;
-      height: 3px;
+      width: 0.65rem;
+      height: 0.65rem;
       border-radius: 999px;
       background: var(--hybrid-magenta);
+      box-shadow: 0 0 0 7px rgb(236 72 153 / 0.1);
     }
 
     .clab__photo-copy p {
@@ -1197,7 +1235,7 @@ const colorSets = [
       height: 1.65rem;
       border: 2px solid var(--hybrid-cyan);
       border-radius: 999px;
-      box-shadow: 0 0 0 5px rgb(14 165 233 / 0.12);
+      box-shadow: 0 0 0 5px rgb(14 165 233 / 0.12), 0 0 16px rgb(236 72 153 / 0.08);
     }
 
     .clab__ai-spark {
@@ -1212,6 +1250,29 @@ const colorSets = [
       font-size: 0.62rem;
       font-weight: 800;
       letter-spacing: 0.05em;
+    }
+
+    .clab__ghost-pill {
+      padding: 0.4rem 0.7rem;
+      border: 1px solid rgb(236 72 153 / 0.24);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--hybrid-deep);
+      font-family: var(--clab-sans);
+      font-size: 0.72rem;
+      font-weight: 700;
+      box-shadow: 0 0 0 4px rgb(236 72 153 / 0.05);
+    }
+
+    .clab__ghost-orb {
+      width: 1.9rem;
+      height: 1.9rem;
+      border: 1px solid rgb(236 72 153 / 0.32);
+      border-radius: 999px;
+      background:
+        radial-gradient(circle, rgb(236 72 153 / 0.24) 0 2px, transparent 3px),
+        var(--hybrid-teal);
+      box-shadow: 0 0 0 6px rgb(236 72 153 / 0.07), 0 0 18px rgb(236 72 153 / 0.1);
     }
 
     .clab__contrast-strip {
@@ -1237,8 +1298,25 @@ const colorSets = [
     }
 
     .clab__contrast .clab__hero-headline {
-      border-left: 3px solid var(--hybrid-magenta);
+      border-left: 3px solid var(--hybrid-deep);
       padding-left: 0.65rem;
+    }
+
+    .clab__contrast--dark .clab__hero-headline {
+      border-left-color: rgb(255 255 255 / 0.16);
+      text-shadow: 0 0 22px rgb(236 72 153 / 0.18);
+    }
+
+    .clab__contrast--dark .clab__hero-headline::after {
+      content: "";
+      display: inline-block;
+      width: 0.42rem;
+      height: 0.42rem;
+      margin-left: 0.45rem;
+      border-radius: 999px;
+      background: var(--hybrid-magenta);
+      box-shadow: 0 0 0 6px rgb(236 72 153 / 0.1);
+      vertical-align: middle;
     }
 
     .clab__contrast--light .clab__hero-tag,
