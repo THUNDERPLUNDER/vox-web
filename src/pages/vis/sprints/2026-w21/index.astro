@@ -59,7 +59,7 @@ const colorTokens = [
 ];
 
 const typographyLabDirections = [
-  "0. Existing Bold Display — moderated",
+  "0. Existing Bold Display — moderated · working decision",
   "1. Signal Sans",
   "2. Tight Sans",
   "3. Editorial Serif",
@@ -156,12 +156,18 @@ const typographyLabDirections = [
       </div>
 
       <div class="sprint-preview__typo-summary">
+        <p class="sprint-preview__typo-decision">
+          <strong>Working decision:</strong> Existing Bold Display — moderated
+        </p>
+        <p class="sprint-preview__typo-sans">
+          Inter remains Viddel Sans for body, UI and action.
+        </p>
         <p class="sprint-preview__typo-status">
-          <strong>Status:</strong> Working decision
+          <strong>Status:</strong> Working decision recorded in Typography Lab
         </p>
         <ul class="sprint-preview__list sprint-preview__list--compact">
           {typographyLabDirections.map((dir) => (
-            <li>{dir}</li>
+            <li class:list={[dir.startsWith("0.") && "sprint-preview__typo-direction--working"]}>{dir}</li>
           ))}
         </ul>
         <a href={`${base}vis/sprints/2026-w21/typography/`} class="sprint-preview__typo-link">
@@ -459,6 +465,25 @@ const typographyLabDirections = [
 
     .sprint-preview__typo-summary {
       max-width: 44rem;
+    }
+
+    .sprint-preview__typo-decision {
+      margin: 0 0 0.5rem;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink));
+    }
+
+    .sprint-preview__typo-sans {
+      margin: 0 0 0.75rem;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__typo-direction--working {
+      font-weight: 600;
+      color: rgb(var(--reading-ink));
     }
 
     .sprint-preview__typo-status {

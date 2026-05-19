@@ -1,7 +1,7 @@
 ---
 /* CONTRACT: VIS-only Typography Lab for #123 — full-width display direction review.
+   Working decision: Direction 0 Existing Bold Display — moderated (MVP hypothesis).
    Parent: #126 sprint preview / #120 Design Lock. Not production design.
-   VIS-only font loading — does not affect global design system.
 */
 import PrototypeLayout from "../../../../../layouts/PrototypeLayout.astro";
 import "../../../../../styles/global.css";
@@ -36,6 +36,7 @@ const directions = [
     testingFor: "Tester om dagens brede, tunge displayenergi kan bevares med mer luft, bedre tracking og kontroll på lange norske overskrifter.",
     fontStack: 'Epilogue 600/700 · VIS-only · "Epilogue", "Inter", sans-serif',
     cssVar: "--tlab-display-existing",
+    isWorkingDecision: true,
   },
   {
     id: "signal",
@@ -45,6 +46,7 @@ const directions = [
     testingFor: "Tester aktiv, presis og produktnær tydelighet — tydelig skilt fra Inter body/UI.",
     fontStack: 'Sora 700 · VIS-only · "Sora", "Inter", sans-serif',
     cssVar: "--tlab-display-signal",
+    isWorkingDecision: false,
   },
   {
     id: "tight",
@@ -54,6 +56,7 @@ const directions = [
     testingFor: "Tester kompakt, fokusert MVP-retning — condensed sans som mulig Viddel Display.",
     fontStack: 'Roboto Condensed 700 · VIS-only · "Roboto Condensed", "Inter", sans-serif',
     cssVar: "--tlab-display-tight",
+    isWorkingDecision: false,
   },
   {
     id: "serif",
@@ -63,6 +66,7 @@ const directions = [
     testingFor: "Tester redaksjonell varme og tillit som mulig editorial accent — ikke spa eller luksusmagasin.",
     fontStack: 'Georgia / Iowan Old Style · system · Georgia, "Iowan Old Style", serif',
     cssVar: "--tlab-display-serif",
+    isWorkingDecision: false,
   },
   {
     id: "precision",
@@ -72,6 +76,7 @@ const directions = [
     testingFor: "Tester strammere redaksjonell presisjon — tyngde uten mykhet, produktpresisjon beholdt.",
     fontStack: 'Source Serif 4 700 · VIS-only · "Source Serif 4", Georgia, serif',
     cssVar: "--tlab-display-precision",
+    isWorkingDecision: false,
   },
 ];
 const tlabFontStylesheet =
@@ -105,8 +110,20 @@ const tlabFontStylesheet =
         <div><dt>Status</dt><dd>Working decision</dd></div>
       </dl>
 
+      <p class="tlab__decision">
+        <strong>Working decision:</strong> continue with Existing Bold Display — moderated as the primary display hypothesis.
+        Inter remains the system font for body, UI and action.
+      </p>
+
+      <ul class="tlab__usage" role="list">
+        <li>Use display for H1, hero and key editorial entry points.</li>
+        <li>Use Inter for body, UI, labels, navigation and action.</li>
+        <li>Control max-width, line-height and responsive breaks.</li>
+        <li>Avoid heavy display in small UI.</li>
+      </ul>
+
       <p class="tlab__note">
-        Viddel Sans = Inter. Viddel Display is under evaluation. This lab is VIS-only.
+        Viddel Sans = Inter. This lab is VIS-only — comparison references retained below.
       </p>
       <p class="tlab__debug-note">
         VIS-only webfonts loaded for review. If unavailable, browser falls back to listed stack.
@@ -120,7 +137,10 @@ const tlabFontStylesheet =
       <ol class="tlab__nav-list">
         {directions.map((d) => (
           <li>
-            <a href={`#${d.anchor}`}>{d.number}. {d.name}</a>
+            <a href={`#${d.anchor}`} class:list={[d.isWorkingDecision && "tlab__nav-link--working"]}>
+              {d.number}. {d.name}
+              {d.isWorkingDecision ? <span class="tlab__badge tlab__badge--working">Working decision</span> : null}
+            </a>
           </li>
         ))}
       </ol>
@@ -129,9 +149,20 @@ const tlabFontStylesheet =
     <!-- Full-width stacked directions -->
     <div class="tlab__sections">
       {directions.map((direction) => (
-        <section id={direction.anchor} class="tlab__direction" data-direction={direction.id}>
+        <section
+          id={direction.anchor}
+          class:list={["tlab__direction", direction.isWorkingDecision && "tlab__direction--working"]}
+          data-direction={direction.id}
+        >
           <header class="tlab__direction-head">
-            <h2>{direction.number}. {direction.name}</h2>
+            <div class="tlab__direction-title-row">
+              <h2>{direction.number}. {direction.name}</h2>
+              {direction.isWorkingDecision ? (
+                <span class="tlab__badge tlab__badge--working">Working decision</span>
+              ) : (
+                <span class="tlab__badge tlab__badge--reference">Comparison reference</span>
+              )}
+            </div>
             <p class="tlab__testing">
               <strong>Testing for:</strong> {direction.testingFor}
             </p>
@@ -281,6 +312,25 @@ const tlabFontStylesheet =
       font-size: 0.84rem;
     }
 
+    .tlab__decision {
+      margin: 1rem 0 0;
+      padding: 0.75rem 0.9rem;
+      border-left: 3px solid rgb(var(--reading-accent-iris) / 0.55);
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink));
+      background: rgb(var(--surface-subtle) / 0.45);
+    }
+
+    .tlab__usage {
+      margin: 0.75rem 0 0;
+      padding-left: 1.15rem;
+      max-width: 44rem;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
     .tlab__note {
       margin: 0.85rem 0 0;
       padding: 0.65rem 0.85rem;
@@ -330,10 +380,18 @@ const tlabFontStylesheet =
     }
 
     .tlab__nav-list a {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
       font-size: 0.78rem;
       font-weight: 500;
       color: rgb(var(--reading-ink));
       text-decoration: none;
+    }
+
+    .tlab__nav-link--working {
+      font-weight: 600;
     }
 
     .tlab__nav-list a:hover {
@@ -365,6 +423,40 @@ const tlabFontStylesheet =
       font-size: 1.05rem;
       font-weight: 700;
       letter-spacing: -0.02em;
+    }
+
+    .tlab__direction-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tlab__badge {
+      display: inline-flex;
+      padding: 0.18rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .tlab__badge--working {
+      border: 1px solid rgb(var(--reading-accent-iris) / 0.45);
+      color: rgb(var(--reading-accent-iris));
+      background: rgb(var(--reading-accent-iris) / 0.08);
+    }
+
+    .tlab__badge--reference {
+      border: 1px solid rgb(var(--border) / 0.4);
+      color: rgb(var(--muted));
+      background: rgb(var(--surface-subtle) / 0.35);
+    }
+
+    .tlab__direction--working .tlab__article-start {
+      border-color: rgb(var(--reading-accent-iris) / 0.35);
     }
 
     .tlab__testing,
