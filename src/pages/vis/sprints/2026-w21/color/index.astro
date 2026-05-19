@@ -229,6 +229,102 @@ const toolboxDoNot = [
   "Use teal/SaaS green as primary identity",
   "Make all buttons colorful",
 ];
+
+const semanticLayers = [
+  {
+    id: "background",
+    name: "Background",
+    role: "Page, chrome, atmosphere, dark/light base.",
+    tokens: [
+      { name: "--color-bg-page", value: "#FFFFFF" },
+      { name: "--color-bg-chrome", value: "#F8FAFC" },
+      { name: "--color-bg-atmosphere-light", value: "#F8FAFC" },
+      { name: "--color-bg-atmosphere-dark", value: "#134D6A" },
+    ],
+    candidates: ["#FFFFFF", "#F8FAFC", "#134D6A", "#020617"],
+  },
+  {
+    id: "surface",
+    name: "Surface",
+    role: "Editorial cards, elevated surfaces, AI/action areas, dark panels.",
+    tokens: [
+      { name: "--color-surface-editorial", value: "#FFFFFF" },
+      { name: "--color-surface-elevated", value: "#F3F4F6" },
+      { name: "--color-surface-action", value: "#F8FAFC" },
+      { name: "--color-surface-action-dark", value: "#071827" },
+    ],
+    candidates: ["#FFFFFF", "#F3F4F6", "#F8FAFC", "#071827", "#020617"],
+  },
+  {
+    id: "text-icon",
+    name: "Text & icon",
+    role: "Reading, UI, inverse text, links, small signal icons.",
+    tokens: [
+      { name: "--color-text-primary", value: "#111827" },
+      { name: "--color-text-secondary", value: "#6B7280" },
+      { name: "--color-text-muted", value: "#6B7280" },
+      { name: "--color-text-inverse", value: "#FFFFFF" },
+      { name: "--color-icon-signal", value: "#FF55B0" },
+    ],
+    candidates: ["#111827", "#18181B", "#6B7280", "#FFFFFF", "#134D6A", "#FF55B0"],
+  },
+  {
+    id: "border",
+    name: "Border",
+    role: "Structure, separation, focus, ghost signal.",
+    tokens: [
+      { name: "--color-border-subtle", value: "#E5E7EB" },
+      { name: "--color-border-strong", value: "#D1D5DB" },
+      { name: "--color-border-focus", value: "#0EA5E9" },
+      { name: "--color-border-signal-ghost", value: "#FF55B0" },
+    ],
+    candidates: ["#E5E7EB", "#D1D5DB", "#0EA5E9", "#FF55B0"],
+  },
+  {
+    id: "fill",
+    name: "Fill",
+    role: "Buttons, active state, signal marks, disabled state.",
+    tokens: [
+      { name: "--color-fill-button-primary", value: "#111827" },
+      { name: "--color-fill-button-dark", value: "#134D6A" },
+      { name: "--color-fill-signal", value: "#FF55B0" },
+      { name: "--color-fill-signal-muted", value: "rgb(255 85 176 / 0.12)" },
+      { name: "--color-fill-disabled", value: "#F3F4F6" },
+    ],
+    candidates: ["#111827", "#134D6A", "#FF55B0", "tint/alpha", "#F3F4F6"],
+  },
+];
+
+const semanticStatus = [
+  {
+    level: "locked",
+    label: "Locked / strong",
+    items: [
+      "Clean light editorial base",
+      "Near-black text/UI",
+      "Inter for body/UI from #123",
+    ],
+  },
+  {
+    level: "working",
+    label: "Working",
+    items: [
+      "Deep Nordic Blue #134D6A",
+      "Kinetic Magenta #FF55B0",
+      "Cyan as functional focus",
+    ],
+  },
+  {
+    level: "open",
+    label: "Open",
+    items: [
+      "Exact dark base variant",
+      "Exact tints/alpha values",
+      "Orange/green system role",
+      "Final production naming",
+    ],
+  },
+];
 ---
 
 <PrototypeLayout title="Color Lab — #122">
@@ -753,6 +849,101 @@ const toolboxDoNot = [
           </article>
         </div>
       </section>
+    </section>
+
+    <section class="clab__semantic" aria-labelledby="semantic-heading">
+      <header class="clab__semantic-head">
+        <p class="clab__kicker">Semantic model</p>
+        <h2 id="semantic-heading">Semantic color model — scaffold v0.1</h2>
+        <p>
+          This scaffold translates the emerging color direction into semantic layers for future primitives
+          and MVP reskin. It is not a final token implementation.
+        </p>
+      </header>
+
+      <div class="clab__semantic-layout">
+        <!-- Five semantic layers -->
+        <div class="clab__semantic-layers">
+          {semanticLayers.map((layer) => (
+            <article class="clab__semantic-layer" data-layer={layer.id}>
+              <header class="clab__semantic-layer-head">
+                <h3>{layer.name}</h3>
+                <p>{layer.role}</p>
+              </header>
+              <ul class="clab__semantic-tokens" role="list">
+                {layer.tokens.map((token) => (
+                  <li class="clab__semantic-token">
+                    <code class="clab__semantic-token-name">{token.name}</code>
+                    <span class="clab__semantic-token-value">
+                      <span
+                        class="clab__semantic-swatch"
+                        style={`background: ${token.value.startsWith("rgb") ? token.value : token.value}`}
+                        aria-hidden="true"
+                      />
+                      <code>{token.value}</code>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <div class="clab__semantic-candidates" aria-label={`${layer.name} candidate values`}>
+                {layer.candidates.map((color) => (
+                  <span
+                    class="clab__semantic-candidate"
+                    style={color.startsWith("tint") ? undefined : `--cand-bg: ${color}`}
+                    data-tint={color.startsWith("tint") ? true : undefined}
+                  >
+                    {color.startsWith("tint") ? color : color}
+                  </span>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <!-- Component anatomy figure -->
+        <aside class="clab__semantic-anatomy-wrap" aria-label="Component anatomy layers">
+          <p class="clab__panel-label">Component anatomy</p>
+          <figure class="clab__semantic-anatomy">
+            <div class="clab__anatomy-bg">
+              <span class="clab__anatomy-tag clab__anatomy-tag--bg">Background</span>
+              <div class="clab__anatomy-surface">
+                <span class="clab__anatomy-tag clab__anatomy-tag--surface">Surface</span>
+                <div class="clab__anatomy-fill">
+                  <span class="clab__anatomy-tag clab__anatomy-tag--fill">Fill</span>
+                </div>
+                <span class="clab__anatomy-tag clab__anatomy-tag--border">Border</span>
+                <p class="clab__anatomy-text">
+                  <span class="clab__anatomy-tag clab__anatomy-tag--text">Text & icon</span>
+                  Article headline
+                  <span class="clab__anatomy-signal" aria-hidden="true"></span>
+                </p>
+              </div>
+            </div>
+            <figcaption class="clab__anatomy-caption">
+              Layers stack bottom-up: background → surface → fill, with border wrapping surface and text/icon on top.
+            </figcaption>
+          </figure>
+        </aside>
+      </div>
+
+      <!-- Status markers -->
+      <section class="clab__semantic-status" aria-label="Token status markers">
+        <p class="clab__panel-label">Status markers</p>
+        <div class="clab__semantic-status-grid">
+          {semanticStatus.map((group) => (
+            <article class="clab__semantic-status-group" data-status={group.level}>
+              <h4>{group.label}</h4>
+              <ul role="list">
+                {group.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <p class="clab__semantic-guardrail">
+        Full semantic token implementation should happen after #124 primitive testing and before #125 MVP surface reskin.
+      </p>
     </section>
 
     <footer class="clab__footer">
@@ -2455,6 +2646,322 @@ const toolboxDoNot = [
       font-weight: 700;
     }
 
+    /* ── Semantic color model scaffold ── */
+    .clab__semantic {
+      --sem-deep: #134d6a;
+      --sem-dark: #071827;
+      --sem-magenta: #ff55b0;
+      --sem-cyan: #0ea5e9;
+      --sem-ink: #111827;
+
+      margin-top: 3rem;
+      padding-top: 2.5rem;
+      border-top: 2px dashed rgb(var(--border) / 0.45);
+    }
+
+    .clab__semantic-head h2 {
+      margin: 0.35rem 0 0;
+      max-width: 44rem;
+      font-family: var(--clab-display);
+      font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+    }
+
+    .clab__semantic-head p:not(.clab__kicker) {
+      margin: 0.65rem 0 0;
+      max-width: 48rem;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__semantic-layout {
+      display: grid;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .clab__semantic-layers {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .clab__semantic-layer {
+      padding: 1rem 1.1rem;
+      border: 1px solid rgb(var(--border) / 0.28);
+      border-radius: 10px;
+      background: rgb(var(--surface-subtle) / 0.35);
+    }
+
+    .clab__semantic-layer-head h3 {
+      margin: 0;
+      font-family: var(--clab-display);
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+
+    .clab__semantic-layer-head p {
+      margin: 0.35rem 0 0;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__semantic-tokens {
+      margin: 0.85rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .clab__semantic-token {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem 1rem;
+      padding: 0.45rem 0.55rem;
+      border-radius: 6px;
+      background: rgb(var(--article-page-canvas));
+      border: 1px solid rgb(var(--border) / 0.18);
+    }
+
+    .clab__semantic-token-name {
+      font-size: 0.68rem;
+      color: var(--sem-deep);
+      word-break: break-all;
+    }
+
+    .clab__semantic-token-value {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.68rem;
+    }
+
+    .clab__semantic-swatch {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 3px;
+      border: 1px solid rgb(var(--border) / 0.35);
+      flex-shrink: 0;
+    }
+
+    .clab__semantic-candidates {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.75rem;
+      padding-top: 0.65rem;
+      border-top: 1px dashed rgb(var(--border) / 0.22);
+    }
+
+    .clab__semantic-candidate {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.45rem 0.2rem 0.2rem;
+      border-radius: 999px;
+      border: 1px solid rgb(var(--border) / 0.28);
+      background: rgb(var(--article-page-canvas));
+      font-size: 0.62rem;
+      font-family: ui-monospace, monospace;
+      gap: 0.35rem;
+    }
+
+    .clab__semantic-candidate:not([data-tint])::before {
+      content: "";
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 50%;
+      background: var(--cand-bg);
+      border: 1px solid rgb(var(--border) / 0.3);
+    }
+
+    .clab__semantic-candidate[data-tint] {
+      font-style: italic;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__semantic-anatomy-wrap {
+      margin: 0;
+    }
+
+    .clab__semantic-anatomy {
+      margin: 0;
+      padding: 0;
+    }
+
+    .clab__anatomy-bg {
+      position: relative;
+      min-height: 14rem;
+      padding: 1.25rem;
+      border-radius: 12px;
+      background: linear-gradient(160deg, var(--sem-deep) 0%, #020617 100%);
+      overflow: hidden;
+    }
+
+    .clab__anatomy-surface {
+      position: relative;
+      margin-top: 1.5rem;
+      padding: 1rem 1rem 1.25rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 4px 18px rgb(0 0 0 / 0.12);
+    }
+
+    .clab__anatomy-fill {
+      display: inline-block;
+      margin: 0.65rem 0 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      background: var(--sem-ink);
+    }
+
+    .clab__anatomy-text {
+      position: relative;
+      margin: 0.5rem 0 0;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--sem-ink);
+      line-height: 1.35;
+    }
+
+    .clab__anatomy-signal {
+      display: inline-block;
+      width: 0.45rem;
+      height: 0.45rem;
+      margin-left: 0.25rem;
+      border-radius: 50%;
+      background: var(--sem-magenta);
+      box-shadow: 0 0 0 3px rgb(255 85 176 / 0.15);
+      vertical-align: middle;
+    }
+
+    .clab__anatomy-tag {
+      display: inline-block;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.3;
+    }
+
+    .clab__anatomy-tag--bg {
+      position: absolute;
+      top: 0.65rem;
+      left: 0.75rem;
+      background: rgb(255 255 255 / 0.12);
+      color: #ffffff;
+    }
+
+    .clab__anatomy-tag--surface {
+      position: absolute;
+      top: -0.55rem;
+      left: 0.75rem;
+      background: #f3f4f6;
+      color: var(--sem-ink);
+      border: 1px solid #e5e7eb;
+    }
+
+    .clab__anatomy-tag--border {
+      position: absolute;
+      top: 50%;
+      right: -0.15rem;
+      transform: translateY(-50%) rotate(90deg);
+      transform-origin: center;
+      background: #0ea5e9;
+      color: #ffffff;
+      font-size: 0.52rem;
+    }
+
+    .clab__anatomy-tag--fill {
+      color: #ffffff;
+      font-size: 0.52rem;
+    }
+
+    .clab__anatomy-tag--text {
+      display: block;
+      width: fit-content;
+      margin-bottom: 0.25rem;
+      background: rgb(255 85 176 / 0.12);
+      color: var(--sem-magenta);
+      border: 1px solid rgb(255 85 176 / 0.25);
+    }
+
+    .clab__anatomy-caption {
+      margin-top: 0.65rem;
+      font-size: 0.75rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__semantic-status {
+      margin-top: 1.75rem;
+    }
+
+    .clab__semantic-status-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .clab__semantic-status-group {
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgb(var(--border) / 0.24);
+    }
+
+    .clab__semantic-status-group[data-status="locked"] {
+      border-left: 3px solid var(--sem-ink);
+      background: rgb(var(--surface-subtle) / 0.5);
+    }
+
+    .clab__semantic-status-group[data-status="working"] {
+      border-left: 3px solid var(--sem-deep);
+      background: rgb(19 77 106 / 0.06);
+    }
+
+    .clab__semantic-status-group[data-status="open"] {
+      border-left: 3px solid rgb(var(--border) / 0.5);
+      background: rgb(var(--article-page-canvas));
+    }
+
+    .clab__semantic-status-group h4 {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .clab__semantic-status-group ul {
+      margin: 0.5rem 0 0;
+      padding-left: 1.1rem;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__semantic-status-group li {
+      margin: 0.2rem 0;
+    }
+
+    .clab__semantic-guardrail {
+      margin: 1.25rem 0 0;
+      max-width: 48rem;
+      padding: 0.65rem 0.8rem;
+      border-left: 3px solid var(--sem-deep);
+      border-radius: 0 8px 8px 0;
+      background: rgb(var(--surface-subtle) / 0.45);
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
     .clab__footer {
       margin-top: 2rem;
       padding-top: 1.25rem;
@@ -2741,6 +3248,15 @@ const toolboxDoNot = [
       }
 
       .clab__toolbox-applied {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .clab__semantic-layout {
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.85fr);
+        align-items: start;
+      }
+
+      .clab__semantic-status-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
