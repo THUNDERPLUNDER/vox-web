@@ -27,6 +27,8 @@ export const navItems = [
   { slug: "surfaces", title: "Surfaces" },
   { slug: "radius", title: "Radius" },
   { slug: "strokes", title: "Strokes" },
+  { slug: "elevation", title: "Elevation" },
+  { slug: "layering", title: "Layering" },
   { slug: "buttons", title: "Buttons" },
   { slug: "cards", title: "Cards" },
   { slug: "inputs", title: "Inputs" },
@@ -37,7 +39,7 @@ export const navItems = [
   { slug: "ai-action", title: "AI / action" },
 ] as const;
 
-type IterationStatus = "Favorite" | "Candidate" | "Parked" | "Rejected";
+type IterationStatus = "Favorite" | "Candidate" | "Parked" | "Rejected" | "Open slot";
 type PageStatus = keyof typeof statusLabels;
 
 export type PrimitivePage = {
@@ -56,6 +58,8 @@ export type PrimitivePage = {
     note: string;
     sample: string;
   };
+  suggestedScale?: string[];
+  tokenNote?: string;
   iterations: {
     id: "P1" | "P2" | "P3" | "P4";
     status: IterationStatus;
@@ -214,6 +218,138 @@ export const primitivePages: PrimitivePage[] = [
     do: ["Use cyan for default focus", "Use subtle borders for editorial structure", "Use signal edge sparingly"],
     dont: ["Use long magenta structural lines", "Over-border every card", "Use focus styling as decoration"],
     questions: ["Should identity stroke be 1px or 2px?", "Where should signal edge be allowed?", "How should focus stroke interact with glass chrome?"],
+  },
+  {
+    slug: "elevation",
+    title: "Elevation / shadow",
+    status: "candidate",
+    purpose: "Define how Viddel uses depth and shadow to separate content, chrome, overlays and action without making the expression heavy or glossy.",
+    does: "Gives controlled visual depth, separates flat content, lifted cards, floating chrome and overlays, and supports readability and hierarchy rather than decoration.",
+    applies: {
+      chrome: "Sticky nav, floating controls and glass fallback.",
+      editorial: "Very subtle lifting only where readability needs separation.",
+      action: "Action panels, prompt containers and real overlays.",
+    },
+    suggestedScale: ["none", "subtle", "lifted", "floating", "overlay"],
+    tokenNote: "These primitives may later map to token families such as shadow.*. Not implemented as global tokens in #124.",
+    iterations: [
+      {
+        id: "P1",
+        status: "Candidate",
+        name: "Subtle depth scale",
+        sample: "elevation-subtle",
+        copy: "A restrained scale from none to overlay, with subtle/lifted as the main editorial candidates.",
+        rationale: "Kept for review because depth is needed for hierarchy, chrome and overlays, but should not become a brand effect.",
+      },
+      {
+        id: "P2",
+        status: "Open slot",
+        name: "Open slot",
+        sample: "open-slot",
+        copy: "Reserved for a future card/elevation comparison.",
+        rationale: "Not tested yet.",
+      },
+      {
+        id: "P3",
+        status: "Open slot",
+        name: "Open slot",
+        sample: "open-slot",
+        copy: "Reserved for a future chrome/floating treatment.",
+        rationale: "Not tested yet.",
+      },
+      {
+        id: "P4",
+        status: "Open slot",
+        name: "Open slot",
+        sample: "open-slot",
+        copy: "Reserved for overlay depth evaluation.",
+        rationale: "Not tested yet.",
+      },
+    ],
+    do: [
+      "Use shadow to clarify hierarchy.",
+      "Keep editorial surfaces mostly quiet.",
+      "Use stronger depth only for overlays, floating chrome or active panels.",
+      "Pair shadow with solid fallback where glass is used.",
+    ],
+    dont: [
+      "Use heavy shadows as brand effect.",
+      "Make every card float.",
+      "Use depth to compensate for unclear layout.",
+      "Add glossy premium effects.",
+    ],
+    questions: [
+      "Hvor mye elevation trenger hub-kort egentlig?",
+      "Skal editorial cards være helt flate eller svakt løftet?",
+      "Skal glass chrome ha egen shadow/elevation?",
+      "Trenger AI/action panels mer depth enn editorial cards?",
+    ],
+  },
+  {
+    slug: "layering",
+    title: "Layering / z-index",
+    status: "candidate",
+    purpose: "Define Viddel stacking order so chrome, content, floating actions, overlays and VIS-shell do not collide.",
+    does: "Gives a clear UI layer model, prevents random z-index values, and makes glass, sticky nav, dropdowns, AI panels and overlays predictable.",
+    applies: {
+      chrome: "Sticky nav, local nav and dropdowns.",
+      editorial: "Base content and in-flow help blocks.",
+      action: "Floating actions, panels and overlays. VIS chrome should remain separate from product primitives.",
+    },
+    suggestedScale: ["base", "content", "sticky chrome", "floating action", "overlay", "modal", "toast", "VIS chrome / debug"],
+    tokenNote: "These primitives may later map to token families such as layer.*. Not implemented as global tokens in #124.",
+    iterations: [
+      {
+        id: "P1",
+        status: "Candidate",
+        name: "Semantic layer stack",
+        sample: "layering-stack",
+        copy: "A named layer model for product content, chrome, floating actions, overlays and VIS/debug chrome.",
+        rationale: "Kept for review because #125 needs semantic layers before sticky chrome, glass and overlays are implemented.",
+      },
+      {
+        id: "P2",
+        status: "Open slot",
+        name: "Open slot",
+        sample: "open-slot",
+        copy: "Reserved for dropdown and sticky chrome interaction.",
+        rationale: "Not tested yet.",
+      },
+      {
+        id: "P3",
+        status: "Open slot",
+        name: "Open slot",
+        sample: "open-slot",
+        copy: "Reserved for AI prompt/action panel stacking.",
+        rationale: "Not tested yet.",
+      },
+      {
+        id: "P4",
+        status: "Open slot",
+        name: "Open slot",
+        sample: "open-slot",
+        copy: "Reserved for VIS chrome/debug separation.",
+        rationale: "Not tested yet.",
+      },
+    ],
+    do: [
+      "Use named semantic layers.",
+      "Keep product layers separate from VIS chrome.",
+      "Define sticky/floating/overlay order before building #125.",
+      "Keep numeric values hidden behind semantic naming later.",
+    ],
+    dont: [
+      "Use random z-index values.",
+      "Let glass chrome sit above modals.",
+      "Let floating AI controls cover important content without rules.",
+      "Mix VIS chrome and product chrome as if they are the same layer.",
+    ],
+    questions: [
+      "Hvilket lag skal sticky product chrome ligge på?",
+      "Hvor skal AI prompt/action panel ligge?",
+      "Hvordan skal dropdowns og overlays samspille med glass?",
+      "Skal VIS chrome ha eget høyere debug-lag uten å påvirke produktmodell?",
+    ],
   },
   {
     slug: "buttons",

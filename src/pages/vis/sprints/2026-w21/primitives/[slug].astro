@@ -87,6 +87,15 @@ const buttonLevels = [
             <article><strong>Editorial</strong><p>{page.applies.editorial}</p></article>
             <article><strong>Action / AI</strong><p>{page.applies.action}</p></article>
           </div>
+          {page.suggestedScale && (
+            <div class="plab__scale-note" aria-label="Suggested scale">
+              <strong>Suggested scale</strong>
+              <div>
+                {page.suggestedScale.map((item) => <span>{item}</span>)}
+              </div>
+            </div>
+          )}
+          {page.tokenNote && <p class="plab__token-note">{page.tokenNote}</p>}
         </section>
 
         <section class="plab__panel" aria-labelledby="favorite-heading">
@@ -331,6 +340,49 @@ const buttonLevels = [
       background: var(--p-subtle);
     }
 
+    .plab__scale-note {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgb(17 24 39 / 0.08);
+    }
+
+    .plab__scale-note strong {
+      display: block;
+      margin-bottom: 0.55rem;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--p-muted);
+    }
+
+    .plab__scale-note div {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .plab__scale-note span {
+      padding: 0.25rem 0.55rem;
+      border: 1px solid rgb(17 24 39 / 0.12);
+      border-radius: 999px;
+      background: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--p-ink);
+    }
+
+    .plab__token-note {
+      margin: 1rem 0 0;
+      padding: 0.7rem 0.8rem;
+      border-left: 3px solid var(--p-deep);
+      border-radius: 0 8px 8px 0;
+      background: rgb(19 77 106 / 0.05);
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: var(--p-muted);
+    }
+
     .plab__applies strong,
     .plab__rules h3,
     .plab__favorite-card h3,
@@ -375,6 +427,12 @@ const buttonLevels = [
     .plab__iteration[data-status="Rejected"] header strong {
       color: #9f1239;
       background: rgb(255 85 176 / 0.09);
+    }
+
+    .plab__iteration-strip span[data-status="Open slot"],
+    .plab__iteration[data-status="Open slot"] header strong {
+      color: var(--p-muted);
+      background: rgb(17 24 39 / 0.06);
     }
 
     .plab__iteration header {
@@ -436,6 +494,13 @@ const buttonLevels = [
       background: linear-gradient(90deg, var(--p-magenta), rgb(255 85 176 / 0.18));
     }
 
+    .plab__sample--open-slot {
+      border: 1px dashed rgb(17 24 39 / 0.2);
+      background:
+        linear-gradient(135deg, transparent 0 48%, rgb(17 24 39 / 0.08) 48% 52%, transparent 52%),
+        var(--p-subtle);
+    }
+
     .plab__sample--surface-ink {
       background: var(--p-dark);
     }
@@ -482,6 +547,38 @@ const buttonLevels = [
     .plab__sample--signal-edge,
     .plab__sample--focus-magenta {
       box-shadow: inset 4px 0 0 var(--p-magenta);
+    }
+
+    .plab__sample--elevation-subtle {
+      background: #fff;
+      box-shadow:
+        0 1px 2px rgb(2 6 23 / 0.04),
+        0 8px 24px rgb(2 6 23 / 0.08);
+    }
+
+    .plab__sample--layering-stack {
+      position: relative;
+      overflow: hidden;
+      background: var(--p-subtle);
+    }
+
+    .plab__sample--layering-stack::before,
+    .plab__sample--layering-stack::after {
+      content: "";
+      position: absolute;
+      border-radius: 10px;
+      border: 1px solid rgb(17 24 39 / 0.12);
+      background: #fff;
+      box-shadow: 0 8px 20px rgb(2 6 23 / 0.07);
+    }
+
+    .plab__sample--layering-stack::before {
+      inset: 1.4rem 2rem 1rem 1rem;
+    }
+
+    .plab__sample--layering-stack::after {
+      inset: 0.7rem 1rem 1.8rem 2rem;
+      background: rgb(19 77 106 / 0.12);
     }
 
     .plab__sample--button-favorite,
