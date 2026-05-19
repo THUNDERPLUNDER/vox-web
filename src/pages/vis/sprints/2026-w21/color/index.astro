@@ -325,6 +325,81 @@ const semanticStatus = [
     ],
   },
 ];
+
+const chromeMaterialTokens = [
+  {
+    group: "Chrome glass",
+    tokens: [
+      { name: "--color-bg-chrome-glass-light", value: "rgba(255, 255, 255, 0.72)" },
+      { name: "--color-bg-chrome-glass-dark", value: "rgba(2, 6, 23, 0.72)" },
+      { name: "--color-border-chrome-glass", value: "see light/dark variants" },
+      { name: "--opacity-chrome-glass-light", value: "0.72" },
+      { name: "--opacity-chrome-glass-dark", value: "0.72" },
+      { name: "--effect-chrome-blur", value: "16px / 24px candidate" },
+      { name: "--shadow-chrome-float", value: "0 4px 24px rgb(0 0 0 / 0.08)" },
+    ],
+  },
+  {
+    group: "Solid fallback",
+    tokens: [
+      { name: "--color-bg-chrome-solid-light", value: "#FFFFFF" },
+      { name: "--color-bg-chrome-solid-dark", value: "#020617" },
+    ],
+  },
+];
+
+const chromeBorderCandidates = [
+  { label: "border light", value: "rgba(17, 24, 39, 0.10)" },
+  { label: "border dark", value: "rgba(255, 255, 255, 0.14)" },
+];
+
+const chromeProductRules = [
+  {
+    zone: "Chrome / navigation",
+    rule: "Can use glass, transparency and blur.",
+  },
+  {
+    zone: "Editorial",
+    rule: "Should remain a clean light reading/help surface.",
+  },
+  {
+    zone: "Action / AI",
+    rule: "Can use clear surfaces or dark surfaces, but should not become a floating glass widget detached from content.",
+  },
+];
+
+const chromeDo = [
+  "Use glass for chrome/orientation",
+  "Keep glass subtle",
+  "Provide solid fallback",
+  "Use deep blue/ink for dark chrome",
+  "Keep editorial surfaces clean",
+];
+
+const chromeDoNot = [
+  "Use glass for every card",
+  "Put long text on busy glass",
+  "Make AI feel like a detached widget",
+  "Overuse magenta inside chrome",
+];
+
+const chromeStatus = [
+  {
+    level: "locked",
+    label: "Locked / strong",
+    items: ["Editorial remains clean/light", "Inter remains body/UI from #123"],
+  },
+  {
+    level: "working",
+    label: "Working",
+    items: ["Chrome glass behavior"],
+  },
+  {
+    level: "open",
+    label: "Open",
+    items: ["Exact blur, opacity, fallback values"],
+  },
+];
 ---
 
 <PrototypeLayout title="Color Lab — #122">
@@ -944,6 +1019,154 @@ const semanticStatus = [
       <p class="clab__semantic-guardrail">
         Full semantic token implementation should happen after #124 primitive testing and before #125 MVP surface reskin.
       </p>
+    </section>
+
+    <section class="clab__chrome" aria-labelledby="chrome-heading">
+      <header class="clab__chrome-head">
+        <p class="clab__kicker">Material / effect</p>
+        <h2 id="chrome-heading">Chrome material — glass behavior scaffold</h2>
+        <p>
+          Chrome can use glass/transparency as a material. This scaffold separates color tokens from
+          material/effect behavior for future primitives and MVP reskin.
+        </p>
+      </header>
+
+      <aside class="clab__chrome-rules" aria-label="Product rules for chrome, editorial and action">
+        <p class="clab__panel-label">Product rule</p>
+        <ul role="list">
+          {chromeProductRules.map((item) => (
+            <li>
+              <strong>{item.zone}:</strong> {item.rule}
+            </li>
+          ))}
+        </ul>
+      </aside>
+
+      <section class="clab__chrome-tokens-wrap" aria-label="Material and effect token proposals">
+        <p class="clab__panel-label">Material / effect tokens (not global)</p>
+        <p class="clab__chrome-note">
+          Color tokens define hue and role. Material tokens define transparency, blur, border treatment and fallback solids.
+        </p>
+        <div class="clab__chrome-token-groups">
+          {chromeMaterialTokens.map((group) => (
+            <article class="clab__chrome-token-group">
+              <h3>{group.group}</h3>
+              <ul class="clab__chrome-token-list" role="list">
+                {group.tokens.map((token) => (
+                  <li class="clab__chrome-token">
+                    <code>{token.name}</code>
+                    <span>{token.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+        <div class="clab__chrome-border-candidates">
+          {chromeBorderCandidates.map((item) => (
+            <span class="clab__chrome-border-chip">
+              <span class="clab__chrome-border-swatch" style={`background: ${item.value}`} aria-hidden="true"></span>
+              <code>{item.label}: {item.value}</code>
+            </span>
+          ))}
+          <span class="clab__chrome-border-chip">
+            <span class="clab__chrome-border-swatch clab__chrome-border-swatch--deep" aria-hidden="true"></span>
+            <code>solid deep fallback: #134D6A</code>
+          </span>
+        </div>
+      </section>
+
+      <section class="clab__chrome-previews" aria-label="Chrome glass previews">
+        <p class="clab__panel-label">CSS-only previews</p>
+        <div class="clab__chrome-preview-grid">
+          <!-- 1. Light chrome glass -->
+          <article class="clab__chrome-preview">
+            <p class="clab__chrome-preview-label">1. Light chrome glass</p>
+            <div class="clab__chrome-scene clab__chrome-scene--light">
+              <div class="clab__chrome-scene-content">
+                <p class="clab__chrome-scene-kicker">BESLUTNINGSSTØTTE</p>
+                <p class="clab__chrome-scene-title">Audiograf: når det haster</p>
+                <p class="clab__chrome-scene-copy">Clean editorial surface behind transparent chrome.</p>
+              </div>
+              <nav class="clab__chrome-bar clab__chrome-bar--glass-light" aria-label="Light glass chrome preview">
+                <span class="clab__chrome-logo">Viddel</span>
+                <span class="clab__chrome-links">Hjelp · Artikler</span>
+                <span class="clab__chrome-signals" aria-hidden="true">
+                  <span class="clab__chrome-signal clab__chrome-signal--cyan"></span>
+                </span>
+              </nav>
+            </div>
+          </article>
+
+          <!-- 2. Dark chrome glass -->
+          <article class="clab__chrome-preview">
+            <p class="clab__chrome-preview-label">2. Dark chrome glass</p>
+            <div class="clab__chrome-scene clab__chrome-scene--dark">
+              <div class="clab__chrome-scene-content clab__chrome-scene-content--inverse">
+                <p class="clab__chrome-scene-kicker">ETTER LESING</p>
+                <p class="clab__chrome-scene-title">Hva bør jeg gjøre nå?</p>
+              </div>
+              <nav class="clab__chrome-bar clab__chrome-bar--glass-dark" aria-label="Dark glass chrome preview">
+                <span class="clab__chrome-logo">Viddel</span>
+                <span class="clab__chrome-links">Hjelp · Artikler</span>
+              </nav>
+            </div>
+          </article>
+
+          <!-- 3. Solid fallback -->
+          <article class="clab__chrome-preview clab__chrome-preview--wide">
+            <p class="clab__chrome-preview-label">3. Solid fallback</p>
+            <div class="clab__chrome-fallback-pair">
+              <div class="clab__chrome-scene clab__chrome-scene--light clab__chrome-scene--compact">
+                <nav class="clab__chrome-bar clab__chrome-bar--solid-light" aria-label="Solid light chrome fallback">
+                  <span class="clab__chrome-logo">Viddel</span>
+                  <span class="clab__chrome-links">Hjelp</span>
+                </nav>
+                <p class="clab__chrome-fallback-caption">Solid light · #FFFFFF</p>
+              </div>
+              <div class="clab__chrome-scene clab__chrome-scene--dark clab__chrome-scene--compact">
+                <nav class="clab__chrome-bar clab__chrome-bar--solid-dark" aria-label="Solid dark chrome fallback">
+                  <span class="clab__chrome-logo">Viddel</span>
+                  <span class="clab__chrome-links">Hjelp</span>
+                </nav>
+                <p class="clab__chrome-fallback-caption">Solid dark · #020617</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="clab__chrome-dodont" aria-label="Chrome do and do not">
+        <p class="clab__panel-label">4. Do / do not</p>
+        <div class="clab__chrome-dodont-grid">
+          <div>
+            <p class="clab__chrome-dodont-title">Do</p>
+            <ul role="list">
+              {chromeDo.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+          <div>
+            <p class="clab__chrome-dodont-title">Do not</p>
+            <ul role="list">
+              {chromeDoNot.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="clab__chrome-status" aria-label="Chrome material status">
+        <p class="clab__panel-label">Status markers</p>
+        <div class="clab__chrome-status-grid">
+          {chromeStatus.map((group) => (
+            <article class="clab__chrome-status-group" data-status={group.level}>
+              <h4>{group.label}</h4>
+              <ul role="list">
+                {group.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </section>
     </section>
 
     <footer class="clab__footer">
@@ -2962,6 +3185,398 @@ const semanticStatus = [
       color: rgb(var(--reading-ink-secondary));
     }
 
+    /* ── Chrome material / glass scaffold ── */
+    .clab__chrome {
+      --chrome-deep: #134d6a;
+      --chrome-dark: #020617;
+      --chrome-ink: #111827;
+      --chrome-magenta: #ff55b0;
+      --chrome-cyan: #0ea5e9;
+      --chrome-glass-light: rgb(255 255 255 / 0.72);
+      --chrome-glass-dark: rgb(2 6 23 / 0.72);
+      --chrome-border-light: rgb(17 24 39 / 0.1);
+      --chrome-border-dark: rgb(255 255 255 / 0.14);
+      --chrome-blur: 16px;
+
+      margin-top: 3rem;
+      padding-top: 2.5rem;
+      border-top: 2px dashed rgb(var(--border) / 0.45);
+    }
+
+    .clab__chrome-head h2 {
+      margin: 0.35rem 0 0;
+      max-width: 44rem;
+      font-family: var(--clab-display);
+      font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+    }
+
+    .clab__chrome-head p:not(.clab__kicker) {
+      margin: 0.65rem 0 0;
+      max-width: 48rem;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__chrome-rules {
+      margin-top: 1.25rem;
+      padding: 0.85rem 1rem;
+      border: 1px solid rgb(var(--border) / 0.28);
+      border-left: 3px solid var(--chrome-deep);
+      border-radius: 0 10px 10px 0;
+      background: rgb(var(--surface-subtle) / 0.45);
+    }
+
+    .clab__chrome-rules ul {
+      margin: 0.55rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .clab__chrome-rules li {
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__chrome-rules strong {
+      color: rgb(var(--reading-ink));
+    }
+
+    .clab__chrome-tokens-wrap {
+      margin-top: 1.5rem;
+    }
+
+    .clab__chrome-note {
+      margin: 0.45rem 0 0;
+      max-width: 48rem;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__chrome-token-groups {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 0.85rem;
+    }
+
+    .clab__chrome-token-group {
+      padding: 0.85rem 1rem;
+      border: 1px solid rgb(var(--border) / 0.24);
+      border-radius: 8px;
+      background: rgb(var(--article-page-canvas));
+    }
+
+    .clab__chrome-token-group h3 {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .clab__chrome-token-list {
+      margin: 0.65rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.4rem;
+    }
+
+    .clab__chrome-token {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.35rem 1rem;
+      padding: 0.4rem 0.5rem;
+      border-radius: 6px;
+      background: rgb(var(--surface-subtle) / 0.4);
+      font-size: 0.68rem;
+    }
+
+    .clab__chrome-token code {
+      color: var(--chrome-deep);
+      word-break: break-all;
+    }
+
+    .clab__chrome-token span {
+      color: rgb(var(--reading-ink-secondary));
+      font-family: ui-monospace, monospace;
+    }
+
+    .clab__chrome-border-candidates {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.75rem;
+    }
+
+    .clab__chrome-border-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.55rem 0.25rem 0.3rem;
+      border: 1px solid rgb(var(--border) / 0.24);
+      border-radius: 999px;
+      background: rgb(var(--article-page-canvas));
+      font-size: 0.62rem;
+    }
+
+    .clab__chrome-border-swatch {
+      width: 0.85rem;
+      height: 0.85rem;
+      border-radius: 50%;
+      border: 1px solid rgb(var(--border) / 0.35);
+    }
+
+    .clab__chrome-border-swatch--deep {
+      background: var(--chrome-deep);
+    }
+
+    .clab__chrome-previews {
+      margin-top: 1.5rem;
+    }
+
+    .clab__chrome-preview-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .clab__chrome-preview-label {
+      margin: 0 0 0.55rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__chrome-scene {
+      position: relative;
+      min-height: 9.5rem;
+      padding: 3.25rem 0.85rem 0.85rem;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgb(var(--border) / 0.22);
+    }
+
+    .clab__chrome-scene--light {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .clab__chrome-scene--dark {
+      background: linear-gradient(160deg, var(--chrome-deep) 0%, var(--chrome-dark) 100%);
+    }
+
+    .clab__chrome-scene--compact {
+      min-height: 5.5rem;
+      padding: 2.75rem 0.65rem 0.55rem;
+    }
+
+    .clab__chrome-scene-content {
+      position: relative;
+      z-index: 0;
+    }
+
+    .clab__chrome-scene-content--inverse {
+      color: #ffffff;
+    }
+
+    .clab__chrome-scene-kicker {
+      margin: 0;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--chrome-deep);
+    }
+
+    .clab__chrome-scene-content--inverse .clab__chrome-scene-kicker {
+      color: rgb(255 255 255 / 0.65);
+    }
+
+    .clab__chrome-scene-title {
+      margin: 0.25rem 0 0;
+      font-size: 0.82rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .clab__chrome-scene-copy {
+      margin: 0.35rem 0 0;
+      font-size: 0.72rem;
+      line-height: 1.45;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__chrome-bar {
+      position: absolute;
+      top: 0.55rem;
+      left: 0.55rem;
+      right: 0.55rem;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: 10px;
+      font-size: 0.68rem;
+    }
+
+    .clab__chrome-bar--glass-light {
+      background: var(--chrome-glass-light);
+      border: 1px solid var(--chrome-border-light);
+      backdrop-filter: blur(var(--chrome-blur));
+      -webkit-backdrop-filter: blur(var(--chrome-blur));
+      box-shadow: 0 4px 24px rgb(0 0 0 / 0.06);
+      color: var(--chrome-ink);
+    }
+
+    .clab__chrome-bar--glass-dark {
+      background: var(--chrome-glass-dark);
+      border: 1px solid var(--chrome-border-dark);
+      backdrop-filter: blur(var(--chrome-blur));
+      -webkit-backdrop-filter: blur(var(--chrome-blur));
+      box-shadow: 0 4px 24px rgb(0 0 0 / 0.2);
+      color: #ffffff;
+    }
+
+    .clab__chrome-bar--solid-light {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      color: var(--chrome-ink);
+    }
+
+    .clab__chrome-bar--solid-dark {
+      background: var(--chrome-dark);
+      border: 1px solid rgb(255 255 255 / 0.08);
+      color: #ffffff;
+    }
+
+    .clab__chrome-logo {
+      font-weight: 700;
+      margin-right: auto;
+    }
+
+    .clab__chrome-links {
+      opacity: 0.75;
+    }
+
+    .clab__chrome-signals {
+      display: inline-flex;
+      gap: 0.25rem;
+    }
+
+    .clab__chrome-signal {
+      width: 0.35rem;
+      height: 0.35rem;
+      border-radius: 50%;
+    }
+
+    .clab__chrome-signal--cyan {
+      background: var(--chrome-cyan);
+      box-shadow: 0 0 0 2px rgb(14 165 233 / 0.15);
+    }
+
+    .clab__chrome-fallback-pair {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .clab__chrome-fallback-caption {
+      margin: 0.45rem 0 0;
+      font-size: 0.62rem;
+      color: rgb(var(--reading-ink-secondary));
+      text-align: center;
+    }
+
+    .clab__chrome-scene--dark .clab__chrome-fallback-caption {
+      color: rgb(255 255 255 / 0.65);
+    }
+
+    .clab__chrome-dodont {
+      margin-top: 1.5rem;
+    }
+
+    .clab__chrome-dodont-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .clab__chrome-dodont-title {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .clab__chrome-dodont ul {
+      margin: 0.5rem 0 0;
+      padding-left: 1.1rem;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__chrome-dodont li {
+      margin: 0.2rem 0;
+    }
+
+    .clab__chrome-status {
+      margin-top: 1.5rem;
+    }
+
+    .clab__chrome-status-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .clab__chrome-status-group {
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgb(var(--border) / 0.24);
+    }
+
+    .clab__chrome-status-group[data-status="locked"] {
+      border-left: 3px solid var(--chrome-ink);
+      background: rgb(var(--surface-subtle) / 0.5);
+    }
+
+    .clab__chrome-status-group[data-status="working"] {
+      border-left: 3px solid var(--chrome-deep);
+      background: rgb(19 77 106 / 0.06);
+    }
+
+    .clab__chrome-status-group[data-status="open"] {
+      border-left: 3px solid rgb(var(--border) / 0.5);
+      background: rgb(var(--article-page-canvas));
+    }
+
+    .clab__chrome-status-group h4 {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .clab__chrome-status-group ul {
+      margin: 0.5rem 0 0;
+      padding-left: 1.1rem;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__chrome-status-group li {
+      margin: 0.2rem 0;
+    }
+
     .clab__footer {
       margin-top: 2rem;
       padding-top: 1.25rem;
@@ -3257,6 +3872,30 @@ const semanticStatus = [
       }
 
       .clab__semantic-status-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .clab__chrome-token-groups {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .clab__chrome-preview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .clab__chrome-preview--wide {
+        grid-column: 1 / -1;
+      }
+
+      .clab__chrome-fallback-pair {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .clab__chrome-dodont-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .clab__chrome-status-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
