@@ -34,7 +34,7 @@ const directions = [
     number: "0",
     name: "Existing Bold Display — moderated",
     testingFor: "Tester om dagens brede, tunge displayenergi kan bevares med mer luft, bedre tracking og kontroll på lange norske overskrifter.",
-    fontStack: 'Epilogue 650 · VIS-only font test · "Epilogue", ui-sans-serif, sans-serif',
+    fontStack: 'Epilogue 600/700 · VIS-only · "Epilogue", "Inter", sans-serif',
     cssVar: "--tlab-display-existing",
   },
   {
@@ -43,7 +43,7 @@ const directions = [
     number: "1",
     name: "Signal Sans",
     testingFor: "Tester aktiv, presis og produktnær tydelighet — tydelig skilt fra Inter body/UI.",
-    fontStack: 'Sora 700 · VIS-only font test · "Sora", ui-sans-serif, sans-serif',
+    fontStack: 'Sora 700 · VIS-only · "Sora", "Inter", sans-serif',
     cssVar: "--tlab-display-signal",
   },
   {
@@ -52,7 +52,7 @@ const directions = [
     number: "2",
     name: "Tight Sans",
     testingFor: "Tester kompakt, fokusert MVP-retning — condensed sans som mulig Viddel Display.",
-    fontStack: 'Archivo Condensed 700 · VIS-only font test · "Archivo Condensed", ui-sans-serif, sans-serif',
+    fontStack: 'Roboto Condensed 700 · VIS-only · "Roboto Condensed", "Inter", sans-serif',
     cssVar: "--tlab-display-tight",
   },
   {
@@ -61,7 +61,7 @@ const directions = [
     number: "3",
     name: "Editorial Serif",
     testingFor: "Tester redaksjonell varme og tillit som mulig editorial accent — ikke spa eller luksusmagasin.",
-    fontStack: 'Georgia / Iowan Old Style · system serif · no webfont import',
+    fontStack: 'Georgia / Iowan Old Style · system · Georgia, "Iowan Old Style", serif',
     cssVar: "--tlab-display-serif",
   },
   {
@@ -70,21 +70,18 @@ const directions = [
     number: "4",
     name: "Editorial Precision Display",
     testingFor: "Tester strammere redaksjonell presisjon — tyngde uten mykhet, produktpresisjon beholdt.",
-    fontStack: 'Source Serif 4 650 · VIS-only font test · "Source Serif 4", Georgia, serif',
+    fontStack: 'Source Serif 4 700 · VIS-only · "Source Serif 4", Georgia, serif',
     cssVar: "--tlab-display-precision",
   },
 ];
+const tlabFontStylesheet =
+  "https://fonts.googleapis.com/css2?family=Epilogue:wght@600;700&family=Inter:wght@400;500;600&family=Roboto+Condensed:wght@700&family=Sora:wght@700&family=Source+Serif+4:wght@600;700&display=swap";
 ---
 
-<!-- VIS-only font test — hoisted to head by Astro, scoped to this page only -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  href="https://fonts.googleapis.com/css2?family=Archivo+Condensed:wght@600;700&family=Epilogue:wght@500;600;700&family=Inter:wght@400;500;600&family=Sora:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,600;650&display=swap"
-  rel="stylesheet"
-/>
-
 <PrototypeLayout title="Typography Lab — #123">
+  <link slot="head" rel="preconnect" href="https://fonts.googleapis.com" />
+  <link slot="head" rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link slot="head" rel="stylesheet" href={tlabFontStylesheet} />
   <main class="tlab" data-typography-lab>
     <nav class="tlab__breadcrumb" aria-label="Du er her">
       <a href={`${base}vis`}>VIS</a>
@@ -110,6 +107,10 @@ const directions = [
 
       <p class="tlab__note">
         Viddel Sans = Inter. Viddel Display is under evaluation. This lab is VIS-only.
+      </p>
+      <p class="tlab__debug-note">
+        VIS-only webfonts loaded for review. If unavailable, browser falls back to listed stack.
+        Check Network tab for fonts.googleapis.com / fonts.gstatic.com.
       </p>
     </header>
 
@@ -196,10 +197,10 @@ const directions = [
   <style>
     [data-typography-lab] {
       --tlab-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
-      --tlab-display-existing: "Epilogue", var(--tlab-sans);
-      --tlab-display-signal: "Sora", var(--tlab-sans);
-      --tlab-display-tight: "Archivo Condensed", var(--tlab-sans);
-      --tlab-display-serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+      --tlab-display-existing: "Epilogue", "Inter", ui-sans-serif, sans-serif;
+      --tlab-display-signal: "Sora", "Inter", ui-sans-serif, sans-serif;
+      --tlab-display-tight: "Roboto Condensed", "Inter", ui-sans-serif, sans-serif;
+      --tlab-display-serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
       --tlab-display-precision: "Source Serif 4", Georgia, "Times New Roman", serif;
 
       min-height: 100vh;
@@ -245,7 +246,7 @@ const directions = [
       margin: 0.45rem 0 0;
       font-family: var(--tlab-sans);
       font-size: clamp(1.75rem, 4.5vw, 2.5rem);
-      font-weight: 650;
+      font-weight: 600;
       letter-spacing: -0.04em;
       line-height: 1.05;
     }
@@ -288,6 +289,13 @@ const directions = [
       line-height: 1.6;
       color: rgb(var(--reading-ink-secondary));
       background: rgb(var(--surface-subtle) / 0.35);
+    }
+
+    .tlab__debug-note {
+      margin: 0.55rem 0 0;
+      font-size: 0.75rem;
+      line-height: 1.55;
+      color: rgb(var(--muted));
     }
 
     /* Sticky nav */
@@ -513,9 +521,10 @@ const directions = [
     .tlab__direction[data-direction="existing"] .tlab__h1 {
       margin: 0.55rem 0 0;
       max-width: 14em;
-      font-family: var(--tlab-display-existing);
+      font-family: "Epilogue", "Inter", ui-sans-serif, sans-serif;
       font-size: clamp(2rem, 5.5vw, 3.4rem);
-      font-weight: 650;
+      font-weight: 600;
+      font-synthesis: none;
       letter-spacing: -0.038em;
       line-height: 1.1;
       text-wrap: balance;
@@ -525,9 +534,10 @@ const directions = [
     .tlab__direction[data-direction="existing"] .tlab__h2 {
       margin: 1.1rem 0 0;
       max-width: 20em;
-      font-family: var(--tlab-display-existing);
+      font-family: "Epilogue", "Inter", ui-sans-serif, sans-serif;
       font-size: clamp(1.15rem, 2.5vw, 1.45rem);
-      font-weight: 650;
+      font-weight: 600;
+      font-synthesis: none;
       letter-spacing: -0.028em;
       line-height: 1.18;
       color: rgb(var(--reading-ink));
@@ -537,9 +547,10 @@ const directions = [
     .tlab__direction[data-direction="signal"] .tlab__h1 {
       margin: 0.55rem 0 0;
       max-width: 13.5em;
-      font-family: var(--tlab-display-signal);
+      font-family: "Sora", "Inter", ui-sans-serif, sans-serif;
       font-size: clamp(1.85rem, 5vw, 3.1rem);
       font-weight: 700;
+      font-synthesis: none;
       letter-spacing: -0.03em;
       line-height: 1.06;
       text-wrap: balance;
@@ -548,22 +559,24 @@ const directions = [
 
     .tlab__direction[data-direction="signal"] .tlab__h2 {
       margin: 1.05rem 0 0;
-      font-family: var(--tlab-display-signal);
+      font-family: "Sora", "Inter", ui-sans-serif, sans-serif;
       font-size: clamp(1.1rem, 2.3vw, 1.35rem);
       font-weight: 700;
+      font-synthesis: none;
       letter-spacing: -0.022em;
       line-height: 1.14;
       color: rgb(var(--reading-ink));
     }
 
-    /* 2: Tight Sans — Archivo Condensed */
+    /* 2: Tight Sans — Roboto Condensed */
     .tlab__direction[data-direction="tight"] .tlab__h1 {
       margin: 0.55rem 0 0;
       max-width: 12.5em;
-      font-family: var(--tlab-display-tight);
+      font-family: "Roboto Condensed", "Inter", ui-sans-serif, sans-serif;
       font-size: clamp(1.9rem, 5.2vw, 3.2rem);
       font-weight: 700;
-      letter-spacing: -0.015em;
+      font-synthesis: none;
+      letter-spacing: -0.01em;
       line-height: 1.02;
       text-wrap: balance;
       color: rgb(var(--reading-ink));
@@ -571,10 +584,11 @@ const directions = [
 
     .tlab__direction[data-direction="tight"] .tlab__h2 {
       margin: 1rem 0 0;
-      font-family: var(--tlab-display-tight);
+      font-family: "Roboto Condensed", "Inter", ui-sans-serif, sans-serif;
       font-size: clamp(1.05rem, 2.2vw, 1.3rem);
       font-weight: 700;
-      letter-spacing: -0.01em;
+      font-synthesis: none;
+      letter-spacing: -0.008em;
       line-height: 1.1;
       color: rgb(var(--reading-ink));
     }
@@ -583,9 +597,10 @@ const directions = [
     .tlab__direction[data-direction="serif"] .tlab__h1 {
       margin: 0.55rem 0 0;
       max-width: 15em;
-      font-family: var(--tlab-display-serif);
+      font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
       font-size: clamp(1.9rem, 5vw, 3.15rem);
       font-weight: 600;
+      font-synthesis: none;
       letter-spacing: -0.015em;
       line-height: 1.16;
       text-wrap: balance;
@@ -594,9 +609,10 @@ const directions = [
 
     .tlab__direction[data-direction="serif"] .tlab__h2 {
       margin: 1.05rem 0 0;
-      font-family: var(--tlab-display-serif);
+      font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
       font-size: clamp(1.15rem, 2.4vw, 1.4rem);
       font-weight: 600;
+      font-synthesis: none;
       letter-spacing: -0.008em;
       line-height: 1.22;
       color: rgb(var(--reading-ink));
@@ -606,9 +622,10 @@ const directions = [
     .tlab__direction[data-direction="precision"] .tlab__h1 {
       margin: 0.55rem 0 0;
       max-width: 14em;
-      font-family: var(--tlab-display-precision);
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
       font-size: clamp(1.85rem, 4.8vw, 3rem);
-      font-weight: 650;
+      font-weight: 700;
+      font-synthesis: none;
       letter-spacing: -0.032em;
       line-height: 1.1;
       text-wrap: balance;
@@ -617,9 +634,10 @@ const directions = [
 
     .tlab__direction[data-direction="precision"] .tlab__h2 {
       margin: 1rem 0 0;
-      font-family: var(--tlab-display-precision);
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
       font-size: clamp(1.1rem, 2.3vw, 1.35rem);
-      font-weight: 650;
+      font-weight: 700;
+      font-synthesis: none;
       letter-spacing: -0.024em;
       line-height: 1.16;
       color: rgb(var(--reading-ink));
@@ -685,30 +703,30 @@ const directions = [
     }
 
     .tlab__strip-item[data-direction="existing"] .tlab__strip-h1 {
-      font-family: var(--tlab-display-existing);
-      font-weight: 650;
+      font-family: "Epilogue", "Inter", ui-sans-serif, sans-serif;
+      font-weight: 600;
       letter-spacing: -0.03em;
     }
 
     .tlab__strip-item[data-direction="signal"] .tlab__strip-h1 {
-      font-family: var(--tlab-display-signal);
+      font-family: "Sora", "Inter", ui-sans-serif, sans-serif;
       font-weight: 700;
       letter-spacing: -0.025em;
     }
 
     .tlab__strip-item[data-direction="tight"] .tlab__strip-h1 {
-      font-family: var(--tlab-display-tight);
+      font-family: "Roboto Condensed", "Inter", ui-sans-serif, sans-serif;
       font-weight: 700;
     }
 
     .tlab__strip-item[data-direction="serif"] .tlab__strip-h1 {
-      font-family: var(--tlab-display-serif);
+      font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
       font-weight: 600;
     }
 
     .tlab__strip-item[data-direction="precision"] .tlab__strip-h1 {
-      font-family: var(--tlab-display-precision);
-      font-weight: 650;
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+      font-weight: 700;
       letter-spacing: -0.028em;
     }
 

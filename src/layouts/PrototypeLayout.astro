@@ -50,6 +50,7 @@ const fileNavTotal = wireframeFileNav?.allFiles.length ?? 0;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title>VIS Wireframe - {title}</title>
+    <slot name="head" />
     <style is:global>
       #vis-file-picker-dialog::backdrop {
         background: rgb(0 0 0 / 0.45);
