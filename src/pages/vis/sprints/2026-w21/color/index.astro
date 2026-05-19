@@ -102,6 +102,107 @@ const colorSets = [
     signalNote: "Magenta used as line/marker only — not fill or gradient.",
   },
 ];
+
+const hierarchyBar = [
+  {
+    id: "light",
+    label: "White / Clean Light Gray",
+    share: "52%",
+    color: "#FFFFFF",
+    text: "#111827",
+    border: true,
+    flex: 52,
+  },
+  {
+    id: "deep",
+    label: "Deep Nordic Blue / Teal",
+    share: "30%",
+    color: "#0F4C5C",
+    text: "#FFFFFF",
+    flex: 30,
+  },
+  {
+    id: "ink",
+    label: "Near Black / Ink",
+    share: "12%",
+    color: "#111827",
+    text: "#FFFFFF",
+    flex: 12,
+  },
+  {
+    id: "cyan",
+    label: "Cyan Focus",
+    share: "2%",
+    color: "#0EA5E9",
+    text: "#FFFFFF",
+    flex: 2,
+  },
+  {
+    id: "magenta",
+    label: "Kinetic Magenta",
+    share: "1.5%",
+    color: "#EC4899",
+    text: "#FFFFFF",
+    flex: 1.5,
+  },
+];
+
+const hierarchyParked = [
+  { label: "Warm", color: "#F97316" },
+  { label: "Success", color: "#10B981" },
+];
+
+const hierarchyUsage = [
+  {
+    name: "Deep Nordic Blue / Teal",
+    role: "Primary identity depth, dark surfaces, chrome moments, hero contrast.",
+    share: "25–35%",
+    doUse: "Dark hero, chrome/nav, dark AI transition, footer/dark editorial bands.",
+    doNot: "Decorative fills across reading surfaces or large layout blocks.",
+    colors: "#0F4C81 · #0F4C5C · #071827",
+  },
+  {
+    name: "White / Clean Light Gray",
+    role: "Editorial base, reading space, help space.",
+    share: "45–60%",
+    doUse: "Page background, article surfaces, content + AI help layer.",
+    doNot: "Tinted wellness base or cream/powder editorial wash.",
+    colors: "#FFFFFF · #F3F4F6 · #F8FAFC",
+  },
+  {
+    name: "Near Black / Ink",
+    role: "Typography, monochrome UI, primary buttons.",
+    share: "10–15%",
+    doUse: "Text, buttons, UI anchors, structural monochrome actions.",
+    doNot: "Large colored UI blocks or signal replacement.",
+    colors: "#111827 · #020617 · #18181B",
+  },
+  {
+    name: "Cyan Focus",
+    role: "Functional focus, active link, precise interaction signal.",
+    share: "1–3%",
+    doUse: "Focus rings, active link, small UI state.",
+    doNot: "Brand hero fill or decorative accent bands.",
+    colors: "#0EA5E9",
+  },
+  {
+    name: "Kinetic Magenta",
+    role: "Ghost signal, motion/sound marker, small energy pulse.",
+    share: "under 1–2%",
+    doUse: "Audio bars, small dots, subtle halo, dark-surface ghost outline.",
+    doNot: "Long lines, large fills, gradients, decorative pink wash.",
+    colors: "#EC4899 · muted tint optional",
+  },
+  {
+    name: "Warm / Success",
+    role: "System or future support colors, not core identity yet.",
+    share: "parked / optional",
+    doUse: "Only if state semantics require it later.",
+    doNot: "Core brand identity or primary action color in hybrid track.",
+    colors: "#F97316 · #EA580C · #10B981",
+    parked: true,
+  },
+];
 ---
 
 <PrototypeLayout title="Color Lab — #122">
@@ -400,6 +501,101 @@ const colorSets = [
           </div>
         </section>
       </div>
+    </section>
+
+    <section class="clab__hierarchy" aria-labelledby="hierarchy-heading">
+      <header class="clab__hierarchy-head">
+        <p class="clab__kicker">Color hierarchy</p>
+        <h2 id="hierarchy-heading">Color hierarchy — proposed usage distribution</h2>
+        <p>
+          This hierarchy tests how the hybrid palette should be distributed across future Viddel surfaces.
+          It is a usage model, not final token lock.
+        </p>
+      </header>
+
+      <!-- A. Large hierarchy bar -->
+      <section class="clab__hierarchy-bar-wrap" aria-label="Proposed color distribution bar">
+        <p class="clab__panel-label">Proposed distribution v0.1</p>
+        <div class="clab__hierarchy-bar">
+          {hierarchyBar.map((segment) => (
+            <div
+              class="clab__hierarchy-segment"
+              data-segment={segment.id}
+              style={`--seg-flex: ${segment.flex}; --seg-bg: ${segment.color}; --seg-text: ${segment.text};`}
+            >
+              <span class="clab__hierarchy-segment-share">{segment.share}</span>
+              <span class="clab__hierarchy-segment-label">{segment.label}</span>
+            </div>
+          ))}
+        </div>
+        <div class="clab__hierarchy-parked" aria-label="Parked optional system colors">
+          {hierarchyParked.map((chip) => (
+            <span class="clab__hierarchy-chip" style={`--chip-bg: ${chip.color}`}>{chip.label}</span>
+          ))}
+          <span class="clab__hierarchy-chip-note">parked / optional</span>
+        </div>
+      </section>
+
+      <!-- B. Usage table -->
+      <section class="clab__hierarchy-table-wrap" aria-label="Color usage table">
+        <p class="clab__panel-label">Usage table</p>
+        <div class="clab__hierarchy-table">
+          {hierarchyUsage.map((row) => (
+            <article class:list={["clab__hierarchy-row", row.parked && "clab__hierarchy-row--parked"]}>
+              <header>
+                <h3>{row.name}</h3>
+                <p class="clab__hierarchy-share">{row.share}</p>
+              </header>
+              <p class="clab__hierarchy-role">{row.role}</p>
+              <dl>
+                <div><dt>Do</dt><dd>{row.doUse}</dd></div>
+                <div><dt>Do not</dt><dd>{row.doNot}</dd></div>
+                <div><dt>Hex</dt><dd><code>{row.colors}</code></dd></div>
+              </dl>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <!-- C. Applied miniature examples -->
+      <section class="clab__hierarchy-mini-wrap" aria-label="Applied miniature examples">
+        <p class="clab__panel-label">Applied miniature examples</p>
+        <div class="clab__hierarchy-mini-grid">
+          <article class="clab__hierarchy-mini clab__hierarchy-mini--dark-hero">
+            <p class="clab__hierarchy-mini-label">1. Dark hero</p>
+            <p class="clab__hierarchy-mini-headline">
+              Få verden tydeligere tilbake.
+              <span class="clab__hierarchy-ghost-dot" aria-hidden="true"></span>
+            </p>
+            <p class="clab__hierarchy-mini-copy">Deep blue/teal carries identity. Magenta stays a ghost pulse.</p>
+          </article>
+
+          <article class="clab__hierarchy-mini clab__hierarchy-mini--editorial">
+            <p class="clab__hierarchy-mini-label">2. Editorial article</p>
+            <p class="clab__hierarchy-mini-kicker">BESLUTNINGSSTØTTE</p>
+            <p class="clab__hierarchy-mini-headline clab__hierarchy-mini-headline--display">
+              Audiograf: når det haster
+            </p>
+            <p class="clab__hierarchy-mini-copy">Clean white reading base with deep blue micro-accent only.</p>
+          </article>
+
+          <article class="clab__hierarchy-mini clab__hierarchy-mini--ai">
+            <p class="clab__hierarchy-mini-label">3. Article → AI</p>
+            <p class="clab__hierarchy-mini-kicker">ETTER LESING</p>
+            <p class="clab__hierarchy-mini-headline">Hva bør jeg gjøre nå?</p>
+            <div class="clab__hierarchy-mini-signals" aria-hidden="true">
+              <span class="clab__hierarchy-signal-dot clab__hierarchy-signal-dot--magenta"></span>
+              <span class="clab__hierarchy-signal-dot clab__hierarchy-signal-dot--cyan"></span>
+            </div>
+            <button type="button" class="clab__hierarchy-mini-btn">Få hjelp nå</button>
+          </article>
+        </div>
+      </section>
+
+      <p class="clab__hierarchy-guardrail">
+        Magenta should behave like a signal in the air, not a layout structure.
+        Long lines, large fills and decorative gradients should remain avoided.
+      </p>
     </section>
 
     <footer class="clab__footer">
@@ -1329,6 +1525,336 @@ const colorSets = [
       color: rgb(255 255 255 / 0.62);
     }
 
+    /* ── Color hierarchy ── */
+    .clab__hierarchy {
+      --hier-deep: #0f4c5c;
+      --hier-deep-dark: #071827;
+      --hier-light: #ffffff;
+      --hier-surface: #f3f4f6;
+      --hier-ink: #111827;
+      --hier-cyan: #0ea5e9;
+      --hier-magenta: #ec4899;
+
+      margin-top: 3rem;
+      padding-top: 2.5rem;
+      border-top: 2px dashed rgb(var(--border) / 0.45);
+    }
+
+    .clab__hierarchy-head h2 {
+      margin: 0.35rem 0 0;
+      max-width: 44rem;
+      font-family: var(--clab-display);
+      font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+    }
+
+    .clab__hierarchy-head p:not(.clab__kicker) {
+      margin: 0.65rem 0 0;
+      max-width: 48rem;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__hierarchy-bar-wrap {
+      margin-top: 1.25rem;
+    }
+
+    .clab__hierarchy-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-height: 14rem;
+      overflow: hidden;
+      border: 1px solid rgb(var(--border) / 0.28);
+      border-radius: 10px;
+    }
+
+    .clab__hierarchy-segment {
+      flex: var(--seg-flex) 1 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 0.15rem;
+      min-height: 1.75rem;
+      padding: 0.55rem 0.65rem;
+      background: var(--seg-bg);
+      color: var(--seg-text);
+    }
+
+    .clab__hierarchy-segment[data-segment="light"] {
+      border: 1px solid #e5e7eb;
+    }
+
+    .clab__hierarchy-segment-share {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .clab__hierarchy-segment-label {
+      font-size: 0.58rem;
+      font-weight: 600;
+      line-height: 1.35;
+      opacity: 0.92;
+    }
+
+    .clab__hierarchy-segment[data-segment="magenta"] .clab__hierarchy-segment-label,
+    .clab__hierarchy-segment[data-segment="cyan"] .clab__hierarchy-segment-label {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-size: 0.52rem;
+    }
+
+    .clab__hierarchy-parked {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      margin-top: 0.65rem;
+    }
+
+    .clab__hierarchy-chip {
+      padding: 0.22rem 0.55rem;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      color: #ffffff;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0.72;
+    }
+
+    .clab__hierarchy-chip-note {
+      font-size: 0.68rem;
+      color: rgb(var(--muted));
+      font-style: italic;
+    }
+
+    .clab__hierarchy-table-wrap {
+      margin-top: 1.5rem;
+    }
+
+    .clab__hierarchy-table {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .clab__hierarchy-row {
+      padding: 0.85rem 1rem;
+      border: 1px solid rgb(var(--border) / 0.22);
+      border-radius: 8px;
+      background: rgb(var(--reading-paper));
+    }
+
+    .clab__hierarchy-row--parked {
+      opacity: 0.78;
+      border-style: dashed;
+    }
+
+    .clab__hierarchy-row header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.75rem;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .clab__hierarchy-row h3 {
+      margin: 0;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .clab__hierarchy-share {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .clab__hierarchy-role {
+      margin: 0.35rem 0 0.55rem;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__hierarchy-row dl {
+      display: grid;
+      gap: 0.45rem;
+      margin: 0;
+    }
+
+    .clab__hierarchy-row dt {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgb(var(--muted));
+    }
+
+    .clab__hierarchy-row dd {
+      margin: 0.12rem 0 0;
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .clab__hierarchy-row code {
+      font-size: 0.72rem;
+      color: rgb(var(--reading-ink));
+    }
+
+    .clab__hierarchy-mini-wrap {
+      margin-top: 1.5rem;
+    }
+
+    .clab__hierarchy-mini-grid {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .clab__hierarchy-mini {
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+    }
+
+    .clab__hierarchy-mini-label {
+      margin: 0 0 0.45rem;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .clab__hierarchy-mini-kicker {
+      margin: 0 0 0.25rem;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .clab__hierarchy-mini-headline {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .clab__hierarchy-mini-headline--display {
+      font-family: var(--clab-display);
+      font-size: 1.05rem;
+      font-weight: 650;
+      letter-spacing: -0.03em;
+    }
+
+    .clab__hierarchy-mini-copy {
+      margin: 0.4rem 0 0;
+      font-size: 0.72rem;
+      line-height: 1.5;
+    }
+
+    .clab__hierarchy-mini--dark-hero {
+      background: var(--hier-deep-dark);
+      color: #ffffff;
+    }
+
+    .clab__hierarchy-mini--dark-hero .clab__hierarchy-mini-label {
+      color: rgb(255 255 255 / 0.48);
+    }
+
+    .clab__hierarchy-mini--dark-hero .clab__hierarchy-mini-copy {
+      color: rgb(255 255 255 / 0.62);
+    }
+
+    .clab__hierarchy-ghost-dot {
+      display: inline-block;
+      width: 0.42rem;
+      height: 0.42rem;
+      margin-left: 0.35rem;
+      border-radius: 999px;
+      background: var(--hier-magenta);
+      box-shadow: 0 0 0 6px rgb(236 72 153 / 0.12);
+      vertical-align: middle;
+    }
+
+    .clab__hierarchy-mini--editorial {
+      border: 1px solid #e5e7eb;
+      background: var(--hier-light);
+      color: var(--hier-ink);
+      box-shadow: inset 3px 0 0 var(--hier-deep);
+    }
+
+    .clab__hierarchy-mini--editorial .clab__hierarchy-mini-kicker {
+      color: var(--hier-deep);
+    }
+
+    .clab__hierarchy-mini--editorial .clab__hierarchy-mini-copy {
+      color: #4b5563;
+    }
+
+    .clab__hierarchy-mini--ai {
+      background: var(--hier-surface);
+      border: 1px solid #e5e7eb;
+      color: var(--hier-ink);
+    }
+
+    .clab__hierarchy-mini--ai .clab__hierarchy-mini-kicker {
+      color: #6b7280;
+    }
+
+    .clab__hierarchy-mini-signals {
+      display: flex;
+      gap: 0.35rem;
+      margin: 0.45rem 0;
+    }
+
+    .clab__hierarchy-signal-dot {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 999px;
+    }
+
+    .clab__hierarchy-signal-dot--magenta {
+      background: var(--hier-magenta);
+      box-shadow: 0 0 0 4px rgb(236 72 153 / 0.08);
+    }
+
+    .clab__hierarchy-signal-dot--cyan {
+      background: var(--hier-cyan);
+      box-shadow: 0 0 0 4px rgb(14 165 233 / 0.1);
+    }
+
+    .clab__hierarchy-mini-btn {
+      padding: 0.4rem 0.75rem;
+      border: 0;
+      border-radius: 6px;
+      background: var(--hier-ink);
+      color: #ffffff;
+      font-family: var(--clab-sans);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .clab__hierarchy-guardrail {
+      margin: 1.25rem 0 0;
+      max-width: 48rem;
+      padding: 0.65rem 0.8rem;
+      border-left: 3px solid var(--hier-deep);
+      border-radius: 0 8px 8px 0;
+      background: rgb(var(--surface-subtle) / 0.45);
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
     .clab__footer {
       margin-top: 2rem;
       padding-top: 1.25rem;
@@ -1567,6 +2093,35 @@ const colorSets = [
 
       .clab__contrast-strip {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .clab__hierarchy-bar {
+        flex-direction: row;
+        min-height: 9rem;
+      }
+
+      .clab__hierarchy-segment {
+        min-height: auto;
+        min-width: 0;
+      }
+
+      .clab__hierarchy-segment[data-segment="magenta"] .clab__hierarchy-segment-label,
+      .clab__hierarchy-segment[data-segment="cyan"] .clab__hierarchy-segment-label {
+        writing-mode: horizontal-tb;
+        transform: none;
+        font-size: 0.58rem;
+      }
+
+      .clab__hierarchy-table {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .clab__hierarchy-row--parked {
+        grid-column: 1 / -1;
+      }
+
+      .clab__hierarchy-mini-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
   </style>
