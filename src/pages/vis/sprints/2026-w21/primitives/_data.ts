@@ -20,6 +20,7 @@ export const statusLabels = {
   candidate: "Candidate",
   favorite: "Favorite exists",
   needsReview: "Needs review",
+  recommended: "Recommended direction exists",
   parked: "Parked",
 } as const;
 
@@ -58,6 +59,30 @@ export type PrimitivePage = {
     note: string;
     sample: string;
   };
+  favoriteStack?: {
+    label: string;
+    value: string;
+    tone: string;
+  }[];
+  surfaceRoles?: {
+    title: string;
+    role: string;
+    candidate: string;
+    tone: string;
+  }[];
+  surfaceCandidates?: {
+    id: string;
+    title: string;
+    status: "Recommended" | "Candidate" | "Parked";
+    copy: string;
+    pros: string[];
+    risks: string[];
+    sample: string;
+  }[];
+  dependencies?: {
+    title: string;
+    note: string;
+  }[];
   suggestedScale?: string[];
   tokenNote?: string;
   iterations: {
@@ -116,56 +141,165 @@ export const primitivePages: PrimitivePage[] = [
   {
     slug: "surfaces",
     title: "Surfaces",
-    status: "favorite",
-    purpose: "Separate editorial, identity, action and chrome surfaces before #125.",
-    does: "Surface primitives define where content lives: clean reading base, elevated help, dark identity and subtle signal containers.",
+    status: "recommended",
+    purpose: "Define a usable Viddel MVP surface hierarchy before #125.",
+    does: "Surface primitives define where content lives: clean editorial base, subtle elevated help, Deep Nordic identity/action, ink contrast, chrome glass and low-quantity signal details.",
     applies: {
-      chrome: "Glass or solid orientation surfaces only.",
-      editorial: "Light, clean, readable surfaces are default.",
-      action: "Can shift to deep blue or ink when the user needs a next step.",
+      chrome: "Glass/solid orientation surfaces for nav, toolbar and orientation chips.",
+      editorial: "Light, clean, readable surfaces are the default for articles, explanations and help.",
+      action: "Deep Nordic Blue or ink can carry controlled action areas when the next step needs contrast.",
     },
     favorite: {
-      name: "Light editorial + deep action contrast",
-      note: "Use #FFFFFF/#F8FAFC for reading and #134D6A/#020617 for identity/action depth.",
-      sample: "surface-favorite",
+      name: "Light editorial + Deep Nordic identity/action + ink highest contrast",
+      note: "Recommended direction: keep reading/help light, use #134D6A for identity depth and controlled action areas, reserve ink for highest contrast, and keep #FF55B0 as micro-signal only. Glass remains chrome/material.",
+      sample: "surface-stack",
     },
+    favoriteStack: [
+      { label: "Editorial base", value: "#FFFFFF / #F8FAFC", tone: "light" },
+      { label: "Elevated editorial", value: "#F3F4F6", tone: "elevated" },
+      { label: "Deep identity/action", value: "#134D6A", tone: "deep" },
+      { label: "Ink highest contrast", value: "#111827 / #020617 / #18181B", tone: "ink" },
+      { label: "Magenta signal detail", value: "#FF55B0 low opacity", tone: "signal" },
+      { label: "Glass chrome note", value: "chrome/material only", tone: "glass" },
+    ],
+    surfaceRoles: [
+      {
+        title: "Editorial base",
+        role: "Light, clean reading/help surface. Default for articles, explanations and help.",
+        candidate: "#FFFFFF / #F8FAFC",
+        tone: "light",
+      },
+      {
+        title: "Elevated editorial surface",
+        role: "Cards, boxes, hub elements and helper blocks. Subtle, not heavy card UI.",
+        candidate: "#F3F4F6 / #F8FAFC",
+        tone: "elevated",
+      },
+      {
+        title: "Deep Nordic Blue identity surface",
+        role: "Identity, depth, orientation and controlled dark action fields.",
+        candidate: "#134D6A",
+        tone: "deep",
+      },
+      {
+        title: "Ink / near-black action surface",
+        role: "Primary action, highest contrast and dark panels where clarity matters.",
+        candidate: "#111827 / #020617 / #18181B",
+        tone: "ink",
+      },
+      {
+        title: "Glass chrome surface",
+        role: "Chrome/material for nav, toolbar and orientation chips. Not editorial content default.",
+        candidate: "rgba + blur + solid fallback",
+        tone: "glass",
+      },
+      {
+        title: "Signal / ghost surface",
+        role: "Kinetic Magenta as micro-signal only. Not large fill, not layout surface.",
+        candidate: "#FF55B0 low opacity",
+        tone: "signal",
+      },
+    ],
+    surfaceCandidates: [
+      {
+        id: "A",
+        title: "Light editorial + Deep Nordic Blue identity/action",
+        status: "Recommended",
+        copy: "Light editorial surfaces stay default while #134D6A carries identity, orientation and controlled action fields.",
+        pros: ["Clear Viddel identity", "Keeps reading/help calm", "Lets AI/action feel connected but stronger"],
+        risks: ["Deep blue can become too dominant if used as broad layout fill", "Needs strong text contrast on dark fields"],
+        sample: "surface-candidate-a",
+      },
+      {
+        id: "B",
+        title: "Light editorial + Ink action + Blue identity support",
+        status: "Candidate",
+        copy: "Ink carries most action surfaces, while Deep Nordic Blue supports identity and orientation.",
+        pros: ["Very clear action contrast", "Restrained and UI-safe", "Blue can stay more premium/identity-led"],
+        risks: ["May feel less ownable", "AI/action may become too monochrome if blue is only secondary"],
+        sample: "surface-candidate-b",
+      },
+      {
+        id: "C",
+        title: "Light editorial + Deep Blue action + Ink only for highest contrast",
+        status: "Candidate",
+        copy: "Deep Nordic Blue becomes the primary action surface, with ink reserved for highest-contrast moments.",
+        pros: ["Distinct, warmer than pure ink", "Strong bridge from identity to action", "Good fit for dark AI transition blocks"],
+        risks: ["Needs careful CTA hierarchy", "Can blur identity/action if every action turns blue"],
+        sample: "surface-candidate-c",
+      },
+    ],
+    dependencies: [
+      {
+        title: "Elevation / shadow dependency",
+        note: "Surface hierarchy must work before depth is added.",
+      },
+      {
+        title: "Layering / z-index dependency",
+        note: "Glass, sticky chrome and overlays must respect semantic layers.",
+      },
+      {
+        title: "Buttons dependency",
+        note: "Button hierarchy should inherit surface roles, not invent new color logic.",
+      },
+    ],
     iterations: [
       {
         id: "P1",
         status: "Favorite",
-        name: "Editorial light base",
-        sample: "surface-light",
-        copy: "White and clean light gray for reading/help.",
-        rationale: "Strongest candidate because it preserves trust and clarity.",
+        name: "Recommended surface stack",
+        sample: "surface-stack",
+        copy: "Light editorial base with Deep Nordic Blue identity/action, ink for highest contrast, glass limited to chrome, and magenta micro-signal.",
+        rationale: "Recommended because it preserves reading clarity while giving Viddel a distinct identity/action surface.",
       },
       {
         id: "P2",
         status: "Candidate",
-        name: "Deep Nordic identity",
-        sample: "surface-deep",
-        copy: "#134D6A for identity bands, hero/action and dark transitions.",
-        rationale: "Kept because it gives Viddel distinct depth without making articles dark.",
+        name: "Ink-led action",
+        sample: "surface-candidate-b",
+        copy: "Light editorial with ink action and Deep Nordic Blue as identity support.",
+        rationale: "Kept for comparison because ink is clear, but may feel less Viddel-specific.",
       },
       {
         id: "P3",
         status: "Candidate",
-        name: "Ink action",
-        sample: "surface-ink",
-        copy: "Near-black for primary action and high-contrast panels.",
-        rationale: "Useful but should not replace deep blue identity everywhere.",
+        name: "Deep-blue-led action",
+        sample: "surface-candidate-c",
+        copy: "Light editorial with Deep Nordic Blue as the stronger action surface and ink reserved for highest contrast.",
+        rationale: "Promising for AI/action contexts but needs careful button/card hierarchy.",
       },
       {
         id: "P4",
         status: "Parked",
-        name: "Signal surface",
+        name: "Magenta surface",
         sample: "surface-signal",
-        copy: "Very subtle magenta tint as micro-signal surface.",
-        rationale: "Parked until signal usage is proven in real primitives.",
+        copy: "Magenta as a larger surface or tint.",
+        rationale: "Parked because #FF55B0 should remain ghost/signal/micro-detail, not a layout surface.",
       },
     ],
-    do: ["Keep editorial surfaces light", "Use deep blue for identity depth", "Separate chrome glass from editorial cards"],
-    dont: ["Use pink as a large surface", "Make every card elevated", "Use glass as editorial default"],
-    questions: ["Exact dark base: #071827 or #020617?", "How much elevation do hub cards need?", "Where can deep blue appear without reducing readability?"],
+    do: [
+      "Keep editorial/help surfaces light and readable.",
+      "Use Deep Nordic Blue for identity depth and controlled action areas.",
+      "Use ink/near-black for high contrast where needed.",
+      "Keep glass limited to chrome/material.",
+      "Use magenta only as ghost/signal/micro-detail.",
+      "Pair dark surfaces with clear text contrast.",
+    ],
+    dont: [
+      "Make all cards elevated.",
+      "Use magenta as large surface fill.",
+      "Use glass as default article/card material.",
+      "Make editorial layer dark.",
+      "Let action panels feel detached from content.",
+      "Use shadow/elevation to compensate for unclear surface hierarchy.",
+    ],
+    questions: [
+      "Should Deep Nordic Blue or Ink carry primary action surfaces?",
+      "How elevated should hub/editorial cards be?",
+      "Where does AI/action transition from editorial surface to dark/action surface?",
+      "How much glass can chrome use before it distracts?",
+      "Does #125 need separate article, hub and AI surface examples?",
+    ],
   },
   {
     slug: "radius",

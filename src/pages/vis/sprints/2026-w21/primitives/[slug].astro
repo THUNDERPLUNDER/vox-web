@@ -107,12 +107,83 @@ const buttonLevels = [
               <div>
                 <h3>{page.favorite.name}</h3>
                 <p>{page.favorite.note}</p>
+                {page.favoriteStack && (
+                  <div class="plab__surface-stack" aria-label="Recommended surface stack">
+                    {page.favoriteStack.map((item) => (
+                      <span data-tone={item.tone}>
+                        <strong>{item.label}</strong>
+                        <code>{item.value}</code>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </article>
           ) : (
             <p>No favorite yet.</p>
           )}
         </section>
+
+        {page.surfaceRoles && (
+          <section class="plab__panel" aria-labelledby="surface-roles-heading">
+            <p class="plab__kicker">Surface system</p>
+            <h2 id="surface-roles-heading">Surface roles</h2>
+            <div class="plab__surface-roles">
+              {page.surfaceRoles.map((role) => (
+                <article data-tone={role.tone}>
+                  <p>{role.title}</p>
+                  <strong>{role.candidate}</strong>
+                  <span>{role.role}</span>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {page.surfaceCandidates && (
+          <section class="plab__panel" aria-labelledby="surface-candidates-heading">
+            <p class="plab__kicker">Comparison</p>
+            <h2 id="surface-candidates-heading">Surface hierarchy candidates</h2>
+            <div class="plab__surface-candidates">
+              {page.surfaceCandidates.map((candidate) => (
+                <article data-status={candidate.status}>
+                  <header>
+                    <span>{candidate.id}</span>
+                    <strong>{candidate.status}</strong>
+                  </header>
+                  <div class:list={["plab__sample", `plab__sample--${candidate.sample}`]} aria-hidden="true"></div>
+                  <h3>{candidate.title}</h3>
+                  <p>{candidate.copy}</p>
+                  <div class="plab__candidate-notes">
+                    <div>
+                      <h4>Pros</h4>
+                      <ul>{candidate.pros.map((item) => <li>{item}</li>)}</ul>
+                    </div>
+                    <div>
+                      <h4>Risk</h4>
+                      <ul>{candidate.risks.map((item) => <li>{item}</li>)}</ul>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {page.dependencies && (
+          <section class="plab__panel" aria-labelledby="dependencies-heading">
+            <p class="plab__kicker">Dependencies</p>
+            <h2 id="dependencies-heading">Before #125</h2>
+            <div class="plab__dependencies">
+              {page.dependencies.map((dependency) => (
+                <article>
+                  <strong>{dependency.title}</strong>
+                  <p>{dependency.note}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section class="plab__panel" aria-labelledby="iterations-heading">
           <p class="plab__kicker">04</p>
@@ -324,7 +395,10 @@ const buttonLevels = [
 
     .plab__applies,
     .plab__iterations,
-    .plab__rules {
+    .plab__rules,
+    .plab__surface-roles,
+    .plab__surface-candidates,
+    .plab__dependencies {
       display: grid;
       gap: 0.85rem;
       margin-top: 1rem;
@@ -333,7 +407,10 @@ const buttonLevels = [
     .plab__applies article,
     .plab__favorite-card,
     .plab__iteration,
-    .plab__rules article {
+    .plab__rules article,
+    .plab__surface-roles article,
+    .plab__surface-candidates article,
+    .plab__dependencies article {
       padding: 1rem;
       border: 1px solid rgb(17 24 39 / 0.12);
       border-radius: 12px;
@@ -386,9 +463,190 @@ const buttonLevels = [
     .plab__applies strong,
     .plab__rules h3,
     .plab__favorite-card h3,
-    .plab__iteration h3 {
+    .plab__iteration h3,
+    .plab__surface-candidates h3,
+    .plab__dependencies strong {
       margin: 0;
       font-size: 0.9rem;
+    }
+
+    .plab__surface-stack {
+      display: grid;
+      gap: 0.4rem;
+      margin-top: 0.9rem;
+    }
+
+    .plab__surface-stack span {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.45rem 0.55rem;
+      border: 1px solid rgb(17 24 39 / 0.1);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 0.72rem;
+    }
+
+    .plab__surface-stack span[data-tone="deep"],
+    .plab__surface-stack span[data-tone="ink"] {
+      background: var(--p-deep);
+      color: #fff;
+    }
+
+    .plab__surface-stack span[data-tone="ink"] {
+      background: var(--p-dark);
+    }
+
+    .plab__surface-stack span[data-tone="signal"] {
+      border-color: rgb(255 85 176 / 0.28);
+      background: rgb(255 85 176 / 0.06);
+    }
+
+    .plab__surface-stack span[data-tone="glass"] {
+      background: linear-gradient(135deg, rgb(255 255 255 / 0.72), rgb(248 250 252 / 0.45));
+      box-shadow: 0 8px 20px rgb(2 6 23 / 0.06);
+    }
+
+    .plab__surface-stack code {
+      color: inherit;
+      opacity: 0.72;
+      font-size: 0.68rem;
+    }
+
+    .plab__surface-roles article {
+      min-height: 8rem;
+    }
+
+    .plab__surface-roles article[data-tone="light"] {
+      background: #fff;
+    }
+
+    .plab__surface-roles article[data-tone="elevated"] {
+      background: var(--p-elevated);
+    }
+
+    .plab__surface-roles article[data-tone="deep"] {
+      background: var(--p-deep);
+      color: #fff;
+    }
+
+    .plab__surface-roles article[data-tone="ink"] {
+      background: var(--p-dark);
+      color: #fff;
+    }
+
+    .plab__surface-roles article[data-tone="glass"] {
+      background: linear-gradient(135deg, rgb(255 255 255 / 0.72), rgb(248 250 252 / 0.38));
+      box-shadow: 0 10px 28px rgb(2 6 23 / 0.08);
+    }
+
+    .plab__surface-roles article[data-tone="signal"] {
+      border-color: rgb(255 85 176 / 0.28);
+      background: rgb(255 85 176 / 0.05);
+    }
+
+    .plab__surface-roles p,
+    .plab__surface-roles strong,
+    .plab__surface-roles span {
+      display: block;
+      margin: 0;
+    }
+
+    .plab__surface-roles p {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.72;
+    }
+
+    .plab__surface-roles strong {
+      margin-top: 0.45rem;
+      font-size: 0.82rem;
+    }
+
+    .plab__surface-roles span {
+      margin-top: 0.55rem;
+      color: var(--p-muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+
+    .plab__surface-roles article[data-tone="deep"] span,
+    .plab__surface-roles article[data-tone="ink"] span {
+      color: rgb(255 255 255 / 0.72);
+    }
+
+    .plab__surface-candidates article[data-status="Recommended"] {
+      border-color: rgb(19 77 106 / 0.32);
+      background: rgb(19 77 106 / 0.05);
+    }
+
+    .plab__surface-candidates article[data-status="Parked"] {
+      border-color: rgb(255 85 176 / 0.24);
+      background: rgb(255 85 176 / 0.04);
+    }
+
+    .plab__surface-candidates header {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .plab__surface-candidates header span,
+    .plab__surface-candidates header strong {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .plab__surface-candidates header strong {
+      padding: 0.22rem 0.5rem;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--p-muted);
+    }
+
+    .plab__surface-candidates article[data-status="Recommended"] header strong {
+      color: var(--p-deep);
+    }
+
+    .plab__surface-candidates p,
+    .plab__dependencies p {
+      margin: 0.55rem 0 0;
+      color: var(--p-muted);
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+
+    .plab__candidate-notes {
+      display: grid;
+      gap: 0.7rem;
+      margin-top: 0.8rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid rgb(17 24 39 / 0.08);
+    }
+
+    .plab__candidate-notes h4 {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--p-muted);
+    }
+
+    .plab__candidate-notes ul {
+      margin: 0.35rem 0 0;
+      padding-left: 1rem;
+      color: var(--p-muted);
+      font-size: 0.78rem;
+      line-height: 1.5;
     }
 
     .plab__favorite-card {
@@ -503,6 +761,28 @@ const buttonLevels = [
 
     .plab__sample--surface-ink {
       background: var(--p-dark);
+    }
+
+    .plab__sample--surface-stack {
+      background:
+        radial-gradient(circle at 82% 18%, rgb(255 85 176 / 0.85) 0 4px, transparent 5px),
+        linear-gradient(90deg, #fff 0 36%, var(--p-elevated) 36% 54%, var(--p-deep) 54% 78%, var(--p-dark) 78% 100%);
+    }
+
+    .plab__sample--surface-candidate-a {
+      background:
+        radial-gradient(circle at 88% 22%, rgb(255 85 176 / 0.75) 0 4px, transparent 5px),
+        linear-gradient(90deg, #fff 0 48%, var(--p-elevated) 48% 62%, var(--p-deep) 62% 100%);
+    }
+
+    .plab__sample--surface-candidate-b {
+      background:
+        linear-gradient(90deg, #fff 0 50%, var(--p-elevated) 50% 62%, var(--p-dark) 62% 84%, var(--p-deep) 84% 100%);
+    }
+
+    .plab__sample--surface-candidate-c {
+      background:
+        linear-gradient(90deg, #fff 0 46%, var(--p-deep) 46% 84%, var(--p-dark) 84% 100%);
     }
 
     .plab__sample--radius-favorite,
@@ -658,7 +938,10 @@ const buttonLevels = [
 
       .plab__applies,
       .plab__iterations,
-      .plab__rules {
+      .plab__rules,
+      .plab__surface-roles,
+      .plab__surface-candidates,
+      .plab__dependencies {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
@@ -696,6 +979,10 @@ const buttonLevels = [
       }
 
       .plab__applies {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .plab__surface-roles {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
