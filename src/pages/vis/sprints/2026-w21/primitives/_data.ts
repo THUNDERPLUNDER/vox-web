@@ -83,6 +83,30 @@ export type PrimitivePage = {
     title: string;
     note: string;
   }[];
+  buttonStack?: {
+    label: string;
+    sample: string;
+    note: string;
+  }[];
+  buttonHierarchy?: {
+    level: string;
+    role: string;
+    context: string;
+    status: "Candidate" | "Needs review" | "Parked";
+    sample: string;
+  }[];
+  buttonStates?: {
+    state: string;
+    note: string;
+    sample: string;
+  }[];
+  buttonSurfaceBehavior?: {
+    surface: string;
+    behavior: string;
+    sample: string;
+  }[];
+  completionNotes?: string[];
+  roundIntro?: string;
   suggestedScale?: string[];
   tokenNote?: string;
   iterations: {
@@ -490,26 +514,185 @@ export const primitivePages: PrimitivePage[] = [
     title: "Buttons",
     status: "needsReview",
     purpose: "Make button levels scalable before real MVP reskin decisions.",
-    does: "Button primitives describe hierarchy, state, surface variants and action behavior.",
+    does: "Buttons define action hierarchy, interaction states, surface adaptation and how users move from reading to help.",
     applies: {
-      chrome: "Compact/icon or glass-aware controls only.",
-      editorial: "Inline and secondary actions should stay calm.",
-      action: "Primary, AI primary and dark variants can be stronger.",
+      chrome: "Compact, icon and glass-aware controls only.",
+      editorial: "Inline, secondary and quiet actions.",
+      action: "Primary, AI primary and dark/action variants.",
     },
     favorite: {
-      name: "Ink primary + deep AI primary",
-      note: "Ink works for standard primary action; deep blue works for AI/action contexts.",
-      sample: "button-favorite",
+      name: "Ink primary + Deep Nordic Blue AI/action + quiet editorial secondary",
+      note: "Candidate direction: standard primary stays calm and high-contrast, AI/action can use Deep Nordic Blue when it belongs to a help transition, and editorial flows use quiet secondary/ghost/inline actions.",
+      sample: "button-stack",
     },
-    iterations: [
-      { id: "P1", status: "Favorite", name: "Ink primary", sample: "button-primary", copy: "Near-black solid primary button.", rationale: "Strong, calm and not over-colored." },
-      { id: "P2", status: "Candidate", name: "Deep AI primary", sample: "button-ai", copy: "Deep Nordic Blue for article-to-AI or next-step action.", rationale: "Useful when action belongs to AI/help transition." },
-      { id: "P3", status: "Candidate", name: "Ghost / tertiary", sample: "button-ghost", copy: "Quiet outline or text action.", rationale: "Needed for secondary choices and editorial flows." },
-      { id: "P4", status: "Parked", name: "Magenta action", sample: "button-magenta", copy: "Magenta as button fill.", rationale: "Parked because magenta should remain high-character, low-quantity." },
+    buttonStack: [
+      { label: "Primary", sample: "button-primary", note: "Ink default action" },
+      { label: "Secondary", sample: "button-secondary", note: "Quiet editorial support" },
+      { label: "Tertiary / ghost", sample: "button-ghost", note: "Low-emphasis choice" },
+      { label: "Inline action", sample: "button-inline", note: "Reading flow action" },
+      { label: "AI primary", sample: "button-ai", note: "Deep help transition" },
+      { label: "Disabled/loading", sample: "button-loading", note: "State preview" },
     ],
-    do: ["Keep standard primary calm", "Let AI/action button be stronger in context", "Show disabled/loading/focus states"],
-    dont: ["Make all buttons colorful", "Use magenta as default button fill", "Use heavy display type in small buttons"],
-    questions: ["Should AI primary be deep blue or ink by default?", "How compact should chrome buttons be?", "Do dark surfaces need an inverse or deep button?"],
+    buttonHierarchy: [
+      {
+        level: "Primary",
+        role: "Main standard action when one clear next step is needed.",
+        context: "Light editorial or neutral action areas; inherits ink/high-contrast surface role.",
+        status: "Candidate",
+        sample: "button-primary",
+      },
+      {
+        level: "Secondary",
+        role: "Support action beside primary without competing.",
+        context: "Editorial and helper flows on light surfaces.",
+        status: "Candidate",
+        sample: "button-secondary",
+      },
+      {
+        level: "Tertiary / ghost",
+        role: "Low-emphasis action or alternative path.",
+        context: "Editorial flows and quiet utility areas.",
+        status: "Candidate",
+        sample: "button-ghost",
+      },
+      {
+        level: "Inline action",
+        role: "Action inside reading/help copy.",
+        context: "Editorial content, helper copy and article transitions.",
+        status: "Needs review",
+        sample: "button-inline",
+      },
+      {
+        level: "AI primary",
+        role: "Primary action when the user moves from content to concrete AI/help.",
+        context: "Action/AI blocks; inherits Deep Nordic Blue identity/action surface role.",
+        status: "Candidate",
+        sample: "button-ai",
+      },
+      {
+        level: "AI secondary",
+        role: "Alternative AI/help action without overtaking the primary prompt.",
+        context: "AI/action blocks and preseeded question areas.",
+        status: "Needs review",
+        sample: "button-ai-secondary",
+      },
+      {
+        level: "Icon",
+        role: "Compact control where text is unavailable or repetitive.",
+        context: "Chrome, toolbars and tight utility areas.",
+        status: "Needs review",
+        sample: "button-icon",
+      },
+      {
+        level: "Compact",
+        role: "Small text button for toolbar/chip contexts.",
+        context: "Chrome and dense helper controls.",
+        status: "Needs review",
+        sample: "button-compact",
+      },
+      {
+        level: "Disabled",
+        role: "Unavailable action with preserved layout.",
+        context: "All surfaces, especially forms and prompt flows.",
+        status: "Candidate",
+        sample: "button-disabled",
+      },
+      {
+        level: "Loading",
+        role: "In-progress action state.",
+        context: "Primary, AI primary and submit-like actions.",
+        status: "Needs review",
+        sample: "button-loading",
+      },
+      {
+        level: "Focus state",
+        role: "Keyboard-visible focus state.",
+        context: "All interactive buttons; inherits cyan functional focus from Focus primitive.",
+        status: "Candidate",
+        sample: "button-focus",
+      },
+      {
+        level: "Dark surface variant",
+        role: "Button treatment on deep blue or ink panels.",
+        context: "Dark action panels and AI transitions.",
+        status: "Needs review",
+        sample: "button-dark",
+      },
+      {
+        level: "Glass chrome variant",
+        role: "Small chrome control inside glass/material surfaces if relevant.",
+        context: "Navigation, toolbar and orientation chips only.",
+        status: "Parked",
+        sample: "button-glass",
+      },
+    ],
+    buttonStates: [
+      { state: "Default", note: "Base visual state.", sample: "button-primary" },
+      { state: "Hover", note: "Slight contrast/elevation shift only.", sample: "button-hover" },
+      { state: "Focus", note: "Cyan functional focus, not magenta.", sample: "button-focus" },
+      { state: "Disabled", note: "Muted, still readable.", sample: "button-disabled" },
+      { state: "Loading", note: "In-progress affordance before production behavior.", sample: "button-loading" },
+    ],
+    buttonSurfaceBehavior: [
+      {
+        surface: "Light editorial surface",
+        behavior: "Primary can be ink; secondary/ghost/inline stay quiet.",
+        sample: "button-surface-light",
+      },
+      {
+        surface: "Deep blue surface",
+        behavior: "Use inverse or light controls; avoid losing hierarchy against identity/action background.",
+        sample: "button-surface-deep",
+      },
+      {
+        surface: "Ink/dark surface",
+        behavior: "Use inverse controls or carefully placed deep blue; maintain high contrast.",
+        sample: "button-surface-ink",
+      },
+      {
+        surface: "Glass chrome surface",
+        behavior: "Only compact/icon controls if relevant; glass is chrome/material, not editorial default.",
+        sample: "button-surface-glass",
+      },
+    ],
+    completionNotes: [
+      "Test on actual hub/article/AI surface.",
+      "Confirm primary vs AI primary distinction.",
+      "Confirm focus/disabled/loading states.",
+      "Confirm compact/icon behavior for chrome.",
+      "Confirm dark surface variants.",
+    ],
+    roundIntro: "These are Round 1 variants, not historical iterations.",
+    iterations: [
+      { id: "P1", status: "Favorite", name: "A. Ink primary as default", sample: "button-primary", copy: "Near-black solid primary button for standard high-contrast action.", rationale: "Strong, calm and not over-colored. Candidate default for standard primary." },
+      { id: "P2", status: "Candidate", name: "B. Deep Nordic Blue AI/action primary", sample: "button-ai", copy: "Deep Nordic Blue for article-to-AI or next-step help transition.", rationale: "Useful when action belongs to the AI/help surface rather than generic UI." },
+      { id: "P3", status: "Candidate", name: "C. Quiet editorial secondary/ghost", sample: "button-ghost", copy: "Quiet outline or text treatment for editorial flows.", rationale: "Needed for secondary choices without adding new color logic." },
+      { id: "P4", status: "Rejected", name: "D. Magenta action fill", sample: "button-magenta", copy: "Magenta as full button fill.", rationale: "Rejected/parked because magenta should remain micro-signal, not default button fill." },
+    ],
+    do: [
+      "Keep standard primary calm and clear.",
+      "Use Deep Nordic Blue for AI/action when action belongs to help transition.",
+      "Use ink/near-black for highest contrast when needed.",
+      "Use quiet secondary/ghost buttons in editorial flows.",
+      "Show disabled/loading/focus states.",
+      "Keep small buttons typographically simple.",
+    ],
+    dont: [
+      "Don't make all buttons colorful.",
+      "Don't use magenta as default button fill.",
+      "Don't use heavy display typography in small buttons.",
+      "Don't invent button colors outside the surface system.",
+      "Don't make AI buttons feel detached from editorial context.",
+      "Don't rely on shadow alone to make buttons visible.",
+    ],
+    questions: [
+      "Should standard Primary be ink or Deep Nordic Blue?",
+      "Should AI primary be Deep Nordic Blue by default?",
+      "When should a dark surface use inverse buttons?",
+      "How compact should chrome buttons be?",
+      "Does inline action need underline, arrow, pill or text-only treatment?",
+      "Which button states must be ready before #125?",
+    ],
     extra: "buttons",
   },
   {
