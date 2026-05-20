@@ -656,11 +656,11 @@ export const primitivePages: PrimitivePage[] = [
       },
     ],
     completionNotes: [
-      "Test on actual hub/article/AI surface.",
-      "Confirm primary vs AI primary distinction.",
-      "Confirm focus/disabled/loading states.",
-      "Confirm compact/icon behavior for chrome.",
-      "Confirm dark surface variants.",
+      "Review applied contexts on /primitives/buttons/context/ before decision candidate.",
+      "Confirm primary vs AI primary distinction in editorial and AI transition blocks.",
+      "Confirm focus/disabled/loading states in real content density.",
+      "Confirm compact/icon behavior for chrome without editorial bleed.",
+      "Confirm dark surface variants on article-to-AI transitions.",
     ],
     roundIntro: "These are Round 1 variants, not historical iterations.",
     iterations: [

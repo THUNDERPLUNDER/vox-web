@@ -1,0 +1,732 @@
+---
+/* CONTRACT: VIS-only applied button context review for #128.
+   Shows button primitives in realistic Viddel product scenarios; no production components.
+*/
+import PrototypeLayout from "../../../../../../../layouts/PrototypeLayout.astro";
+import "../../../../../../../styles/global.css";
+import { navItems, statusLabels } from "../../_data";
+
+const base = import.meta.env.BASE_URL;
+const sprintPath = `${base}vis/sprints/2026-w21`;
+const primitivesPath = `${sprintPath}/primitives`;
+const buttonsPath = `${primitivesPath}/buttons`;
+
+const scenarios = [
+  {
+    id: "editorial",
+    kicker: "Scenario 01",
+    title: "Editorial article context",
+    evaluate:
+      "Can you tell which action is primary, which is supportive, and which opens AI help — without the page feeling like a button showroom?",
+    decision:
+      "Confirm inline vs secondary vs AI transition hierarchy on a light reading surface. Is ink primary too hard here, or does it feel calm enough?",
+  },
+  {
+    id: "ai-transition",
+    kicker: "Scenario 02",
+    title: "AI / action transition context",
+    evaluate:
+      "Does the AI block feel like a natural continuation of the article, or like a detached chatbot widget dropped onto the page?",
+    decision:
+      "Choose whether Deep Nordic Blue AI primary is the right default for article-to-help transitions, and whether the secondary AI action stays quiet enough.",
+  },
+  {
+    id: "hub-cards",
+    kicker: "Scenario 03",
+    title: "Hub card / navigation context",
+    evaluate:
+      "Do card actions help orientation without turning every hub tile into a loud CTA block?",
+    decision:
+      "Decide card-level primary vs compact link treatment, button radius/density on cards, and whether hub navigation should stay text-first.",
+  },
+  {
+    id: "chrome",
+    kicker: "Scenario 04",
+    title: "Chrome / glass context",
+    evaluate:
+      "Can compact and icon controls work in chrome without borrowing editorial or AI/action button language?",
+    decision:
+      "Confirm compact/icon/glass controls are visually distinct from content actions and small enough for toolbar use.",
+  },
+];
+
+const qaChecklist = [
+  "Is the primary action visually clear without being too loud?",
+  "Does AI/action feel connected to editorial content?",
+  "Do secondary and inline actions stay quiet enough?",
+  "Are button sizes and radius appropriate in real content?",
+  "Does Deep Nordic Blue work better than ink for AI/action?",
+  "Does ink feel too hard as default primary?",
+  "Are compact/chrome buttons distinct enough from content actions?",
+];
+---
+
+<PrototypeLayout title="Buttons applied context - Primitives Lab #128">
+  <main class="btnctx" data-button-context-page>
+    <nav class="btnctx__breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={sprintPath}>2026-W21</a>
+      <span aria-hidden="true">/</span>
+      <a href={primitivesPath}>Primitives</a>
+      <span aria-hidden="true">/</span>
+      <a href={buttonsPath}>Buttons</a>
+      <span aria-hidden="true">/</span>
+      <span>Context</span>
+    </nav>
+
+    <header class="btnctx__hero">
+      <p class="btnctx__kicker">VIS-only · #128 · Applied review</p>
+      <h1>Buttons in product context</h1>
+      <p class="btnctx__subtitle">
+        Realistic Viddel scenarios for judging hierarchy, size, shape, radius, density and action behavior.
+      </p>
+      <div class="btnctx__hero-status">
+        <span>Status</span>
+        <strong>{statusLabels.needsReview}</strong>
+      </div>
+    </header>
+
+    <aside class="btnctx__callout" role="note">
+      <strong>This context page is the decision surface.</strong>
+      <p>
+        The main <a href={buttonsPath}>Buttons primitive catalog</a> remains the abstract hierarchy reference.
+        Use this page to decide what should become a decision candidate.
+      </p>
+    </aside>
+
+    <div class="btnctx__layout">
+      <nav class="btnctx__nav" aria-label="Primitives Lab navigation">
+        <a class="btnctx__nav-link" href={primitivesPath}>Overview</a>
+        {navItems.map((item) => (
+          <a
+            class:list={["btnctx__nav-link", item.slug === "buttons" && "btnctx__nav-link--active"]}
+            href={`${primitivesPath}/${item.slug}/`}
+            aria-current={item.slug === "buttons" ? "page" : undefined}
+          >
+            {item.title}
+          </a>
+        ))}
+      </nav>
+
+      <div class="btnctx__content">
+        <section class="btnctx__panel" aria-labelledby="editorial-heading">
+          <p class="btnctx__kicker">{scenarios[0].kicker}</p>
+          <h2 id="editorial-heading">{scenarios[0].title}</h2>
+
+          <div class="btnctx__sample btnctx__sample--editorial">
+            <p class="btnctx__eyebrow">Artikkel · Høreapparat i hverdagen</p>
+            <h3>Jeg får piping i høreapparatet</h3>
+            <p>
+              Piping kan komme plutselig og gjøre det vanskelig å konsentrere deg. Ofte handler det om
+              voks, fukt eller feil program. Start med enkle tiltak før du kontakter hørselskontakten.
+            </p>
+            <h4>Dette kan du prøve først</h4>
+            <ul>
+              <li>Rengjør domene og høyttaler med riktig verktøy</li>
+              <li>Bytt batteri eller lad opp og test på nytt</li>
+              <li>Prøv et roligere program når du er inne</li>
+            </ul>
+            <div class="btnctx__actions btnctx__actions--editorial">
+              <button type="button" class="btnctx__btn btnctx__btn--inline">Les mer om piping</button>
+              <button type="button" class="btnctx__btn btnctx__btn--secondary">Lagre til senere</button>
+              <button type="button" class="btnctx__btn btnctx__btn--ai">Spør Viddel om piping</button>
+            </div>
+          </div>
+
+          <div class="btnctx__notes">
+            <article>
+              <h4>What to evaluate</h4>
+              <p>{scenarios[0].evaluate}</p>
+            </article>
+            <article>
+              <h4>Decision needed</h4>
+              <p>{scenarios[0].decision}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="btnctx__panel" aria-labelledby="ai-heading">
+          <p class="btnctx__kicker">{scenarios[1].kicker}</p>
+          <h2 id="ai-heading">{scenarios[1].title}</h2>
+
+          <div class="btnctx__sample btnctx__sample--ai">
+            <div class="btnctx__ai-bridge">
+              <div class="btnctx__ai-copy">
+                <p class="btnctx__eyebrow">Fra artikkel</p>
+                <p>Du leser om piping i høreapparatet. Vil du få hjelp til å finne ut hva som kan passe for deg nå?</p>
+              </div>
+              <div class="btnctx__ai-block">
+                <p class="btnctx__seed-label">Foreslått spørsmål</p>
+                <p class="btnctx__seed">«Hva kan jeg gjøre med piping når jeg er ute blant folk?»</p>
+                <div class="btnctx__actions btnctx__actions--ai">
+                  <button type="button" class="btnctx__btn btnctx__btn--ai">Spør Viddel</button>
+                  <button type="button" class="btnctx__btn btnctx__btn--ai-secondary">Velg annet spørsmål</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="btnctx__notes">
+            <article>
+              <h4>What to evaluate</h4>
+              <p>{scenarios[1].evaluate}</p>
+            </article>
+            <article>
+              <h4>Decision needed</h4>
+              <p>{scenarios[1].decision}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="btnctx__panel" aria-labelledby="hub-heading">
+          <p class="btnctx__kicker">{scenarios[2].kicker}</p>
+          <h2 id="hub-heading">{scenarios[2].title}</h2>
+
+          <div class="btnctx__sample btnctx__sample--hub">
+            <div class="btnctx__hub-grid">
+              <article class="btnctx__hub-card">
+                <p class="btnctx__eyebrow">Live hub</p>
+                <h3>Bedre lyd i hverdagen</h3>
+                <p>Praktiske råd for samtaler, støy og tilpasning i hverdagen.</p>
+                <div class="btnctx__actions btnctx__actions--hub">
+                  <button type="button" class="btnctx__btn btnctx__btn--primary">Gå til hub</button>
+                  <button type="button" class="btnctx__btn btnctx__btn--compact">Se temaer</button>
+                </div>
+              </article>
+              <article class="btnctx__hub-card">
+                <p class="btnctx__eyebrow">Kommende</p>
+                <h3>Relasjoner og samtale</h3>
+                <p>Hvordan høreapparatet kan hjelpe i møter, familie og telefonsamtaler.</p>
+                <div class="btnctx__actions btnctx__actions--hub">
+                  <button type="button" class="btnctx__btn btnctx__btn--ghost">Kommer snart</button>
+                </div>
+              </article>
+              <article class="btnctx__hub-card">
+                <p class="btnctx__eyebrow">Ordbok</p>
+                <h3>Forstå begrepene</h3>
+                <p>Korte forklaringer på ord du møter hos audiograf og i egne notater.</p>
+                <div class="btnctx__actions btnctx__actions--hub">
+                  <button type="button" class="btnctx__btn btnctx__btn--inline">Åpne ordbok</button>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="btnctx__notes">
+            <article>
+              <h4>What to evaluate</h4>
+              <p>{scenarios[2].evaluate}</p>
+            </article>
+            <article>
+              <h4>Decision needed</h4>
+              <p>{scenarios[2].decision}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="btnctx__panel" aria-labelledby="chrome-heading">
+          <p class="btnctx__kicker">{scenarios[3].kicker}</p>
+          <h2 id="chrome-heading">{scenarios[3].title}</h2>
+
+          <div class="btnctx__sample btnctx__sample--chrome">
+            <div class="btnctx__chrome-bar">
+              <span class="btnctx__brand">Viddel</span>
+              <div class="btnctx__chrome-actions">
+                <button type="button" class="btnctx__btn btnctx__btn--compact">Hubber</button>
+                <button type="button" class="btnctx__btn btnctx__btn--icon" aria-label="Søk">
+                  <span aria-hidden="true">⌕</span>
+                </button>
+                <button type="button" class="btnctx__btn btnctx__btn--glass">Meny</button>
+              </div>
+            </div>
+            <div class="btnctx__chrome-body">
+              <p>Chrome controls should orient, not compete with editorial or AI/action buttons below.</p>
+            </div>
+          </div>
+
+          <div class="btnctx__notes">
+            <article>
+              <h4>What to evaluate</h4>
+              <p>{scenarios[3].evaluate}</p>
+            </article>
+            <article>
+              <h4>Decision needed</h4>
+              <p>{scenarios[3].decision}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="btnctx__panel btnctx__panel--checklist" aria-labelledby="qa-heading">
+          <p class="btnctx__kicker">QA checklist</p>
+          <h2 id="qa-heading">Before moving buttons toward decision candidate</h2>
+          <ul class="btnctx__checklist">
+            {qaChecklist.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="btnctx__back">
+            <a href={buttonsPath}>← Back to Buttons primitive catalog</a>
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    [data-button-context-page] {
+      --p-deep: #134d6a;
+      --p-cyan: #0ea5e9;
+      --p-ink: #111827;
+      --p-dark: #020617;
+      --p-muted: #6b7280;
+      --p-border: #e5e7eb;
+      --p-border-strong: #d1d5db;
+      --p-light: #ffffff;
+      --p-subtle: #f8fafc;
+      --p-elevated: #f3f4f6;
+
+      min-height: 100vh;
+      max-width: 76rem;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+      background: var(--p-light);
+      color: var(--p-ink);
+      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+
+    .btnctx__breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      margin-bottom: 1.1rem;
+      font-size: 0.72rem;
+      color: var(--p-muted);
+    }
+
+    .btnctx__breadcrumb a {
+      color: inherit;
+      text-underline-offset: 2px;
+    }
+
+    .btnctx__hero {
+      padding: 1.5rem 0 1.25rem;
+      border-bottom: 1px solid rgb(17 24 39 / 0.12);
+    }
+
+    .btnctx__kicker {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--p-deep);
+    }
+
+    .btnctx__hero h1,
+    .btnctx__panel h2 {
+      margin: 0.35rem 0 0;
+      font-family: var(--font-display);
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+    }
+
+    .btnctx__hero h1 {
+      font-size: clamp(2rem, 5.5vw, 3.2rem);
+    }
+
+    .btnctx__subtitle {
+      max-width: 46rem;
+      margin: 0.8rem 0 0;
+      color: var(--p-muted);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    .btnctx__hero-status {
+      display: inline-flex;
+      gap: 0.6rem;
+      align-items: center;
+      margin-top: 1rem;
+      padding: 0.35rem 0.6rem;
+      border: 1px solid rgb(19 77 106 / 0.24);
+      border-radius: 999px;
+      background: var(--p-subtle);
+      font-size: 0.76rem;
+    }
+
+    .btnctx__hero-status span {
+      color: var(--p-muted);
+    }
+
+    .btnctx__callout {
+      margin-top: 1.25rem;
+      padding: 0.9rem 1rem;
+      border: 1px solid rgb(19 77 106 / 0.28);
+      border-radius: 12px;
+      background: rgb(19 77 106 / 0.05);
+    }
+
+    .btnctx__callout strong {
+      display: block;
+      font-size: 0.84rem;
+    }
+
+    .btnctx__callout p {
+      margin: 0.45rem 0 0;
+      color: var(--p-muted);
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+
+    .btnctx__callout a {
+      color: var(--p-deep);
+      font-weight: 700;
+    }
+
+    .btnctx__layout {
+      display: grid;
+      gap: 1.5rem;
+      padding-top: 1.5rem;
+    }
+
+    .btnctx__nav {
+      display: flex;
+      gap: 0.45rem;
+      overflow-x: auto;
+      padding: 0.75rem;
+      border: 1px solid rgb(17 24 39 / 0.12);
+      border-radius: 14px;
+      background: var(--p-subtle);
+    }
+
+    .btnctx__nav-link {
+      flex: 0 0 auto;
+      padding: 0.42rem 0.65rem;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      color: var(--p-muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btnctx__nav-link--active {
+      border-color: rgb(19 77 106 / 0.28);
+      background: #fff;
+      color: var(--p-deep);
+    }
+
+    .btnctx__content {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .btnctx__panel {
+      padding: 1.1rem;
+      border: 1px solid rgb(17 24 39 / 0.12);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .btnctx__panel h2 {
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+    }
+
+    .btnctx__sample {
+      margin-top: 1rem;
+      padding: 1rem;
+      border: 1px solid rgb(17 24 39 / 0.1);
+      border-radius: 12px;
+      background: var(--p-subtle);
+    }
+
+    .btnctx__sample--editorial {
+      background: #fff;
+    }
+
+    .btnctx__sample--ai {
+      padding: 0;
+      overflow: hidden;
+      background: var(--p-subtle);
+    }
+
+    .btnctx__sample--chrome {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .btnctx__eyebrow {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--p-muted);
+    }
+
+    .btnctx__sample h3,
+    .btnctx__hub-card h3 {
+      margin: 0.45rem 0 0;
+      font-size: 1.15rem;
+      letter-spacing: -0.03em;
+    }
+
+    .btnctx__sample h4 {
+      margin: 1rem 0 0.35rem;
+      font-size: 0.92rem;
+    }
+
+    .btnctx__sample p,
+    .btnctx__hub-card p,
+    .btnctx__chrome-body p {
+      margin: 0.55rem 0 0;
+      color: var(--p-muted);
+      font-size: 0.86rem;
+      line-height: 1.65;
+    }
+
+    .btnctx__sample ul {
+      margin: 0.35rem 0 0;
+      padding-left: 1.1rem;
+      color: var(--p-muted);
+      font-size: 0.84rem;
+      line-height: 1.55;
+    }
+
+    .btnctx__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .btnctx__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.55rem 0.95rem;
+      border-radius: 10px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 650;
+      line-height: 1.2;
+      cursor: default;
+    }
+
+    .btnctx__btn--primary {
+      background: var(--p-ink);
+      color: #fff;
+    }
+
+    .btnctx__btn--secondary {
+      border: 1px solid var(--p-border-strong);
+      background: #fff;
+      color: var(--p-ink);
+    }
+
+    .btnctx__btn--ghost {
+      border: 1px solid rgb(19 77 106 / 0.28);
+      background: transparent;
+      color: var(--p-deep);
+    }
+
+    .btnctx__btn--inline {
+      padding: 0.1rem 0;
+      border-radius: 0;
+      border-bottom: 2px solid var(--p-deep);
+      background: transparent;
+      color: var(--p-deep);
+    }
+
+    .btnctx__btn--ai {
+      background: var(--p-deep);
+      color: #fff;
+    }
+
+    .btnctx__btn--ai-secondary {
+      border: 1px solid rgb(255 255 255 / 0.55);
+      background: rgb(255 255 255 / 0.12);
+      color: #fff;
+    }
+
+    .btnctx__btn--compact {
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      background: var(--p-ink);
+      color: #fff;
+    }
+
+    .btnctx__btn--icon {
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      border-radius: 50%;
+      background: var(--p-ink);
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .btnctx__btn--glass {
+      border: 1px solid rgb(255 255 255 / 0.45);
+      background: rgb(255 255 255 / 0.62);
+      color: var(--p-ink);
+      box-shadow: 0 6px 18px rgb(2 6 23 / 0.08);
+    }
+
+    .btnctx__ai-bridge {
+      display: grid;
+    }
+
+    .btnctx__ai-copy {
+      padding: 1rem;
+      background: #fff;
+      border-bottom: 1px solid rgb(17 24 39 / 0.08);
+    }
+
+    .btnctx__ai-block {
+      padding: 1rem;
+      background: var(--p-deep);
+      color: #fff;
+    }
+
+    .btnctx__seed-label {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgb(255 255 255 / 0.72);
+    }
+
+    .btnctx__seed {
+      margin: 0.45rem 0 0;
+      font-size: 0.92rem;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+    .btnctx__actions--ai {
+      margin-top: 0.85rem;
+    }
+
+    .btnctx__hub-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .btnctx__hub-card {
+      padding: 0.85rem;
+      border: 1px solid rgb(17 24 39 / 0.1);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .btnctx__actions--hub {
+      margin-top: 0.85rem;
+    }
+
+    .btnctx__chrome-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: linear-gradient(135deg, rgb(255 255 255 / 0.78), rgb(248 250 252 / 0.55));
+      border-bottom: 1px solid rgb(17 24 39 / 0.08);
+      backdrop-filter: blur(8px);
+    }
+
+    .btnctx__brand {
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .btnctx__chrome-actions {
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    .btnctx__chrome-body {
+      padding: 0.85rem 1rem;
+      background: var(--p-subtle);
+    }
+
+    .btnctx__notes {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .btnctx__notes article {
+      padding: 0.75rem;
+      border: 1px solid rgb(17 24 39 / 0.08);
+      border-radius: 10px;
+      background: var(--p-subtle);
+    }
+
+    .btnctx__notes h4 {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--p-deep);
+    }
+
+    .btnctx__notes p {
+      margin: 0.4rem 0 0;
+      color: var(--p-muted);
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+
+    .btnctx__checklist {
+      margin: 0.75rem 0 0;
+      padding-left: 1.1rem;
+      color: var(--p-muted);
+      font-size: 0.86rem;
+      line-height: 1.65;
+    }
+
+    .btnctx__checklist li + li {
+      margin-top: 0.35rem;
+    }
+
+    .btnctx__back {
+      margin: 1rem 0 0;
+      font-size: 0.82rem;
+    }
+
+    .btnctx__back a {
+      color: var(--p-deep);
+      font-weight: 700;
+    }
+
+    @media (min-width: 48rem) {
+      .btnctx__layout {
+        grid-template-columns: 15rem minmax(0, 1fr);
+        align-items: start;
+      }
+
+      .btnctx__nav {
+        flex-direction: column;
+        overflow: visible;
+      }
+
+      .btnctx__hub-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .btnctx__notes {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</PrototypeLayout>
