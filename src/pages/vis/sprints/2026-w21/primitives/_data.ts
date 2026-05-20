@@ -512,7 +512,7 @@ export const primitivePages: PrimitivePage[] = [
   {
     slug: "buttons",
     title: "Buttons",
-    status: "needsReview",
+    status: "candidate",
     purpose: "Make button levels scalable before real MVP reskin decisions.",
     does: "Buttons define action hierarchy, interaction states, surface adaptation and how users move from reading to help.",
     applies: {
