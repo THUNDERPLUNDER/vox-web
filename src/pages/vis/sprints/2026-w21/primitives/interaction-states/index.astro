@@ -80,7 +80,7 @@ const verifyNext = [
       </p>
       <div class="istates__hero-status">
         <span>Status</span>
-        <strong>{statusLabels.needsReview}</strong>
+        <strong>{statusLabels.candidate}</strong>
       </div>
     </header>
 
@@ -147,7 +147,7 @@ const verifyNext = [
                         href="#"
                         class:list={["istates__text-link", col.id !== "default" && `istates__sim-${col.id}`]}
                         aria-disabled={col.id === "disabled" ? "true" : undefined}
-                        tabindex={col.id === "disabled" ? -1 : undefined}
+                        tabindex={-1}
                       >
                         Les mer
                       </a>
@@ -161,6 +161,7 @@ const verifyNext = [
                             col.id !== "default" && `istates__sim-${col.id}`,
                           ]}
                           disabled={col.id === "disabled"}
+                          tabindex={-1}
                         >
                           <span class="inline-chat-shell__seed-question">Hva kan jeg prøve selv?</span>
                         </button>
@@ -178,6 +179,7 @@ const verifyNext = [
                         ]}
                         disabled={col.id === "disabled"}
                         aria-busy={col.id === "loading" ? "true" : undefined}
+                        tabindex={-1}
                       >
                         {col.id === "loading" ? "Laster…" : "Try Viddel"}
                       </button>
@@ -190,6 +192,7 @@ const verifyNext = [
                           col.id !== "default" && `istates__sim-${col.id}`,
                         ]}
                         disabled={col.id === "disabled"}
+                        tabindex={-1}
                       >
                         Lagre
                       </button>
@@ -202,6 +205,7 @@ const verifyNext = [
                           col.id !== "default" && `istates__sim-${col.id}`,
                         ]}
                         disabled={col.id === "disabled"}
+                        tabindex={-1}
                       >
                         Hubber
                       </button>
@@ -217,6 +221,7 @@ const verifyNext = [
                           col.id !== "default" && `istates__sim-${col.id}`,
                         ]}
                         disabled={col.id === "disabled"}
+                        tabindex={-1}
                       >
                         <span class="istates__ai-signal" aria-hidden="true"></span>
                         Spør Viddel
@@ -332,7 +337,7 @@ const verifyNext = [
 
             <article class="istates__card-example">
               <h3>Helper — static</h3>
-              <div class="istates__helper-box" role="note">
+              <div class="istates__helper-box" role="note" tabindex="-1">
                 <p class="istates__eyebrow">Merk</p>
                 <p>Dette er en statisk hjelpeboks — dashed border only. Ingen hover, ingen focus, ingen peker-cursor.</p>
               </div>
