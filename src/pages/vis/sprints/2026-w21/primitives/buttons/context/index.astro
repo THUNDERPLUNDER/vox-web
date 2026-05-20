@@ -107,6 +107,16 @@ const qaChecklist = [
       </p>
     </aside>
 
+    <aside class="btnctx__typo-note" role="note">
+      <p>
+        Action labels should use restrained type weight and optical centering. Question pills, secondary pills
+        and CTA pills share a calm label style; hierarchy should come from role, shape and context, not heavy typography.
+      </p>
+      <p class="btnctx__token-note">
+        Future token candidate: <code>action.label</code> / <code>questionPill.label</code>. Not implemented globally in #128.
+      </p>
+    </aside>
+
     <div class="btnctx__layout">
       <nav class="btnctx__nav" aria-label="Primitives Lab navigation">
         <a class="btnctx__nav-link" href={primitivesPath}>Overview</a>
@@ -369,6 +379,12 @@ const qaChecklist = [
       --p-pill-radius: 999px;
       --p-pill-padding-y: 0.72rem;
       --p-pill-padding-x: 1.35rem;
+      --p-action-label-size: 0.8125rem;
+      --p-action-label-weight: 500;
+      --p-question-label-weight: 400;
+      /* Replicated from r1-dialog-article progressive seed-row + hub-ai-seed-btn (VIS-local only) */
+      --p-question-shadow: 0 6px 20px rgb(15 23 42 / 0.07), 0 2px 6px rgb(15 23 42 / 0.05);
+      --p-question-shadow-hover: 0 12px 28px rgb(15 23 42 / 0.08);
 
       min-height: 100vh;
       max-width: 76rem;
@@ -474,6 +490,32 @@ const qaChecklist = [
       font-weight: 700;
     }
 
+    .btnctx__typo-note {
+      margin-top: 0.75rem;
+      padding: 0.85rem 1rem;
+      border: 1px solid rgb(17 24 39 / 0.1);
+      border-radius: 10px;
+      background: var(--p-subtle);
+    }
+
+    .btnctx__typo-note p {
+      margin: 0;
+      color: var(--p-muted);
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+
+    .btnctx__token-note {
+      margin-top: 0.55rem !important;
+      font-size: 0.76rem !important;
+      opacity: 0.9;
+    }
+
+    .btnctx__token-note code {
+      font-size: 0.72rem;
+      color: var(--p-deep);
+    }
+
     .btnctx__layout {
       display: grid;
       gap: 1.5rem;
@@ -556,19 +598,19 @@ const qaChecklist = [
       align-items: center;
     }
 
-    /* Shared action types */
+    /* Shared action types — calm label scale; primary CTA is the weight ceiling */
     .btnctx__text-link {
       color: var(--p-deep);
-      font-size: 0.86rem;
-      font-weight: 600;
+      font-size: var(--p-action-label-size);
+      font-weight: 450;
       text-decoration: underline;
-      text-decoration-color: rgb(19 77 106 / 0.35);
+      text-decoration-color: rgb(19 77 106 / 0.3);
       text-underline-offset: 3px;
       text-decoration-thickness: 1px;
     }
 
     .btnctx__text-link--inline {
-      font-weight: 650;
+      font-weight: 450;
     }
 
     .btnctx__question-pill {
@@ -576,24 +618,27 @@ const qaChecklist = [
       align-items: flex-start;
       width: 100%;
       max-width: 28rem;
-      padding: 0.78rem 1rem;
-      border: 1px solid rgb(17 24 39 / 0.14);
-      border-radius: 1.1rem;
-      background: #fff;
+      padding: 0.7rem 1.05rem;
+      border: 1px solid rgb(228 224 216 / 0.55);
+      border-radius: 999px;
+      background: rgb(255 252 248 / 0.98);
       color: var(--p-ink);
       font-family: inherit;
-      font-size: 0.9rem;
-      font-weight: 550;
-      line-height: 1.45;
+      font-size: var(--p-action-label-size);
+      font-weight: var(--p-question-label-weight);
+      line-height: 1.42;
+      letter-spacing: -0.006em;
       text-align: left;
       cursor: default;
-      transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+      box-shadow: var(--p-question-shadow);
+      transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
     }
 
     .btnctx__question-pill:hover {
-      border-color: rgb(17 24 39 / 0.22);
-      background: rgb(248 250 252 / 0.95);
-      box-shadow: 0 10px 24px rgb(15 23 42 / 0.06);
+      border-color: rgb(228 224 216 / 0.85);
+      background: rgb(248 250 252 / 0.98);
+      box-shadow: var(--p-question-shadow-hover);
+      transform: translateY(-1px);
     }
 
     .btnctx__pill {
@@ -604,9 +649,9 @@ const qaChecklist = [
       border: none;
       border-radius: var(--p-pill-radius);
       font-family: inherit;
-      font-size: 0.88rem;
-      font-weight: 650;
-      line-height: 1.2;
+      font-size: var(--p-action-label-size);
+      font-weight: var(--p-action-label-weight);
+      line-height: 1;
       cursor: default;
       transition: background-color 140ms ease;
     }
@@ -616,15 +661,19 @@ const qaChecklist = [
       padding: 0.62rem 1.2rem 0.58rem;
       background: var(--p-ink);
       color: #fff;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      line-height: 1;
+      font-size: var(--p-action-label-size);
+      font-weight: var(--p-action-label-weight);
       letter-spacing: -0.012em;
     }
 
     .btnctx__pill--secondary {
+      min-height: 2.375rem;
+      padding: 0.62rem 1.2rem 0.58rem;
       background: var(--p-gray-secondary);
       color: var(--p-ink);
+      font-size: var(--p-action-label-size);
+      font-weight: var(--p-question-label-weight);
+      letter-spacing: -0.006em;
     }
 
     .btnctx__pill--secondary:hover {
@@ -632,9 +681,10 @@ const qaChecklist = [
     }
 
     .btnctx__pill--quiet {
-      padding: 0.55rem 1rem;
-      font-size: 0.8rem;
-      font-weight: 600;
+      min-height: auto;
+      padding: 0.55rem 1rem 0.52rem;
+      font-size: var(--p-action-label-size);
+      font-weight: var(--p-question-label-weight);
     }
 
     .btnctx__chrome-compact {
@@ -645,7 +695,7 @@ const qaChecklist = [
       color: #fff;
       font-family: inherit;
       font-size: 0.7rem;
-      font-weight: 650;
+      font-weight: 500;
       cursor: default;
     }
 
@@ -673,7 +723,7 @@ const qaChecklist = [
       color: var(--p-ink);
       font-family: inherit;
       font-size: 0.7rem;
-      font-weight: 650;
+      font-weight: 500;
       box-shadow: 0 6px 18px rgb(2 6 23 / 0.08);
       cursor: default;
     }
@@ -682,21 +732,21 @@ const qaChecklist = [
       display: inline-flex;
       align-items: center;
       gap: 0.55rem;
-      padding: 0.65rem 1.1rem;
+      padding: 0.62rem 1.1rem 0.58rem;
       border: 1px solid rgb(255 85 176 / 0.35);
       border-radius: var(--p-pill-radius);
       background: rgb(255 255 255 / 0.72);
       color: var(--p-ink);
       font-family: inherit;
-      font-size: 0.84rem;
-      font-weight: 650;
+      font-size: var(--p-action-label-size);
+      font-weight: var(--p-action-label-weight);
       box-shadow: 0 0 0 1px rgb(255 85 176 / 0.08), 0 8px 22px rgb(255 85 176 / 0.08);
       cursor: default;
     }
 
     .btnctx__ai-ghost-pill--large {
-      padding: 0.78rem 1.35rem;
-      font-size: 0.9rem;
+      padding: 0.72rem 1.25rem 0.68rem;
+      font-size: var(--p-action-label-size);
     }
 
     .btnctx__ai-ghost-signal {
@@ -809,7 +859,7 @@ const qaChecklist = [
     .btnctx__seed-label {
       margin: 0;
       font-size: 0.82rem;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--p-ink);
     }
 
