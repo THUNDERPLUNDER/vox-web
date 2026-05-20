@@ -64,9 +64,14 @@ const recommendedDirection = [
 const styleNotes = {
   production:
     "Production source: src/pages/no/artikkel/[slug].astro + ArticleInlineChatShell (mode=progressive) + src/styles/r1-dialog-article.css (.inline-chat-shell__seed-row / __seed-question).",
+  surface:
+    "Production light article surface: --article-page-canvas and --reading-paper are both rgb(255 255 255). Seed pill default background is transparent on white paper — not beige. Dark-mode seed treatment must be reviewed separately.",
   tokens:
     "Future semantic token candidates: questionPrompt.label, action.label, cta.label. Not implemented globally in #128.",
 };
+
+const surfaceContextNote =
+  "Scenario uses production article surface context (reading-paper white). Dark-mode seed question treatment reviewed separately.";
 
 const qaChecklist = [
   "Are seed questions visually distinct from CTA buttons?",
@@ -172,8 +177,9 @@ const qaChecklist = [
         <section class="btnctx__panel" aria-labelledby="editorial-heading">
           <p class="btnctx__kicker">Scenario 01</p>
           <h2 id="editorial-heading">Editorial article context</h2>
+          <p class="btnctx__surface-note">{surfaceContextNote}</p>
 
-          <div class="btnctx__sample btnctx__sample--editorial">
+          <div class="btnctx__sample btnctx__sample--editorial btnctx__sample--article-surface">
             <p class="btnctx__eyebrow">Artikkel · Høreapparat i hverdagen</p>
             <h3>Jeg får piping i høreapparatet</h3>
             <p>
@@ -220,8 +226,9 @@ const qaChecklist = [
         <section class="btnctx__panel" aria-labelledby="ai-heading">
           <p class="btnctx__kicker">Scenario 02</p>
           <h2 id="ai-heading">AI / action transition context</h2>
+          <p class="btnctx__surface-note">{surfaceContextNote}</p>
 
-          <div class="btnctx__sample btnctx__sample--ai">
+          <div class="btnctx__sample btnctx__sample--ai btnctx__sample--article-surface">
             <div class="btnctx__ai-bridge">
               <div class="btnctx__ai-copy">
                 <p class="btnctx__eyebrow">Fra artikkel · piping</p>
@@ -354,6 +361,7 @@ const qaChecklist = [
           </ul>
           <div class="btnctx__style-notes">
             <p>{styleNotes.production}</p>
+            <p>{styleNotes.surface}</p>
             <p class="btnctx__token-note">{styleNotes.tokens}</p>
           </div>
         </section>
@@ -390,6 +398,9 @@ const qaChecklist = [
       --p-cta-label-size: 0.875rem;
       --p-cta-label-weight: 500;
       /* Mapped from r1-dialog-article.css progressive seed-row (VIS-local, no global import) */
+      /* Production article surfaces (tokens.css values, mapped locally — not imported) */
+      --p-prod-article-canvas: #ffffff;
+      --p-prod-reading-paper: #ffffff;
       --p-prod-border: 228 224 216;
       --p-prod-ink: 28 32 38;
       --p-prod-seed-radius: 1.15rem;
@@ -757,18 +768,24 @@ const qaChecklist = [
     .btnctx__sample {
       margin-top: 1rem;
       padding: 1rem;
-      border: 1px solid rgb(17 24 39 / 0.1);
+      border: 1px solid rgb(var(--p-prod-border) / 0.22);
       border-radius: 12px;
-      background: var(--p-subtle);
+      background: var(--p-prod-reading-paper);
+    }
+
+    .btnctx__sample--article-surface {
+      background: var(--p-prod-reading-paper);
+      box-shadow: 0 1px 0 rgb(0 0 0 / 0.04);
     }
 
     .btnctx__sample--editorial {
-      background: #fff;
+      background: var(--p-prod-reading-paper);
     }
 
     .btnctx__sample--ai {
       padding: 0;
       overflow: hidden;
+      background: var(--p-prod-reading-paper);
     }
 
     .btnctx__sample--chrome {
@@ -842,13 +859,20 @@ const qaChecklist = [
 
     .btnctx__ai-copy {
       padding: 1rem;
-      background: #fff;
-      border-bottom: 1px solid rgb(17 24 39 / 0.08);
+      background: var(--p-prod-reading-paper);
+      border-bottom: 1px solid rgb(var(--p-prod-border) / 0.22);
     }
 
     .btnctx__ai-seeds {
       padding: 1rem;
-      background: var(--p-subtle);
+      background: var(--p-prod-reading-paper);
+    }
+
+    .btnctx__surface-note {
+      margin: 0.55rem 0 0;
+      color: var(--p-muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
     }
 
     .btnctx__seed-label {
