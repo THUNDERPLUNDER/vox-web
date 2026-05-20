@@ -391,7 +391,7 @@ const dependencyNotes = [
                     </div>
                   </a>
                 </div>
-                <p class="cardctx__variant-note">Wide landscape aspect (16:10), fixed size — text anchored bottom-left with open space above.</p>
+                <p class="cardctx__variant-note">Feature-like bottom-left text stack (no CTA button) — whole-card hover/shadow for click affordance.</p>
               </article>
 
               <article class="cardctx__variant">
@@ -1107,9 +1107,9 @@ const dependencyNotes = [
     .cardctx__media-card-scrim--article {
       background: linear-gradient(
         to top,
-        rgb(17 24 39 / 0.88) 0%,
-        rgb(17 24 39 / 0.38) 20%,
-        transparent 36%
+        rgb(17 24 39 / 0.78) 0%,
+        rgb(17 24 39 / 0.28) 34%,
+        transparent 58%
       );
     }
 
@@ -1127,32 +1127,37 @@ const dependencyNotes = [
       left: 0;
       bottom: 0;
       z-index: 2;
-      max-width: 52%;
-      padding: 0 1.35rem 1.15rem;
+      max-width: 80%;
+      padding: 0 1.35rem 1.5rem;
+      text-align: left;
+    }
+
+    .cardctx__media-card-content--anchored .cardctx__eyebrow {
+      margin: 0;
     }
 
     .cardctx__media-card-content--anchored h3 {
-      font-size: 0.98rem;
-      line-height: 1.28;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
+      margin: 0.45rem 0 0;
+      font-size: 1.05rem;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
     }
 
     .cardctx__media-card-content--anchored .cardctx__media-card-copy {
-      max-width: 11rem;
-      font-size: 0.76rem;
-      line-height: 1.45;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
+      max-width: none;
+      margin: 0.45rem 0 0;
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+
+    .cardctx__media-card-content--anchored .cardctx__article-meta--on-dark {
+      margin-top: 0.45rem;
     }
 
     .cardctx__media-card-content--anchored .cardctx__ghost-cue {
       margin-top: 0.65rem;
-      font-size: 0.74rem;
+      font-size: 0.78rem;
+      font-weight: 600;
     }
 
     .cardctx__media-card-scrim--light {
