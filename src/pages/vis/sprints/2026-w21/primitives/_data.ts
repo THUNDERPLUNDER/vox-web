@@ -755,8 +755,8 @@ export const primitivePages: PrimitivePage[] = [
     ],
     do: [
       "Treat cards as grouped content surfaces — often invisible until hover.",
-      "Media/background cards: image or color behind text, bottom-left, fixed size in groups.",
-      "Image/text-separated cards: shadow on media only; link underline on hover for text affordance.",
+      "Feature/media CTA: special hero/promo pattern with ghost CTA — not default hub card.",
+      "Image/background cards need scrim + high-contrast (white) text on dark surfaces.",
       "Use whitespace, rhythm and image/text relation for grouping.",
       "Keep helper boxes static with dashed note border only.",
       "Bridge AI/action from editorial content.",

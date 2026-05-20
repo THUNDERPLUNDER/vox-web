@@ -24,6 +24,11 @@ const cardTaxonomy = [
     note: "Editorial reading invitation. Whole-card click preferred; layout can vary (image inside, outside, or invisible group).",
   },
   {
+    id: "feature-media-cta",
+    title: "Feature / media CTA card",
+    note: "Large visual card for featured content or hero/story surfaces with ghost CTA. Not default for hub navigation.",
+  },
+  {
     id: "helper-info",
     title: "Helper / info box",
     note: "Static note surface. Dashed border affordance only — must not look clickable.",
@@ -71,9 +76,23 @@ const hubInvisible = {
 const articleMediaBg = {
   eyebrow: "Artikkel · 6 min",
   title: "Jeg får piping i høreapparatet",
-  copy: "Ofte handler det om voks, fukt eller feil program.",
+  copy: "Ofte voks, fukt eller feil program.",
   meta: "Oppdatert mai 2026",
   cue: "Les artikkel",
+};
+
+const featureLarge = {
+  eyebrow: "Featured guide",
+  title: "Kom i gang med høreapparatet",
+  copy: "En rolig guide til de første ukene — skrevet for deg, ikke audiografen.",
+  cta: "Les guiden",
+};
+
+const featureCompact = {
+  eyebrow: "Ny artikkel",
+  title: "Piping i hverdagen",
+  copy: "Hva du kan prøve selv.",
+  cta: "Les mer",
 };
 
 const articleSeparate = {
@@ -97,31 +116,29 @@ const seedQuestions = [
 
 const decisionSummary = [
   "Cards are grouped content surfaces — not default visible bordered boxes.",
+  "Media/background cards are core patterns: image or color surface, fixed size in groups, text bottom-left with generous whitespace.",
+  "Image/background cards need scrim and white/high-contrast text — never dark link text on dark surfaces.",
   "Whole-card click is preferred for hub and article teasers — no internal CTA by default.",
-  "Media/background cards are a core pattern: image or color surface behind text, bottom-left placement, generous whitespace above.",
-  "In rows/grids, media/background cards use fixed size — card height is not driven by text length.",
-  "Image+text-separated cards: shadow/lift on media only; text flat with link underline on hover.",
-  "Invisible/white grouped cards: no visible background at rest; hover reveals surface/shadow.",
-  "Helper/info boxes: dashed border only, static.",
-  "AI bridge + dark identity: unchanged.",
+  "Feature/media CTA card is a special pattern for hero/story/promo — ghost CTA inside allowed; not default hub behavior.",
+  "Default hub/article cards avoid internal CTA buttons; CTA-inside-card only for explicit feature/promo surfaces.",
+  "Image+text-separated cards: shadow on media only; link underline on text cue.",
+  "Invisible grouped, helper, AI bridge, dark identity: as reviewed.",
   "Hover/focus interaction states need a later pass after Cards decision.",
 ];
 
 const openDecisions = [
   "Which media/background vs separated vs invisible layout fits hub overview vs article rails?",
+  "Where should feature/media CTA cards appear vs standard hub cards?",
   "Is fixed card height correct for mobile (~390px) hub grids?",
-  "How strong should bottom scrim/gradient be on image backgrounds?",
-  "When is a dark action surface too heavy for editorial flow?",
+  "How strong should bottom scrim be on image backgrounds?",
 ];
 
 const verifyNext = [
-  "Hub A/B fixed grid: same card height regardless of text length; text bottom-left.",
-  "Hub C: media-only shadow; link underline on hover.",
-  "Hub D: invisible group; hover surface with spacing buffer.",
-  "Article A: media/background + text inside, fixed size, bottom-left.",
-  "Article B/C: separated and invisible patterns.",
-  "No visible borders; no internal CTA buttons.",
-  "Mobile ~390px: fixed grid stacking, legibility, hover notes.",
+  "Hub A: white/high-contrast cues on dark scrim — no dark «Utforsk» text.",
+  "Article A: bottom-left text with whitespace above; scrim + white text; not cramped.",
+  "Scenario 06: large + compact feature CTA — CTA lighter on hover; no whole-card shadow.",
+  "Hub B/C/D + Article B/C unchanged affordance.",
+  "Mobile ~390px: contrast, spacing, fixed grid.",
 ];
 
 const dependencyNotes = [
@@ -188,7 +205,7 @@ const dependencyNotes = [
       <div class="cardctx__content">
         <section class="cardctx__panel" aria-labelledby="taxonomy-heading">
           <p class="cardctx__kicker">Card taxonomy</p>
-          <h2 id="taxonomy-heading">Five surface roles to evaluate</h2>
+          <h2 id="taxonomy-heading">Six surface roles to evaluate</h2>
           <p class="cardctx__lead">
             Mental model: grouped content surfaces with distinct affordance — not bordered UI boxes.
           </p>
@@ -206,6 +223,12 @@ const dependencyNotes = [
                     <span class="cardctx__mini-article">
                       <span class="cardctx__mini-article-thumb"></span>
                       <span class="cardctx__mini-article-text"></span>
+                    </span>
+                  )}
+                  {item.id === "feature-media-cta" && (
+                    <span class="cardctx__mini-feature">
+                      <span class="cardctx__mini-feature-bg"></span>
+                      <span class="cardctx__mini-feature-cta">CTA</span>
                     </span>
                   )}
                   {item.id === "helper-info" && (
@@ -354,20 +377,21 @@ const dependencyNotes = [
               <article class="cardctx__variant">
                 <p class="cardctx__variant-label">A · Image/background + text inside (fixed size)</p>
                 <div class="cardctx__fixed-grid cardctx__fixed-grid--single">
-                  <a href="#" class="cardctx__media-card cardctx__media-card--image">
-                    <div class="cardctx__media-card-surface">
+                  <a href="#" class="cardctx__media-card cardctx__media-card--image cardctx__media-card--article">
+                    <div class="cardctx__media-card-surface cardctx__media-card-surface--article">
                       <div class="cardctx__media-card-bg cardctx__media-card-bg--image-editorial" aria-hidden="true"></div>
-                      <div class="cardctx__media-card-scrim cardctx__media-card-scrim--dark" aria-hidden="true"></div>
-                      <div class="cardctx__media-card-content">
+                      <div class="cardctx__media-card-scrim cardctx__media-card-scrim--article" aria-hidden="true"></div>
+                      <div class="cardctx__media-card-content cardctx__media-card-content--anchored">
                         <p class="cardctx__eyebrow cardctx__eyebrow--on-dark">{articleMediaBg.eyebrow}</p>
                         <h3>{articleMediaBg.title}</h3>
                         <p class="cardctx__media-card-copy">{articleMediaBg.copy}</p>
                         <span class="cardctx__article-meta cardctx__article-meta--on-dark">{articleMediaBg.meta}</span>
-                        <span class="cardctx__ghost-cue cardctx__ghost-cue--on-dark">{articleMediaBg.cue}</span>
+                        <span class="cardctx__ghost-cue">{articleMediaBg.cue}</span>
                       </div>
                     </div>
                   </a>
                 </div>
+                <p class="cardctx__variant-note">Text anchored bottom-left — generous whitespace above; scrim + high-contrast text.</p>
               </article>
 
               <article class="cardctx__variant">
@@ -545,6 +569,80 @@ const dependencyNotes = [
             <article>
               <h4>What to evaluate</h4>
               <p>Is dark surface sparse enough? Is magenta dot signal-only?</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="cardctx__panel" aria-labelledby="feature-heading">
+          <p class="cardctx__kicker">Scenario 06</p>
+          <h2 id="feature-heading">Feature / media CTA card</h2>
+          <p class="cardctx__surface-note">
+            Special pattern for hero/story/promo — not default hub navigation. Large visual surface,
+            text bottom-left, transparent ghost CTA inside. No whole-card hover shadow — hover makes
+            CTA lighter/clearer.
+          </p>
+
+          <div class="cardctx__sample cardctx__sample--surface">
+            <div class="cardctx__variants">
+              <article class="cardctx__variant">
+                <p class="cardctx__variant-label">A · Large feature / media CTA</p>
+                <a href="#" class="cardctx__feature-card cardctx__feature-card--large">
+                  <div class="cardctx__feature-card-surface">
+                    <div class="cardctx__feature-card-bg cardctx__feature-card-bg--hero" aria-hidden="true"></div>
+                    <div class="cardctx__feature-card-scrim" aria-hidden="true"></div>
+                    <div class="cardctx__feature-card-content">
+                      <p class="cardctx__eyebrow cardctx__eyebrow--on-dark">{featureLarge.eyebrow}</p>
+                      <h3>{featureLarge.title}</h3>
+                      <p class="cardctx__feature-card-copy">{featureLarge.copy}</p>
+                      <span class="cardctx__feature-cta">{featureLarge.cta}</span>
+                    </div>
+                  </div>
+                </a>
+              </article>
+
+              <article class="cardctx__variant">
+                <p class="cardctx__variant-label">B · Compact feature / media CTA</p>
+                <div class="cardctx__fixed-grid cardctx__fixed-grid--feature">
+                  <a href="#" class="cardctx__feature-card cardctx__feature-card--compact">
+                    <div class="cardctx__feature-card-surface">
+                      <div class="cardctx__feature-card-bg cardctx__feature-card-bg--tile" aria-hidden="true"></div>
+                      <div class="cardctx__feature-card-scrim" aria-hidden="true"></div>
+                      <div class="cardctx__feature-card-content">
+                        <p class="cardctx__eyebrow cardctx__eyebrow--on-dark">{featureCompact.eyebrow}</p>
+                        <h3>{featureCompact.title}</h3>
+                        <p class="cardctx__feature-card-copy">{featureCompact.copy}</p>
+                        <span class="cardctx__feature-cta cardctx__feature-cta--compact">{featureCompact.cta}</span>
+                      </div>
+                    </div>
+                  </a>
+                  <a href="#" class="cardctx__feature-card cardctx__feature-card--compact">
+                    <div class="cardctx__feature-card-surface">
+                      <div class="cardctx__feature-card-bg cardctx__feature-card-bg--tile-alt" aria-hidden="true"></div>
+                      <div class="cardctx__feature-card-scrim" aria-hidden="true"></div>
+                      <div class="cardctx__feature-card-content">
+                        <p class="cardctx__eyebrow cardctx__eyebrow--on-dark">Tips</p>
+                        <h3>Rengjøring uten stress</h3>
+                        <p class="cardctx__feature-card-copy">En enkel rutine.</p>
+                        <span class="cardctx__feature-cta cardctx__feature-cta--compact">Les tips</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="cardctx__notes">
+            <article>
+              <h4>What to evaluate</h4>
+              <p>
+                Is ghost CTA affordance clear without whole-card shadow? Does this feel like feature/promo —
+                not hub navigation?
+              </p>
+            </article>
+            <article>
+              <h4>Decision needed</h4>
+              <p>Where does feature/media CTA belong vs standard hub/article cards?</p>
             </article>
           </div>
         </section>
@@ -990,10 +1088,34 @@ const dependencyNotes = [
     .cardctx__media-card-scrim--dark {
       background: linear-gradient(
         to top,
-        rgb(17 24 39 / 0.72) 0%,
-        rgb(17 24 39 / 0.28) 38%,
-        transparent 68%
+        rgb(17 24 39 / 0.82) 0%,
+        rgb(17 24 39 / 0.32) 36%,
+        transparent 62%
       );
+    }
+
+    .cardctx__media-card-scrim--article {
+      background: linear-gradient(
+        to top,
+        rgb(17 24 39 / 0.9) 0%,
+        rgb(17 24 39 / 0.45) 26%,
+        transparent 48%
+      );
+    }
+
+    .cardctx__media-card-surface--article {
+      height: 16.5rem;
+      min-height: 16.5rem;
+      max-height: 16.5rem;
+    }
+
+    .cardctx__media-card-content--anchored {
+      max-width: 72%;
+      padding: 0 1.25rem 1.45rem;
+    }
+
+    .cardctx__media-card-content--anchored .cardctx__media-card-copy {
+      max-width: 14rem;
     }
 
     .cardctx__media-card-scrim--light {
@@ -1019,20 +1141,11 @@ const dependencyNotes = [
       line-height: 1.25;
     }
 
-    .cardctx__media-card--image .cardctx__media-card-content h3,
-    .cardctx__media-card--image .cardctx__media-card-copy {
-      color: #fff;
-    }
-
     .cardctx__media-card-copy {
       margin: 0.4rem 0 0;
       font-size: 0.8rem;
       line-height: 1.5;
       color: var(--p-muted);
-    }
-
-    .cardctx__media-card--image .cardctx__media-card-copy {
-      color: rgb(255 255 255 / 0.82);
     }
 
     .cardctx__eyebrow--on-dark {
@@ -1137,6 +1250,29 @@ const dependencyNotes = [
       opacity: 0.88;
     }
 
+    /* High-contrast text on dark image/scrim — overrides base ghost-cue color */
+    .cardctx__media-card--image .cardctx__eyebrow--on-dark {
+      color: rgb(255 255 255 / 0.65);
+    }
+
+    .cardctx__media-card--image .cardctx__media-card-content h3 {
+      color: #fff;
+    }
+
+    .cardctx__media-card--image .cardctx__media-card-copy {
+      color: rgb(255 255 255 / 0.88);
+    }
+
+    .cardctx__media-card--image .cardctx__ghost-cue {
+      color: rgb(255 255 255 / 0.96);
+      font-weight: 600;
+      opacity: 1;
+    }
+
+    .cardctx__media-card--image .cardctx__article-meta--on-dark {
+      color: rgb(255 255 255 / 0.58);
+    }
+
     .cardctx__link-cue {
       display: inline-block;
       margin-top: 1rem;
@@ -1184,6 +1320,161 @@ const dependencyNotes = [
     .cardctx__article-b:hover .cardctx__article-b-media {
       box-shadow: var(--p-surface-hover);
       transform: var(--p-surface-lift);
+    }
+
+    /* Feature / media CTA card */
+    .cardctx__fixed-grid--feature {
+      grid-template-columns: 1fr;
+    }
+
+    .cardctx__feature-card {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .cardctx__feature-card-surface {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-radius: var(--p-radius);
+      overflow: hidden;
+    }
+
+    .cardctx__feature-card--large .cardctx__feature-card-surface {
+      height: 20rem;
+      min-height: 20rem;
+    }
+
+    .cardctx__feature-card--compact .cardctx__feature-card-surface {
+      height: 12.5rem;
+      min-height: 12.5rem;
+      max-height: 12.5rem;
+    }
+
+    .cardctx__feature-card-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .cardctx__feature-card-bg--hero {
+      background: linear-gradient(155deg, rgb(19 77 106 / 0.55), rgb(30 58 80 / 0.35)),
+        linear-gradient(120deg, rgb(148 163 184 / 0.4), rgb(224 242 254 / 0.5));
+    }
+
+    .cardctx__feature-card-bg--tile {
+      background: linear-gradient(160deg, rgb(71 85 105 / 0.45), rgb(19 77 106 / 0.35)),
+        linear-gradient(145deg, rgb(180 120 80 / 0.25), rgb(248 250 252));
+    }
+
+    .cardctx__feature-card-bg--tile-alt {
+      background: linear-gradient(160deg, rgb(19 77 106 / 0.5), rgb(100 116 139 / 0.3)),
+        linear-gradient(145deg, rgb(224 242 254 / 0.5), rgb(248 250 252));
+    }
+
+    .cardctx__feature-card-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(
+        to top,
+        rgb(17 24 39 / 0.78) 0%,
+        rgb(17 24 39 / 0.28) 34%,
+        transparent 58%
+      );
+    }
+
+    .cardctx__feature-card-content {
+      position: relative;
+      z-index: 2;
+      max-width: 80%;
+      padding: 0 1.35rem 1.5rem;
+      text-align: left;
+    }
+
+    .cardctx__feature-card--compact .cardctx__feature-card-content {
+      max-width: 88%;
+      padding: 0 1.1rem 1.15rem;
+    }
+
+    .cardctx__feature-card-content h3 {
+      margin: 0.45rem 0 0;
+      font-size: 1.12rem;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+      color: #fff;
+    }
+
+    .cardctx__feature-card--compact .cardctx__feature-card-content h3 {
+      font-size: 0.95rem;
+    }
+
+    .cardctx__feature-card-copy {
+      margin: 0.45rem 0 0;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: rgb(255 255 255 / 0.86);
+    }
+
+    .cardctx__feature-card--compact .cardctx__feature-card-copy {
+      font-size: 0.76rem;
+    }
+
+    .cardctx__feature-cta {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 1rem;
+      padding: 0.58rem 1.1rem;
+      border: 1px solid rgb(255 255 255 / 0.42);
+      border-radius: 999px;
+      background: rgb(255 255 255 / 0.14);
+      color: rgb(255 255 255 / 0.92);
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+    }
+
+    .cardctx__feature-card:hover .cardctx__feature-cta {
+      background: rgb(255 255 255 / 0.32);
+      border-color: rgb(255 255 255 / 0.72);
+      color: #fff;
+    }
+
+    .cardctx__feature-cta--compact {
+      margin-top: 0.75rem;
+      padding: 0.42rem 0.82rem;
+      font-size: 0.72rem;
+    }
+
+    .cardctx__mini-feature {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 2.6rem;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .cardctx__mini-feature-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, rgb(19 77 106 / 0.5), rgb(71 85 105 / 0.28));
+    }
+
+    .cardctx__mini-feature-cta {
+      position: absolute;
+      left: 0.45rem;
+      bottom: 0.38rem;
+      padding: 0.12rem 0.42rem;
+      border: 1px solid rgb(255 255 255 / 0.4);
+      border-radius: 999px;
+      background: rgb(255 255 255 / 0.12);
+      color: #fff;
+      font-size: 0.55rem;
+      font-weight: 700;
     }
 
     /* Helper — dashed only, static */
@@ -1366,6 +1657,10 @@ const dependencyNotes = [
       .cardctx__fixed-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1.15rem;
+      }
+
+      .cardctx__fixed-grid--feature {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .cardctx__dark-grid {
