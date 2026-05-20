@@ -117,8 +117,8 @@ const seedQuestions = [
 const decisionSummary = [
   "Cards are grouped content surfaces — not default visible bordered boxes.",
   "Media/background cards are core patterns: image or color surface, fixed size in groups, text bottom-left with generous whitespace.",
-  "Image/background cards need scrim and white/high-contrast text — never dark link text on dark surfaces.",
-  "Whole-card click is preferred for hub and article teasers — no internal CTA by default.",
+  "Article media cards: wide fixed aspect, bottom-left text, generous whitespace — not text-driven or cramped.",
+  "Feature/media CTA: borderless translucent CTA buttons; hover lightens CTA only.",
   "Feature/media CTA card is a special pattern for hero/story/promo — ghost CTA inside allowed; not default hub behavior.",
   "Default hub/article cards avoid internal CTA buttons; CTA-inside-card only for explicit feature/promo surfaces.",
   "Image+text-separated cards: shadow on media only; link underline on text cue.",
@@ -135,8 +135,8 @@ const openDecisions = [
 
 const verifyNext = [
   "Hub A: white/high-contrast cues on dark scrim — no dark «Utforsk» text.",
-  "Article A: bottom-left text with whitespace above; scrim + white text; not cramped.",
-  "Scenario 06: large + compact feature CTA — CTA lighter on hover; no whole-card shadow.",
+  "Article A: wide landscape media card, bottom-left anchor, whitespace above text.",
+  "Scenario 06: borderless translucent CTA, lighter on hover, no card shadow.",
   "Hub B/C/D + Article B/C unchanged affordance.",
   "Mobile ~390px: contrast, spacing, fixed grid.",
 ];
@@ -376,7 +376,7 @@ const dependencyNotes = [
             <div class="cardctx__variants">
               <article class="cardctx__variant">
                 <p class="cardctx__variant-label">A · Image/background + text inside (fixed size)</p>
-                <div class="cardctx__fixed-grid cardctx__fixed-grid--single">
+                <div class="cardctx__fixed-grid cardctx__fixed-grid--article">
                   <a href="#" class="cardctx__media-card cardctx__media-card--image cardctx__media-card--article">
                     <div class="cardctx__media-card-surface cardctx__media-card-surface--article">
                       <div class="cardctx__media-card-bg cardctx__media-card-bg--image-editorial" aria-hidden="true"></div>
@@ -391,7 +391,7 @@ const dependencyNotes = [
                     </div>
                   </a>
                 </div>
-                <p class="cardctx__variant-note">Text anchored bottom-left — generous whitespace above; scrim + high-contrast text.</p>
+                <p class="cardctx__variant-note">Wide landscape aspect (16:10), fixed size — text anchored bottom-left with open space above.</p>
               </article>
 
               <article class="cardctx__variant">
@@ -1024,6 +1024,15 @@ const dependencyNotes = [
       max-width: 20rem;
     }
 
+    .cardctx__fixed-grid--article {
+      width: 100%;
+      max-width: min(100%, 28rem);
+    }
+
+    .cardctx__media-card--article {
+      width: 100%;
+    }
+
     .cardctx__media-card {
       display: block;
       color: inherit;
@@ -1097,25 +1106,39 @@ const dependencyNotes = [
     .cardctx__media-card-scrim--article {
       background: linear-gradient(
         to top,
-        rgb(17 24 39 / 0.9) 0%,
-        rgb(17 24 39 / 0.45) 26%,
-        transparent 48%
+        rgb(17 24 39 / 0.88) 0%,
+        rgb(17 24 39 / 0.38) 20%,
+        transparent 36%
       );
     }
 
     .cardctx__media-card-surface--article {
-      height: 16.5rem;
-      min-height: 16.5rem;
-      max-height: 16.5rem;
+      width: 100%;
+      height: auto;
+      min-height: unset;
+      max-height: unset;
+      aspect-ratio: 16 / 10;
     }
 
     .cardctx__media-card-content--anchored {
-      max-width: 72%;
-      padding: 0 1.25rem 1.45rem;
+      max-width: 48%;
+      padding: 0 1.4rem 1.2rem;
+    }
+
+    .cardctx__media-card-content--anchored h3 {
+      font-size: 0.98rem;
+      line-height: 1.28;
     }
 
     .cardctx__media-card-content--anchored .cardctx__media-card-copy {
-      max-width: 14rem;
+      max-width: 10.5rem;
+      font-size: 0.76rem;
+      line-height: 1.45;
+    }
+
+    .cardctx__media-card-content--anchored .cardctx__ghost-cue {
+      margin-top: 0.65rem;
+      font-size: 0.74rem;
     }
 
     .cardctx__media-card-scrim--light {
@@ -1428,18 +1451,17 @@ const dependencyNotes = [
       align-items: center;
       margin-top: 1rem;
       padding: 0.58rem 1.1rem;
-      border: 1px solid rgb(255 255 255 / 0.42);
+      border: none;
       border-radius: 999px;
-      background: rgb(255 255 255 / 0.14);
-      color: rgb(255 255 255 / 0.92);
+      background: rgb(255 255 255 / 0.2);
+      color: rgb(255 255 255 / 0.94);
       font-size: 0.8rem;
       font-weight: 600;
-      transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+      transition: background-color 180ms ease, color 180ms ease;
     }
 
     .cardctx__feature-card:hover .cardctx__feature-cta {
-      background: rgb(255 255 255 / 0.32);
-      border-color: rgb(255 255 255 / 0.72);
+      background: rgb(255 255 255 / 0.38);
       color: #fff;
     }
 
@@ -1469,9 +1491,9 @@ const dependencyNotes = [
       left: 0.45rem;
       bottom: 0.38rem;
       padding: 0.12rem 0.42rem;
-      border: 1px solid rgb(255 255 255 / 0.4);
+      border: none;
       border-radius: 999px;
-      background: rgb(255 255 255 / 0.12);
+      background: rgb(255 255 255 / 0.2);
       color: #fff;
       font-size: 0.55rem;
       font-weight: 700;
