@@ -755,8 +755,8 @@ export const primitivePages: PrimitivePage[] = [
     ],
     do: [
       "Treat cards as grouped content surfaces — often invisible until hover.",
-      "Use whole-card click for hub and article navigation.",
-      "Let hover shadow/lift validate clickability.",
+      "Full-surface cards: hover shadow on grouped surface with internal whitespace — not tight against text.",
+      "Image/text-separated cards: shadow on media only; link underline on hover for text affordance.",
       "Use whitespace, rhythm and image/text relation for grouping.",
       "Keep helper boxes static with dashed note border only.",
       "Bridge AI/action from editorial content.",

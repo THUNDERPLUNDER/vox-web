@@ -40,27 +40,26 @@ const cardTaxonomy = [
   },
 ];
 
-const hubCards = [
-  {
-    eyebrow: "Live hub",
-    title: "Bedre lyd i hverdagen",
-    copy: "Praktiske råd for samtaler, støy og tilpasning — fra morgenkaffe til kollegemøter og telefonsamtaler hjemme.",
-    tone: "warm",
-  },
-  {
-    eyebrow: "Live hub",
-    title: "Høreapparat i hverdagen",
-    copy: "Alt du trenger å vite om tilvenning, vedlikehold og vanlige utfordringer de første månedene.",
-    tone: "cool",
-  },
-  {
-    eyebrow: "Kommende",
-    title: "Relasjoner og samtale",
-    copy: "Hvordan høreapparatet kan hjelpe i møter, familie og telefonsamtaler — kommer snart.",
-    tone: "muted",
-    muted: true,
-  },
-];
+const hubVariantA = {
+  eyebrow: "Live hub",
+  title: "Bedre lyd i hverdagen",
+  copy: "Praktiske råd for samtaler, støy og tilpasning — fra morgenkaffe til kollegemøter og telefonsamtaler hjemme. Start med det som gir mest effekt i hverdagen din.",
+  cue: "Utforsk hubben →",
+};
+
+const hubVariantB = {
+  eyebrow: "Ordbok",
+  title: "Forstå begrepene",
+  copy: "Korte forklaringer på ord du møter hos audiograf og i egne notater — uten fagjargong som gjør det vanskeligere å stille spørsmål.",
+  cue: "Gå til ordboken →",
+};
+
+const hubVariantC = {
+  eyebrow: "Live hub",
+  title: "Høreapparat i hverdagen",
+  copy: "Alt du trenger å vite om tilvenning, vedlikehold og vanlige utfordringer de første månedene — skrevet for deg som bruker apparatet hver dag.",
+  cue: "Utforsk hubben",
+};
 
 const articleVariantA = {
   eyebrow: "Artikkel · 6 min",
@@ -90,31 +89,30 @@ const seedQuestions = [
 
 const decisionSummary = [
   "Cards are grouped content surfaces — not default visible bordered boxes.",
-  "Clickable cards may be almost invisible until hover; hover shadow/lift validates affordance.",
-  "Hub cards: whole-card click, no internal CTA, grouping + whitespace + arrow/text cue.",
-  "Article teasers: whole-card click preferred — layout varies (A/B/C editorial patterns).",
-  "Helper/info boxes: dashed border only, static, no hover — must not look clickable.",
-  "AI bridge: editorial continuation with seed questions as interaction pattern (#128).",
-  "Dark/identity surfaces: sparse use; magenta as micro-signal only.",
-  "Interaction states (focus, active) deferred to later pass after Cards decision.",
+  "Whole-card click is preferred for hub and article teasers.",
+  "Full-surface cards (A/B): hover shadow/lift on the grouped surface — with internal whitespace so shadow does not hug text.",
+  "Image/text-separated editorial cards (C): shadow/lift on image/media only — text block stays flat; link cue uses underline on hover.",
+  "Helper/info boxes: dashed border only, static, no hover.",
+  "AI bridge: seed questions as article/AI interaction pattern (#128).",
+  "Dark/identity surfaces: sparse; magenta as micro-signal only.",
+  "Hover/focus interaction states need a later pass after Cards decision.",
 ];
 
 const openDecisions = [
-  "Which article teaser layout (A, B, or C) fits which editorial context?",
-  "Is hover-only surface revelation enough for hub cards on mobile (~390px)?",
-  "How much whitespace between grouped surfaces before hover?",
+  "Which hub/article layout (A, B, or C) fits which product context?",
+  "Is hover-only affordance enough on mobile (~390px) for borderless variants?",
+  "How much internal padding before shadow feels calm, not tight?",
   "When is a dark action surface too heavy for editorial flow?",
-  "Should hub cards always include imagery, or can text-only grouping suffice?",
 ];
 
 const verifyNext = [
-  "Do hub cards read as grouped surfaces without visible borders at rest?",
-  "Does hover lift/shadow make clickability clear without CTA buttons?",
-  "Do article variants A/B/C all feel editorial — not UI boxes or ads?",
-  "Are helper boxes clearly static (dashed only, no fill, no hover)?",
-  "Does AI bridge stay connected to article content?",
-  "Is magenta dot signal-only on dark cards?",
-  "Mobile ~390px: wrapping, spacing and visual grouping with realistic content.",
+  "Hub A/B: full-surface hover with whitespace buffer — no internal CTA.",
+  "Hub C: image-only shadow; text flat; link underline on hover.",
+  "Article A: surface shadow when text is inside grouped surface.",
+  "Article B: image-only hover; editorial link-line under cue on hover.",
+  "Article C: invisible at rest; subtle surface on hover with generous padding.",
+  "Helper, AI bridge, dark cards unchanged.",
+  "Mobile ~390px: wrapping, spacing, realistic content length.",
 ];
 
 const dependencyNotes = [
@@ -224,34 +222,51 @@ const dependencyNotes = [
           <p class="cardctx__kicker">Scenario 01</p>
           <h2 id="hub-heading">Hub card / clickable surface</h2>
           <p class="cardctx__surface-note">
-            Whole-card click with image and content grouping. No visible border at rest — affordance
-            is subtle before hover, clearer on hover/focus via shadow/lift. No internal CTA button.
+            Three layout variants — all whole-card clickable, no internal CTA. Affordance subtle at
+            rest; hover/focus validates clickability. Variant C separates image shadow from text block.
           </p>
 
           <div class="cardctx__sample cardctx__sample--surface">
-            <div class="cardctx__hub-grid">
-              {hubCards.map((card) => (
-                <a
-                  href="#"
-                  class:list={[
-                    "cardctx__hub-card",
-                    card.muted && "cardctx__hub-card--muted",
-                  ]}
-                  aria-disabled={card.muted ? "true" : undefined}
-                >
-                  <div class:list={["cardctx__hub-media", `cardctx__hub-media--${card.tone}`]} aria-hidden="true"></div>
-                  <div class="cardctx__hub-body">
-                    <p class="cardctx__eyebrow">{card.eyebrow}</p>
-                    <h3>{card.title}</h3>
-                    <p>{card.copy}</p>
-                    {card.muted ? (
-                      <span class="cardctx__hub-cue cardctx__hub-cue--muted">Kommer snart</span>
-                    ) : (
-                      <span class="cardctx__hub-cue">Utforsk hubben →</span>
-                    )}
+            <div class="cardctx__variants">
+              <article class="cardctx__variant">
+                <p class="cardctx__variant-label">A · Background/image with content inside</p>
+                <a href="#" class="cardctx__hub-a">
+                  <div class="cardctx__hub-a-surface">
+                    <div class="cardctx__hub-a-media cardctx__hub-a-media--warm" aria-hidden="true"></div>
+                    <div class="cardctx__hub-a-body">
+                      <p class="cardctx__eyebrow">{hubVariantA.eyebrow}</p>
+                      <h3>{hubVariantA.title}</h3>
+                      <p>{hubVariantA.copy}</p>
+                      <span class="cardctx__ghost-cue">{hubVariantA.cue}</span>
+                    </div>
                   </div>
                 </a>
-              ))}
+              </article>
+
+              <article class="cardctx__variant">
+                <p class="cardctx__variant-label">B · No background — invisible group at rest</p>
+                <a href="#" class="cardctx__hub-b">
+                  <div class="cardctx__hub-b-inner">
+                    <p class="cardctx__eyebrow">{hubVariantB.eyebrow}</p>
+                    <h3>{hubVariantB.title}</h3>
+                    <p>{hubVariantB.copy}</p>
+                    <span class="cardctx__ghost-cue">{hubVariantB.cue}</span>
+                  </div>
+                </a>
+              </article>
+
+              <article class="cardctx__variant">
+                <p class="cardctx__variant-label">C · Image + text separate (editorial group)</p>
+                <a href="#" class="cardctx__hub-c">
+                  <div class="cardctx__hub-c-media cardctx__hub-c-media--cool" aria-hidden="true"></div>
+                  <div class="cardctx__hub-c-body">
+                    <p class="cardctx__eyebrow">{hubVariantC.eyebrow}</p>
+                    <h3>{hubVariantC.title}</h3>
+                    <p>{hubVariantC.copy}</p>
+                    <span class="cardctx__link-cue">{hubVariantC.cue} →</span>
+                  </div>
+                </a>
+              </article>
             </div>
           </div>
 
@@ -259,13 +274,13 @@ const dependencyNotes = [
             <article>
               <h4>What to evaluate</h4>
               <p>
-                Does grouping + image + whitespace communicate hub entry without a visible box?
-                Is hover lift enough to confirm clickability?
+                A/B: does internal padding keep hover shadow from sitting tight against text?
+                C: does image-only lift feel editorial — with link underline, not card shadow on text?
               </p>
             </article>
             <article>
               <h4>Decision needed</h4>
-              <p>Hub affordance should be subtle before hover and clearer on hover/focus — is this balance right?</p>
+              <p>Which hub layout fits hub overview vs. in-flow editorial navigation?</p>
             </article>
           </div>
         </section>
@@ -274,8 +289,8 @@ const dependencyNotes = [
           <p class="cardctx__kicker">Scenario 02</p>
           <h2 id="article-heading">Article teaser card</h2>
           <p class="cardctx__surface-note">
-            <strong>Decision:</strong> whole-card click is the preferred direction. Three editorial
-            layout variants — all whole-card clickable, different visual grouping.
+            <strong>Decision:</strong> whole-card click preferred. Same A/B/C affordance logic as hub
+            cards — full-surface shadow when text is inside; image-only shadow when text is separate.
           </p>
 
           <div class="cardctx__sample cardctx__sample--surface">
@@ -283,13 +298,15 @@ const dependencyNotes = [
               <article class="cardctx__variant">
                 <p class="cardctx__variant-label">A · Background/image with text inside</p>
                 <a href="#" class="cardctx__article-a">
-                  <div class="cardctx__article-a-media" aria-hidden="true"></div>
-                  <div class="cardctx__article-a-body">
-                    <p class="cardctx__eyebrow">{articleVariantA.eyebrow}</p>
-                    <h3>{articleVariantA.title}</h3>
-                    <p>{articleVariantA.copy}</p>
-                    <span class="cardctx__article-meta">{articleVariantA.meta}</span>
-                    <span class="cardctx__ghost-cue">Les artikkel</span>
+                  <div class="cardctx__article-a-surface">
+                    <div class="cardctx__article-a-media" aria-hidden="true"></div>
+                    <div class="cardctx__article-a-body">
+                      <p class="cardctx__eyebrow">{articleVariantA.eyebrow}</p>
+                      <h3>{articleVariantA.title}</h3>
+                      <p>{articleVariantA.copy}</p>
+                      <span class="cardctx__article-meta">{articleVariantA.meta}</span>
+                      <span class="cardctx__ghost-cue">Les artikkel</span>
+                    </div>
                   </div>
                 </a>
               </article>
@@ -303,6 +320,7 @@ const dependencyNotes = [
                     <h3>{articleVariantB.title}</h3>
                     <p>{articleVariantB.copy}</p>
                     <span class="cardctx__article-meta">{articleVariantB.meta}</span>
+                    <span class="cardctx__link-cue">Les artikkel</span>
                   </div>
                 </a>
               </article>
@@ -310,7 +328,7 @@ const dependencyNotes = [
               <article class="cardctx__variant">
                 <p class="cardctx__variant-label">C · No visible background — grouped text area</p>
                 <a href="#" class="cardctx__article-c">
-                  <div class="cardctx__article-c-body">
+                  <div class="cardctx__article-c-inner">
                     <p class="cardctx__eyebrow">{articleVariantC.eyebrow}</p>
                     <h3>{articleVariantC.title}</h3>
                     <p>{articleVariantC.copy}</p>
@@ -326,13 +344,13 @@ const dependencyNotes = [
             <article>
               <h4>What to evaluate</h4>
               <p>
-                Do all three variants feel like editorial reading invitations — not UI boxes or ads?
-                Does whole-card click work across layout differences?
+                Do all three feel editorial — not UI boxes? B/C: no full-group shadow under text;
+                link-line on hover for separated layouts.
               </p>
             </article>
             <article>
               <h4>Decision needed</h4>
-              <p>Which layout (A, B, or C) fits which editorial context?</p>
+              <p>Which article layout fits hub lists, article rails and in-article related content?</p>
             </article>
           </div>
         </section>
@@ -830,100 +848,170 @@ const dependencyNotes = [
       color: rgb(255 255 255 / 0.62);
     }
 
-    /* Hub cards — borderless, hover lift */
-    .cardctx__hub-grid {
-      display: grid;
-      gap: 1.5rem;
-    }
-
-    .cardctx__hub-card {
-      display: grid;
-      gap: 0.85rem;
+    /* Hub variants */
+    .cardctx__hub-a,
+    .cardctx__hub-b,
+    .cardctx__hub-c,
+    .cardctx__article-a,
+    .cardctx__article-b,
+    .cardctx__article-c {
+      display: block;
       color: inherit;
       text-decoration: none;
-      border: none;
-      border-radius: var(--p-radius);
-      background: transparent;
-      transition: box-shadow 180ms ease, transform 180ms ease;
     }
 
-    .cardctx__hub-card:hover {
+    .cardctx__hub-a-surface,
+    .cardctx__hub-b-inner,
+    .cardctx__article-a-surface,
+    .cardctx__article-c-inner {
+      border-radius: var(--p-radius);
+      transition: box-shadow 200ms ease, transform 200ms ease, background-color 200ms ease;
+    }
+
+    .cardctx__hub-a-surface {
+      padding: 0.85rem;
+      overflow: hidden;
+    }
+
+    .cardctx__hub-a:hover .cardctx__hub-a-surface,
+    .cardctx__hub-b:hover .cardctx__hub-b-inner,
+    .cardctx__article-a:hover .cardctx__article-a-surface,
+    .cardctx__article-c:hover .cardctx__article-c-inner {
       box-shadow: var(--p-surface-hover);
       transform: var(--p-surface-lift);
     }
 
-    .cardctx__hub-card--muted {
-      opacity: 0.65;
-      pointer-events: none;
+    .cardctx__hub-b-inner,
+    .cardctx__article-c-inner {
+      padding: 1.35rem 1.25rem;
     }
 
-    .cardctx__hub-media {
+    .cardctx__hub-b:hover .cardctx__hub-b-inner,
+    .cardctx__article-c:hover .cardctx__article-c-inner {
+      background: rgb(248 250 252 / 0.55);
+    }
+
+    .cardctx__hub-a-media,
+    .cardctx__hub-c-media,
+    .cardctx__article-a-media,
+    .cardctx__article-b-media {
+      border-radius: calc(var(--p-radius) - 2px);
+    }
+
+    .cardctx__hub-a-media,
+    .cardctx__hub-c-media,
+    .cardctx__article-a-media,
+    .cardctx__article-b-media {
       aspect-ratio: 16 / 10;
-      border-radius: var(--p-radius);
-      background: linear-gradient(135deg, rgb(19 77 106 / 0.1), rgb(248 250 252));
     }
 
-    .cardctx__hub-media--warm {
-      background: linear-gradient(145deg, rgb(255 237 213 / 0.5), rgb(254 249 235 / 0.8));
+    .cardctx__hub-a-media--warm {
+      background: linear-gradient(145deg, rgb(255 237 213 / 0.55), rgb(254 249 235 / 0.85));
     }
 
-    .cardctx__hub-media--cool {
-      background: linear-gradient(145deg, rgb(19 77 106 / 0.14), rgb(224 242 254 / 0.5));
+    .cardctx__hub-c-media--cool,
+    .cardctx__article-b-media {
+      background: linear-gradient(145deg, rgb(19 77 106 / 0.14), rgb(224 242 254 / 0.55));
     }
 
-    .cardctx__hub-media--muted {
-      background: linear-gradient(145deg, rgb(17 24 39 / 0.06), rgb(248 250 252));
+    .cardctx__article-a-media {
+      background: linear-gradient(160deg, rgb(19 77 106 / 0.18), rgb(248 250 252));
     }
 
-    .cardctx__hub-body h3,
+    .cardctx__hub-a-body,
+    .cardctx__hub-b-inner,
+    .cardctx__hub-c-body,
+    .cardctx__article-a-body,
+    .cardctx__article-b-body,
+    .cardctx__article-c-inner {
+      padding-top: 0.15rem;
+    }
+
+    .cardctx__hub-a-body {
+      padding: 1.1rem 0.35rem 0.35rem;
+    }
+
+    .cardctx__hub-c {
+      display: grid;
+      gap: 1.1rem;
+    }
+
+    .cardctx__hub-c-media {
+      transition: box-shadow 200ms ease, transform 200ms ease;
+    }
+
+    .cardctx__hub-c:hover .cardctx__hub-c-media {
+      box-shadow: var(--p-surface-hover);
+      transform: var(--p-surface-lift);
+    }
+
+    .cardctx__hub-c-body {
+      padding: 0 0.15rem;
+    }
+
+    .cardctx__hub-a-body h3,
+    .cardctx__hub-b-inner h3,
+    .cardctx__hub-c-body h3,
     .cardctx__article-a-body h3,
     .cardctx__article-b-body h3,
-    .cardctx__article-c-body h3,
+    .cardctx__article-c-inner h3,
     .cardctx__helper-box h3,
     .cardctx__dark-card h3 {
-      margin: 0.5rem 0 0;
+      margin: 0.55rem 0 0;
       font-size: 1.05rem;
       letter-spacing: -0.03em;
-      line-height: 1.25;
+      line-height: 1.3;
     }
 
-    .cardctx__hub-body p,
+    .cardctx__hub-a-body p,
+    .cardctx__hub-b-inner p,
+    .cardctx__hub-c-body p,
     .cardctx__article-a-body p,
     .cardctx__article-b-body p,
-    .cardctx__article-c-body p,
+    .cardctx__article-c-inner p,
     .cardctx__helper-box p,
     .cardctx__dark-card p,
     .cardctx__ai-copy p {
-      margin: 0.5rem 0 0;
+      margin: 0.55rem 0 0;
       font-size: 0.84rem;
       line-height: 1.65;
       color: var(--p-muted);
     }
 
-    .cardctx__hub-cue {
+    .cardctx__ghost-cue {
       display: inline-block;
-      margin-top: 0.75rem;
+      margin-top: 1rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--p-deep);
+      opacity: 0.88;
+    }
+
+    .cardctx__link-cue {
+      display: inline-block;
+      margin-top: 1rem;
       font-size: 0.78rem;
       font-weight: 600;
       color: var(--p-deep);
+      text-decoration: none;
+      text-underline-offset: 3px;
+      transition: text-decoration-color 160ms ease;
     }
 
-    .cardctx__hub-cue--muted {
-      font-size: 0.68rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--p-muted);
+    .cardctx__hub-c:hover .cardctx__link-cue,
+    .cardctx__article-b:hover .cardctx__link-cue {
+      text-decoration: underline;
+      text-decoration-color: rgb(19 77 106 / 0.45);
     }
 
     /* Article variants */
     .cardctx__variants {
       display: grid;
-      gap: 2rem;
+      gap: 2.25rem;
     }
 
     .cardctx__variant-label {
-      margin: 0 0 0.75rem;
+      margin: 0 0 0.85rem;
       font-size: 0.68rem;
       font-weight: 800;
       letter-spacing: 0.06em;
@@ -933,91 +1021,35 @@ const dependencyNotes = [
 
     .cardctx__article-meta {
       display: block;
-      margin-top: 0.65rem;
+      margin-top: 0.75rem;
       font-size: 0.68rem;
       color: var(--p-muted);
     }
 
-    .cardctx__ghost-cue {
-      display: inline-block;
-      margin-top: 0.85rem;
-      font-size: 0.78rem;
-      font-weight: 500;
-      color: var(--p-deep);
-      opacity: 0.85;
-    }
-
-    /* A: background/image + text inside */
-    .cardctx__article-a {
-      display: block;
+    .cardctx__article-a-surface {
+      padding: 0.85rem;
       overflow: hidden;
-      border: none;
-      border-radius: var(--p-radius);
-      color: inherit;
-      text-decoration: none;
-      background: transparent;
-      transition: box-shadow 180ms ease, transform 180ms ease;
-    }
-
-    .cardctx__article-a:hover {
-      box-shadow: var(--p-surface-hover);
-      transform: var(--p-surface-lift);
-    }
-
-    .cardctx__article-a-media {
-      aspect-ratio: 16 / 9;
-      border-radius: var(--p-radius);
-      background: linear-gradient(160deg, rgb(19 77 106 / 0.18), rgb(248 250 252));
     }
 
     .cardctx__article-a-body {
-      padding: 1rem 0.15rem 0.25rem;
+      padding: 1.15rem 0.35rem 0.35rem;
     }
 
-    /* B: image + text outside */
     .cardctx__article-b {
       display: grid;
-      gap: 0.85rem;
-      color: inherit;
-      text-decoration: none;
+      gap: 1.1rem;
     }
 
     .cardctx__article-b-media {
-      aspect-ratio: 16 / 10;
-      border-radius: var(--p-radius);
-      background: linear-gradient(145deg, rgb(224 242 254 / 0.6), rgb(248 250 252));
-      transition: opacity 180ms ease;
+      transition: box-shadow 200ms ease, transform 200ms ease, opacity 200ms ease;
     }
 
     .cardctx__article-b:hover .cardctx__article-b-media {
-      opacity: 0.92;
-    }
-
-    .cardctx__article-b-body {
-      padding: 0 0.15rem;
-    }
-
-    /* C: invisible grouped area */
-    .cardctx__article-c {
-      display: block;
-      padding: 1.15rem 0;
-      border: none;
-      border-radius: var(--p-radius);
-      color: inherit;
-      text-decoration: none;
-      background: transparent;
-      transition: box-shadow 180ms ease, background-color 180ms ease, transform 180ms ease;
-    }
-
-    .cardctx__article-c:hover {
-      padding: 1.15rem;
-      margin: 0 -1.15rem;
-      background: rgb(248 250 252 / 0.72);
       box-shadow: var(--p-surface-hover);
       transform: var(--p-surface-lift);
     }
 
-    .cardctx__article-c-body {
+    .cardctx__article-b-body {
       padding: 0 0.15rem;
     }
 
@@ -1196,11 +1228,6 @@ const dependencyNotes = [
 
       .cardctx__taxonomy {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .cardctx__hub-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 1.75rem;
       }
 
       .cardctx__dark-grid {
