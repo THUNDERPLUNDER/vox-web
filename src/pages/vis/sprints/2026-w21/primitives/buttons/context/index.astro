@@ -4,6 +4,7 @@
 */
 import PrototypeLayout from "../../../../../../../layouts/PrototypeLayout.astro";
 import "../../../../../../../styles/global.css";
+import "../../../../../../../styles/r1-dialog-article.css";
 import { navItems, statusLabels } from "../../_data";
 
 const base = import.meta.env.BASE_URL;
@@ -52,13 +53,26 @@ const seedQuestions = [
 
 const recommendedDirection = [
   "Text links for editorial references.",
-  "Question pills for AI seed questions.",
-  "Primary CTA candidate: large pill-shaped, calm black/ink, with restrained type weight and optical vertical centering.",
-  "Large light-gray pill for secondary action.",
+  "Question pills for AI seed questions — match production article pattern (ArticleInlineChatShell progressive seed-row).",
+  "Primary CTA candidate: large pill-shaped, calm black/ink, 0.875rem / weight 500, optical vertical centering.",
+  "Large light-gray pill for secondary action — not bolder or larger than primary CTA label.",
   "Hub cards should usually be clickable surfaces, not button containers.",
   "Chrome controls should stay compact.",
   "Standalone AI can use a larger ghost/pill button with magenta signal detail.",
+  "Seed question pills should match the production article seed-question pattern. CTA and secondary pill labels should stay restrained, but not smaller or heavier than the primary CTA reference.",
 ];
+
+const styleNotes = {
+  production:
+    "Seed questions reuse production markup: inline-chat-shell__seed-row + r1-dialog-article.css (same as ArticleInlineChatShell progressive on /no/artikkel/[slug]).",
+  surface:
+    "Production light article surface: reading-paper white. Dark-mode seed treatment reviewed separately.",
+  tokens:
+    "Future semantic token candidates: questionPrompt.label, action.label, cta.label. Not implemented globally in #128.",
+};
+
+const surfaceContextNote =
+  "Scenario uses production article surface context (reading-paper white). Dark-mode seed question treatment reviewed separately.";
 
 const qaChecklist = [
   "Are seed questions visually distinct from CTA buttons?",
@@ -134,7 +148,21 @@ const qaChecklist = [
                 <div class="btnctx__taxonomy-sample" aria-hidden="true">
                   {item.id === "text-link" && <span class="btnctx__text-link">Text link</span>}
                   {item.id === "question-pill" && (
-                    <button type="button" class="btnctx__question-pill">Eksempelspørsmål?</button>
+                    <div class="btnctx__article-column-sim" data-r1-editorial>
+                      <section class="r1-ai-bridge">
+                        <section class="inline-chat-shell" data-inline-chat-mode="progressive">
+                          <div class="inline-chat-shell__seed-suggestions">
+                            <ul class="inline-chat-shell__seed-list inline-chat-shell__seed-list--rows" role="list">
+                              <li class="inline-chat-shell__seed-item">
+                                <button type="button" class="inline-chat-shell__seed-btn inline-chat-shell__seed-row">
+                                  <span class="inline-chat-shell__seed-question">Eksempelspørsmål?</span>
+                                </button>
+                              </li>
+                            </ul>
+                          </div>
+                        </section>
+                      </section>
+                    </div>
                   )}
                   {item.id === "primary-pill" && (
                     <button type="button" class="btnctx__pill btnctx__pill--primary">Try Viddel</button>
@@ -162,8 +190,9 @@ const qaChecklist = [
         <section class="btnctx__panel" aria-labelledby="editorial-heading">
           <p class="btnctx__kicker">Scenario 01</p>
           <h2 id="editorial-heading">Editorial article context</h2>
+          <p class="btnctx__surface-note">{surfaceContextNote}</p>
 
-          <div class="btnctx__sample btnctx__sample--editorial">
+          <div class="btnctx__sample btnctx__sample--editorial btnctx__sample--article-surface">
             <p class="btnctx__eyebrow">Artikkel · Høreapparat i hverdagen</p>
             <h3>Jeg får piping i høreapparatet</h3>
             <p>
@@ -183,10 +212,24 @@ const qaChecklist = [
               <button type="button" class="btnctx__pill btnctx__pill--secondary">Lagre til senere</button>
             </div>
             <div class="btnctx__action-row btnctx__action-row--stack">
-              <span class="btnctx__action-label">Question pill</span>
-              <button type="button" class="btnctx__question-pill">
-                Hva er forskjellen på pip fra apparatet og piping i øret?
-              </button>
+              <span class="btnctx__action-label">Question pill (production markup)</span>
+              <div class="btnctx__article-column-sim" data-r1-editorial>
+                <section class="r1-ai-bridge">
+                  <section class="inline-chat-shell" data-inline-chat-mode="progressive">
+                    <div class="inline-chat-shell__seed-suggestions">
+                      <ul class="inline-chat-shell__seed-list inline-chat-shell__seed-list--rows" role="list">
+                        <li class="inline-chat-shell__seed-item">
+                          <button type="button" class="inline-chat-shell__seed-btn inline-chat-shell__seed-row">
+                            <span class="inline-chat-shell__seed-question">
+                              Hva er forskjellen på pip fra apparatet og piping i øret?
+                            </span>
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </section>
+                </section>
+              </div>
             </div>
           </div>
 
@@ -208,22 +251,33 @@ const qaChecklist = [
         <section class="btnctx__panel" aria-labelledby="ai-heading">
           <p class="btnctx__kicker">Scenario 02</p>
           <h2 id="ai-heading">AI / action transition context</h2>
+          <p class="btnctx__surface-note">{surfaceContextNote}</p>
 
-          <div class="btnctx__sample btnctx__sample--ai">
+          <div class="btnctx__sample btnctx__sample--ai btnctx__sample--article-surface">
             <div class="btnctx__ai-bridge">
               <div class="btnctx__ai-copy">
                 <p class="btnctx__eyebrow">Fra artikkel · piping</p>
                 <p>Du leser om piping i høreapparatet. Velg et spørsmål for å starte, eller gå videre på egen hånd.</p>
               </div>
-              <div class="btnctx__ai-seeds">
-                <p class="btnctx__seed-label">Spør Hørehjelpen:</p>
-                <ul class="btnctx__seed-list" role="list">
-                  {seedQuestions.map((question) => (
-                    <li>
-                      <button type="button" class="btnctx__question-pill">{question}</button>
-                    </li>
-                  ))}
-                </ul>
+              <div class="btnctx__ai-seeds btnctx__article-column-sim" data-r1-editorial>
+                <section class="r1-ai-bridge">
+                  <section class="inline-chat-shell" data-inline-chat-mode="progressive">
+                    <header class="inline-chat-shell__header">
+                      <h2 class="inline-chat-shell__title">Spør Hørehjelpen:</h2>
+                    </header>
+                    <div class="inline-chat-shell__seed-suggestions">
+                      <ul class="inline-chat-shell__seed-list inline-chat-shell__seed-list--rows" role="list">
+                        {seedQuestions.map((question) => (
+                          <li class="inline-chat-shell__seed-item">
+                            <button type="button" class="inline-chat-shell__seed-btn inline-chat-shell__seed-row">
+                              <span class="inline-chat-shell__seed-question">{question}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </section>
+                </section>
                 <div class="btnctx__ai-standalone">
                   <button type="button" class="btnctx__pill btnctx__pill--secondary btnctx__pill--quiet">
                     Spør videre
@@ -338,6 +392,11 @@ const qaChecklist = [
           <ul class="btnctx__direction-list">
             {recommendedDirection.map((item) => <li>{item}</li>)}
           </ul>
+          <div class="btnctx__style-notes">
+            <p>{styleNotes.production}</p>
+            <p>{styleNotes.surface}</p>
+            <p class="btnctx__token-note">{styleNotes.tokens}</p>
+          </div>
         </section>
 
         <section class="btnctx__panel btnctx__panel--checklist" aria-labelledby="qa-heading">
@@ -369,6 +428,9 @@ const qaChecklist = [
       --p-pill-radius: 999px;
       --p-pill-padding-y: 0.72rem;
       --p-pill-padding-x: 1.35rem;
+      --p-cta-label-size: 0.875rem;
+      --p-cta-label-weight: 500;
+      --p-prod-reading-paper: #ffffff;
 
       min-height: 100vh;
       max-width: 76rem;
@@ -556,44 +618,39 @@ const qaChecklist = [
       align-items: center;
     }
 
-    /* Shared action types */
+    /* Shared action types — CTA labels at 0.875rem / 500; seed pills match production progressive row */
     .btnctx__text-link {
       color: var(--p-deep);
-      font-size: 0.86rem;
-      font-weight: 600;
+      font-size: 0.875rem;
+      font-weight: 500;
       text-decoration: underline;
-      text-decoration-color: rgb(19 77 106 / 0.35);
+      text-decoration-color: rgb(19 77 106 / 0.3);
       text-underline-offset: 3px;
       text-decoration-thickness: 1px;
     }
 
     .btnctx__text-link--inline {
-      font-weight: 650;
+      font-weight: 500;
     }
 
-    .btnctx__question-pill {
-      display: inline-flex;
-      align-items: flex-start;
+    /* Production seed rows: reuse r1-dialog-article.css — column width matched to article measure */
+    .btnctx__article-column-sim {
       width: 100%;
-      max-width: 28rem;
-      padding: 0.78rem 1rem;
-      border: 1px solid rgb(17 24 39 / 0.14);
-      border-radius: 1.1rem;
-      background: #fff;
-      color: var(--p-ink);
-      font-family: inherit;
-      font-size: 0.9rem;
-      font-weight: 550;
-      line-height: 1.45;
-      text-align: left;
-      cursor: default;
-      transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+      max-width: min(100%, 46rem);
     }
 
-    .btnctx__question-pill:hover {
-      border-color: rgb(17 24 39 / 0.22);
-      background: rgb(248 250 252 / 0.95);
-      box-shadow: 0 10px 24px rgb(15 23 42 / 0.06);
+    @media (max-width: 48rem) {
+      .btnctx__article-column-sim {
+        max-width: 16.625rem;
+      }
+    }
+
+    .btnctx__article-column-sim .inline-chat-shell__seed-row {
+      cursor: default;
+    }
+
+    .btnctx__article-column-sim .r1-ai-bridge {
+      padding: 0;
     }
 
     .btnctx__pill {
@@ -604,9 +661,9 @@ const qaChecklist = [
       border: none;
       border-radius: var(--p-pill-radius);
       font-family: inherit;
-      font-size: 0.88rem;
-      font-weight: 650;
-      line-height: 1.2;
+      font-size: var(--p-cta-label-size);
+      font-weight: var(--p-cta-label-weight);
+      line-height: 1;
       cursor: default;
       transition: background-color 140ms ease;
     }
@@ -616,15 +673,19 @@ const qaChecklist = [
       padding: 0.62rem 1.2rem 0.58rem;
       background: var(--p-ink);
       color: #fff;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      line-height: 1;
+      font-size: var(--p-cta-label-size);
+      font-weight: var(--p-cta-label-weight);
       letter-spacing: -0.012em;
     }
 
     .btnctx__pill--secondary {
+      min-height: 2.375rem;
+      padding: 0.62rem 1.2rem 0.58rem;
       background: var(--p-gray-secondary);
       color: var(--p-ink);
+      font-size: var(--p-cta-label-size);
+      font-weight: 400;
+      letter-spacing: -0.006em;
     }
 
     .btnctx__pill--secondary:hover {
@@ -632,9 +693,10 @@ const qaChecklist = [
     }
 
     .btnctx__pill--quiet {
-      padding: 0.55rem 1rem;
-      font-size: 0.8rem;
-      font-weight: 600;
+      min-height: auto;
+      padding: 0.58rem 1rem 0.54rem;
+      font-size: var(--p-cta-label-size);
+      font-weight: 400;
     }
 
     .btnctx__chrome-compact {
@@ -645,7 +707,7 @@ const qaChecklist = [
       color: #fff;
       font-family: inherit;
       font-size: 0.7rem;
-      font-weight: 650;
+      font-weight: 500;
       cursor: default;
     }
 
@@ -673,7 +735,7 @@ const qaChecklist = [
       color: var(--p-ink);
       font-family: inherit;
       font-size: 0.7rem;
-      font-weight: 650;
+      font-weight: 500;
       box-shadow: 0 6px 18px rgb(2 6 23 / 0.08);
       cursor: default;
     }
@@ -682,21 +744,21 @@ const qaChecklist = [
       display: inline-flex;
       align-items: center;
       gap: 0.55rem;
-      padding: 0.65rem 1.1rem;
+      padding: 0.62rem 1.1rem 0.58rem;
       border: 1px solid rgb(255 85 176 / 0.35);
       border-radius: var(--p-pill-radius);
       background: rgb(255 255 255 / 0.72);
       color: var(--p-ink);
       font-family: inherit;
-      font-size: 0.84rem;
-      font-weight: 650;
+      font-size: var(--p-cta-label-size);
+      font-weight: var(--p-cta-label-weight);
       box-shadow: 0 0 0 1px rgb(255 85 176 / 0.08), 0 8px 22px rgb(255 85 176 / 0.08);
       cursor: default;
     }
 
     .btnctx__ai-ghost-pill--large {
-      padding: 0.78rem 1.35rem;
-      font-size: 0.9rem;
+      padding: 0.72rem 1.25rem 0.68rem;
+      font-size: var(--p-cta-label-size);
     }
 
     .btnctx__ai-ghost-signal {
@@ -712,18 +774,24 @@ const qaChecklist = [
     .btnctx__sample {
       margin-top: 1rem;
       padding: 1rem;
-      border: 1px solid rgb(17 24 39 / 0.1);
+      border: 1px solid rgb(228 224 216 / 0.22);
       border-radius: 12px;
-      background: var(--p-subtle);
+      background: var(--p-prod-reading-paper);
+    }
+
+    .btnctx__sample--article-surface {
+      background: var(--p-prod-reading-paper);
+      box-shadow: 0 1px 0 rgb(0 0 0 / 0.04);
     }
 
     .btnctx__sample--editorial {
-      background: #fff;
+      background: var(--p-prod-reading-paper);
     }
 
     .btnctx__sample--ai {
       padding: 0;
       overflow: hidden;
+      background: var(--p-prod-reading-paper);
     }
 
     .btnctx__sample--chrome {
@@ -797,32 +865,24 @@ const qaChecklist = [
 
     .btnctx__ai-copy {
       padding: 1rem;
-      background: #fff;
-      border-bottom: 1px solid rgb(17 24 39 / 0.08);
+      background: var(--p-prod-reading-paper);
+      border-bottom: 1px solid rgb(228 224 216 / 0.22);
     }
 
     .btnctx__ai-seeds {
       padding: 1rem;
-      background: var(--p-subtle);
+      background: var(--p-prod-reading-paper);
     }
 
-    .btnctx__seed-label {
-      margin: 0;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--p-ink);
+    .btnctx__ai-seeds.btnctx__article-column-sim {
+      padding: 1rem 0 0;
     }
 
-    .btnctx__seed-list {
-      margin: 0.65rem 0 0;
-      padding: 0;
-      list-style: none;
-      display: grid;
-      gap: 0.45rem;
-    }
-
-    .btnctx__seed-list li {
-      margin: 0;
+    .btnctx__surface-note {
+      margin: 0.55rem 0 0;
+      color: var(--p-muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
     }
 
     .btnctx__ai-standalone {
@@ -962,6 +1022,24 @@ const qaChecklist = [
     .btnctx__panel--direction {
       border-color: rgb(19 77 106 / 0.22);
       background: rgb(19 77 106 / 0.03);
+    }
+
+    .btnctx__style-notes {
+      margin-top: 0.85rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgb(19 77 106 / 0.12);
+    }
+
+    .btnctx__style-notes p {
+      margin: 0;
+      color: var(--p-muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+
+    .btnctx__token-note {
+      margin-top: 0.45rem !important;
+      font-size: 0.74rem !important;
     }
 
     .btnctx__back {
