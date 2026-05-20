@@ -1122,44 +1122,6 @@ const dependencyNotes = [
       aspect-ratio: 16 / 10;
     }
 
-    .cardctx__media-card-content--anchored {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      z-index: 2;
-      max-width: 80%;
-      padding: 0 1.35rem 1.5rem;
-      text-align: left;
-    }
-
-    .cardctx__media-card-content--anchored .cardctx__eyebrow {
-      margin: 0;
-    }
-
-    .cardctx__media-card-content--anchored h3 {
-      margin: 0.45rem 0 0;
-      font-size: 1.05rem;
-      letter-spacing: -0.03em;
-      line-height: 1.25;
-    }
-
-    .cardctx__media-card-content--anchored .cardctx__media-card-copy {
-      max-width: none;
-      margin: 0.45rem 0 0;
-      font-size: 0.82rem;
-      line-height: 1.55;
-    }
-
-    .cardctx__media-card-content--anchored .cardctx__article-meta--on-dark {
-      margin-top: 0.45rem;
-    }
-
-    .cardctx__media-card-content--anchored .cardctx__ghost-cue {
-      margin-top: 0.65rem;
-      font-size: 0.78rem;
-      font-weight: 600;
-    }
-
     .cardctx__media-card-scrim--light {
       background: linear-gradient(
         to top,
@@ -1188,6 +1150,45 @@ const dependencyNotes = [
       font-size: 0.8rem;
       line-height: 1.5;
       color: var(--p-muted);
+    }
+
+    /* Article A — bottom-left stack (after base content so cascade wins) */
+    .cardctx__media-card-content.cardctx__media-card-content--anchored {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      z-index: 2;
+      max-width: 80%;
+      padding: 0 1.35rem 1.5rem;
+      text-align: left;
+    }
+
+    .cardctx__media-card-content.cardctx__media-card-content--anchored .cardctx__eyebrow {
+      margin: 0;
+    }
+
+    .cardctx__media-card-content.cardctx__media-card-content--anchored h3 {
+      margin: 0.45rem 0 0;
+      font-size: 1.05rem;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+    }
+
+    .cardctx__media-card-content.cardctx__media-card-content--anchored .cardctx__media-card-copy {
+      max-width: none;
+      margin: 0.45rem 0 0;
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+
+    .cardctx__media-card-content.cardctx__media-card-content--anchored .cardctx__article-meta--on-dark {
+      margin-top: 0.45rem;
+    }
+
+    .cardctx__media-card-content.cardctx__media-card-content--anchored .cardctx__ghost-cue {
+      margin-top: 0.65rem;
+      font-size: 0.78rem;
+      font-weight: 600;
     }
 
     .cardctx__eyebrow--on-dark {
