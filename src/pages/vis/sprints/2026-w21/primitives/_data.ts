@@ -755,7 +755,7 @@ export const primitivePages: PrimitivePage[] = [
     ],
     do: [
       "Treat cards as grouped content surfaces — often invisible until hover.",
-      "Full-surface cards: hover shadow on grouped surface with internal whitespace — not tight against text.",
+      "Media/background cards: image or color behind text, bottom-left, fixed size in groups.",
       "Image/text-separated cards: shadow on media only; link underline on hover for text affordance.",
       "Use whitespace, rhythm and image/text relation for grouping.",
       "Keep helper boxes static with dashed note border only.",
