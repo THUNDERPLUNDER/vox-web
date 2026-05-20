@@ -120,7 +120,7 @@ export type PrimitivePage = {
   do: string[];
   dont: string[];
   questions: string[];
-  extra?: "buttons";
+  extra?: "buttons" | "cards";
 };
 
 const signalAllowed = ["Small dots", "Ghost halo", "Micro audio bars in small quantity", "Edge/detail"];
@@ -698,23 +698,80 @@ export const primitivePages: PrimitivePage[] = [
   {
     slug: "cards",
     title: "Cards",
-    status: "candidate",
-    purpose: "Separate article, hub, info, decision, seed and dark action boxes.",
-    does: "Card primitives define how content and help modules group without making every surface feel like a card.",
+    status: "needsReview",
+    purpose: "Test clickable surfaces and card roles in real Viddel context — hub, editorial, helper, AI bridge and dark identity.",
+    does: "Card primitives define how content groups and navigates without turning every block into an elevated card or button container.",
     applies: {
       chrome: "Rare; cards should not become navigation chrome.",
-      editorial: "Article, hub, info and decision boxes.",
-      action: "AI seed and dark action cards.",
+      editorial: "Hub cards, article teasers, helper/info boxes.",
+      action: "AI bridge panels and dark identity/action cards.",
     },
     favorite: {
-      name: "Quiet editorial cards",
-      note: "White/light cards with subtle border, plus dark action card when needed.",
+      name: "Whole-card surfaces + quiet editorial",
+      note: "Hub/article cards as clickable surfaces with arrow/text cue; helper boxes stay static; dark cards only for identity/action.",
       sample: "card-favorite",
     },
-    iterations: defaultIterations,
-    do: ["Keep article cards quiet", "Use decision boxes for meaningful forks", "Use dark cards only for next-step emphasis"],
-    dont: ["Turn every content block into elevated card", "Use decorative gradients as card identity", "Detach AI cards from surrounding editorial content"],
-    questions: ["How much shadow is acceptable?", "Should hub cards carry deep blue accents?", "When is a dark action card too heavy?"],
+    dependencies: [
+      {
+        title: "Surfaces (#127)",
+        note: "Cards inherit surface hierarchy — light editorial default, elevated only when needed.",
+      },
+      {
+        title: "Buttons (#128)",
+        note: "Cards should not use internal buttons to solve navigation. Seed questions are an article/AI interaction pattern, not button variants.",
+      },
+      {
+        title: "Elevation",
+        note: "Card lift stays subtle — border + light hover shadow, not decorative depth.",
+      },
+      {
+        title: "Layering",
+        note: "Cards should not create overlay/depth confusion with chrome or modals.",
+      },
+      {
+        title: "Focus",
+        note: "Whole-card focus rings handled in a later interaction states pass.",
+      },
+    ],
+    completionNotes: [
+      "Applied context page tests five card roles in realistic Viddel scenarios — review /primitives/cards/context/ before decision candidate.",
+      "Confirm hub cards work as whole-card clickable surfaces without internal CTA buttons.",
+      "Confirm article teasers feel editorial, not ad-like.",
+      "Confirm helper/info boxes are visually distinct from clickable cards.",
+      "Confirm AI/action cards bridge content to help without becoming button collections.",
+      "Confirm dark/identity cards are used sparingly.",
+    ],
+    roundIntro: "Applied context review in /cards/context/ replaces abstract-only evaluation.",
+    iterations: [
+      { id: "P1", status: "Favorite", name: "A. Whole-card hub surface", sample: "card-favorite", copy: "Entire hub card clickable with arrow/text cue — no internal CTA.", rationale: "Matches #128 learning: hub cards are surfaces, not button containers." },
+      { id: "P2", status: "Candidate", name: "B. Quiet article teaser", sample: "neutral-card", copy: "Editorial entry with image, title, ingress — whole card or title affordance.", rationale: "Should feel like reading invitation, not promotional card." },
+      { id: "P3", status: "Candidate", name: "C. Static helper/info box", sample: "ai-helper", copy: "Non-clickable guidance surface — no false affordance.", rationale: "Must visually separate from navigation cards." },
+      { id: "P4", status: "Candidate", name: "D. AI bridge + dark identity", sample: "deep-card", copy: "Editorial-to-help transition and sparing dark action surface.", rationale: "Respects #128: seed questions as interaction pattern; dark only for hierarchy." },
+    ],
+    do: [
+      "Use whole-card click for hub navigation.",
+      "Keep article teasers editorial and quiet.",
+      "Make helper/info boxes visually static unless truly clickable.",
+      "Bridge AI/action from editorial content — not detached widgets.",
+      "Use dark cards sparingly for identity or next-step emphasis.",
+      "Use magenta only as micro-signal, not card decoration.",
+    ],
+    dont: [
+      "Put internal CTA buttons inside hub cards by default.",
+      "Turn every content block into an elevated card.",
+      "Make helper boxes look clickable when they are not.",
+      "Turn AI cards into button collections.",
+      "Use dark cards as general decoration.",
+      "Use decorative gradients as card identity.",
+    ],
+    questions: [
+      "Is whole-card click clear enough without internal buttons?",
+      "Should article teasers use whole-card click or title-only affordance?",
+      "How much elevation is acceptable on hub cards?",
+      "When is a dark action card too heavy?",
+      "Which card focus states need the interaction pass?",
+    ],
+    extra: "cards",
   },
   {
     slug: "inputs",
