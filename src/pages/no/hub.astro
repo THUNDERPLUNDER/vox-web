@@ -2,6 +2,7 @@
 /* CONTRACT: First public hub — «Få høreapparatet til å fungere».
    Need-led, Editorial-led surface. Top tasks first. No segment-based nav.
    v0.2: Featured + secondary guide cards with abstract thumbnails.
+   v0.3: Guide cards — borderless grouped clickable surfaces (#125B / #129).
    Mandate: docs/project/VIDDEL_HUB_MANDATE_v0_1.md / #112.
 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -466,21 +467,38 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
       linear-gradient(140deg, rgb(243 241 255) 0%, rgb(249 251 255) 55%, rgb(252 252 255) 100%);
   }
 
-  /* ── Featured guide card ── */
+  /* ── Featured guide card — grouped clickable surface (#129 / #124D) ── */
   .hub-guide-featured {
     display: block;
-    border: 1px solid rgb(var(--border) / 0.28);
-    border-radius: 10px;
+    border: 0;
+    border-radius: var(--radius-lg);
     overflow: hidden;
     background: rgb(var(--reading-paper));
     text-decoration: none;
-    transition: box-shadow 150ms ease, border-color 150ms ease;
+    box-shadow: 0 1px 3px rgb(var(--reading-ink) / 0.05);
+    transition:
+      box-shadow 180ms ease,
+      transform 180ms ease;
     margin-bottom: 1rem;
   }
 
   .hub-guide-featured:hover {
-    border-color: rgb(var(--border) / 0.5);
-    box-shadow: 0 4px 20px rgb(var(--reading-ink) / 0.06);
+    box-shadow: 0 14px 32px rgb(15 23 42 / 0.08);
+    transform: translateY(-2px);
+  }
+
+  .hub-guide-featured:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 3px rgb(14 165 233 / 0.32),
+      0 1px 3px rgb(var(--reading-ink) / 0.05);
+  }
+
+  .hub-guide-featured:focus-visible:hover {
+    box-shadow:
+      0 0 0 3px rgb(14 165 233 / 0.32),
+      0 14px 32px rgb(15 23 42 / 0.08);
+    transform: translateY(-2px);
   }
 
   .hub-guide-featured__body {
@@ -508,13 +526,18 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
   .hub-guide-featured__cta {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    font-size: 0.875rem;
-    font-weight: 650;
-    letter-spacing: -0.01em;
-    color: rgb(var(--reading-accent-iris));
-    text-decoration: underline;
-    text-underline-offset: 3px;
+    gap: 0.25rem;
+    margin-top: 0.15rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: rgb(var(--reading-ink-secondary) / 0.82);
+    text-decoration: none;
+  }
+
+  .hub-guide-featured:hover .hub-guide-featured__cta,
+  .hub-guide-featured:focus-visible .hub-guide-featured__cta {
+    color: rgb(var(--reading-ink-secondary));
   }
 
   /* ── Secondary guide grid ── */
@@ -530,18 +553,35 @@ const hubSeeds = seeds.filter((s) => s.status !== "archived").slice(0, 2);
   .hub-guide-secondary {
     display: flex;
     flex-direction: column;
-    border: 1px solid rgb(var(--border) / 0.25);
-    border-radius: 10px;
+    border: 0;
+    border-radius: var(--radius-lg);
     overflow: hidden;
     background: rgb(var(--reading-paper));
     text-decoration: none;
     height: 100%;
-    transition: box-shadow 150ms ease, border-color 150ms ease;
+    box-shadow: 0 1px 2px rgb(var(--reading-ink) / 0.04);
+    transition:
+      box-shadow 180ms ease,
+      transform 180ms ease;
   }
 
   .hub-guide-secondary:hover {
-    border-color: rgb(var(--border) / 0.5);
-    box-shadow: 0 3px 14px rgb(var(--reading-ink) / 0.05);
+    box-shadow: 0 10px 24px rgb(15 23 42 / 0.06);
+    transform: translateY(-2px);
+  }
+
+  .hub-guide-secondary:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 3px rgb(14 165 233 / 0.32),
+      0 1px 2px rgb(var(--reading-ink) / 0.04);
+  }
+
+  .hub-guide-secondary:focus-visible:hover {
+    box-shadow:
+      0 0 0 3px rgb(14 165 233 / 0.32),
+      0 10px 24px rgb(15 23 42 / 0.06);
+    transform: translateY(-2px);
   }
 
   .hub-guide-secondary__body {
