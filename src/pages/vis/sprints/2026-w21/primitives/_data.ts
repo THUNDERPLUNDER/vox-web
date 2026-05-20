@@ -656,11 +656,11 @@ export const primitivePages: PrimitivePage[] = [
       },
     ],
     completionNotes: [
-      "Review applied contexts on /primitives/buttons/context/ before decision candidate.",
-      "Confirm primary vs AI primary distinction in editorial and AI transition blocks.",
-      "Confirm focus/disabled/loading states in real content density.",
-      "Confirm compact/icon behavior for chrome without editorial bleed.",
-      "Confirm dark surface variants on article-to-AI transitions.",
+      "Context page tests action taxonomy — not color variants. Review /primitives/buttons/context/ before decision candidate.",
+      "Confirm text link vs question pill vs primary/secondary pill roles in editorial flow.",
+      "Confirm seed question pills match published soft pill pattern.",
+      "Confirm hub cards work as clickable surfaces without internal buttons.",
+      "Confirm standalone AI ghost pill with magenta signal detail.",
     ],
     roundIntro: "These are Round 1 variants, not historical iterations.",
     iterations: [
