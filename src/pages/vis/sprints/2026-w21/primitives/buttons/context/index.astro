@@ -25,7 +25,7 @@ const actionTaxonomy = [
   {
     id: "primary-pill",
     title: "Primary CTA pill",
-    note: "Large pill-shaped action. Black/ink candidate. Calm and clear, not colorful.",
+    note: "Large pill-shaped, calm black/ink. Restrained type weight and optical vertical centering — not heavier than a ChatGPT-style CTA pill.",
   },
   {
     id: "secondary-pill",
@@ -53,7 +53,7 @@ const seedQuestions = [
 const recommendedDirection = [
   "Text links for editorial references.",
   "Question pills for AI seed questions.",
-  "Large black/ink pill for primary CTA.",
+  "Primary CTA candidate: large pill-shaped, calm black/ink, with restrained type weight and optical vertical centering.",
   "Large light-gray pill for secondary action.",
   "Hub cards should usually be clickable surfaces, not button containers.",
   "Chrome controls should stay compact.",
@@ -63,7 +63,7 @@ const recommendedDirection = [
 const qaChecklist = [
   "Are seed questions visually distinct from CTA buttons?",
   "Do hub cards work without internal buttons?",
-  "Does black/ink primary feel clear but calm?",
+  "Does black/ink primary feel clear but calm — restrained weight, optically centered, not heavier than ChatGPT-style pill?",
   "Does light gray secondary feel useful enough?",
   "Does standalone AI ghost pill feel visible without becoming decorative?",
   "Is magenta only a signal/detail?",
@@ -137,7 +137,7 @@ const qaChecklist = [
                     <button type="button" class="btnctx__question-pill">Eksempelspørsmål?</button>
                   )}
                   {item.id === "primary-pill" && (
-                    <button type="button" class="btnctx__pill btnctx__pill--primary">Primary CTA</button>
+                    <button type="button" class="btnctx__pill btnctx__pill--primary">Try Viddel</button>
                   )}
                   {item.id === "secondary-pill" && (
                     <button type="button" class="btnctx__pill btnctx__pill--secondary">Secondary</button>
@@ -612,8 +612,14 @@ const qaChecklist = [
     }
 
     .btnctx__pill--primary {
+      min-height: 2.375rem;
+      padding: 0.62rem 1.2rem 0.58rem;
       background: var(--p-ink);
       color: #fff;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.012em;
     }
 
     .btnctx__pill--secondary {
