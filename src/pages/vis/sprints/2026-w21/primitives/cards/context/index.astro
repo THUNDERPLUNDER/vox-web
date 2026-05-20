@@ -1027,6 +1027,7 @@ const dependencyNotes = [
     .cardctx__fixed-grid--article {
       width: 100%;
       max-width: min(100%, 28rem);
+      grid-template-columns: 1fr;
     }
 
     .cardctx__media-card--article {
@@ -1113,27 +1114,40 @@ const dependencyNotes = [
     }
 
     .cardctx__media-card-surface--article {
+      display: block;
       width: 100%;
       height: auto;
-      min-height: unset;
-      max-height: unset;
+      min-height: 0;
+      max-height: none;
       aspect-ratio: 16 / 10;
     }
 
     .cardctx__media-card-content--anchored {
-      max-width: 48%;
-      padding: 0 1.4rem 1.2rem;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      z-index: 2;
+      max-width: 52%;
+      padding: 0 1.35rem 1.15rem;
     }
 
     .cardctx__media-card-content--anchored h3 {
       font-size: 0.98rem;
       line-height: 1.28;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
     }
 
     .cardctx__media-card-content--anchored .cardctx__media-card-copy {
-      max-width: 10.5rem;
+      max-width: 11rem;
       font-size: 0.76rem;
       line-height: 1.45;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
     }
 
     .cardctx__media-card-content--anchored .cardctx__ghost-cue {
@@ -1679,6 +1693,10 @@ const dependencyNotes = [
       .cardctx__fixed-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1.15rem;
+      }
+
+      .cardctx__fixed-grid--article {
+        grid-template-columns: 1fr;
       }
 
       .cardctx__fixed-grid--feature {
