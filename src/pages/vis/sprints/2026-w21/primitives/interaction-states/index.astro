@@ -1,0 +1,1282 @@
+---
+/* CONTRACT: VIS-only interaction states pass for #124D.
+   Validates hover/focus/active/selected/disabled/loading across #128 actions and #129 cards before #125.
+*/
+import PrototypeLayout from "../../../../../../layouts/PrototypeLayout.astro";
+import "../../../../../../styles/global.css";
+import "../../../../../../styles/r1-dialog-article.css";
+import { guardrails, navItems, statusLabels } from "../_data";
+
+const base = import.meta.env.BASE_URL;
+const sprintPath = `${base}vis/sprints/2026-w21`;
+const primitivesPath = `${sprintPath}/primitives`;
+const passPath = `${primitivesPath}/interaction-states`;
+
+const stateColumns = [
+  { id: "default", label: "Default" },
+  { id: "hover", label: "Hover" },
+  { id: "focus", label: "Focus-visible" },
+  { id: "active", label: "Active / pressed" },
+  { id: "selected", label: "Selected / current" },
+  { id: "disabled", label: "Disabled" },
+  { id: "loading", label: "Loading" },
+];
+
+const actionRows = [
+  { id: "text-link", title: "Text link", note: "Editorial reference — not a CTA." },
+  { id: "question-pill", title: "Question pill / seed question", note: "Article/AI interaction pattern — production markup." },
+  { id: "primary-pill", title: "Primary CTA pill", note: "Ink primary — calm, restrained label." },
+  { id: "secondary-pill", title: "Secondary pill", note: "Light gray support action." },
+  { id: "chrome-compact", title: "Chrome compact control", note: "Small nav/toolbar only." },
+  { id: "ai-ghost-pill", title: "Standalone AI ghost pill", note: "Magenta micro-signal — not full fill." },
+];
+
+
+const decisionSummary = [
+  "Cyan (#0EA5E9) is the default functional focus ring — magenta stays micro-signal only.",
+  "Seed questions use production article/AI markup — not button taxonomy variants.",
+  "Helper/info boxes have no hover, focus or lift affordance.",
+  "Whole-card hover/lift applies to clickable hub/article surfaces — not helpers or feature CTA tiles.",
+  "Selected/current (nav, active hub) is distinct from active/pressed (momentary click).",
+  "Disabled and loading states stay muted — no new brand variants.",
+  "All patterns need applied validation in #125 MVP Surface Reskin.",
+];
+
+const openDecisions = [
+  "2px vs 3px focus ring on large pill targets?",
+  "Whole-card focus: full outline vs inset edge on media cards?",
+  "Is hover-only lift enough on touch for hub cards?",
+  "Loading spinner vs label-only for primary CTA in MVP?",
+];
+
+const verifyNext = [
+  "Tab through keyboard demo — focus-visible on links, pills, cards.",
+  "Helper box: confirm no hover cursor or shadow change.",
+  "Seed question row: distinct from primary/secondary pills on hover/focus.",
+  "Hub card lift on hover only — not on helper or feature CTA card shell.",
+  "Deep/identity surface: inverse focus still readable.",
+];
+---
+
+<PrototypeLayout title="Interaction states pass - Primitives Lab #124D">
+  <main class="istates" data-interaction-states-page>
+    <nav class="istates__breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={sprintPath}>2026-W21</a>
+      <span aria-hidden="true">/</span>
+      <a href={primitivesPath}>Primitives</a>
+      <span aria-hidden="true">/</span>
+      <span>Interaction states</span>
+    </nav>
+
+    <header class="istates__hero">
+      <p class="istates__kicker">VIS-only · #124D · Interaction states pass</p>
+      <h1>Hover, focus and state behavior before reskin</h1>
+      <p class="istates__subtitle">
+        Validates interaction states across #128 action taxonomy and #129 clickable surfaces —
+        before #125 MVP Surface Reskin. Builds on decision candidates #127 Surfaces, #128 Buttons
+        and #129 Cards.
+      </p>
+      <div class="istates__hero-status">
+        <span>Status</span>
+        <strong>{statusLabels.needsReview}</strong>
+      </div>
+    </header>
+
+    <aside class="istates__callout" role="note">
+      <strong>Decision surface for #125 — not production implementation.</strong>
+      <p>
+        Uses scoped VIS CSS and existing markup patterns. No changes to <code>tokens.css</code>,
+        Storyblok schema or production pages. Seed questions reuse production article pattern.
+      </p>
+    </aside>
+
+    <div class="istates__layout">
+      <nav class="istates__nav" aria-label="Primitives Lab navigation">
+        <a class="istates__nav-link" href={primitivesPath}>Overview</a>
+        <a class="istates__nav-link istates__nav-link--active" href={passPath} aria-current="page">
+          Interaction states
+        </a>
+        {navItems.map((item) => (
+          <a class="istates__nav-link" href={`${primitivesPath}/${item.slug}/`}>{item.title}</a>
+        ))}
+      </nav>
+
+      <div class="istates__content">
+        <section class="istates__panel" aria-labelledby="scope-heading">
+          <p class="istates__kicker">Scope</p>
+          <h2 id="scope-heading">What this pass covers</h2>
+          <ul class="istates__list">
+            <li><strong>Action taxonomy (#128):</strong> text link, seed question, primary/secondary pills, chrome compact, AI ghost pill.</li>
+            <li><strong>Clickable surfaces (#129):</strong> hub whole-card, article media, static helper, feature/media CTA.</li>
+            <li><strong>Focus (#127 + Focus primitive):</strong> cyan functional ring, keyboard-visible on interactive targets.</li>
+            <li><strong>Surfaces:</strong> light editorial, deep/identity, media/background scrim.</li>
+          </ul>
+          <div class="istates__links">
+            <a href={`${primitivesPath}/buttons/context/`}>Buttons applied context →</a>
+            <a href={`${primitivesPath}/cards/context/`}>Cards applied context →</a>
+            <a href={`${primitivesPath}/focus/`}>Focus primitive →</a>
+          </div>
+        </section>
+
+        <section class="istates__panel" aria-labelledby="matrix-heading">
+          <p class="istates__kicker">Action taxonomy</p>
+          <h2 id="matrix-heading">State matrix — #128 action types</h2>
+          <p class="istates__lead">
+            Simulated states for review. Live elements in keyboard demo below use real
+            <code>:hover</code> and <code>:focus-visible</code>.
+          </p>
+          <div class="istates__matrix" role="table" aria-label="Action taxonomy state matrix">
+            <div class="istates__matrix-row istates__matrix-row--head" role="row">
+              <div class="istates__matrix-label" role="columnheader">Action</div>
+              {stateColumns.map((col) => (
+                <div class="istates__matrix-head" role="columnheader">{col.label}</div>
+              ))}
+            </div>
+            {actionRows.map((row) => (
+              <div class="istates__matrix-row" role="row" data-action={row.id}>
+                <div class="istates__matrix-label" role="rowheader">
+                  <strong>{row.title}</strong>
+                  <span>{row.note}</span>
+                </div>
+                {stateColumns.map((col) => (
+                  <div class="istates__matrix-cell" role="cell" data-state={col.id}>
+                    {row.id === "text-link" && (
+                      <a
+                        href="#"
+                        class:list={["istates__text-link", col.id !== "default" && `istates__sim-${col.id}`]}
+                        aria-disabled={col.id === "disabled" ? "true" : undefined}
+                        tabindex={col.id === "disabled" ? -1 : undefined}
+                      >
+                        Les mer
+                      </a>
+                    )}
+                    {row.id === "question-pill" && col.id !== "loading" && col.id !== "selected" && (
+                      <div class="istates__seed-wrap" data-r1-editorial>
+                        <button
+                          type="button"
+                          class:list={[
+                            "inline-chat-shell__seed-btn inline-chat-shell__seed-row",
+                            col.id !== "default" && `istates__sim-${col.id}`,
+                          ]}
+                          disabled={col.id === "disabled"}
+                        >
+                          <span class="inline-chat-shell__seed-question">Hva kan jeg prøve selv?</span>
+                        </button>
+                      </div>
+                    )}
+                    {row.id === "question-pill" && (col.id === "loading" || col.id === "selected") && (
+                      <span class="istates__na">—</span>
+                    )}
+                    {row.id === "primary-pill" && (
+                      <button
+                        type="button"
+                        class:list={[
+                          "istates__pill istates__pill--primary",
+                          col.id !== "default" && `istates__sim-${col.id}`,
+                        ]}
+                        disabled={col.id === "disabled"}
+                        aria-busy={col.id === "loading" ? "true" : undefined}
+                      >
+                        {col.id === "loading" ? "Laster…" : "Try Viddel"}
+                      </button>
+                    )}
+                    {row.id === "secondary-pill" && (
+                      <button
+                        type="button"
+                        class:list={[
+                          "istates__pill istates__pill--secondary",
+                          col.id !== "default" && `istates__sim-${col.id}`,
+                        ]}
+                        disabled={col.id === "disabled"}
+                      >
+                        Lagre
+                      </button>
+                    )}
+                    {row.id === "chrome-compact" && col.id !== "loading" && (
+                      <button
+                        type="button"
+                        class:list={[
+                          "istates__chrome-compact",
+                          col.id !== "default" && `istates__sim-${col.id}`,
+                        ]}
+                        disabled={col.id === "disabled"}
+                      >
+                        Hubber
+                      </button>
+                    )}
+                    {row.id === "chrome-compact" && col.id === "loading" && (
+                      <span class="istates__na">—</span>
+                    )}
+                    {row.id === "ai-ghost-pill" && col.id !== "loading" && col.id !== "selected" && (
+                      <button
+                        type="button"
+                        class:list={[
+                          "istates__ai-ghost",
+                          col.id !== "default" && `istates__sim-${col.id}`,
+                        ]}
+                        disabled={col.id === "disabled"}
+                      >
+                        <span class="istates__ai-signal" aria-hidden="true"></span>
+                        Spør Viddel
+                      </button>
+                    )}
+                    {row.id === "ai-ghost-pill" && (col.id === "loading" || col.id === "selected") && (
+                      <span class="istates__na">—</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="istates__panel" aria-labelledby="focus-heading">
+          <p class="istates__kicker">Focus-visible</p>
+          <h2 id="focus-heading">Keyboard affordance demo</h2>
+          <p class="istates__lead">
+            Tab through these live controls. Focus ring uses cyan functional color — not magenta.
+            <code>:focus-visible</code> only; mouse click should not leave a persistent ring.
+          </p>
+          <div class="istates__focus-demo">
+            <a href="#" class="istates__text-link">Text link</a>
+            <button type="button" class="istates__pill istates__pill--primary">Primary pill</button>
+            <button type="button" class="istates__pill istates__pill--secondary">Secondary pill</button>
+            <button type="button" class="istates__chrome-compact">Hubber</button>
+            <a href="#" class="istates__card-link istates__card-link--hub">
+              <span class="istates__card-link-surface">
+                <span class="istates__eyebrow">Hub card</span>
+                <strong>Whole-card focus target</strong>
+              </span>
+            </a>
+          </div>
+          <div class="istates__focus-demo istates__focus-demo--dark">
+            <p class="istates__surface-label">Deep / identity surface</p>
+            <button type="button" class="istates__pill istates__pill--inverse">Inverse pill</button>
+            <button type="button" class="istates__ai-ghost istates__ai-ghost--on-dark">
+              <span class="istates__ai-signal" aria-hidden="true"></span>
+              AI ghost
+            </button>
+          </div>
+        </section>
+
+        <section class="istates__panel" aria-labelledby="selected-heading">
+          <p class="istates__kicker">Selected vs active</p>
+          <h2 id="selected-heading">Selected / current ≠ active / pressed</h2>
+          <div class="istates__compare">
+            <article>
+              <h3>Selected / current</h3>
+              <p>Persistent navigation state — where you are in IA.</p>
+              <nav class="istates__mini-nav" aria-label="Example nav">
+                <a href="#" class="istates__mini-nav-link">Hubber</a>
+                <a href="#" class="istates__mini-nav-link istates__mini-nav-link--current" aria-current="page">
+                  Artikler
+                </a>
+                <a href="#" class="istates__mini-nav-link">Ordbok</a>
+              </nav>
+              <p class="istates__note">Deep blue edge / weight — not magenta fill.</p>
+            </article>
+            <article>
+              <h3>Active / pressed</h3>
+              <p>Momentary feedback while pointer is down — not persistent.</p>
+              <button type="button" class="istates__pill istates__pill--primary istates__sim-active">
+                Pressed primary
+              </button>
+              <button type="button" class="istates__pill istates__pill--secondary istates__sim-active">
+                Pressed secondary
+              </button>
+              <p class="istates__note">Slightly darker / inset — returns to default on release.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="istates__panel" aria-labelledby="cards-heading">
+          <p class="istates__kicker">Clickable surfaces</p>
+          <h2 id="cards-heading">Card state examples — #129</h2>
+          <p class="istates__lead">
+            Hover/lift is an affordance variant for clickable grouped surfaces — not a universal card default.
+          </p>
+          <div class="istates__card-grid">
+            <article class="istates__card-example">
+              <h3>Hub — hover + focus</h3>
+              <a href="#" class="istates__hub-card">
+                <div class="istates__hub-card-surface">
+                  <div class="istates__hub-card-bg" aria-hidden="true"></div>
+                  <div class="istates__hub-card-scrim" aria-hidden="true"></div>
+                  <div class="istates__hub-card-content">
+                    <p class="istates__eyebrow istates__eyebrow--on-dark">Live hub</p>
+                    <strong>Bedre lyd i hverdagen</strong>
+                    <span class="istates__ghost-cue">Utforsk →</span>
+                  </div>
+                </div>
+              </a>
+              <p class="istates__note">Whole-card click. Hover: lift + shadow. Tab: cyan focus ring.</p>
+            </article>
+
+            <article class="istates__card-example">
+              <h3>Article media — bottom-left</h3>
+              <a href="#" class="istates__article-card">
+                <div class="istates__article-card-surface">
+                  <div class="istates__article-card-bg" aria-hidden="true"></div>
+                  <div class="istates__article-card-scrim" aria-hidden="true"></div>
+                  <div class="istates__article-card-content">
+                    <p class="istates__eyebrow istates__eyebrow--on-dark">Artikkel · 6 min</p>
+                    <strong>Jeg får piping i høreapparatet</strong>
+                    <span class="istates__ghost-cue">Les artikkel</span>
+                  </div>
+                </div>
+              </a>
+              <p class="istates__note">Ghost cue — not CTA button. Hover lift on whole card.</p>
+            </article>
+
+            <article class="istates__card-example">
+              <h3>Helper — static</h3>
+              <div class="istates__helper-box" role="note">
+                <p class="istates__eyebrow">Merk</p>
+                <p>Dette er en statisk hjelpeboks — dashed border only. Ingen hover, ingen focus, ingen peker-cursor.</p>
+              </div>
+              <p class="istates__note">Must not look clickable. No lift, no shadow on hover.</p>
+            </article>
+
+            <article class="istates__card-example">
+              <h3>Feature CTA — CTA hover only</h3>
+              <a href="#" class="istates__feature-card">
+                <div class="istates__feature-card-surface">
+                  <div class="istates__feature-card-bg" aria-hidden="true"></div>
+                  <div class="istates__feature-card-scrim" aria-hidden="true"></div>
+                  <div class="istates__feature-card-content">
+                    <p class="istates__eyebrow istates__eyebrow--on-dark">Featured</p>
+                    <strong>Kom i gang</strong>
+                    <span class="istates__feature-cta">Les guiden</span>
+                  </div>
+                </div>
+              </a>
+              <p class="istates__note">Card shell static. Borderless translucent CTA lightens on hover.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="istates__panel" aria-labelledby="seed-heading">
+          <p class="istates__kicker">Article / AI pattern</p>
+          <h2 id="seed-heading">Seed questions — not button variants</h2>
+          <p class="istates__lead">Production markup from article flow. Evaluate hover/focus separately from CTA pills.</p>
+          <div class="istates__seed-panel" data-r1-editorial>
+            <section class="r1-ai-bridge">
+              <section class="inline-chat-shell" data-inline-chat-mode="progressive">
+                <div class="inline-chat-shell__seed-suggestions">
+                  <ul class="inline-chat-shell__seed-list inline-chat-shell__seed-list--rows" role="list">
+                    <li class="inline-chat-shell__seed-item">
+                      <button type="button" class="inline-chat-shell__seed-btn inline-chat-shell__seed-row">
+                        <span class="inline-chat-shell__seed-question">Hva er forskjellen på pip fra apparatet og piping i øret?</span>
+                      </button>
+                    </li>
+                    <li class="inline-chat-shell__seed-item">
+                      <button type="button" class="inline-chat-shell__seed-btn inline-chat-shell__seed-row">
+                        <span class="inline-chat-shell__seed-question">Kan jeg gjøre noe selv før jeg kontakter audiograf?</span>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </section>
+            </section>
+          </div>
+        </section>
+
+        <section class="istates__panel istates__panel--notes" aria-labelledby="decision-heading">
+          <p class="istates__kicker">Decision notes</p>
+          <h2 id="decision-heading">For #125 validation</h2>
+          <div class="istates__decision-grid">
+            <article>
+              <h3>Default</h3>
+              <ul>{decisionSummary.slice(0, 3).map((item) => <li>{item}</li>)}</ul>
+            </article>
+            <article>
+              <h3>Context-only</h3>
+              <ul>{decisionSummary.slice(3, 5).map((item) => <li>{item}</li>)}</ul>
+            </article>
+            <article>
+              <h3>Needs #125</h3>
+              <ul>{decisionSummary.slice(5).map((item) => <li>{item}</li>)}</ul>
+            </article>
+          </div>
+          <h3 class="istates__subhead">Open decisions</h3>
+          <ul class="istates__list">{openDecisions.map((item) => <li>{item}</li>)}</ul>
+          <h3 class="istates__subhead">Verify next</h3>
+          <ul class="istates__checklist">{verifyNext.map((item) => <li>{item}</li>)}</ul>
+          <ul class="istates__guardrails" role="list">
+            {guardrails.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    [data-interaction-states-page] {
+      --p-deep: #134d6a;
+      --p-magenta: #ff55b0;
+      --p-cyan: #0ea5e9;
+      --p-ink: #111827;
+      --p-dark: #071827;
+      --p-muted: #6b7280;
+      --p-border: #e5e7eb;
+      --p-light: #ffffff;
+      --p-subtle: #f8fafc;
+      --p-gray-secondary: #eeeeee;
+      --p-gray-hover: #dcdcdc;
+      --p-radius: 8px;
+      --p-surface-hover: 0 14px 32px rgb(15 23 42 / 0.08);
+      --p-surface-lift: translateY(-2px);
+      --p-focus-ring: 0 0 0 3px rgb(14 165 233 / 0.32);
+
+      min-height: 100vh;
+      max-width: 76rem;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+      background: var(--p-light);
+      color: var(--p-ink);
+      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+
+    .istates__breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      margin-bottom: 1.1rem;
+      font-size: 0.72rem;
+      color: var(--p-muted);
+    }
+
+    .istates__breadcrumb a {
+      color: inherit;
+      text-underline-offset: 2px;
+    }
+
+    .istates__hero {
+      padding: 1.5rem 0 1.25rem;
+      border-bottom: 1px solid rgb(17 24 39 / 0.12);
+    }
+
+    .istates__kicker {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--p-deep);
+    }
+
+    .istates__hero h1,
+    .istates__panel h2 {
+      margin: 0.35rem 0 0;
+      font-family: var(--font-display);
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+    }
+
+    .istates__hero h1 {
+      font-size: clamp(2rem, 5.5vw, 3.1rem);
+    }
+
+    .istates__subtitle,
+    .istates__lead {
+      max-width: 46rem;
+      margin: 0.8rem 0 0;
+      color: var(--p-muted);
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+
+    .istates__lead {
+      font-size: 0.84rem;
+    }
+
+    .istates__hero-status {
+      display: inline-flex;
+      gap: 0.6rem;
+      align-items: center;
+      margin-top: 1rem;
+      padding: 0.35rem 0.6rem;
+      border: 1px solid rgb(19 77 106 / 0.24);
+      border-radius: 999px;
+      background: var(--p-subtle);
+      font-size: 0.76rem;
+    }
+
+    .istates__hero-status span {
+      color: var(--p-muted);
+    }
+
+    .istates__callout {
+      margin-top: 1.25rem;
+      padding: 0.9rem 1rem;
+      border: 1px solid rgb(19 77 106 / 0.28);
+      border-radius: 12px;
+      background: rgb(19 77 106 / 0.05);
+    }
+
+    .istates__callout strong {
+      display: block;
+      font-size: 0.84rem;
+    }
+
+    .istates__callout p {
+      margin: 0.45rem 0 0;
+      color: var(--p-muted);
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+
+    .istates__layout {
+      display: grid;
+      gap: 1.5rem;
+      padding-top: 1.5rem;
+    }
+
+    .istates__nav {
+      display: flex;
+      gap: 0.45rem;
+      overflow-x: auto;
+      padding: 0.75rem;
+      border: 1px solid rgb(17 24 39 / 0.12);
+      border-radius: 14px;
+      background: var(--p-subtle);
+    }
+
+    .istates__nav-link {
+      flex: 0 0 auto;
+      padding: 0.42rem 0.65rem;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      color: var(--p-muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .istates__nav-link--active {
+      border-color: rgb(19 77 106 / 0.28);
+      background: #fff;
+      color: var(--p-deep);
+    }
+
+    .istates__content {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .istates__panel {
+      padding: 1.1rem;
+      border: 1px solid rgb(17 24 39 / 0.12);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .istates__panel h2 {
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+    }
+
+    .istates__list,
+    .istates__checklist,
+    .istates__guardrails {
+      margin: 0.75rem 0 0;
+      padding-left: 1.15rem;
+      color: var(--p-muted);
+      font-size: 0.84rem;
+      line-height: 1.65;
+    }
+
+    .istates__links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .istates__links a {
+      color: var(--p-deep);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* Matrix */
+    .istates__matrix {
+      margin-top: 1rem;
+      overflow-x: auto;
+      border: 1px solid rgb(17 24 39 / 0.1);
+      border-radius: 10px;
+    }
+
+    .istates__matrix-row {
+      display: grid;
+      grid-template-columns: 9.5rem repeat(7, minmax(5.5rem, 1fr));
+      gap: 0;
+      border-top: 1px solid rgb(17 24 39 / 0.08);
+    }
+
+    .istates__matrix-row--head {
+      border-top: none;
+      background: var(--p-subtle);
+    }
+
+    .istates__matrix-label,
+    .istates__matrix-head,
+    .istates__matrix-cell {
+      padding: 0.65rem 0.5rem;
+      border-right: 1px solid rgb(17 24 39 / 0.06);
+      font-size: 0.68rem;
+    }
+
+    .istates__matrix-head {
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--p-muted);
+    }
+
+    .istates__matrix-label strong {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--p-ink);
+    }
+
+    .istates__matrix-label span {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--p-muted);
+      line-height: 1.4;
+    }
+
+    .istates__matrix-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3.25rem;
+      background: #fff;
+    }
+
+    .istates__na {
+      color: var(--p-muted);
+      opacity: 0.5;
+    }
+
+    .istates__seed-wrap {
+      width: 100%;
+      max-width: 5rem;
+      transform: scale(0.72);
+      transform-origin: left center;
+    }
+
+    /* Actions */
+    .istates__text-link {
+      color: var(--p-deep);
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-decoration: underline;
+      text-decoration-color: rgb(19 77 106 / 0.3);
+      text-underline-offset: 2px;
+    }
+
+    .istates__text-link.istates__sim-hover,
+    .istates__text-link:hover {
+      text-decoration-color: var(--p-deep);
+    }
+
+    .istates__text-link.istates__sim-focus,
+    .istates__text-link:focus-visible {
+      outline: none;
+      box-shadow: var(--p-focus-ring);
+      border-radius: 3px;
+    }
+
+    .istates__text-link.istates__sim-active {
+      color: rgb(19 77 106 / 0.75);
+    }
+
+    .istates__text-link.istates__sim-selected {
+      font-weight: 700;
+    }
+
+    .istates__text-link.istates__sim-disabled,
+    .istates__text-link[aria-disabled="true"] {
+      color: var(--p-muted);
+      pointer-events: none;
+      text-decoration-color: rgb(107 114 128 / 0.35);
+    }
+
+    .istates__pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2rem;
+      padding: 0.45rem 0.85rem;
+      border: none;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 500;
+      line-height: 1;
+      cursor: default;
+      transition: background-color 140ms ease, transform 80ms ease, box-shadow 140ms ease;
+    }
+
+    .istates__pill--primary {
+      background: var(--p-ink);
+      color: #fff;
+    }
+
+    .istates__pill--primary.istates__sim-hover,
+    .istates__pill--primary:hover:not(:disabled) {
+      background: rgb(17 24 39 / 0.88);
+    }
+
+    .istates__pill--primary.istates__sim-focus,
+    .istates__pill--primary:focus-visible {
+      outline: none;
+      box-shadow: var(--p-focus-ring);
+    }
+
+    .istates__pill--primary.istates__sim-active {
+      transform: translateY(1px);
+      background: rgb(17 24 39 / 0.92);
+    }
+
+    .istates__pill--primary:disabled,
+    .istates__pill--primary.istates__sim-disabled {
+      background: var(--p-border);
+      color: rgb(107 114 128 / 0.9);
+      cursor: not-allowed;
+    }
+
+    .istates__pill--primary.istates__sim-loading {
+      background: rgb(17 24 39 / 0.72);
+      color: rgb(255 255 255 / 0.75);
+    }
+
+    .istates__pill--secondary {
+      background: var(--p-gray-secondary);
+      color: var(--p-ink);
+      font-weight: 400;
+    }
+
+    .istates__pill--secondary.istates__sim-hover,
+    .istates__pill--secondary:hover:not(:disabled) {
+      background: var(--p-gray-hover);
+    }
+
+    .istates__pill--secondary.istates__sim-focus,
+    .istates__pill--secondary:focus-visible {
+      outline: none;
+      box-shadow: var(--p-focus-ring);
+    }
+
+    .istates__pill--secondary.istates__sim-active {
+      transform: translateY(1px);
+      background: rgb(220 220 220);
+    }
+
+    .istates__pill--secondary:disabled,
+    .istates__pill--secondary.istates__sim-disabled {
+      background: rgb(243 244 246);
+      color: rgb(156 163 175);
+    }
+
+    .istates__pill--inverse {
+      background: #fff;
+      color: var(--p-ink);
+    }
+
+    .istates__pill--inverse:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgb(255 255 255 / 0.45), var(--p-focus-ring);
+    }
+
+    .istates__chrome-compact {
+      padding: 0.28rem 0.55rem;
+      border: none;
+      border-radius: 999px;
+      background: var(--p-ink);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.62rem;
+      font-weight: 500;
+      cursor: default;
+    }
+
+    .istates__chrome-compact.istates__sim-hover,
+    .istates__chrome-compact:hover:not(:disabled) {
+      background: rgb(17 24 39 / 0.85);
+    }
+
+    .istates__chrome-compact.istates__sim-focus,
+    .istates__chrome-compact:focus-visible {
+      outline: none;
+      box-shadow: var(--p-focus-ring);
+    }
+
+    .istates__chrome-compact.istates__sim-active {
+      transform: scale(0.97);
+    }
+
+    .istates__chrome-compact.istates__sim-selected {
+      box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.5);
+    }
+
+    .istates__chrome-compact:disabled,
+    .istates__chrome-compact.istates__sim-disabled {
+      background: rgb(209 213 219);
+      color: rgb(107 114 128);
+    }
+
+    .istates__ai-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.45rem 0.75rem;
+      border: 1px solid rgb(255 85 176 / 0.35);
+      border-radius: 999px;
+      background: rgb(255 255 255 / 0.72);
+      color: var(--p-ink);
+      font-family: inherit;
+      font-size: 0.68rem;
+      font-weight: 500;
+      cursor: default;
+    }
+
+    .istates__ai-ghost.istates__sim-hover,
+    .istates__ai-ghost:hover:not(:disabled) {
+      background: #fff;
+      border-color: rgb(255 85 176 / 0.55);
+    }
+
+    .istates__ai-ghost.istates__sim-focus,
+    .istates__ai-ghost:focus-visible {
+      outline: none;
+      box-shadow: var(--p-focus-ring);
+    }
+
+    .istates__ai-ghost.istates__sim-active {
+      transform: translateY(1px);
+    }
+
+    .istates__ai-ghost:disabled,
+    .istates__ai-ghost.istates__sim-disabled {
+      opacity: 0.55;
+      border-color: rgb(255 85 176 / 0.18);
+    }
+
+    .istates__ai-ghost--on-dark {
+      background: rgb(255 255 255 / 0.1);
+      color: #fff;
+      border-color: rgb(255 85 176 / 0.45);
+    }
+
+    .istates__ai-signal {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      background: var(--p-magenta);
+      box-shadow: 0 0 0 2px rgb(255 85 176 / 0.18);
+    }
+
+    /* Seed row simulated states */
+    .istates__seed-wrap .inline-chat-shell__seed-row.istates__sim-hover {
+      background: rgb(248 250 252);
+      border-color: rgb(19 77 106 / 0.22);
+    }
+
+    .istates__seed-wrap .inline-chat-shell__seed-row.istates__sim-focus {
+      outline: none;
+      box-shadow: var(--p-focus-ring);
+    }
+
+    .istates__seed-wrap .inline-chat-shell__seed-row.istates__sim-active {
+      transform: translateY(1px);
+    }
+
+    .istates__seed-wrap .inline-chat-shell__seed-row:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Focus demo */
+    .istates__focus-demo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 1rem;
+      padding: 1rem;
+      border: 1px dashed rgb(19 77 106 / 0.22);
+      border-radius: 10px;
+      background: var(--p-subtle);
+    }
+
+    .istates__focus-demo--dark {
+      background: linear-gradient(145deg, var(--p-deep), var(--p-dark));
+    }
+
+    .istates__surface-label {
+      width: 100%;
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgb(255 255 255 / 0.62);
+    }
+
+    .istates__card-link {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .istates__card-link-surface {
+      display: block;
+      padding: 0.75rem 0.85rem;
+      border-radius: var(--p-radius);
+      background: #fff;
+      box-shadow: 0 1px 2px rgb(15 23 42 / 0.06);
+    }
+
+    .istates__card-link--hub .istates__card-link-surface {
+      background: linear-gradient(145deg, rgb(19 77 106 / 0.08), rgb(248 250 252));
+    }
+
+    .istates__card-link:focus-visible {
+      outline: none;
+    }
+
+    .istates__card-link:focus-visible .istates__card-link-surface {
+      box-shadow: var(--p-focus-ring), 0 1px 2px rgb(15 23 42 / 0.06);
+    }
+
+    .istates__card-link-surface strong {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.82rem;
+    }
+
+    /* Selected vs active */
+    .istates__compare {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .istates__compare article {
+      padding: 1rem;
+      border: 1px solid rgb(17 24 39 / 0.1);
+      border-radius: 10px;
+      background: var(--p-subtle);
+    }
+
+    .istates__compare h3 {
+      margin: 0;
+      font-size: 0.88rem;
+    }
+
+    .istates__compare p {
+      margin: 0.4rem 0 0;
+      color: var(--p-muted);
+      font-size: 0.8rem;
+      line-height: 1.55;
+    }
+
+    .istates__mini-nav {
+      display: flex;
+      gap: 0.35rem;
+      margin-top: 0.75rem;
+    }
+
+    .istates__mini-nav-link {
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      color: var(--p-muted);
+      font-size: 0.74rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .istates__mini-nav-link--current {
+      background: rgb(19 77 106 / 0.08);
+      color: var(--p-deep);
+      box-shadow: inset 3px 0 0 var(--p-deep);
+      border-radius: 6px 999px 999px 6px;
+    }
+
+    .istates__note {
+      margin: 0.55rem 0 0;
+      font-size: 0.72rem;
+      font-style: italic;
+      color: var(--p-muted);
+      line-height: 1.5;
+    }
+
+    /* Card examples */
+    .istates__card-grid {
+      display: grid;
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .istates__card-example h3 {
+      margin: 0 0 0.65rem;
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .istates__eyebrow {
+      margin: 0;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--p-muted);
+    }
+
+    .istates__eyebrow--on-dark {
+      color: rgb(255 255 255 / 0.62);
+    }
+
+    .istates__ghost-cue {
+      display: block;
+      margin-top: 0.45rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: rgb(255 255 255 / 0.94);
+    }
+
+    .istates__hub-card,
+    .istates__article-card,
+    .istates__feature-card {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .istates__hub-card-surface,
+    .istates__article-card-surface,
+    .istates__feature-card-surface {
+      position: relative;
+      border-radius: var(--p-radius);
+      overflow: hidden;
+      transition: box-shadow 200ms ease, transform 200ms ease;
+    }
+
+    .istates__hub-card-surface {
+      height: 8.5rem;
+    }
+
+    .istates__article-card-surface {
+      aspect-ratio: 16 / 10;
+    }
+
+    .istates__feature-card-surface {
+      height: 9rem;
+    }
+
+    .istates__hub-card-bg,
+    .istates__article-card-bg,
+    .istates__feature-card-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .istates__hub-card-bg {
+      background: linear-gradient(160deg, rgb(19 77 106 / 0.5), rgb(224 242 254 / 0.75));
+    }
+
+    .istates__article-card-bg {
+      background: linear-gradient(165deg, rgb(19 77 106 / 0.5), rgb(148 163 184 / 0.35));
+    }
+
+    .istates__feature-card-bg {
+      background: linear-gradient(155deg, rgb(19 77 106 / 0.55), rgb(148 163 184 / 0.35));
+    }
+
+    .istates__hub-card-scrim,
+    .istates__article-card-scrim,
+    .istates__feature-card-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(
+        to top,
+        rgb(17 24 39 / 0.78) 0%,
+        rgb(17 24 39 / 0.28) 34%,
+        transparent 58%
+      );
+    }
+
+    .istates__hub-card-content,
+    .istates__article-card-content,
+    .istates__feature-card-content {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      z-index: 2;
+      max-width: 80%;
+      padding: 0 1rem 1rem;
+    }
+
+    .istates__hub-card-content strong,
+    .istates__article-card-content strong,
+    .istates__feature-card-content strong {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 0.88rem;
+      color: #fff;
+    }
+
+    .istates__hub-card:hover .istates__hub-card-surface,
+    .istates__article-card:hover .istates__article-card-surface {
+      box-shadow: var(--p-surface-hover);
+      transform: var(--p-surface-lift);
+    }
+
+    .istates__hub-card:focus-visible,
+    .istates__article-card:focus-visible,
+    .istates__feature-card:focus-visible {
+      outline: none;
+    }
+
+    .istates__hub-card:focus-visible .istates__hub-card-surface,
+    .istates__article-card:focus-visible .istates__article-card-surface,
+    .istates__feature-card:focus-visible .istates__feature-card-surface {
+      box-shadow: var(--p-focus-ring), var(--p-surface-hover);
+    }
+
+    .istates__feature-card:hover .istates__feature-card-surface {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .istates__feature-cta {
+      display: inline-flex;
+      margin-top: 0.55rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      background: rgb(255 255 255 / 0.2);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 600;
+      transition: background-color 180ms ease;
+    }
+
+    .istates__feature-card:hover .istates__feature-cta {
+      background: rgb(255 255 255 / 0.38);
+    }
+
+    .istates__helper-box {
+      padding: 1rem;
+      border: 1px dashed rgb(19 77 106 / 0.35);
+      border-radius: var(--p-radius);
+      background: transparent;
+      cursor: default;
+    }
+
+    .istates__helper-box p:last-child {
+      margin: 0.45rem 0 0;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: var(--p-muted);
+    }
+
+    .istates__seed-panel {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      background: #fff;
+      max-width: 16.625rem;
+    }
+
+    .istates__seed-panel .r1-ai-bridge {
+      padding: 0;
+    }
+
+    .istates__decision-grid {
+      display: grid;
+      gap: 0.85rem;
+      margin-top: 0.75rem;
+    }
+
+    .istates__decision-grid article {
+      padding: 0.85rem;
+      border: 1px solid rgb(17 24 39 / 0.1);
+      border-radius: 10px;
+      background: var(--p-subtle);
+    }
+
+    .istates__decision-grid h3 {
+      margin: 0;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--p-deep);
+    }
+
+    .istates__decision-grid ul {
+      margin: 0.5rem 0 0;
+      padding-left: 1rem;
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: var(--p-muted);
+    }
+
+    .istates__subhead {
+      margin: 1.25rem 0 0;
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .istates__guardrails {
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px dashed rgb(17 24 39 / 0.12);
+      font-size: 0.72rem;
+    }
+
+    @media (min-width: 640px) {
+      [data-interaction-states-page] {
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      .istates__compare,
+      .istates__card-grid,
+      .istates__decision-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 900px) {
+      .istates__layout {
+        grid-template-columns: 14rem minmax(0, 1fr);
+        align-items: start;
+      }
+
+      .istates__nav {
+        position: sticky;
+        top: 1rem;
+        display: grid;
+        overflow: visible;
+      }
+
+      .istates__card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .istates__decision-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
+</PrototypeLayout>

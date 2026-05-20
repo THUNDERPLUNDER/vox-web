@@ -60,6 +60,19 @@ const meta = [
           </p>
         </section>
 
+        <section class="plab__panel" aria-labelledby="interaction-states-heading">
+          <p class="plab__kicker">#124D</p>
+          <h2 id="interaction-states-heading">Interaction states pass</h2>
+          <p>
+            Validates hover, focus-visible, active, selected, disabled and loading across #128 action
+            taxonomy and #129 clickable surfaces — decision surface before #125 MVP Surface Reskin.
+          </p>
+          <p class="plab__context-link">
+            <a href={`${primitivesPath}/interaction-states/`}>Open interaction states pass →</a>
+            <span>Builds on decision candidates #127 Surfaces, #128 Buttons and #129 Cards.</span>
+          </p>
+        </section>
+
         <section class="plab__panel" aria-labelledby="guardrails-heading">
           <p class="plab__kicker">Guardrails</p>
           <h2 id="guardrails-heading">Decision boundaries</h2>
@@ -192,6 +205,30 @@ const meta = [
     .plab__meta dd {
       margin: 0.2rem 0 0;
       font-size: 0.85rem;
+    }
+
+    .plab__context-link {
+      max-width: 42rem;
+      margin: 1rem 0 0;
+      padding: 0.75rem 0.85rem;
+      border: 1px solid rgb(19 77 106 / 0.24);
+      border-radius: 10px;
+      background: rgb(19 77 106 / 0.04);
+      font-size: 0.8rem;
+      line-height: 1.55;
+    }
+
+    .plab__context-link a {
+      display: inline-block;
+      margin-bottom: 0.25rem;
+      color: var(--p-deep);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .plab__context-link span {
+      display: block;
+      color: var(--p-muted);
     }
 
     .plab__layout {

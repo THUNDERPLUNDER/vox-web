@@ -658,11 +658,10 @@ export const primitivePages: PrimitivePage[] = [
       },
     ],
     completionNotes: [
-      "Context page tests action taxonomy — not color variants. Review /primitives/buttons/context/ before decision candidate.",
-      "Confirm text link vs question pill vs primary/secondary pill roles in editorial flow.",
+      "Context page tests action taxonomy — decision candidate.",
+      "Interaction states pass (#124D) validates hover/focus/disabled/loading before #125.",
       "Confirm seed question pills match published soft pill pattern.",
       "Confirm hub cards work as clickable surfaces without internal buttons.",
-      "Confirm standalone AI ghost pill with magenta signal detail.",
     ],
     roundIntro: "These are Round 1 variants, not historical iterations.",
     iterations: [
@@ -732,7 +731,7 @@ export const primitivePages: PrimitivePage[] = [
       },
       {
         title: "Focus",
-        note: "Whole-card focus rings handled in a later interaction states pass.",
+        note: "Whole-card focus rings — see #124D interaction states pass.",
       },
     ],
     completionNotes: [
@@ -742,7 +741,7 @@ export const primitivePages: PrimitivePage[] = [
       "Feature/media CTA: special hero/promo pattern with borderless translucent CTA — not default hub.",
       "Helper/info boxes: dashed border only, visibly static.",
       "AI bridge stays connected to editorial content.",
-      "Hover/focus interaction states deferred to later pass.",
+      "Hover/focus interaction states validated in #124D — needs applied check in #125.",
     ],
     roundIntro: "These are Round 1 variants, not historical iterations.",
     iterationsHeading: "Round 1 variants",

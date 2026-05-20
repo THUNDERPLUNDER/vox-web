@@ -51,6 +51,12 @@ const primitivesPath = `${sprintPath}/primitives`;
           <span>Decision surface for clickable surfaces — hub cards, article teasers, helper boxes, AI bridge and dark identity — in real Viddel scenarios.</span>
         </p>
       )}
+      {(page.slug === "buttons" || page.slug === "cards" || page.slug === "focus") && (
+        <p class="plab__context-link">
+          <a href={`${primitivesPath}/interaction-states/`}>Interaction states pass (#124D) →</a>
+          <span>Hover, focus, active, selected, disabled and loading — validation before #125.</span>
+        </p>
+      )}
     </header>
 
     <div class="plab__layout">
