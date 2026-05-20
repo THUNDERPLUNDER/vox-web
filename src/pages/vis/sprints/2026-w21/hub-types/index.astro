@@ -1,0 +1,867 @@
+---
+/* CONTRACT: VIS-only hub type split (#125C) — utility vs editorial decision surface.
+   Informs next #125 slice after #130 content strategy revisit. No production routes.
+*/
+import PrototypeLayout from "../../../../../layouts/PrototypeLayout.astro";
+import "../../../../../styles/global.css";
+
+const base = import.meta.env.BASE_URL;
+const sprintPath = `${base}vis/sprints/2026-w21`;
+const pagePath = `${sprintPath}/hub-types`;
+
+const taskTaxonomy = [
+  {
+    id: "practical",
+    title: "Praktiske tasks",
+    copy: "Gjøre noe nå — feilsøke, koble, rense, kontakte.",
+    examples: ["Stoppe piping", "Koble til mobil", "Bytte filter"],
+  },
+  {
+    id: "mastery",
+    title: "Forståelses- / mestringstasks",
+    copy: "Forstå hva som skjer og hva som er normalt over tid.",
+    examples: ["Hva er normalt første uke?", "Når lyden blir for mye", "Tegn på at noe bør sjekkes"],
+  },
+  {
+    id: "relational",
+    title: "Relasjonelle tasks",
+    copy: "Snakke med andre, finne ord, håndtere situasjoner sammen.",
+    examples: ["Si til kollegaer", "På restaurant", "For pårørende"],
+  },
+];
+
+const utilityTasks = [
+  "Stoppe piping",
+  "Koble høreapparatet til mobilen",
+  "Fikse app eller Bluetooth",
+  "Rense filter, propp eller dome",
+  "Vite når audiograf bør kontaktes",
+];
+
+const utilityGuides = [
+  { label: "Feilsøking", title: "Få slutt på pipingen" },
+  { label: "Tilkobling", title: "Appen finner ikke høreapparatet" },
+  { label: "Vedlikehold", title: "Bytte filter uten stress" },
+];
+
+const editorialSituations = [
+  "Ny med høreapparat",
+  "Sosialt liv",
+  "På jobb",
+  "For pårørende",
+  "Lyd og energi",
+];
+
+const editorialArticles = [
+  { series: "Erfaring", title: "Slik løste jeg middagsbordet" },
+  { series: "Normalt?", title: "Hva som er normalt de første ukene" },
+  { series: "Energi", title: "Når lyden blir for mye" },
+];
+
+const editorialSeeds = [
+  "Snakk med Hørehjelpen om lyttetrøtthet",
+  "Få forslag til hva jeg kan si til kollegaene mine",
+];
+
+const openQuestions = [
+  "Skal hovednavn være «Hjelp» eller «Hørehjelp»?",
+  "Skal editorial-flaten hete «Erfaringer», «Innsikt», «Magasin» eller noe annet?",
+  "Skal toppmenyen vise begge direkte, eller samle dem under én ressurs-paraply?",
+  "Hvilken hubtype bør bygges først etter #125C?",
+];
+
+const nextSteps125 = [
+  "Ikke fortsett universell hub-reskin — velg hubtype etter denne VIS-vurderingen.",
+  "#125B beholdes som applied learning på utility-inspirert hub, ikke som endelig fasit.",
+  "Neste applied slice bør matche valgt hubtype og surface-hierarki.",
+];
+---
+
+<PrototypeLayout title="Hub type split — VIS #125C">
+  <main class="htypes" data-hub-types-page>
+    <nav class="htypes__breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={sprintPath}>2026-W21</a>
+      <span aria-hidden="true">/</span>
+      <span>Hub types</span>
+    </nav>
+
+    <header class="htypes__hero">
+      <p class="htypes__kicker">VIS-only · #125C · Hub type split</p>
+      <h1>Utility vs editorial hub</h1>
+      <p class="htypes__subtitle">
+        Beslutningsflate etter #130 Content Strategy Revisit — sammenlign hjelpehub og
+        editorial/erfaringshub før neste #125-slice.
+      </p>
+      <div class="htypes__hero-status">
+        <span>Status</span>
+        <strong>Decision support</strong>
+      </div>
+    </header>
+
+    <aside class="htypes__callout" role="note">
+      <strong>Navn og ruter er forslag — ikke låst.</strong>
+      <p>
+        VIS mockups only. Ingen endring i produksjon, tokens, Storyblok eller global CSS.
+        Formål: vurdere layout, hierarki, surface-logikk og navngiving.
+      </p>
+    </aside>
+
+    <!-- Task taxonomy -->
+    <section class="htypes__panel" aria-labelledby="taxonomy-heading">
+      <p class="htypes__panel-kicker">01 · Top task taxonomy</p>
+      <h2 id="taxonomy-heading">Tre task-typer i innholdsstrategien</h2>
+      <div class="htypes__taxonomy">
+        {taskTaxonomy.map((item) => (
+          <article class="htypes__taxonomy-item">
+            <h3>{item.title}</h3>
+            <p>{item.copy}</p>
+            <ul role="list">
+              {item.examples.map((ex) => (
+                <li>{ex}</li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Side-by-side mocks -->
+    <section class="htypes__compare" aria-labelledby="compare-heading">
+      <div class="htypes__compare-head">
+        <p class="htypes__panel-kicker">02 · Hub mocks</p>
+        <h2 id="compare-heading">Hjelpehub vs editorial hub</h2>
+        <p class="htypes__compare-lead">
+          Scroll side ved side (desktop) eller sammenlign sekvensielt (mobil).
+        </p>
+      </div>
+
+      <div class="htypes__compare-grid">
+        <!-- Utility / help hub -->
+        <article class="htypes__mock htypes__mock--utility" aria-labelledby="utility-heading">
+          <header class="htypes__mock-label">
+            <span class="htypes__mock-tag htypes__mock-tag--utility">Forslag A</span>
+            <h3 id="utility-heading">Hjelpehub / utility</h3>
+            <p>Rask problemløsning · FAQ · eskalering</p>
+          </header>
+
+          <div class="htypes__utility">
+            <div class="htypes__utility-hero">
+              <p class="htypes__utility-kicker">Emnehub · feilsøking</p>
+              <h4>Hva trenger du hjelp til?</h4>
+              <p class="htypes__utility-lead">Finn riktig grep for det som ikke fungerer nå.</p>
+              <label class="htypes__utility-search">
+                <span class="sr-only">Beskriv problemet</span>
+                <input type="search" placeholder="F.eks. piping, Bluetooth, filter…" readonly tabindex="-1" />
+              </label>
+            </div>
+
+            <div class="htypes__utility-block">
+              <p class="htypes__block-title">Top tasks</p>
+              <ul class="htypes__task-list" role="list">
+                {utilityTasks.map((task) => (
+                  <li>
+                    <span class="htypes__task-row">
+                      <span>{task}</span>
+                      <span aria-hidden="true">→</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="htypes__utility-block">
+              <p class="htypes__block-title">Korte guider</p>
+              <ul class="htypes__guide-rows" role="list">
+                {utilityGuides.map((guide) => (
+                  <li>
+                    <a href="#" class="htypes__guide-row" tabindex="-1" onclick="return false">
+                      <span class="htypes__guide-row-label">{guide.label}</span>
+                      <span class="htypes__guide-row-title">{guide.title}</span>
+                      <span class="htypes__guide-row-arrow" aria-hidden="true">→</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="htypes__utility-escalation">
+              <a href="#" class="htypes__escalation-link" tabindex="-1" onclick="return false">
+                Fant du ikke svaret? Spør Hørehjelpen
+              </a>
+              <a href="#" class="htypes__escalation-link htypes__escalation-link--muted" tabindex="-1" onclick="return false">
+                Når bør du kontakte audiograf?
+              </a>
+            </div>
+          </div>
+
+          <footer class="htypes__mock-notes">
+            <strong>Designretning:</strong> kompakt, tekstlig, presis, lite bilde, tydelig affordance — ikke magasin.
+          </footer>
+        </article>
+
+        <!-- Editorial / experience hub -->
+        <article class="htypes__mock htypes__mock--editorial" aria-labelledby="editorial-heading">
+          <header class="htypes__mock-label">
+            <span class="htypes__mock-tag htypes__mock-tag--editorial">Forslag B</span>
+            <h3 id="editorial-heading">Editorial / erfaringshub</h3>
+            <p>Gjenkjennelse · mestring · videre utforsking</p>
+          </header>
+
+          <div class="htypes__editorial">
+            <a href="#" class="htypes__editorial-featured" tabindex="-1" onclick="return false">
+              <div class="htypes__editorial-featured-media" aria-hidden="true"></div>
+              <div class="htypes__editorial-featured-body">
+                <p class="htypes__editorial-eyebrow">Featured · lyd og energi</p>
+                <h4>Den usynlige utmattelsen: hvorfor du er helt skutt etter jobb</h4>
+                <p class="htypes__editorial-deck">
+                  Lyttetrøtthet er mer enn «høre dårlig» — slik kan du gjenkjenne det i hverdagen.
+                </p>
+              </div>
+            </a>
+
+            <div class="htypes__editorial-block">
+              <p class="htypes__block-title htypes__block-title--editorial">Situasjonsbaserte innganger</p>
+              <ul class="htypes__situation-grid" role="list">
+                {editorialSituations.map((situation) => (
+                  <li>
+                    <a href="#" class="htypes__situation-chip" tabindex="-1" onclick="return false">{situation}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="htypes__editorial-block">
+              <p class="htypes__block-title htypes__block-title--editorial">Artikler og serier</p>
+              <ul class="htypes__article-cards" role="list">
+                {editorialArticles.map((article) => (
+                  <li>
+                    <a href="#" class="htypes__article-card" tabindex="-1" onclick="return false">
+                      <div class="htypes__article-card-media" aria-hidden="true"></div>
+                      <div class="htypes__article-card-body">
+                        <p class="htypes__article-series">{article.series}</p>
+                        <p class="htypes__article-title">{article.title}</p>
+                      </div>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="htypes__editorial-ai">
+              <p class="htypes__block-title htypes__block-title--editorial">Videre samtale</p>
+              <p class="htypes__editorial-ai-intro">AI som videreføring av artikkel — ikke supportboks.</p>
+              <ul class="htypes__seed-list" role="list">
+                {editorialSeeds.map((seed) => (
+                  <li>
+                    <a href="#" class="htypes__seed-row" tabindex="-1" onclick="return false">{seed}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <footer class="htypes__mock-notes">
+            <strong>Designretning:</strong> mer luft, redaksjonelt hierarki, sterkere bilde/surface, lesing og gjenkjennelse.
+          </footer>
+        </article>
+      </div>
+    </section>
+
+    <!-- Topic hub note -->
+    <section class="htypes__panel htypes__panel--note" aria-labelledby="topic-heading">
+      <p class="htypes__panel-kicker">03 · Emnehub / topic</p>
+      <h2 id="topic-heading">Tredje type — notat, ikke full mock</h2>
+      <p>
+        En <strong>emnehub</strong> kan senere samle både hjelp og editorial rundt ett tema — f.eks.
+        «På jobb»: praktiske tasks (Bluetooth på kontoret) og erfaringer (møter, lyttetrøtthet).
+      </p>
+      <p class="htypes__topic-warning">
+        Bør ikke blandes med rotside eller én universell hub-mal før IA er avklart.
+      </p>
+    </section>
+
+    <!-- Decision questions -->
+    <section class="htypes__panel" aria-labelledby="questions-heading">
+      <p class="htypes__panel-kicker">04 · Beslutningsspørsmål</p>
+      <h2 id="questions-heading">Åpne valg for Thomas</h2>
+      <ul class="htypes__questions" role="list">
+        {openQuestions.map((q) => (
+          <li>{q}</li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- #125 consequence -->
+    <section class="htypes__panel htypes__panel--consequence" aria-labelledby="125-heading">
+      <p class="htypes__panel-kicker">05 · Konsekvens for #125</p>
+      <h2 id="125-heading">Anbefalt videre arbeid</h2>
+      <ul class="htypes__next" role="list">
+        {nextSteps125.map((step) => (
+          <li>{step}</li>
+        ))}
+      </ul>
+    </section>
+  </main>
+
+  <style>
+    [data-hub-types-page] {
+      --ht-deep: #134d6a;
+      --ht-ink: #111827;
+      --ht-muted: #6b7280;
+      --ht-light: #ffffff;
+      --ht-subtle: #f8fafc;
+      --ht-border: rgb(17 24 39 / 0.12);
+      --ht-focus: 0 0 0 3px rgb(14 165 233 / 0.32);
+      --ht-radius: 8px;
+
+      min-height: 100vh;
+      max-width: 76rem;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+      background: var(--ht-light);
+      color: var(--ht-ink);
+      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+
+    .htypes__breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      margin-bottom: 1.1rem;
+      font-size: 0.72rem;
+      color: var(--ht-muted);
+    }
+
+    .htypes__breadcrumb a {
+      color: inherit;
+      text-underline-offset: 2px;
+    }
+
+    .htypes__hero {
+      padding: 1.25rem 0 1.75rem;
+      border-bottom: 1px solid var(--ht-border);
+    }
+
+    .htypes__kicker,
+    .htypes__panel-kicker {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ht-deep);
+    }
+
+    .htypes__hero h1,
+    .htypes__panel h2 {
+      margin: 0.4rem 0 0;
+      font-family: var(--font-display);
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+    }
+
+    .htypes__hero h1 {
+      font-size: clamp(1.85rem, 5vw, 3rem);
+    }
+
+    .htypes__subtitle,
+    .htypes__compare-lead,
+    .htypes__panel p,
+    .htypes__taxonomy-item p,
+    .htypes__mock-label p,
+    .htypes__mock-notes,
+    .htypes__editorial-ai-intro {
+      color: var(--ht-muted);
+      line-height: 1.65;
+    }
+
+    .htypes__subtitle {
+      max-width: 44rem;
+      margin: 0.75rem 0 0;
+      font-size: 0.95rem;
+    }
+
+    .htypes__hero-status {
+      display: inline-flex;
+      gap: 0.6rem;
+      align-items: center;
+      margin-top: 1rem;
+      padding: 0.35rem 0.65rem;
+      border: 1px solid rgb(19 77 106 / 0.24);
+      border-radius: 999px;
+      background: rgb(19 77 106 / 0.05);
+      font-size: 0.76rem;
+    }
+
+    .htypes__hero-status span {
+      color: var(--ht-muted);
+    }
+
+    .htypes__callout {
+      margin: 1.25rem 0 0;
+      padding: 0.9rem 1rem;
+      border: 1px solid rgb(19 77 106 / 0.22);
+      border-radius: var(--ht-radius);
+      background: rgb(19 77 106 / 0.04);
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+
+    .htypes__callout strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--ht-ink);
+    }
+
+    .htypes__panel {
+      margin-top: 1.75rem;
+      padding: 1.15rem;
+      border: 1px solid var(--ht-border);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .htypes__panel h2 {
+      font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+    }
+
+    .htypes__taxonomy {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .htypes__taxonomy-item {
+      padding: 0.85rem;
+      border-radius: var(--ht-radius);
+      background: var(--ht-subtle);
+    }
+
+    .htypes__taxonomy-item h3 {
+      margin: 0;
+      font-size: 0.88rem;
+    }
+
+    .htypes__taxonomy-item p {
+      margin: 0.35rem 0 0;
+      font-size: 0.8rem;
+    }
+
+    .htypes__taxonomy-item ul {
+      margin: 0.5rem 0 0;
+      padding-left: 1.1rem;
+      font-size: 0.78rem;
+      color: var(--ht-muted);
+    }
+
+    .htypes__compare {
+      margin-top: 1.75rem;
+    }
+
+    .htypes__compare-head {
+      margin-bottom: 1rem;
+    }
+
+    .htypes__compare-grid {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .htypes__mock {
+      border: 1px solid var(--ht-border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .htypes__mock-label {
+      padding: 1rem 1.1rem;
+      border-bottom: 1px solid var(--ht-border);
+      background: var(--ht-subtle);
+    }
+
+    .htypes__mock-label h3 {
+      margin: 0.45rem 0 0;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .htypes__mock-label p {
+      margin: 0.25rem 0 0;
+      font-size: 0.78rem;
+    }
+
+    .htypes__mock-tag {
+      display: inline-block;
+      padding: 0.2rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .htypes__mock-tag--utility {
+      background: rgb(19 77 106 / 0.1);
+      color: var(--ht-deep);
+    }
+
+    .htypes__mock-tag--editorial {
+      background: rgb(17 24 39 / 0.06);
+      color: var(--ht-ink);
+    }
+
+    .htypes__mock-notes {
+      padding: 0.85rem 1.1rem;
+      border-top: 1px solid var(--ht-border);
+      font-size: 0.76rem;
+      line-height: 1.55;
+    }
+
+    .htypes__mock-notes strong {
+      color: var(--ht-ink);
+    }
+
+    /* ── Utility mock ── */
+    .htypes__utility {
+      padding: 1rem 1.1rem 1.15rem;
+      background: #fff;
+    }
+
+    .htypes__utility-hero {
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--ht-border);
+    }
+
+    .htypes__utility-kicker {
+      margin: 0;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ht-deep);
+    }
+
+    .htypes__utility-hero h4 {
+      margin: 0.45rem 0 0;
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 650;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+    }
+
+    .htypes__utility-lead {
+      margin: 0.45rem 0 0.85rem;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--ht-muted);
+    }
+
+    .htypes__utility-search input {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid rgb(17 24 39 / 0.18);
+      border-radius: 999px;
+      background: var(--ht-subtle);
+      font-size: 0.82rem;
+      color: var(--ht-ink);
+    }
+
+    .htypes__utility-block {
+      padding-top: 0.9rem;
+    }
+
+    .htypes__block-title {
+      margin: 0 0 0.55rem;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ht-deep);
+    }
+
+    .htypes__block-title--editorial {
+      color: var(--ht-ink);
+    }
+
+    .htypes__task-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border: 1px solid rgb(17 24 39 / 0.14);
+      border-radius: var(--ht-radius);
+      overflow: hidden;
+    }
+
+    .htypes__task-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.65rem 0.8rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      border-bottom: 1px solid rgb(17 24 39 / 0.08);
+    }
+
+    .htypes__task-list li:last-child .htypes__task-row {
+      border-bottom: 0;
+    }
+
+    .htypes__task-row span:last-child {
+      color: var(--ht-deep);
+      font-size: 0.9rem;
+    }
+
+    .htypes__guide-rows {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .htypes__guide-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 0.45rem 0.65rem;
+      align-items: baseline;
+      padding: 0.55rem 0.65rem;
+      border-radius: 6px;
+      background: var(--ht-subtle);
+      color: inherit;
+      text-decoration: none;
+      font-size: 0.8rem;
+    }
+
+    .htypes__guide-row-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ht-deep);
+    }
+
+    .htypes__guide-row-title {
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .htypes__guide-row-arrow {
+      color: var(--ht-muted);
+    }
+
+    .htypes__utility-escalation {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin-top: 1rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--ht-border);
+    }
+
+    .htypes__escalation-link {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--ht-deep);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .htypes__escalation-link--muted {
+      font-weight: 500;
+      color: var(--ht-muted);
+    }
+
+    /* ── Editorial mock ── */
+    .htypes__editorial {
+      padding: 1rem 1.1rem 1.15rem;
+      background: rgb(252 252 253);
+    }
+
+    .htypes__editorial-featured {
+      display: grid;
+      gap: 1rem;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .htypes__editorial-featured-media {
+      aspect-ratio: 16 / 9;
+      border-radius: var(--ht-radius);
+      background:
+        linear-gradient(145deg, rgb(19 77 106 / 0.35), rgb(148 163 184 / 0.25)),
+        linear-gradient(160deg, rgb(30 58 80 / 0.2), rgb(248 250 252));
+    }
+
+    .htypes__editorial-eyebrow {
+      margin: 0;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ht-muted);
+    }
+
+    .htypes__editorial-featured h4 {
+      margin: 0.4rem 0 0;
+      font-family: var(--font-display);
+      font-size: clamp(1.15rem, 3vw, 1.45rem);
+      font-weight: 650;
+      letter-spacing: -0.04em;
+      line-height: 1.12;
+    }
+
+    .htypes__editorial-deck {
+      margin: 0.55rem 0 0;
+      font-size: 0.84rem;
+      line-height: 1.6;
+      color: var(--ht-muted);
+    }
+
+    .htypes__editorial-block {
+      margin-top: 1.25rem;
+    }
+
+    .htypes__situation-grid {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .htypes__situation-chip {
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid rgb(17 24 39 / 0.1);
+      color: var(--ht-ink);
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .htypes__article-cards {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .htypes__article-card {
+      display: grid;
+      gap: 0.75rem;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .htypes__article-card-media {
+      aspect-ratio: 16 / 10;
+      max-height: 5.5rem;
+      border-radius: var(--ht-radius);
+      background: linear-gradient(145deg, rgb(19 77 106 / 0.12), rgb(224 242 254 / 0.55));
+    }
+
+    .htypes__article-series {
+      margin: 0;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ht-muted);
+    }
+
+    .htypes__article-title {
+      margin: 0.25rem 0 0;
+      font-size: 0.88rem;
+      font-weight: 650;
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+    }
+
+    .htypes__editorial-ai {
+      margin-top: 1.35rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--ht-border);
+    }
+
+    .htypes__seed-list {
+      margin: 0.55rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      align-items: flex-end;
+    }
+
+    .htypes__seed-row {
+      display: block;
+      max-width: 92%;
+      padding: 0.55rem 0.85rem;
+      border: 1px solid rgb(17 24 39 / 0.12);
+      border-radius: 999px;
+      background: #fff;
+      font-size: 0.78rem;
+      line-height: 1.4;
+      color: var(--ht-ink);
+      text-decoration: none;
+    }
+
+    .htypes__topic-warning {
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.75rem;
+      border-left: 3px solid var(--ht-deep);
+      background: var(--ht-subtle);
+      font-size: 0.82rem;
+    }
+
+    .htypes__questions,
+    .htypes__next {
+      margin: 0.75rem 0 0;
+      padding-left: 1.15rem;
+      line-height: 1.65;
+      font-size: 0.88rem;
+    }
+
+    .htypes__questions li + li,
+    .htypes__next li + li {
+      margin-top: 0.35rem;
+    }
+
+    .htypes__panel--consequence {
+      border-color: rgb(19 77 106 / 0.22);
+      background: rgb(19 77 106 / 0.03);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (min-width: 960px) {
+      .htypes__taxonomy {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .htypes__compare-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+      }
+    }
+  </style>
+</PrototypeLayout>
