@@ -1,6 +1,6 @@
 ---
 /* CONTRACT: VIS-only applied card context review for #129.
-   Tests clickable surfaces and card roles in realistic Viddel scenarios; no production components.
+   Tests grouped clickable/static surfaces in realistic Viddel scenarios; no production components.
 */
 import PrototypeLayout from "../../../../../../../layouts/PrototypeLayout.astro";
 import "../../../../../../../styles/global.css";
@@ -16,17 +16,17 @@ const cardTaxonomy = [
   {
     id: "hub-card",
     title: "Hub card / clickable surface",
-    note: "Whole card is the target. Arrow or text cue — no internal CTA button.",
+    note: "Grouped content surface — almost invisible until hover. Whole card is the target, no internal CTA.",
   },
   {
     id: "article-teaser",
     title: "Article teaser card",
-    note: "Editorial entry: image area, title, ingress, meta. Quiet — not ad-like.",
+    note: "Editorial reading invitation. Whole-card click preferred; layout can vary (image inside, outside, or invisible group).",
   },
   {
     id: "helper-info",
     title: "Helper / info box",
-    note: "Static guidance or reassurance. Must not look clickable unless it is.",
+    note: "Static note surface. Dashed border affordance only — must not look clickable.",
   },
   {
     id: "ai-action",
@@ -44,72 +44,85 @@ const hubCards = [
   {
     eyebrow: "Live hub",
     title: "Bedre lyd i hverdagen",
-    copy: "Praktiske råd for samtaler, støy og tilpasning i hverdagen.",
-    live: true,
+    copy: "Praktiske råd for samtaler, støy og tilpasning — fra morgenkaffe til kollegemøter og telefonsamtaler hjemme.",
+    tone: "warm",
+  },
+  {
+    eyebrow: "Live hub",
+    title: "Høreapparat i hverdagen",
+    copy: "Alt du trenger å vite om tilvenning, vedlikehold og vanlige utfordringer de første månedene.",
+    tone: "cool",
   },
   {
     eyebrow: "Kommende",
     title: "Relasjoner og samtale",
-    copy: "Hvordan høreapparatet kan hjelpe i møter, familie og telefonsamtaler.",
+    copy: "Hvordan høreapparatet kan hjelpe i møter, familie og telefonsamtaler — kommer snart.",
+    tone: "muted",
     muted: true,
-  },
-  {
-    eyebrow: "Ordbok",
-    title: "Forstå begrepene",
-    copy: "Korte forklaringer på ord du møter hos audiograf og i egne notater.",
   },
 ];
 
-const articleTeasers = [
-  {
-    eyebrow: "Artikkel · 6 min",
-    title: "Jeg får piping i høreapparatet",
-    copy: "Piping kan komme plutselig. Ofte handler det om voks, fukt eller feil program.",
-    meta: "Oppdatert mai 2026",
-    mode: "whole-card",
-  },
-  {
-    eyebrow: "Artikkel · 4 min",
-    title: "De første ukene med høreapparat",
-    copy: "Tilvenning tar tid. Små justeringer i hverdagen kan gjøre stor forskjell.",
-    meta: "Oppdatert april 2026",
-    mode: "title-link",
-  },
-];
+const articleVariantA = {
+  eyebrow: "Artikkel · 6 min",
+  title: "Jeg får piping i høreapparatet",
+  copy: "Piping kan komme plutselig og gjøre det vanskelig å konsentrere deg. Ofte handler det om voks, fukt eller feil program — og mye kan du prøve selv før du ringer audiograf.",
+  meta: "Oppdatert mai 2026",
+};
+
+const articleVariantB = {
+  eyebrow: "Artikkel · 8 min",
+  title: "De første ukene med høreapparat",
+  copy: "Tilvenning tar tid. Kroppen må lære seg ny lyd, og det er helt normalt at alt føles litt overveldende i starten. Her er hva du kan forvente uke for uke.",
+  meta: "Oppdatert april 2026",
+};
+
+const articleVariantC = {
+  eyebrow: "Artikkel · 5 min",
+  title: "Slik rengjør du høreapparatet riktig",
+  copy: "Riktig rengjøring forebygger piping og forlenger levetiden. Du trenger ikke mange verktøy — bare riktig rutine og litt tålmodighet.",
+  meta: "Oppdatert mars 2026",
+};
 
 const seedQuestions = [
   "Hva er forskjellen på pip fra apparatet og piping i øret?",
   "Kan jeg gjøre noe selv før jeg kontakter audiograf?",
 ];
 
-const recommendedDirection = [
-  "Hub cards should usually be whole-card clickable surfaces.",
-  "Article cards should stay editorial and quiet.",
-  "Helper/info boxes should not look clickable unless they are.",
-  "AI/action cards should bridge content to help, not become detached widgets.",
-  "Card affordance should come from layout, arrow/text cue, hover/focus and context — not from internal CTA buttons.",
-  "Seed questions remain an article/AI interaction pattern (#128), not a button variant inside cards.",
-  "Dark/identity cards only where hierarchy or next-step emphasis needs it.",
-  "Magenta only as micro-signal — not card decoration.",
+const decisionSummary = [
+  "Cards are grouped content surfaces — not default visible bordered boxes.",
+  "Clickable cards may be almost invisible until hover; hover shadow/lift validates affordance.",
+  "Hub cards: whole-card click, no internal CTA, grouping + whitespace + arrow/text cue.",
+  "Article teasers: whole-card click preferred — layout varies (A/B/C editorial patterns).",
+  "Helper/info boxes: dashed border only, static, no hover — must not look clickable.",
+  "AI bridge: editorial continuation with seed questions as interaction pattern (#128).",
+  "Dark/identity surfaces: sparse use; magenta as micro-signal only.",
+  "Interaction states (focus, active) deferred to later pass after Cards decision.",
 ];
 
-const qaChecklist = [
-  "Do hub cards work without internal buttons?",
-  "Is the whole-card click affordance clear enough?",
-  "Are article cards editorial rather than CTA-heavy?",
-  "Are static helper boxes visually distinct from clickable cards?",
-  "Does AI/action feel connected to editorial content?",
-  "Is elevation/stroke subtle enough?",
-  "Is magenta only used as signal/detail?",
-  "What states need a later interaction pass?",
+const openDecisions = [
+  "Which article teaser layout (A, B, or C) fits which editorial context?",
+  "Is hover-only surface revelation enough for hub cards on mobile (~390px)?",
+  "How much whitespace between grouped surfaces before hover?",
+  "When is a dark action surface too heavy for editorial flow?",
+  "Should hub cards always include imagery, or can text-only grouping suffice?",
+];
+
+const verifyNext = [
+  "Do hub cards read as grouped surfaces without visible borders at rest?",
+  "Does hover lift/shadow make clickability clear without CTA buttons?",
+  "Do article variants A/B/C all feel editorial — not UI boxes or ads?",
+  "Are helper boxes clearly static (dashed only, no fill, no hover)?",
+  "Does AI bridge stay connected to article content?",
+  "Is magenta dot signal-only on dark cards?",
+  "Mobile ~390px: wrapping, spacing and visual grouping with realistic content.",
 ];
 
 const dependencyNotes = [
-  { title: "Surfaces (#127)", note: "Cards must inherit surface hierarchy — light editorial default, elevated sparingly." },
-  { title: "Buttons (#128)", note: "Cards should not use buttons to solve all navigation. Seed questions are interaction pattern, not button variants." },
-  { title: "Elevation", note: "Card lift must remain subtle — light border and hover shadow only." },
-  { title: "Layering", note: "Cards should not create overlay/depth confusion with chrome or modals." },
-  { title: "Focus", note: "Whole-card focus must be handled later in interaction states pass." },
+  { title: "Surfaces (#127)", note: "Cards inherit surface hierarchy — quiet editorial grouping, not boxed UI." },
+  { title: "Buttons (#128)", note: "No internal navigation buttons. Seed questions are interaction pattern." },
+  { title: "Elevation", note: "Hover shadow/lift validates clickability — no default visible border." },
+  { title: "Layering", note: "Cards should not create overlay/depth confusion." },
+  { title: "Focus", note: "Whole-card focus handled in later interaction states pass." },
 ];
 ---
 
@@ -129,10 +142,11 @@ const dependencyNotes = [
 
     <header class="cardctx__hero">
       <p class="cardctx__kicker">VIS-only · #129 · Applied review</p>
-      <h1>Clickable surfaces in product context</h1>
+      <h1>Grouped surfaces in product context</h1>
       <p class="cardctx__subtitle">
-        Tests how Viddel cards behave in real scenarios — not as visual variants, but as distinct surface
-        roles with affordance, hierarchy and context.
+        A card is a grouped content surface — not a visible bordered box. Affordance comes from
+        grouping, whitespace, visual rhythm, image/text relation, subtle arrow/text cue and
+        hover/focus — not from strokes or internal CTA buttons.
       </p>
       <div class="cardctx__hero-status">
         <span>Status</span>
@@ -144,8 +158,8 @@ const dependencyNotes = [
       <strong>This context page is the decision surface.</strong>
       <p>
         The main <a href={cardsPath}>Cards primitive catalog</a> remains the abstract reference.
-        This page tests <em>card behavior</em> — hub surfaces, editorial teasers, helper boxes, AI bridge
-        and dark identity — inside realistic product contexts.
+        Clickable surfaces may be almost invisible at rest — hover shadow/lift is the validation
+        that a surface is interactive.
       </p>
     </aside>
 
@@ -167,9 +181,9 @@ const dependencyNotes = [
       <div class="cardctx__content">
         <section class="cardctx__panel" aria-labelledby="taxonomy-heading">
           <p class="cardctx__kicker">Card taxonomy</p>
-          <h2 id="taxonomy-heading">Five card roles to evaluate</h2>
+          <h2 id="taxonomy-heading">Five surface roles to evaluate</h2>
           <p class="cardctx__lead">
-            Mental model: separate surface roles, not card color variants.
+            Mental model: grouped content surfaces with distinct affordance — not bordered UI boxes.
           </p>
           <div class="cardctx__taxonomy">
             {cardTaxonomy.map((item) => (
@@ -177,8 +191,8 @@ const dependencyNotes = [
                 <div class="cardctx__taxonomy-sample" aria-hidden="true">
                   {item.id === "hub-card" && (
                     <span class="cardctx__mini-hub">
-                      <span class="cardctx__mini-hub-title">Hub</span>
-                      <span class="cardctx__mini-hub-cue">→</span>
+                      <span class="cardctx__mini-hub-thumb"></span>
+                      <span class="cardctx__mini-hub-text"></span>
                     </span>
                   )}
                   {item.id === "article-teaser" && (
@@ -188,7 +202,7 @@ const dependencyNotes = [
                     </span>
                   )}
                   {item.id === "helper-info" && (
-                    <span class="cardctx__mini-helper">Info</span>
+                    <span class="cardctx__mini-helper">Note</span>
                   )}
                   {item.id === "ai-action" && (
                     <span class="cardctx__mini-ai">
@@ -210,7 +224,8 @@ const dependencyNotes = [
           <p class="cardctx__kicker">Scenario 01</p>
           <h2 id="hub-heading">Hub card / clickable surface</h2>
           <p class="cardctx__surface-note">
-            Whole card is the click target. Subtle arrow cue and hover lift — no internal CTA button.
+            Whole-card click with image and content grouping. No visible border at rest — affordance
+            is subtle before hover, clearer on hover/focus via shadow/lift. No internal CTA button.
           </p>
 
           <div class="cardctx__sample cardctx__sample--surface">
@@ -220,19 +235,21 @@ const dependencyNotes = [
                   href="#"
                   class:list={[
                     "cardctx__hub-card",
-                    card.live && "cardctx__hub-card--live",
                     card.muted && "cardctx__hub-card--muted",
                   ]}
                   aria-disabled={card.muted ? "true" : undefined}
                 >
-                  <p class="cardctx__eyebrow">{card.eyebrow}</p>
-                  <h3>{card.title}</h3>
-                  <p>{card.copy}</p>
-                  {card.muted ? (
-                    <span class="cardctx__hub-cue cardctx__hub-cue--muted">Kommer snart</span>
-                  ) : (
-                    <span class="cardctx__hub-cue" aria-hidden="true">→</span>
-                  )}
+                  <div class:list={["cardctx__hub-media", `cardctx__hub-media--${card.tone}`]} aria-hidden="true"></div>
+                  <div class="cardctx__hub-body">
+                    <p class="cardctx__eyebrow">{card.eyebrow}</p>
+                    <h3>{card.title}</h3>
+                    <p>{card.copy}</p>
+                    {card.muted ? (
+                      <span class="cardctx__hub-cue cardctx__hub-cue--muted">Kommer snart</span>
+                    ) : (
+                      <span class="cardctx__hub-cue">Utforsk hubben →</span>
+                    )}
+                  </div>
                 </a>
               ))}
             </div>
@@ -242,13 +259,13 @@ const dependencyNotes = [
             <article>
               <h4>What to evaluate</h4>
               <p>
-                Do whole-card targets help orientation without internal buttons? Is arrow/text cue enough
-                affordance without CTA noise?
+                Does grouping + image + whitespace communicate hub entry without a visible box?
+                Is hover lift enough to confirm clickability?
               </p>
             </article>
             <article>
               <h4>Decision needed</h4>
-              <p>Should hub cards ever contain internal buttons, or is surface-level click always preferred?</p>
+              <p>Hub affordance should be subtle before hover and clearer on hover/focus — is this balance right?</p>
             </article>
           </div>
         </section>
@@ -257,54 +274,65 @@ const dependencyNotes = [
           <p class="cardctx__kicker">Scenario 02</p>
           <h2 id="article-heading">Article teaser card</h2>
           <p class="cardctx__surface-note">
-            Compare whole-card click vs title-only affordance. Both should feel editorial, not promotional.
+            <strong>Decision:</strong> whole-card click is the preferred direction. Three editorial
+            layout variants — all whole-card clickable, different visual grouping.
           </p>
 
           <div class="cardctx__sample cardctx__sample--surface">
-            <div class="cardctx__article-grid">
-              {articleTeasers.map((article) =>
-                article.mode === "whole-card" ? (
-                  <a href="#" class="cardctx__article-card cardctx__article-card--whole">
-                    <div class="cardctx__article-thumb" aria-hidden="true"></div>
-                    <div class="cardctx__article-body">
-                      <p class="cardctx__eyebrow">{article.eyebrow}</p>
-                      <h3>{article.title}</h3>
-                      <p>{article.copy}</p>
-                      <span class="cardctx__article-meta">{article.meta}</span>
-                      <span class="cardctx__article-cue" aria-hidden="true">Les artikkel →</span>
-                    </div>
-                  </a>
-                ) : (
-                  <article class="cardctx__article-card cardctx__article-card--static">
-                    <div class="cardctx__article-thumb" aria-hidden="true"></div>
-                    <div class="cardctx__article-body">
-                      <p class="cardctx__eyebrow">{article.eyebrow}</p>
-                      <h3>
-                        <a href="#" class="cardctx__article-title-link">{article.title}</a>
-                      </h3>
-                      <p>{article.copy}</p>
-                      <span class="cardctx__article-meta">{article.meta}</span>
-                    </div>
-                  </article>
-                ),
-              )}
+            <div class="cardctx__variants">
+              <article class="cardctx__variant">
+                <p class="cardctx__variant-label">A · Background/image with text inside</p>
+                <a href="#" class="cardctx__article-a">
+                  <div class="cardctx__article-a-media" aria-hidden="true"></div>
+                  <div class="cardctx__article-a-body">
+                    <p class="cardctx__eyebrow">{articleVariantA.eyebrow}</p>
+                    <h3>{articleVariantA.title}</h3>
+                    <p>{articleVariantA.copy}</p>
+                    <span class="cardctx__article-meta">{articleVariantA.meta}</span>
+                    <span class="cardctx__ghost-cue">Les artikkel</span>
+                  </div>
+                </a>
+              </article>
+
+              <article class="cardctx__variant">
+                <p class="cardctx__variant-label">B · Image + text outside (editorial/story)</p>
+                <a href="#" class="cardctx__article-b">
+                  <div class="cardctx__article-b-media" aria-hidden="true"></div>
+                  <div class="cardctx__article-b-body">
+                    <p class="cardctx__eyebrow">{articleVariantB.eyebrow}</p>
+                    <h3>{articleVariantB.title}</h3>
+                    <p>{articleVariantB.copy}</p>
+                    <span class="cardctx__article-meta">{articleVariantB.meta}</span>
+                  </div>
+                </a>
+              </article>
+
+              <article class="cardctx__variant">
+                <p class="cardctx__variant-label">C · No visible background — grouped text area</p>
+                <a href="#" class="cardctx__article-c">
+                  <div class="cardctx__article-c-body">
+                    <p class="cardctx__eyebrow">{articleVariantC.eyebrow}</p>
+                    <h3>{articleVariantC.title}</h3>
+                    <p>{articleVariantC.copy}</p>
+                    <span class="cardctx__article-meta">{articleVariantC.meta}</span>
+                    <span class="cardctx__ghost-cue">Les artikkel</span>
+                  </div>
+                </a>
+              </article>
             </div>
-            <p class="cardctx__compare-note">
-              Left: whole-card click candidate · Right: title-link affordance candidate
-            </p>
           </div>
 
           <div class="cardctx__notes">
             <article>
               <h4>What to evaluate</h4>
               <p>
-                Does the teaser feel like a reading invitation? Is image + title + ingress enough without
-                a button?
+                Do all three variants feel like editorial reading invitations — not UI boxes or ads?
+                Does whole-card click work across layout differences?
               </p>
             </article>
             <article>
               <h4>Decision needed</h4>
-              <p>Whole-card click or title-only link as default editorial affordance?</p>
+              <p>Which layout (A, B, or C) fits which editorial context?</p>
             </article>
           </div>
         </section>
@@ -313,25 +341,27 @@ const dependencyNotes = [
           <p class="cardctx__kicker">Scenario 03</p>
           <h2 id="helper-heading">Helper / info box</h2>
           <p class="cardctx__surface-note">
-            Static guidance — not clickable. Must visually separate from hub and article cards.
+            Static helpers — dashed border as note affordance only. No fill, no hover, no arrow.
+            Must not look clickable.
           </p>
 
           <div class="cardctx__sample cardctx__sample--surface">
-            <div class="cardctx__helper-grid">
+            <div class="cardctx__helper-stack">
               <div class="cardctx__helper-box">
                 <p class="cardctx__helper-label">Trygghet</p>
                 <h3>Dette er vanlig i starten</h3>
                 <p>
                   De fleste opplever mer lyd enn de er vant til de første ukene. Det betyr ikke at
-                  apparatet er feil — kroppen trenger tid til å tilpasse seg.
+                  apparatet er feil — kroppen trenger tid til å tilpasse seg nye lyder i hverdagen.
                 </p>
               </div>
-              <div class="cardctx__helper-box cardctx__helper-box--tip">
+              <div class="cardctx__helper-box">
                 <p class="cardctx__helper-label">Tips</p>
                 <h3>Rengjør domene regelmessig</h3>
                 <p>
                   Voks og fukt er blant de vanligste årsakene til piping. Bruk riktig verktøy og
-                  unngå vann direkte på apparatet.
+                  unngå vann direkte på apparatet — en enkel rutine kan spare deg for mange
+                  unødvendige turer til audiografen.
                 </p>
               </div>
             </div>
@@ -341,13 +371,13 @@ const dependencyNotes = [
             <article>
               <h4>What to evaluate</h4>
               <p>
-                Is it obvious these boxes are not navigation targets? No hover lift, no arrow, muted
-                surface treatment.
+                Is dashed border enough to signal “note/helper” without looking like a navigation card?
+                No hover state — clearly static.
               </p>
             </article>
             <article>
               <h4>Decision needed</h4>
-              <p>What visual language separates helper boxes from clickable cards?</p>
+              <p>Does dashed-only treatment distinguish helpers from invisible clickable groups?</p>
             </article>
           </div>
         </section>
@@ -364,8 +394,9 @@ const dependencyNotes = [
               <div class="cardctx__ai-copy">
                 <p class="cardctx__eyebrow">Fra artikkel · piping</p>
                 <p>
-                  Du leser om piping i høreapparatet. Velg et spørsmål for å starte — eller fortsett
-                  å lese på egen hånd.
+                  Du leser om piping i høreapparatet. Mange opplever dette i starten, og det finnes
+                  enkle ting du kan prøve selv. Velg et spørsmål for å starte — eller fortsett å lese
+                  på egen hånd.
                 </p>
               </div>
               <div class="cardctx__ai-body" data-r1-editorial>
@@ -396,12 +427,7 @@ const dependencyNotes = [
               <h4>What to evaluate</h4>
               <p>
                 Does this feel like a continuation of the article — not a detached chatbot widget?
-                Are seed questions clearly interaction pattern, not CTA buttons?
               </p>
-            </article>
-            <article>
-              <h4>Decision needed</h4>
-              <p>Is AI transition primarily seed questions, a card wrapper, or both?</p>
             </article>
           </div>
         </section>
@@ -410,7 +436,9 @@ const dependencyNotes = [
           <p class="cardctx__kicker">Scenario 05</p>
           <h2 id="dark-heading">Dark / identity surface card</h2>
           <p class="cardctx__surface-note">
-            Deep Nordic Blue / ink for identity or next-step — sparingly, not as general decoration.
+            Deep Nordic Blue / ink for identity or next-step — sparingly. Magenta dot is micro-signal
+            only. Note: dot may later become a small Viddel signal symbol, sound bars or resonance
+            mark — not designed here.
           </p>
 
           <div class="cardctx__sample cardctx__sample--surface">
@@ -421,7 +449,7 @@ const dependencyNotes = [
                 <h3>Snakk med Hørehjelpen om tilpasning</h3>
                 <p>
                   Få hjelp til å forstå hva som skjer i de første ukene — uten å måtte vite riktig
-                  fagterm på forhånd.
+                  fagterm på forhånd. Hørehjelpen kjenner vanlige spørsmål fra hverdagen.
                 </p>
                 <span class="cardctx__dark-cue">Start samtale →</span>
               </a>
@@ -430,41 +458,41 @@ const dependencyNotes = [
                 <h3>Viddel hjelper deg i hverdagen</h3>
                 <p>
                   Rolig veiledning for høreapparatbrukere — ikke klinisk, ikke teknisk for teknisk.
+                  Innhold du kan bruke i samtaler hjemme, på jobb og hos audiograf.
                 </p>
               </div>
             </div>
-            <p class="cardctx__compare-note">
-              Left: clickable next-step (whole card) · Right: static identity panel — not navigation
-            </p>
           </div>
 
           <div class="cardctx__notes">
             <article>
               <h4>What to evaluate</h4>
-              <p>
-                Is dark surface used only where hierarchy needs it? Is magenta dot a signal, not decoration?
-              </p>
-            </article>
-            <article>
-              <h4>Decision needed</h4>
-              <p>When is a dark action card too heavy for editorial flow?</p>
+              <p>Is dark surface sparse enough? Is magenta dot signal-only?</p>
             </article>
           </div>
         </section>
 
-        <section class="cardctx__panel" aria-labelledby="direction-heading">
-          <p class="cardctx__kicker">Recommended direction</p>
-          <h2 id="direction-heading">Recommended direction after QA seed</h2>
-          <ul class="cardctx__direction">
-            {recommendedDirection.map((item) => <li>{item}</li>)}
+        <section class="cardctx__panel" aria-labelledby="summary-heading">
+          <p class="cardctx__kicker">Decision summary</p>
+          <h2 id="summary-heading">Decision summary after QA revision</h2>
+          <ul class="cardctx__list">
+            {decisionSummary.map((item) => <li>{item}</li>)}
           </ul>
         </section>
 
-        <section class="cardctx__panel" aria-labelledby="qa-heading">
-          <p class="cardctx__kicker">QA checklist</p>
-          <h2 id="qa-heading">What Thomas should verify</h2>
-          <ul class="cardctx__checklist">
-            {qaChecklist.map((item) => <li>{item}</li>)}
+        <section class="cardctx__panel" aria-labelledby="open-heading">
+          <p class="cardctx__kicker">Open decisions</p>
+          <h2 id="open-heading">Still needs review</h2>
+          <ul class="cardctx__list">
+            {openDecisions.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+
+        <section class="cardctx__panel" aria-labelledby="verify-heading">
+          <p class="cardctx__kicker">What to verify next</p>
+          <h2 id="verify-heading">Thomas QA focus</h2>
+          <ul class="cardctx__list">
+            {verifyNext.map((item) => <li>{item}</li>)}
           </ul>
         </section>
 
@@ -488,17 +516,16 @@ const dependencyNotes = [
     [data-card-context-page] {
       --p-deep: #134d6a;
       --p-magenta: #ff55b0;
-      --p-cyan: #0ea5e9;
       --p-ink: #111827;
       --p-dark: #020617;
       --p-dark-panel: #071827;
       --p-muted: #6b7280;
-      --p-border: #e5e7eb;
       --p-light: #ffffff;
       --p-subtle: #f8fafc;
       --p-reading-paper: #ffffff;
-      --p-card-radius: 12px;
-      --p-card-border: rgb(17 24 39 / 0.1);
+      --p-radius: 8px;
+      --p-surface-hover: 0 14px 32px rgb(15 23 42 / 0.08);
+      --p-surface-lift: translateY(-2px);
 
       min-height: 100vh;
       max-width: 76rem;
@@ -586,7 +613,7 @@ const dependencyNotes = [
       margin-top: 1.25rem;
       padding: 0.85rem 1rem;
       border: 1px solid rgb(19 77 106 / 0.24);
-      border-radius: 12px;
+      border-radius: var(--p-radius);
       background: rgb(19 77 106 / 0.04);
       font-size: 0.82rem;
       line-height: 1.6;
@@ -657,23 +684,14 @@ const dependencyNotes = [
       font-size: clamp(1.25rem, 3vw, 1.75rem);
     }
 
-    .cardctx__surface-note,
-    .cardctx__compare-note {
+    .cardctx__surface-note {
       margin: 0.55rem 0 0;
       font-size: 0.78rem;
       line-height: 1.55;
       color: var(--p-muted);
     }
 
-    .cardctx__compare-note {
-      margin-top: 0.85rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid rgb(17 24 39 / 0.08);
-      font-size: 0.72rem;
-      font-style: italic;
-    }
-
-    /* Taxonomy */
+    /* Taxonomy mini samples */
     .cardctx__taxonomy {
       display: grid;
       gap: 0.75rem;
@@ -682,8 +700,8 @@ const dependencyNotes = [
 
     .cardctx__taxonomy-item {
       padding: 0.85rem;
-      border: 1px solid rgb(17 24 39 / 0.1);
-      border-radius: 12px;
+      border: 1px solid rgb(17 24 39 / 0.08);
+      border-radius: var(--p-radius);
       background: var(--p-subtle);
     }
 
@@ -703,41 +721,36 @@ const dependencyNotes = [
       align-items: center;
     }
 
-    .cardctx__mini-hub,
-    .cardctx__mini-article,
-    .cardctx__mini-helper,
-    .cardctx__mini-ai,
-    .cardctx__mini-dark {
-      display: block;
-      width: 100%;
-      border-radius: 8px;
-      border: 1px solid var(--p-card-border);
-      background: #fff;
-    }
-
     .cardctx__mini-hub {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 2.5rem 1fr;
+      gap: 0.5rem;
+      width: 100%;
       align-items: center;
-      padding: 0.45rem 0.55rem;
-      font-size: 0.68rem;
-      font-weight: 700;
     }
 
-    .cardctx__mini-hub-cue {
-      color: var(--p-deep);
+    .cardctx__mini-hub-thumb {
+      height: 2rem;
+      border-radius: 6px;
+      background: linear-gradient(135deg, rgb(19 77 106 / 0.12), rgb(248 250 252));
+    }
+
+    .cardctx__mini-hub-text {
+      height: 0.4rem;
+      border-radius: 999px;
+      background: rgb(17 24 39 / 0.08);
     }
 
     .cardctx__mini-article {
       display: grid;
       grid-template-columns: 2.5rem 1fr;
       gap: 0.4rem;
-      padding: 0.35rem;
+      width: 100%;
     }
 
     .cardctx__mini-article-thumb {
-      border-radius: 4px;
-      background: var(--p-subtle);
+      border-radius: 6px;
+      background: rgb(17 24 39 / 0.06);
       min-height: 2rem;
     }
 
@@ -750,15 +763,20 @@ const dependencyNotes = [
     }
 
     .cardctx__mini-helper {
+      display: block;
+      width: 100%;
       padding: 0.45rem 0.55rem;
-      border-style: dashed;
-      background: rgb(19 77 106 / 0.04);
+      border: 1px dashed rgb(19 77 106 / 0.28);
+      border-radius: var(--p-radius);
+      background: transparent;
       font-size: 0.68rem;
       font-weight: 700;
       color: var(--p-muted);
+      text-align: center;
     }
 
     .cardctx__mini-ai {
+      width: 100%;
       padding: 0.45rem;
       border-top: 2px solid var(--p-deep);
     }
@@ -771,21 +789,27 @@ const dependencyNotes = [
     }
 
     .cardctx__mini-dark {
+      display: block;
+      width: 100%;
       padding: 0.45rem 0.55rem;
-      border: none;
+      border-radius: var(--p-radius);
       background: linear-gradient(145deg, var(--p-deep), var(--p-dark));
       color: #fff;
       font-size: 0.68rem;
       font-weight: 700;
+      text-align: center;
     }
 
-    /* Scenarios */
+    /* Scenario samples */
     .cardctx__sample {
       margin-top: 1rem;
-      padding: 1rem;
-      border: 1px solid rgb(228 224 216 / 0.22);
-      border-radius: var(--p-card-radius);
+      padding: 1.25rem;
+      border-radius: var(--p-radius);
       background: var(--p-reading-paper);
+    }
+
+    .cardctx__sample--surface {
+      padding: 1.5rem 1rem;
     }
 
     .cardctx__sample--ai {
@@ -806,69 +830,82 @@ const dependencyNotes = [
       color: rgb(255 255 255 / 0.62);
     }
 
-    /* Hub cards */
+    /* Hub cards — borderless, hover lift */
     .cardctx__hub-grid {
       display: grid;
-      gap: 0.75rem;
+      gap: 1.5rem;
     }
 
     .cardctx__hub-card {
-      position: relative;
-      display: block;
-      padding: 0.95rem 2.5rem 0.95rem 0.95rem;
-      border: 1px solid var(--p-card-border);
-      border-radius: var(--p-card-radius);
-      background: #fff;
+      display: grid;
+      gap: 0.85rem;
       color: inherit;
       text-decoration: none;
-      transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+      border: none;
+      border-radius: var(--p-radius);
+      background: transparent;
+      transition: box-shadow 180ms ease, transform 180ms ease;
     }
 
     .cardctx__hub-card:hover {
-      border-color: rgb(17 24 39 / 0.18);
-      box-shadow: 0 12px 28px rgb(15 23 42 / 0.07);
-      transform: translateY(-1px);
+      box-shadow: var(--p-surface-hover);
+      transform: var(--p-surface-lift);
     }
 
-    .cardctx__hub-card h3,
-    .cardctx__article-card h3,
+    .cardctx__hub-card--muted {
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .cardctx__hub-media {
+      aspect-ratio: 16 / 10;
+      border-radius: var(--p-radius);
+      background: linear-gradient(135deg, rgb(19 77 106 / 0.1), rgb(248 250 252));
+    }
+
+    .cardctx__hub-media--warm {
+      background: linear-gradient(145deg, rgb(255 237 213 / 0.5), rgb(254 249 235 / 0.8));
+    }
+
+    .cardctx__hub-media--cool {
+      background: linear-gradient(145deg, rgb(19 77 106 / 0.14), rgb(224 242 254 / 0.5));
+    }
+
+    .cardctx__hub-media--muted {
+      background: linear-gradient(145deg, rgb(17 24 39 / 0.06), rgb(248 250 252));
+    }
+
+    .cardctx__hub-body h3,
+    .cardctx__article-a-body h3,
+    .cardctx__article-b-body h3,
+    .cardctx__article-c-body h3,
     .cardctx__helper-box h3,
     .cardctx__dark-card h3 {
-      margin: 0.45rem 0 0;
+      margin: 0.5rem 0 0;
       font-size: 1.05rem;
       letter-spacing: -0.03em;
       line-height: 1.25;
     }
 
-    .cardctx__hub-card p,
-    .cardctx__article-card p,
+    .cardctx__hub-body p,
+    .cardctx__article-a-body p,
+    .cardctx__article-b-body p,
+    .cardctx__article-c-body p,
     .cardctx__helper-box p,
     .cardctx__dark-card p,
     .cardctx__ai-copy p {
-      margin: 0.45rem 0 0;
+      margin: 0.5rem 0 0;
       font-size: 0.84rem;
-      line-height: 1.6;
+      line-height: 1.65;
       color: var(--p-muted);
     }
 
-    .cardctx__hub-card--live {
-      border-color: rgb(19 77 106 / 0.22);
-      background: rgb(19 77 106 / 0.03);
-    }
-
-    .cardctx__hub-card--muted {
-      opacity: 0.72;
-      pointer-events: none;
-    }
-
     .cardctx__hub-cue {
-      position: absolute;
-      right: 0.95rem;
-      top: 50%;
-      transform: translateY(-50%);
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-size: 0.78rem;
+      font-weight: 600;
       color: var(--p-deep);
-      font-size: 1.1rem;
-      font-weight: 700;
     }
 
     .cardctx__hub-cue--muted {
@@ -879,89 +916,122 @@ const dependencyNotes = [
       color: var(--p-muted);
     }
 
-    /* Article teasers */
-    .cardctx__article-grid {
+    /* Article variants */
+    .cardctx__variants {
       display: grid;
-      gap: 0.85rem;
+      gap: 2rem;
     }
 
-    .cardctx__article-card {
-      display: grid;
-      gap: 0.75rem;
-      border: 1px solid var(--p-card-border);
-      border-radius: var(--p-card-radius);
-      background: #fff;
-      overflow: hidden;
-    }
-
-    .cardctx__article-card--whole {
-      color: inherit;
-      text-decoration: none;
-      transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
-    }
-
-    .cardctx__article-card--whole:hover {
-      border-color: rgb(17 24 39 / 0.16);
-      box-shadow: 0 8px 22px rgb(15 23 42 / 0.06);
-      transform: translateY(-1px);
-    }
-
-    .cardctx__article-card--static {
-      padding-bottom: 0.85rem;
-    }
-
-    .cardctx__article-thumb {
-      min-height: 5.5rem;
-      background: linear-gradient(135deg, rgb(19 77 106 / 0.08), rgb(248 250 252 / 0.9));
-    }
-
-    .cardctx__article-body {
-      padding: 0 0.85rem;
-    }
-
-    .cardctx__article-card--static .cardctx__article-body {
-      padding-bottom: 0;
+    .cardctx__variant-label {
+      margin: 0 0 0.75rem;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--p-deep);
     }
 
     .cardctx__article-meta {
       display: block;
-      margin-top: 0.55rem;
+      margin-top: 0.65rem;
       font-size: 0.68rem;
       color: var(--p-muted);
     }
 
-    .cardctx__article-cue {
+    .cardctx__ghost-cue {
       display: inline-block;
-      margin-top: 0.65rem;
+      margin-top: 0.85rem;
       font-size: 0.78rem;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--p-deep);
+      opacity: 0.85;
     }
 
-    .cardctx__article-title-link {
-      color: var(--p-ink);
-      text-decoration: underline;
-      text-decoration-color: rgb(19 77 106 / 0.28);
-      text-underline-offset: 3px;
+    /* A: background/image + text inside */
+    .cardctx__article-a {
+      display: block;
+      overflow: hidden;
+      border: none;
+      border-radius: var(--p-radius);
+      color: inherit;
+      text-decoration: none;
+      background: transparent;
+      transition: box-shadow 180ms ease, transform 180ms ease;
     }
 
-    /* Helper boxes */
-    .cardctx__helper-grid {
+    .cardctx__article-a:hover {
+      box-shadow: var(--p-surface-hover);
+      transform: var(--p-surface-lift);
+    }
+
+    .cardctx__article-a-media {
+      aspect-ratio: 16 / 9;
+      border-radius: var(--p-radius);
+      background: linear-gradient(160deg, rgb(19 77 106 / 0.18), rgb(248 250 252));
+    }
+
+    .cardctx__article-a-body {
+      padding: 1rem 0.15rem 0.25rem;
+    }
+
+    /* B: image + text outside */
+    .cardctx__article-b {
       display: grid;
-      gap: 0.75rem;
+      gap: 0.85rem;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .cardctx__article-b-media {
+      aspect-ratio: 16 / 10;
+      border-radius: var(--p-radius);
+      background: linear-gradient(145deg, rgb(224 242 254 / 0.6), rgb(248 250 252));
+      transition: opacity 180ms ease;
+    }
+
+    .cardctx__article-b:hover .cardctx__article-b-media {
+      opacity: 0.92;
+    }
+
+    .cardctx__article-b-body {
+      padding: 0 0.15rem;
+    }
+
+    /* C: invisible grouped area */
+    .cardctx__article-c {
+      display: block;
+      padding: 1.15rem 0;
+      border: none;
+      border-radius: var(--p-radius);
+      color: inherit;
+      text-decoration: none;
+      background: transparent;
+      transition: box-shadow 180ms ease, background-color 180ms ease, transform 180ms ease;
+    }
+
+    .cardctx__article-c:hover {
+      padding: 1.15rem;
+      margin: 0 -1.15rem;
+      background: rgb(248 250 252 / 0.72);
+      box-shadow: var(--p-surface-hover);
+      transform: var(--p-surface-lift);
+    }
+
+    .cardctx__article-c-body {
+      padding: 0 0.15rem;
+    }
+
+    /* Helper — dashed only, static */
+    .cardctx__helper-stack {
+      display: grid;
+      gap: 1.25rem;
     }
 
     .cardctx__helper-box {
-      padding: 0.95rem;
-      border: 1px dashed rgb(19 77 106 / 0.22);
-      border-radius: var(--p-card-radius);
-      background: rgb(19 77 106 / 0.04);
-    }
-
-    .cardctx__helper-box--tip {
-      border-style: solid;
-      border-color: rgb(17 24 39 / 0.08);
-      background: var(--p-subtle);
+      padding: 1.1rem 1.15rem;
+      border: 1px dashed rgb(19 77 106 / 0.28);
+      border-radius: var(--p-radius);
+      background: transparent;
     }
 
     .cardctx__helper-label {
@@ -983,13 +1053,13 @@ const dependencyNotes = [
     }
 
     .cardctx__ai-copy {
-      padding: 1rem;
+      padding: 1.15rem 1.25rem;
       background: var(--p-reading-paper);
       border-bottom: 1px solid rgb(228 224 216 / 0.22);
     }
 
     .cardctx__ai-body {
-      padding: 1rem;
+      padding: 1.15rem 1.25rem;
       background: var(--p-reading-paper);
     }
 
@@ -1004,26 +1074,26 @@ const dependencyNotes = [
     /* Dark cards */
     .cardctx__dark-grid {
       display: grid;
-      gap: 0.85rem;
+      gap: 1.25rem;
     }
 
     .cardctx__dark-card {
       position: relative;
       display: block;
-      padding: 1rem;
-      border-radius: var(--p-card-radius);
+      padding: 1.15rem;
+      border-radius: var(--p-radius);
       color: #fff;
       text-decoration: none;
     }
 
     .cardctx__dark-card--deep {
       background: linear-gradient(145deg, var(--p-deep), var(--p-dark-panel));
-      transition: box-shadow 140ms ease, transform 140ms ease;
+      transition: box-shadow 180ms ease, transform 180ms ease;
     }
 
     .cardctx__dark-card--deep:hover {
       box-shadow: 0 14px 32px rgb(2 6 23 / 0.22);
-      transform: translateY(-1px);
+      transform: var(--p-surface-lift);
     }
 
     .cardctx__dark-card--ink {
@@ -1040,8 +1110,8 @@ const dependencyNotes = [
 
     .cardctx__dark-signal {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
+      top: 1.15rem;
+      right: 1.15rem;
       width: 0.5rem;
       height: 0.5rem;
       border-radius: 50%;
@@ -1051,13 +1121,13 @@ const dependencyNotes = [
 
     .cardctx__dark-cue {
       display: inline-block;
-      margin-top: 0.75rem;
+      margin-top: 0.85rem;
       font-size: 0.78rem;
       font-weight: 600;
       color: rgb(255 255 255 / 0.88);
     }
 
-    /* Notes, direction, checklist, deps */
+    /* Notes & lists */
     .cardctx__notes {
       display: grid;
       gap: 0.75rem;
@@ -1067,7 +1137,7 @@ const dependencyNotes = [
     .cardctx__notes article {
       padding: 0.75rem;
       border: 1px solid rgb(17 24 39 / 0.08);
-      border-radius: 10px;
+      border-radius: var(--p-radius);
       background: var(--p-subtle);
     }
 
@@ -1085,8 +1155,7 @@ const dependencyNotes = [
       font-size: 0.8rem;
     }
 
-    .cardctx__direction,
-    .cardctx__checklist {
+    .cardctx__list {
       margin: 0.85rem 0 0;
       padding-left: 1.15rem;
       color: var(--p-muted);
@@ -1102,8 +1171,8 @@ const dependencyNotes = [
 
     .cardctx__dependencies article {
       padding: 0.85rem;
-      border: 1px solid rgb(17 24 39 / 0.1);
-      border-radius: 10px;
+      border: 1px solid rgb(17 24 39 / 0.08);
+      border-radius: var(--p-radius);
       background: var(--p-subtle);
     }
 
@@ -1121,33 +1190,21 @@ const dependencyNotes = [
         padding: 2rem 1.5rem 4rem;
       }
 
-      .cardctx__taxonomy {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .cardctx__sample--surface {
+        padding: 2rem 1.5rem;
       }
 
-      .cardctx__hub-grid,
-      .cardctx__article-grid,
-      .cardctx__helper-grid,
-      .cardctx__dark-grid {
+      .cardctx__taxonomy {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .cardctx__hub-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.75rem;
       }
 
-      .cardctx__article-card {
-        grid-template-columns: 7rem minmax(0, 1fr);
-      }
-
-      .cardctx__article-card--whole,
-      .cardctx__article-card--static {
-        grid-template-columns: 1fr;
-      }
-
-      .cardctx__article-thumb {
-        min-height: auto;
-        min-width: 100%;
+      .cardctx__dark-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 

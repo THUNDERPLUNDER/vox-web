@@ -216,7 +216,7 @@ const primitivesPath = `${sprintPath}/primitives`;
 
         <section class="plab__panel" aria-labelledby="iterations-heading">
           <p class="plab__kicker">04</p>
-          <h2 id="iterations-heading">Iterations</h2>
+          <h2 id="iterations-heading">{page.iterationsHeading ?? "Iterations"}</h2>
           {page.roundIntro && <p class="plab__round-note">{page.roundIntro}</p>}
           <div class="plab__iteration-strip" aria-label="Iteration index">
             {page.iterations.map((iteration) => (
@@ -278,7 +278,7 @@ const primitivesPath = `${sprintPath}/primitives`;
         {page.completionNotes && (
           <section class="plab__panel" aria-labelledby="completion-heading">
             <p class="plab__kicker">Completion note</p>
-            <h2 id="completion-heading">What remains before buttons are ready</h2>
+            <h2 id="completion-heading">{page.completionHeading ?? `What remains before ${page.title.toLowerCase()} are ready`}</h2>
             <ul class="plab__questions">{page.completionNotes.map((item) => <li>{item}</li>)}</ul>
           </section>
         )}
