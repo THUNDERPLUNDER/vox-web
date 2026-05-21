@@ -1,5 +1,7 @@
 ---
-/* CONTRACT: Norwegian landing page with hero content and CES panel entrypoint. */
+/* CONTRACT: Norwegian landing — routing to Hjelp, Lyd i hverdagen and Hørehjelpen (#125G).
+   Hero + two complementary hub entries; CES panel unchanged. Not full IA or toppmeny.
+ */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Section from "../../components/layout/Section.astro";
 import Footer from "../../components/nav/Footer.astro";
@@ -39,93 +41,68 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
             <h1
               class="font-display text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl lg:text-[2.5rem] lg:leading-tight"
             >
-              Få høreapparatet tilbake i hverdagen
+              Få mer ut av høreapparatet ditt
             </h1>
             <p class="mt-5 text-lg font-normal leading-relaxed text-[rgb(var(--text-secondary))]">
-              Hørehjelpen gir deg korte, konkrete steg når teknikken frustrerer - og en trygg inngang når terskelen er høy.
-              Du trenger ikke kunne alt for å starte.
+              Rask hjelp når noe ikke virker — og artikler som gjør det lettere å leve godt med lyd i hverdagen.
             </p>
-            <div class="mt-9 flex flex-wrap items-center gap-3">
+
+            <div class="mt-9 grid gap-4 sm:grid-cols-2" role="list">
               <a
-                href="/no/hubs"
-                class="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--surface-elevated))/0.45] px-6 py-3 text-sm font-medium text-[rgb(var(--text))] shadow-sm ring-0 backdrop-blur-md transition-colors hover:bg-[rgb(var(--surface-elevated))/0.65]"
+                href="/no/hub/"
+                class="vox-surface-tech group flex h-full flex-col rounded-[var(--radius-md)] p-5 transition-colors hover:bg-[rgb(var(--surface-subtle))/0.85] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgb(var(--reading-accent-iris))]"
+                role="listitem"
               >
-                Utforsk emnehuber
+                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[rgb(var(--reading-accent-iris))]">
+                  Hjelp
+                </p>
+                <p class="mt-2 text-base font-semibold text-[rgb(var(--text))]">Noe virker ikke?</p>
+                <p class="mt-2 flex-1 text-sm leading-relaxed text-[rgb(var(--muted))]">
+                  Få raske steg for piping, app, Bluetooth, filter og når du bør kontakte audiograf.
+                </p>
+                <span class="mt-4 text-sm font-medium text-[rgb(var(--text))] group-hover:underline">
+                  Gå til Hjelp →
+                </span>
               </a>
+
+              <a
+                href="/no/lyd-i-hverdagen/"
+                class="vox-surface-calm group flex h-full flex-col rounded-[var(--radius-md)] p-5 transition-colors hover:bg-[rgb(var(--surface-subtle))/0.55] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgb(var(--reading-accent-iris))]"
+                role="listitem"
+              >
+                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[rgb(var(--reading-accent-iris))]">
+                  Lyd i hverdagen
+                </p>
+                <p class="mt-2 text-base font-semibold text-[rgb(var(--text))]">Vil du forstå og mestre mer?</p>
+                <p class="mt-2 flex-1 text-sm leading-relaxed text-[rgb(var(--muted))]">
+                  Les om lyttetrøtthet, små lyder, sosialt liv og strategier som gjør hverdagen lettere.
+                </p>
+                <span class="mt-4 text-sm font-medium text-[rgb(var(--text))] group-hover:underline">
+                  Utforsk Lyd i hverdagen →
+                </span>
+              </a>
+            </div>
+
+            <p class="mt-6 text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Du kan også{" "}
+              <a
+                href="/no/chat"
+                class="font-medium text-[rgb(var(--text))] underline underline-offset-2 hover:text-[rgb(var(--reading-accent-iris))]"
+              >
+                spørre Hørehjelpen direkte
+              </a>
+              {" "}eller{" "}
               <button
                 type="button"
                 onclick="document.getElementById('ces-widget')?.scrollIntoView({behavior:'smooth', block:'start'}); document.getElementById('ces-widget')?.open?.(); document.getElementById('ces-widget')?.show?.();"
-                class="sonic-pulse-cta inline-flex items-center justify-center rounded-[var(--radius-md)] px-6 py-3 text-sm font-semibold transition-shadow"
+                class="font-medium text-[rgb(var(--text))] underline underline-offset-2 hover:text-[rgb(var(--reading-accent-iris))]"
               >
-                Chat her
+                starte samtalen her
               </button>
-              <a
-                href="/no/info"
-                class="inline-flex items-center justify-center rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.35] bg-transparent px-6 py-3 text-sm font-medium text-[rgb(var(--text))] transition-colors hover:bg-[rgb(var(--surface-subtle))/0.5]"
-              >
-                Kom i gang
-              </a>
-            </div>
-            <p class="mt-4 text-sm text-[rgb(var(--muted))]">
-              Start med én setning. Vi tar resten stegvis.
+              .
             </p>
           </div>
         </Section>
-
-        <div class="mt-12 max-w-3xl space-y-12 sm:mt-14 sm:space-y-14 lg:mt-14">
-          <section aria-labelledby="forside-slik-heading">
-            <h2 id="forside-slik-heading" class="vox-section-title">Slik fungerer det</h2>
-            <p class="vox-lead mt-3 max-w-2xl">
-              Korte svar og konkrete steg — uten at du må forklare alt på en gang.
-            </p>
-            <ul class="mt-8 grid list-none gap-4 p-0 sm:gap-5" role="list">
-              <li class="vox-surface-tech">
-                <p class="text-sm font-semibold text-[rgb(var(--text))]">Start samtalen</p>
-                <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
-                  Si kort hva du står i. Én setning er nok i starten.
-                </p>
-              </li>
-              <li class="vox-surface-tech">
-                <p class="text-sm font-semibold text-[rgb(var(--text))]">Steg for steg</p>
-                <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
-                  Du får forslag du kan prøve med én gang — ikke lange tekstvegger.
-                </p>
-              </li>
-              <li class="vox-surface-tech">
-                <p class="text-sm font-semibold text-[rgb(var(--text))]">Ditt tempo</p>
-                <p class="mt-1.5 text-sm leading-relaxed text-[rgb(var(--muted))]">
-                  Avslutt når du vil og kom tilbake når det passer deg.
-                </p>
-              </li>
-            </ul>
-          </section>
-
-          <div class="vox-surface-calm">
-            <p class="text-base leading-relaxed text-[rgb(var(--text-secondary))] sm:text-lg">
-              Vil du lese litt mer kontekst før du chatter? På info-siden samler vi det samme budskapet med litt mer struktur.
-            </p>
-            <a
-              href="/no/info"
-              class="mt-5 inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--surface-elevated))/0.42] px-5 py-2.5 text-sm font-medium text-[rgb(var(--text))] shadow-sm ring-0 backdrop-blur-md transition-colors hover:bg-[rgb(var(--surface-elevated))/0.62]"
-            >
-              Til info-siden
-            </a>
-          </div>
-
-          <div class="vox-surface-lifted">
-            <h2 class="vox-section-title text-lg sm:text-xl">Klar når du er</h2>
-            <p class="mt-2 max-w-xl text-sm leading-relaxed text-[rgb(var(--muted))]">
-              På store skjermer ligger chatten i panelet til høyre. På mobil møter du først intro og forklaring — chatten finner du som egen blokk lenger ned.
-            </p>
-            <button
-              type="button"
-              onclick="document.getElementById('ces-widget')?.scrollIntoView({behavior:'smooth', block:'start'}); document.getElementById('ces-widget')?.open?.(); document.getElementById('ces-widget')?.show?.();"
-              class="sonic-pulse-cta mt-6 inline-flex items-center justify-center rounded-[var(--radius-md)] px-5 py-2.5 text-sm font-semibold transition-shadow"
-            >
-              Åpne chat
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   </main>

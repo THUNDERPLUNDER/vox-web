@@ -7,6 +7,7 @@
    #125D: Hjelp A3 applied on /no/hub/ — QA accepted, closed.
    #125E: Editorial hub prototype — QA accepted; E2 base for #125F.
    #125F: Lyd i hverdagen production slice at /no/lyd-i-hverdagen/ — QA accepted, closed.
+   #125G: Forside/routing at /no/ — connects Hjelp and Lyd i hverdagen.
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -117,7 +118,8 @@ const typographyLabDirections = [
         <li><strong>Testes i preview:</strong> #123 Typography v0.1 · #122 Color tokens v0.1 · #124 Primitives v0.1</li>
         <li><strong>Applied:</strong> #125D Hjelp A3 på <code>/no/hub/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125F Editorial hub på <code>/no/lyd-i-hverdagen/</code> — QA-godkjent, closed</li>
-        <li><strong>Neste:</strong> Forside/routing — videre polish venter til helhetsjustering</li>
+        <li><strong>Applied:</strong> #125G Forside/routing på <code>/no/</code> — needs review</li>
+        <li><strong>Neste:</strong> Toppmeny og videre polish etter helhetsjustering</li>
       </ul>
     </section>
 
@@ -333,6 +335,27 @@ const typographyLabDirections = [
         </p>
         <a href={`${base}no/lyd-i-hverdagen/`} class="sprint-preview__typo-link">
           Open production editorial hub →
+        </a>
+      </div>
+    </section>
+
+    <!-- Forside/routing (#125G) -->
+    <section class="sprint-preview__section" aria-labelledby="forside-routing-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">12 · #125G</p>
+        <h2 id="forside-routing-heading">Forside / routing</h2>
+        <p>Produksjonsforside som ruter tydelig til Hjelp, Lyd i hverdagen og Hørehjelpen.</p>
+      </div>
+      <div class="sprint-preview__typo-summary">
+        <p class="sprint-preview__typo-status">
+          <strong>Status:</strong> Applied production slice — needs review
+        </p>
+        <p class="sprint-preview__typo-sans">
+          To komplementære hub-innganger på <code>/no/</code> — utility (Hjelp) og editorial (Lyd i hverdagen).
+          Toppmeny og full IA kommer senere.
+        </p>
+        <a href={`${base}no/`} class="sprint-preview__typo-link">
+          Open production forside →
         </a>
       </div>
     </section>
