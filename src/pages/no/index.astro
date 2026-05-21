@@ -1,6 +1,6 @@
 ---
-/* CONTRACT: Norwegian landing — routing to Hjelp, Lyd i hverdagen and Hørehjelpen (#125G / #125G-R1).
-   Primitive-aligned entry surfaces (Hjelp A3 utility + editorial situation cards). CES panel unchanged.
+/* CONTRACT: Norwegian landing — triage / avklaringsflate (#125G-R3).
+   Two primary hub entries + Hørehjelpen fast-track. No embedded chat widget in viewport.
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/nav/Footer.astro";
@@ -8,69 +8,47 @@ import Footer from "../../components/nav/Footer.astro";
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 ---
 
-<BaseLayout title="Viddel - Hørehjelpen" currentPath="/no" shellVariant="article">
+<BaseLayout title="Viddel" currentPath="/no" shellVariant="article">
   <meta slot="head" name="robots" content="noindex,follow" />
 
   <main class="land-page" data-landing-page>
-    <div class="land-layout">
-      <div class="land-main">
-        <header class="land-header">
-          <h1>Få mer ut av høreapparatet ditt</h1>
-          <p class="land-lead">
-            Rask hjelp når noe ikke virker — og artikler som gjør det lettere å leve godt med lyd i hverdagen.
-          </p>
-        </header>
-
-        <ul class="land-entry-grid" role="list">
-          <li>
-            <a href="/no/hub/" class="land-entry land-entry--help">
-              <span class="land-entry__kicker">Hjelp</span>
-              <span class="land-entry__visual" aria-hidden="true"></span>
-              <span class="land-entry__title">Noe virker ikke?</span>
-              <span class="land-entry__hint">
-                Få raske steg for piping, app, Bluetooth, filter og når du bør kontakte audiograf.
-              </span>
-              <span class="land-entry__arrow" aria-hidden="true">→</span>
-            </a>
-          </li>
-          <li>
-            <a href="/no/lyd-i-hverdagen/" class="land-entry land-entry--editorial">
-              <span class="land-entry__kicker">Lyd i hverdagen</span>
-              <span class="land-entry__title">Vil du forstå og mestre mer?</span>
-              <span class="land-entry__hint">
-                Les om lyttetrøtthet, små lyder, sosialt liv og strategier som gjør hverdagen lettere.
-              </span>
-              <span class="land-entry__arrow" aria-hidden="true">→</span>
-            </a>
-          </li>
-        </ul>
-
-        <p class="land-chat-note">
-          Du kan også{" "}
-          <a href="/no/chat">spørre Hørehjelpen direkte</a>
-          {" "}eller{" "}
-          <button
-            type="button"
-            onclick="document.getElementById('ces-widget')?.scrollIntoView({behavior:'smooth', block:'start'}); document.getElementById('ces-widget')?.open?.(); document.getElementById('ces-widget')?.show?.();"
-          >
-            starte samtalen her
-          </button>
-          .
+    <div class="land-container">
+      <header class="land-header">
+        <h1>Hva trenger du hjelp til nå?</h1>
+        <p class="land-lead">
+          Få rask hjelp når noe ikke virker, les om hverdagen med høreapparat, eller spør Hørehjelpen
+          direkte.
         </p>
-      </div>
+      </header>
 
-      <aside class="land-chat" aria-label="Hørehjelpen chat">
-        <chat-messenger
-          id="ces-widget"
-          url-allowlist="*"
-          class="land-chat__widget"
-        >
-          <chat-messenger-container
-            chat-title="Hørehjelpen"
-            enable-file-upload
-            enable-audio-input
-          ></chat-messenger-container>
-        </chat-messenger>
+      <ul class="land-entry-grid" role="list">
+        <li>
+          <a href="/no/hub/" class="land-entry land-entry--help">
+            <span class="land-entry__kicker">Hjelp</span>
+            <span class="land-entry__visual" aria-hidden="true"></span>
+            <span class="land-entry__title">Noe virker ikke?</span>
+            <span class="land-entry__hint">
+              Få raske steg for piping, app, Bluetooth, filter og når du bør kontakte audiograf.
+            </span>
+            <span class="land-entry__arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li>
+          <a href="/no/lyd-i-hverdagen/" class="land-entry land-entry--editorial">
+            <span class="land-entry__kicker">Lyd i hverdagen</span>
+            <span class="land-entry__stripe" aria-hidden="true"></span>
+            <span class="land-entry__title">Vil du forstå og mestre mer?</span>
+            <span class="land-entry__hint">
+              Les om lyttetrøtthet, små lyder, sosialt liv og strategier som gjør hverdagen lettere.
+            </span>
+            <span class="land-entry__arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+      </ul>
+
+      <aside class="land-fasttrack" aria-label="Direkte til Hørehjelpen">
+        <p class="land-fasttrack__text">Vil du heller spørre direkte?</p>
+        <a href="/no/chat" class="land-fasttrack__cta">Start samtale med Hørehjelpen</a>
       </aside>
     </div>
   </main>
@@ -81,78 +59,55 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       const params = new URLSearchParams(window.location.search);
       const initialQuestion = params.get("q");
       if (!initialQuestion) return;
-      const widget = document.getElementById("ces-widget");
-      if (!widget) return;
-
-      const sendInitialQuestion = () => {
-        if (typeof widget.sessionInput !== "function") return false;
-        widget.open?.();
-        widget.show?.();
-        widget.sessionInput(initialQuestion);
-        return true;
-      };
-
-      if (sendInitialQuestion()) return;
-
-      let tries = 0;
-      const t = setInterval(() => {
-        tries += 1;
-        if (sendInitialQuestion() || tries > 40) clearInterval(t);
-      }, 250);
+      window.location.replace(`/no/chat?q=${encodeURIComponent(initialQuestion)}`);
     })();
   </script>
 </BaseLayout>
 
 <style>
-  /* Page-scoped — aligned with Hjelp A3 problem cards + editorial situation cards (#125G-R1) */
+  /* Page-scoped — mandate triage (#125G-R3): utility + editorial entries, chat fast-track */
   .land-page {
-    padding: clamp(1.5rem, 4vw, 2.5rem) 0 clamp(3rem, 6vw, 4.5rem);
+    padding: clamp(1.75rem, 5vw, 3rem) 0 clamp(3rem, 6vw, 4rem);
   }
 
-  .land-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(1.5rem, 4vw, 2rem);
-    max-width: min(100%, 52rem);
+  .land-container {
+    max-width: min(100%, 44rem);
     margin: 0 auto;
     padding: 0 1rem;
   }
 
-  @media (min-width: 1024px) {
-    .land-layout {
-      max-width: min(100%, 68rem);
-      grid-template-columns: minmax(0, 1fr) min(22.5rem, 36vw);
-      align-items: start;
-      gap: 1.75rem;
+  @media (min-width: 640px) {
+    .land-container {
+      max-width: min(100%, 52rem);
     }
   }
 
   .land-header {
-    padding-bottom: clamp(1.25rem, 3vw, 1.75rem);
+    padding-bottom: clamp(1.15rem, 3vw, 1.5rem);
     border-bottom: 1px solid rgb(var(--border) / 0.2);
   }
 
   [data-landing-page] h1 {
     margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(2rem, 6vw, 2.75rem);
+    font-size: clamp(1.85rem, 5.5vw, 2.5rem);
     font-weight: 650;
-    line-height: 1.02;
-    letter-spacing: -0.055em;
+    line-height: 1.05;
+    letter-spacing: -0.05em;
     text-wrap: balance;
     color: rgb(var(--reading-ink));
   }
 
   .land-lead {
-    margin: clamp(0.85rem, 2.5vw, 1.15rem) 0 0;
-    max-width: 38rem;
-    font-size: clamp(1rem, 2.4vw, 1.12rem);
+    margin: clamp(0.75rem, 2.2vw, 1rem) 0 0;
+    max-width: 36rem;
+    font-size: clamp(0.95rem, 2.3vw, 1.05rem);
     line-height: 1.55;
     color: rgb(var(--reading-ink-secondary));
   }
 
   .land-entry-grid {
-    margin: clamp(1.35rem, 3.5vw, 1.75rem) 0 0;
+    margin: clamp(1.25rem, 3.5vw, 1.65rem) 0 0;
     padding: 0;
     list-style: none;
     display: grid;
@@ -163,6 +118,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
   @media (min-width: 640px) {
     .land-entry-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
     }
   }
 
@@ -170,9 +126,9 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.45rem;
     min-height: 100%;
-    padding: 0.85rem 0.9rem 2.15rem;
+    padding: 1rem 1rem 2.25rem;
     border-radius: 10px;
     color: inherit;
     text-decoration: none;
@@ -197,7 +153,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
   }
 
   .land-entry__title {
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 650;
     letter-spacing: -0.025em;
     line-height: 1.25;
@@ -206,15 +162,15 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
   .land-entry__hint {
     flex: 1;
-    font-size: 0.78rem;
-    line-height: 1.45;
+    font-size: 0.8rem;
+    line-height: 1.5;
     color: rgb(var(--reading-ink-secondary));
   }
 
   .land-entry__arrow {
     position: absolute;
-    right: 0.9rem;
-    bottom: 0.85rem;
+    right: 1rem;
+    bottom: 0.95rem;
     font-size: 0.9rem;
     line-height: 1;
     color: rgb(var(--reading-ink-secondary) / 0.55);
@@ -226,36 +182,33 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
     transform: translateX(2px);
   }
 
-  /* Hjelp — utility / problem-card DNA (A3) */
+  /* Hjelp — utility / A3 problem-card DNA */
   .land-entry--help {
-    border: 1px solid rgb(var(--border) / 0.28);
+    border: 1px solid rgb(var(--border) / 0.32);
     background: rgb(var(--reading-paper));
   }
 
   .land-entry--help:hover {
-    border-color: rgb(var(--border) / 0.5);
+    border-color: rgb(var(--border) / 0.52);
     box-shadow: 0 3px 14px rgb(var(--reading-ink) / 0.06);
     transform: translateY(-1px);
   }
 
   .land-entry__visual {
     display: block;
-    height: 2.25rem;
+    height: 2rem;
     border-radius: 6px;
     overflow: hidden;
     background:
-      radial-gradient(ellipse 55% 55% at 18% 75%, rgb(95 82 220 / 0.12) 0%, transparent 65%),
-      linear-gradient(145deg, rgb(238 235 255) 0%, rgb(252 252 255) 100%);
+      radial-gradient(ellipse 55% 55% at 18% 75%, rgb(95 82 220 / 0.1) 0%, transparent 65%),
+      linear-gradient(145deg, rgb(245 244 252) 0%, rgb(252 252 255) 100%);
   }
 
-  .land-entry--editorial .land-entry__visual {
-    display: none;
-  }
-
-  /* Editorial — situation-card DNA */
+  /* Editorial — situation-card DNA + tonal stripe */
   .land-entry--editorial {
     border: 1px solid rgb(var(--border) / 0.14);
     background: transparent;
+    padding-top: 0.85rem;
   }
 
   .land-entry--editorial:hover {
@@ -263,64 +216,75 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
     border-color: rgb(var(--border) / 0.28);
   }
 
-  .land-chat-note {
-    margin: clamp(1.15rem, 3vw, 1.5rem) 0 0;
+  .land-entry__stripe {
+    display: block;
+    height: 0.28rem;
+    margin: 0.1rem 0 0.15rem;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      rgb(19 77 106 / 0.35) 0%,
+      rgb(95 82 220 / 0.12) 55%,
+      rgb(253 252 250) 100%
+    );
+  }
+
+  .land-entry--editorial .land-entry__visual {
+    display: none;
+  }
+
+  /* Hørehjelpen — compact fast-track */
+  .land-fasttrack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-top: clamp(1.35rem, 3.5vw, 1.75rem);
+    padding: 0.95rem 1rem;
+    border: 1px solid rgb(var(--border) / 0.16);
+    border-radius: 10px;
+    background: rgb(var(--reading-paper) / 0.45);
+  }
+
+  @media (min-width: 480px) {
+    .land-fasttrack {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+  }
+
+  .land-fasttrack__text {
+    margin: 0;
     font-size: 0.84rem;
-    line-height: 1.55;
+    line-height: 1.45;
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .land-chat-note a,
-  .land-chat-note button {
-    padding: 0;
-    border: 0;
-    background: none;
-    font: inherit;
-    font-weight: 600;
-    color: rgb(var(--reading-ink));
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    cursor: pointer;
+  .land-fasttrack__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    background: rgb(var(--reading-ink));
+    color: rgb(var(--reading-paper));
+    font-size: 0.82rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    transition: opacity 150ms ease, transform 150ms ease;
   }
 
-  .land-chat-note a:hover,
-  .land-chat-note button:hover {
-    color: rgb(var(--reading-accent-iris));
+  .land-fasttrack__cta:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
   }
 
-  .land-chat-note a:focus-visible,
-  .land-chat-note button:focus-visible {
+  .land-fasttrack__cta:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
-    border-radius: 2px;
-  }
-
-  .land-chat {
-    position: relative;
-    z-index: 1;
-  }
-
-  @media (min-width: 1024px) {
-    .land-chat {
-      position: sticky;
-      top: 1.5rem;
-    }
-  }
-
-  .land-chat__widget {
-    display: block;
-    width: 100%;
-    overflow: hidden;
-    border-radius: var(--radius-lg);
-    border: 1px solid rgb(var(--border) / 0.22);
-    background: rgb(var(--reading-paper));
-    box-shadow: 0 4px 20px rgb(var(--reading-ink) / 0.05);
-    height: min(24rem, 58dvh);
-  }
-
-  @media (min-width: 1024px) {
-    .land-chat__widget {
-      height: min(38rem, calc(100vh - 7rem));
-    }
   }
 </style>
