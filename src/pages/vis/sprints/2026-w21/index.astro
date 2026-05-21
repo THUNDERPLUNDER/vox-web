@@ -3,7 +3,8 @@
    Test bench for #122 Color tokens, #123 Typography, #124 Primitives.
    #123: Typography Lab at /typography/ — full-width direction review.
    #124: Primitives Lab at /primitives/ — VIS-only primitive candidates.
-   #125C: Hub type split at /hub-types/ — utility vs editorial decision surface.
+   #125C: Hub type split at /hub-types/ — closed; Hjelp A3 valgt for utility.
+   #125D: Hjelp A3 applied on /no/hub/ — QA accepted, closed.
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -112,7 +113,8 @@ const typographyLabDirections = [
         <li><strong>Parent issue:</strong> #120 MVP Design Lock v0.1</li>
         <li><strong>Preview issue:</strong> #126 VIS design preview</li>
         <li><strong>Testes i preview:</strong> #123 Typography v0.1 · #122 Color tokens v0.1 · #124 Primitives v0.1</li>
-        <li><strong>Senere bruk:</strong> #125 Reskin MVP Surfaces etter at byggeklossene er testet</li>
+        <li><strong>Applied:</strong> #125D Hjelp A3 på <code>/no/hub/</code> — QA-godkjent, closed</li>
+        <li><strong>Senere bruk:</strong> Editorial hub og forside før videre polish på Hjelp</li>
       </ul>
     </section>
 
@@ -252,14 +254,38 @@ const typographyLabDirections = [
       <div class="sprint-preview__section-head">
         <p class="sprint-preview__kicker">08 · #125C</p>
         <h2 id="hub-types-heading">Hub type split</h2>
-        <p>Utility/hjelpehub vs editorial/erfaringshub — beslutningsflate etter #130.</p>
+        <p>Komplementære hubtyper: Hjelp og editorial — beslutningsflate etter #130 og #125C-R1.</p>
+      </div>
+      <div class="sprint-preview__typo-summary">
+        <p class="sprint-preview__typo-decision">
+          <strong>Decision:</strong> Hjelp A3 valgt for utility-hub. Editorial hub kommer senere.
+        </p>
+        <p class="sprint-preview__typo-status">
+          <strong>Status:</strong> Closed — beslutningsflate avsluttet
+        </p>
+        <a href={`${base}vis/sprints/2026-w21/hub-types/`} class="sprint-preview__typo-link">
+          Open hub type comparison (reference) →
+        </a>
+      </div>
+    </section>
+
+    <!-- Hjelp A3 production (#125D) -->
+    <section class="sprint-preview__section" aria-labelledby="hjelp-a3-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">09 · #125D</p>
+        <h2 id="hjelp-a3-heading">Hjelp A3 production slice</h2>
+        <p>Applied utility-hub på produksjon — AI-inngang, oppgavekort, korte guider og eskalering.</p>
       </div>
       <div class="sprint-preview__typo-summary">
         <p class="sprint-preview__typo-status">
-          <strong>Status:</strong> Decision support — navn og ruter er forslag
+          <strong>Status:</strong> QA accepted / closed
         </p>
-        <a href={`${base}vis/sprints/2026-w21/hub-types/`} class="sprint-preview__typo-link">
-          Open hub type comparison →
+        <p class="sprint-preview__typo-sans">
+          Videre polish på <code>/no/hub/</code> venter til editorial hub og forside er på plass.
+          Darkmode-svakheter observert — parkert til senere eget konsept/sweep, ikke del av #125D.
+        </p>
+        <a href={`${base}no/hub/`} class="sprint-preview__typo-link">
+          Open production Hjelp hub →
         </a>
       </div>
     </section>
