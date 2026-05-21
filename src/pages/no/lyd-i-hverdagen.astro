@@ -1,7 +1,7 @@
 ---
-/* CONTRACT: Editorial hub (E2) — «Lyd i hverdagen» #125F / #125F-R1.
-   Situation-first lesespor → featured → artikkelkort → AI seeds. Motflate til Hjelp A3.
-   Arbeidstittel/rute — ikke i toppmeny ennå.
+/* CONTRACT: Editorial hub (E2) — «Lyd i hverdagen» #125F / #125F-R2.
+   Situasjonskort → featured → artikkelkort → AI seeds. Motflate til Hjelp A3.
+   Balanserer mestring, lydglede og hverdagslytting — ikke bare problemløsning.
 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/nav/Footer.astro";
@@ -11,41 +11,38 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
 const pageTitle = "Lyd i hverdagen";
 const pageIntro =
-  "Artikler, erfaringer og konkrete strategier for å leve bedre med høreapparat i hverdagen.";
-
-const situationSectionLead =
-  "Finn temaer som ligner det du opplever — og start et lesespor der du kjenner deg igjen.";
+  "Artikler, erfaringer og strategier for å leve bedre med høreapparat — fra små lyder og lydglede til mestring i hverdagen.";
 
 const situations: Array<{ label: string; hint: string; href: string }> = [
   {
     label: "Ny med høreapparat",
-    hint: "Normalt, forventninger og de første ukene",
+    hint: "Forventninger, tilvenning og de første ukene.",
     href: "/no/artikkel/de-forste-ukene-med-horeapparat",
   },
   {
-    label: "Sosialt liv",
-    hint: "Samtaler, restaurant og å bli med",
-    href: "/no/artikkel/slik-tar-du-praten",
+    label: "Små lyder og lydglede",
+    hint: "Fugler, regn, musikk, stemmer og det som gjør verden nær.",
+    href: "/no/artikkel/fra-skuff-til-daglig-bruk",
   },
   {
-    label: "På jobb",
-    hint: "Møter, energi og lyttetrøtthet",
-    href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
-  },
-  {
-    label: "For pårørende",
-    hint: "Støtte uten å ta over",
-    href: "/no/artikkel/stotte-uten-a-ta-over-samtalen",
+    label: "Sosialt liv og samtaler",
+    hint: "Middag, restaurant, familie og støy.",
+    href: "/no/artikkel/for-restaurant-eller-stort-selskap",
   },
   {
     label: "Lyd og energi",
-    hint: "Når lyden blir slitsom utpå dagen",
+    hint: "Når hjernen blir sliten, og hvordan du kan ta pauser.",
     href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
   },
   {
-    label: "Middag og støy",
-    hint: "Små grep som hjelper rundt bordet",
-    href: "/no/artikkel/for-restaurant-eller-stort-selskap",
+    label: "På jobb",
+    hint: "Møter, Teams, kollegaer og konsentrasjon.",
+    href: "/no/artikkel/slik-tar-du-praten",
+  },
+  {
+    label: "For pårørende",
+    hint: "Hvordan støtte uten å presse.",
+    href: "/no/artikkel/stotte-uten-a-ta-over-samtalen",
   },
 ];
 
@@ -93,11 +90,11 @@ const articles: Array<{
     href: "/no/artikkel/slik-tar-du-praten",
   },
   {
-    series: "Forståelse",
-    title: "Derfor blir hjernen sliten før apparatet er feil",
-    deck: "Lyttetrøtthet handler ofte om energi — ikke bare teknisk feil.",
-    visual: "mind",
-    href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
+    series: "Lydglede",
+    title: "Små lyder som gjør verden nær",
+    deck: "Fugler, regn, musikk og stemmer — og hvordan du kan legge merke til dem.",
+    visual: "joy",
+    href: "/no/artikkel/fra-skuff-til-daglig-bruk",
   },
 ];
 
@@ -127,9 +124,7 @@ const editorialSeeds = [
 
       <div class="ed-core">
 
-        <section class="ed-block" aria-labelledby="situations-heading">
-          <h2 id="situations-heading" class="ed-block__title">Les etter situasjon</h2>
-          <p class="ed-block__lead">{situationSectionLead}</p>
+        <section class="ed-block ed-block--situations" aria-label="Temaer i hverdagen">
           <ul class="ed-situation-grid" role="list">
             {situations.map((situation) => (
               <li>
@@ -301,15 +296,11 @@ const editorialSeeds = [
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .ed-block__lead {
-    margin: 0 0 1.1rem;
-    max-width: 36rem;
-    font-size: 0.9rem;
-    line-height: 1.55;
-    color: rgb(var(--reading-ink-secondary));
+  .ed-block--situations {
+    padding-top: clamp(1.5rem, 4vw, 2rem);
   }
 
-  /* Situations — lesespor, not self-categorization */
+  /* Situations — self-explanatory cards, no section instruction */
   .ed-situation-grid {
     margin: 0;
     padding: 0;
@@ -482,6 +473,10 @@ const editorialSeeds = [
 
   [data-visual="mind"] .ed-article-card__visual {
     background: linear-gradient(145deg, rgb(200 192 176 / 0.22), rgb(252 250 245));
+  }
+
+  [data-visual="joy"] .ed-article-card__visual {
+    background: linear-gradient(145deg, rgb(34 197 94 / 0.16), rgb(234 246 255 / 0.55));
   }
 
   .ed-article-card__body {
