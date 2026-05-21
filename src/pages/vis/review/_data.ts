@@ -87,11 +87,11 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     href: "/no/lyd-i-hverdagen/",
     sprint: "2026-W21",
     issue: "#125F",
-    type: "active",
-    status: "needs-review",
+    type: "reference",
+    status: "closed",
     stakeholderSafe: true,
     description:
-      "Første editorial production slice — E2 situation-first. Arbeidstittel/rute, ikke i toppmeny ennå.",
+      "Editorial production slice QA-godkjent på /no/lyd-i-hverdagen/. Videre polish venter til forside/routing og helhetsjustering.",
   },
   {
     id: "interaction-states",
