@@ -9,6 +9,7 @@
    #125F: Lyd i hverdagen production slice at /no/lyd-i-hverdagen/ — QA accepted, closed.
    #125G: Forside/routing at /no/ — QA accepted, closed (#125G-R3 triage mandate).
    #125G-R2: Frontpage mandate decision surface — mandate accepted, applied R3.
+   #125H: Navigation / top menu pass — hub model in header and footer.
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -120,7 +121,8 @@ const typographyLabDirections = [
         <li><strong>Applied:</strong> #125D Hjelp A3 på <code>/no/hub/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125F Editorial hub på <code>/no/lyd-i-hverdagen/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125G Forside/routing på <code>/no/</code> — QA-godkjent, closed</li>
-        <li><strong>Neste:</strong> Nav/toppmeny-pass eller sprint closure — ikke ny forside-polish nå</li>
+        <li><strong>Applied:</strong> #125H Nav/toppmeny — needs review</li>
+        <li><strong>Neste:</strong> Sprint closure eller videre IA etter nav-QA</li>
       </ul>
     </section>
 
@@ -378,6 +380,27 @@ const typographyLabDirections = [
         </p>
         <a href={`${base}vis/sprints/2026-w21/frontpage-mandate/`} class="sprint-preview__typo-link">
           Open frontpage mandate decision →
+        </a>
+      </div>
+    </section>
+
+    <!-- Navigation / top menu (#125H) -->
+    <section class="sprint-preview__section" aria-labelledby="nav-top-menu-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">14 · #125H</p>
+        <h2 id="nav-top-menu-heading">Navigation / top menu</h2>
+        <p>Toppmeny og footer synket til hubmodellen etter #125G.</p>
+      </div>
+      <div class="sprint-preview__typo-summary">
+        <p class="sprint-preview__typo-status">
+          <strong>Status:</strong> Applied — needs review
+        </p>
+        <p class="sprint-preview__typo-sans">
+          Primærnav: Forside, Hjelp, Lyd i hverdagen, Ordbok, Om. CTA: Start samtale →{" "}
+          <code>/no/chat</code>. Emnehuber og Kom i gang fjernet fra primærnav.
+        </p>
+        <a href={`${base}no/`} class="sprint-preview__typo-link">
+          Verify navigation on production →
         </a>
       </div>
     </section>
