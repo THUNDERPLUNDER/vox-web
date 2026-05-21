@@ -82,6 +82,18 @@ export const reviewRegistry: ReviewRegistryItem[] = [
       "QA-godkjent. E2 situation-first anbefalt som base — applied som #125F på /no/lyd-i-hverdagen/.",
   },
   {
+    id: "forside-routing",
+    title: "Forside / routing",
+    href: "/no/",
+    sprint: "2026-W21",
+    issue: "#125G",
+    type: "active",
+    status: "needs-review",
+    stakeholderSafe: true,
+    description:
+      "Produksjonsforside ruter til Hjelp og Lyd i hverdagen — to komplementære hub-innganger. Toppmeny og full IA kommer senere.",
+  },
+  {
     id: "lyd-i-hverdagen-production",
     title: "Lyd i hverdagen production slice",
     href: "/no/lyd-i-hverdagen/",
