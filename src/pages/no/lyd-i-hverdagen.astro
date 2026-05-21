@@ -1,8 +1,8 @@
 ---
-/* CONTRACT: Editorial hub (E2) — «Lyd i hverdagen» #125F / #125F-R2.
+/* CONTRACT: Editorial hub (E2) — «Lyd i hverdagen» #125F / #125F-R3.
    Situasjonskort → featured → artikkelkort → AI seeds. Motflate til Hjelp A3.
-   Balanserer mestring, lydglede og hverdagslytting — ikke bare problemløsning.
-*/
+   Hero uten metaintro — innganger og kort bærer innholdet.
+ */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/nav/Footer.astro";
 import "../../styles/r1-dialog-article.css";
@@ -10,8 +10,6 @@ import "../../styles/r1-dialog-article.css";
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
 const pageTitle = "Lyd i hverdagen";
-const pageIntro =
-  "Artikler, erfaringer og strategier for å leve bedre med høreapparat — fra små lyder og lydglede til mestring i hverdagen.";
 
 const situations: Array<{ label: string; hint: string; href: string }> = [
   {
@@ -119,7 +117,6 @@ const editorialSeeds = [
         </nav>
         <p class="ed-kicker">{pageTitle}</p>
         <h1>{pageTitle}</h1>
-        <p class="ed-lead">{pageIntro}</p>
       </header>
 
       <div class="ed-core">
@@ -221,7 +218,7 @@ const editorialSeeds = [
   }
 
   .ed-header {
-    padding: clamp(2rem, 6vw, 3.5rem) 0 clamp(1.75rem, 4vw, 2.5rem);
+    padding: clamp(2rem, 6vw, 3.5rem) 0 clamp(1.25rem, 3vw, 1.75rem);
     border-bottom: 1px solid rgb(var(--border) / 0.2);
   }
 
@@ -261,15 +258,6 @@ const editorialSeeds = [
     letter-spacing: -0.065em;
     text-wrap: balance;
     color: rgb(var(--reading-ink));
-  }
-
-  .ed-lead {
-    margin: clamp(0.9rem, 2.5vw, 1.35rem) 0 0;
-    max-width: 40rem;
-    font-size: clamp(1rem, 2.5vw, 1.2rem);
-    line-height: 1.55;
-    letter-spacing: -0.01em;
-    color: rgb(var(--reading-ink-secondary));
   }
 
   .ed-core {
