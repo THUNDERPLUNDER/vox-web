@@ -7,8 +7,8 @@
    #125D: Hjelp A3 applied on /no/hub/ — QA accepted, closed.
    #125E: Editorial hub prototype — QA accepted; E2 base for #125F.
    #125F: Lyd i hverdagen production slice at /no/lyd-i-hverdagen/ — QA accepted, closed.
-   #125G: Forside/routing at /no/ — connects Hjelp and Lyd i hverdagen.
-   #125G-R2: Frontpage mandate decision surface — triage before further polish.
+   #125G: Forside/routing at /no/ — QA accepted, closed (#125G-R3 triage mandate).
+   #125G-R2: Frontpage mandate decision surface — mandate accepted, applied R3.
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -119,8 +119,8 @@ const typographyLabDirections = [
         <li><strong>Testes i preview:</strong> #123 Typography v0.1 · #122 Color tokens v0.1 · #124 Primitives v0.1</li>
         <li><strong>Applied:</strong> #125D Hjelp A3 på <code>/no/hub/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125F Editorial hub på <code>/no/lyd-i-hverdagen/</code> — QA-godkjent, closed</li>
-        <li><strong>Applied:</strong> #125G Forside/routing på <code>/no/</code> — needs review</li>
-        <li><strong>Neste:</strong> Toppmeny og videre polish etter helhetsjustering</li>
+        <li><strong>Applied:</strong> #125G Forside/routing på <code>/no/</code> — QA-godkjent, closed</li>
+        <li><strong>Neste:</strong> Nav/toppmeny-pass eller sprint closure — ikke ny forside-polish nå</li>
       </ul>
     </section>
 
@@ -349,11 +349,11 @@ const typographyLabDirections = [
       </div>
       <div class="sprint-preview__typo-summary">
         <p class="sprint-preview__typo-status">
-          <strong>Status:</strong> Applied production slice — needs review
+          <strong>Status:</strong> QA accepted / closed
         </p>
         <p class="sprint-preview__typo-sans">
-          To komplementære hub-innganger på <code>/no/</code> — utility (Hjelp) og editorial (Lyd i hverdagen).
-          Mandat uavklart — se <a href={`${base}vis/sprints/2026-w21/frontpage-mandate/`}>#125G-R2</a>.
+          Avklaringsflate / trafikkdirigent på <code>/no/</code> — Hjelp og Lyd i hverdagen som primære
+          valg, Hørehjelpen som kompakt fast-track. Neste aktuelle arbeid: nav/toppmeny-pass eller sprint closure.
         </p>
         <a href={`${base}no/`} class="sprint-preview__typo-link">
           Open production forside →
@@ -370,11 +370,11 @@ const typographyLabDirections = [
       </div>
       <div class="sprint-preview__typo-summary">
         <p class="sprint-preview__typo-status">
-          <strong>Status:</strong> Needs review — decision surface
+          <strong>Status:</strong> Decision candidate — mandate accepted, applied #125G-R3
         </p>
         <p class="sprint-preview__typo-sans">
-          Avklaringsflate / triage til Hjelp, Lyd i hverdagen og Hørehjelpen. Routing på{" "}
-          <code>/no/</code> er teknisk riktig; mandat og kjernebeskrivelse må godkjennes før neste pass.
+          Mandat godkjent: avklaringsflate / triage. Implementert på produksjon — se{" "}
+          <a href={`${base}no/`}>/no/</a>.
         </p>
         <a href={`${base}vis/sprints/2026-w21/frontpage-mandate/`} class="sprint-preview__typo-link">
           Open frontpage mandate decision →

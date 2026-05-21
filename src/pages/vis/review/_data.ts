@@ -87,11 +87,11 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     href: "/vis/sprints/2026-w21/frontpage-mandate/",
     sprint: "2026-W21",
     issue: "#125G-R2",
-    type: "active",
-    status: "needs-review",
+    type: "reference",
+    status: "decision-candidate",
     stakeholderSafe: true,
     description:
-      "Forsidens mandat — avklaringsflate / triage til Hjelp, Lyd i hverdagen og Hørehjelpen. Ingen produksjonspolish før godkjenning.",
+      "Mandat godkjent — avklaringsflate / triage. Applied som #125G-R3 på /no/.",
   },
   {
     id: "forside-routing",
@@ -99,11 +99,11 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     href: "/no/",
     sprint: "2026-W21",
     issue: "#125G",
-    type: "active",
-    status: "needs-review",
+    type: "reference",
+    status: "closed",
     stakeholderSafe: true,
     description:
-      "Produksjonsforside ruter til Hjelp og Lyd i hverdagen — to komplementære hub-innganger. Toppmeny og full IA kommer senere.",
+      "Forside/routing QA-godkjent som avklaringsflate — Hjelp, Lyd i hverdagen og Hørehjelpen fast-track. Neste: nav/toppmeny.",
   },
   {
     id: "lyd-i-hverdagen-production",
