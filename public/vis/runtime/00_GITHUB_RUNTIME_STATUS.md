@@ -4,8 +4,8 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## Siste sync
 
-- **generated_at (UTC):** 2026-05-20T09:38:05.424Z
-- **generated_at (Europe/Oslo):** 20.5.2026, 11:38:05
+- **generated_at (UTC):** 2026-05-21T09:45:10.202Z
+- **generated_at (Europe/Oslo):** 21.5.2026, 11:45:10
 - **timezone:** Europe/Oslo
 - **repo:** THUNDERPLUNDER/vox-web
 - **data_warnings:** (ingen)
@@ -76,7 +76,7 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## SISTE 24T
 
-Vindu: commits/issues lukket/oppdatert etter **2026-05-19T09:38:05Z** (sirket ~24 timer).
+Vindu: commits/issues lukket/oppdatert etter **2026-05-20T09:45:10Z** (sirket ~24 timer).
 
 ### Lukkede issues
 
@@ -84,52 +84,44 @@ _Ingen._
 
 ### Kommentarer (Return Ticket-lignende)
 
-- **#124** kommentar av **THUNDERPLUNDER** (2026-05-19T16:17:19Z): _## Return Ticket — Primitives Lab v0.1 (#124) **Status:** Ferdig **Hva ble gjort:** - Etablert ny VIS-only side: `/vis/sprints/2026-w21/primitives/` - Lagt tydelig inngang fra eksisterende sprintpreview `/vis/sprints/202…_
-- **#124** kommentar av **THUNDERPLUNDER** (2026-05-19T18:12:27Z): _## Return Ticket — Primitives Lab IA v0.2 (#124) **Status:** Ferdig **Hva ble gjort:** - Omstrukturert `/vis/sprints/2026-w21/primitives/` fra én lang side til et lokalt primitives-dashboard - Opprettet statiske undersid…_
-- **#124** kommentar av **THUNDERPLUNDER** (2026-05-19T18:37:39Z): _## Return Ticket — Elevation + Layering primitives (#124) **Status:** Ferdig **Hva ble gjort:** - Lagt til to nye primitives i IA v0.2-katalogen: - `/vis/sprints/2026-w21/primitives/elevation/` - `/vis/sprints/2026-w21/p…_
-- **#124** kommentar av **THUNDERPLUNDER** (2026-05-19T18:44:31Z): _## Return Ticket — #124 control issue prepared for child workstreams **Status:** Ferdig **Hva ble gjort:** - Lagt inn register-kommentar: **Register delta — elevation/layering added** - Opprettet child issue for surface-…_
-- **#124** kommentar av **THUNDERPLUNDER** (2026-05-19T18:55:01Z): _## #124 status update — #127 surface system branch ready #127 Surface system decision has a branch ready for QA/review: - Branch: `feature/127-surface-system-decision` - Commit: `0de69b3f` - Return Ticket: https://github…_
-- **#124** kommentar av **THUNDERPLUNDER** (2026-05-20T06:24:22Z): _#128 forblir åpen. Abstract button hierarchy er strukturelt nyttig, men ikke nok for designbeslutning. Applied button context page er lagt til for QA: → https://github.com/THUNDERPLUNDER/vox-web/issues/128#issuecomment (…_
-- **#124** kommentar av **THUNDERPLUNDER** (2026-05-20T07:05:20Z): _#128 revised after QA: context page now separates text links, question pills, CTA pills, secondary pills, chrome controls and standalone AI ghost pill — not color variants. → https://github.com/THUNDERPLUNDER/vox-web/iss…_
-- **#124** kommentar av **THUNDERPLUNDER** (2026-05-20T09:20:06Z): _#128 polish branch: question pill + secondary label typography tuned in VIS context (restrained weight, published seed shadow pattern). → https://github.com/THUNDERPLUNDER/vox-web/issues/128#issuecomment (latest Return T…_
-- **#124** kommentar av **THUNDERPLUNDER** (2026-05-20T09:35:20Z): _#128 polish: VIS seed question pills now match production ArticleInlineChatShell progressive CSS; CTA labels at 0.875rem/500. → https://github.com/THUNDERPLUNDER/vox-web/issues/128#issuecomment (latest Return Ticket) Bra…_
-- **#128** kommentar av **THUNDERPLUNDER** (2026-05-20T06:07:28Z): _## Return Ticket — Buttons primitive hierarchy (#128) **Status:** Ferdig på branch, klar for QA/review **Hva ble gjort:** - Opprettet og jobbet på egen branch: `feature/128-buttons-primitive-hierarchy` - Oppdatert Button…_
-- **#128** kommentar av **THUNDERPLUNDER** (2026-05-20T06:24:21Z): _## Return Ticket — Applied button context review (#128) **Status:** Ferdig på branch, klar for applied QA — **forblir Needs review** **Hva ble gjort:** - Ny VIS-only underside: `/vis/sprints/2026-w21/primitives/buttons/c…_
-- **#128** kommentar av **THUNDERPLUNDER** (2026-05-20T07:05:19Z): _## Return Ticket — Buttons context revised to action taxonomy (#128) **Status:** Revisert på branch — **fortsatt Needs review**, **ikke merget til main** **Hva ble endret:** - Context-siden skiftet mental modell fra farg…_
-- **#128** kommentar av **THUNDERPLUNDER** (2026-05-20T09:20:05Z): _## Return Ticket — Action label & question pill polish (#128) **Status:** VIS-only polish på branch, klar for QA før merge til main **Hva ble endret:** - Question pills: roligere label-vekt (400), samme tekststørrelse so…_
-- **#128** kommentar av **THUNDERPLUNDER** (2026-05-20T09:35:18Z): _## Return Ticket — Match production seed question style (#128) **Status:** VIS-only polish på branch, klar for QA før merge til main **Hva ble endret:** - Seed question pills replikert fra produksjon: `ArticleInlineChatS…_
-- **#127** kommentar av **THUNDERPLUNDER** (2026-05-19T18:54:54Z): _## Return Ticket — Surface system decision scaffold (#127) **Status:** Ferdig på branch, klar for QA/review **Hva ble gjort:** - Opprettet og jobbet på egen branch: `feature/127-surface-system-decision` - Oppdatert Surfa…_
-- **#122** kommentar av **THUNDERPLUNDER** (2026-05-19T12:49:35Z): _## Return Ticket — Color Lab (#122) **Status:** Ferdig **Hva ble gjort:** - Ny VIS-only **Color Lab** på `/vis/sprints/2026-w21/color/` - Fire token-sett side-by-side/stacked med identiske testflater: - **A. Dyp Nordisk*…_
-- **#122** kommentar av **THUNDERPLUNDER** (2026-05-19T13:03:22Z): _## Return Ticket — Color Lab hybrid candidate **Status:** Ferdig **Hva ble gjort:** - Color Lab beholder eksisterende Set A-D. - Ny seksjon **Recommended hybrid candidate** lagt til nederst. - Hybrid-kandidat: **A+D — Dy…_
-- **#122** kommentar av **THUNDERPLUNDER** (2026-05-19T13:16:04Z): _## Return Ticket — Hybrid magenta micro-signal refinement **Status:** Ferdig **Hva ble gjort:** - Hybridseksjonen **A+D — Dyp Nordisk + Kinetic Magenta** er beholdt og finjustert. - Set A-D er uendret. - La inn note: mag…_
-- **#122** kommentar av **THUNDERPLUNDER** (2026-05-19T13:29:26Z): _## Return Ticket — Color hierarchy usage model **Status:** Ferdig **Hva ble gjort:** - Ny seksjon **Color hierarchy — proposed usage distribution** lagt til etter hybridkandidaten. - Stor visuell hierarchy bar med ulik b…_
-- **#122** kommentar av **THUNDERPLUNDER** (2026-05-19T13:45:43Z): _## Return Ticket — Color Lab toolbox + palette revision (#122) **Status:** Ferdig **Hva ble gjort:** - Oppdatert hybrid-kandidat og Color hierarchy til **Deep Nordic Blue `#134D6A`** og **Kinetic Magenta `#FF55B0`** - Te…_
-- **#122** kommentar av **THUNDERPLUNDER** (2026-05-19T13:51:24Z): _## Return Ticket — Semantic color model scaffold v0.1 (#122) **Status:** Ferdig **Hva ble gjort:** - Ny seksjon **Semantic color model — scaffold v0.1** lagt til etter Signal & atmosphere toolbox - Fem lag med foreslåtte…_
-- **#122** kommentar av **THUNDERPLUNDER** (2026-05-19T13:57:22Z): _## Return Ticket — Chrome material glass scaffold (#122) **Status:** Ferdig **Hva ble gjort:** - Ny seksjon **Chrome material — glass behavior scaffold** lagt til etter Semantic color model - Skiller color tokens fra mat…_
+- **#125** kommentar av **THUNDERPLUNDER** (2026-05-20T13:15:02Z): _## Return Ticket — #125A MVP Surface Reskin (safe-read & plan) **Status:** Ferdig — plan only, ingen produksjonsvisuelle endringer. ### Hva ble gjort Safe-read av MVP-produksjonsflater mot decision candidates #127–#129 o…_
+- **#125** kommentar av **THUNDERPLUNDER** (2026-05-20T14:12:45Z): _## Return Ticket — #125B Hub guide surfaces **Status:** Ferdig — klar for QA / merge. ### Hva ble gjort Første applied surface-reskin på `/no/hub`: featured + secondary guide cards oppdatert til borderless grouped clicka…_
+- **#125** kommentar av **THUNDERPLUNDER** (2026-05-20T14:24:59Z): _## Return Ticket — #125B QA refinement (editorial open grouping) **Status:** Ferdig — synligere retning, klar for visuell QA. ### Hva ble gjort Andre pass på samme scope: guide cards føles nå mer som **editorial grouped …_
+- **#125** kommentar av **THUNDERPLUNDER** (2026-05-20T14:58:11Z): _## Return Ticket — #125C VIS Hub Type Split **Status:** Ferdig — beslutningsflate klar for review. ### Hva ble gjort Ny VIS-side som sammenligner **Hjelpehub (utility)** og **Editorial/erfaringshub** side ved side, etter…_
+- **#125** kommentar av **THUNDERPLUNDER** (2026-05-21T08:36:48Z): _## Return Ticket — #125C VIS Access fix **Status:** Klar for Thomas-QA — offentlig produksjons-URL verifisert. ### VIS Access | Felt | Verdi | |------|-------| | **VIS route** | `/vis/sprints/2026-w21/hub-types/` | | **B…_
+- **#125** kommentar av **THUNDERPLUNDER** (2026-05-21T09:41:56Z): _## Return Ticket — #125C-R1 VIS Hub Type Split refinement **Status:** Ferdig — beslutningsflate oppdatert etter Thomas QA. ### Hva ble gjort VIS-side `/vis/sprints/2026-w21/hub-types/` justert etter QA-funn: 1. **Komplem…_
+- **#131** kommentar av **THUNDERPLUNDER** (2026-05-21T08:56:28Z): _## Return Ticket — #131A VIS inventory & access map **Status:** Ferdig — kartlegging only, ingen VIS-flytting/sletting/domeneendring. ### Hva ble gjort Fullt inventar og access map for dagens VIS: ~40+ ruter, status (Act…_
+- **#131** kommentar av **THUNDERPLUNDER** (2026-05-21T09:22:46Z): _## Return Ticket — #131A merge + #131B Stakeholder review entry **Status:** Ferdig — merged til main, produksjon verifisert. ### Del 1 — #131A merged - `docs/project/tasks/ISSUE_131A_VIS_INVENTORY_ACCESS_MAP.md` på main …_
+- **#131** kommentar av **THUNDERPLUNDER** (2026-05-21T09:32:38Z): _## Return Ticket — #131C VIS Review Registry & Sprint Navigation **Status:** Ferdig — merged til main, produksjon verifiseres. ### Hva ble gjort - Ny registry: `src/pages/vis/review/_data.ts` - `/vis/review/` rendrer fra…_
+- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T10:27:24Z): _## Return Ticket — #129 Cards / clickable surfaces **Status:** Needs review — applied context review ready for Thomas QA --- ### Hva ble gjort - Opprettet **applied context page** for Cards primitive: - `/vis/sprints/202…_
+- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T10:54:34Z): _## Return Ticket — #129 QA revision (grouped surfaces, not bordered boxes) **Status:** Needs review — revised after Thomas QA, not yet decision candidate --- ### Hva ble endret **Hovedkorreksjon:** Cards forstås nå som *…_
+- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T11:25:28Z): _## Return Ticket — #129 targeted affordance refinement **Status:** Needs review — closer to decision candidate after hover/grouping split --- ### Hva ble endret **Scenario 01 — Hub A/B/C:** - **A:** Background/image + co…_
+- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T11:55:07Z): _## Return Ticket — #129 media/background card family **Status:** Needs review — core card family added, closer to decision candidate --- ### Hva ble endret **Scenario 01 — Hub (A/B/C/D):** - **A · Image background:** Fix…_
+- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T12:16:49Z): _## Return Ticket — #129 feature/media CTA + contrast fixes **Status:** Needs review — decision candidate after final targeted refinement --- ### Hva ble endret **Kontrast (Hub A + image cards):** - Fikset cascade-bug: `.…_
+- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T12:28:06Z): _## Return Ticket — #129 final QA fixes (Article A + borderless feature CTA) **Status:** Needs review — decision candidate after two targeted fixes --- ### Hva ble endret **Fix 1 — Article A (editorial media card):** - By…_
+- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T12:36:09Z): _## Return Ticket — #129 Article A layout fix (absolute anchor) **Status:** Needs review — decision candidate after root-cause fix --- ### Problem (Thomas QA) Article A viste smal portrait-tile der tekst fylte hele kortet…_
 
 ### Commits
 
-- **e0a1b38** (2026-05-20T09:07:58Z) chore(#128): Mark buttons primitive as decision candidate after QA approval
-- **3ac531e** (2026-05-20T07:13:47Z) fix(#128): Lighten primary CTA pill typography in context QA
-- **1345822** (2026-05-20T07:05:10Z) refactor(#128): Revise buttons context to action taxonomy
-- **80c1661** (2026-05-20T06:23:47Z) feat(#128): Add applied button context review page
-- **993be5f** (2026-05-20T06:07:05Z) feat(#128): Expand buttons primitive hierarchy
-- **0de69b3** (2026-05-19T18:54:30Z) feat(#127): Refine surface system decision scaffold
-- **355edb5** (2026-05-19T18:37:25Z) feat(#124): Add elevation and layering primitives
-- **be141b5** (2026-05-19T18:12:08Z) feat(#124): Restructure Primitives Lab into catalog
-- **3164741** (2026-05-19T16:17:02Z) feat(#124): Establish Primitives Lab preview
-- **46157d0** (2026-05-19T13:57:16Z) feat(#122): Add chrome glass material scaffold to Color Lab
-- **04f1cb3** (2026-05-19T13:51:17Z) feat(#122): Add semantic color model scaffold to Color Lab
-- **b616108** (2026-05-19T13:45:36Z) feat(#122): Add signal toolbox and refine hybrid palette candidates
-- **5656d57** (2026-05-19T13:29:19Z) feat(#122): Add hybrid color hierarchy usage model to Color Lab
-- **f593dbf** (2026-05-19T13:15:48Z) feat(#122): Refine hybrid magenta as micro-signal
-- **fb37074** (2026-05-19T13:03:09Z) feat(#122): Add hybrid Color Lab product samples
-- **9c84cf3** (2026-05-19T12:49:28Z) feat(#122): Add VIS Color Lab with four restrained signal sets
-- **f043ff8** (2026-05-19T12:27:53Z) feat(#123): Add Optima-like Marcellus proxy to Typography Lab
-- **236bf57** (2026-05-19T12:18:40Z) feat(#123): Add Image 2.0 Playfair Display proxy to Typography Lab
-- **9693b8b** (2026-05-19T12:12:23Z) feat(#123): Add secondary lighter display explorations to Typography Lab
-- **3677ab6** (2026-05-19T11:49:31Z) docs(#123): Record typography working decision in VIS
-- **e1b6cfc** (2026-05-19T09:49:48Z) chore(vis): refresh GitHub runtime status for navigator
+- **5739fa4** (2026-05-21T09:41:45Z) refine(#125C-R1): Complementary hub types, Hjelp variants, and decision updates (#134)
+- **9cca93d** (2026-05-21T09:32:26Z) feat(#131C): VIS review registry and sprint navigation (#133)
+- **fb5e29c** (2026-05-21T09:22:03Z) feat(#131): VIS inventory doc and stakeholder review entry (#132)
+- **2bbc278** (2026-05-21T08:36:06Z) feat(#125C): Add VIS hub type split decision surface (#130)
+- **d7aea33** (2026-05-20T13:10:13Z) fix(#124D): Keep matrix demos out of tab order for keyboard QA.
+- **f31d238** (2026-05-20T12:56:37Z) feat(#124D): Add interaction states pass to VIS Primitives Lab.
+- **51b5bf3** (2026-05-20T12:44:29Z) chore(#129): Mark cards primitive as decision candidate.
+- **ea404e4** (2026-05-20T12:42:01Z) fix(#129): Fix Article A cascade — absolute bottom-left text anchor.
+- **4b47ce5** (2026-05-20T12:39:29Z) fix(#129): Align Article A text stack with feature card bottom-left.
+- **ee1413c** (2026-05-20T12:35:21Z) fix(#129): Lock Article A media card size with absolute text anchor.
+- **95d61de** (2026-05-20T12:24:13Z) Fix Article A landscape layout and borderless feature CTAs for #129.
+- **c955b45** (2026-05-20T12:16:00Z) fix(#129): Add feature/media CTA card and fix image card contrast
+- **e3c1c24** (2026-05-20T11:53:50Z) fix(#129): Add media/background cards with fixed-size grouping
+- **549a6af** (2026-05-20T11:24:54Z) fix(#129): Separate full-surface hover from image/text editorial groups
+- **bba0d81** (2026-05-20T10:53:59Z) fix(#129): Treat cards as grouped surfaces, not bordered boxes
+- **49d1ffd** (2026-05-20T10:26:49Z) feat(#129): Add cards applied context review for clickable surfaces
+- **52bcd46** (2026-05-20T10:09:08Z) Merge branch 'fix/128-match-production-seed-question-style'
+- **30b9afe** (2026-05-20T10:02:46Z) fix(#128): Reuse production seed-row markup and CSS in VIS context
+- **03dece8** (2026-05-20T09:49:05Z) fix(#128): Use production white article surface in seed scenarios
 
 ## BLOCKERS
 
