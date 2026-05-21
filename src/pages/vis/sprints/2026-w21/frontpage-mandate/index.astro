@@ -1,0 +1,589 @@
+---
+/* CONTRACT: VIS-only frontpage mandate decision surface (#125G-R2).
+   Clarifies what /no/ should be before further production polish. No production routes changed.
+   Related: DECISION_130_HUB_MODEL_V0_1.md, applied #125G / #125G-R1 on /no/.
+*/
+import PrototypeLayout from "../../../../../layouts/PrototypeLayout.astro";
+import "../../../../../styles/global.css";
+
+const base = import.meta.env.BASE_URL;
+const sprintPath = `${base}vis/sprints/2026-w21`;
+
+const userContexts = [
+  {
+    id: "a",
+    intent: "Noe virker ikke",
+    need: "Rask, presis hjelp — piping, app, Bluetooth, filter, eskalering.",
+    route: "Hjelp",
+    href: `${base}no/hub/`,
+  },
+  {
+    id: "b",
+    intent: "Jeg vil forstå og mestre hverdagen bedre",
+    need: "Gjenkjennelse, erfaring, strategier, lydglede og hverdagsforståelse.",
+    route: "Lyd i hverdagen",
+    href: `${base}no/lyd-i-hverdagen/`,
+  },
+  {
+    id: "c",
+    intent: "Jeg vil bare spørre direkte",
+    need: "Samtale uten å velge hub først — én setning er nok.",
+    route: "Hørehjelpen",
+    href: `${base}no/chat`,
+  },
+];
+
+const coreVariants = [
+  {
+    id: "v1",
+    label: "Variant 1 · Triage",
+    copy: "Velg hvordan du vil komme videre med høreapparatet ditt.",
+    note: "Tydelig valgflate — minst meta, mest retning.",
+  },
+  {
+    id: "v2",
+    label: "Variant 2 · Tre tilbud",
+    copy: "Rask hjelp, gode forklaringer og en samtale når du trenger det.",
+    note: "Oppsummerer produktets tre veier uten å forklare hele modellen.",
+  },
+  {
+    id: "v3",
+    label: "Variant 3 · Ambisjon",
+    copy: "Når høreapparatet ikke bare skal virke, men fungere i hverdagen.",
+    note: "Mer aspirasjon — krever at inngangene bærer utility-delen tydelig.",
+  },
+];
+
+const notList = [
+  "Full innholdsoversikt",
+  "Kampanjeside",
+  "Tradisjonell SaaS-landingsside",
+  "Komplett produktforklaring",
+  "Generell hub",
+];
+
+const layoutConsequences = [
+  "Forsiden bør være enkel og triage-orientert — ikke mer innhold før mandatet er godkjent.",
+  "Hjelp og Lyd i hverdagen må leses som tydelige valg, ikke bare to kort i en grid.",
+  "Hørehjelpen bør være lett tilgjengelig, men ikke nødvendigvis en dominerende høyrekolonne-widget.",
+  "Copy og layout må forklare produktets tre veier raskere enn dagens produksjon.",
+  "Ingen videre visuell polish på /no/ før Thomas godkjenner mandat og kjernebeskrivelse.",
+];
+
+const openQuestions = [
+  {
+    question: "Skal Hørehjelpen være likeverdig tredje valg eller sekundær direkteinngang?",
+    note: "Anbefaling i denne flaten: sekundær, men synlig — ikke tredje stort kort.",
+  },
+  {
+    question: "Skal forsiden ha stor chat-widget, liten chat-inngang eller ingen widget i første viewport?",
+    note: "Dagens produksjon har stor høyrekolonne — uklart om det matcher triage-mandat.",
+  },
+  {
+    question: "Skal Hjelp eller Lyd i hverdagen ha visuell prioritet?",
+    note: "Anbefaling: likeverdige primærveier — ulike roller, ikke hierarki.",
+  },
+  {
+    question: "Hvilken kjernebeskrivelse skal styre copy og layout?",
+    note: "Variant 1 eller 2 foreslås som mest MVP-egnet — avklares i review.",
+  },
+];
+---
+
+<PrototypeLayout title="Frontpage mandate — VIS #125G-R2">
+  <main class="fpm" data-frontpage-mandate>
+    <nav class="fpm__breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={sprintPath}>2026-W21</a>
+      <span aria-hidden="true">/</span>
+      <span>Frontpage mandate</span>
+    </nav>
+
+    <header class="fpm__hero">
+      <p class="fpm__kicker">VIS-only · #125G-R2 · Frontpage mandate</p>
+      <h1>Hva skal forsiden være i MVP?</h1>
+      <p class="fpm__subtitle">
+        Beslutningsflate etter Thomas QA — routing på <code>/no/</code> er teknisk riktig, men mandatet
+        er uklart. Ingen ny produksjonspolish før dette er godkjent.
+      </p>
+      <div class="fpm__hero-status">
+        <span>Status</span>
+        <strong>Needs review</strong>
+      </div>
+    </header>
+
+    <aside class="fpm__callout fpm__callout--primary" role="note">
+      <strong>Brukeren som skriver viddel.no</strong>
+      <p>
+        Kommer ofte uten å vite om de trenger feilsøking, forståelse eller samtale. Forsiden skal hjelpe
+        dem å <strong>velge riktig vei raskt</strong> — ikke forklare hele produktet.
+      </p>
+    </aside>
+
+    <aside class="fpm__callout" role="note">
+      <strong>VIS decision only.</strong>
+      <p>
+        Ingen endring i <code>/no/</code>, hub-flatene, tokens, Storyblok eller domene (#131D).
+        Produksjon: <a href={`${base}no/`}>vox.raddum.no/no/</a>
+      </p>
+    </aside>
+
+    <section class="fpm__panel" aria-labelledby="is-heading">
+      <p class="fpm__panel-kicker">01 · Mandat</p>
+      <h2 id="is-heading">Hva er forsiden i MVP?</h2>
+      <p class="fpm__lead">
+        Forsiden er en <strong>avklaringsflate / inngangsflate</strong>. Den skal hjelpe brukeren å velge
+        riktig vei:
+      </p>
+      <ul class="fpm__route-list" role="list">
+        <li><strong>Hjelp</strong> — når noe ikke virker</li>
+        <li><strong>Lyd i hverdagen</strong> — når brukeren vil forstå og mestre</li>
+        <li><strong>Hørehjelpen</strong> — når brukeren vil spørre direkte</li>
+      </ul>
+    </section>
+
+    <section class="fpm__panel" aria-labelledby="is-not-heading">
+      <p class="fpm__panel-kicker">02 · Avgrensning</p>
+      <h2 id="is-not-heading">Hva er forsiden ikke?</h2>
+      <ul class="fpm__not-list" role="list">
+        {notList.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+
+    <section class="fpm__panel" aria-labelledby="context-heading">
+      <p class="fpm__panel-kicker">03 · Brukerkontekster</p>
+      <h2 id="context-heading">Tre sannsynlige intensjoner</h2>
+      <div class="fpm__context-grid">
+        {userContexts.map((ctx) => (
+          <article class="fpm__context-card">
+            <p class="fpm__context-label">Intensjon {ctx.id.toUpperCase()}</p>
+            <h3>«{ctx.intent}»</h3>
+            <p>{ctx.need}</p>
+            <p class="fpm__context-route">
+              → <strong>{ctx.route}</strong>
+            </p>
+            <a href={ctx.href} class="fpm__context-link">
+              Se produksjon ({ctx.route}) →
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="fpm__panel" aria-labelledby="core-heading">
+      <p class="fpm__panel-kicker">04 · Kjernebeskrivelse</p>
+      <h2 id="core-heading">Foreslåtte copy-varianter</h2>
+      <div class="fpm__variant-grid">
+        {coreVariants.map((variant) => (
+          <article class="fpm__variant-card">
+            <p class="fpm__variant-label">{variant.label}</p>
+            <blockquote class="fpm__variant-copy">«{variant.copy}»</blockquote>
+            <p class="fpm__variant-note">{variant.note}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="fpm__panel" aria-labelledby="priority-heading">
+      <p class="fpm__panel-kicker">05 · Prioritet</p>
+      <h2 id="priority-heading">Anbefaling</h2>
+      <dl class="fpm__priority">
+        <div>
+          <dt>Primær</dt>
+          <dd>
+            <strong>Hjelp</strong> + <strong>Lyd i hverdagen</strong> som to likeverdige veier — ulike
+            roller, samme tyngde.
+          </dd>
+        </div>
+        <div>
+          <dt>Sekundær</dt>
+          <dd>
+            <strong>Hørehjelpen</strong> — synlig direkteinngang, ikke tredje konkurrerende hovedkort.
+          </dd>
+        </div>
+        <div>
+          <dt>Chat-widget</dt>
+          <dd>
+            Direkte samtale når brukeren allerede er klar — <strong>ikke</strong> dominerende
+            produktdemo i triage-fasen.
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="fpm__panel" aria-labelledby="layout-heading">
+      <p class="fpm__panel-kicker">06 · Layout-konsekvens</p>
+      <h2 id="layout-heading">Neste produksjons-pass (etter godkjenning)</h2>
+      <ul class="fpm__consequence-list" role="list">
+        {layoutConsequences.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+
+    <section class="fpm__panel fpm__panel--open" aria-labelledby="open-heading">
+      <p class="fpm__panel-kicker">07 · Åpne spørsmål</p>
+      <h2 id="open-heading">Til Thomas / review</h2>
+      <ul class="fpm__open-list" role="list">
+        {openQuestions.map((item) => (
+          <li>
+            <p class="fpm__open-q">{item.question}</p>
+            <p class="fpm__open-note">{item.note}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="fpm__panel fpm__panel--refs" aria-labelledby="refs-heading">
+      <p class="fpm__panel-kicker">08 · Referanser</p>
+      <h2 id="refs-heading">Relatert arbeid</h2>
+      <ul class="fpm__ref-list" role="list">
+        <li>
+          <a href={`${base}no/`}>Produksjon — /no/ (#125G, #125G-R1)</a>
+        </li>
+        <li>
+          <a href={`${base}no/hub/`}>Hjelp A3 — /no/hub/ (#125D)</a>
+        </li>
+        <li>
+          <a href={`${base}no/lyd-i-hverdagen/`}>Lyd i hverdagen — /no/lyd-i-hverdagen/ (#125F)</a>
+        </li>
+        <li>
+          <code>docs/project/decisions/DECISION_130_HUB_MODEL_V0_1.md</code>
+        </li>
+        <li>
+          <a href={`${sprintPath}/hub-types/`}>Hub type split (#125C)</a>
+        </li>
+      </ul>
+    </section>
+
+    <footer class="fpm__footer">
+      <p>
+        Neste steg etter godkjenning: produksjonspass på <code>/no/</code> — ikke før mandat og
+        kjernebeskrivelse er avklart.
+      </p>
+      <a href={`${base}vis/review/`}>← Viddel Review</a>
+    </footer>
+  </main>
+</PrototypeLayout>
+
+<style>
+  .fpm {
+    --fpm-ink: rgb(17 24 39);
+    --fpm-muted: rgb(55 65 81);
+    --fpm-border: rgb(17 24 39 / 0.12);
+    --fpm-subtle: rgb(249 250 251);
+    --fpm-accent: rgb(19 77 106);
+    --fpm-radius: 10px;
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3.5rem;
+    color: var(--fpm-ink);
+    font-family: var(--font-sans, Inter, system-ui, sans-serif);
+  }
+
+  .fpm__breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(17 24 39 / 0.55);
+  }
+
+  .fpm__breadcrumb a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .fpm__hero {
+    padding-bottom: 1.35rem;
+    border-bottom: 1px solid var(--fpm-border);
+  }
+
+  .fpm__kicker {
+    margin: 0 0 0.55rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fpm-accent);
+  }
+
+  .fpm h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 5vw, 2.35rem);
+    font-weight: 650;
+    letter-spacing: -0.045em;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+
+  .fpm__subtitle {
+    margin: 0.85rem 0 0;
+    max-width: 38rem;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--fpm-muted);
+  }
+
+  .fpm__hero-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: 1rem;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid var(--fpm-border);
+    border-radius: 999px;
+    font-size: 0.72rem;
+  }
+
+  .fpm__hero-status span {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgb(17 24 39 / 0.5);
+  }
+
+  .fpm__callout {
+    margin: 1rem 0 0;
+    padding: 0.85rem 1rem;
+    border: 1px dashed rgb(17 24 39 / 0.18);
+    border-radius: var(--fpm-radius);
+    background: var(--fpm-subtle);
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .fpm__callout--primary {
+    border-style: solid;
+    border-color: rgb(19 77 106 / 0.22);
+    background: rgb(240 249 255 / 0.65);
+  }
+
+  .fpm__callout p {
+    margin: 0.35rem 0 0;
+  }
+
+  .fpm__callout a {
+    color: var(--fpm-accent);
+  }
+
+  .fpm__panel {
+    margin-top: 1.75rem;
+    padding-top: 1.35rem;
+    border-top: 1px solid var(--fpm-border);
+  }
+
+  .fpm__panel-kicker {
+    margin: 0 0 0.35rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgb(17 24 39 / 0.45);
+  }
+
+  .fpm__panel h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+  }
+
+  .fpm__lead {
+    margin: 0.75rem 0 0;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--fpm-muted);
+  }
+
+  .fpm__route-list,
+  .fpm__not-list,
+  .fpm__consequence-list,
+  .fpm__open-list,
+  .fpm__ref-list {
+    margin: 0.85rem 0 0;
+    padding-left: 1.15rem;
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .fpm__route-list li + li,
+  .fpm__not-list li + li,
+  .fpm__consequence-list li + li {
+    margin-top: 0.35rem;
+  }
+
+  .fpm__context-grid,
+  .fpm__variant-grid {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 0.85rem;
+  }
+
+  @media (min-width: 640px) {
+    .fpm__context-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .fpm__context-card,
+  .fpm__variant-card {
+    padding: 0.85rem 0.9rem;
+    border: 1px solid var(--fpm-border);
+    border-radius: var(--fpm-radius);
+    background: var(--fpm-subtle);
+  }
+
+  .fpm__context-label,
+  .fpm__variant-label {
+    margin: 0;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fpm-accent);
+  }
+
+  .fpm__context-card h3 {
+    margin: 0.45rem 0 0;
+    font-size: 0.92rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+
+  .fpm__context-card p {
+    margin: 0.45rem 0 0;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--fpm-muted);
+  }
+
+  .fpm__context-route {
+    font-size: 0.82rem !important;
+    color: var(--fpm-ink) !important;
+  }
+
+  .fpm__context-link {
+    display: inline-block;
+    margin-top: 0.55rem;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--fpm-accent);
+    text-decoration: none;
+  }
+
+  .fpm__context-link:hover {
+    text-decoration: underline;
+  }
+
+  .fpm__variant-copy {
+    margin: 0.55rem 0 0;
+    padding: 0;
+    border: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+    color: var(--fpm-ink);
+  }
+
+  .fpm__variant-note {
+    margin: 0.45rem 0 0;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--fpm-muted);
+  }
+
+  .fpm__priority {
+    margin: 0.85rem 0 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .fpm__priority dt {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fpm-accent);
+  }
+
+  .fpm__priority dd {
+    margin: 0.25rem 0 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--fpm-muted);
+  }
+
+  .fpm__open-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .fpm__open-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--fpm-border);
+  }
+
+  .fpm__open-list li:last-child {
+    border-bottom: 0;
+  }
+
+  .fpm__open-q {
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 650;
+    line-height: 1.4;
+  }
+
+  .fpm__open-note {
+    margin: 0.35rem 0 0;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--fpm-muted);
+  }
+
+  .fpm__ref-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .fpm__ref-list li + li {
+    margin-top: 0.45rem;
+  }
+
+  .fpm__ref-list a {
+    color: var(--fpm-accent);
+    font-size: 0.86rem;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .fpm__footer {
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--fpm-border);
+    font-size: 0.84rem;
+    line-height: 1.55;
+    color: var(--fpm-muted);
+  }
+
+  .fpm__footer a {
+    display: inline-block;
+    margin-top: 0.65rem;
+    font-weight: 600;
+    color: var(--fpm-accent);
+    text-decoration: none;
+  }
+
+  .fpm__footer a:hover {
+    text-decoration: underline;
+  }
+</style>

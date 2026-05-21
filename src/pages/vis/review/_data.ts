@@ -82,6 +82,18 @@ export const reviewRegistry: ReviewRegistryItem[] = [
       "QA-godkjent. E2 situation-first anbefalt som base — applied som #125F på /no/lyd-i-hverdagen/.",
   },
   {
+    id: "frontpage-mandate",
+    title: "Frontpage mandate",
+    href: "/vis/sprints/2026-w21/frontpage-mandate/",
+    sprint: "2026-W21",
+    issue: "#125G-R2",
+    type: "active",
+    status: "needs-review",
+    stakeholderSafe: true,
+    description:
+      "Forsidens mandat — avklaringsflate / triage til Hjelp, Lyd i hverdagen og Hørehjelpen. Ingen produksjonspolish før godkjenning.",
+  },
+  {
     id: "forside-routing",
     title: "Forside / routing",
     href: "/no/",

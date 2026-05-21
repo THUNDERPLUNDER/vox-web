@@ -8,6 +8,7 @@
    #125E: Editorial hub prototype — QA accepted; E2 base for #125F.
    #125F: Lyd i hverdagen production slice at /no/lyd-i-hverdagen/ — QA accepted, closed.
    #125G: Forside/routing at /no/ — connects Hjelp and Lyd i hverdagen.
+   #125G-R2: Frontpage mandate decision surface — triage before further polish.
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -352,10 +353,31 @@ const typographyLabDirections = [
         </p>
         <p class="sprint-preview__typo-sans">
           To komplementære hub-innganger på <code>/no/</code> — utility (Hjelp) og editorial (Lyd i hverdagen).
-          Toppmeny og full IA kommer senere.
+          Mandat uavklart — se <a href={`${base}vis/sprints/2026-w21/frontpage-mandate/`}>#125G-R2</a>.
         </p>
         <a href={`${base}no/`} class="sprint-preview__typo-link">
           Open production forside →
+        </a>
+      </div>
+    </section>
+
+    <!-- Frontpage mandate (#125G-R2) -->
+    <section class="sprint-preview__section" aria-labelledby="frontpage-mandate-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">13 · #125G-R2</p>
+        <h2 id="frontpage-mandate-heading">Frontpage mandate</h2>
+        <p>Beslutningsflate — hva skal forsiden være i MVP før videre produksjonspolish?</p>
+      </div>
+      <div class="sprint-preview__typo-summary">
+        <p class="sprint-preview__typo-status">
+          <strong>Status:</strong> Needs review — decision surface
+        </p>
+        <p class="sprint-preview__typo-sans">
+          Avklaringsflate / triage til Hjelp, Lyd i hverdagen og Hørehjelpen. Routing på{" "}
+          <code>/no/</code> er teknisk riktig; mandat og kjernebeskrivelse må godkjennes før neste pass.
+        </p>
+        <a href={`${base}vis/sprints/2026-w21/frontpage-mandate/`} class="sprint-preview__typo-link">
+          Open frontpage mandate decision →
         </a>
       </div>
     </section>
