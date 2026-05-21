@@ -1,27 +1,69 @@
 ---
-/* CONTRACT: Norwegian landing — routing to Hjelp, Lyd i hverdagen and Hørehjelpen (#125G).
-   Hero + two complementary hub entries; CES panel unchanged. Not full IA or toppmeny.
+/* CONTRACT: Norwegian landing — routing to Hjelp, Lyd i hverdagen and Hørehjelpen (#125G / #125G-R1).
+   Primitive-aligned entry surfaces (Hjelp A3 utility + editorial situation cards). CES panel unchanged.
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Section from "../../components/layout/Section.astro";
 import Footer from "../../components/nav/Footer.astro";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 ---
 
-<BaseLayout title="Viddel - Hørehjelpen" currentPath="/no">
+<BaseLayout title="Viddel - Hørehjelpen" currentPath="/no" shellVariant="article">
   <meta slot="head" name="robots" content="noindex,follow" />
 
-  <main class="py-8 sm:py-10">
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_460px] lg:items-start">
-      <aside
-        class="relative isolate z-10 order-2 lg:order-2 lg:sticky lg:top-6"
-        aria-label="Hørehjelpen chat"
-      >
+  <main class="land-page" data-landing-page>
+    <div class="land-layout">
+      <div class="land-main">
+        <header class="land-header">
+          <h1>Få mer ut av høreapparatet ditt</h1>
+          <p class="land-lead">
+            Rask hjelp når noe ikke virker — og artikler som gjør det lettere å leve godt med lyd i hverdagen.
+          </p>
+        </header>
+
+        <ul class="land-entry-grid" role="list">
+          <li>
+            <a href="/no/hub/" class="land-entry land-entry--help">
+              <span class="land-entry__kicker">Hjelp</span>
+              <span class="land-entry__visual" aria-hidden="true"></span>
+              <span class="land-entry__title">Noe virker ikke?</span>
+              <span class="land-entry__hint">
+                Få raske steg for piping, app, Bluetooth, filter og når du bør kontakte audiograf.
+              </span>
+              <span class="land-entry__arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+          <li>
+            <a href="/no/lyd-i-hverdagen/" class="land-entry land-entry--editorial">
+              <span class="land-entry__kicker">Lyd i hverdagen</span>
+              <span class="land-entry__title">Vil du forstå og mestre mer?</span>
+              <span class="land-entry__hint">
+                Les om lyttetrøtthet, små lyder, sosialt liv og strategier som gjør hverdagen lettere.
+              </span>
+              <span class="land-entry__arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        </ul>
+
+        <p class="land-chat-note">
+          Du kan også{" "}
+          <a href="/no/chat">spørre Hørehjelpen direkte</a>
+          {" "}eller{" "}
+          <button
+            type="button"
+            onclick="document.getElementById('ces-widget')?.scrollIntoView({behavior:'smooth', block:'start'}); document.getElementById('ces-widget')?.open?.(); document.getElementById('ces-widget')?.show?.();"
+          >
+            starte samtalen her
+          </button>
+          .
+        </p>
+      </div>
+
+      <aside class="land-chat" aria-label="Hørehjelpen chat">
         <chat-messenger
           id="ces-widget"
           url-allowlist="*"
-          class="block w-full overflow-hidden rounded-[var(--radius-lg)] bg-[rgb(var(--surface-subtle))] shadow-[var(--shadow-md)] max-lg:h-[min(26rem,62dvh)] lg:h-[min(45rem,calc(100vh-6rem))]"
+          class="land-chat__widget"
         >
           <chat-messenger-container
             chat-title="Hørehjelpen"
@@ -30,80 +72,6 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
           ></chat-messenger-container>
         </chat-messenger>
       </aside>
-
-      <div class="relative z-0 order-1 flex flex-col lg:order-1">
-        <Section class="!py-6 sm:!py-10 lg:!py-14 lg:flex lg:min-h-[min(58vh,520px)] lg:flex-col lg:justify-center">
-          <div class="relative max-w-3xl">
-            <div
-              class="pointer-events-none absolute -inset-x-4 -inset-y-3 -z-10 rounded-[var(--radius-lg)] bg-gradient-to-br from-[rgb(var(--accent-gradient-start)/0.14)] via-[rgb(var(--surface))/0.1] to-[rgb(var(--accent-gradient-end)/0.12)] sm:-inset-x-6 sm:-inset-y-4"
-              aria-hidden="true"
-            ></div>
-            <h1
-              class="font-display text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl lg:text-[2.5rem] lg:leading-tight"
-            >
-              Få mer ut av høreapparatet ditt
-            </h1>
-            <p class="mt-5 text-lg font-normal leading-relaxed text-[rgb(var(--text-secondary))]">
-              Rask hjelp når noe ikke virker — og artikler som gjør det lettere å leve godt med lyd i hverdagen.
-            </p>
-
-            <div class="mt-9 grid gap-4 sm:grid-cols-2" role="list">
-              <a
-                href="/no/hub/"
-                class="vox-surface-tech group flex h-full flex-col rounded-[var(--radius-md)] p-5 transition-colors hover:bg-[rgb(var(--surface-subtle))/0.85] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgb(var(--reading-accent-iris))]"
-                role="listitem"
-              >
-                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[rgb(var(--reading-accent-iris))]">
-                  Hjelp
-                </p>
-                <p class="mt-2 text-base font-semibold text-[rgb(var(--text))]">Noe virker ikke?</p>
-                <p class="mt-2 flex-1 text-sm leading-relaxed text-[rgb(var(--muted))]">
-                  Få raske steg for piping, app, Bluetooth, filter og når du bør kontakte audiograf.
-                </p>
-                <span class="mt-4 text-sm font-medium text-[rgb(var(--text))] group-hover:underline">
-                  Gå til Hjelp →
-                </span>
-              </a>
-
-              <a
-                href="/no/lyd-i-hverdagen/"
-                class="vox-surface-calm group flex h-full flex-col rounded-[var(--radius-md)] p-5 transition-colors hover:bg-[rgb(var(--surface-subtle))/0.55] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgb(var(--reading-accent-iris))]"
-                role="listitem"
-              >
-                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[rgb(var(--reading-accent-iris))]">
-                  Lyd i hverdagen
-                </p>
-                <p class="mt-2 text-base font-semibold text-[rgb(var(--text))]">Vil du forstå og mestre mer?</p>
-                <p class="mt-2 flex-1 text-sm leading-relaxed text-[rgb(var(--muted))]">
-                  Les om lyttetrøtthet, små lyder, sosialt liv og strategier som gjør hverdagen lettere.
-                </p>
-                <span class="mt-4 text-sm font-medium text-[rgb(var(--text))] group-hover:underline">
-                  Utforsk Lyd i hverdagen →
-                </span>
-              </a>
-            </div>
-
-            <p class="mt-6 text-sm leading-relaxed text-[rgb(var(--muted))]">
-              Du kan også{" "}
-              <a
-                href="/no/chat"
-                class="font-medium text-[rgb(var(--text))] underline underline-offset-2 hover:text-[rgb(var(--reading-accent-iris))]"
-              >
-                spørre Hørehjelpen direkte
-              </a>
-              {" "}eller{" "}
-              <button
-                type="button"
-                onclick="document.getElementById('ces-widget')?.scrollIntoView({behavior:'smooth', block:'start'}); document.getElementById('ces-widget')?.open?.(); document.getElementById('ces-widget')?.show?.();"
-                class="font-medium text-[rgb(var(--text))] underline underline-offset-2 hover:text-[rgb(var(--reading-accent-iris))]"
-              >
-                starte samtalen her
-              </button>
-              .
-            </p>
-          </div>
-        </Section>
-      </div>
     </div>
   </main>
   <Footer />
@@ -134,3 +102,225 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
     })();
   </script>
 </BaseLayout>
+
+<style>
+  /* Page-scoped — aligned with Hjelp A3 problem cards + editorial situation cards (#125G-R1) */
+  .land-page {
+    padding: clamp(1.5rem, 4vw, 2.5rem) 0 clamp(3rem, 6vw, 4.5rem);
+  }
+
+  .land-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.5rem, 4vw, 2rem);
+    max-width: min(100%, 52rem);
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .land-layout {
+      max-width: min(100%, 68rem);
+      grid-template-columns: minmax(0, 1fr) min(22.5rem, 36vw);
+      align-items: start;
+      gap: 1.75rem;
+    }
+  }
+
+  .land-header {
+    padding-bottom: clamp(1.25rem, 3vw, 1.75rem);
+    border-bottom: 1px solid rgb(var(--border) / 0.2);
+  }
+
+  [data-landing-page] h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 2.75rem);
+    font-weight: 650;
+    line-height: 1.02;
+    letter-spacing: -0.055em;
+    text-wrap: balance;
+    color: rgb(var(--reading-ink));
+  }
+
+  .land-lead {
+    margin: clamp(0.85rem, 2.5vw, 1.15rem) 0 0;
+    max-width: 38rem;
+    font-size: clamp(1rem, 2.4vw, 1.12rem);
+    line-height: 1.55;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .land-entry-grid {
+    margin: clamp(1.35rem, 3.5vw, 1.75rem) 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  @media (min-width: 640px) {
+    .land-entry-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .land-entry {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 100%;
+    padding: 0.85rem 0.9rem 2.15rem;
+    border-radius: 10px;
+    color: inherit;
+    text-decoration: none;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      box-shadow 150ms ease,
+      transform 150ms ease;
+  }
+
+  .land-entry:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
+  }
+
+  .land-entry__kicker {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .land-entry__title {
+    font-size: 0.95rem;
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+    color: rgb(var(--reading-ink));
+  }
+
+  .land-entry__hint {
+    flex: 1;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .land-entry__arrow {
+    position: absolute;
+    right: 0.9rem;
+    bottom: 0.85rem;
+    font-size: 0.9rem;
+    line-height: 1;
+    color: rgb(var(--reading-ink-secondary) / 0.55);
+    transition: color 150ms ease, transform 150ms ease;
+  }
+
+  .land-entry:hover .land-entry__arrow {
+    color: rgb(var(--reading-ink));
+    transform: translateX(2px);
+  }
+
+  /* Hjelp — utility / problem-card DNA (A3) */
+  .land-entry--help {
+    border: 1px solid rgb(var(--border) / 0.28);
+    background: rgb(var(--reading-paper));
+  }
+
+  .land-entry--help:hover {
+    border-color: rgb(var(--border) / 0.5);
+    box-shadow: 0 3px 14px rgb(var(--reading-ink) / 0.06);
+    transform: translateY(-1px);
+  }
+
+  .land-entry__visual {
+    display: block;
+    height: 2.25rem;
+    border-radius: 6px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 55% 55% at 18% 75%, rgb(95 82 220 / 0.12) 0%, transparent 65%),
+      linear-gradient(145deg, rgb(238 235 255) 0%, rgb(252 252 255) 100%);
+  }
+
+  .land-entry--editorial .land-entry__visual {
+    display: none;
+  }
+
+  /* Editorial — situation-card DNA */
+  .land-entry--editorial {
+    border: 1px solid rgb(var(--border) / 0.14);
+    background: transparent;
+  }
+
+  .land-entry--editorial:hover {
+    background: rgb(var(--reading-paper));
+    border-color: rgb(var(--border) / 0.28);
+  }
+
+  .land-chat-note {
+    margin: clamp(1.15rem, 3vw, 1.5rem) 0 0;
+    font-size: 0.84rem;
+    line-height: 1.55;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .land-chat-note a,
+  .land-chat-note button {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    color: rgb(var(--reading-ink));
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+  }
+
+  .land-chat-note a:hover,
+  .land-chat-note button:hover {
+    color: rgb(var(--reading-accent-iris));
+  }
+
+  .land-chat-note a:focus-visible,
+  .land-chat-note button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
+    border-radius: 2px;
+  }
+
+  .land-chat {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (min-width: 1024px) {
+    .land-chat {
+      position: sticky;
+      top: 1.5rem;
+    }
+  }
+
+  .land-chat__widget {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgb(var(--border) / 0.22);
+    background: rgb(var(--reading-paper));
+    box-shadow: 0 4px 20px rgb(var(--reading-ink) / 0.05);
+    height: min(24rem, 58dvh);
+  }
+
+  @media (min-width: 1024px) {
+    .land-chat__widget {
+      height: min(38rem, calc(100vh - 7rem));
+    }
+  }
+</style>
