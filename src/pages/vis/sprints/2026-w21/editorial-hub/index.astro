@@ -1,0 +1,820 @@
+---
+/* CONTRACT: VIS-only editorial hub prototype (#125E) — Lyd i hverdagen decision surface.
+   Complements Hjelp A3 (/no/hub). No production routes. Name and route not locked.
+*/
+import PrototypeLayout from "../../../../../layouts/PrototypeLayout.astro";
+import "../../../../../styles/global.css";
+import "../../../../../styles/r1-dialog-article.css";
+
+const base = import.meta.env.BASE_URL;
+const sprintPath = `${base}vis/sprints/2026-w21`;
+
+const featuredStory = {
+  eyebrow: "Lyd og energi",
+  title: "Den usynlige utmattelsen: hvorfor du er helt skutt etter jobb",
+  deck:
+    "Lyttetrøtthet er mer enn en dårlig dag. Slik kan du kjenne den igjen og gjøre hverdagen lettere.",
+};
+
+const situations = [
+  "Ny med høreapparat",
+  "Sosialt liv",
+  "På jobb",
+  "For pårørende",
+  "Lyd og energi",
+  "Middag og støy",
+];
+
+const articles = [
+  { series: "Erfaring", title: "Slik løste jeg middagsbordet" },
+  { series: "Normalt?", title: "Hva som er normalt de første ukene" },
+  { series: "Energi", title: "Når lyden blir for mye" },
+  { series: "Relasjon", title: "Slik kan du be kollegaene dine hjelpe" },
+  { series: "Forståelse", title: "Derfor blir hjernen sliten før apparatet er feil" },
+];
+
+const editorialSeeds = [
+  "Snakk med Hørehjelpen om lyttetrøtthet",
+  "Få forslag til hva jeg kan si til kollegaene mine",
+  "Hjelp meg å forstå om dette er normalt",
+];
+
+const decisionItems = [
+  {
+    question: "Hub-navn",
+    answer: "Åpent — kandidater: Lyd i hverdagen · Hverdag · Erfaringer",
+    status: "åpent",
+  },
+  {
+    question: "Startpunkt i hub",
+    answer: "Story-first (E1) vs situasjon-first (E2) — begge testes her",
+    status: "åpent",
+  },
+  {
+    question: "AI på hubnivå",
+    answer: "Videreføring av lesing — ikke supportboks; tydelighet vs diskret plassering åpent",
+    status: "åpent",
+  },
+  {
+    question: "Artikkeltyper i første MVP",
+    answer: "Erfaring, normalt?, energi, relasjon, forståelse — ikke full serie-IA",
+    status: "hypotese",
+  },
+  {
+    question: "Neste applied slice",
+    answer: "Produksjonsrute vs fortsatt VIS — avhenger av denne review",
+    status: "åpent",
+  },
+];
+---
+
+<PrototypeLayout title="Editorial hub prototype — VIS #125E">
+  <main class="edhub" data-editorial-hub-page>
+    <nav class="edhub__breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={sprintPath}>2026-W21</a>
+      <span aria-hidden="true">/</span>
+      <span>Editorial hub</span>
+    </nav>
+
+    <header class="edhub__hero">
+      <p class="edhub__kicker">VIS-only · #125E · Editorial hub prototype</p>
+      <h1>Lyd i hverdagen</h1>
+      <p class="edhub__subtitle">
+        Redaksjonell hub — motflate til Hjelp A3. Navn og rute er <strong>ikke låst</strong>.
+      </p>
+      <div class="edhub__hero-status">
+        <span>Status</span>
+        <strong>Needs review</strong>
+      </div>
+    </header>
+
+    <aside class="edhub__callout edhub__callout--primary" role="note">
+      <strong>Dette er ikke Hjelp.</strong>
+      <p>
+        Dette er redaksjonelt produktinnhold — for å forstå, kjenne seg igjen og mestre hverdagen med
+        høreapparat. AI er videreføring av lesing, ikke supportboks.
+      </p>
+    </aside>
+
+    <aside class="edhub__callout" role="note">
+      <strong>VIS mockups only.</strong>
+      <p>Ingen endring i produksjon, tokens, Storyblok eller <code>/no/hub</code>.</p>
+    </aside>
+
+    <!-- Compare vs Hjelp -->
+    <section class="edhub__panel" aria-labelledby="compare-heading">
+      <p class="edhub__panel-kicker">01 · Mot Hjelp A3</p>
+      <h2 id="compare-heading">To komplementære flater</h2>
+      <div class="edhub__compare">
+        <article class="edhub__compare-col edhub__compare-col--help">
+          <p class="edhub__compare-label">Hjelp · A3 (produksjon)</p>
+          <p class="edhub__compare-question">«Noe virker ikke. Hva gjør jeg nå?»</p>
+          <p class="edhub__compare-desc">AI-spørrefelt, oppgavekort, korte guider, eskalering.</p>
+          <a href={`${base}no/hub/`} class="edhub__compare-link">Se /no/hub/ →</a>
+        </article>
+        <article class="edhub__compare-col edhub__compare-col--editorial">
+          <p class="edhub__compare-label">Lyd i hverdagen · editorial</p>
+          <p class="edhub__compare-question">«Hvordan lever jeg bedre med dette?»</p>
+          <p class="edhub__compare-desc">Gjenkjennelse, mestring, situasjoner, erfaringer, videre samtale.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Variant E1 -->
+    <section class="edhub__panel" aria-labelledby="e1-heading">
+      <p class="edhub__panel-kicker">02 · Variant E1</p>
+      <h2 id="e1-heading">Story-first — featured story først</h2>
+      <p class="edhub__variant-lead">Redaksjonell inngang via fortelling — situasjoner og artikler følger.</p>
+
+      <article class="edhub__mock">
+        <p class="edhub__variant-tag">E1 · Featured story → situasjoner → artikler → AI</p>
+        <div class="edhub__mock-body">
+          <a href="#" class="edhub__featured" tabindex="-1" onclick="return false">
+            <div class="edhub__featured-media" aria-hidden="true"></div>
+            <div class="edhub__featured-body">
+              <p class="edhub__eyebrow">{featuredStory.eyebrow}</p>
+              <h3>{featuredStory.title}</h3>
+              <p class="edhub__deck">{featuredStory.deck}</p>
+            </div>
+          </a>
+
+          <div class="edhub__block">
+            <p class="edhub__block-title">Situasjonsbaserte innganger</p>
+            <ul class="edhub__situation-grid" role="list">
+              {situations.map((situation) => (
+                <li>
+                  <a href="#" class="edhub__situation-chip" tabindex="-1" onclick="return false">{situation}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="edhub__block">
+            <p class="edhub__block-title">Artikler og serier</p>
+            <ul class="edhub__article-list" role="list">
+              {articles.map((article) => (
+                <li>
+                  <a href="#" class="edhub__article-card" tabindex="-1" onclick="return false">
+                    <div class="edhub__article-media" aria-hidden="true"></div>
+                    <div class="edhub__article-body">
+                      <p class="edhub__article-series">{article.series}</p>
+                      <p class="edhub__article-title">{article.title}</p>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="edhub__ai-block">
+            <p class="edhub__block-title">Videre samtale etter lesing</p>
+            <p class="edhub__ai-intro">Article/AI seed pattern — fortsettelse av artikkel, ikke support.</p>
+            <div class="edhub__seed-bridge" data-r1-editorial>
+              <section class="r1-ai-bridge">
+                <section class="inline-chat-shell" data-inline-chat-mode="progressive">
+                  <div class="inline-chat-shell__seed-suggestions">
+                    <ul class="inline-chat-shell__seed-list inline-chat-shell__seed-list--rows" role="list">
+                      {editorialSeeds.map((seed) => (
+                        <li class="inline-chat-shell__seed-item">
+                          <button type="button" class="inline-chat-shell__seed-btn inline-chat-shell__seed-row" tabindex="-1">
+                            <span class="inline-chat-shell__seed-question">{seed}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </section>
+              </section>
+            </div>
+          </div>
+        </div>
+        <footer class="edhub__mock-notes">
+          <strong>Designretning:</strong> mer luft, editorial hierarki, større mediaflater — lesing og gjenkjennelse, ikke FAQ.
+        </footer>
+      </article>
+    </section>
+
+    <!-- Variant E2 -->
+    <section class="edhub__panel" aria-labelledby="e2-heading">
+      <p class="edhub__panel-kicker">03 · Variant E2</p>
+      <h2 id="e2-heading">Situation-first — situasjoner først</h2>
+      <p class="edhub__variant-lead">Inngang via livssituasjon — featured story sekundært.</p>
+
+      <article class="edhub__mock">
+        <p class="edhub__variant-tag">E2 · Situasjoner → featured story → artikler → AI</p>
+        <div class="edhub__mock-body edhub__mock-body--e2">
+          <div class="edhub__block edhub__block--situations-first">
+            <p class="edhub__block-title">Hvor er du i hverdagen?</p>
+            <ul class="edhub__situation-cards" role="list">
+              {situations.map((situation) => (
+                <li>
+                  <a href="#" class="edhub__situation-card" tabindex="-1" onclick="return false">
+                    <span class="edhub__situation-card-label">{situation}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <a href="#" class="edhub__featured edhub__featured--secondary" tabindex="-1" onclick="return false">
+            <div class="edhub__featured-media edhub__featured-media--compact" aria-hidden="true"></div>
+            <div class="edhub__featured-body">
+              <p class="edhub__eyebrow">Utvalgt · {featuredStory.eyebrow}</p>
+              <h3>{featuredStory.title}</h3>
+              <p class="edhub__deck">{featuredStory.deck}</p>
+            </div>
+          </a>
+
+          <div class="edhub__block">
+            <p class="edhub__block-title">Artikler og serier</p>
+            <ul class="edhub__article-rows" role="list">
+              {articles.map((article) => (
+                <li>
+                  <a href="#" class="edhub__article-row" tabindex="-1" onclick="return false">
+                    <span class="edhub__article-series">{article.series}</span>
+                    <span class="edhub__article-title">{article.title}</span>
+                    <span class="edhub__article-arrow" aria-hidden="true">→</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="edhub__ai-block">
+            <p class="edhub__block-title">Videre samtale etter lesing</p>
+            <div class="edhub__seed-bridge" data-r1-editorial>
+              <section class="r1-ai-bridge">
+                <section class="inline-chat-shell" data-inline-chat-mode="progressive">
+                  <div class="inline-chat-shell__seed-suggestions">
+                    <ul class="inline-chat-shell__seed-list inline-chat-shell__seed-list--rows" role="list">
+                      {editorialSeeds.map((seed) => (
+                        <li class="inline-chat-shell__seed-item">
+                          <button type="button" class="inline-chat-shell__seed-btn inline-chat-shell__seed-row" tabindex="-1">
+                            <span class="inline-chat-shell__seed-question">{seed}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </section>
+              </section>
+            </div>
+          </div>
+        </div>
+        <footer class="edhub__mock-notes">
+          <strong>Test:</strong> om brukeren finner seg raskere via situasjon enn via featured story.
+        </footer>
+      </article>
+    </section>
+
+    <!-- Emnehub boundary -->
+    <section class="edhub__panel edhub__panel--note" aria-labelledby="topic-heading">
+      <p class="edhub__panel-kicker">04 · Emnehub-grense</p>
+      <h2 id="topic-heading">Ikke emnehub</h2>
+      <p>
+        Dette er en <strong>primær inngang til redaksjonelt innhold</strong> — ikke emnehub. Emnehub kan
+        senere samle både Hjelp og editorial rundt ett tema, f.eks. <strong>«På jobb»</strong> (praktiske
+        guider + erfaringer), uten å erstatte denne huben.
+      </p>
+    </section>
+
+    <!-- Decisions -->
+    <section class="edhub__panel" aria-labelledby="decisions-heading">
+      <p class="edhub__panel-kicker">05 · Beslutninger</p>
+      <h2 id="decisions-heading">Åpne spørsmål</h2>
+      <dl class="edhub__decisions">
+        {decisionItems.map((item) => (
+          <div class="edhub__decision-row">
+            <dt>{item.question}</dt>
+            <dd>
+              <span class="edhub__decision-answer">{item.answer}</span>
+              <span class={`edhub__decision-status edhub__decision-status--${item.status}`}>{item.status}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  </main>
+
+  <style>
+    [data-editorial-hub-page] {
+      --ed-deep: #134d6a;
+      --ed-ink: #111827;
+      --ed-muted: #6b7280;
+      --ed-light: #ffffff;
+      --ed-subtle: #fafbfc;
+      --ed-warm: #fdfcfa;
+      --ed-border: rgb(17 24 39 / 0.1);
+      --ed-radius: 10px;
+
+      min-height: 100vh;
+      max-width: 52rem;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+      background: var(--ed-light);
+      color: var(--ed-ink);
+      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+
+    .edhub__breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      margin-bottom: 1.1rem;
+      font-size: 0.72rem;
+      color: var(--ed-muted);
+    }
+
+    .edhub__breadcrumb a {
+      color: inherit;
+      text-underline-offset: 2px;
+    }
+
+    .edhub__hero {
+      padding: 1.25rem 0 1.75rem;
+      border-bottom: 1px solid var(--ed-border);
+    }
+
+    .edhub__kicker,
+    .edhub__panel-kicker {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ed-deep);
+    }
+
+    .edhub__hero h1,
+    .edhub__panel h2 {
+      margin: 0.4rem 0 0;
+      font-family: var(--font-display);
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+    }
+
+    .edhub__hero h1 {
+      font-size: clamp(2rem, 5.5vw, 3.2rem);
+    }
+
+    .edhub__subtitle,
+    .edhub__variant-lead,
+    .edhub__panel p,
+    .edhub__compare-desc,
+    .edhub__ai-intro,
+    .edhub__mock-notes {
+      color: var(--ed-muted);
+      line-height: 1.65;
+    }
+
+    .edhub__subtitle {
+      max-width: 40rem;
+      margin: 0.75rem 0 0;
+      font-size: 0.95rem;
+    }
+
+    .edhub__hero-status {
+      display: inline-flex;
+      gap: 0.6rem;
+      align-items: center;
+      margin-top: 1rem;
+      padding: 0.35rem 0.65rem;
+      border: 1px solid rgb(245 158 11 / 0.35);
+      border-radius: 999px;
+      background: rgb(245 158 11 / 0.08);
+      font-size: 0.76rem;
+    }
+
+    .edhub__hero-status span {
+      color: var(--ed-muted);
+    }
+
+    .edhub__hero-status strong {
+      color: rgb(146 64 14);
+    }
+
+    .edhub__callout {
+      margin: 1.25rem 0 0;
+      padding: 0.9rem 1rem;
+      border: 1px solid rgb(19 77 106 / 0.18);
+      border-radius: var(--ed-radius);
+      background: rgb(19 77 106 / 0.03);
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+
+    .edhub__callout--primary {
+      border-color: rgb(19 77 106 / 0.28);
+      background: rgb(19 77 106 / 0.06);
+    }
+
+    .edhub__callout strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--ed-ink);
+    }
+
+    .edhub__panel {
+      margin-top: 1.75rem;
+      padding: 1.15rem;
+      border: 1px solid var(--ed-border);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .edhub__panel h2 {
+      font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+    }
+
+    .edhub__panel--note {
+      background: var(--ed-subtle);
+    }
+
+    .edhub__compare {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .edhub__compare-col {
+      padding: 1rem 1.1rem;
+      border-radius: var(--ed-radius);
+      border: 1px solid var(--ed-border);
+    }
+
+    .edhub__compare-col--help {
+      background: var(--ed-subtle);
+    }
+
+    .edhub__compare-col--editorial {
+      background: var(--ed-warm);
+      border-color: rgb(19 77 106 / 0.15);
+    }
+
+    .edhub__compare-label {
+      margin: 0;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ed-deep);
+    }
+
+    .edhub__compare-question {
+      margin: 0.45rem 0 0;
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 650;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      color: var(--ed-ink);
+    }
+
+    .edhub__compare-desc {
+      margin: 0.4rem 0 0;
+      font-size: 0.82rem;
+    }
+
+    .edhub__compare-link {
+      display: inline-block;
+      margin-top: 0.65rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--ed-deep);
+      text-underline-offset: 2px;
+    }
+
+    .edhub__variant-lead {
+      margin: 0.5rem 0 0;
+      font-size: 0.88rem;
+    }
+
+    .edhub__mock {
+      margin-top: 1rem;
+      border: 1px solid var(--ed-border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--ed-warm);
+    }
+
+    .edhub__variant-tag {
+      margin: 0;
+      padding: 0.55rem 1rem;
+      border-bottom: 1px solid var(--ed-border);
+      background: #fff;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ed-deep);
+    }
+
+    .edhub__mock-body {
+      padding: 1.25rem 1.15rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .edhub__mock-body--e2 {
+      gap: 1.35rem;
+    }
+
+    .edhub__block-title {
+      margin: 0 0 0.65rem;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ed-muted);
+    }
+
+    /* Featured story */
+    .edhub__featured {
+      display: grid;
+      gap: 1.1rem;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .edhub__featured--secondary {
+      padding-top: 0.25rem;
+      border-top: 1px solid var(--ed-border);
+    }
+
+    .edhub__featured-media {
+      aspect-ratio: 16 / 9;
+      border-radius: var(--ed-radius);
+      background:
+        linear-gradient(145deg, rgb(19 77 106 / 0.32), rgb(148 163 184 / 0.22)),
+        linear-gradient(160deg, rgb(30 58 80 / 0.15), rgb(253 252 250));
+    }
+
+    .edhub__featured-media--compact {
+      aspect-ratio: 21 / 9;
+      max-height: 8.5rem;
+    }
+
+    .edhub__eyebrow {
+      margin: 0;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ed-muted);
+    }
+
+    .edhub__featured h3 {
+      margin: 0.45rem 0 0;
+      font-family: var(--font-display);
+      font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+      font-weight: 650;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      color: var(--ed-ink);
+    }
+
+    .edhub__deck {
+      margin: 0.6rem 0 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--ed-muted);
+      max-width: 36rem;
+    }
+
+    /* Situation chips (E1) */
+    .edhub__situation-grid {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .edhub__situation-chip {
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgb(17 24 39 / 0.08);
+      background: #fff;
+      color: var(--ed-ink);
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    /* Situation cards (E2) */
+    .edhub__situation-cards {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+
+    .edhub__situation-card {
+      display: flex;
+      align-items: center;
+      min-height: 3.25rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: var(--ed-radius);
+      border: 1px solid rgb(17 24 39 / 0.08);
+      background: #fff;
+      color: inherit;
+      text-decoration: none;
+      transition: box-shadow 150ms ease;
+    }
+
+    .edhub__situation-card:hover {
+      box-shadow: 0 2px 10px rgb(17 24 39 / 0.05);
+    }
+
+    .edhub__situation-card-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+
+    /* Article cards (E1) */
+    .edhub__article-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .edhub__article-card {
+      display: grid;
+      gap: 0.85rem;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .edhub__article-media {
+      aspect-ratio: 16 / 10;
+      max-height: 6rem;
+      border-radius: var(--ed-radius);
+      background: linear-gradient(145deg, rgb(19 77 106 / 0.1), rgb(224 242 254 / 0.45));
+    }
+
+    .edhub__article-series {
+      margin: 0;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ed-muted);
+    }
+
+    .edhub__article-title {
+      margin: 0.25rem 0 0;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 650;
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+      color: var(--ed-ink);
+    }
+
+    /* Article rows (E2) */
+    .edhub__article-rows {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .edhub__article-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 0.45rem 0.75rem;
+      align-items: baseline;
+      padding: 0.6rem 0.7rem;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid rgb(17 24 39 / 0.06);
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .edhub__article-arrow {
+      color: var(--ed-muted);
+      font-size: 0.85rem;
+    }
+
+    /* AI seeds */
+    .edhub__ai-block {
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--ed-border);
+    }
+
+    .edhub__ai-intro {
+      margin: 0 0 0.65rem;
+      font-size: 0.8rem;
+    }
+
+    .edhub__seed-bridge {
+      padding: 0.75rem;
+      border-radius: var(--ed-radius);
+      background: rgb(var(--reading-paper));
+    }
+
+    .edhub__mock-notes {
+      padding: 0.85rem 1.1rem;
+      border-top: 1px solid var(--ed-border);
+      background: #fff;
+      font-size: 0.76rem;
+    }
+
+    .edhub__mock-notes strong {
+      color: var(--ed-ink);
+    }
+
+    /* Decisions */
+    .edhub__decisions {
+      margin: 0.85rem 0 0;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .edhub__decision-row {
+      padding: 0.75rem 0.85rem;
+      border: 1px solid var(--ed-border);
+      border-radius: var(--ed-radius);
+      background: var(--ed-subtle);
+    }
+
+    .edhub__decision-row dt {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ed-deep);
+    }
+
+    .edhub__decision-row dd {
+      margin: 0.35rem 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: baseline;
+    }
+
+    .edhub__decision-answer {
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .edhub__decision-status {
+      padding: 0.12rem 0.4rem;
+      border-radius: 999px;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .edhub__decision-status--hypotese {
+      background: rgb(19 77 106 / 0.1);
+      color: var(--ed-deep);
+    }
+
+    .edhub__decision-status--åpent {
+      background: rgb(245 158 11 / 0.14);
+      color: rgb(146 64 14);
+    }
+
+    @media (min-width: 640px) {
+      [data-editorial-hub-page] {
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      .edhub__compare {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .edhub__article-card {
+        grid-template-columns: 7rem 1fr;
+        align-items: start;
+      }
+
+      .edhub__article-media {
+        max-height: none;
+        height: 100%;
+        min-height: 4.5rem;
+      }
+
+      .edhub__situation-cards {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
+</PrototypeLayout>
