@@ -19,8 +19,8 @@ const chatHref = `${base}${NO_NAV_CHAT_HREF.replace(/^\//, "")}`;
 const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
 ---
 
-<header class="h-16 sm:h-[4.5rem]">
-  <div class="flex h-full items-center gap-3 sm:gap-4">
+<header class="h-full min-h-16 sm:min-h-[4.5rem]">
+  <div class="flex h-full min-h-16 items-center gap-3 sm:min-h-[4.5rem] sm:gap-4">
     <a
       href={homeHref}
       class="inline-flex items-center rounded-[var(--radius-sm)] px-2 py-1.5 text-sm font-semibold tracking-tight text-[rgb(var(--text))] sm:text-base"
@@ -47,15 +47,15 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
         )
       }
     </a>
-    <nav class="hidden flex-1 items-center justify-center gap-1 lg:flex">
+    <nav class="hidden min-h-9 flex-1 items-center justify-center gap-1 lg:flex">
       {NO_NAV_LINKS.map((link) => {
         const isActive = isNavActive(link.href, currentPath);
         return (
           <a
             href={link.href}
-            class={`rounded-[var(--radius-sm)] px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4] ${
+            class={`inline-flex min-h-9 items-center rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium leading-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4] ${
               isActive
-                ? "bg-[rgb(var(--surface-subtle))] font-semibold text-[rgb(var(--text))] shadow-[var(--shadow-sm)]"
+                ? "bg-[rgb(var(--surface-subtle))] text-[rgb(var(--text))]"
                 : "text-[rgb(var(--muted))] hover:bg-[rgb(var(--surface-subtle))/0.7] hover:text-[rgb(var(--text))]"
             }`}
           >
@@ -99,7 +99,7 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
     </nav>
     <a
       href={chatHref}
-      class={`hidden items-center justify-center rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4] lg:inline-flex ${
+      class={`hidden min-h-[2.625rem] items-center justify-center rounded-full border px-5 py-2.5 text-sm font-semibold leading-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4] lg:inline-flex ${
         chatActive
           ? "border-[rgb(var(--text))/0.34] bg-[rgb(var(--reading-ink))] text-[rgb(var(--reading-paper))]"
           : "border-[rgb(var(--border))/0.7] bg-[rgb(var(--surface))/0.42] text-[rgb(var(--text))] hover:border-[rgb(var(--text))/0.34] hover:bg-[rgb(var(--surface-subtle))/0.62]"

@@ -43,9 +43,9 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
           return (
             <a
               href={link.href}
-              class={`flex w-full items-center justify-between rounded-[var(--radius-sm)] px-3 py-3 text-sm transition-colors ${
+              class={`flex min-h-11 w-full items-center justify-between rounded-[var(--radius-sm)] px-3 py-3 text-sm font-medium leading-none transition-colors ${
                 isActive
-                  ? "bg-[rgb(var(--surface-subtle))] font-semibold text-[rgb(var(--text))]"
+                  ? "bg-[rgb(var(--surface-subtle))] text-[rgb(var(--text))]"
                   : "text-[rgb(var(--muted))] hover:bg-[rgb(var(--surface-subtle))/0.7] hover:text-[rgb(var(--text))]"
               }`}
             >
