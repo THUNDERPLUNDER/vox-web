@@ -5,7 +5,8 @@
    #124: Primitives Lab at /primitives/ — VIS-only primitive candidates.
    #125C: Hub type split at /hub-types/ — closed; Hjelp A3 valgt for utility.
    #125D: Hjelp A3 applied on /no/hub/ — QA accepted, closed.
-   #125E: Editorial hub prototype at /editorial-hub/ — Lyd i hverdagen.
+   #125E: Editorial hub prototype — QA accepted; E2 base for #125F.
+   #125F: Lyd i hverdagen production slice at /no/lyd-i-hverdagen/.
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -299,14 +300,37 @@ const typographyLabDirections = [
         <p>Lyd i hverdagen — redaksjonell motflate til Hjelp A3. Gjenkjennelse, mestring, situasjoner og videre samtale.</p>
       </div>
       <div class="sprint-preview__typo-summary">
+        <p class="sprint-preview__typo-decision">
+          <strong>Decision:</strong> E2 situation-first anbefalt som base for production slice.
+        </p>
+        <p class="sprint-preview__typo-status">
+          <strong>Status:</strong> QA accepted / decision candidate — applied som #125F
+        </p>
+        <p class="sprint-preview__typo-sans">
+          To layoutvarianter testet (E1 story-first, E2 situation-first). Navn og rute fortsatt arbeidstittel.
+        </p>
+        <a href={`${base}vis/sprints/2026-w21/editorial-hub/`} class="sprint-preview__typo-link">
+          Open editorial hub prototype (reference) →
+        </a>
+      </div>
+    </section>
+
+    <!-- Lyd i hverdagen production (#125F) -->
+    <section class="sprint-preview__section" aria-labelledby="lyd-hverdagen-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">11 · #125F</p>
+        <h2 id="lyd-hverdagen-heading">Lyd i hverdagen production slice</h2>
+        <p>Første editorial production route — situation-first, artikler og videre samtale med Hørehjelpen.</p>
+      </div>
+      <div class="sprint-preview__typo-summary">
         <p class="sprint-preview__typo-status">
           <strong>Status:</strong> Needs review
         </p>
         <p class="sprint-preview__typo-sans">
-          To layoutvarianter: E1 story-first og E2 situation-first. Navn og rute ikke låst.
+          Arbeidstittel <code>/no/lyd-i-hverdagen/</code> — ikke i toppmeny ennå. Forside/routing kommer senere.
         </p>
-        <a href={`${base}vis/sprints/2026-w21/editorial-hub/`} class="sprint-preview__typo-link">
-          Open editorial hub prototype →
+        <a href={`${base}no/lyd-i-hverdagen/`} class="sprint-preview__typo-link">
+          Open production editorial hub →
         </a>
       </div>
     </section>

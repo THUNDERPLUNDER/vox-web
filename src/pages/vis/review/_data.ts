@@ -75,11 +75,23 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     href: "/vis/sprints/2026-w21/editorial-hub/",
     sprint: "2026-W21",
     issue: "#125E",
+    type: "reference",
+    status: "decision-candidate",
+    stakeholderSafe: true,
+    description:
+      "QA-godkjent. E2 situation-first anbefalt som base — applied som #125F på /no/lyd-i-hverdagen/.",
+  },
+  {
+    id: "lyd-i-hverdagen-production",
+    title: "Lyd i hverdagen production slice",
+    href: "/no/lyd-i-hverdagen/",
+    sprint: "2026-W21",
+    issue: "#125F",
     type: "active",
     status: "needs-review",
     stakeholderSafe: true,
     description:
-      "Lyd i hverdagen — redaksjonell hub som motflate til Hjelp A3. Story-first (E1) og situation-first (E2).",
+      "Første editorial production slice — E2 situation-first. Arbeidstittel/rute, ikke i toppmeny ennå.",
   },
   {
     id: "interaction-states",
