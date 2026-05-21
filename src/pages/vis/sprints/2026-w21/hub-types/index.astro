@@ -1,13 +1,13 @@
 ---
-/* CONTRACT: VIS-only hub type split (#125C) — utility vs editorial decision surface.
+/* CONTRACT: VIS-only hub type split (#125C / #125C-R1) — complementary Hjelp vs editorial decision surface.
    Informs next #125 slice after #130 content strategy revisit. No production routes.
 */
 import PrototypeLayout from "../../../../../layouts/PrototypeLayout.astro";
 import "../../../../../styles/global.css";
+import "../../../../../styles/r1-dialog-article.css";
 
 const base = import.meta.env.BASE_URL;
 const sprintPath = `${base}vis/sprints/2026-w21`;
-const pagePath = `${sprintPath}/hub-types`;
 
 const taskTaxonomy = [
   {
@@ -30,13 +30,22 @@ const taskTaxonomy = [
   },
 ];
 
-const utilityTasks = [
+const commonProblems = [
   "Stoppe piping",
   "Koble høreapparatet til mobilen",
   "Fikse app eller Bluetooth",
   "Rense filter, propp eller dome",
   "Vite når audiograf bør kontaktes",
 ];
+
+const problemCards = [
+  { title: "Stoppe piping", visual: "piping" },
+  { title: "Koble til mobilen", visual: "bluetooth" },
+  { title: "App finner ikke apparatet", visual: "app" },
+  { title: "Bytte filter", visual: "filter" },
+];
+
+const hybridCards = problemCards.slice(0, 4);
 
 const utilityGuides = [
   { label: "Feilsøking", title: "Få slutt på pipingen" },
@@ -63,11 +72,27 @@ const editorialSeeds = [
   "Få forslag til hva jeg kan si til kollegaene mine",
 ];
 
-const openQuestions = [
-  "Skal hovednavn være «Hjelp» eller «Hørehjelp»?",
-  "Skal editorial-flaten hete «Erfaringer», «Innsikt», «Magasin» eller noe annet?",
-  "Skal toppmenyen vise begge direkte, eller samle dem under én ressurs-paraply?",
-  "Hvilken hubtype bør bygges først etter #125C?",
+const decisionItems = [
+  {
+    question: "Utility-navn",
+    answer: "Hjelp (foreløpig)",
+    status: "foreløpig",
+  },
+  {
+    question: "Editorial-navn",
+    answer: "Åpent — kandidater: Hverdag · Lyd i hverdagen",
+    status: "åpent",
+  },
+  {
+    question: "Toppmeny",
+    answer: "Begge hubtyper direkte i meny (arbeidshypotese)",
+    status: "hypotese",
+  },
+  {
+    question: "Neste #125 build-slice",
+    answer: "Fortsatt åpent etter denne VIS-vurderingen",
+    status: "åpent",
+  },
 ];
 
 const nextSteps125 = [
@@ -77,7 +102,7 @@ const nextSteps125 = [
 ];
 ---
 
-<PrototypeLayout title="Hub type split — VIS #125C">
+<PrototypeLayout title="Hub type split — VIS #125C-R1">
   <main class="htypes" data-hub-types-page>
     <nav class="htypes__breadcrumb" aria-label="Du er her">
       <a href={`${base}vis`}>VIS</a>
@@ -88,29 +113,34 @@ const nextSteps125 = [
     </nav>
 
     <header class="htypes__hero">
-      <p class="htypes__kicker">VIS-only · #125C · Hub type split</p>
-      <h1>Utility vs editorial hub</h1>
+      <p class="htypes__kicker">VIS-only · #125C-R1 · Hub type refinement</p>
+      <h1>Komplementære hubtyper: Hjelp og editorial</h1>
       <p class="htypes__subtitle">
-        Beslutningsflate etter #130 Content Strategy Revisit — sammenlign hjelpehub og
-        editorial/erfaringshub før neste #125-slice.
+        Beslutningsflate etter #130 og Thomas QA — to flater som jobber sammen, ikke to alternativer
+        for samme jobb.
       </p>
       <div class="htypes__hero-status">
         <span>Status</span>
-        <strong>Decision support</strong>
+        <strong>Decision support · R1</strong>
       </div>
     </header>
 
-    <aside class="htypes__callout" role="note">
-      <strong>Navn og ruter er forslag — ikke låst.</strong>
+    <aside class="htypes__callout htypes__callout--complement" role="note">
+      <strong>Disse er komplementære flater, ikke alternativer.</strong>
       <p>
-        VIS mockups only. Ingen endring i produksjon, tokens, Storyblok eller global CSS.
-        Formål: vurdere layout, hierarki, surface-logikk og navngiving.
+        <strong>Hjelp</strong> løser problemer nå. <strong>Lyd i hverdagen</strong> (editorial) gir
+        gjenkjennelse, forståelse og videre utforsking. Navn og ruter er forslag — ikke låst.
       </p>
+    </aside>
+
+    <aside class="htypes__callout" role="note">
+      <strong>VIS mockups only.</strong>
+      <p>Ingen endring i produksjon, tokens, Storyblok eller global CSS.</p>
     </aside>
 
     <!-- Task taxonomy -->
     <section class="htypes__panel" aria-labelledby="taxonomy-heading">
-      <p class="htypes__panel-kicker">01 · Top task taxonomy</p>
+      <p class="htypes__panel-kicker">01 · Task taxonomy</p>
       <h2 id="taxonomy-heading">Tre task-typer i innholdsstrategien</h2>
       <div class="htypes__taxonomy">
         {taskTaxonomy.map((item) => (
@@ -127,86 +157,145 @@ const nextSteps125 = [
       </div>
     </section>
 
-    <!-- Side-by-side mocks -->
+    <!-- Hub mocks -->
     <section class="htypes__compare" aria-labelledby="compare-heading">
       <div class="htypes__compare-head">
         <p class="htypes__panel-kicker">02 · Hub mocks</p>
-        <h2 id="compare-heading">Hjelpehub vs editorial hub</h2>
+        <h2 id="compare-heading">Hjelp vs Lyd i hverdagen</h2>
         <p class="htypes__compare-lead">
-          Scroll side ved side (desktop) eller sammenlign sekvensielt (mobil).
+          Hjelp vises med tre layoutvarianter (A1–A3). Editorial beholder hovedretningen.
         </p>
       </div>
 
       <div class="htypes__compare-grid">
-        <!-- Utility / help hub -->
-        <article class="htypes__mock htypes__mock--utility" aria-labelledby="utility-heading">
-          <header class="htypes__mock-label">
-            <span class="htypes__mock-tag htypes__mock-tag--utility">Forslag A</span>
-            <h3 id="utility-heading">Hjelpehub / utility</h3>
-            <p>Rask problemløsning · FAQ · eskalering</p>
+        <!-- Hjelp column -->
+        <div class="htypes__help-column">
+          <header class="htypes__type-header htypes__type-header--help">
+            <span class="htypes__mock-tag htypes__mock-tag--utility">Hubtype 1</span>
+            <h3>Hjelp</h3>
+            <p>Rask problemløsning · praktisk grep · eskalering</p>
           </header>
 
-          <div class="htypes__utility">
-            <div class="htypes__utility-hero">
-              <p class="htypes__utility-kicker">Emnehub · feilsøking</p>
-              <h4>Hva trenger du hjelp til?</h4>
-              <p class="htypes__utility-lead">Finn riktig grep for det som ikke fungerer nå.</p>
-              <label class="htypes__utility-search">
-                <span class="sr-only">Beskriv problemet</span>
-                <input type="search" placeholder="F.eks. piping, Bluetooth, filter…" readonly tabindex="-1" />
-              </label>
-            </div>
+          <aside class="htypes__ai-note" role="note">
+            <strong>AI-inngang, ikke tradisjonelt søk.</strong>
+            <p>
+              Søkefeltet i Hjelp bør åpne <strong>Hørehjelpen</strong> med brukerens spørsmål som seed
+              — en AI-assistert problemløser, ikke bare sideinternt søk.
+            </p>
+          </aside>
 
-            <div class="htypes__utility-block">
-              <p class="htypes__block-title">Top tasks</p>
-              <ul class="htypes__task-list" role="list">
-                {utilityTasks.map((task) => (
-                  <li>
-                    <span class="htypes__task-row">
-                      <span>{task}</span>
-                      <span aria-hidden="true">→</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
+          <!-- A1 -->
+          <article class="htypes__variant" aria-labelledby="variant-a1">
+            <p class="htypes__variant-label" id="variant-a1">Variant A1 · Search-first</p>
+            <div class="htypes__utility">
+              <div class="htypes__utility-hero">
+                <h4>Hva trenger du hjelp til?</h4>
+                <p class="htypes__utility-lead">Beskriv problemet — Hørehjelpen åpnes med spørsmålet ditt.</p>
+                <label class="htypes__utility-search">
+                  <span class="sr-only">Beskriv problemet</span>
+                  <input type="search" placeholder="F.eks. piping, Bluetooth, filter…" readonly tabindex="-1" />
+                </label>
+                <p class="htypes__search-hint">→ åpner Hørehjelpen med seed</p>
+              </div>
+              <div class="htypes__utility-block">
+                <p class="htypes__block-title">Vanlige problemer</p>
+                <ul class="htypes__task-list" role="list">
+                  {commonProblems.map((task) => (
+                    <li>
+                      <span class="htypes__task-row">
+                        <span>{task}</span>
+                        <span aria-hidden="true">→</span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
+          </article>
 
-            <div class="htypes__utility-block">
-              <p class="htypes__block-title">Korte guider</p>
-              <ul class="htypes__guide-rows" role="list">
-                {utilityGuides.map((guide) => (
-                  <li>
-                    <a href="#" class="htypes__guide-row" tabindex="-1" onclick="return false">
-                      <span class="htypes__guide-row-label">{guide.label}</span>
-                      <span class="htypes__guide-row-title">{guide.title}</span>
-                      <span class="htypes__guide-row-arrow" aria-hidden="true">→</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
+          <!-- A2 -->
+          <article class="htypes__variant" aria-labelledby="variant-a2">
+            <p class="htypes__variant-label" id="variant-a2">Variant A2 · Oppgavekort med mini-visual</p>
+            <div class="htypes__utility">
+              <div class="htypes__utility-hero htypes__utility-hero--compact">
+                <h4>Rask hjelp</h4>
+                <p class="htypes__utility-lead">Velg det som passer — eller spør Hørehjelpen direkte.</p>
+              </div>
+              <div class="htypes__utility-block">
+                <p class="htypes__block-title">Dette kan du prøve først</p>
+                <ul class="htypes__problem-card-grid" role="list">
+                  {problemCards.map((card) => (
+                    <li>
+                      <a href="#" class="htypes__problem-card" tabindex="-1" onclick="return false">
+                        <span class="htypes__problem-card-visual" data-visual={card.visual} aria-hidden="true"></span>
+                        <span class="htypes__problem-card-title">{card.title}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
+          </article>
 
-            <div class="htypes__utility-escalation">
-              <a href="#" class="htypes__escalation-link" tabindex="-1" onclick="return false">
-                Fant du ikke svaret? Spør Hørehjelpen
-              </a>
-              <a href="#" class="htypes__escalation-link htypes__escalation-link--muted" tabindex="-1" onclick="return false">
-                Når bør du kontakte audiograf?
-              </a>
+          <!-- A3 -->
+          <article class="htypes__variant" aria-labelledby="variant-a3">
+            <p class="htypes__variant-label" id="variant-a3">Variant A3 · Hybrid</p>
+            <div class="htypes__utility">
+              <div class="htypes__utility-hero">
+                <h4>Hva fungerer ikke?</h4>
+                <label class="htypes__utility-search">
+                  <span class="sr-only">Spør Hørehjelpen</span>
+                  <input type="search" placeholder="Skriv hva som skjer…" readonly tabindex="-1" />
+                </label>
+              </div>
+              <div class="htypes__utility-block">
+                <p class="htypes__block-title">Dette kan du prøve først</p>
+                <ul class="htypes__problem-card-grid htypes__problem-card-grid--large" role="list">
+                  {hybridCards.map((card) => (
+                    <li>
+                      <a href="#" class="htypes__problem-card htypes__problem-card--large" tabindex="-1" onclick="return false">
+                        <span class="htypes__problem-card-visual" data-visual={card.visual} aria-hidden="true"></span>
+                        <span class="htypes__problem-card-title">{card.title}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div class="htypes__utility-block">
+                <p class="htypes__block-title">Korte guider</p>
+                <ul class="htypes__guide-rows" role="list">
+                  {utilityGuides.map((guide) => (
+                    <li>
+                      <a href="#" class="htypes__guide-row" tabindex="-1" onclick="return false">
+                        <span class="htypes__guide-row-label">{guide.label}</span>
+                        <span class="htypes__guide-row-title">{guide.title}</span>
+                        <span class="htypes__guide-row-arrow" aria-hidden="true">→</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div class="htypes__utility-escalation">
+                <a href="#" class="htypes__escalation-link" tabindex="-1" onclick="return false">
+                  Fant du ikke svaret? Spør Hørehjelpen
+                </a>
+              </div>
             </div>
-          </div>
+          </article>
 
           <footer class="htypes__mock-notes">
-            <strong>Designretning:</strong> kompakt, tekstlig, presis, lite bilde, tydelig affordance — ikke magasin.
+            <strong>Designretning:</strong> kompakt, presis, tydelig affordance — ikke magasin. Varianter
+            tester om oppgaver trenger ikon/visual i tillegg til tekstliste.
           </footer>
-        </article>
+        </div>
 
-        <!-- Editorial / experience hub -->
+        <!-- Editorial column -->
         <article class="htypes__mock htypes__mock--editorial" aria-labelledby="editorial-heading">
-          <header class="htypes__mock-label">
-            <span class="htypes__mock-tag htypes__mock-tag--editorial">Forslag B</span>
-            <h3 id="editorial-heading">Editorial / erfaringshub</h3>
-            <p>Gjenkjennelse · mestring · videre utforsking</p>
+          <header class="htypes__type-header htypes__type-header--editorial">
+            <span class="htypes__mock-tag htypes__mock-tag--editorial">Hubtype 2</span>
+            <h3 id="editorial-heading">Lyd i hverdagen</h3>
+            <p>Editorial · erfaring · gjenkjennelse · videre utforsking</p>
+            <p class="htypes__name-note">Navn ikke låst — kandidater: Hverdag · Lyd i hverdagen</p>
           </header>
 
           <div class="htypes__editorial">
@@ -250,15 +339,28 @@ const nextSteps125 = [
             </div>
 
             <div class="htypes__editorial-ai">
-              <p class="htypes__block-title htypes__block-title--editorial">Videre samtale</p>
-              <p class="htypes__editorial-ai-intro">AI som videreføring av artikkel — ikke supportboks.</p>
-              <ul class="htypes__seed-list" role="list">
-                {editorialSeeds.map((seed) => (
-                  <li>
-                    <a href="#" class="htypes__seed-row" tabindex="-1" onclick="return false">{seed}</a>
-                  </li>
-                ))}
-              </ul>
+              <p class="htypes__block-title htypes__block-title--editorial">Videre samtale etter lesing</p>
+              <p class="htypes__editorial-ai-intro">
+                AI som videreføring av artikkel — ikke supportboks. Seed questions bruker article/AI-pattern
+                (#128), ikke vanlig button-variant.
+              </p>
+              <div class="htypes__seed-bridge" data-r1-editorial>
+                <section class="r1-ai-bridge">
+                  <section class="inline-chat-shell" data-inline-chat-mode="progressive">
+                    <div class="inline-chat-shell__seed-suggestions">
+                      <ul class="inline-chat-shell__seed-list inline-chat-shell__seed-list--rows" role="list">
+                        {editorialSeeds.map((seed) => (
+                          <li class="inline-chat-shell__seed-item">
+                            <button type="button" class="inline-chat-shell__seed-btn inline-chat-shell__seed-row" tabindex="-1">
+                              <span class="inline-chat-shell__seed-question">{seed}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </section>
+                </section>
+              </div>
             </div>
           </div>
 
@@ -269,28 +371,39 @@ const nextSteps125 = [
       </div>
     </section>
 
-    <!-- Topic hub note -->
+    <!-- Topic cross-surface note -->
     <section class="htypes__panel htypes__panel--note" aria-labelledby="topic-heading">
-      <p class="htypes__panel-kicker">03 · Emnehub / topic</p>
-      <h2 id="topic-heading">Tredje type — notat, ikke full mock</h2>
+      <p class="htypes__panel-kicker">03 · Emnehub — senere kryssflate</p>
+      <h2 id="topic-heading">Ikke tredje primærhub nå</h2>
       <p>
-        En <strong>emnehub</strong> kan senere samle både hjelp og editorial rundt ett tema — f.eks.
-        «På jobb»: praktiske tasks (Bluetooth på kontoret) og erfaringer (møter, lyttetrøtthet).
+        En <strong>emnehub</strong> er en fremtidig <strong>kryssflate</strong> som kan samle både Hjelp og
+        editorial rundt ett tema — ikke en egen hubtype på lik linje med de to primærene.
+      </p>
+      <p>
+        Eksempel: <strong>«På jobb»</strong> kan lenke til praktiske guider (Bluetooth på kontoret, møter)
+        og redaksjonelle erfaringer (lyttetrøtthet, hva du kan si til kollegaer) — uten å erstatte Hjelp
+        eller Lyd i hverdagen som egne innganger.
       </p>
       <p class="htypes__topic-warning">
-        Bør ikke blandes med rotside eller én universell hub-mal før IA er avklart.
+        Emnehub planlegges etter at Hjelp + editorial er avklart. Ikke bland med rotside eller én universell hub-mal.
       </p>
     </section>
 
     <!-- Decision questions -->
     <section class="htypes__panel" aria-labelledby="questions-heading">
-      <p class="htypes__panel-kicker">04 · Beslutningsspørsmål</p>
-      <h2 id="questions-heading">Åpne valg for Thomas</h2>
-      <ul class="htypes__questions" role="list">
-        {openQuestions.map((q) => (
-          <li>{q}</li>
+      <p class="htypes__panel-kicker">04 · Beslutninger</p>
+      <h2 id="questions-heading">Foreløpige valg og åpne punkter</h2>
+      <dl class="htypes__decisions">
+        {decisionItems.map((item) => (
+          <div class="htypes__decision-row">
+            <dt>{item.question}</dt>
+            <dd>
+              <span class="htypes__decision-answer">{item.answer}</span>
+              <span class={`htypes__decision-status htypes__decision-status--${item.status}`}>{item.status}</span>
+            </dd>
+          </div>
         ))}
-      </ul>
+      </dl>
     </section>
 
     <!-- #125 consequence -->
@@ -313,7 +426,6 @@ const nextSteps125 = [
       --ht-light: #ffffff;
       --ht-subtle: #f8fafc;
       --ht-border: rgb(17 24 39 / 0.12);
-      --ht-focus: 0 0 0 3px rgb(14 165 233 / 0.32);
       --ht-radius: 8px;
 
       min-height: 100vh;
@@ -371,9 +483,9 @@ const nextSteps125 = [
     .htypes__compare-lead,
     .htypes__panel p,
     .htypes__taxonomy-item p,
-    .htypes__mock-label p,
     .htypes__mock-notes,
-    .htypes__editorial-ai-intro {
+    .htypes__editorial-ai-intro,
+    .htypes__ai-note p {
       color: var(--ht-muted);
       line-height: 1.65;
     }
@@ -408,6 +520,11 @@ const nextSteps125 = [
       background: rgb(19 77 106 / 0.04);
       font-size: 0.84rem;
       line-height: 1.6;
+    }
+
+    .htypes__callout--complement {
+      border-color: rgb(19 77 106 / 0.32);
+      background: rgb(19 77 106 / 0.07);
     }
 
     .htypes__callout strong {
@@ -470,28 +587,36 @@ const nextSteps125 = [
       gap: 1.25rem;
     }
 
-    .htypes__mock {
-      border: 1px solid var(--ht-border);
-      border-radius: 14px;
-      overflow: hidden;
-      background: #fff;
+    .htypes__help-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
 
-    .htypes__mock-label {
+    .htypes__type-header {
       padding: 1rem 1.1rem;
-      border-bottom: 1px solid var(--ht-border);
+      border: 1px solid var(--ht-border);
+      border-radius: 12px;
       background: var(--ht-subtle);
     }
 
-    .htypes__mock-label h3 {
+    .htypes__type-header h3 {
       margin: 0.45rem 0 0;
-      font-size: 1rem;
+      font-size: 1.05rem;
       letter-spacing: -0.02em;
     }
 
-    .htypes__mock-label p {
+    .htypes__type-header p {
       margin: 0.25rem 0 0;
       font-size: 0.78rem;
+      color: var(--ht-muted);
+      line-height: 1.55;
+    }
+
+    .htypes__name-note {
+      margin-top: 0.45rem !important;
+      font-size: 0.72rem !important;
+      font-style: italic;
     }
 
     .htypes__mock-tag {
@@ -514,48 +639,85 @@ const nextSteps125 = [
       color: var(--ht-ink);
     }
 
+    .htypes__ai-note {
+      padding: 0.85rem 1rem;
+      border: 1px solid rgb(14 165 233 / 0.22);
+      border-radius: var(--ht-radius);
+      background: rgb(14 165 233 / 0.05);
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+
+    .htypes__ai-note strong {
+      display: block;
+      margin-bottom: 0.3rem;
+      color: var(--ht-ink);
+    }
+
+    .htypes__variant {
+      border: 1px solid var(--ht-border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .htypes__variant-label {
+      margin: 0;
+      padding: 0.55rem 1rem;
+      border-bottom: 1px solid var(--ht-border);
+      background: var(--ht-subtle);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ht-deep);
+    }
+
+    .htypes__mock {
+      border: 1px solid var(--ht-border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+
     .htypes__mock-notes {
       padding: 0.85rem 1.1rem;
       border-top: 1px solid var(--ht-border);
       font-size: 0.76rem;
       line-height: 1.55;
+      color: var(--ht-muted);
     }
 
     .htypes__mock-notes strong {
       color: var(--ht-ink);
     }
 
-    /* ── Utility mock ── */
     .htypes__utility {
       padding: 1rem 1.1rem 1.15rem;
       background: #fff;
     }
 
     .htypes__utility-hero {
-      padding-bottom: 1rem;
+      padding-bottom: 0.85rem;
       border-bottom: 1px solid var(--ht-border);
     }
 
-    .htypes__utility-kicker {
-      margin: 0;
-      font-size: 0.62rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--ht-deep);
+    .htypes__utility-hero--compact {
+      border-bottom: 0;
+      padding-bottom: 0.5rem;
     }
 
     .htypes__utility-hero h4 {
-      margin: 0.45rem 0 0;
+      margin: 0;
       font-family: var(--font-display);
-      font-size: 1.35rem;
+      font-size: 1.2rem;
       font-weight: 650;
       letter-spacing: -0.04em;
       line-height: 1.08;
     }
 
     .htypes__utility-lead {
-      margin: 0.45rem 0 0.85rem;
+      margin: 0.45rem 0 0.75rem;
       font-size: 0.82rem;
       line-height: 1.55;
       color: var(--ht-muted);
@@ -569,6 +731,15 @@ const nextSteps125 = [
       background: var(--ht-subtle);
       font-size: 0.82rem;
       color: var(--ht-ink);
+    }
+
+    .htypes__search-hint {
+      margin: 0.4rem 0 0;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ht-deep);
     }
 
     .htypes__utility-block {
@@ -617,6 +788,67 @@ const nextSteps125 = [
       font-size: 0.9rem;
     }
 
+    .htypes__problem-card-grid {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+
+    .htypes__problem-card-grid--large {
+      gap: 0.65rem;
+    }
+
+    .htypes__problem-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.65rem;
+      border: 1px solid rgb(17 24 39 / 0.12);
+      border-radius: var(--ht-radius);
+      background: var(--ht-subtle);
+      color: inherit;
+      text-decoration: none;
+      min-height: 5.5rem;
+    }
+
+    .htypes__problem-card--large {
+      min-height: 6.5rem;
+      padding: 0.75rem;
+    }
+
+    .htypes__problem-card-visual {
+      display: block;
+      height: 2.25rem;
+      border-radius: 6px;
+      background: linear-gradient(145deg, rgb(19 77 106 / 0.14), rgb(224 242 254 / 0.55));
+    }
+
+    .htypes__problem-card-visual[data-visual="piping"] {
+      background: linear-gradient(145deg, rgb(95 82 220 / 0.18), rgb(238 235 255));
+    }
+
+    .htypes__problem-card-visual[data-visual="bluetooth"] {
+      background: linear-gradient(145deg, rgb(14 165 233 / 0.18), rgb(234 246 255));
+    }
+
+    .htypes__problem-card-visual[data-visual="app"] {
+      background: linear-gradient(145deg, rgb(19 77 106 / 0.16), rgb(240 239 255));
+    }
+
+    .htypes__problem-card-visual[data-visual="filter"] {
+      background: linear-gradient(145deg, rgb(200 192 176 / 0.28), rgb(252 250 245));
+    }
+
+    .htypes__problem-card-title {
+      font-size: 0.78rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+
     .htypes__guide-rows {
       margin: 0;
       padding: 0;
@@ -659,8 +891,8 @@ const nextSteps125 = [
       display: flex;
       flex-direction: column;
       gap: 0.45rem;
-      margin-top: 1rem;
-      padding-top: 0.9rem;
+      margin-top: 0.85rem;
+      padding-top: 0.85rem;
       border-top: 1px solid var(--ht-border);
     }
 
@@ -670,11 +902,6 @@ const nextSteps125 = [
       color: var(--ht-deep);
       text-decoration: underline;
       text-underline-offset: 3px;
-    }
-
-    .htypes__escalation-link--muted {
-      font-weight: 500;
-      color: var(--ht-muted);
     }
 
     /* ── Editorial mock ── */
@@ -792,27 +1019,11 @@ const nextSteps125 = [
       border-top: 1px solid var(--ht-border);
     }
 
-    .htypes__seed-list {
-      margin: 0.55rem 0 0;
-      padding: 0;
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      align-items: flex-end;
-    }
-
-    .htypes__seed-row {
-      display: block;
-      max-width: 92%;
-      padding: 0.55rem 0.85rem;
-      border: 1px solid rgb(17 24 39 / 0.12);
-      border-radius: 999px;
-      background: #fff;
-      font-size: 0.78rem;
-      line-height: 1.4;
-      color: var(--ht-ink);
-      text-decoration: none;
+    .htypes__seed-bridge {
+      margin-top: 0.65rem;
+      padding: 0.75rem;
+      border-radius: var(--ht-radius);
+      background: rgb(var(--reading-paper));
     }
 
     .htypes__topic-warning {
@@ -823,7 +1034,61 @@ const nextSteps125 = [
       font-size: 0.82rem;
     }
 
-    .htypes__questions,
+    .htypes__decisions {
+      margin: 0.85rem 0 0;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .htypes__decision-row {
+      padding: 0.75rem 0.85rem;
+      border: 1px solid var(--ht-border);
+      border-radius: var(--ht-radius);
+      background: var(--ht-subtle);
+    }
+
+    .htypes__decision-row dt {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ht-deep);
+    }
+
+    .htypes__decision-row dd {
+      margin: 0.35rem 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: baseline;
+    }
+
+    .htypes__decision-answer {
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .htypes__decision-status {
+      padding: 0.12rem 0.4rem;
+      border-radius: 999px;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .htypes__decision-status--foreløpig,
+    .htypes__decision-status--hypotese {
+      background: rgb(19 77 106 / 0.1);
+      color: var(--ht-deep);
+    }
+
+    .htypes__decision-status--åpent {
+      background: rgb(245 158 11 / 0.14);
+      color: rgb(146 64 14);
+    }
+
     .htypes__next {
       margin: 0.75rem 0 0;
       padding-left: 1.15rem;
@@ -831,7 +1096,6 @@ const nextSteps125 = [
       font-size: 0.88rem;
     }
 
-    .htypes__questions li + li,
     .htypes__next li + li {
       margin-top: 0.35rem;
     }
@@ -859,7 +1123,7 @@ const nextSteps125 = [
       }
 
       .htypes__compare-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1.1fr 0.9fr;
         align-items: start;
       }
     }
