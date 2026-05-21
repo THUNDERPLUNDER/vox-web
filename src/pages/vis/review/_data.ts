@@ -51,10 +51,23 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     href: "/vis/sprints/2026-w21/hub-types/",
     sprint: "2026-W21",
     issue: "#125C",
-    type: "active",
-    status: "needs-review",
+    type: "reference",
+    status: "closed",
     stakeholderSafe: true,
-    description: "Utility/hjelpehub vs editorial/erfaringshub — beslutningsflate etter innholdsstrategi.",
+    description:
+      "Beslutning tatt: Hjelp A3 for utility-hub. Editorial hub kommer senere. VIS-beslutningsflate avsluttet etter #125C-R1.",
+  },
+  {
+    id: "hjelp-a3-production",
+    title: "Hjelp A3 production slice",
+    href: "/no/hub/",
+    sprint: "2026-W21",
+    issue: "#125D",
+    type: "reference",
+    status: "closed",
+    stakeholderSafe: true,
+    description:
+      "Applied Hjelp A3 på /no/hub — QA-godkjent. Videre polish venter til editorial hub og forside er på plass.",
   },
   {
     id: "interaction-states",
