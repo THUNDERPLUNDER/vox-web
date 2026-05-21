@@ -4,6 +4,7 @@
    #123: Typography Lab at /typography/ — full-width direction review.
    #124: Primitives Lab at /primitives/ — VIS-only primitive candidates.
    #125C: Hub type split at /hub-types/ — utility vs editorial decision surface.
+   #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
 import PrototypeLayout from "../../../../layouts/PrototypeLayout.astro";
@@ -78,6 +79,9 @@ const typographyLabDirections = [
     <!-- 1. Header / status -->
     <header class="sprint-preview__hero">
       <p class="sprint-preview__kicker">VIS / sprint preview</p>
+      <p class="sprint-preview__review-link">
+        Stakeholder review: <a href={`${base}vis/review/`}>Viddel Review →</a>
+      </p>
       <h1>Viddel Sprint Preview — 2026-W21</h1>
       <p class="sprint-preview__subtitle">VIS reviewflate for #120 / #126</p>
       <p class="sprint-preview__focus">
@@ -349,6 +353,18 @@ const typographyLabDirections = [
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: rgb(var(--reading-accent-iris));
+    }
+
+    .sprint-preview__review-link {
+      margin: 0.55rem 0 0;
+      font-size: 0.78rem;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__review-link a {
+      font-weight: 600;
+      color: rgb(var(--reading-ink));
+      text-underline-offset: 2px;
     }
 
     .sprint-preview__hero h1 {
