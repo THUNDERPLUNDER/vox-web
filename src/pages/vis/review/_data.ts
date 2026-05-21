@@ -94,6 +94,18 @@ export const reviewRegistry: ReviewRegistryItem[] = [
       "Mandat godkjent — avklaringsflate / triage. Applied som #125G-R3 på /no/.",
   },
   {
+    id: "nav-top-menu",
+    title: "Navigation / top menu",
+    href: "/no/",
+    sprint: "2026-W21",
+    issue: "#125H",
+    type: "active",
+    status: "needs-review",
+    stakeholderSafe: true,
+    description:
+      "Toppmeny og footer synket til hubmodellen — Forside, Hjelp, Lyd i hverdagen, Ordbok, Om + Start samtale CTA.",
+  },
+  {
     id: "forside-routing",
     title: "Forside / routing",
     href: "/no/",

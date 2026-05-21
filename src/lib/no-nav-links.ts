@@ -1,10 +1,14 @@
-/* CONTRACT: Primary NO-site navigation labels (hub-and-spoke + fri samtale). */
+/* CONTRACT: Primary NO-site navigation (#125H) — hub model: Forside, Hjelp, Lyd i hverdagen, Ordbok, Om.
+   Hørehjelpen via header/mobile CTA only (not a regular nav item).
+ */
 
 export const NO_NAV_LINKS = [
   { href: "/no", label: "Forside" },
-  { href: "/no/hubs", label: "Emnehuber" },
-  { href: "/no/info", label: "Kom i gang" },
+  { href: "/no/hub", label: "Hjelp" },
+  { href: "/no/lyd-i-hverdagen", label: "Lyd i hverdagen" },
   { href: "/no/ordbok", label: "Ordbok" },
-  { href: "/no/chat", label: "Hørehjelpen" },
   { href: "/no/om", label: "Om" },
 ] as const;
+
+export const NO_NAV_CHAT_HREF = "/no/chat";
+export const NO_NAV_CHAT_LABEL = "Start samtale";

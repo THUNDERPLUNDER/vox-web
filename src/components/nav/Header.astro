@@ -1,7 +1,7 @@
 <!-- CONTRACT: Global site header with desktop nav and mobile menu trigger. -->
 ---
 import MobileMenuTrigger from "./MobileMenuTrigger.astro";
-import { NO_NAV_LINKS } from "../../lib/no-nav-links";
+import { NO_NAV_CHAT_HREF, NO_NAV_CHAT_LABEL, NO_NAV_LINKS } from "../../lib/no-nav-links";
 import { isNavActive } from "../../lib/nav-active";
 
 type Props = {
@@ -15,7 +15,8 @@ type Props = {
 const { currentPath = "", brand = "default", showDevtoolsToggle = false } = Astro.props as Props;
 const base = import.meta.env.BASE_URL;
 const homeHref = `${base}no`;
-const chatHref = `${base}no/chat`;
+const chatHref = `${base}${NO_NAV_CHAT_HREF.replace(/^\//, "")}`;
+const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
 ---
 
 <header class="h-16 sm:h-[4.5rem]">
@@ -98,9 +99,13 @@ const chatHref = `${base}no/chat`;
     </nav>
     <a
       href={chatHref}
-      class="hidden items-center justify-center rounded-full border border-[rgb(var(--border))/0.7] bg-[rgb(var(--surface))/0.42] px-5 py-2.5 text-sm font-semibold text-[rgb(var(--text))] transition-colors hover:border-[rgb(var(--text))/0.34] hover:bg-[rgb(var(--surface-subtle))/0.62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4] lg:inline-flex"
+      class={`hidden items-center justify-center rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4] lg:inline-flex ${
+        chatActive
+          ? "border-[rgb(var(--text))/0.34] bg-[rgb(var(--reading-ink))] text-[rgb(var(--reading-paper))]"
+          : "border-[rgb(var(--border))/0.7] bg-[rgb(var(--surface))/0.42] text-[rgb(var(--text))] hover:border-[rgb(var(--text))/0.34] hover:bg-[rgb(var(--surface-subtle))/0.62]"
+      }`}
     >
-      Start samtale
+      {NO_NAV_CHAT_LABEL}
     </a>
     <MobileMenuTrigger />
   </div>
