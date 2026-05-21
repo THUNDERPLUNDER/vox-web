@@ -204,12 +204,14 @@ Ikke gjort i #131A — kartlegging only.
 
 | Issue | Tittel | Scope | Avhenger av |
 |-------|--------|-------|-------------|
-| **#131B** | Stakeholder-safe VIS entry | Ny `/vis/review/` eller erstatte topp av `/vis/` med «safe set» + tydelig Viddel-branding; skjul/archive-lenker | #131A |
-| **#131C** | Route taxonomy & labeling | Metadata (`vis:status`, badges Active/Reference/Archive/Deprecated) i index; ingen sletting | #131A |
+| **#131B** | Stakeholder-safe VIS entry | `/vis/review/` — kuratert inngang | **Done** (`fb5e29c3`) |
+| **#131C** | Review registry & sprint navigation | `src/pages/vis/review/_data.ts` — datadrevet review med sprint, type, status | #131B |
 | **#131D** | Domain & access model | `vis.viddel.no`, redirect-plan, Vercel protection policy, Return Ticket URL-mal | #131A, drift |
 | **#131E** | Current-facing naming cleanup | Fjern KlarLyd/VOX fra titler brukere ser først; behold filer; rename display only der trygt | #131B |
 
-**Minste trygge neste steg etter #131A:** **#131B** — én kuratert inngang med direkte lenker til W21 safe set + «Do not share» for archive.
+**Registry ( #131C):** Nye reviewflater legges i `src/pages/vis/review/_data.ts` med `stakeholderSafe`, `sprint`, `type` og `status`. `/vis/review/` filtrerer automatisk — ingen hardkodede kort.
+
+**Minste trygge neste steg etter #131C:** **#131D** — domene/access, eller **#131E** — naming cleanup på current-facing VIS.
 
 ---
 
