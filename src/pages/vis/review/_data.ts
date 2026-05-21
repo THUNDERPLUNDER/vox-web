@@ -70,6 +70,18 @@ export const reviewRegistry: ReviewRegistryItem[] = [
       "Applied Hjelp A3 på /no/hub — QA-godkjent. Videre polish venter til editorial hub og forside er på plass.",
   },
   {
+    id: "editorial-hub-prototype",
+    title: "Editorial hub prototype",
+    href: "/vis/sprints/2026-w21/editorial-hub/",
+    sprint: "2026-W21",
+    issue: "#125E",
+    type: "active",
+    status: "needs-review",
+    stakeholderSafe: true,
+    description:
+      "Lyd i hverdagen — redaksjonell hub som motflate til Hjelp A3. Story-first (E1) og situation-first (E2).",
+  },
+  {
     id: "interaction-states",
     title: "Interaction states",
     href: "/vis/sprints/2026-w21/primitives/interaction-states/",
