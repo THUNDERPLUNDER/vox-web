@@ -1,6 +1,6 @@
 ---
-/* CONTRACT: Editorial hub (E2) — «Lyd i hverdagen» production slice #125F.
-   Situation-first: situasjoner → featured → artikler → AI seeds. Motflate til Hjelp A3.
+/* CONTRACT: Editorial hub (E2) — «Lyd i hverdagen» #125F / #125F-R1.
+   Situation-first lesespor → featured → artikkelkort → AI seeds. Motflate til Hjelp A3.
    Arbeidstittel/rute — ikke i toppmeny ennå.
 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -13,13 +13,40 @@ const pageTitle = "Lyd i hverdagen";
 const pageIntro =
   "Artikler, erfaringer og konkrete strategier for å leve bedre med høreapparat i hverdagen.";
 
-const situations: Array<{ label: string; href: string }> = [
-  { label: "Ny med høreapparat", href: "/no/artikkel/de-forste-ukene-med-horeapparat" },
-  { label: "Sosialt liv", href: "/no/artikkel/slik-tar-du-praten" },
-  { label: "På jobb", href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen" },
-  { label: "For pårørende", href: "/no/artikkel/stotte-uten-a-ta-over-samtalen" },
-  { label: "Lyd og energi", href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen" },
-  { label: "Middag og støy", href: "/no/artikkel/for-restaurant-eller-stort-selskap" },
+const situationSectionLead =
+  "Finn temaer som ligner det du opplever — og start et lesespor der du kjenner deg igjen.";
+
+const situations: Array<{ label: string; hint: string; href: string }> = [
+  {
+    label: "Ny med høreapparat",
+    hint: "Normalt, forventninger og de første ukene",
+    href: "/no/artikkel/de-forste-ukene-med-horeapparat",
+  },
+  {
+    label: "Sosialt liv",
+    hint: "Samtaler, restaurant og å bli med",
+    href: "/no/artikkel/slik-tar-du-praten",
+  },
+  {
+    label: "På jobb",
+    hint: "Møter, energi og lyttetrøtthet",
+    href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
+  },
+  {
+    label: "For pårørende",
+    hint: "Støtte uten å ta over",
+    href: "/no/artikkel/stotte-uten-a-ta-over-samtalen",
+  },
+  {
+    label: "Lyd og energi",
+    hint: "Når lyden blir slitsom utpå dagen",
+    href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
+  },
+  {
+    label: "Middag og støy",
+    hint: "Små grep som hjelper rundt bordet",
+    href: "/no/artikkel/for-restaurant-eller-stort-selskap",
+  },
 ];
 
 const featuredStory = {
@@ -30,30 +57,46 @@ const featuredStory = {
   href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
 };
 
-const articles: Array<{ series: string; title: string; href: string }> = [
+const articles: Array<{
+  series: string;
+  title: string;
+  deck: string;
+  visual: string;
+  href: string;
+}> = [
   {
     series: "Erfaring",
     title: "Slik løste jeg middagsbordet",
+    deck: "Erfaringer fra et støyende bord — uten å gi opp sosialt liv.",
+    visual: "social",
     href: "/no/artikkel/for-restaurant-eller-stort-selskap",
   },
   {
     series: "Normalt?",
     title: "Hva som er normalt de første ukene",
+    deck: "Forventninger, tilpasning og tegn på at ting går riktig vei.",
+    visual: "start",
     href: "/no/artikkel/de-forste-ukene-med-horeapparat",
   },
   {
     series: "Energi",
     title: "Når lyden blir for mye",
+    deck: "Hvorfor dagen kan føles tyngre — og hva som hjelper.",
+    visual: "energy",
     href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
   },
   {
     series: "Relasjon",
     title: "Slik kan du be kollegaene dine hjelpe",
+    deck: "Ord og små grep som gjør hverdagen på jobb enklere.",
+    visual: "work",
     href: "/no/artikkel/slik-tar-du-praten",
   },
   {
     series: "Forståelse",
     title: "Derfor blir hjernen sliten før apparatet er feil",
+    deck: "Lyttetrøtthet handler ofte om energi — ikke bare teknisk feil.",
+    visual: "mind",
     href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
   },
 ];
@@ -85,24 +128,26 @@ const editorialSeeds = [
       <div class="ed-core">
 
         <section class="ed-block" aria-labelledby="situations-heading">
-          <h2 id="situations-heading" class="ed-block__title">Hvor er du i hverdagen?</h2>
+          <h2 id="situations-heading" class="ed-block__title">Les etter situasjon</h2>
+          <p class="ed-block__lead">{situationSectionLead}</p>
           <ul class="ed-situation-grid" role="list">
             {situations.map((situation) => (
               <li>
                 <a href={situation.href} class="ed-situation-card">
                   <span class="ed-situation-card__label">{situation.label}</span>
+                  <span class="ed-situation-card__hint">{situation.hint}</span>
                 </a>
               </li>
             ))}
           </ul>
         </section>
 
-        <section class="ed-block" aria-labelledby="featured-heading">
-          <h2 id="featured-heading" class="sr-only">Utvalgt artikkel</h2>
+        <section class="ed-block ed-block--featured" aria-labelledby="featured-heading">
+          <h2 id="featured-heading" class="ed-block__title">Utvalgt nå</h2>
           <a href={featuredStory.href} class="ed-featured">
             <div class="ed-featured__media" aria-hidden="true"></div>
             <div class="ed-featured__body">
-              <p class="ed-eyebrow">Utvalgt · {featuredStory.eyebrow}</p>
+              <p class="ed-eyebrow">{featuredStory.eyebrow}</p>
               <h3 class="ed-featured__title">{featuredStory.title}</h3>
               <p class="ed-featured__deck">{featuredStory.deck}</p>
             </div>
@@ -111,13 +156,16 @@ const editorialSeeds = [
 
         <section class="ed-block" aria-labelledby="articles-heading">
           <h2 id="articles-heading" class="ed-block__title">Artikler og serier</h2>
-          <ul class="ed-article-list" role="list">
+          <ul class="ed-article-grid" role="list">
             {articles.map((article) => (
               <li>
-                <a href={article.href} class="ed-article-row">
-                  <span class="ed-article-row__series">{article.series}</span>
-                  <span class="ed-article-row__title">{article.title}</span>
-                  <span class="ed-article-row__arrow" aria-hidden="true">→</span>
+                <a href={article.href} class="ed-article-card" data-visual={article.visual}>
+                  <span class="ed-article-card__visual" aria-hidden="true"></span>
+                  <span class="ed-article-card__body">
+                    <span class="ed-article-card__series">{article.series}</span>
+                    <span class="ed-article-card__title">{article.title}</span>
+                    <span class="ed-article-card__deck">{article.deck}</span>
+                  </span>
                 </a>
               </li>
             ))}
@@ -245,7 +293,7 @@ const editorialSeeds = [
   }
 
   .ed-block__title {
-    margin: 0 0 1rem;
+    margin: 0 0 0.55rem;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -253,33 +301,41 @@ const editorialSeeds = [
     color: rgb(var(--reading-ink-secondary));
   }
 
-  /* Situations */
+  .ed-block__lead {
+    margin: 0 0 1.1rem;
+    max-width: 36rem;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  /* Situations — lesespor, not self-categorization */
   .ed-situation-grid {
     margin: 0;
     padding: 0;
     list-style: none;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.6rem;
+    gap: 0.65rem;
   }
 
   .ed-situation-card {
     display: flex;
-    align-items: center;
-    min-height: 3.5rem;
-    padding: 0.75rem 0.85rem;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-height: 4.25rem;
+    padding: 0.85rem 0.9rem;
     border-radius: 10px;
-    border: 1px solid rgb(var(--border) / 0.18);
-    background: rgb(var(--reading-paper));
+    border: 1px solid rgb(var(--border) / 0.14);
+    background: transparent;
     color: inherit;
     text-decoration: none;
-    transition: box-shadow 150ms ease, border-color 150ms ease, transform 150ms ease;
+    transition: background-color 150ms ease, border-color 150ms ease;
   }
 
   .ed-situation-card:hover {
-    border-color: rgb(var(--border) / 0.35);
-    box-shadow: 0 3px 16px rgb(var(--reading-ink) / 0.05);
-    transform: translateY(-1px);
+    background: rgb(var(--reading-paper));
+    border-color: rgb(var(--border) / 0.28);
   }
 
   .ed-situation-card:focus-visible {
@@ -288,38 +344,57 @@ const editorialSeeds = [
   }
 
   .ed-situation-card__label {
-    font-size: 0.88rem;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 650;
     letter-spacing: -0.025em;
-    line-height: 1.3;
+    line-height: 1.25;
     color: rgb(var(--reading-ink));
   }
 
-  /* Featured */
+  .ed-situation-card__hint {
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  /* Featured — stacked, media-first editorial weight */
+  .ed-block--featured {
+    padding-top: clamp(2rem, 5vw, 2.75rem);
+  }
+
   .ed-featured {
-    display: grid;
-    gap: 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
     color: inherit;
     text-decoration: none;
-    transition: opacity 120ms ease;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgb(var(--reading-paper));
+    border: 1px solid rgb(var(--border) / 0.12);
+    transition: box-shadow 180ms ease, border-color 180ms ease;
   }
 
   .ed-featured:hover {
-    opacity: 0.92;
+    border-color: rgb(var(--border) / 0.28);
+    box-shadow: 0 8px 32px rgb(var(--reading-ink) / 0.06);
   }
 
   .ed-featured:focus-visible {
     outline: none;
-    border-radius: 10px;
     box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
   }
 
   .ed-featured__media {
     aspect-ratio: 16 / 9;
-    border-radius: 10px;
+    min-height: 11rem;
     background:
-      linear-gradient(145deg, rgb(19 77 106 / 0.28), rgb(148 163 184 / 0.18)),
-      linear-gradient(160deg, rgb(30 58 80 / 0.12), rgb(253 252 250));
+      linear-gradient(145deg, rgb(19 77 106 / 0.38), rgb(95 82 220 / 0.14)),
+      linear-gradient(165deg, rgb(30 58 80 / 0.18), rgb(253 252 250));
+  }
+
+  .ed-featured__body {
+    padding: clamp(1.15rem, 3vw, 1.5rem) clamp(1.1rem, 3vw, 1.45rem) clamp(1.35rem, 3.5vw, 1.65rem);
   }
 
   .ed-eyebrow {
@@ -328,61 +403,95 @@ const editorialSeeds = [
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgb(var(--reading-ink-secondary));
+    color: rgb(var(--reading-accent-iris));
   }
 
   .ed-featured__title {
-    margin: 0.45rem 0 0;
+    margin: 0.5rem 0 0;
     font-family: var(--font-display);
-    font-size: clamp(1.35rem, 4vw, 1.9rem);
+    font-size: clamp(1.45rem, 4.5vw, 2.15rem);
     font-weight: 650;
-    letter-spacing: -0.04em;
-    line-height: 1.1;
+    letter-spacing: -0.045em;
+    line-height: 1.08;
+    text-wrap: balance;
     color: rgb(var(--reading-ink));
   }
 
   .ed-featured__deck {
-    margin: 0.65rem 0 0;
-    max-width: 38rem;
-    font-size: 0.92rem;
+    margin: 0.75rem 0 0;
+    max-width: 40rem;
+    font-size: clamp(0.92rem, 2.2vw, 1.02rem);
     line-height: 1.6;
     color: rgb(var(--reading-ink-secondary));
   }
 
-  /* Articles */
-  .ed-article-list {
+  /* Article cards — editorial, not FAQ rows */
+  .ed-article-grid {
     margin: 0;
     padding: 0;
     list-style: none;
     display: grid;
-    gap: 0.45rem;
+    gap: 1rem;
   }
 
-  .ed-article-row {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 0.45rem 0.85rem;
-    align-items: baseline;
-    padding: 0.75rem 0.85rem;
-    border-radius: 8px;
-    background: rgb(var(--reading-paper));
-    border: 1px solid rgb(var(--border) / 0.16);
+  .ed-article-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
     color: inherit;
     text-decoration: none;
-    transition: background-color 120ms ease, border-color 120ms ease;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgb(var(--reading-paper));
+    border: 1px solid rgb(var(--border) / 0.12);
+    transition: box-shadow 150ms ease, border-color 150ms ease, transform 150ms ease;
   }
 
-  .ed-article-row:hover {
-    background: rgb(var(--border) / 0.1);
-    border-color: rgb(var(--border) / 0.3);
+  .ed-article-card:hover {
+    border-color: rgb(var(--border) / 0.28);
+    box-shadow: 0 4px 18px rgb(var(--reading-ink) / 0.05);
+    transform: translateY(-1px);
   }
 
-  .ed-article-row:focus-visible {
+  .ed-article-card:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
   }
 
-  .ed-article-row__series {
+  .ed-article-card__visual {
+    display: block;
+    height: 5.5rem;
+    background: linear-gradient(145deg, rgb(19 77 106 / 0.12), rgb(224 242 254 / 0.45));
+  }
+
+  [data-visual="social"] .ed-article-card__visual {
+    background: linear-gradient(145deg, rgb(95 82 220 / 0.14), rgb(238 235 255));
+  }
+
+  [data-visual="start"] .ed-article-card__visual {
+    background: linear-gradient(145deg, rgb(14 165 233 / 0.14), rgb(234 246 255));
+  }
+
+  [data-visual="energy"] .ed-article-card__visual {
+    background: linear-gradient(145deg, rgb(19 77 106 / 0.16), rgb(243 241 255));
+  }
+
+  [data-visual="work"] .ed-article-card__visual {
+    background: linear-gradient(145deg, rgb(96 165 250 / 0.14), rgb(248 250 255));
+  }
+
+  [data-visual="mind"] .ed-article-card__visual {
+    background: linear-gradient(145deg, rgb(200 192 176 / 0.22), rgb(252 250 245));
+  }
+
+  .ed-article-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.85rem 0.95rem 1rem;
+  }
+
+  .ed-article-card__series {
     font-size: 0.6rem;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -390,18 +499,19 @@ const editorialSeeds = [
     color: rgb(var(--reading-accent-iris));
   }
 
-  .ed-article-row__title {
+  .ed-article-card__title {
     font-family: var(--font-display);
-    font-size: 0.92rem;
+    font-size: 1rem;
     font-weight: 650;
-    letter-spacing: -0.025em;
-    line-height: 1.3;
+    letter-spacing: -0.03em;
+    line-height: 1.22;
     color: rgb(var(--reading-ink));
   }
 
-  .ed-article-row__arrow {
-    color: rgb(var(--muted));
-    font-size: 0.85rem;
+  .ed-article-card__deck {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: rgb(var(--reading-ink-secondary));
   }
 
   /* AI seeds */
@@ -410,7 +520,7 @@ const editorialSeeds = [
   }
 
   .ed-ai-intro {
-    margin: -0.35rem 0 0.85rem;
+    margin: -0.15rem 0 0.85rem;
     font-size: 0.86rem;
     line-height: 1.6;
     color: rgb(var(--reading-ink-secondary));
@@ -473,6 +583,10 @@ const editorialSeeds = [
     .ed-container {
       padding: 0 1.25rem 5rem;
     }
+
+    .ed-article-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (min-width: 640px) {
@@ -484,15 +598,9 @@ const editorialSeeds = [
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .ed-featured {
-      grid-template-columns: 1.15fr 1fr;
-      align-items: start;
-      gap: 1.35rem;
-    }
-
     .ed-featured__media {
-      aspect-ratio: 4 / 5;
-      max-height: 14rem;
+      aspect-ratio: 21 / 9;
+      min-height: 14rem;
     }
   }
 </style>
