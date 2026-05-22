@@ -4,8 +4,8 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## Siste sync
 
-- **generated_at (UTC):** 2026-05-21T09:45:10.202Z
-- **generated_at (Europe/Oslo):** 21.5.2026, 11:45:10
+- **generated_at (UTC):** 2026-05-22T09:30:04.805Z
+- **generated_at (Europe/Oslo):** 22.5.2026, 11:30:04
 - **timezone:** Europe/Oslo
 - **repo:** THUNDERPLUNDER/vox-web
 - **data_warnings:** (ingen)
@@ -76,7 +76,7 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## SISTE 24T
 
-Vindu: commits/issues lukket/oppdatert etter **2026-05-20T09:45:10Z** (sirket ~24 timer).
+Vindu: commits/issues lukket/oppdatert etter **2026-05-21T09:30:04Z** (sirket ~24 timer).
 
 ### Lukkede issues
 
@@ -84,44 +84,35 @@ _Ingen._
 
 ### Kommentarer (Return Ticket-lignende)
 
-- **#125** kommentar av **THUNDERPLUNDER** (2026-05-20T13:15:02Z): _## Return Ticket — #125A MVP Surface Reskin (safe-read & plan) **Status:** Ferdig — plan only, ingen produksjonsvisuelle endringer. ### Hva ble gjort Safe-read av MVP-produksjonsflater mot decision candidates #127–#129 o…_
-- **#125** kommentar av **THUNDERPLUNDER** (2026-05-20T14:12:45Z): _## Return Ticket — #125B Hub guide surfaces **Status:** Ferdig — klar for QA / merge. ### Hva ble gjort Første applied surface-reskin på `/no/hub`: featured + secondary guide cards oppdatert til borderless grouped clicka…_
-- **#125** kommentar av **THUNDERPLUNDER** (2026-05-20T14:24:59Z): _## Return Ticket — #125B QA refinement (editorial open grouping) **Status:** Ferdig — synligere retning, klar for visuell QA. ### Hva ble gjort Andre pass på samme scope: guide cards føles nå mer som **editorial grouped …_
-- **#125** kommentar av **THUNDERPLUNDER** (2026-05-20T14:58:11Z): _## Return Ticket — #125C VIS Hub Type Split **Status:** Ferdig — beslutningsflate klar for review. ### Hva ble gjort Ny VIS-side som sammenligner **Hjelpehub (utility)** og **Editorial/erfaringshub** side ved side, etter…_
-- **#125** kommentar av **THUNDERPLUNDER** (2026-05-21T08:36:48Z): _## Return Ticket — #125C VIS Access fix **Status:** Klar for Thomas-QA — offentlig produksjons-URL verifisert. ### VIS Access | Felt | Verdi | |------|-------| | **VIS route** | `/vis/sprints/2026-w21/hub-types/` | | **B…_
-- **#125** kommentar av **THUNDERPLUNDER** (2026-05-21T09:41:56Z): _## Return Ticket — #125C-R1 VIS Hub Type Split refinement **Status:** Ferdig — beslutningsflate oppdatert etter Thomas QA. ### Hva ble gjort VIS-side `/vis/sprints/2026-w21/hub-types/` justert etter QA-funn: 1. **Komplem…_
-- **#131** kommentar av **THUNDERPLUNDER** (2026-05-21T08:56:28Z): _## Return Ticket — #131A VIS inventory & access map **Status:** Ferdig — kartlegging only, ingen VIS-flytting/sletting/domeneendring. ### Hva ble gjort Fullt inventar og access map for dagens VIS: ~40+ ruter, status (Act…_
-- **#131** kommentar av **THUNDERPLUNDER** (2026-05-21T09:22:46Z): _## Return Ticket — #131A merge + #131B Stakeholder review entry **Status:** Ferdig — merged til main, produksjon verifisert. ### Del 1 — #131A merged - `docs/project/tasks/ISSUE_131A_VIS_INVENTORY_ACCESS_MAP.md` på main …_
-- **#131** kommentar av **THUNDERPLUNDER** (2026-05-21T09:32:38Z): _## Return Ticket — #131C VIS Review Registry & Sprint Navigation **Status:** Ferdig — merged til main, produksjon verifiseres. ### Hva ble gjort - Ny registry: `src/pages/vis/review/_data.ts` - `/vis/review/` rendrer fra…_
-- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T10:27:24Z): _## Return Ticket — #129 Cards / clickable surfaces **Status:** Needs review — applied context review ready for Thomas QA --- ### Hva ble gjort - Opprettet **applied context page** for Cards primitive: - `/vis/sprints/202…_
-- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T10:54:34Z): _## Return Ticket — #129 QA revision (grouped surfaces, not bordered boxes) **Status:** Needs review — revised after Thomas QA, not yet decision candidate --- ### Hva ble endret **Hovedkorreksjon:** Cards forstås nå som *…_
-- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T11:25:28Z): _## Return Ticket — #129 targeted affordance refinement **Status:** Needs review — closer to decision candidate after hover/grouping split --- ### Hva ble endret **Scenario 01 — Hub A/B/C:** - **A:** Background/image + co…_
-- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T11:55:07Z): _## Return Ticket — #129 media/background card family **Status:** Needs review — core card family added, closer to decision candidate --- ### Hva ble endret **Scenario 01 — Hub (A/B/C/D):** - **A · Image background:** Fix…_
-- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T12:16:49Z): _## Return Ticket — #129 feature/media CTA + contrast fixes **Status:** Needs review — decision candidate after final targeted refinement --- ### Hva ble endret **Kontrast (Hub A + image cards):** - Fikset cascade-bug: `.…_
-- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T12:28:06Z): _## Return Ticket — #129 final QA fixes (Article A + borderless feature CTA) **Status:** Needs review — decision candidate after two targeted fixes --- ### Hva ble endret **Fix 1 — Article A (editorial media card):** - By…_
-- **#129** kommentar av **THUNDERPLUNDER** (2026-05-20T12:36:09Z): _## Return Ticket — #129 Article A layout fix (absolute anchor) **Status:** Needs review — decision candidate after root-cause fix --- ### Problem (Thomas QA) Article A viste smal portrait-tile der tekst fylte hele kortet…_
+_Ingen treff i søkt utsnitt._
 
 ### Commits
 
+- **59a5a5c** (2026-05-21T15:33:01Z) Merge pull request #152 from THUNDERPLUNDER/fix/125h-r3-nav-transient-shift
+- **b3a3d08** (2026-05-21T15:32:48Z) fix(#125H-R3): Add critical header CSS to stop transient layout shift
+- **5fe4a49** (2026-05-21T15:16:25Z) Merge pull request #151 from THUNDERPLUNDER/fix/125h-r2-nav-stability-regression
+- **b72e159** (2026-05-21T15:16:14Z) fix(#125H-R2): Revert R1 nav regression and stabilize active metrics
+- **6ecdc45** (2026-05-21T15:05:59Z) Merge pull request #150 from THUNDERPLUNDER/fix/125h-r1-nav-vertical-stability
+- **0986ce6** (2026-05-21T15:05:44Z) fix(#125H-R1): Stabilize header height and nav link metrics
+- **73b17e2** (2026-05-21T14:44:29Z) feat(#125H): Sync top menu and footer to hub model navigation (#149)
+- **284037a** (2026-05-21T14:37:56Z) chore(#125G): Close frontpage routing in VIS review registry (#148)
+- **ce97429** (2026-05-21T14:31:50Z) refine(#125G-R3): Implement frontpage triage mandate on /no/ (#147)
+- **8daffa1** (2026-05-21T14:21:18Z) feat(#125G-R2): Add VIS frontpage mandate decision surface (#146)
+- **f5caa1d** (2026-05-21T14:10:56Z) refine(#125G-R1): Align forside entries with validated hub surfaces (#145)
+- **29d9b2f** (2026-05-21T13:48:17Z) feat(#125G): Route forside to Hjelp and Lyd i hverdagen (#144)
+- **d470f97** (2026-05-21T13:44:38Z) docs(#130): Add canonical hub model decision note v0.1 (#143)
+- **ea99f59** (2026-05-21T13:20:25Z) chore(#125F): Close editorial production slice in VIS review registry (#142)
+- **3ead2d3** (2026-05-21T13:11:45Z) refine(#125F-R3): Remove meta hero intro on Lyd i hverdagen (#141)
+- **efdc321** (2026-05-21T12:55:06Z) chore(#125F-R2): Retrigger production deploy after missed post-merge deploy
+- **3c6baee** (2026-05-21T12:47:39Z) refine(#125F-R2): Balance editorial hub toward lydglede and presence (#140)
+- **d59cf99** (2026-05-21T12:18:39Z) refine(#125F-R1): Editorial hub — lesespor, featured weight, article cards (#139)
+- **8f6e142** (2026-05-21T10:35:58Z) feat(#125F): Lyd i hverdagen editorial production slice + close #125E VIS (#138)
+- **537cc98** (2026-05-21T10:22:25Z) feat(#125E): Add editorial hub VIS prototype — Lyd i hverdagen (#137)
+- **21ed785** (2026-05-21T10:13:46Z) chore(#125D): Close hub-type split and sync VIS review status (#136)
+- **3426f27** (2026-05-21T10:00:14Z) feat(#125D): Convert /no/hub to Hjelp A3 utility layout (#135)
+- **521ead0** (2026-05-21T09:45:13Z) chore(vis): refresh GitHub runtime status for navigator
 - **5739fa4** (2026-05-21T09:41:45Z) refine(#125C-R1): Complementary hub types, Hjelp variants, and decision updates (#134)
 - **9cca93d** (2026-05-21T09:32:26Z) feat(#131C): VIS review registry and sprint navigation (#133)
-- **fb5e29c** (2026-05-21T09:22:03Z) feat(#131): VIS inventory doc and stakeholder review entry (#132)
-- **2bbc278** (2026-05-21T08:36:06Z) feat(#125C): Add VIS hub type split decision surface (#130)
-- **d7aea33** (2026-05-20T13:10:13Z) fix(#124D): Keep matrix demos out of tab order for keyboard QA.
-- **f31d238** (2026-05-20T12:56:37Z) feat(#124D): Add interaction states pass to VIS Primitives Lab.
-- **51b5bf3** (2026-05-20T12:44:29Z) chore(#129): Mark cards primitive as decision candidate.
-- **ea404e4** (2026-05-20T12:42:01Z) fix(#129): Fix Article A cascade — absolute bottom-left text anchor.
-- **4b47ce5** (2026-05-20T12:39:29Z) fix(#129): Align Article A text stack with feature card bottom-left.
-- **ee1413c** (2026-05-20T12:35:21Z) fix(#129): Lock Article A media card size with absolute text anchor.
-- **95d61de** (2026-05-20T12:24:13Z) Fix Article A landscape layout and borderless feature CTAs for #129.
-- **c955b45** (2026-05-20T12:16:00Z) fix(#129): Add feature/media CTA card and fix image card contrast
-- **e3c1c24** (2026-05-20T11:53:50Z) fix(#129): Add media/background cards with fixed-size grouping
-- **549a6af** (2026-05-20T11:24:54Z) fix(#129): Separate full-surface hover from image/text editorial groups
-- **bba0d81** (2026-05-20T10:53:59Z) fix(#129): Treat cards as grouped surfaces, not bordered boxes
-- **49d1ffd** (2026-05-20T10:26:49Z) feat(#129): Add cards applied context review for clickable surfaces
-- **52bcd46** (2026-05-20T10:09:08Z) Merge branch 'fix/128-match-production-seed-question-style'
-- **30b9afe** (2026-05-20T10:02:46Z) fix(#128): Reuse production seed-row markup and CSS in VIS context
-- **03dece8** (2026-05-20T09:49:05Z) fix(#128): Use production white article surface in seed scenarios
 
 ## BLOCKERS
 
