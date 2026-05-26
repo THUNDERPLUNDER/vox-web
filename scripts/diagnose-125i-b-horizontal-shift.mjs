@@ -49,9 +49,7 @@ const MEASURE_INIT = () => {
       }
     const outerHeader =
       document.querySelector("body > header.fixed") ?? document.querySelector("body > header");
-    const headerInner =
-      outerHeader?.querySelector("[data-vox-shell-container]") ??
-      outerHeader?.querySelector(":scope > div > div.mx-auto");
+    const headerInner = outerHeader?.querySelector(":scope > div > div.mx-auto");
     const headerComponent = outerHeader?.querySelector("header");
     const nav = headerComponent?.querySelector("nav");
     const wordmark =
@@ -60,9 +58,9 @@ const MEASURE_INIT = () => {
     const cta =
       headerComponent?.querySelector("a.sonic-pulse-cta") ??
       headerComponent?.querySelector('a[href*="/no/chat"]');
-    const contentWrapper =
-      document.querySelector("[data-vox-shell-main]") ??
-      document.querySelector("body > header.fixed ~ div.mx-auto, body > header ~ div.mx-auto");
+    const contentWrapper = document.querySelector(
+      "body > header.fixed ~ div.mx-auto, body > header ~ div.mx-auto",
+    );
     const firstContent =
       contentWrapper?.querySelector("main h1, main, section h1, h1") ??
       contentWrapper?.firstElementChild;

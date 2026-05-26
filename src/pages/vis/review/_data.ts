@@ -111,11 +111,11 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     href: "/no/",
     sprint: "2026-W21",
     issue: "#125I-B",
-    type: "active",
-    status: "needs-review",
+    type: "reference",
+    status: "closed",
     stakeholderSafe: true,
     description:
-      "R3 horizontal first-paint shell CSS — inline preflight + container layout. Needs Thomas QA.",
+      "Diagnose completed — horizontal layout shift / FOUC not solved. R1–R3 CSS attempts reverted (no visible QA improvement). Known issue / teknisk gjeld. Neste polish: #125I-C.",
   },
   {
     id: "forside-routing",
