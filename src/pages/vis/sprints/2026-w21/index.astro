@@ -10,7 +10,7 @@
    #125G: Forside/routing at /no/ — QA accepted, closed (#125G-R3 triage mandate).
    #125G-R2: Frontpage mandate decision surface — mandate accepted, applied R3.
    #125H: Navigation / top menu pass — QA accepted, closed (IA/nav-sync). Layout jump → #125I.
-   #125I-B-R3: Horizontal first-paint shell CSS; needs review.
+   #125I-B: Layout shift / FOUC — diagnose completed, parked (known issue). Neste: #125I-C.
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -123,8 +123,8 @@ const typographyLabDirections = [
         <li><strong>Applied:</strong> #125F Editorial hub på <code>/no/lyd-i-hverdagen/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125G Forside/routing på <code>/no/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125H Nav/toppmeny — QA-godkjent, closed (IA/nav-sync)</li>
-        <li><strong>Active:</strong> #125I-B-R3 Horizontal first-paint shell fix — needs review</li>
-        <li><strong>Neste:</strong> #125I-B Thomas QA, deretter #125I-C Frontpage polish</li>
+        <li><strong>Parked:</strong> #125I-B Layout shift / FOUC — diagnose completed, not solved (known issue)</li>
+        <li><strong>Neste:</strong> #125I-C Frontpage polish (med kjent layout issue)</li>
       </ul>
     </section>
 
@@ -411,20 +411,20 @@ const typographyLabDirections = [
       </div>
     </section>
 
-    <!-- Layout stability / FOUC (#125I-B / R3) -->
+    <!-- Layout stability / FOUC (#125I-B — parked) -->
     <section class="sprint-preview__section" aria-labelledby="layout-stability-heading">
       <div class="sprint-preview__section-head">
-        <p class="sprint-preview__kicker">15 · #125I-B-R3</p>
-        <h2 id="layout-stability-heading">Layout stability / horizontal first-paint</h2>
-        <p>Inline shell CSS i head — preflight + container layout før Tailwind bundle.</p>
+        <p class="sprint-preview__kicker">15 · #125I-B</p>
+        <h2 id="layout-stability-heading">Layout stability / FOUC</h2>
+        <p>Diagnose completed — horisontal layout shift parkert som known issue. Ingen flere CSS-forsøk i denne slicen.</p>
       </div>
       <div class="sprint-preview__typo-summary">
         <p class="sprint-preview__typo-status">
-          <strong>Status:</strong> Applied — needs review
+          <strong>Status:</strong> Diagnose completed / parked
         </p>
         <p class="sprint-preview__typo-sans">
-          <code>data-vox-shell-container</code> / <code>data-vox-shell-main</code> med inline max-width 72rem,
-          margin-inline auto, padding-inline 1rem/1.5rem/2rem. Body margin 0 ved first paint. Wordmark min-width reservert.
+          R2 identifiserte horisontal shift (body margin 8→0, container layout ved Tailwind-load). R3 first-paint CSS
+          ga bedre målinger men ingen synlig QA-forbedring — revertet. FOUC beholdes som teknisk gjeld. Neste: #125I-C.
         </p>
         <a href={`${base}no/hub/`} class="sprint-preview__typo-link">
           Verify layout stability on production →

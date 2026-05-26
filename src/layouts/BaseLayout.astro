@@ -1,6 +1,5 @@
 ---
-/* CONTRACT: Shared application shell with global header, background mood layer, and CES bootstrapping.
-   #125I-B-R3: Inline first-paint horizontal shell CSS in head — before Tailwind bundle. */
+/* CONTRACT: Shared application shell with global header, background mood layer, and CES bootstrapping. */
 import "../styles/global.css";
 import Header from "../components/nav/Header.astro";
 import MobileMenuSheet from "../components/nav/MobileMenuSheet.astro";
@@ -29,55 +28,6 @@ const isSandboxWhite = shellVariant === "sandbox-white";
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style is:inline>
-      /* #125I-B-R3 — horizontal first-paint shell (preflight + container layout only) */
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-      }
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-      }
-      body > header.fixed {
-        position: fixed;
-        z-index: 40;
-        top: 0;
-        right: 0;
-        left: 0;
-        width: 100%;
-      }
-      [data-vox-shell-container],
-      [data-vox-shell-main] {
-        width: 100%;
-        max-width: 72rem;
-        margin-inline: auto;
-        padding-inline: 1rem;
-      }
-      @media (min-width: 640px) {
-        [data-vox-shell-container],
-        [data-vox-shell-main] {
-          padding-inline: 1.5rem;
-        }
-      }
-      @media (min-width: 1024px) {
-        [data-vox-shell-container],
-        [data-vox-shell-main] {
-          padding-inline: 2rem;
-        }
-      }
-      body > header.fixed header .font-display {
-        display: inline-block;
-        min-width: 3.375rem;
-      }
-      @media (min-width: 640px) {
-        body > header.fixed header .font-display {
-          min-width: 4.25rem;
-        }
-      }
-    </style>
     <script is:inline>
       (function () {
         var STORAGE_KEY = "vox-theme";
@@ -187,10 +137,7 @@ const isSandboxWhite = shellVariant === "sandbox-white";
         class="bg-[rgb(var(--surface-elevated))/0.88] backdrop-blur-xl"
         style="box-shadow: var(--shadow-header);"
       >
-        <div
-          class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8"
-          data-vox-shell-container
-        >
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <Header currentPath={currentPath} brand={headerBrand} showDevtoolsToggle={showHeaderDevtoolsToggle} />
         </div>
       </div>
@@ -198,10 +145,7 @@ const isSandboxWhite = shellVariant === "sandbox-white";
 
     <MobileMenuSheet currentPath={currentPath} brand={headerBrand} showDevtoolsToggle={showHeaderDevtoolsToggle} />
 
-    <div
-      class="mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-30 lg:px-8"
-      data-vox-shell-main
-    >
+    <div class="mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-30 lg:px-8">
       <slot />
     </div>
 
