@@ -55,17 +55,6 @@ const isSandboxWhite = shellVariant === "sandbox-white";
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
     />
-    <style is:inline>
-      /* #125H-R5: content offset under fixed header before Tailwind bundle paints */
-      .vox-shell-content {
-        padding-top: 7rem;
-      }
-      @media (min-width: 640px) {
-        .vox-shell-content {
-          padding-top: 7.5rem;
-        }
-      }
-    </style>
     <InspectDrawerArmScript />
     <slot name="head" />
     <script defer src="https://www.gstatic.com/ces-console/fast/chat-messenger/prod/v1.15/chat-messenger.js"></script>
@@ -156,7 +145,7 @@ const isSandboxWhite = shellVariant === "sandbox-white";
 
     <MobileMenuSheet currentPath={currentPath} brand={headerBrand} showDevtoolsToggle={showHeaderDevtoolsToggle} />
 
-    <div class="vox-shell-content mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-30 lg:px-8">
+    <div class="mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-30 lg:px-8">
       <slot />
     </div>
 
