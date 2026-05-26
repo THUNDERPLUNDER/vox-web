@@ -10,7 +10,7 @@
    #125G: Forside/routing at /no/ — QA accepted, closed (#125G-R3 triage mandate).
    #125G-R2: Frontpage mandate decision surface — mandate accepted, applied R3.
    #125H: Navigation / top menu pass — QA accepted, closed (IA/nav-sync). Layout jump → #125I.
-   #125I-C-R3: Shared footer polish; needs review.
+   #125I-C: Frontpage/footer polish — QA accepted, closed. Neste: #125I-D.
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -123,9 +123,9 @@ const typographyLabDirections = [
         <li><strong>Applied:</strong> #125F Editorial hub på <code>/no/lyd-i-hverdagen/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125G Forside/routing på <code>/no/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125H Nav/toppmeny — QA-godkjent, closed (IA/nav-sync)</li>
+        <li><strong>Applied:</strong> #125I-C Forside/footer polish på <code>/no/</code> — QA-godkjent, closed</li>
         <li><strong>Parked:</strong> #125I-B Layout shift / FOUC — known issue</li>
-        <li><strong>Active:</strong> #125I-C-R3 Shared footer polish — needs review</li>
-        <li><strong>Neste:</strong> #125I-D Hub polish etter Thomas QA på #125I-C</li>
+        <li><strong>Neste:</strong> #125I-D Hub polish · alternativt senere #125J Copy/nav naming pass</li>
       </ul>
     </section>
 
@@ -412,19 +412,24 @@ const typographyLabDirections = [
       </div>
     </section>
 
-    <!-- Frontpage polish (#125I-C) -->
+    <!-- Frontpage & footer polish (#125I-C — closed) -->
     <section class="sprint-preview__section" aria-labelledby="frontpage-polish-heading">
       <div class="sprint-preview__section-head">
         <p class="sprint-preview__kicker">16 · #125I-C</p>
-        <h2 id="frontpage-polish-heading">Frontpage polish</h2>
-        <p>Shared Viddel layout family — strammere rytme og tydeligere hovedvalg på avklaringsflaten.</p>
+        <h2 id="frontpage-polish-heading">Frontpage &amp; footer polish</h2>
+        <p>Forside og footer strammet inn som felles Viddel-layoutfamilie — god nok for videre arbeid.</p>
       </div>
       <div class="sprint-preview__typo-summary">
         <p class="sprint-preview__typo-status">
-          <strong>Status:</strong> Applied — needs review
+          <strong>Status:</strong> QA accepted / closed
         </p>
         <p class="sprint-preview__typo-sans">
-          R3: felles footer-shell (60rem, divider, grid). R2 forside uendret i denne PR.
+          R1–R3: redusert meta, samlet kortfamilie, bredere modul, integrert fast-track, felles footer-shell.
+          FOUC forblir known issue (#125I-B).
+        </p>
+        <p class="sprint-preview__typo-sans">
+          <strong>Parkert copy/nav (senere pass):</strong> «Hva trenger du hjelp til nå?», «mestre mer»,
+          «Hørehjelpen», «spørre direkte», «Lyd i hverdagen», bruk av «rask/raske steg».
         </p>
         <a href={`${base}no/`} class="sprint-preview__typo-link">
           Verify frontpage polish on production →
@@ -445,7 +450,7 @@ const typographyLabDirections = [
         </p>
         <p class="sprint-preview__typo-sans">
           R2 identifiserte horisontal shift (body margin 8→0, container layout ved Tailwind-load). R3 first-paint CSS
-          ga bedre målinger men ingen synlig QA-forbedring — revertet. FOUC beholdes som teknisk gjeld. Neste: #125I-C.
+          ga bedre målinger men ingen synlig QA-forbedring — revertet. FOUC beholdes som teknisk gjeld. Neste: #125I-D.
         </p>
         <a href={`${base}no/hub/`} class="sprint-preview__typo-link">
           Verify layout stability on production →
