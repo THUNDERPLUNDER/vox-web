@@ -119,15 +119,15 @@ export const reviewRegistry: ReviewRegistryItem[] = [
   },
   {
     id: "frontpage-polish-125i-c",
-    title: "Frontpage polish",
+    title: "Frontpage & footer polish",
     href: "/no/",
     sprint: "2026-W21",
     issue: "#125I-C",
-    type: "active",
-    status: "needs-review",
+    type: "reference",
+    status: "closed",
     stakeholderSafe: true,
     description:
-      "R3 shared footer polish + R2 frontpage. Mandat/copy uendret. Needs Thomas QA.",
+      "QA-godkjent — god nok for nå (R1–R3 forside + felles footer). FOUC/layout shift forblir known issue (#125I-B). Copy/nav wording parkert til senere pass (#125J). Neste: #125I-D hub polish.",
   },
   {
     id: "forside-routing",
