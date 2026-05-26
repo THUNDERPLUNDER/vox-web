@@ -111,12 +111,16 @@ Polish = **stramming og sammenheng** innen eksisterende mandat og tokens — ikk
 
 ## 5. Referanse — FNI (inspirasjon, ikke stilkopi)
 
-[Folkehelseinstituttet (FHI)](https://www.fhi.no/) — bruk som **inspirasjon**, ikke visuell kopi:
+**Referanse:** [FNI / Fridtjof Nansens Institutt](https://www.fni.no/) — bruk som **inspirasjon**, ikke visuell kopi.
+
+- Autoritet, aktualitet, faglig trygghet og redaksjonell tyngde.
+- Særlig «Aktuelt»-følelsen og inntrykket av en levende, oppdatert faglig institusjon.
+- **Ikke kopier:** tung institusjonell hero, akademisk distanse eller portal-/moduloverlast.
 
 | Ta med | Ikke ta med |
 |--------|-------------|
 | Autoritet og faglig trygghet | Tung institusjonell hero |
-| «Aktuelt»-følelse — levende, oppdatert tjeneste | Akademisk distanse |
+| «Aktuelt»-følelse — levende, oppdatert faglig institusjon | Akademisk distanse |
 | Redaksjonell tyngde i innholdsrytme | Moduloverlast / portal-følelse |
 | Tydelig hierarki mellom nyheter, tema og dypdykk | Direkte layout-/fargekopi |
 
