@@ -99,11 +99,11 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     href: "/no/",
     sprint: "2026-W21",
     issue: "#125H",
-    type: "active",
-    status: "needs-review",
+    type: "reference",
+    status: "closed",
     stakeholderSafe: true,
     description:
-      "Toppmeny og footer synket til hubmodellen — Forside, Hjelp, Lyd i hverdagen, Ordbok, Om + Start samtale CTA.",
+      "IA/nav-sync QA-godkjent — Forside, Hjelp, Lyd i hverdagen, Ordbok, Om + Start samtale CTA. Footer synket. Layout jump/FOUC known issue → #125I.",
   },
   {
     id: "forside-routing",
