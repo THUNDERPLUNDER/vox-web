@@ -115,7 +115,19 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "closed",
     stakeholderSafe: true,
     description:
-      "Diagnose completed — horizontal layout shift / FOUC not solved. R1–R3 CSS attempts reverted (no visible QA improvement). Known issue / teknisk gjeld. Neste polish: #125I-C.",
+      "Diagnose completed — horizontal layout shift / FOUC not solved. Parkert som known issue / teknisk gjeld.",
+  },
+  {
+    id: "frontpage-polish-125i-c",
+    title: "Frontpage polish",
+    href: "/no/",
+    sprint: "2026-W21",
+    issue: "#125I-C",
+    type: "active",
+    status: "needs-review",
+    stakeholderSafe: true,
+    description:
+      "Shared Viddel layout family on /no/ — strammere rytme, tydeligere hovedvalg, hub/ed-aligned container. Mandat uendret. Needs Thomas QA.",
   },
   {
     id: "forside-routing",

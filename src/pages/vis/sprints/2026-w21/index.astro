@@ -10,7 +10,7 @@
    #125G: Forside/routing at /no/ — QA accepted, closed (#125G-R3 triage mandate).
    #125G-R2: Frontpage mandate decision surface — mandate accepted, applied R3.
    #125H: Navigation / top menu pass — QA accepted, closed (IA/nav-sync). Layout jump → #125I.
-   #125I-B: Layout shift / FOUC — diagnose completed, parked (known issue). Neste: #125I-C.
+   #125I-C: Frontpage polish — shared Viddel layout family; needs review.
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -123,8 +123,9 @@ const typographyLabDirections = [
         <li><strong>Applied:</strong> #125F Editorial hub på <code>/no/lyd-i-hverdagen/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125G Forside/routing på <code>/no/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125H Nav/toppmeny — QA-godkjent, closed (IA/nav-sync)</li>
-        <li><strong>Parked:</strong> #125I-B Layout shift / FOUC — diagnose completed, not solved (known issue)</li>
-        <li><strong>Neste:</strong> #125I-C Frontpage polish (med kjent layout issue)</li>
+        <li><strong>Parked:</strong> #125I-B Layout shift / FOUC — known issue</li>
+        <li><strong>Active:</strong> #125I-C Frontpage polish på <code>/no/</code> — needs review</li>
+        <li><strong>Neste:</strong> #125I-D Hub polish etter Thomas QA på #125I-C</li>
       </ul>
     </section>
 
@@ -407,6 +408,27 @@ const typographyLabDirections = [
         </p>
         <a href={`${base}no/`} class="sprint-preview__typo-link">
           Verify navigation on production →
+        </a>
+      </div>
+    </section>
+
+    <!-- Frontpage polish (#125I-C) -->
+    <section class="sprint-preview__section" aria-labelledby="frontpage-polish-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">16 · #125I-C</p>
+        <h2 id="frontpage-polish-heading">Frontpage polish</h2>
+        <p>Shared Viddel layout family — strammere rytme og tydeligere hovedvalg på avklaringsflaten.</p>
+      </div>
+      <div class="sprint-preview__typo-summary">
+        <p class="sprint-preview__typo-status">
+          <strong>Status:</strong> Applied — needs review
+        </p>
+        <p class="sprint-preview__typo-sans">
+          Hub/ed-aligned container (52rem), block-rytme, tre-veier-paths, utility vs editorial entry cards, kompakt
+          Hørehjelpen fast-track. Mandat #125G-R3 uendret. FOUC ikke adressert.
+        </p>
+        <a href={`${base}no/`} class="sprint-preview__typo-link">
+          Verify frontpage polish on production →
         </a>
       </div>
     </section>
