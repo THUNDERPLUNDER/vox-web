@@ -1,4 +1,5 @@
-<!-- CONTRACT: Global footer — utility nav + editorial line + theme (inspect toggles only on article variant until #76). -->
+<!-- CONTRACT: Global footer — utility nav, editorial note, theme (#125I-C-R3 layout family).
+     Shared shell width and calm surface transition on production pages. -->
 ---
 import ThemeControl from "../ThemeControl.astro";
 
@@ -9,54 +10,75 @@ const { variant = "default", withInspectDrawer = false } = Astro.props as {
   /** When true, ThemeInspectBootScript lives with InspectToolsDrawer — avoids double boot. */
   withInspectDrawer?: boolean;
 };
-const isArticle = variant === "article";
 const isSandboxTall = variant === "sandbox-tall";
+const isSiteFooter = !isSandboxTall;
+
+const footerLinks = [
+  { href: "/no", label: "Forside" },
+  { href: "/no/hub", label: "Hjelp" },
+  { href: "/no/lyd-i-hverdagen", label: "Lyd i hverdagen" },
+  { href: "/no/ordbok", label: "Ordbok" },
+  { href: "/no/om", label: "Om" },
+  { href: "/no/personvern", label: "Personvern" },
+] as const;
 ---
 
 <footer
   class:list={[
     isSandboxTall && "mt-24 py-16 sm:mt-28 sm:py-24",
-    isArticle &&
-      !isSandboxTall &&
-      "mt-16 border-t border-[rgb(var(--border)/0.38)] pt-9 pb-6 sm:mt-20 sm:pt-10 sm:pb-7",
-    !isArticle && !isSandboxTall && "mt-16 py-8 sm:mt-20 sm:py-10",
+    isSiteFooter &&
+      "mt-12 border-t border-[rgb(var(--border)/0.24)] bg-[rgb(var(--reading-paper)/0.42)] pt-8 pb-8 sm:mt-14 sm:pt-9 sm:pb-9",
   ]}
 >
-  <nav
-    class:list={[
-      "flex flex-wrap items-center gap-x-4 gap-y-2 text-[rgb(var(--muted))]",
-      isArticle && !isSandboxTall ? "text-xs" : "text-sm",
-    ]}
-  >
-    <a href="/no" class="hover:text-[rgb(var(--text))]">Forside</a>
-    <a href="/no/hub" class="hover:text-[rgb(var(--text))]">Hjelp</a>
-    <a href="/no/lyd-i-hverdagen" class="hover:text-[rgb(var(--text))]">Lyd i hverdagen</a>
-    <a href="/no/ordbok" class="hover:text-[rgb(var(--text))]">Ordbok</a>
-    <a href="/no/om" class="hover:text-[rgb(var(--text))]">Om</a>
-    <a href="/no/personvern" class="hover:text-[rgb(var(--text))]">Personvern</a>
-  </nav>
-  <p
-    class:list={[
-      "text-[rgb(var(--muted))]",
-      isSandboxTall && "mt-8 max-w-md text-sm leading-relaxed",
-      isArticle && !isSandboxTall && "mt-3 text-[11px]",
-      !isArticle && !isSandboxTall && "mt-4 text-xs",
-    ]}
-  >
-    Innhold fra Viddel-redaksjonen. Hørehjelpen er i tidlig utgave og utvikles fortløpende.
-  </p>
   {
-    isSandboxTall ? (
-      <p class="mt-10 max-w-xl text-[11px] leading-relaxed text-[rgb(var(--muted))]">
-        Sandbox · brukes til å teste artikkel-layout og bunnrytme. Ikke en produksjonsside.
-      </p>
-    ) : null
+    isSiteFooter ? (
+      <div class="mx-auto max-w-[60rem] px-4 sm:px-6 lg:px-8">
+        <div class="grid gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end sm:gap-x-10 lg:gap-x-12">
+          <div class="flex min-w-0 flex-col gap-3.5">
+            <nav
+              class="grid grid-cols-2 gap-x-4 gap-y-2 sm:flex sm:flex-wrap sm:gap-x-5 sm:gap-y-2"
+              aria-label="Footer"
+            >
+              {footerLinks.map((link) => (
+                <a
+                  href={link.href}
+                  class="text-xs font-medium text-[rgb(var(--reading-ink-secondary))] transition-colors hover:text-[rgb(var(--reading-ink))]"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+            <p class="max-w-md text-[11px] leading-relaxed text-[rgb(var(--reading-ink-secondary))]">
+              Innhold fra Viddel-redaksjonen. Hørehjelpen er i tidlig utgave og utvikles fortløpende.
+            </p>
+          </div>
+          <div class="shrink-0 sm:pb-0.5">
+            <ThemeControl compact includeInspectToggles={false} omitScript={withInspectDrawer} />
+          </div>
+        </div>
+      </div>
+    ) : (
+      <>
+        <nav
+          class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[rgb(var(--muted))]"
+          aria-label="Footer"
+        >
+          {footerLinks.map((link) => (
+            <a href={link.href} class="hover:text-[rgb(var(--text))]">
+              {link.label}
+            </a>
+          ))}
+        </nav>
+        <p class="mt-8 max-w-md text-sm leading-relaxed text-[rgb(var(--muted))]">
+          Innhold fra Viddel-redaksjonen. Hørehjelpen er i tidlig utgave og utvikles fortløpende.
+        </p>
+        <p class="mt-10 max-w-xl text-[11px] leading-relaxed text-[rgb(var(--muted))]">
+          Sandbox · brukes til å teste artikkel-layout og bunnrytme. Ikke en produksjonsside.
+        </p>
+        <div class="mt-14">
+          <ThemeControl includeInspectToggles={false} omitScript={withInspectDrawer} />
+        </div>
+      </>
+    )
   }
-  <div class:list={[isSandboxTall ? "mt-14" : isArticle ? "mt-3" : "mt-5"]}>
-    <ThemeControl
-      compact={isArticle && !isSandboxTall}
-      includeInspectToggles={false}
-      omitScript={withInspectDrawer}
-    />
-  </div>
 </footer>

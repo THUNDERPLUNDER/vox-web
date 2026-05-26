@@ -127,7 +127,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "needs-review",
     stakeholderSafe: true,
     description:
-      "R2 — unified card surface, wider module (60rem), tight fast-track row. Mandat uendret. Needs Thomas QA.",
+      "R3 shared footer polish + R2 frontpage. Mandat/copy uendret. Needs Thomas QA.",
   },
   {
     id: "forside-routing",
