@@ -647,39 +647,6 @@
         </section>
 
         <section class="section">
-          <div class="surface">
-            <h2>Når dere trenger mer detaljert veiledning</h2>
-            <p>Start med Kronisk Kompetanse-verktøykassen og vurder hvilke tiltak som kan prøves i liten skala. Ved behov for mer detaljert veiledning kan disse ressursene være nyttige:</p>
-            <ul class="source-list u-mb-0">
-              <li>
-                <a href="https://idebanken.no/forebygge-sykefravaer/finn-god-tilrettelegging" target="_blank" rel="noopener">Ta samtalen om tilrettelegging – Idébanken</a>
-                <p class="small-note u-mb-0">For leder og ansatt som skal finne gode løsninger sammen.</p>
-              </li>
-              <li>
-                <a href="https://idebanken.no/folge-opp-sykefravaer/samtaler-ved-sykefravaer" target="_blank" rel="noopener">Samtaler ved sykefravær – Idébanken</a>
-                <p class="small-note u-mb-0">For ledere som skal forberede, gjennomføre og følge opp samtaler med en sykmeldt ansatt.</p>
-              </li>
-              <li>
-                <a href="https://www.nav.no/arbeidsgiver/tilretteleggingsplikt" target="_blank" rel="noopener">Tilrettelegging på arbeidsplassen – NAV</a>
-                <p class="small-note u-mb-0">For arbeidsgivers plikter, medvirkning, grenser for tilrettelegging og dokumentasjon.</p>
-              </li>
-              <li>
-                <a href="https://www.nav.no/arbeidsgiver/redusere-sykefravar" target="_blank" rel="noopener">Redusere sykefravær og beholde ansatte i jobb – NAV</a>
-                <p class="small-note u-mb-0">For oversikt over støtteordninger, rådgivning og tjenester for arbeidsgivere.</p>
-              </li>
-              <li>
-                <a href="https://www.nav.no/arbeidsgiver/ekspertbistand" target="_blank" rel="noopener">Tilskudd til ekspertbistand – NAV</a>
-                <p class="small-note u-mb-0">For situasjoner der leder og ansatt står fast og trenger ekstern faglig hjelp.</p>
-              </li>
-              <li>
-                <a href="https://www.nav.no/arbeidsgiver/hjelpemiddelsentral" target="_blank" rel="noopener">Hjelpemidler og tilrettelegging – NAV</a>
-                <p class="small-note u-mb-0">For ansatte som kan trenge hjelpemidler eller veiledning fra Nav hjelpemiddelsentral.</p>
-              </li>
-            </ul>
-          </div>
-        </section>
-
-        <section class="section">
           <h2>Hvorfor turnover blir dyrt</h2>
           <div class="grid three">
             <article class="card">
@@ -726,7 +693,6 @@
             <h2>Kildegrunnlag og forbehold</h2>
             <p>Scenarioene er illustrasjoner, ikke faste satser. Turnover varierer med rolle og situasjon. Modellen bruker 0,4 x årslønn for driftsrolle, 1,5 x for fag-/kunnskapsrolle og 2,0 x for lederrolle.</p>
             <p>Tiltak, dokumenterte merkostnader og eventuell NAV-relevans må vurderes konkret i hver sak.</p>
-            <p class="small-note">Se også ressursboksen etter verktøykassen for praktisk veiledning fra Idébanken og NAV.</p>
             <p><a href="/preview/nrf/kompetanse-i-arbeid-v07k/NRF_kildegrunnlag_tilrettelegging_turnover_v1_1.pdf" target="_blank" rel="noopener">Åpne PDF: NRF_kildegrunnlag_tilrettelegging_turnover_v1_1</a></p>
             <ul class="source-list u-mb-0">
               <li><a href="https://www.simployer.com/no/artikler/ansatte-som-slutter-koster-overraskende-mye" target="_blank" rel="noopener">Simployer — ansatte som slutter koster overraskende mye</a></li>
