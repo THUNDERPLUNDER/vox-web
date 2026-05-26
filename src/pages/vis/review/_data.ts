@@ -115,7 +115,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "needs-review",
     stakeholderSafe: true,
     description:
-      "R2 rollback to pre-#125I-B shell baseline; horizontal layout shift diagnosis. Needs Thomas QA.",
+      "R3 horizontal first-paint shell CSS — inline preflight + container layout. Needs Thomas QA.",
   },
   {
     id: "forside-routing",
