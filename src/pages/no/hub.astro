@@ -1,7 +1,8 @@
 ---
 /* CONTRACT: Hjelp hub (A3) — «Få høreapparatet til å fungere».
    Utility-first: AI ask → problem cards → short guides → escalation.
-   #125D applied slice on /no/hub only. Mandate: docs/project/VIDDEL_HUB_MANDATE_v0_1.md / #112.
+   #125D applied slice; #125I-D-R1 polish — layout family aligned with /no/ (#125I-C).
+   Mandate: docs/project/VIDDEL_HUB_MANDATE_v0_1.md / #112.
 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/nav/Footer.astro";
@@ -15,13 +16,12 @@ type TaskStatus = "finnes" | "gap";
 
 const problemCards: Array<{
   title: string;
-  thumb: string;
   href: string;
 }> = [
-  { title: "Stoppe piping", thumb: "piping", href: "/no/artikkel/fa-slutt-pa-pipingen" },
-  { title: "Koble til mobilen", thumb: "bluetooth", href: "/no/artikkel/koble-horeapparatet-til-mobilen" },
-  { title: "Appen finner ikke høreapparatet", thumb: "app", href: "/no/artikkel/appen-finner-ikke-horeapparatet" },
-  { title: "Bytte filter", thumb: "filter", href: "/no/artikkel/bytte-filter-uten-stress" },
+  { title: "Stoppe piping", href: "/no/artikkel/fa-slutt-pa-pipingen" },
+  { title: "Koble til mobilen", href: "/no/artikkel/koble-horeapparatet-til-mobilen" },
+  { title: "Appen finner ikke høreapparatet", href: "/no/artikkel/appen-finner-ikke-horeapparatet" },
+  { title: "Bytte filter", href: "/no/artikkel/bytte-filter-uten-stress" },
 ];
 
 const moreProblems: Array<{
@@ -87,11 +87,26 @@ const audiografEscalation = {
         <p class="hub-lead">{hubSupport}</p>
       </header>
 
-      <div class="hub-help-core">
+      <div class="hub-module">
 
-        <!-- AI ask — first step -->
-        <section class="hub-block hub-block--ai" aria-labelledby="ai-ask-heading">
-          <h2 id="ai-ask-heading" class="hub-block__title">Hva fungerer ikke?</h2>
+        <!-- Problem cards — primary paths first -->
+        <section class="hub-section" aria-labelledby="problems-heading">
+          <h2 id="problems-heading" class="hub-section__title">Dette kan du prøve først</h2>
+          <ul class="hub-problem-grid" role="list">
+            {problemCards.map((card) => (
+              <li>
+                <a href={card.href} class="hub-problem-card">
+                  <span class="hub-problem-card__title">{card.title}</span>
+                  <span class="hub-problem-card__arrow" aria-hidden="true">→</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <!-- AI ask — compact utility row -->
+        <section class="hub-section hub-section--ai" aria-labelledby="ai-ask-heading">
+          <h2 id="ai-ask-heading" class="hub-section__title">Hva fungerer ikke?</h2>
           <p class="hub-ai-ask__lead">
             Beskriv problemet — Hørehjelpen åpnes med spørsmålet ditt og hjelper deg videre.
           </p>
@@ -112,26 +127,9 @@ const audiografEscalation = {
           </form>
         </section>
 
-        <!-- Problem cards -->
-        <section class="hub-block" aria-labelledby="problems-heading">
-          <h2 id="problems-heading" class="hub-block__title">Dette kan du prøve først</h2>
-          <ul class="hub-problem-grid" role="list">
-            {problemCards.map((card) => (
-              <li>
-                <a href={card.href} class="hub-problem-card" data-thumb={card.thumb}>
-                  <span class="hub-problem-card__visual" aria-hidden="true">
-                    <span class="hub-problem-card__shape"></span>
-                  </span>
-                  <span class="hub-problem-card__title">{card.title}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-
         <!-- More problems — compact list -->
-        <section class="hub-block" aria-labelledby="more-problems-heading">
-          <h2 id="more-problems-heading" class="hub-block__title">Flere vanlige problemer</h2>
+        <section class="hub-section" aria-labelledby="more-problems-heading">
+          <h2 id="more-problems-heading" class="hub-section__title">Flere vanlige problemer</h2>
           <ul class="hub-task-list" role="list">
             {moreProblems.map((task) => (
               <li class:list={["hub-task-row", task.status === "gap" && "hub-task-row--gap"]}>
@@ -152,8 +150,8 @@ const audiografEscalation = {
         </section>
 
         <!-- Short guides -->
-        <section class="hub-block" aria-labelledby="guides-heading">
-          <h2 id="guides-heading" class="hub-block__title">Korte guider</h2>
+        <section class="hub-section" aria-labelledby="guides-heading">
+          <h2 id="guides-heading" class="hub-section__title">Korte guider</h2>
           <ul class="hub-guide-rows" role="list">
             {shortGuides.map((guide) => (
               <li>
@@ -168,7 +166,7 @@ const audiografEscalation = {
         </section>
 
         <!-- Escalation -->
-        <section class="hub-block hub-block--escalation" aria-labelledby="escalation-heading">
+        <section class="hub-section hub-section--escalation" aria-labelledby="escalation-heading">
           <h2 id="escalation-heading" class="sr-only">Videre hjelp</h2>
           <a href="/no/chat?from=hub" class="hub-escalation-chat">
             Fant du ikke svaret? Spør Hørehjelpen
@@ -186,31 +184,43 @@ const audiografEscalation = {
     </div>
   </main>
 
-  <Footer variant="article" />
+  <Footer />
 </BaseLayout>
 
 <style>
-  [data-hub-help] {
-    background: rgb(var(--article-page-canvas));
-    min-height: 100vh;
+  /* #125I-D-R1 — layout family aligned with /no/ (#125I-C): 60rem module, calm surfaces */
+  .hub-page {
+    padding: 0;
   }
 
   .hub-container {
-    max-width: min(100%, 52rem);
+    max-width: min(100%, 60rem);
     margin: 0 auto;
-    padding: 0 1rem 4rem;
+    padding: 0 1rem clamp(3.75rem, 7vw, 5rem);
+  }
+
+  @media (min-width: 640px) {
+    .hub-container {
+      padding-inline: 1.25rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hub-container {
+      padding-inline: 1.75rem;
+    }
   }
 
   .hub-header {
-    padding: clamp(2rem, 6vw, 3.5rem) 0 clamp(1.5rem, 4vw, 2.25rem);
-    border-bottom: 1px solid rgb(var(--border) / 0.22);
+    padding: clamp(2rem, 6vw, 3rem) 0 clamp(1rem, 2.5vw, 1.3rem);
+    border-bottom: 1px solid rgb(var(--border) / 0.2);
   }
 
   .hub-breadcrumb {
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.85rem;
     font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.12em;
@@ -225,83 +235,88 @@ const audiografEscalation = {
   }
 
   .hub-kicker {
-    margin: 0 0 0.55rem;
+    margin: 0 0 0.45rem;
     font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
+    font-weight: 800;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgb(var(--reading-accent-iris));
+    color: rgb(var(--reading-ink-secondary));
   }
 
   [data-hub-help] h1 {
     margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(2.4rem, 8vw, 4.2rem);
+    font-size: clamp(2rem, 5.8vw, 2.6rem);
     font-weight: 650;
-    line-height: 0.99;
-    letter-spacing: -0.065em;
+    line-height: 1.05;
+    letter-spacing: -0.055em;
     text-wrap: balance;
     color: rgb(var(--reading-ink));
+    max-width: 42rem;
   }
 
   .hub-lead {
-    margin: clamp(0.9rem, 2.5vw, 1.35rem) 0 0;
-    font-size: clamp(1rem, 2.5vw, 1.2rem);
-    line-height: 1.48;
-    letter-spacing: -0.01em;
+    margin: clamp(0.65rem, 1.8vw, 0.85rem) 0 0;
+    max-width: 38rem;
+    font-size: clamp(0.93rem, 2.1vw, 1.02rem);
+    line-height: 1.5;
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .hub-help-core {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+  .hub-module {
+    margin-top: clamp(1rem, 2.5vw, 1.2rem);
+    padding: clamp(0.9rem, 2.2vw, 1.05rem);
+    border: 1px solid rgb(var(--border) / 0.16);
+    border-radius: 12px;
   }
 
-  .hub-block {
-    padding: clamp(1.5rem, 4vw, 2rem) 0;
-    border-bottom: 1px solid rgb(var(--border) / 0.15);
+  .hub-section {
+    padding: clamp(0.85rem, 2vw, 1rem) 0;
   }
 
-  .hub-block:last-child {
-    border-bottom: 0;
+  .hub-section + .hub-section {
+    border-top: 1px solid rgb(var(--border) / 0.14);
   }
 
-  .hub-block__title {
-    margin: 0 0 0.85rem;
+  .hub-section:first-child {
+    padding-top: 0;
+  }
+
+  .hub-section:last-child {
+    padding-bottom: 0;
+  }
+
+  .hub-section__title {
+    margin: 0 0 0.65rem;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgb(var(--reading-accent-iris));
+    color: rgb(var(--reading-ink-secondary));
   }
 
-  /* ── AI ask ── */
-  .hub-block--ai {
-    padding-top: clamp(1.75rem, 4vw, 2.25rem);
-  }
-
+  /* ── AI ask — compact utility, not dominant widget ── */
   .hub-ai-ask__lead {
-    margin: 0 0 1rem;
-    font-size: 0.88rem;
-    line-height: 1.6;
+    margin: 0 0 0.75rem;
+    font-size: 0.84rem;
+    line-height: 1.48;
     color: rgb(var(--reading-ink-secondary));
   }
 
   .hub-ai-form {
     display: flex;
     flex-direction: column;
-    gap: 0.65rem;
+    gap: 0.55rem;
   }
 
   .hub-ai-form__field input {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid rgb(var(--border) / 0.35);
+    padding: 0.62rem 0.95rem;
+    border: 1px solid rgb(var(--border) / 0.28);
     border-radius: 999px;
     background: rgb(var(--reading-paper));
     color: rgb(var(--reading-ink));
-    font-size: 0.9rem;
+    font-size: 0.86rem;
     line-height: 1.4;
   }
 
@@ -317,7 +332,7 @@ const audiografEscalation = {
 
   .hub-ai-form__submit {
     align-self: flex-start;
-    padding: 0.6rem 1.1rem;
+    padding: 0.52rem 0.95rem;
     border: 0;
     border-radius: 999px;
     background: rgb(var(--reading-ink));
@@ -326,11 +341,11 @@ const audiografEscalation = {
     font-weight: 650;
     letter-spacing: -0.01em;
     cursor: pointer;
-    transition: opacity 120ms ease;
+    transition: opacity 150ms ease;
   }
 
   .hub-ai-form__submit:hover {
-    opacity: 0.88;
+    opacity: 0.9;
   }
 
   .hub-ai-form__submit:focus-visible {
@@ -338,34 +353,44 @@ const audiografEscalation = {
     box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
   }
 
-  /* ── Problem cards ── */
+  /* ── Problem cards — same calm surface family as forside entry cards ── */
   .hub-problem-grid {
     margin: 0;
     padding: 0;
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.65rem;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  @media (min-width: 640px) {
+    .hub-problem-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
   }
 
   .hub-problem-card {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 0.55rem;
-    min-height: 6.75rem;
-    padding: 0.7rem;
-    border: 1px solid rgb(var(--border) / 0.28);
+    justify-content: center;
+    gap: 0.25rem;
+    min-height: 4.5rem;
+    padding: 0.95rem 1rem 2rem;
+    border: 1px solid rgb(var(--border) / 0.22);
     border-radius: 10px;
     background: rgb(var(--reading-paper));
     color: inherit;
     text-decoration: none;
-    transition: box-shadow 150ms ease, border-color 150ms ease, transform 150ms ease;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
   }
 
   .hub-problem-card:hover {
-    border-color: rgb(var(--border) / 0.5);
-    box-shadow: 0 3px 14px rgb(var(--reading-ink) / 0.06);
-    transform: translateY(-1px);
+    border-color: rgb(var(--border) / 0.36);
+    box-shadow: 0 2px 12px rgb(var(--reading-ink) / 0.05);
   }
 
   .hub-problem-card:focus-visible {
@@ -373,49 +398,27 @@ const audiografEscalation = {
     box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
   }
 
-  .hub-problem-card__visual {
-    position: relative;
-    display: block;
-    height: 2.5rem;
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .hub-problem-card__shape {
-    position: absolute;
-    inset: 0;
-  }
-
-  [data-thumb="piping"] .hub-problem-card__visual {
-    background:
-      radial-gradient(ellipse 55% 55% at 18% 75%, rgb(95 82 220 / 0.15) 0%, transparent 65%),
-      linear-gradient(145deg, rgb(238 235 255) 0%, rgb(252 252 255) 100%);
-  }
-
-  [data-thumb="bluetooth"] .hub-problem-card__visual {
-    background:
-      radial-gradient(ellipse 60% 50% at 60% 50%, rgb(14 165 233 / 0.13) 0%, transparent 65%),
-      linear-gradient(155deg, rgb(234 246 255) 0%, rgb(252 252 255) 100%);
-  }
-
-  [data-thumb="app"] .hub-problem-card__visual {
-    background:
-      radial-gradient(ellipse 50% 65% at 75% 30%, rgb(95 82 220 / 0.11) 0%, transparent 60%),
-      linear-gradient(160deg, rgb(240 239 255) 0%, rgb(252 253 255) 100%);
-  }
-
-  [data-thumb="filter"] .hub-problem-card__visual {
-    background:
-      radial-gradient(ellipse 65% 55% at 55% 60%, rgb(200 192 176 / 0.28) 0%, transparent 65%),
-      linear-gradient(130deg, rgb(252 250 245) 0%, rgb(255 253 250) 100%);
-  }
-
   .hub-problem-card__title {
-    font-size: 0.84rem;
+    font-size: 0.98rem;
     font-weight: 650;
     letter-spacing: -0.025em;
-    line-height: 1.25;
+    line-height: 1.28;
     color: rgb(var(--reading-ink));
+  }
+
+  .hub-problem-card__arrow {
+    position: absolute;
+    right: 1rem;
+    bottom: 0.85rem;
+    font-size: 0.88rem;
+    line-height: 1;
+    color: rgb(var(--reading-ink-secondary) / 0.5);
+    transition: color 150ms ease, transform 150ms ease;
+  }
+
+  .hub-problem-card:hover .hub-problem-card__arrow {
+    color: rgb(var(--reading-ink-secondary));
+    transform: translateX(2px);
   }
 
   /* ── Compact task list ── */
@@ -423,14 +426,14 @@ const audiografEscalation = {
     margin: 0;
     padding: 0;
     list-style: none;
-    border: 1px solid rgb(var(--border) / 0.28);
+    border: 1px solid rgb(var(--border) / 0.22);
     border-radius: 10px;
     overflow: hidden;
     background: rgb(var(--reading-paper));
   }
 
   .hub-task-row {
-    border-bottom: 1px solid rgb(var(--border) / 0.18);
+    border-bottom: 1px solid rgb(var(--border) / 0.14);
   }
 
   .hub-task-row:last-child {
@@ -443,7 +446,7 @@ const audiografEscalation = {
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    padding: 0.85rem 1rem;
+    padding: 0.8rem 0.95rem;
     text-decoration: none;
   }
 
@@ -453,7 +456,7 @@ const audiografEscalation = {
   }
 
   .hub-task-row__link:hover {
-    background: rgb(var(--border) / 0.18);
+    background: rgb(var(--border) / 0.12);
   }
 
   .hub-task-row__link:focus-visible {
@@ -470,15 +473,15 @@ const audiografEscalation = {
   }
 
   .hub-task-row__label {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     line-height: 1.4;
     font-weight: 500;
   }
 
   .hub-task-row__arrow {
     flex-shrink: 0;
-    color: rgb(var(--reading-accent-iris));
-    font-size: 0.9rem;
+    color: rgb(var(--reading-ink-secondary) / 0.5);
+    font-size: 0.88rem;
   }
 
   .hub-task-row__badge {
@@ -488,7 +491,7 @@ const audiografEscalation = {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: rgb(var(--muted));
-    border: 1px solid rgb(var(--border) / 0.4);
+    border: 1px solid rgb(var(--border) / 0.35);
     border-radius: 3px;
     padding: 0.12rem 0.38rem;
   }
@@ -499,26 +502,28 @@ const audiografEscalation = {
     padding: 0;
     list-style: none;
     display: grid;
-    gap: 0.4rem;
+    gap: 0.55rem;
   }
 
   .hub-guide-row {
     display: grid;
     grid-template-columns: auto 1fr auto;
-    gap: 0.4rem 0.75rem;
+    gap: 0.35rem 0.75rem;
     align-items: baseline;
-    padding: 0.65rem 0.75rem;
-    border-radius: 8px;
+    padding: 0.85rem 0.95rem;
+    border-radius: 10px;
     background: rgb(var(--reading-paper));
-    border: 1px solid rgb(var(--border) / 0.2);
+    border: 1px solid rgb(var(--border) / 0.22);
     color: inherit;
     text-decoration: none;
-    transition: background-color 120ms ease, border-color 120ms ease;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
   }
 
   .hub-guide-row:hover {
-    background: rgb(var(--border) / 0.12);
-    border-color: rgb(var(--border) / 0.35);
+    border-color: rgb(var(--border) / 0.36);
+    box-shadow: 0 2px 12px rgb(var(--reading-ink) / 0.05);
   }
 
   .hub-guide-row:focus-visible {
@@ -527,41 +532,40 @@ const audiografEscalation = {
   }
 
   .hub-guide-row__label {
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgb(var(--reading-accent-iris));
+    color: rgb(var(--reading-ink-secondary));
   }
 
   .hub-guide-row__title {
     font-size: 0.88rem;
-    font-weight: 600;
+    font-weight: 650;
     letter-spacing: -0.02em;
     line-height: 1.3;
     color: rgb(var(--reading-ink));
   }
 
   .hub-guide-row__arrow {
-    color: rgb(var(--muted));
-    font-size: 0.85rem;
+    color: rgb(var(--reading-ink-secondary) / 0.5);
+    font-size: 0.88rem;
   }
 
   /* ── Escalation ── */
-  .hub-block--escalation {
+  .hub-section--escalation {
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
-    padding-bottom: 0.5rem;
+    gap: 0.75rem;
   }
 
   .hub-escalation-chat {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: 0.9rem;
+    font-size: 0.84rem;
     font-weight: 650;
-    color: rgb(var(--reading-accent-iris));
+    color: rgb(var(--reading-ink-secondary));
     text-decoration: underline;
     text-underline-offset: 3px;
   }
@@ -580,18 +584,20 @@ const audiografEscalation = {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 0.25rem 0.75rem;
-    padding: 0.9rem 1rem;
-    border: 1px solid rgb(var(--border) / 0.25);
+    padding: 0.95rem 1rem;
+    border: 1px solid rgb(var(--border) / 0.22);
     border-radius: 10px;
-    background: rgb(252 250 247);
+    background: rgb(var(--reading-paper));
     color: inherit;
     text-decoration: none;
-    transition: background-color 120ms ease, border-color 120ms ease;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
   }
 
   .hub-escalation-audiograf:hover {
-    background: rgb(250 247 242);
-    border-color: rgb(var(--border) / 0.4);
+    border-color: rgb(var(--border) / 0.36);
+    box-shadow: 0 2px 12px rgb(var(--reading-ink) / 0.05);
   }
 
   .hub-escalation-audiograf:focus-visible {
@@ -601,27 +607,26 @@ const audiografEscalation = {
 
   .hub-escalation-audiograf__label {
     grid-column: 1;
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgb(var(--muted));
+    color: rgb(var(--reading-ink-secondary));
   }
 
   .hub-escalation-audiograf__title {
     grid-column: 1;
-    font-family: var(--font-display);
-    font-size: 0.95rem;
+    font-size: 0.98rem;
     font-weight: 650;
     letter-spacing: -0.025em;
-    line-height: 1.2;
+    line-height: 1.28;
     color: rgb(var(--reading-ink));
   }
 
   .hub-escalation-audiograf__deck {
     grid-column: 1;
-    font-size: 0.8rem;
-    line-height: 1.55;
+    font-size: 0.82rem;
+    line-height: 1.48;
     color: rgb(var(--reading-ink-secondary));
   }
 
@@ -629,7 +634,7 @@ const audiografEscalation = {
     grid-column: 2;
     grid-row: 1 / span 3;
     align-self: center;
-    color: rgb(var(--muted));
+    color: rgb(var(--reading-ink-secondary) / 0.5);
   }
 
   .sr-only {
@@ -644,25 +649,7 @@ const audiografEscalation = {
     border: 0;
   }
 
-  @media (max-width: 479px) {
-    .hub-problem-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .hub-escalation-audiograf {
-      grid-template-columns: 1fr;
-    }
-
-    .hub-escalation-audiograf__arrow {
-      display: none;
-    }
-  }
-
   @media (min-width: 480px) {
-    .hub-container {
-      padding: 0 1.25rem 4.5rem;
-    }
-
     .hub-ai-form {
       flex-direction: row;
       align-items: stretch;
@@ -673,9 +660,13 @@ const audiografEscalation = {
     }
   }
 
-  @media (min-width: 640px) {
-    .hub-container {
-      padding: 0 1.75rem 5.5rem;
+  @media (max-width: 479px) {
+    .hub-escalation-audiograf {
+      grid-template-columns: 1fr;
+    }
+
+    .hub-escalation-audiograf__arrow {
+      display: none;
     }
   }
 </style>
