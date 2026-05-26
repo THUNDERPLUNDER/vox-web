@@ -1,6 +1,6 @@
 ---
-/* CONTRACT: Norwegian landing — triage / avklaringsflate (#125G-R3).
-   Two primary hub entries + Hørehjelpen fast-track. No embedded chat widget in viewport.
+/* CONTRACT: Norwegian landing — triage / avklaringsflate (#125G-R3, polish #125I-C).
+   Two primary hub entries + Hørehjelpen fast-track. Shared Viddel layout family with hub/editorial pages.
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/nav/Footer.astro";
@@ -14,37 +14,46 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
   <main class="land-page" data-landing-page>
     <div class="land-container">
       <header class="land-header">
+        <p class="land-kicker">Forside</p>
         <h1>Hva trenger du hjelp til nå?</h1>
         <p class="land-lead">
           Få rask hjelp når noe ikke virker, les om hverdagen med høreapparat, eller spør Hørehjelpen
           direkte.
         </p>
+        <ul class="land-paths" aria-label="Tre måter inn i Viddel">
+          <li><span class="land-paths__label">Rask hjelp</span> når noe ikke virker</li>
+          <li><span class="land-paths__label">Forstå mer</span> om lyd og hverdagen</li>
+          <li><span class="land-paths__label">Spør direkte</span> til Hørehjelpen</li>
+        </ul>
+        <p class="land-note">Fagstoff og guider oppdateres fortløpende av Viddel-redaksjonen.</p>
       </header>
 
-      <ul class="land-entry-grid" role="list">
-        <li>
-          <a href="/no/hub/" class="land-entry land-entry--help">
-            <span class="land-entry__kicker">Hjelp</span>
-            <span class="land-entry__visual" aria-hidden="true"></span>
-            <span class="land-entry__title">Noe virker ikke?</span>
-            <span class="land-entry__hint">
-              Få raske steg for piping, app, Bluetooth, filter og når du bør kontakte audiograf.
-            </span>
-            <span class="land-entry__arrow" aria-hidden="true">→</span>
-          </a>
-        </li>
-        <li>
-          <a href="/no/lyd-i-hverdagen/" class="land-entry land-entry--editorial">
-            <span class="land-entry__kicker">Lyd i hverdagen</span>
-            <span class="land-entry__stripe" aria-hidden="true"></span>
-            <span class="land-entry__title">Vil du forstå og mestre mer?</span>
-            <span class="land-entry__hint">
-              Les om lyttetrøtthet, små lyder, sosialt liv og strategier som gjør hverdagen lettere.
-            </span>
-            <span class="land-entry__arrow" aria-hidden="true">→</span>
-          </a>
-        </li>
-      </ul>
+      <section class="land-block land-block--choices" aria-labelledby="choices-heading">
+        <h2 id="choices-heading" class="land-block__title">Velg vei</h2>
+        <ul class="land-entry-grid" role="list">
+          <li>
+            <a href="/no/hub/" class="land-entry land-entry--help">
+              <span class="land-entry__kicker">Hjelp</span>
+              <span class="land-entry__title">Noe virker ikke?</span>
+              <span class="land-entry__hint">
+                Få raske steg for piping, app, Bluetooth, filter og når du bør kontakte audiograf.
+              </span>
+              <span class="land-entry__arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+          <li>
+            <a href="/no/lyd-i-hverdagen/" class="land-entry land-entry--editorial">
+              <span class="land-entry__kicker">Lyd i hverdagen</span>
+              <span class="land-entry__stripe" aria-hidden="true"></span>
+              <span class="land-entry__title">Vil du forstå og mestre mer?</span>
+              <span class="land-entry__hint">
+                Les om lyttetrøtthet, små lyder, sosialt liv og strategier som gjør hverdagen lettere.
+              </span>
+              <span class="land-entry__arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        </ul>
+      </section>
 
       <aside class="land-fasttrack" aria-label="Direkte til Hørehjelpen">
         <p class="land-fasttrack__text">Vil du heller spørre direkte?</p>
@@ -65,49 +74,112 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 </BaseLayout>
 
 <style>
-  /* Page-scoped — mandate triage (#125G-R3): utility + editorial entries, chat fast-track */
+  /* #125I-C — shared Viddel page family (hub/ed rhythm), mandate unchanged (#125G-R3) */
   .land-page {
-    padding: clamp(1.75rem, 5vw, 3rem) 0 clamp(3rem, 6vw, 4rem);
+    padding: 0;
   }
 
   .land-container {
-    max-width: min(100%, 44rem);
+    max-width: min(100%, 52rem);
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0 1rem clamp(3.5rem, 7vw, 5rem);
   }
 
   @media (min-width: 640px) {
     .land-container {
-      max-width: min(100%, 52rem);
+      padding-inline: 1.25rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .land-container {
+      padding-inline: 1.75rem;
     }
   }
 
   .land-header {
-    padding-bottom: clamp(1.15rem, 3vw, 1.5rem);
-    border-bottom: 1px solid rgb(var(--border) / 0.2);
+    padding: clamp(2rem, 6vw, 3.25rem) 0 clamp(1.35rem, 3.5vw, 1.85rem);
+    border-bottom: 1px solid rgb(var(--border) / 0.22);
+  }
+
+  .land-kicker {
+    margin: 0 0 0.55rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgb(var(--reading-ink-secondary));
   }
 
   [data-landing-page] h1 {
     margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(1.85rem, 5.5vw, 2.5rem);
+    font-size: clamp(2rem, 5.8vw, 2.65rem);
     font-weight: 650;
-    line-height: 1.05;
-    letter-spacing: -0.05em;
+    line-height: 1.04;
+    letter-spacing: -0.055em;
     text-wrap: balance;
     color: rgb(var(--reading-ink));
   }
 
   .land-lead {
-    margin: clamp(0.75rem, 2.2vw, 1rem) 0 0;
-    max-width: 36rem;
-    font-size: clamp(0.95rem, 2.3vw, 1.05rem);
+    margin: clamp(0.7rem, 2vw, 0.95rem) 0 0;
+    max-width: 38rem;
+    font-size: clamp(0.94rem, 2.2vw, 1.04rem);
     line-height: 1.55;
     color: rgb(var(--reading-ink-secondary));
   }
 
+  .land-paths {
+    margin: clamp(0.95rem, 2.5vw, 1.15rem) 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    max-width: 38rem;
+    font-size: 0.84rem;
+    line-height: 1.45;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  @media (min-width: 640px) {
+    .land-paths {
+      flex-direction: row;
+      flex-wrap: wrap;
+      column-gap: 1.15rem;
+      row-gap: 0.35rem;
+    }
+  }
+
+  .land-paths__label {
+    font-weight: 650;
+    color: rgb(var(--reading-ink));
+  }
+
+  .land-note {
+    margin: clamp(0.85rem, 2.2vw, 1rem) 0 0;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    color: rgb(var(--reading-ink-secondary) / 0.82);
+  }
+
+  .land-block {
+    padding: clamp(1.35rem, 3.5vw, 1.75rem) 0;
+    border-bottom: 1px solid rgb(var(--border) / 0.15);
+  }
+
+  .land-block__title {
+    margin: 0 0 0.85rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgb(var(--reading-accent-iris));
+  }
+
   .land-entry-grid {
-    margin: clamp(1.25rem, 3.5vw, 1.65rem) 0 0;
+    margin: 0;
     padding: 0;
     list-style: none;
     display: grid;
@@ -126,9 +198,9 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
+    gap: 0.4rem;
     min-height: 100%;
-    padding: 1rem 1rem 2.25rem;
+    padding: 0.95rem 0.95rem 2.15rem;
     border-radius: 10px;
     color: inherit;
     text-decoration: none;
@@ -153,7 +225,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
   }
 
   .land-entry__title {
-    font-size: 1rem;
+    font-size: 1.02rem;
     font-weight: 650;
     letter-spacing: -0.025em;
     line-height: 1.25;
@@ -162,15 +234,15 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
   .land-entry__hint {
     flex: 1;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     line-height: 1.5;
     color: rgb(var(--reading-ink-secondary));
   }
 
   .land-entry__arrow {
     position: absolute;
-    right: 1rem;
-    bottom: 0.95rem;
+    right: 0.95rem;
+    bottom: 0.9rem;
     font-size: 0.9rem;
     line-height: 1;
     color: rgb(var(--reading-ink-secondary) / 0.55);
@@ -185,30 +257,26 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
   /* Hjelp — utility / A3 problem-card DNA */
   .land-entry--help {
     border: 1px solid rgb(var(--border) / 0.32);
+    border-left: 4px solid rgb(var(--primary));
     background: rgb(var(--reading-paper));
   }
 
   .land-entry--help:hover {
     border-color: rgb(var(--border) / 0.52);
+    border-left-color: rgb(var(--primary));
     box-shadow: 0 3px 14px rgb(var(--reading-ink) / 0.06);
     transform: translateY(-1px);
   }
 
-  .land-entry__visual {
-    display: block;
-    height: 2rem;
-    border-radius: 6px;
-    overflow: hidden;
-    background:
-      radial-gradient(ellipse 55% 55% at 18% 75%, rgb(95 82 220 / 0.1) 0%, transparent 65%),
-      linear-gradient(145deg, rgb(245 244 252) 0%, rgb(252 252 255) 100%);
+  .land-entry--help .land-entry__kicker {
+    color: rgb(var(--reading-accent-iris));
   }
 
   /* Editorial — situation-card DNA + tonal stripe */
   .land-entry--editorial {
     border: 1px solid rgb(var(--border) / 0.14);
     background: transparent;
-    padding-top: 0.85rem;
+    padding-top: 0.8rem;
   }
 
   .land-entry--editorial:hover {
@@ -219,7 +287,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
   .land-entry__stripe {
     display: block;
     height: 0.28rem;
-    margin: 0.1rem 0 0.15rem;
+    margin: 0.05rem 0 0.1rem;
     border-radius: 999px;
     background: linear-gradient(
       90deg,
@@ -229,21 +297,16 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
     );
   }
 
-  .land-entry--editorial .land-entry__visual {
-    display: none;
-  }
-
   /* Hørehjelpen — compact fast-track */
   .land-fasttrack {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.75rem;
-    margin-top: clamp(1.35rem, 3.5vw, 1.75rem);
-    padding: 0.95rem 1rem;
-    border: 1px solid rgb(var(--border) / 0.16);
-    border-radius: 10px;
-    background: rgb(var(--reading-paper) / 0.45);
+    gap: 0.7rem;
+    margin: 0;
+    padding: clamp(1.15rem, 3vw, 1.4rem) 0 0;
+    border: 0;
+    background: transparent;
   }
 
   @media (min-width: 480px) {
