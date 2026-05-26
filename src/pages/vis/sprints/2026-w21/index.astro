@@ -10,7 +10,7 @@
    #125G: Forside/routing at /no/ — QA accepted, closed (#125G-R3 triage mandate).
    #125G-R2: Frontpage mandate decision surface — mandate accepted, applied R3.
    #125H: Navigation / top menu pass — QA accepted, closed (IA/nav-sync). Layout jump → #125I.
-   #125I-B: Layout stability / FOUC — shell-first-paint.css, needs review.
+   #125I-B-R1: Shell simplification — static header, no content offset; needs review.
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -123,7 +123,7 @@ const typographyLabDirections = [
         <li><strong>Applied:</strong> #125F Editorial hub på <code>/no/lyd-i-hverdagen/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125G Forside/routing på <code>/no/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125H Nav/toppmeny — QA-godkjent, closed (IA/nav-sync)</li>
-        <li><strong>Active:</strong> #125I-B Layout stability / FOUC — needs review</li>
+        <li><strong>Active:</strong> #125I-B-R1 Shell simplification — static header, needs review</li>
         <li><strong>Neste:</strong> #125I-B Thomas QA, deretter #125I-C Frontpage polish</li>
       </ul>
     </section>
@@ -411,20 +411,20 @@ const typographyLabDirections = [
       </div>
     </section>
 
-    <!-- Layout stability / FOUC (#125I-B) -->
+    <!-- Layout stability / FOUC (#125I-B / R1) -->
     <section class="sprint-preview__section" aria-labelledby="layout-stability-heading">
       <div class="sprint-preview__section-head">
-        <p class="sprint-preview__kicker">15 · #125I-B</p>
-        <h2 id="layout-stability-heading">Layout stability / FOUC</h2>
-        <p>Shell first-paint CSS — body reset, fixed header metrics, content offset under header.</p>
+        <p class="sprint-preview__kicker">15 · #125I-B-R1</p>
+        <h2 id="layout-stability-heading">Layout stability / shell simplification</h2>
+        <p>Test: header i normal dokumentflyt — ingen fixed header eller content offset padding.</p>
       </div>
       <div class="sprint-preview__typo-summary">
         <p class="sprint-preview__typo-status">
           <strong>Status:</strong> Applied — needs review
         </p>
         <p class="sprint-preview__typo-sans">
-          <code>/shell-first-paint.css</code> lastes før Tailwind. Diagnose viste body margin 8px, header static og
-          manglende content offset ved first paint. Playwright (800ms CSS delay): headerTop 8→0 eliminert.
+          #125I-B shell-first-paint.css revertet. Header <code>relative</code> (ikke fixed); content wrapper uten{" "}
+          <code>pt-28</code>/<code>sm:pt-30</code>. Hypotese: fjern fixed+offset-modellen som årsak til synlig snap.
         </p>
         <a href={`${base}no/hub/`} class="sprint-preview__typo-link">
           Verify layout stability on production →

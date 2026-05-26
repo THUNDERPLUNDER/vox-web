@@ -115,7 +115,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "needs-review",
     stakeholderSafe: true,
     description:
-      "Shell first-paint CSS — body reset, fixed header, content offset. Needs Thomas QA on refresh + globalnav.",
+      "Shell simplification (#125I-B-R1): header static flow, no shell-first-paint.css. Needs Thomas QA.",
   },
   {
     id: "forside-routing",
