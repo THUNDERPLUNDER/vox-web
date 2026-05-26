@@ -106,6 +106,18 @@ export const reviewRegistry: ReviewRegistryItem[] = [
       "IA/nav-sync QA-godkjent — Forside, Hjelp, Lyd i hverdagen, Ordbok, Om + Start samtale CTA. Footer synket. Layout jump/FOUC known issue → #125I.",
   },
   {
+    id: "layout-stability-fouc",
+    title: "Layout stability / FOUC",
+    href: "/no/",
+    sprint: "2026-W21",
+    issue: "#125I-B",
+    type: "active",
+    status: "needs-review",
+    stakeholderSafe: true,
+    description:
+      "Shell first-paint CSS — body reset, fixed header, content offset. Needs Thomas QA on refresh + globalnav.",
+  },
+  {
     id: "forside-routing",
     title: "Forside / routing",
     href: "/no/",

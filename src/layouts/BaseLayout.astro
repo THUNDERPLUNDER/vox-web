@@ -1,5 +1,6 @@
 ---
-/* CONTRACT: Shared application shell with global header, background mood layer, and CES bootstrapping. */
+/* CONTRACT: Shared application shell with global header, background mood layer, and CES bootstrapping.
+   #125I-B: /shell-first-paint.css loads before Tailwind for stable first-paint shell metrics. */
 import "../styles/global.css";
 import Header from "../components/nav/Header.astro";
 import MobileMenuSheet from "../components/nav/MobileMenuSheet.astro";
@@ -48,6 +49,7 @@ const isSandboxWhite = shellVariant === "sandbox-white";
         document.documentElement.style.colorScheme = resolvedColorScheme(mode);
       })();
     </script>
+    <link rel="stylesheet" href="/shell-first-paint.css" />
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -145,7 +147,7 @@ const isSandboxWhite = shellVariant === "sandbox-white";
 
     <MobileMenuSheet currentPath={currentPath} brand={headerBrand} showDevtoolsToggle={showHeaderDevtoolsToggle} />
 
-    <div class="mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-30 lg:px-8">
+    <div class="mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-30 lg:px-8" data-vox-shell-main>
       <slot />
     </div>
 
