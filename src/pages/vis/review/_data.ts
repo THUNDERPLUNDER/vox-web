@@ -115,7 +115,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "needs-review",
     stakeholderSafe: true,
     description:
-      "Shell simplification (#125I-B-R1): header static flow, no shell-first-paint.css. Needs Thomas QA.",
+      "R2 rollback to pre-#125I-B shell baseline; horizontal layout shift diagnosis. Needs Thomas QA.",
   },
   {
     id: "forside-routing",

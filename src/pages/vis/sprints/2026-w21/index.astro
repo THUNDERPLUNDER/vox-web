@@ -10,7 +10,7 @@
    #125G: Forside/routing at /no/ — QA accepted, closed (#125G-R3 triage mandate).
    #125G-R2: Frontpage mandate decision surface — mandate accepted, applied R3.
    #125H: Navigation / top menu pass — QA accepted, closed (IA/nav-sync). Layout jump → #125I.
-   #125I-B-R1: Shell simplification — static header, no content offset; needs review.
+   #125I-B-R2: R1 rollback + horizontal shift diagnosis; needs review.
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -123,7 +123,7 @@ const typographyLabDirections = [
         <li><strong>Applied:</strong> #125F Editorial hub på <code>/no/lyd-i-hverdagen/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125G Forside/routing på <code>/no/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125H Nav/toppmeny — QA-godkjent, closed (IA/nav-sync)</li>
-        <li><strong>Active:</strong> #125I-B-R1 Shell simplification — static header, needs review</li>
+        <li><strong>Active:</strong> #125I-B-R2 Rollback R1 + horizontal shift diagnosis</li>
         <li><strong>Neste:</strong> #125I-B Thomas QA, deretter #125I-C Frontpage polish</li>
       </ul>
     </section>
@@ -411,20 +411,20 @@ const typographyLabDirections = [
       </div>
     </section>
 
-    <!-- Layout stability / FOUC (#125I-B / R1) -->
+    <!-- Layout stability / FOUC (#125I-B / R2) -->
     <section class="sprint-preview__section" aria-labelledby="layout-stability-heading">
       <div class="sprint-preview__section-head">
-        <p class="sprint-preview__kicker">15 · #125I-B-R1</p>
-        <h2 id="layout-stability-heading">Layout stability / shell simplification</h2>
-        <p>Test: header i normal dokumentflyt — ingen fixed header eller content offset padding.</p>
+        <p class="sprint-preview__kicker">15 · #125I-B-R2</p>
+        <h2 id="layout-stability-heading">Layout stability / horizontal shift</h2>
+        <p>R1 revertet. Shell tilbake til pre-#125I-B (fixed header + content offset). Diagnose fokuserer horisontal shift.</p>
       </div>
       <div class="sprint-preview__typo-summary">
         <p class="sprint-preview__typo-status">
           <strong>Status:</strong> Applied — needs review
         </p>
         <p class="sprint-preview__typo-sans">
-          #125I-B shell-first-paint.css revertet. Header <code>relative</code> (ikke fixed); content wrapper uten{" "}
-          <code>pt-28</code>/<code>sm:pt-30</code>. Hypotese: fjern fixed+offset-modellen som årsak til synlig snap.
+          #125I-B-R1 static header revertet. Baseline: fixed header,{" "}
+          <code>pt-28</code>/<code>sm:pt-30</code>, ingen shell-first-paint.css. Thomas rapporterer sideveis hopp — ikke vertikal offset.
         </p>
         <a href={`${base}no/hub/`} class="sprint-preview__typo-link">
           Verify layout stability on production →
