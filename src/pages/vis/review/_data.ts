@@ -139,7 +139,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "decision-candidate",
     stakeholderSafe: true,
     description:
-      "R1: Hjelp-hub samlet med forside-layoutfamilie (60rem, modulramme, rolige kort, kompakt AI). FOUC ikke adressert. QA pending.",
+      "R2: én primærvei (AI først), smalere innholdsflate, felles link-liste, færre visuelle nivåer. R1 ikke merget. FOUC ikke adressert. QA pending.",
   },
   {
     id: "forside-routing",
