@@ -127,7 +127,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "needs-review",
     stakeholderSafe: true,
     description:
-      "R1 refinement — unified card family, reduced meta copy, integrated fast-track. Mandat uendret. Needs Thomas QA.",
+      "R2 — unified card surface, wider module (60rem), tight fast-track row. Mandat uendret. Needs Thomas QA.",
   },
   {
     id: "forside-routing",
