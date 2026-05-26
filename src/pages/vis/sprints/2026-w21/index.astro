@@ -9,7 +9,7 @@
    #125F: Lyd i hverdagen production slice at /no/lyd-i-hverdagen/ — QA accepted, closed.
    #125G: Forside/routing at /no/ — QA accepted, closed (#125G-R3 triage mandate).
    #125G-R2: Frontpage mandate decision surface — mandate accepted, applied R3.
-   #125H: Navigation / top menu pass — hub model in header and footer.
+   #125H: Navigation / top menu pass — QA accepted, closed (IA/nav-sync). Layout jump → #125I.
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -121,8 +121,9 @@ const typographyLabDirections = [
         <li><strong>Applied:</strong> #125D Hjelp A3 på <code>/no/hub/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125F Editorial hub på <code>/no/lyd-i-hverdagen/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125G Forside/routing på <code>/no/</code> — QA-godkjent, closed</li>
-        <li><strong>Applied:</strong> #125H Nav/toppmeny — needs review</li>
-        <li><strong>Neste:</strong> Sprint closure eller videre IA etter nav-QA</li>
+        <li><strong>Applied:</strong> #125H Nav/toppmeny — QA-godkjent, closed (IA/nav-sync)</li>
+        <li><strong>Known issue:</strong> #125I Cross-surface layout/polish — transient layout jump / FOUC</li>
+        <li><strong>Neste:</strong> Sprint closure eller #125I layout/polish</li>
       </ul>
     </section>
 
@@ -355,7 +356,7 @@ const typographyLabDirections = [
         </p>
         <p class="sprint-preview__typo-sans">
           Avklaringsflate / trafikkdirigent på <code>/no/</code> — Hjelp og Lyd i hverdagen som primære
-          valg, Hørehjelpen som kompakt fast-track. Neste aktuelle arbeid: nav/toppmeny-pass eller sprint closure.
+          valg, Hørehjelpen som kompakt fast-track. #125H nav-sync QA-godkjent — layout jump parkert til #125I.
         </p>
         <a href={`${base}no/`} class="sprint-preview__typo-link">
           Open production forside →
@@ -393,11 +394,15 @@ const typographyLabDirections = [
       </div>
       <div class="sprint-preview__typo-summary">
         <p class="sprint-preview__typo-status">
-          <strong>Status:</strong> Applied — needs review
+          <strong>Status:</strong> QA accepted / closed
         </p>
         <p class="sprint-preview__typo-sans">
           Primærnav: Forside, Hjelp, Lyd i hverdagen, Ordbok, Om. CTA: Start samtale →{" "}
-          <code>/no/chat</code>. Emnehuber og Kom i gang fjernet fra primærnav.
+          <code>/no/chat</code>. Footer synket. Hørehjelpen ikke duplisert som navpunkt og CTA.
+        </p>
+        <p class="sprint-preview__typo-sans">
+          <strong>Known issue:</strong> Synlig layout jump / FOUC ved refresh og globalnav-klikk — ikke introdusert
+          av #125H (bekreftet i pre-#125H baseline). Parkert til #125I Cross-surface layout/polish.
         </p>
         <a href={`${base}no/`} class="sprint-preview__typo-link">
           Verify navigation on production →
