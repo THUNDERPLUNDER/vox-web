@@ -19,14 +19,14 @@ const chatHref = `${base}${NO_NAV_CHAT_HREF.replace(/^\//, "")}`;
 const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
 
 const navLinkClass =
-  "inline-flex items-center rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4]";
+  "inline-flex items-center rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4]";
 ---
 
 <header class="h-16 sm:h-[4.5rem]">
   <div class="flex h-full items-center gap-3 sm:gap-4">
     <a
       href={homeHref}
-      class="vox-header-brand inline-flex items-center rounded-[var(--radius-sm)] px-2 py-1.5 text-sm font-semibold tracking-tight text-[rgb(var(--text))] sm:text-base"
+      class="inline-flex items-center rounded-[var(--radius-sm)] px-2 py-1.5 text-sm font-semibold tracking-tight text-[rgb(var(--text))] sm:text-base"
       aria-label={brand === "viddel" ? "Viddel" : undefined}
     >
       {
@@ -102,7 +102,7 @@ const navLinkClass =
     </nav>
     <a
       href={chatHref}
-      class={`vox-header-chat-cta hidden items-center justify-center rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4] lg:inline-flex ${
+      class={`hidden items-center justify-center rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4] lg:inline-flex ${
         chatActive
           ? "border-[rgb(var(--text))/0.34] bg-[rgb(var(--reading-ink))] text-[rgb(var(--reading-paper))]"
           : "border-[rgb(var(--border))/0.7] bg-[rgb(var(--surface))/0.42] text-[rgb(var(--text))] hover:border-[rgb(var(--text))/0.34] hover:bg-[rgb(var(--surface-subtle))/0.62]"
