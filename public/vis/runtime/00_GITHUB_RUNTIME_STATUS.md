@@ -4,8 +4,8 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## Siste sync
 
-- **generated_at (UTC):** 2026-05-25T10:11:12.088Z
-- **generated_at (Europe/Oslo):** 25.5.2026, 12:11:12
+- **generated_at (UTC):** 2026-05-26T09:59:45.886Z
+- **generated_at (Europe/Oslo):** 26.5.2026, 11:59:45
 - **timezone:** Europe/Oslo
 - **repo:** THUNDERPLUNDER/vox-web
 - **data_warnings:** (ingen)
@@ -76,7 +76,7 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## SISTE 24T
 
-Vindu: commits/issues lukket/oppdatert etter **2026-05-24T10:11:12Z** (sirket ~24 timer).
+Vindu: commits/issues lukket/oppdatert etter **2026-05-25T09:59:45Z** (sirket ~24 timer).
 
 ### Lukkede issues
 
@@ -88,7 +88,8 @@ _Ingen treff i søkt utsnitt._
 
 ### Commits
 
-_Ingen eller ikke tilgjengelig._
+- **af6e6b4** (2026-05-26T09:52:02Z) content(nrf): Add secondary resource box after toolkit on v07k arbeidsgiver
+- **1494ec9** (2026-05-25T10:11:15Z) chore(vis): refresh GitHub runtime status for navigator
 
 ## BLOCKERS
 
