@@ -127,7 +127,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "needs-review",
     stakeholderSafe: true,
     description:
-      "Shared Viddel layout family on /no/ — strammere rytme, tydeligere hovedvalg, hub/ed-aligned container. Mandat uendret. Needs Thomas QA.",
+      "R1 refinement — unified card family, reduced meta copy, integrated fast-track. Mandat uendret. Needs Thomas QA.",
   },
   {
     id: "forside-routing",
