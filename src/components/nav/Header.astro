@@ -17,9 +17,6 @@ const base = import.meta.env.BASE_URL;
 const homeHref = `${base}no`;
 const chatHref = `${base}${NO_NAV_CHAT_HREF.replace(/^\//, "")}`;
 const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
-
-const navLinkClass =
-  "inline-flex items-center rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4]";
 ---
 
 <header class="h-16 sm:h-[4.5rem]">
@@ -56,9 +53,9 @@ const navLinkClass =
         return (
           <a
             href={link.href}
-            class={`${navLinkClass} ${
+            class={`rounded-[var(--radius-sm)] px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4] ${
               isActive
-                ? "bg-[rgb(var(--surface-subtle))] text-[rgb(var(--text))]"
+                ? "bg-[rgb(var(--surface-subtle))] font-semibold text-[rgb(var(--text))] shadow-[var(--shadow-sm)]"
                 : "text-[rgb(var(--muted))] hover:bg-[rgb(var(--surface-subtle))/0.7] hover:text-[rgb(var(--text))]"
             }`}
           >
