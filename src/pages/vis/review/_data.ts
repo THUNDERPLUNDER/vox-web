@@ -139,7 +139,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "decision-candidate",
     stakeholderSafe: true,
     description:
-      "R6: hvite kategorikort, ingen ikonbokser/offwhite på interactive cards. Ikoner midlertidig fjernet — eget ikonpass senere, ikke design lock. QA pending.",
+      "R7: tekststerke hvite kort, hover #F5F6F5 (ikke fersken). Good-enough for QA. Follow-ups: ikonsett, full composer-paritet, footer/shell — ikke i #125I-D.",
   },
   {
     id: "forside-routing",
