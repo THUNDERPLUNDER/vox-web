@@ -1,6 +1,6 @@
 ---
 /* CONTRACT: Hjelp hub (A3) — praktisk hjelpehub for konkrete problemer.
-   #125I-D-R4 — artikkel-paritet surface (46rem/radius-md), større kategorikort, copy-justeringer.
+   #125I-D-R5 — direkte H1, tyngre kategorikort/ikoner, tydeligere gestalt.
    Mandate: docs/project/VIDDEL_HUB_MANDATE_v0_1.md / #112.
 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -8,8 +8,7 @@ import Footer from "../../components/nav/Footer.astro";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
-const hubTitle = "Få høreapparatet til å fungere";
-const hubSupport = "Vanlige problemer og hjelp, velg det som passer, eller spør Hørehjelpen.";
+const hubHeading = "Hva trenger du hjelp med?";
 
 type CategoryIcon = "piping" | "bluetooth" | "app" | "filter" | "battery" | "sound";
 
@@ -72,7 +71,7 @@ const audiografEscalation = {
 };
 ---
 
-<BaseLayout title={`Viddel - ${hubTitle}`} currentPath="/no/hub" shellVariant="article">
+<BaseLayout title={`Viddel - ${hubHeading}`} currentPath="/no/hub" shellVariant="article">
   <meta slot="head" name="robots" content="noindex,follow" />
 
   <main class="hub-page" data-hub-help>
@@ -84,15 +83,13 @@ const audiografEscalation = {
             <span aria-hidden="true">/</span>
             <span>Hjelp</span>
           </nav>
-          <h1>{hubTitle}</h1>
-          <p class="hub-lead">{hubSupport}</p>
+          <h1>{hubHeading}</h1>
         </header>
 
         <div class="hub-body">
-          <section class="hub-primary" aria-labelledby="ai-ask-heading">
-            <h2 id="ai-ask-heading">Hva trenger du hjelp med?</h2>
+          <section class="hub-intro" aria-label="Still et spørsmål">
             <form class="hub-compose" action="/no/chat" method="get">
-              <label class="sr-only" for="hub-compose-input">Hva trenger du hjelp med?</label>
+              <label class="sr-only" for="hub-compose-input">{hubHeading}</label>
               <div class="hub-compose__input-wrap">
                 <input
                   id="hub-compose-input"
@@ -106,7 +103,7 @@ const audiografEscalation = {
                 />
               </div>
               <input type="hidden" name="from" value="hub" />
-              <button type="submit" class="hub-compose__send" aria-label="Send spørsmål">
+              <button type="submit" class="hub-compose__send" aria-label="Still et spørsmål">
                 <span aria-hidden="true">↑</span>
               </button>
             </form>
@@ -120,44 +117,43 @@ const audiografEscalation = {
                     <a href={card.href} class="hub-cat-card">
                       <span class="hub-cat-card__icon" aria-hidden="true" data-icon={card.icon}>
                         {card.icon === "piping" && (
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                             <path d="M4 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0" />
                           </svg>
                         )}
                         {card.icon === "bluetooth" && (
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
                             <path d="M8 7l8 5-8 5V7z" /><path d="M16 7v10" />
                           </svg>
                         )}
                         {card.icon === "app" && (
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                             <rect x="5" y="3" width="14" height="18" rx="2" /><path d="M10 17h4" />
                           </svg>
                         )}
                         {card.icon === "filter" && (
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                             <path d="M4 6h16M7 12h10M10 18h4" />
                           </svg>
                         )}
                         {card.icon === "battery" && (
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="7" width="16" height="10" rx="2" /><path d="M21 10v4" /><path d="M7 11v2" />
                           </svg>
                         )}
                         {card.icon === "sound" && (
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                             <path d="M6 10v4h3l4 3V7L9 10H6z" /><path d="M17 9a3 3 0 010 6" />
                           </svg>
                         )}
                       </span>
                       <span class="hub-cat-card__title">{card.title}</span>
                       <span class="hub-cat-card__hint">{card.hint}</span>
-                      <span class="hub-cat-card__arrow" aria-hidden="true">→</span>
                     </a>
                   ) : (
                     <span class="hub-cat-card hub-cat-card--gap">
                       <span class="hub-cat-card__icon" aria-hidden="true" data-icon={card.icon}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                           <rect x="3" y="7" width="16" height="10" rx="2" /><path d="M21 10v4" /><path d="M7 11v2" />
                         </svg>
                       </span>
@@ -193,7 +189,7 @@ const audiografEscalation = {
               <span class="hub-escalation-card__arrow" aria-hidden="true">→</span>
             </a>
             <p class="hub-escalation-fallback">
-              <a href="/no/chat?from=hub">Fant du ikke svaret? Spør Hørehjelpen</a>
+              <a href="/no/chat?from=hub">Finner du ikke svaret? Still et spørsmål</a>
             </p>
           </section>
         </div>
@@ -205,7 +201,7 @@ const audiografEscalation = {
 </BaseLayout>
 
 <style>
-  /* #125I-D-R4 — surface paritet med artikkel (46rem, --radius-md); større kategorikort */
+  /* #125I-D-R5 — tydelig gestalt, tyngre kort/ikoner, direkte H1 */
   .hub-page {
     background: rgb(var(--article-page-canvas));
     padding: 0.5rem 0 clamp(3rem, 6vw, 4rem);
@@ -244,8 +240,8 @@ const audiografEscalation = {
   }
 
   .hub-header {
-    padding-bottom: clamp(0.85rem, 2vw, 1.1rem);
-    border-bottom: 1px solid rgb(var(--border) / 0.14);
+    padding-bottom: 0;
+    border-bottom: 0;
   }
 
   .hub-breadcrumb {
@@ -277,38 +273,28 @@ const audiografEscalation = {
     color: rgb(var(--reading-ink));
   }
 
-  .hub-lead {
-    margin: clamp(0.65rem, 1.8vw, 0.85rem) 0 0;
-    font-size: clamp(0.93rem, 2.1vw, 1.02rem);
-    line-height: 1.5;
-    color: rgb(var(--reading-ink-secondary));
-  }
-
   .hub-body {
-    padding-top: clamp(1rem, 2.5vw, 1.25rem);
+    padding-top: clamp(1.1rem, 2.8vw, 1.35rem);
     display: flex;
     flex-direction: column;
-    gap: clamp(1.35rem, 3.2vw, 1.75rem);
+    gap: clamp(2rem, 4.5vw, 2.65rem);
   }
 
-  .hub-block h2,
-  .hub-primary h2 {
-    margin: 0 0 0.65rem;
+  .hub-intro {
+    margin-top: -0.15rem;
+  }
+
+  .hub-block h2 {
+    margin: 0 0 0.75rem;
     font-family: var(--font-body, inherit);
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 650;
     letter-spacing: -0.02em;
     line-height: 1.3;
-    color: rgb(var(--reading-ink));
+    color: rgb(var(--reading-ink-secondary));
   }
 
-  /* ── Composer (R2b) på hvit flate ── */
-  .hub-primary {
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-  }
-
+  /* ── Composer ── */
   .hub-compose {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -379,23 +365,29 @@ const audiografEscalation = {
   }
 
   .hub-block--categories {
-    margin-top: -0.15rem;
+    padding-top: 0.15rem;
   }
 
-  /* ── Kategorikort — ikon over tekst, midlertidige line-glyphs (R4) ── */
+  /* ── Kategorikort — equal height, tyngre ikoner (midlertidige line-glyphs, R5) ── */
   .hub-cat-grid {
     margin: 0;
     padding: 0;
     list-style: none;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 0.75rem;
+    grid-auto-rows: 1fr;
+    gap: 0.9rem;
+  }
+
+  .hub-cat-grid > li {
+    display: flex;
+    min-height: 0;
   }
 
   @media (min-width: 540px) {
     .hub-cat-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.85rem;
+      gap: 1rem;
     }
   }
 
@@ -406,26 +398,30 @@ const audiografEscalation = {
   }
 
   .hub-cat-card {
-    position: relative;
     display: flex;
+    flex: 1;
+    width: 100%;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.45rem;
-    min-height: 8.25rem;
-    padding: 1.2rem 1.15rem 2.35rem;
-    border: 1px solid rgb(var(--border) / 0.22);
+    gap: 0.65rem;
+    min-height: 10.75rem;
+    padding: 1.35rem 1.25rem 1.3rem;
+    border: 1px solid rgb(var(--border) / 0.4);
     border-radius: var(--radius-md);
-    background: rgb(var(--reading-paper));
+    background: rgb(var(--surface-subtle) / 0.55);
+    box-shadow: 0 1px 3px rgb(var(--reading-ink) / 0.07);
     color: inherit;
     text-decoration: none;
     transition:
       border-color 150ms ease,
-      box-shadow 150ms ease;
+      box-shadow 150ms ease,
+      transform 150ms ease;
   }
 
   a.hub-cat-card:hover {
-    border-color: rgb(var(--border) / 0.36);
-    box-shadow: 0 2px 10px rgb(var(--reading-ink) / 0.05);
+    border-color: rgb(var(--border) / 0.52);
+    box-shadow: 0 4px 14px rgb(var(--reading-ink) / 0.08);
+    transform: translateY(-1px);
   }
 
   a.hub-cat-card:focus-visible {
@@ -435,32 +431,34 @@ const audiografEscalation = {
 
   .hub-cat-card--gap {
     color: rgb(var(--reading-ink-secondary));
+    opacity: 0.92;
   }
 
   .hub-cat-card__icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.85rem;
-    height: 2.85rem;
+    width: 3.25rem;
+    height: 3.25rem;
     flex-shrink: 0;
-    border: 1px solid rgb(var(--border) / 0.28);
+    border: 1px solid rgb(var(--border) / 0.38);
     border-radius: var(--radius-md);
-    background: rgb(var(--border) / 0.08);
+    background: rgb(var(--reading-paper));
+    box-shadow: 0 1px 2px rgb(var(--reading-ink) / 0.06);
     color: rgb(var(--reading-ink));
   }
 
   .hub-cat-card--gap .hub-cat-card__icon {
-    color: rgb(var(--reading-ink-secondary) / 0.7);
+    color: rgb(var(--reading-ink-secondary) / 0.75);
   }
 
   .hub-cat-card__icon svg {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1.65rem;
+    height: 1.65rem;
   }
 
   .hub-cat-card__title {
-    font-size: 0.98rem;
+    font-size: 1rem;
     font-weight: 650;
     letter-spacing: -0.02em;
     line-height: 1.28;
@@ -468,34 +466,19 @@ const audiografEscalation = {
   }
 
   .hub-cat-card--gap .hub-cat-card__title {
-    color: rgb(var(--reading-ink-secondary) / 0.75);
+    color: rgb(var(--reading-ink-secondary) / 0.78);
   }
 
   .hub-cat-card__hint {
-    font-size: 0.8rem;
-    line-height: 1.4;
+    margin-top: auto;
+    font-size: 0.82rem;
+    line-height: 1.42;
     color: rgb(var(--reading-ink-secondary));
-  }
-
-  .hub-cat-card__arrow {
-    position: absolute;
-    right: 1.1rem;
-    bottom: 1.05rem;
-    font-size: 0.9rem;
-    color: rgb(var(--reading-ink-secondary) / 0.45);
-    transition: color 100ms ease, transform 100ms ease;
-  }
-
-  a.hub-cat-card:hover .hub-cat-card__arrow {
-    color: rgb(var(--reading-ink-secondary));
-    transform: translateX(2px);
   }
 
   .hub-cat-card__badge {
-    position: absolute;
-    right: 1.1rem;
-    bottom: 1.05rem;
-    flex-shrink: 0;
+    margin-top: auto;
+    align-self: flex-start;
     font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.08em;

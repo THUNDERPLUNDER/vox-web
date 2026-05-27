@@ -139,7 +139,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "decision-candidate",
     stakeholderSafe: true,
     description:
-      "R4: artikkel-paritet surface, større kategorikort, copy-justeringer. Midlertidige line-glyphs — ikke endelig ikonstil; eget pass senere. QA pending — ikke merge.",
+      "R5: direkte H1, tyngre kort/ikoner, tydelig gestalt. Midlertidige større line-icons — ikke endelig design lock. QA pending — ikke merge.",
   },
   {
     id: "forside-routing",
