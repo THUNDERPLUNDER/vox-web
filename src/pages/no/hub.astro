@@ -1,6 +1,6 @@
 ---
 /* CONTRACT: Hjelp hub (A3) — praktisk hjelpehub for konkrete problemer.
-   #125I-D-R7 — tekststerke kort, nøytral hover #F5F6F5; good-enough polish.
+   #125I-D-R8 — editorial card hover på kategorikort (shadow + lift, ikke grå fill).
    Mandate: docs/project/VIDDEL_HUB_MANDATE_v0_1.md / #112.
 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -155,7 +155,7 @@ const audiografEscalation = {
 </BaseLayout>
 
 <style>
-  /* #125I-D-R7 — nøytral hub-hover; tekststerke kategorikort */
+  /* #125I-D-R8 — editorial card hover på kategori-kort; #F5F6F5 kun på liste-rader */
   [data-hub-help] {
     --hub-hover: #f5f6f5;
   }
@@ -364,22 +364,23 @@ const audiografEscalation = {
     gap: 0.45rem;
     min-height: 7.5rem;
     padding: 1.3rem 1.25rem;
-    border: 1px solid rgb(var(--border) / 0.3);
+    border: 1px solid rgb(var(--border) / 0.22);
     border-radius: var(--radius-md);
     background: rgb(var(--reading-paper));
     box-shadow: 0 1px 2px rgb(var(--reading-ink) / 0.04);
     color: inherit;
     text-decoration: none;
+    cursor: pointer;
     transition:
       border-color 150ms ease,
       box-shadow 150ms ease,
-      background-color 150ms ease;
+      transform 150ms ease;
   }
 
   a.hub-cat-card:hover {
-    background: var(--hub-hover);
-    border-color: rgb(var(--border) / 0.38);
-    box-shadow: 0 2px 8px rgb(var(--reading-ink) / 0.05);
+    border-color: rgb(var(--border) / 0.28);
+    box-shadow: 0 4px 18px rgb(var(--reading-ink) / 0.05);
+    transform: translateY(-2px);
   }
 
   a.hub-cat-card:focus-visible {

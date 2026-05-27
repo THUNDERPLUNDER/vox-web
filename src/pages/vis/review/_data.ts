@@ -139,7 +139,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "decision-candidate",
     stakeholderSafe: true,
     description:
-      "R7: tekststerke hvite kort, hover #F5F6F5 (ikke fersken). Good-enough for QA. Follow-ups: ikonsett, full composer-paritet, footer/shell — ikke i #125I-D.",
+      "R8: kategori-kort = editorial hover (hvit flate, shadow, lift). #F5F6F5 kun liste-rader. CBA for help-hub IXD — ikke design lock. QA pending.",
   },
   {
     id: "forside-routing",
