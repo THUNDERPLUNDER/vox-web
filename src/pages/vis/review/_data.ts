@@ -139,7 +139,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "decision-candidate",
     stakeholderSafe: true,
     description:
-      "R2b: composer-inngang (pilknapp inne i felt, speiler artikkel). R2: én primærvei, felles link-liste. FOUC ikke adressert. QA pending.",
+      "R3: hvit content surface, kategorikort (line-glyphs), composer beholdt, kortere guide-liste. FOUC ikke adressert. QA pending — ikke merge.",
   },
   {
     id: "forside-routing",

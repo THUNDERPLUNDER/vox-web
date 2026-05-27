@@ -1,6 +1,6 @@
 ---
 /* CONTRACT: Hjelp hub (A3) — praktisk hjelpehub for konkrete problemer.
-   #125D applied slice; #125I-D-R2b — composer-inngang speiler artikkelsidens inline compose.
+   #125I-D-R3 — hvit content surface, composer, kategorikort med enkle glyphs.
    Mandate: docs/project/VIDDEL_HUB_MANDATE_v0_1.md / #112.
 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -11,29 +11,58 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 const hubTitle = "Få høreapparatet til å fungere";
 const hubSupport = "Vanlige problemer og rask hjelp — velg det som passer, eller spør Hørehjelpen.";
 
-type TaskStatus = "finnes" | "gap";
+type CategoryIcon = "piping" | "bluetooth" | "app" | "filter" | "battery" | "sound";
 
-const commonProblems: Array<{
+const categoryCards: Array<{
   title: string;
+  hint: string;
   href?: string;
-  status?: TaskStatus;
+  icon: CategoryIcon;
+  status?: "gap";
 }> = [
-  { title: "Stoppe piping", href: "/no/artikkel/fa-slutt-pa-pipingen" },
-  { title: "Koble til mobilen", href: "/no/artikkel/koble-horeapparatet-til-mobilen" },
-  { title: "Appen finner ikke høreapparatet", href: "/no/artikkel/appen-finner-ikke-horeapparatet" },
-  { title: "Bytte filter", href: "/no/artikkel/bytte-filter-uten-stress" },
-  { title: "Fikse app eller Bluetooth", href: "/no/artikkel/appen-finner-ikke-horeapparatet" },
-  { title: "Sjekke batteri og lading", status: "gap" },
-  { title: "Forstå om lyden er feil eller normal", href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen" },
-  { title: "Vite når audiograf bør kontaktes", href: "/no/artikkel/audiograf-nar-det-haster" },
+  {
+    title: "Piping og ulyd",
+    hint: "Slutt på piping og ulyd i øret",
+    href: "/no/artikkel/fa-slutt-pa-pipingen",
+    icon: "piping",
+  },
+  {
+    title: "Mobil og Bluetooth",
+    hint: "Koble høreapparatet til mobilen",
+    href: "/no/artikkel/koble-horeapparatet-til-mobilen",
+    icon: "bluetooth",
+  },
+  {
+    title: "App og tilkobling",
+    hint: "Når appen ikke finner apparatet",
+    href: "/no/artikkel/appen-finner-ikke-horeapparatet",
+    icon: "app",
+  },
+  {
+    title: "Filter og vedlikehold",
+    hint: "Bytte filter og enkel vedlikehold",
+    href: "/no/artikkel/bytte-filter-uten-stress",
+    icon: "filter",
+  },
+  {
+    title: "Batteri og lading",
+    hint: "Sjekke batteri og lading",
+    icon: "battery",
+    status: "gap",
+  },
+  {
+    title: "Lyd og tilpasning",
+    hint: "Når lyden føles feil eller slitsom",
+    href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
+    icon: "sound",
+  },
 ];
 
 const shortGuides = [
   { title: "Få slutt på pipingen", href: "/no/artikkel/fa-slutt-pa-pipingen" },
-  { title: "Koble høreapparatet til mobilen", href: "/no/artikkel/koble-horeapparatet-til-mobilen" },
   { title: "Appen finner ikke høreapparatet", href: "/no/artikkel/appen-finner-ikke-horeapparatet" },
-  { title: "Bytte filter uten stress", href: "/no/artikkel/bytte-filter-uten-stress" },
   { title: "Lyden blir slitsom utpå dagen", href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen" },
+  { title: "Audiograf når det haster", href: "/no/artikkel/audiograf-nar-det-haster" },
 ];
 
 const audiografEscalation = {
@@ -48,90 +77,131 @@ const audiografEscalation = {
 
   <main class="hub-page" data-hub-help>
     <div class="hub-container">
-      <header class="hub-header">
-        <nav class="hub-breadcrumb" aria-label="Du er her">
-          <a href="/no">Forside</a>
-          <span aria-hidden="true">/</span>
-          <span>Hjelp</span>
-        </nav>
-        <h1>{hubTitle}</h1>
-        <p class="hub-lead">{hubSupport}</p>
-      </header>
+      <div class="hub-surface">
+        <header class="hub-header">
+          <nav class="hub-breadcrumb" aria-label="Du er her">
+            <a href="/no">Forside</a>
+            <span aria-hidden="true">/</span>
+            <span>Hjelp</span>
+          </nav>
+          <h1>{hubTitle}</h1>
+          <p class="hub-lead">{hubSupport}</p>
+        </header>
 
-      <div class="hub-inner">
-        <!-- 1. Primærvei: composer (speiler artikkel inline compose) -->
-        <section class="hub-primary" aria-labelledby="ai-ask-heading">
-          <h2 id="ai-ask-heading">Hva trenger du hjelp med?</h2>
-          <form class="hub-compose" action="/no/chat" method="get">
-            <label class="sr-only" for="hub-compose-input">Hva trenger du hjelp med?</label>
-            <div class="hub-compose__input-wrap">
-              <input
-                id="hub-compose-input"
-                type="search"
-                name="seed"
-                class="hub-compose__input"
-                required
-                autocomplete="off"
-                enterkeyhint="search"
-                placeholder="F.eks. piping, Bluetooth, filter…"
-              />
-            </div>
-            <input type="hidden" name="from" value="hub" />
-            <button type="submit" class="hub-compose__send" aria-label="Send spørsmål">
-              <span aria-hidden="true">↑</span>
-            </button>
-          </form>
-        </section>
+        <div class="hub-body">
+          <section class="hub-primary" aria-labelledby="ai-ask-heading">
+            <h2 id="ai-ask-heading">Hva trenger du hjelp med?</h2>
+            <form class="hub-compose" action="/no/chat" method="get">
+              <label class="sr-only" for="hub-compose-input">Hva trenger du hjelp med?</label>
+              <div class="hub-compose__input-wrap">
+                <input
+                  id="hub-compose-input"
+                  type="search"
+                  name="seed"
+                  class="hub-compose__input"
+                  required
+                  autocomplete="off"
+                  enterkeyhint="search"
+                  placeholder="F.eks. piping, Bluetooth, filter…"
+                />
+              </div>
+              <input type="hidden" name="from" value="hub" />
+              <button type="submit" class="hub-compose__send" aria-label="Send spørsmål">
+                <span aria-hidden="true">↑</span>
+              </button>
+            </form>
+          </section>
 
-        <!-- 2. Vanlige problemer — samme link-familie -->
-        <section class="hub-block" aria-labelledby="problems-heading">
-          <h2 id="problems-heading">Vanlige problemer</h2>
-          <ul class="hub-link-list" role="list">
-            {commonProblems.map((item) => (
-              <li class:list={["hub-link-row", item.status === "gap" && "hub-link-row--gap"]}>
-                {item.href ? (
-                  <a href={item.href} class="hub-link-row__action">
-                    <span class="hub-link-row__title">{item.title}</span>
+          <section class="hub-block" aria-labelledby="categories-heading">
+            <h2 id="categories-heading">Velg problemområde</h2>
+            <ul class="hub-cat-grid" role="list">
+              {categoryCards.map((card) => (
+                <li>
+                  {card.href ? (
+                    <a href={card.href} class="hub-cat-card">
+                      <span class="hub-cat-card__icon" aria-hidden="true" data-icon={card.icon}>
+                        {card.icon === "piping" && (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                            <path d="M4 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0" />
+                          </svg>
+                        )}
+                        {card.icon === "bluetooth" && (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round">
+                            <path d="M8 7l8 5-8 5V7z" /><path d="M16 7v10" />
+                          </svg>
+                        )}
+                        {card.icon === "app" && (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                            <rect x="5" y="3" width="14" height="18" rx="2" /><path d="M10 17h4" />
+                          </svg>
+                        )}
+                        {card.icon === "filter" && (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                            <path d="M4 6h16M7 12h10M10 18h4" />
+                          </svg>
+                        )}
+                        {card.icon === "battery" && (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="7" width="16" height="10" rx="2" /><path d="M21 10v4" /><path d="M7 11v2" />
+                          </svg>
+                        )}
+                        {card.icon === "sound" && (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                            <path d="M6 10v4h3l4 3V7L9 10H6z" /><path d="M17 9a3 3 0 010 6" />
+                          </svg>
+                        )}
+                      </span>
+                      <span class="hub-cat-card__body">
+                        <span class="hub-cat-card__title">{card.title}</span>
+                        <span class="hub-cat-card__hint">{card.hint}</span>
+                      </span>
+                      <span class="hub-cat-card__arrow" aria-hidden="true">→</span>
+                    </a>
+                  ) : (
+                    <span class="hub-cat-card hub-cat-card--gap">
+                      <span class="hub-cat-card__icon" aria-hidden="true" data-icon={card.icon}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3" y="7" width="16" height="10" rx="2" /><path d="M21 10v4" /><path d="M7 11v2" />
+                        </svg>
+                      </span>
+                      <span class="hub-cat-card__body">
+                        <span class="hub-cat-card__title">{card.title}</span>
+                        <span class="hub-cat-card__hint">{card.hint}</span>
+                      </span>
+                      <span class="hub-cat-card__badge">Kommer</span>
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section class="hub-block" aria-labelledby="guides-heading">
+            <h2 id="guides-heading">Korte guider</h2>
+            <ul class="hub-link-list" role="list">
+              {shortGuides.map((guide) => (
+                <li class="hub-link-row">
+                  <a href={guide.href} class="hub-link-row__action">
+                    <span class="hub-link-row__title">{guide.title}</span>
                     <span class="hub-link-row__arrow" aria-hidden="true">→</span>
                   </a>
-                ) : (
-                  <span class="hub-link-row__static">
-                    <span class="hub-link-row__title">{item.title}</span>
-                    <span class="hub-link-row__badge">Kommer</span>
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-        <!-- 3. Korte guider — samme radmønster -->
-        <section class="hub-block" aria-labelledby="guides-heading">
-          <h2 id="guides-heading">Korte guider</h2>
-          <ul class="hub-link-list" role="list">
-            {shortGuides.map((guide) => (
-              <li class="hub-link-row">
-                <a href={guide.href} class="hub-link-row__action">
-                  <span class="hub-link-row__title">{guide.title}</span>
-                  <span class="hub-link-row__arrow" aria-hidden="true">→</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <!-- 4. Eskalering — rolig avslutningskort -->
-        <section class="hub-block hub-block--escalation" aria-labelledby="escalation-heading">
-          <h2 id="escalation-heading" class="sr-only">Videre hjelp</h2>
-          <a href={audiografEscalation.href} class="hub-escalation-card">
-            <span class="hub-escalation-card__title">{audiografEscalation.title}</span>
-            <span class="hub-escalation-card__deck">{audiografEscalation.deck}</span>
-            <span class="hub-escalation-card__arrow" aria-hidden="true">→</span>
-          </a>
-          <p class="hub-escalation-fallback">
-            <a href="/no/chat?from=hub">Fant du ikke svaret? Spør Hørehjelpen</a>
-          </p>
-        </section>
+          <section class="hub-block hub-block--escalation" aria-labelledby="escalation-heading">
+            <h2 id="escalation-heading" class="sr-only">Videre hjelp</h2>
+            <a href={audiografEscalation.href} class="hub-escalation-card">
+              <span class="hub-escalation-card__title">{audiografEscalation.title}</span>
+              <span class="hub-escalation-card__deck">{audiografEscalation.deck}</span>
+              <span class="hub-escalation-card__arrow" aria-hidden="true">→</span>
+            </a>
+            <p class="hub-escalation-fallback">
+              <a href="/no/chat?from=hub">Fant du ikke svaret? Spør Hørehjelpen</a>
+            </p>
+          </section>
+        </div>
       </div>
     </div>
   </main>
@@ -140,9 +210,9 @@ const audiografEscalation = {
 </BaseLayout>
 
 <style>
-  /* #125I-D-R2 — praktisk hjelpehub: én primærvei, ett link-mønster, smalere innholdsflate */
+  /* #125I-D-R3 — hvit content surface; ambient shell utenfor flaten */
   .hub-page {
-    padding: 0;
+    padding: clamp(0.5rem, 1.5vw, 0.85rem) 0 0;
   }
 
   .hub-container {
@@ -163,20 +233,16 @@ const audiografEscalation = {
     }
   }
 
-  .hub-inner {
-    max-width: 44rem;
-    margin: 0 auto;
-    padding-top: clamp(1.1rem, 2.8vw, 1.45rem);
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.35rem, 3.2vw, 1.75rem);
+  .hub-surface {
+    background: rgb(var(--reading-paper));
+    border: 1px solid rgb(var(--border) / 0.16);
+    border-radius: 12px;
+    padding: clamp(1rem, 2.4vw, 1.35rem);
   }
 
   .hub-header {
-    max-width: 44rem;
-    margin: 0 auto;
-    padding: clamp(2rem, 6vw, 3rem) 0 clamp(0.85rem, 2vw, 1.1rem);
-    border-bottom: 1px solid rgb(var(--border) / 0.2);
+    padding-bottom: clamp(0.85rem, 2vw, 1.1rem);
+    border-bottom: 1px solid rgb(var(--border) / 0.14);
   }
 
   .hub-breadcrumb {
@@ -215,10 +281,18 @@ const audiografEscalation = {
     color: rgb(var(--reading-ink-secondary));
   }
 
-  /* Section headings — én rolig nivå, ikke uppercase micro-labels */
+  .hub-body {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding-top: clamp(1rem, 2.5vw, 1.25rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.25rem, 3vw, 1.6rem);
+  }
+
   .hub-block h2,
   .hub-primary h2 {
-    margin: 0 0 0.6rem;
+    margin: 0 0 0.65rem;
     font-family: var(--font-body, inherit);
     font-size: 1rem;
     font-weight: 650;
@@ -227,7 +301,7 @@ const audiografEscalation = {
     color: rgb(var(--reading-ink));
   }
 
-  /* ── Primærvei: composer — speiler ArticleInlineChatShell compose, roligere skygge ── */
+  /* ── Composer (R2b) på hvit flate ── */
   .hub-primary {
     display: flex;
     flex-direction: column;
@@ -242,7 +316,7 @@ const audiografEscalation = {
     padding: 0.62rem;
     border: 1px solid rgb(var(--border) / 0.46);
     border-radius: 1.15rem;
-    background: rgb(var(--surface) / 0.97);
+    background: rgb(var(--reading-paper));
     transition:
       border-color 150ms ease,
       box-shadow 150ms ease;
@@ -303,12 +377,134 @@ const audiografEscalation = {
     outline-offset: 3px;
   }
 
-  .hub-compose__send:disabled {
-    cursor: not-allowed;
-    opacity: 0.46;
+  /* ── Kategorikort med enkle line-glyphs ── */
+  .hub-cat-grid {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
   }
 
-  /* ── Felles link-liste for problemer og guider ── */
+  @media (min-width: 540px) {
+    .hub-cat-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 900px) {
+    .hub-cat-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .hub-cat-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 4.25rem;
+    padding: 0.85rem 0.9rem;
+    border: 1px solid rgb(var(--border) / 0.22);
+    border-radius: 10px;
+    background: rgb(var(--reading-paper));
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  a.hub-cat-card:hover {
+    border-color: rgb(var(--border) / 0.36);
+    box-shadow: 0 2px 10px rgb(var(--reading-ink) / 0.05);
+  }
+
+  a.hub-cat-card:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
+  }
+
+  .hub-cat-card--gap {
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .hub-cat-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    flex-shrink: 0;
+    border: 1px solid rgb(var(--border) / 0.28);
+    border-radius: 8px;
+    background: rgb(var(--border) / 0.08);
+    color: rgb(var(--reading-ink));
+  }
+
+  .hub-cat-card--gap .hub-cat-card__icon {
+    color: rgb(var(--reading-ink-secondary) / 0.7);
+  }
+
+  .hub-cat-card__icon svg {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  .hub-cat-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .hub-cat-card__title {
+    font-size: 0.92rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    line-height: 1.28;
+    color: rgb(var(--reading-ink));
+  }
+
+  .hub-cat-card--gap .hub-cat-card__title {
+    color: rgb(var(--reading-ink-secondary) / 0.75);
+  }
+
+  .hub-cat-card__hint {
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: rgb(var(--reading-ink-secondary));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .hub-cat-card__arrow {
+    flex-shrink: 0;
+    font-size: 0.88rem;
+    color: rgb(var(--reading-ink-secondary) / 0.45);
+    transition: color 100ms ease, transform 100ms ease;
+  }
+
+  a.hub-cat-card:hover .hub-cat-card__arrow {
+    color: rgb(var(--reading-ink-secondary));
+    transform: translateX(2px);
+  }
+
+  .hub-cat-card__badge {
+    flex-shrink: 0;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(var(--muted));
+    border: 1px solid rgb(var(--border) / 0.35);
+    border-radius: 3px;
+    padding: 0.12rem 0.38rem;
+  }
+
+  /* ── Sekundær guide-liste ── */
   .hub-link-list {
     margin: 0;
     padding: 0;
@@ -327,18 +523,14 @@ const audiografEscalation = {
     border-bottom: 0;
   }
 
-  .hub-link-row__action,
-  .hub-link-row__static {
+  .hub-link-row__action {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
     padding: 0.82rem 0.95rem;
-    text-decoration: none;
-  }
-
-  .hub-link-row__action {
     color: rgb(var(--reading-ink));
+    text-decoration: none;
     transition: background-color 100ms ease;
   }
 
@@ -349,14 +541,6 @@ const audiografEscalation = {
   .hub-link-row__action:focus-visible {
     outline: none;
     box-shadow: inset 0 0 0 2px rgb(14 165 233 / 0.35);
-  }
-
-  .hub-link-row__static {
-    color: rgb(var(--reading-ink-secondary));
-  }
-
-  .hub-link-row--gap .hub-link-row__title {
-    color: rgb(var(--reading-ink-secondary) / 0.65);
   }
 
   .hub-link-row__title {
@@ -378,21 +562,9 @@ const audiografEscalation = {
     transform: translateX(2px);
   }
 
-  .hub-link-row__badge {
-    flex-shrink: 0;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgb(var(--muted));
-    border: 1px solid rgb(var(--border) / 0.35);
-    border-radius: 3px;
-    padding: 0.12rem 0.38rem;
-  }
-
   /* ── Eskalering ── */
   .hub-block--escalation {
-    padding-top: 0.15rem;
+    padding-top: 0.1rem;
   }
 
   .hub-escalation-card {
@@ -444,14 +616,14 @@ const audiografEscalation = {
   }
 
   .hub-escalation-fallback {
-    margin: 0.65rem 0 0;
-    font-size: 0.84rem;
+    margin: 0.6rem 0 0;
+    font-size: 0.82rem;
     line-height: 1.4;
   }
 
   .hub-escalation-fallback a {
-    color: rgb(var(--reading-ink-secondary));
-    font-weight: 550;
+    color: rgb(var(--reading-ink-secondary) / 0.85);
+    font-weight: 500;
     text-decoration: underline;
     text-underline-offset: 3px;
   }
@@ -485,6 +657,10 @@ const audiografEscalation = {
 
     .hub-escalation-card__arrow {
       display: none;
+    }
+
+    .hub-cat-card__hint {
+      white-space: normal;
     }
   }
 </style>
