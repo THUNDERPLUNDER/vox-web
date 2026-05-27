@@ -136,10 +136,10 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     sprint: "2026-W21",
     issue: "#125I-D",
     type: "reference",
-    status: "decision-candidate",
+    status: "closed",
     stakeholderSafe: true,
     description:
-      "R8: kategori-kort = editorial hover (hvit flate, shadow, lift). #F5F6F5 kun liste-rader. CBA for help-hub IXD — ikke design lock. QA pending.",
+      "QA-godkjent — CBA v0.1 / god nok for nå (R1–R8). Editorial card-hover på kategori-kort; #F5F6F5 kun liste-rader. Follow-ups: ikonpass, composer-paritet, footer/shell, FOUC (#125I-B), copy/nav (#125J).",
   },
   {
     id: "forside-routing",
