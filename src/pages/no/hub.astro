@@ -1,6 +1,6 @@
 ---
 /* CONTRACT: Hjelp hub (A3) — praktisk hjelpehub for konkrete problemer.
-   #125D applied slice; #125I-D-R2 — én primærvei, færre visuelle nivåer, samlet link-familie.
+   #125D applied slice; #125I-D-R2b — composer-inngang speiler artikkelsidens inline compose.
    Mandate: docs/project/VIDDEL_HUB_MANDATE_v0_1.md / #112.
 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -59,26 +59,27 @@ const audiografEscalation = {
       </header>
 
       <div class="hub-inner">
-        <!-- 1. Primærvei: beskriv problemet -->
+        <!-- 1. Primærvei: composer (speiler artikkel inline compose) -->
         <section class="hub-primary" aria-labelledby="ai-ask-heading">
-          <h2 id="ai-ask-heading">Hva fungerer ikke?</h2>
-          <p class="hub-primary__lead">
-            Beskriv problemet — Hørehjelpen åpnes med spørsmålet ditt og hjelper deg videre.
-          </p>
-          <form class="hub-ai-form" action="/no/chat" method="get">
-            <label class="hub-ai-form__field">
-              <span class="sr-only">Beskriv hva som ikke fungerer</span>
+          <h2 id="ai-ask-heading">Hva trenger du hjelp med?</h2>
+          <form class="hub-compose" action="/no/chat" method="get">
+            <label class="sr-only" for="hub-compose-input">Hva trenger du hjelp med?</label>
+            <div class="hub-compose__input-wrap">
               <input
+                id="hub-compose-input"
                 type="search"
                 name="seed"
+                class="hub-compose__input"
                 required
                 autocomplete="off"
                 enterkeyhint="search"
                 placeholder="F.eks. piping, Bluetooth, filter…"
               />
-            </label>
+            </div>
             <input type="hidden" name="from" value="hub" />
-            <button type="submit" class="hub-ai-form__submit">Spør Hørehjelpen</button>
+            <button type="submit" class="hub-compose__send" aria-label="Send spørsmål">
+              <span aria-hidden="true">↑</span>
+            </button>
           </form>
         </section>
 
@@ -226,69 +227,85 @@ const audiografEscalation = {
     color: rgb(var(--reading-ink));
   }
 
-  /* ── Primærvei: beskriv problemet ── */
+  /* ── Primærvei: composer — speiler ArticleInlineChatShell compose, roligere skygge ── */
   .hub-primary {
-    padding: clamp(1rem, 2.4vw, 1.2rem);
-    border: 1px solid rgb(var(--border) / 0.2);
-    border-radius: 12px;
-    background: rgb(var(--reading-paper));
-  }
-
-  .hub-primary__lead {
-    margin: 0 0 0.85rem;
-    font-size: 0.88rem;
-    line-height: 1.48;
-    color: rgb(var(--reading-ink-secondary));
-  }
-
-  .hub-ai-form {
     display: flex;
     flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .hub-compose {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: flex-end;
     gap: 0.55rem;
+    padding: 0.62rem;
+    border: 1px solid rgb(var(--border) / 0.46);
+    border-radius: 1.15rem;
+    background: rgb(var(--surface) / 0.97);
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
   }
 
-  .hub-ai-form__field input {
+  .hub-compose:focus-within {
+    border-color: rgb(var(--reading-accent-iris) / 0.46);
+    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.14);
+  }
+
+  .hub-compose__input-wrap {
+    min-width: 0;
+  }
+
+  .hub-compose__input {
     width: 100%;
-    padding: 0.62rem 0.95rem;
-    border: 1px solid rgb(var(--border) / 0.28);
-    border-radius: 999px;
-    background: rgb(var(--reading-paper));
+    min-height: 2.75rem;
+    padding: 0.5rem 0.4rem;
+    border: 0;
+    background: transparent;
     color: rgb(var(--reading-ink));
-    font-size: 0.86rem;
-    line-height: 1.4;
+    font: inherit;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    outline: 0;
   }
 
-  .hub-ai-form__field input::placeholder {
-    color: rgb(var(--reading-ink-secondary) / 0.55);
+  .hub-compose__input::placeholder {
+    color: rgb(var(--reading-ink-secondary) / 0.72);
   }
 
-  .hub-ai-form__field input:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
-    border-color: rgb(14 165 233 / 0.45);
-  }
-
-  .hub-ai-form__submit {
-    align-self: flex-start;
-    padding: 0.52rem 0.95rem;
+  .hub-compose__send {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2.68rem;
+    height: 2.68rem;
+    min-height: 2.68rem;
+    padding: 0;
     border: 0;
     border-radius: 999px;
     background: rgb(var(--reading-ink));
-    color: rgb(var(--reading-paper));
-    font-size: 0.82rem;
-    font-weight: 650;
-    letter-spacing: -0.01em;
+    color: rgb(var(--surface));
+    font-size: 1.02rem;
+    font-weight: 700;
+    line-height: 1;
     cursor: pointer;
     transition: opacity 150ms ease;
   }
 
-  .hub-ai-form__submit:hover {
+  .hub-compose__send:hover {
     opacity: 0.9;
   }
 
-  .hub-ai-form__submit:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
+  .hub-compose__send:focus-visible {
+    outline: 2px solid rgb(var(--reading-accent-iris) / 0.42);
+    outline-offset: 3px;
+  }
+
+  .hub-compose__send:disabled {
+    cursor: not-allowed;
+    opacity: 0.46;
   }
 
   /* ── Felles link-liste for problemer og guider ── */
@@ -459,17 +476,6 @@ const audiografEscalation = {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
-  }
-
-  @media (min-width: 480px) {
-    .hub-ai-form {
-      flex-direction: row;
-      align-items: stretch;
-    }
-
-    .hub-ai-form__field {
-      flex: 1;
-    }
   }
 
   @media (max-width: 479px) {
