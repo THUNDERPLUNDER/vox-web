@@ -139,7 +139,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "decision-candidate",
     stakeholderSafe: true,
     description:
-      "R3: hvit content surface, kategorikort (line-glyphs), composer beholdt, kortere guide-liste. FOUC ikke adressert. QA pending — ikke merge.",
+      "R4: artikkel-paritet surface, større kategorikort, copy-justeringer. Midlertidige line-glyphs — ikke endelig ikonstil; eget pass senere. QA pending — ikke merge.",
   },
   {
     id: "forside-routing",
