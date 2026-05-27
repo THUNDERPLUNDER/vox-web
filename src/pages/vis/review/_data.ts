@@ -115,7 +115,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "closed",
     stakeholderSafe: true,
     description:
-      "Diagnose completed — horizontal layout shift / FOUC not solved. Parkert som known issue / teknisk gjeld.",
+      "Diagnose completed — horizontal layout shift / FOUC not solved (#125I-B). Thomas QA (2026-05): hopper ved lasting av hub/ordbok/om, ikke forside; route-spesifikk CSS sannsynlig. Parkert — ta med i #125I-D / spike.",
   },
   {
     id: "frontpage-polish-125i-c",
@@ -127,7 +127,19 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "closed",
     stakeholderSafe: true,
     description:
-      "QA-godkjent — god nok for nå (R1–R3 forside + felles footer). FOUC/layout shift forblir known issue (#125I-B). Copy/nav wording parkert til senere pass (#125J). Neste: #125I-D hub polish.",
+      "QA-godkjent — god nok for nå (R1–R3 forside + felles footer). FOUC/layout shift forblir known issue (#125I-B). Copy/nav wording parkert til senere pass (#125J).",
+  },
+  {
+    id: "hub-polish-125i-d",
+    title: "Hub polish",
+    href: "/no/hub/",
+    sprint: "2026-W21",
+    issue: "#125I-D",
+    type: "reference",
+    status: "closed",
+    stakeholderSafe: true,
+    description:
+      "QA-godkjent — CBA v0.1 / god nok for nå (R1–R8). Editorial card-hover på kategori-kort; #F5F6F5 kun liste-rader. Follow-ups: ikonpass, composer-paritet, footer/shell, FOUC (#125I-B), copy/nav (#125J).",
   },
   {
     id: "forside-routing",

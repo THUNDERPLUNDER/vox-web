@@ -10,7 +10,8 @@
    #125G: Forside/routing at /no/ — QA accepted, closed (#125G-R3 triage mandate).
    #125G-R2: Frontpage mandate decision surface — mandate accepted, applied R3.
    #125H: Navigation / top menu pass — QA accepted, closed (IA/nav-sync). Layout jump → #125I.
-   #125I-C: Frontpage/footer polish — QA accepted, closed. Neste: #125I-D.
+   #125I-C: Frontpage/footer polish — QA accepted, closed.
+   #125I-D: Hub polish on /no/hub/ — QA accepted, closed (CBA v0.1).
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -124,8 +125,9 @@ const typographyLabDirections = [
         <li><strong>Applied:</strong> #125G Forside/routing på <code>/no/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125H Nav/toppmeny — QA-godkjent, closed (IA/nav-sync)</li>
         <li><strong>Applied:</strong> #125I-C Forside/footer polish på <code>/no/</code> — QA-godkjent, closed</li>
+        <li><strong>Applied:</strong> #125I-D Hub polish på <code>/no/hub/</code> — QA-godkjent, closed (CBA v0.1)</li>
         <li><strong>Parked:</strong> #125I-B Layout shift / FOUC — known issue</li>
-        <li><strong>Neste:</strong> #125I-D Hub polish · alternativt senere #125J Copy/nav naming pass</li>
+        <li><strong>Senere:</strong> hub ikonpass · composer-paritet · footer/shell · #125J Copy/nav pass</li>
       </ul>
     </section>
 
@@ -437,6 +439,27 @@ const typographyLabDirections = [
       </div>
     </section>
 
+    <!-- Hub polish (#125I-D — QA accepted, closed) -->
+    <section class="sprint-preview__section" aria-labelledby="hub-polish-heading">
+      <div class="sprint-preview__section-head">
+        <p class="sprint-preview__kicker">17 · #125I-D</p>
+        <h2 id="hub-polish-heading">Hub polish</h2>
+        <p>Hjelp-huben samles visuelt med godkjent forside — uten bred redesign eller FOUC-fix.</p>
+      </div>
+      <div class="sprint-preview__typo-summary">
+        <p class="sprint-preview__typo-status">
+          <strong>Status:</strong> QA accepted — CBA v0.1 / closed
+        </p>
+        <p class="sprint-preview__typo-sans">
+          R8 godkjent: hvite kategori-kort, editorial hover (shadow + lift), #F5F6F5 kun på liste-rader.
+          Follow-ups: ikonpass, composer-paritet, footer/shell, FOUC (#125I-B), copy/nav (#125J).
+        </p>
+        <a href={`${base}no/hub/`} class="sprint-preview__typo-link">
+          Verify hub polish on production →
+        </a>
+      </div>
+    </section>
+
     <!-- Layout stability / FOUC (#125I-B — parked) -->
     <section class="sprint-preview__section" aria-labelledby="layout-stability-heading">
       <div class="sprint-preview__section-head">
@@ -449,8 +472,9 @@ const typographyLabDirections = [
           <strong>Status:</strong> Diagnose completed / parked
         </p>
         <p class="sprint-preview__typo-sans">
-          R2 identifiserte horisontal shift (body margin 8→0, container layout ved Tailwind-load). R3 first-paint CSS
-          ga bedre målinger men ingen synlig QA-forbedring — revertet. FOUC beholdes som teknisk gjeld. Neste: #125I-D.
+          R2: horisontal shift ved Tailwind-load. R3 first-paint CSS revertet (ingen synlig QA-gevinst). Thomas QA
+          (2026-05): rykk ved <em>lasting</em> av hub/ordbok/om — forside stabil. Tolkning: route-spesifikk
+          layout/CSS-arv. Ingen ny FOUC-fix nå; observasjon tas med i #125I-D (felles shell/container) og evt. spike.
         </p>
         <a href={`${base}no/hub/`} class="sprint-preview__typo-link">
           Verify layout stability on production →

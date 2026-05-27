@@ -1,66 +1,58 @@
 ---
-/* CONTRACT: Hjelp hub (A3) — «Få høreapparatet til å fungere».
-   Utility-first: AI ask → problem cards → short guides → escalation.
-   #125D applied slice on /no/hub only. Mandate: docs/project/VIDDEL_HUB_MANDATE_v0_1.md / #112.
+/* CONTRACT: Hjelp hub (A3) — praktisk hjelpehub for konkrete problemer.
+   #125I-D-R8 — editorial card hover på kategorikort (shadow + lift, ikke grå fill).
+   Mandate: docs/project/VIDDEL_HUB_MANDATE_v0_1.md / #112.
 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/nav/Footer.astro";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
-const hubTitle = "Få høreapparatet til å fungere";
-const hubSupport = "Vanlige problemer og rask hjelp — velg det som passer, eller spør Hørehjelpen.";
+const hubHeading = "Hva trenger du hjelp med?";
 
-type TaskStatus = "finnes" | "gap";
-
-const problemCards: Array<{
+const categoryCards: Array<{
   title: string;
-  thumb: string;
-  href: string;
-}> = [
-  { title: "Stoppe piping", thumb: "piping", href: "/no/artikkel/fa-slutt-pa-pipingen" },
-  { title: "Koble til mobilen", thumb: "bluetooth", href: "/no/artikkel/koble-horeapparatet-til-mobilen" },
-  { title: "Appen finner ikke høreapparatet", thumb: "app", href: "/no/artikkel/appen-finner-ikke-horeapparatet" },
-  { title: "Bytte filter", thumb: "filter", href: "/no/artikkel/bytte-filter-uten-stress" },
-];
-
-const moreProblems: Array<{
-  label: string;
+  hint: string;
   href?: string;
-  status: TaskStatus;
+  status?: "gap";
 }> = [
-  { label: "Fikse app eller Bluetooth", href: "/no/artikkel/appen-finner-ikke-horeapparatet", status: "finnes" },
-  { label: "Sjekke batteri og lading", status: "gap" },
-  { label: "Forstå om lyden er feil eller normal", href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen", status: "finnes" },
-  { label: "Vite når audiograf bør kontaktes", href: "/no/artikkel/audiograf-nar-det-haster", status: "finnes" },
-];
-
-const shortGuides = [
   {
-    label: "Feilsøking",
-    title: "Få slutt på pipingen",
+    title: "Piping og ulyd",
+    hint: "Slutt på piping og ulyd i øret",
     href: "/no/artikkel/fa-slutt-pa-pipingen",
   },
   {
-    label: "Tilkobling",
-    title: "Koble høreapparatet til mobilen",
+    title: "Mobil og Bluetooth",
+    hint: "Koble høreapparatet til mobilen",
     href: "/no/artikkel/koble-horeapparatet-til-mobilen",
   },
   {
-    label: "App og Bluetooth",
-    title: "Appen finner ikke høreapparatet",
+    title: "App og tilkobling",
+    hint: "Når appen ikke finner apparatet",
     href: "/no/artikkel/appen-finner-ikke-horeapparatet",
   },
   {
-    label: "Vedlikehold",
-    title: "Bytte filter uten stress",
+    title: "Filter og vedlikehold",
+    hint: "Bytte filter og enkel vedlikehold",
     href: "/no/artikkel/bytte-filter-uten-stress",
   },
   {
-    label: "Lyd og tilpasning",
-    title: "Lyden blir slitsom utpå dagen",
+    title: "Batteri og lading",
+    hint: "Sjekke batteri og lading",
+    status: "gap",
+  },
+  {
+    title: "Lyd og tilpasning",
+    hint: "Når lyden føles feil eller slitsom",
     href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
   },
+];
+
+const shortGuides = [
+  { title: "Få slutt på pipingen", href: "/no/artikkel/fa-slutt-pa-pipingen" },
+  { title: "Appen finner ikke høreapparatet", href: "/no/artikkel/appen-finner-ikke-horeapparatet" },
+  { title: "Lyden blir slitsom utpå dagen", href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen" },
+  { title: "Audiograf når det haster", href: "/no/artikkel/audiograf-nar-det-haster" },
 ];
 
 const audiografEscalation = {
@@ -70,147 +62,150 @@ const audiografEscalation = {
 };
 ---
 
-<BaseLayout title={`Viddel - ${hubTitle}`} currentPath="/no/hub" shellVariant="article">
+<BaseLayout title={`Viddel - ${hubHeading}`} currentPath="/no/hub" shellVariant="article">
   <meta slot="head" name="robots" content="noindex,follow" />
 
   <main class="hub-page" data-hub-help>
     <div class="hub-container">
+      <div class="hub-surface">
+        <header class="hub-header">
+          <nav class="hub-breadcrumb" aria-label="Du er her">
+            <a href="/no">Forside</a>
+            <span aria-hidden="true">/</span>
+            <span>Hjelp</span>
+          </nav>
+          <h1>{hubHeading}</h1>
+        </header>
 
-      <header class="hub-header">
-        <nav class="hub-breadcrumb" aria-label="Du er her">
-          <a href="/no">Forside</a>
-          <span aria-hidden="true">/</span>
-          <span>Hjelp</span>
-        </nav>
-        <p class="hub-kicker">Hjelp</p>
-        <h1>{hubTitle}</h1>
-        <p class="hub-lead">{hubSupport}</p>
-      </header>
+        <div class="hub-body">
+          <section class="hub-intro" aria-label="Still et spørsmål">
+            <form class="hub-compose" action="/no/chat" method="get">
+              <label class="sr-only" for="hub-compose-input">{hubHeading}</label>
+              <div class="hub-compose__input-wrap">
+                <input
+                  id="hub-compose-input"
+                  type="search"
+                  name="seed"
+                  class="hub-compose__input"
+                  required
+                  autocomplete="off"
+                  enterkeyhint="search"
+                  placeholder="F.eks. piping, Bluetooth, filter…"
+                />
+              </div>
+              <input type="hidden" name="from" value="hub" />
+              <button type="submit" class="hub-compose__send" aria-label="Still et spørsmål">
+                <span aria-hidden="true">↑</span>
+              </button>
+            </form>
+          </section>
 
-      <div class="hub-help-core">
+          <section class="hub-block hub-block--categories" aria-label="Problemområder">
+            <ul class="hub-cat-grid" role="list">
+              {categoryCards.map((card) => (
+                <li>
+                  {card.href ? (
+                    <a href={card.href} class="hub-cat-card">
+                      <span class="hub-cat-card__title">{card.title}</span>
+                      <span class="hub-cat-card__hint">{card.hint}</span>
+                    </a>
+                  ) : (
+                    <span class="hub-cat-card hub-cat-card--gap">
+                      <span class="hub-cat-card__title">{card.title}</span>
+                      <span class="hub-cat-card__hint">{card.hint}</span>
+                      <span class="hub-cat-card__badge">Kommer</span>
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
 
-        <!-- AI ask — first step -->
-        <section class="hub-block hub-block--ai" aria-labelledby="ai-ask-heading">
-          <h2 id="ai-ask-heading" class="hub-block__title">Hva fungerer ikke?</h2>
-          <p class="hub-ai-ask__lead">
-            Beskriv problemet — Hørehjelpen åpnes med spørsmålet ditt og hjelper deg videre.
-          </p>
-          <form class="hub-ai-form" action="/no/chat" method="get">
-            <label class="hub-ai-form__field">
-              <span class="sr-only">Beskriv hva som ikke fungerer</span>
-              <input
-                type="search"
-                name="seed"
-                required
-                autocomplete="off"
-                enterkeyhint="search"
-                placeholder="F.eks. piping, Bluetooth, filter…"
-              />
-            </label>
-            <input type="hidden" name="from" value="hub" />
-            <button type="submit" class="hub-ai-form__submit">Spør Hørehjelpen</button>
-          </form>
-        </section>
-
-        <!-- Problem cards -->
-        <section class="hub-block" aria-labelledby="problems-heading">
-          <h2 id="problems-heading" class="hub-block__title">Dette kan du prøve først</h2>
-          <ul class="hub-problem-grid" role="list">
-            {problemCards.map((card) => (
-              <li>
-                <a href={card.href} class="hub-problem-card" data-thumb={card.thumb}>
-                  <span class="hub-problem-card__visual" aria-hidden="true">
-                    <span class="hub-problem-card__shape"></span>
-                  </span>
-                  <span class="hub-problem-card__title">{card.title}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <!-- More problems — compact list -->
-        <section class="hub-block" aria-labelledby="more-problems-heading">
-          <h2 id="more-problems-heading" class="hub-block__title">Flere vanlige problemer</h2>
-          <ul class="hub-task-list" role="list">
-            {moreProblems.map((task) => (
-              <li class:list={["hub-task-row", task.status === "gap" && "hub-task-row--gap"]}>
-                {task.href ? (
-                  <a href={task.href} class="hub-task-row__link">
-                    <span class="hub-task-row__label">{task.label}</span>
-                    <span class="hub-task-row__arrow" aria-hidden="true">→</span>
+          <section class="hub-block" aria-labelledby="guides-heading">
+            <h2 id="guides-heading">Hjelp meg med</h2>
+            <ul class="hub-link-list" role="list">
+              {shortGuides.map((guide) => (
+                <li class="hub-link-row">
+                  <a href={guide.href} class="hub-link-row__action">
+                    <span class="hub-link-row__title">{guide.title}</span>
+                    <span class="hub-link-row__arrow" aria-hidden="true">→</span>
                   </a>
-                ) : (
-                  <span class="hub-task-row__coming">
-                    <span class="hub-task-row__label">{task.label}</span>
-                    <span class="hub-task-row__badge">Kommer</span>
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-        <!-- Short guides -->
-        <section class="hub-block" aria-labelledby="guides-heading">
-          <h2 id="guides-heading" class="hub-block__title">Korte guider</h2>
-          <ul class="hub-guide-rows" role="list">
-            {shortGuides.map((guide) => (
-              <li>
-                <a href={guide.href} class="hub-guide-row">
-                  <span class="hub-guide-row__label">{guide.label}</span>
-                  <span class="hub-guide-row__title">{guide.title}</span>
-                  <span class="hub-guide-row__arrow" aria-hidden="true">→</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <!-- Escalation -->
-        <section class="hub-block hub-block--escalation" aria-labelledby="escalation-heading">
-          <h2 id="escalation-heading" class="sr-only">Videre hjelp</h2>
-          <a href="/no/chat?from=hub" class="hub-escalation-chat">
-            Fant du ikke svaret? Spør Hørehjelpen
-            <span aria-hidden="true">→</span>
-          </a>
-          <a href={audiografEscalation.href} class="hub-escalation-audiograf">
-            <span class="hub-escalation-audiograf__label">Audiograf</span>
-            <span class="hub-escalation-audiograf__title">{audiografEscalation.title}</span>
-            <span class="hub-escalation-audiograf__deck">{audiografEscalation.deck}</span>
-            <span class="hub-escalation-audiograf__arrow" aria-hidden="true">→</span>
-          </a>
-        </section>
-
+          <section class="hub-block hub-block--escalation" aria-labelledby="escalation-heading">
+            <h2 id="escalation-heading" class="sr-only">Videre hjelp</h2>
+            <a href={audiografEscalation.href} class="hub-escalation-card">
+              <span class="hub-escalation-card__title">{audiografEscalation.title}</span>
+              <span class="hub-escalation-card__deck">{audiografEscalation.deck}</span>
+              <span class="hub-escalation-card__arrow" aria-hidden="true">→</span>
+            </a>
+            <p class="hub-escalation-fallback">
+              <a href="/no/chat?from=hub">Finner du ikke svaret? Still et spørsmål</a>
+            </p>
+          </section>
+        </div>
       </div>
     </div>
   </main>
 
-  <Footer variant="article" />
+  <Footer />
 </BaseLayout>
 
 <style>
+  /* #125I-D-R8 — editorial card hover på kategori-kort; #F5F6F5 kun på liste-rader */
   [data-hub-help] {
+    --hub-hover: #f5f6f5;
+  }
+  .hub-page {
     background: rgb(var(--article-page-canvas));
-    min-height: 100vh;
+    padding: 0.5rem 0 clamp(3rem, 6vw, 4rem);
+  }
+
+  @media (min-width: 640px) {
+    .hub-page {
+      padding-top: 0.75rem;
+    }
   }
 
   .hub-container {
-    max-width: min(100%, 52rem);
     margin: 0 auto;
-    padding: 0 1rem 4rem;
+    padding: 0 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .hub-container {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  .hub-surface {
+    max-width: min(100%, 46rem);
+    margin: 0 auto;
+    background: rgb(var(--reading-paper));
+    border-radius: var(--radius-md);
+    padding: 2.5rem 1.75rem;
+    color: rgb(var(--reading-ink));
+  }
+
+  @media (min-width: 640px) {
+    .hub-surface {
+      padding: 3rem 2.5rem;
+    }
   }
 
   .hub-header {
-    padding: clamp(2rem, 6vw, 3.5rem) 0 clamp(1.5rem, 4vw, 2.25rem);
-    border-bottom: 1px solid rgb(var(--border) / 0.22);
+    padding-bottom: 0;
+    border-bottom: 0;
   }
 
   .hub-breadcrumb {
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.75rem;
     font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.12em;
@@ -224,412 +219,344 @@ const audiografEscalation = {
     text-underline-offset: 2px;
   }
 
-  .hub-kicker {
-    margin: 0 0 0.55rem;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: rgb(var(--reading-accent-iris));
-  }
-
   [data-hub-help] h1 {
     margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(2.4rem, 8vw, 4.2rem);
+    font-size: clamp(2rem, 5.8vw, 2.6rem);
     font-weight: 650;
-    line-height: 0.99;
-    letter-spacing: -0.065em;
+    line-height: 1.05;
+    letter-spacing: -0.055em;
     text-wrap: balance;
     color: rgb(var(--reading-ink));
   }
 
-  .hub-lead {
-    margin: clamp(0.9rem, 2.5vw, 1.35rem) 0 0;
-    font-size: clamp(1rem, 2.5vw, 1.2rem);
-    line-height: 1.48;
-    letter-spacing: -0.01em;
+  .hub-body {
+    padding-top: clamp(1.1rem, 2.8vw, 1.35rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 4.5vw, 2.65rem);
+  }
+
+  .hub-intro {
+    margin-top: -0.15rem;
+  }
+
+  .hub-block h2 {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-body, inherit);
+    font-size: 0.95rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .hub-help-core {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .hub-block {
-    padding: clamp(1.5rem, 4vw, 2rem) 0;
-    border-bottom: 1px solid rgb(var(--border) / 0.15);
-  }
-
-  .hub-block:last-child {
-    border-bottom: 0;
-  }
-
-  .hub-block__title {
-    margin: 0 0 0.85rem;
-    font-size: 0.68rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgb(var(--reading-accent-iris));
-  }
-
-  /* ── AI ask ── */
-  .hub-block--ai {
-    padding-top: clamp(1.75rem, 4vw, 2.25rem);
-  }
-
-  .hub-ai-ask__lead {
-    margin: 0 0 1rem;
-    font-size: 0.88rem;
-    line-height: 1.6;
-    color: rgb(var(--reading-ink-secondary));
-  }
-
-  .hub-ai-form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-  }
-
-  .hub-ai-form__field input {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid rgb(var(--border) / 0.35);
-    border-radius: 999px;
+  /* ── Composer ── */
+  .hub-compose {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: flex-end;
+    gap: 0.55rem;
+    padding: 0.62rem;
+    border: 1px solid rgb(var(--border) / 0.46);
+    border-radius: 1.15rem;
     background: rgb(var(--reading-paper));
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .hub-compose:focus-within {
+    border-color: rgb(var(--reading-accent-iris) / 0.46);
+    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.14);
+  }
+
+  .hub-compose__input-wrap {
+    min-width: 0;
+  }
+
+  .hub-compose__input {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.4rem;
+    border: 0;
+    background: transparent;
     color: rgb(var(--reading-ink));
-    font-size: 0.9rem;
-    line-height: 1.4;
+    font: inherit;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    outline: 0;
   }
 
-  .hub-ai-form__field input::placeholder {
-    color: rgb(var(--reading-ink-secondary) / 0.55);
+  .hub-compose__input::placeholder {
+    color: rgb(var(--reading-ink-secondary) / 0.72);
   }
 
-  .hub-ai-form__field input:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
-    border-color: rgb(14 165 233 / 0.45);
-  }
-
-  .hub-ai-form__submit {
-    align-self: flex-start;
-    padding: 0.6rem 1.1rem;
+  .hub-compose__send {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2.68rem;
+    height: 2.68rem;
+    min-height: 2.68rem;
+    padding: 0;
     border: 0;
     border-radius: 999px;
     background: rgb(var(--reading-ink));
-    color: rgb(var(--reading-paper));
-    font-size: 0.82rem;
-    font-weight: 650;
-    letter-spacing: -0.01em;
+    color: rgb(var(--surface));
+    font-size: 1.02rem;
+    font-weight: 700;
+    line-height: 1;
     cursor: pointer;
-    transition: opacity 120ms ease;
+    transition: opacity 150ms ease;
   }
 
-  .hub-ai-form__submit:hover {
-    opacity: 0.88;
+  .hub-compose__send:hover {
+    opacity: 0.9;
   }
 
-  .hub-ai-form__submit:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
+  .hub-compose__send:focus-visible {
+    outline: 2px solid rgb(var(--reading-accent-iris) / 0.42);
+    outline-offset: 3px;
   }
 
-  /* ── Problem cards ── */
-  .hub-problem-grid {
+  .hub-block--categories {
+    padding-top: 0.15rem;
+  }
+
+  /* ── Kategorikort — hvite flater, equal height, ingen ikonbokser (R6) ── */
+  .hub-cat-grid {
     margin: 0;
     padding: 0;
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.65rem;
+    grid-template-columns: 1fr;
+    grid-auto-rows: 1fr;
+    gap: 0.75rem;
   }
 
-  .hub-problem-card {
+  .hub-cat-grid > li {
     display: flex;
+    min-height: 0;
+  }
+
+  @media (min-width: 540px) {
+    .hub-cat-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+  }
+
+  @media (min-width: 960px) {
+    .hub-cat-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+  }
+
+  .hub-cat-card {
+    display: flex;
+    flex: 1;
+    width: 100%;
     flex-direction: column;
-    gap: 0.55rem;
-    min-height: 6.75rem;
-    padding: 0.7rem;
-    border: 1px solid rgb(var(--border) / 0.28);
-    border-radius: 10px;
+    align-items: flex-start;
+    gap: 0.45rem;
+    min-height: 7.5rem;
+    padding: 1.3rem 1.25rem;
+    border: 1px solid rgb(var(--border) / 0.22);
+    border-radius: var(--radius-md);
     background: rgb(var(--reading-paper));
+    box-shadow: 0 1px 2px rgb(var(--reading-ink) / 0.04);
     color: inherit;
     text-decoration: none;
-    transition: box-shadow 150ms ease, border-color 150ms ease, transform 150ms ease;
+    cursor: pointer;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease,
+      transform 150ms ease;
   }
 
-  .hub-problem-card:hover {
-    border-color: rgb(var(--border) / 0.5);
-    box-shadow: 0 3px 14px rgb(var(--reading-ink) / 0.06);
-    transform: translateY(-1px);
+  a.hub-cat-card:hover {
+    border-color: rgb(var(--border) / 0.28);
+    box-shadow: 0 4px 18px rgb(var(--reading-ink) / 0.05);
+    transform: translateY(-2px);
   }
 
-  .hub-problem-card:focus-visible {
+  a.hub-cat-card:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
   }
 
-  .hub-problem-card__visual {
-    position: relative;
-    display: block;
-    height: 2.5rem;
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .hub-problem-card__shape {
-    position: absolute;
-    inset: 0;
-  }
-
-  [data-thumb="piping"] .hub-problem-card__visual {
-    background:
-      radial-gradient(ellipse 55% 55% at 18% 75%, rgb(95 82 220 / 0.15) 0%, transparent 65%),
-      linear-gradient(145deg, rgb(238 235 255) 0%, rgb(252 252 255) 100%);
-  }
-
-  [data-thumb="bluetooth"] .hub-problem-card__visual {
-    background:
-      radial-gradient(ellipse 60% 50% at 60% 50%, rgb(14 165 233 / 0.13) 0%, transparent 65%),
-      linear-gradient(155deg, rgb(234 246 255) 0%, rgb(252 252 255) 100%);
-  }
-
-  [data-thumb="app"] .hub-problem-card__visual {
-    background:
-      radial-gradient(ellipse 50% 65% at 75% 30%, rgb(95 82 220 / 0.11) 0%, transparent 60%),
-      linear-gradient(160deg, rgb(240 239 255) 0%, rgb(252 253 255) 100%);
-  }
-
-  [data-thumb="filter"] .hub-problem-card__visual {
-    background:
-      radial-gradient(ellipse 65% 55% at 55% 60%, rgb(200 192 176 / 0.28) 0%, transparent 65%),
-      linear-gradient(130deg, rgb(252 250 245) 0%, rgb(255 253 250) 100%);
-  }
-
-  .hub-problem-card__title {
-    font-size: 0.84rem;
-    font-weight: 650;
-    letter-spacing: -0.025em;
-    line-height: 1.25;
-    color: rgb(var(--reading-ink));
-  }
-
-  /* ── Compact task list ── */
-  .hub-task-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    border: 1px solid rgb(var(--border) / 0.28);
-    border-radius: 10px;
-    overflow: hidden;
-    background: rgb(var(--reading-paper));
-  }
-
-  .hub-task-row {
-    border-bottom: 1px solid rgb(var(--border) / 0.18);
-  }
-
-  .hub-task-row:last-child {
-    border-bottom: 0;
-  }
-
-  .hub-task-row__link,
-  .hub-task-row__coming {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.85rem 1rem;
-    text-decoration: none;
-  }
-
-  .hub-task-row__link {
-    color: rgb(var(--reading-ink));
-    transition: background-color 100ms ease;
-  }
-
-  .hub-task-row__link:hover {
-    background: rgb(var(--border) / 0.18);
-  }
-
-  .hub-task-row__link:focus-visible {
-    outline: none;
-    box-shadow: inset 0 0 0 2px rgb(14 165 233 / 0.35);
-  }
-
-  .hub-task-row__coming {
+  .hub-cat-card--gap {
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .hub-task-row--gap .hub-task-row__label {
-    color: rgb(var(--reading-ink-secondary) / 0.6);
+  .hub-cat-card__title {
+    font-size: clamp(1.15rem, 3.2vw, 1.38rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: rgb(var(--reading-ink));
   }
 
-  .hub-task-row__label {
-    font-size: 0.9rem;
-    line-height: 1.4;
-    font-weight: 500;
+  .hub-cat-card--gap .hub-cat-card__title {
+    color: rgb(var(--reading-ink-secondary) / 0.78);
   }
 
-  .hub-task-row__arrow {
-    flex-shrink: 0;
-    color: rgb(var(--reading-accent-iris));
-    font-size: 0.9rem;
+  .hub-cat-card__hint {
+    margin-top: auto;
+    font-size: 0.82rem;
+    line-height: 1.42;
+    color: rgb(var(--reading-ink-secondary));
   }
 
-  .hub-task-row__badge {
-    flex-shrink: 0;
+  .hub-cat-card__badge {
+    margin-top: auto;
     font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: rgb(var(--muted));
-    border: 1px solid rgb(var(--border) / 0.4);
+    border: 1px solid rgb(var(--border) / 0.35);
     border-radius: 3px;
     padding: 0.12rem 0.38rem;
   }
 
-  /* ── Short guide rows ── */
-  .hub-guide-rows {
+  /* ── Sekundær guide-liste ── */
+  .hub-link-list {
     margin: 0;
     padding: 0;
     list-style: none;
-    display: grid;
-    gap: 0.4rem;
+    border: 1px solid rgb(var(--border) / 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgb(var(--reading-paper));
   }
 
-  .hub-guide-row {
+  .hub-link-row {
+    border-bottom: 1px solid rgb(var(--border) / 0.12);
+  }
+
+  .hub-link-row:last-child {
+    border-bottom: 0;
+  }
+
+  .hub-link-row__action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.82rem 0.95rem;
+    color: rgb(var(--reading-ink));
+    text-decoration: none;
+    transition: background-color 100ms ease;
+  }
+
+  .hub-link-row__action:hover {
+    background: var(--hub-hover);
+  }
+
+  .hub-link-row__action:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px rgb(14 165 233 / 0.35);
+  }
+
+  .hub-link-row__title {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .hub-link-row__arrow {
+    flex-shrink: 0;
+    color: rgb(var(--reading-ink-secondary) / 0.45);
+    font-size: 0.88rem;
+    transition: color 100ms ease, transform 100ms ease;
+  }
+
+  .hub-link-row__action:hover .hub-link-row__arrow {
+    color: rgb(var(--reading-ink-secondary));
+    transform: translateX(2px);
+  }
+
+  /* ── Eskalering ── */
+  .hub-block--escalation {
+    padding-top: 0.1rem;
+  }
+
+  .hub-escalation-card {
     display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 0.4rem 0.75rem;
-    align-items: baseline;
-    padding: 0.65rem 0.75rem;
-    border-radius: 8px;
-    background: rgb(var(--reading-paper));
+    grid-template-columns: 1fr auto;
+    gap: 0.3rem 0.75rem;
+    padding: 0.95rem 1rem;
     border: 1px solid rgb(var(--border) / 0.2);
+    border-radius: 10px;
+    background: rgb(var(--reading-paper));
     color: inherit;
     text-decoration: none;
-    transition: background-color 120ms ease, border-color 120ms ease;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease,
+      background-color 150ms ease;
   }
 
-  .hub-guide-row:hover {
-    background: rgb(var(--border) / 0.12);
-    border-color: rgb(var(--border) / 0.35);
+  .hub-escalation-card:hover {
+    background: var(--hub-hover);
+    border-color: rgb(var(--border) / 0.3);
+    box-shadow: 0 2px 8px rgb(var(--reading-ink) / 0.04);
   }
 
-  .hub-guide-row:focus-visible {
+  .hub-escalation-card:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
   }
 
-  .hub-guide-row__label {
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgb(var(--reading-accent-iris));
-  }
-
-  .hub-guide-row__title {
-    font-size: 0.88rem;
-    font-weight: 600;
+  .hub-escalation-card__title {
+    grid-column: 1;
+    font-size: 0.95rem;
+    font-weight: 650;
     letter-spacing: -0.02em;
     line-height: 1.3;
     color: rgb(var(--reading-ink));
   }
 
-  .hub-guide-row__arrow {
-    color: rgb(var(--muted));
-    font-size: 0.85rem;
+  .hub-escalation-card__deck {
+    grid-column: 1;
+    font-size: 0.84rem;
+    line-height: 1.48;
+    color: rgb(var(--reading-ink-secondary));
   }
 
-  /* ── Escalation ── */
-  .hub-block--escalation {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-    padding-bottom: 0.5rem;
+  .hub-escalation-card__arrow {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    color: rgb(var(--reading-ink-secondary) / 0.45);
   }
 
-  .hub-escalation-chat {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: 0.9rem;
-    font-weight: 650;
-    color: rgb(var(--reading-accent-iris));
+  .hub-escalation-fallback {
+    margin: 0.6rem 0 0;
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+
+  .hub-escalation-fallback a {
+    color: rgb(var(--reading-ink-secondary) / 0.85);
+    font-weight: 500;
     text-decoration: underline;
     text-underline-offset: 3px;
   }
 
-  .hub-escalation-chat:hover {
+  .hub-escalation-fallback a:hover {
     color: rgb(var(--reading-ink));
   }
 
-  .hub-escalation-chat:focus-visible {
+  .hub-escalation-fallback a:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
     border-radius: 4px;
-  }
-
-  .hub-escalation-audiograf {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 0.25rem 0.75rem;
-    padding: 0.9rem 1rem;
-    border: 1px solid rgb(var(--border) / 0.25);
-    border-radius: 10px;
-    background: rgb(252 250 247);
-    color: inherit;
-    text-decoration: none;
-    transition: background-color 120ms ease, border-color 120ms ease;
-  }
-
-  .hub-escalation-audiograf:hover {
-    background: rgb(250 247 242);
-    border-color: rgb(var(--border) / 0.4);
-  }
-
-  .hub-escalation-audiograf:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
-  }
-
-  .hub-escalation-audiograf__label {
-    grid-column: 1;
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgb(var(--muted));
-  }
-
-  .hub-escalation-audiograf__title {
-    grid-column: 1;
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    font-weight: 650;
-    letter-spacing: -0.025em;
-    line-height: 1.2;
-    color: rgb(var(--reading-ink));
-  }
-
-  .hub-escalation-audiograf__deck {
-    grid-column: 1;
-    font-size: 0.8rem;
-    line-height: 1.55;
-    color: rgb(var(--reading-ink-secondary));
-  }
-
-  .hub-escalation-audiograf__arrow {
-    grid-column: 2;
-    grid-row: 1 / span 3;
-    align-self: center;
-    color: rgb(var(--muted));
   }
 
   .sr-only {
@@ -645,37 +572,12 @@ const audiografEscalation = {
   }
 
   @media (max-width: 479px) {
-    .hub-problem-grid {
+    .hub-escalation-card {
       grid-template-columns: 1fr;
     }
 
-    .hub-escalation-audiograf {
-      grid-template-columns: 1fr;
-    }
-
-    .hub-escalation-audiograf__arrow {
+    .hub-escalation-card__arrow {
       display: none;
-    }
-  }
-
-  @media (min-width: 480px) {
-    .hub-container {
-      padding: 0 1.25rem 4.5rem;
-    }
-
-    .hub-ai-form {
-      flex-direction: row;
-      align-items: stretch;
-    }
-
-    .hub-ai-form__field {
-      flex: 1;
-    }
-  }
-
-  @media (min-width: 640px) {
-    .hub-container {
-      padding: 0 1.75rem 5.5rem;
     }
   }
 </style>

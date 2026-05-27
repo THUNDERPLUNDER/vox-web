@@ -56,10 +56,13 @@
 
 ### P1 — Layout jump / FOUC (kritisk, systemnivå)
 
-- **Symptom:** Vertikal «snap» ved hard refresh og globalnav-klikk. Innhold under fixed header tegnes først med feil offset, deretter på plass.
+- **Symptom (oppdatert Thomas QA, 2026-05):** Horisontal «snap» ved **lasting av enkelte sider** — ikke primært ved globalnav-klikk. `/no/` står rolig; `/no/hub/`, `/no/lyd-i-hverdagen/`, `/no/ordbok/`, `/no/om/` hopper sideveis (ca. like mye, noe variasjon). Tidligere også rapportert ved refresh/globalnav.
 - **Diagnose (R7):** Identisk FOUC-signatur i pre-#125H (`284037aa`) og #125H initial (`73b17e25`). **Ikke introdusert av #125H.**
-- **Hypotese:** Fixed header, nav-layout og content `padding-top` (`pt-28` / `sm:pt-30`) avhenger av Tailwind-bundle i `/_astro/*.css` som laster etter first paint.
-- **Behandles som:** Layout-systemproblem i `BaseLayout` / shell — **ikke** nav-label- eller IA-problem.
+- **Diagnose (R2):** Horisontal shift ved Tailwind preflight + container layout (body margin 8→0, headerInner 8→64px). R3 first-paint CSS ga bedre målinger, ingen synlig QA-forbedring — revertet.
+- **Tolkning (2026-05):** Peeker mot **route-spesifikk layout/CSS-arv**, ikke bare global header. Sammenlign `/no/` (stabil) vs hub/ordbok/om (hopper).
+- **Hypotese (shell):** Fixed header + content offset avhenger av Tailwind-bundle etter first paint.
+- **Hypotese (route):** Ulik page-scoped CSS, containerbredde, main/footer-forhold mellom flater.
+- **Behandles som:** Known issue / teknisk gjeld. **Ingen ny FOUC-fix uten eksplisitt mandat.** Observasjon tas med inn i #125I-D (felles page shell) og evt. senere teknisk spike.
 
 ### P2 — Forsiden visuelt umoden
 
@@ -152,6 +155,7 @@ Målet er at Viddel føles **trygg, aktuell og redaksjonelt moden** — ikke som
 
 - Samlet polish for **Hjelp** + **Lyd i hverdagen**.
 - Kort, spacing, visual hierarchy, surface-bruk — sett i sammenheng, ikke isolert per side.
+- **Layout-jump observasjon (Thomas QA):** Ta med felles page shell — samme containerbredde, mindre page-scoped historisk CSS, samme main/footer-forhold. Sammenlign stabile `/no/` vs hoppende hub/ordbok/om. **Ikke start dedikert FOUC-fix i hub-polish uten mandat** — alignment kan redusere symptom, men root cause kan kreve egen spike.
 
 ### #125I-E Article surface alignment
 
