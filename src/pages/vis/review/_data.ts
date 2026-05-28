@@ -175,7 +175,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "closed",
     stakeholderSafe: true,
     description:
-      "Bedre lyd R3: article-first magazine-frontpage — hovedsak først, aktuelle saker før tema-chips, ingen AI-seeds på landing. CBA R3, QA pending.",
+      "Bedre lyd R4: image-ready magazine-frontpage — dempet semantic hero, hovedsak bærer toppen, image slots dokumentert. QA pending.",
   },
   {
     id: "interaction-states",
