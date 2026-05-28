@@ -11,7 +11,8 @@
    #125G-R2: Frontpage mandate decision surface — mandate accepted, applied R3.
    #125H: Navigation / top menu pass — QA accepted, closed (IA/nav-sync). Layout jump → #125I.
    #125I-C: Frontpage/footer polish — QA accepted, closed.
-   #125I-D: Hub polish on /no/hub/ — QA accepted, closed (CBA v0.1).
+   #125I-D: Hub polish on /no/hjelp/ — QA accepted, closed (CBA v0.1).
+   #125J: Copy/nav/route pass — CBA v0.3 applied (Hjelp, Bedre lyd, Spør Viddel).
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
@@ -120,14 +121,15 @@ const typographyLabDirections = [
         <li><strong>Parent issue:</strong> #120 MVP Design Lock v0.1</li>
         <li><strong>Preview issue:</strong> #126 VIS design preview</li>
         <li><strong>Testes i preview:</strong> #123 Typography v0.1 · #122 Color tokens v0.1 · #124 Primitives v0.1</li>
-        <li><strong>Applied:</strong> #125D Hjelp A3 på <code>/no/hub/</code> — QA-godkjent, closed</li>
-        <li><strong>Applied:</strong> #125F Editorial hub på <code>/no/lyd-i-hverdagen/</code> — QA-godkjent, closed</li>
+        <li><strong>Applied:</strong> #125D Hjelp A3 på <code>/no/hjelp/</code> — QA-godkjent, closed</li>
+        <li><strong>Applied:</strong> #125F Editorial hub på <code>/no/bedre-lyd/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125G Forside/routing på <code>/no/</code> — QA-godkjent, closed</li>
         <li><strong>Applied:</strong> #125H Nav/toppmeny — QA-godkjent, closed (IA/nav-sync)</li>
         <li><strong>Applied:</strong> #125I-C Forside/footer polish på <code>/no/</code> — QA-godkjent, closed</li>
-        <li><strong>Applied:</strong> #125I-D Hub polish på <code>/no/hub/</code> — QA-godkjent, closed (CBA v0.1)</li>
+        <li><strong>Applied:</strong> #125I-D Hub polish på <code>/no/hjelp/</code> — QA-godkjent, closed (CBA v0.1)</li>
+        <li><strong>Applied:</strong> #125J Copy/nav/routes — CBA v0.3 (redirects fra gamle URL-er)</li>
         <li><strong>Parked:</strong> #125I-B Layout shift / FOUC — known issue</li>
-        <li><strong>Senere:</strong> hub ikonpass · composer-paritet · footer/shell · #125J Copy/nav pass</li>
+        <li><strong>Senere:</strong> ikonpass · composer-paritet · footer/shell · viddel.no domain</li>
       </ul>
     </section>
 
@@ -451,11 +453,11 @@ const typographyLabDirections = [
           <strong>Status:</strong> QA accepted — CBA v0.1 / closed
         </p>
         <p class="sprint-preview__typo-sans">
-          R8 godkjent: hvite kategori-kort, editorial hover (shadow + lift), #F5F6F5 kun på liste-rader.
-          Follow-ups: ikonpass, composer-paritet, footer/shell, FOUC (#125I-B), copy/nav (#125J).
+          #125J: Hjelp → <code>/no/hjelp/</code>, Bedre lyd → <code>/no/bedre-lyd/</code>, header-CTA Spør Viddel →{" "}
+          <code>/no/chat/</code>. Gamle ruter redirectes. Domeneflytt viddel.no ikke gjort.
         </p>
-        <a href={`${base}no/hub/`} class="sprint-preview__typo-link">
-          Verify hub polish on production →
+        <a href={`${base}no/hjelp/`} class="sprint-preview__typo-link">
+          Verify Hjelp on production →
         </a>
       </div>
     </section>

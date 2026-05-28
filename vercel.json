@@ -1,4 +1,26 @@
 {
+  "redirects": [
+    {
+      "source": "/no/hub",
+      "destination": "/no/hjelp",
+      "permanent": true
+    },
+    {
+      "source": "/no/hub/",
+      "destination": "/no/hjelp/",
+      "permanent": true
+    },
+    {
+      "source": "/no/lyd-i-hverdagen",
+      "destination": "/no/bedre-lyd",
+      "permanent": true
+    },
+    {
+      "source": "/no/lyd-i-hverdagen/",
+      "destination": "/no/bedre-lyd/",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/",

@@ -60,7 +60,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
   {
     id: "hjelp-a3-production",
     title: "Hjelp A3 production slice",
-    href: "/no/hub/",
+    href: "/no/hjelp/",
     sprint: "2026-W21",
     issue: "#125D",
     type: "reference",
@@ -103,7 +103,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "closed",
     stakeholderSafe: true,
     description:
-      "IA/nav-sync QA-godkjent — Forside, Hjelp, Lyd i hverdagen, Ordbok, Om + Start samtale CTA. Footer synket. Layout jump/FOUC known issue → #125I.",
+      "IA/nav-sync QA-godkjent (#125H). #125J: Bedre lyd, /no/hjelp/, Spør Viddel CTA → /no/chat/. Footer synket.",
   },
   {
     id: "layout-stability-fouc",
@@ -132,14 +132,26 @@ export const reviewRegistry: ReviewRegistryItem[] = [
   {
     id: "hub-polish-125i-d",
     title: "Hub polish",
-    href: "/no/hub/",
+    href: "/no/hjelp/",
     sprint: "2026-W21",
     issue: "#125I-D",
     type: "reference",
     status: "closed",
     stakeholderSafe: true,
     description:
-      "QA-godkjent — CBA v0.1 / god nok for nå (R1–R8). Editorial card-hover på kategori-kort; #F5F6F5 kun liste-rader. Follow-ups: ikonpass, composer-paritet, footer/shell, FOUC (#125I-B), copy/nav (#125J).",
+      "QA-godkjent — CBA v0.1 / god nok for nå (R1–R8). Route: /no/hjelp/ (#125J). Follow-ups: ikonpass, composer-paritet, footer/shell, FOUC (#125I-B).",
+  },
+  {
+    id: "copy-nav-routes-125j",
+    title: "Copy / nav / routes",
+    href: "/no/hjelp/",
+    sprint: "2026-W21",
+    issue: "#125J",
+    type: "reference",
+    status: "closed",
+    stakeholderSafe: true,
+    description:
+      "CBA v0.3: Hjelp /no/hjelp/, Bedre lyd /no/bedre-lyd/, Spør Viddel → /no/chat/. Gamle ruter redirectes. Domeneflytt viddel.no ikke gjort.",
   },
   {
     id: "forside-routing",
@@ -151,19 +163,19 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "closed",
     stakeholderSafe: true,
     description:
-      "Forside/routing QA-godkjent som avklaringsflate — Hjelp, Lyd i hverdagen og Hørehjelpen fast-track. Neste: nav/toppmeny.",
+      "Forside/routing QA-godkjent — Hjelp, Bedre lyd og Spør Viddel fast-track (#125J routes).",
   },
   {
     id: "lyd-i-hverdagen-production",
-    title: "Lyd i hverdagen production slice",
-    href: "/no/lyd-i-hverdagen/",
+    title: "Bedre lyd production slice",
+    href: "/no/bedre-lyd/",
     sprint: "2026-W21",
     issue: "#125F",
     type: "reference",
     status: "closed",
     stakeholderSafe: true,
     description:
-      "Editorial production slice QA-godkjent på /no/lyd-i-hverdagen/. Videre polish venter til forside/routing og helhetsjustering.",
+      "Editorial production slice QA-godkjent på /no/bedre-lyd/ (tidligere /no/lyd-i-hverdagen/). Label: Bedre lyd.",
   },
   {
     id: "interaction-states",
