@@ -1,7 +1,7 @@
 ---
-/* CONTRACT: Editorial hub — «Bedre lyd» #125J / editorial R2.
-   Situation-first: hero → situasjonsinnganger → utvalgte artikler → bro til Hjelp.
-   Ingen AI-seeds på landing. Surface-paritet med /no/hjelp/ (46rem).
+/* CONTRACT: Editorial magazine frontpage — «Bedre lyd» #125J / editorial R3.
+   Article-first: hero → lead article → current stories → theme chips → help bridge.
+   No AI seeds on landing; no global nav/footer/routes changes.
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/nav/Footer.astro";
@@ -10,55 +10,73 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
 const pageTitle = "Bedre lyd";
 const pageIntro =
-  "Grep, forklaringer og historier som hjelper deg å få mer ut av lyden rundt deg.";
+  "Historier, grep og forklaringer som hjelper deg å få mer ut av lyden rundt deg.";
 
-const situationGateways: Array<{ title: string; hint: string; href: string }> = [
+const leadArticle = {
+  series: "Lyd og energi",
+  title: "Når lyden blir for mye",
+  deck:
+    "Lyttetretthet er mer enn en dårlig dag. Slik kan du kjenne den igjen og gjøre hverdagen lettere.",
+  href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
+};
+
+const currentStories: Array<{ series: string; title: string; deck: string; href: string }> = [
   {
-    title: "I selskap og restaurant",
-    hint: "Middag, støy og samtaler uten å gi opp sosialt liv.",
-    href: "/no/artikkel/for-restaurant-eller-stort-selskap",
-  },
-  {
-    title: "Med TV, mobil og bil",
-    hint: "Små grep når lyden kommer fra skjerm, telefon eller kjøretur.",
-    href: "/no/artikkel/slik-tar-du-praten",
-  },
-  {
-    title: "Når lyden blir for mye",
-    hint: "Lyttetrøtthet, pauser og tegn på at dagen blir tung.",
-    href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
-  },
-  {
-    title: "Små lyder og nærvær",
-    hint: "Musikk, fugler, stemmer og det som gjør verden nær.",
+    series: "Lydglede",
+    title: "Små lyder og følelsen av å være påkoblet",
+    deck: "Fugler, regn, musikk og stemmer — og hvordan du kan legge merke til dem.",
     href: "/no/artikkel/fra-skuff-til-daglig-bruk",
   },
-];
-
-const selectedArticles: Array<{ series: string; title: string; deck: string; href: string }> = [
   {
-    series: "Erfaring",
-    title: "Slik løste jeg middagsbordet",
+    series: "Sosialt",
+    title: "Hvorfor selskap fortsatt kan være krevende",
     deck: "Erfaringer fra et støyende bord — uten å gi opp sosialt liv.",
     href: "/no/artikkel/for-restaurant-eller-stort-selskap",
   },
   {
-    series: "Normalt?",
-    title: "Hva som er normalt de første ukene",
-    deck: "Forventninger, tilpasning og tegn på at ting går riktig vei.",
-    href: "/no/artikkel/de-forste-ukene-med-horeapparat",
+    series: "Lydglede",
+    title: "Musikk med høreapparat",
+    deck: "Små grep for å få mer ut av musikk, podkast og lyd du liker.",
+    href: "/no/artikkel/fra-skuff-til-daglig-bruk",
   },
   {
-    series: "Relasjon",
-    title: "Slik kan du be kollegaene dine hjelpe",
-    deck: "Ord og små grep som gjør hverdagen på jobb enklere.",
+    series: "Hverdagsteknikk",
+    title: "TV, mobil og bil: når lyden går feil vei",
+    deck: "Når lydkilden flytter seg, kan små vaner gjøre det lettere å følge med.",
     href: "/no/artikkel/slik-tar-du-praten",
   },
   {
-    series: "Pårørende",
-    title: "Støtte uten å ta over samtalen",
-    deck: "Hvordan hjelpe hjemme uten å presse.",
-    href: "/no/artikkel/stotte-uten-a-ta-over-samtalen",
+    series: "Ny start",
+    title: "De første ukene med høreapparat",
+    deck: "Hva som er vanlig, hva som tar tid, og hvordan du kan gi lyden en sjanse.",
+    href: "/no/artikkel/de-forste-ukene-med-horeapparat",
+  },
+];
+
+const themeChips = [
+  "Støy og samtaler",
+  "Musikk og små lyder",
+  "TV, mobil og bil",
+  "Energi og lyttetretthet",
+  "Hjemme med andre",
+  "Ny med høreapparat",
+];
+
+const topicOverview: Array<{ title: string; deck: string; href: string }> = [
+  {
+    title: "Lyd i sosiale rom",
+    deck: "Når flere snakker samtidig, og du vil være med uten å bli utslitt.",
+    href: "/no/artikkel/for-restaurant-eller-stort-selskap",
+  },
+  {
+    title: "Lydglede hjemme",
+    deck: "Musikk, TV, små lyder og felles vaner rundt lyd.",
+    href: "/no/artikkel/fra-skuff-til-daglig-bruk",
+  },
+  {
+    title: "Energi gjennom dagen",
+    deck: "Pauser, forventninger og tegn på at lytting krever mer enn vanlig.",
+    href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
   },
 ];
 ---
@@ -68,8 +86,8 @@ const selectedArticles: Array<{ series: string; title: string; deck: string; hre
 
   <main class="bl-page" data-bedre-lyd>
     <div class="bl-container">
-      <div class="bl-surface">
-        <header class="bl-header">
+      <article class="bl-surface">
+        <header class="bl-hero">
           <nav class="bl-breadcrumb" aria-label="Du er her">
             <a href="/no">Forside</a>
             <span aria-hidden="true">/</span>
@@ -79,47 +97,61 @@ const selectedArticles: Array<{ series: string; title: string; deck: string; hre
           <p class="bl-lead">{pageIntro}</p>
         </header>
 
-        <div class="bl-body">
-          <section class="bl-block" aria-labelledby="situations-heading">
-            <h2 id="situations-heading" class="bl-block__title">Velg en situasjon</h2>
-            <p class="bl-block__hint">Start der du er — finn grep og forklaringer for hverdagslytting.</p>
-            <ul class="bl-situation-grid" role="list">
-              {situationGateways.map((item) => (
-                <li>
-                  <a href={item.href} class="bl-situation-card">
-                    <span class="bl-situation-card__title">{item.title}</span>
-                    <span class="bl-situation-card__hint">{item.hint}</span>
-                    <span class="bl-situation-card__arrow" aria-hidden="true">→</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
+        <section class="bl-lead-story" aria-labelledby="lead-story-heading">
+          <p class="bl-eyebrow">{leadArticle.series}</p>
+          <a href={leadArticle.href} class="bl-lead-card">
+            <span class="bl-lead-card__body">
+              <h2 id="lead-story-heading">{leadArticle.title}</h2>
+              <span class="bl-lead-card__deck">{leadArticle.deck}</span>
+            </span>
+            <span class="bl-lead-card__meta" aria-hidden="true">Les saken →</span>
+          </a>
+        </section>
 
-          <section class="bl-block" aria-labelledby="articles-heading">
-            <h2 id="articles-heading" class="bl-block__title">Utvalgte artikler</h2>
-            <ul class="bl-article-list" role="list">
-              {selectedArticles.map((article) => (
-                <li class="bl-article-row">
-                  <a href={article.href} class="bl-article-row__action">
-                    <span class="bl-article-row__series">{article.series}</span>
-                    <span class="bl-article-row__title">{article.title}</span>
-                    <span class="bl-article-row__deck">{article.deck}</span>
-                    <span class="bl-article-row__arrow" aria-hidden="true">→</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
+        <section class="bl-block" aria-labelledby="current-heading">
+          <h2 id="current-heading" class="bl-block__title">Flere aktuelle saker</h2>
+          <ul class="bl-story-grid" role="list">
+            {currentStories.map((story) => (
+              <li>
+                <a href={story.href} class="bl-story-card">
+                  <span class="bl-story-card__series">{story.series}</span>
+                  <span class="bl-story-card__title">{story.title}</span>
+                  <span class="bl-story-card__deck">{story.deck}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
 
-          <footer class="bl-help-link">
-            <p>
-              Trenger du konkret hjelp nå?
-              <a href="/no/hjelp/">Gå til Hjelp</a>
-            </p>
-          </footer>
-        </div>
-      </div>
+        <section class="bl-block bl-block--themes" aria-labelledby="themes-heading">
+          <h2 id="themes-heading" class="bl-block__title">Utforsk tema</h2>
+          <ul class="bl-chip-list" role="list">
+            {themeChips.map((chip) => (
+              <li><span class="bl-chip">{chip}</span></li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="bl-block bl-block--overview" aria-labelledby="overview-heading">
+          <h2 id="overview-heading" class="bl-block__title">Når du vil lese videre</h2>
+          <div class="bl-topic-list">
+            {topicOverview.map((topic) => (
+              <a href={topic.href} class="bl-topic-row">
+                <span class="bl-topic-row__title">{topic.title}</span>
+                <span class="bl-topic-row__deck">{topic.deck}</span>
+                <span class="bl-topic-row__arrow" aria-hidden="true">→</span>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <footer class="bl-help-link">
+          <p>
+            Trenger du konkret hjelp nå?
+            <a href="/no/hjelp/">Gå til Hjelp</a>
+          </p>
+        </footer>
+      </article>
     </div>
   </main>
 
@@ -127,14 +159,10 @@ const selectedArticles: Array<{ series: string; title: string; deck: string; hre
 </BaseLayout>
 
 <style>
-  [data-bedre-lyd] {
-    --bl-hover: rgb(var(--reading-paper));
-  }
-
   .bl-page {
+    min-height: 100vh;
     background: rgb(var(--article-page-canvas));
     padding: 0.5rem 0 clamp(3rem, 6vw, 4rem);
-    min-height: 100vh;
   }
 
   @media (min-width: 640px) {
@@ -155,25 +183,20 @@ const selectedArticles: Array<{ series: string; title: string; deck: string; hre
   }
 
   .bl-surface {
-    max-width: min(100%, 46rem);
+    box-sizing: border-box;
+    max-width: min(100%, 58rem);
     margin: 0 auto;
-    background: rgb(var(--reading-paper));
     border-radius: var(--radius-md);
-    padding: 2.5rem 1.75rem;
+    background: rgb(var(--reading-paper));
     color: rgb(var(--reading-ink));
-  }
-
-  @media (min-width: 640px) {
-    .bl-surface {
-      padding: 3rem 2.5rem;
-    }
+    padding: clamp(2.35rem, 5vw, 3.4rem) clamp(1.5rem, 4vw, 3rem);
   }
 
   .bl-breadcrumb {
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.85rem;
     font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.12em;
@@ -190,78 +213,141 @@ const selectedArticles: Array<{ series: string; title: string; deck: string; hre
   [data-bedre-lyd] h1 {
     margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(2rem, 5.8vw, 2.6rem);
+    font-size: clamp(2.35rem, 6.2vw, 4.15rem);
     font-weight: 650;
-    line-height: 1.05;
-    letter-spacing: -0.055em;
+    line-height: 0.98;
+    letter-spacing: -0.065em;
     text-wrap: balance;
     color: rgb(var(--reading-ink));
   }
 
   .bl-lead {
+    max-width: 40rem;
     margin: 0.85rem 0 0;
-    max-width: 36rem;
-    font-size: clamp(1rem, 2.2vw, 1.08rem);
-    line-height: 1.6;
+    font-size: clamp(1rem, 2.2vw, 1.16rem);
+    line-height: 1.58;
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .bl-body {
-    padding-top: clamp(1.35rem, 3vw, 1.75rem);
+  .bl-lead-story {
+    margin-top: clamp(1.85rem, 5vw, 3rem);
+    padding-top: clamp(1.25rem, 3.4vw, 1.8rem);
+    border-top: 1px solid rgb(var(--border) / 0.16);
   }
 
-  .bl-block {
-    padding: clamp(1.35rem, 3.5vw, 1.85rem) 0;
-    border-top: 1px solid rgb(var(--border) / 0.14);
-  }
-
-  .bl-block:first-child {
-    border-top: 0;
-    padding-top: 0;
-  }
-
+  .bl-eyebrow,
   .bl-block__title {
     margin: 0;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgb(var(--reading-ink-secondary));
+    color: rgb(var(--reading-accent-iris));
   }
 
-  .bl-block__hint {
-    margin: 0.45rem 0 1rem;
-    max-width: 34rem;
-    font-size: 0.88rem;
-    line-height: 1.55;
-    color: rgb(var(--reading-ink-secondary));
+  .bl-lead-card {
+    box-sizing: border-box;
+    max-width: 100%;
+    min-width: 0;
+    display: grid;
+    gap: 1rem;
+    margin-top: 0.65rem;
+    padding: clamp(1.35rem, 4vw, 2rem);
+    border: 1px solid rgb(var(--border) / 0.16);
+    border-radius: calc(var(--radius-md) + 4px);
+    background:
+      linear-gradient(135deg, rgb(19 77 106 / 0.045), transparent 42%),
+      rgb(var(--reading-paper));
+    box-shadow: 0 8px 30px rgb(var(--reading-ink) / 0.045);
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      transform 160ms ease;
   }
 
-  .bl-situation-grid {
+  .bl-lead-card:hover {
+    border-color: rgb(var(--border) / 0.28);
+    box-shadow: 0 12px 36px rgb(var(--reading-ink) / 0.065);
+    transform: translateY(-1px);
+  }
+
+  .bl-lead-card:focus-visible,
+  .bl-story-card:focus-visible,
+  .bl-topic-row:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
+  }
+
+  .bl-lead-card h2 {
+    min-width: 0;
+    max-width: 42rem;
     margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.85rem, 5vw, 3rem);
+    font-weight: 650;
+    line-height: 1.02;
+    letter-spacing: -0.06em;
+    text-wrap: balance;
+    color: rgb(var(--reading-ink));
+  }
+
+  .bl-lead-card__deck {
+    display: block;
+    min-width: 0;
+    max-width: 38rem;
+    margin-top: 0.75rem;
+    font-size: clamp(0.96rem, 2.2vw, 1.08rem);
+    line-height: 1.58;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .bl-lead-card__meta {
+    align-self: end;
+    font-size: 0.82rem;
+    font-weight: 650;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .bl-block {
+    margin-top: clamp(2rem, 5vw, 3rem);
+    padding-top: clamp(1.25rem, 3vw, 1.65rem);
+    border-top: 1px solid rgb(var(--border) / 0.14);
+  }
+
+  .bl-block__title {
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .bl-story-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+    margin: 0.85rem 0 0;
     padding: 0;
     list-style: none;
-    display: grid;
-    gap: 0.75rem;
   }
 
-  @media (min-width: 640px) {
-    .bl-situation-grid {
+  @media (min-width: 720px) {
+    .bl-story-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.85rem;
+      gap: 1rem;
     }
   }
 
-  .bl-situation-card {
+  .bl-story-card {
+    box-sizing: border-box;
+    min-width: 0;
     display: flex;
+    min-height: 9rem;
+    height: 100%;
     flex-direction: column;
     gap: 0.4rem;
-    min-height: 6.5rem;
-    padding: 1.15rem 1.2rem 1.1rem;
-    border: 1px solid rgb(var(--border) / 0.22);
+    padding: 1.1rem 1.15rem;
+    border: 1px solid rgb(var(--border) / 0.14);
     border-radius: var(--radius-md);
     background: rgb(var(--reading-paper));
-    box-shadow: 0 1px 2px rgb(var(--reading-ink) / 0.04);
     color: inherit;
     text-decoration: none;
     transition:
@@ -270,116 +356,108 @@ const selectedArticles: Array<{ series: string; title: string; deck: string; hre
       transform 150ms ease;
   }
 
-  .bl-situation-card:hover {
+  .bl-story-card:hover {
     border-color: rgb(var(--border) / 0.28);
     box-shadow: 0 4px 18px rgb(var(--reading-ink) / 0.05);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 
-  .bl-situation-card:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
-  }
-
-  .bl-situation-card__title {
-    padding-right: 1.25rem;
-    font-family: var(--font-display);
-    font-size: clamp(1.05rem, 2.8vw, 1.2rem);
-    font-weight: 650;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    color: rgb(var(--reading-ink));
-  }
-
-  .bl-situation-card__hint {
-    font-size: 0.84rem;
-    line-height: 1.45;
-    color: rgb(var(--reading-ink-secondary));
-  }
-
-  .bl-situation-card__arrow {
-    margin-top: auto;
-    font-size: 0.95rem;
-    color: rgb(var(--reading-ink-secondary) / 0.65);
-  }
-
-  .bl-article-list {
-    margin: 0.65rem 0 0;
-    padding: 0;
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    border: 1px solid rgb(var(--border) / 0.16);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-  }
-
-  .bl-article-row {
-    border-bottom: 1px solid rgb(var(--border) / 0.12);
-  }
-
-  .bl-article-row:last-child {
-    border-bottom: 0;
-  }
-
-  .bl-article-row__action {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto auto;
-    gap: 0.2rem 0.75rem;
-    padding: 0.95rem 1rem;
-    color: inherit;
-    text-decoration: none;
-    background: rgb(var(--reading-paper));
-    transition: background-color 150ms ease;
-  }
-
-  .bl-article-row__action:hover {
-    background: rgb(var(--surface-subtle) / 0.35);
-  }
-
-  .bl-article-row__action:focus-visible {
-    outline: none;
-    box-shadow: inset 0 0 0 2px rgb(14 165 233 / 0.32);
-  }
-
-  .bl-article-row__series {
-    grid-column: 1;
+  .bl-story-card__series {
     font-size: 0.6rem;
-    font-weight: 700;
+    font-weight: 750;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: rgb(var(--reading-accent-iris));
   }
 
-  .bl-article-row__title {
-    grid-column: 1;
+  .bl-story-card__title {
+    overflow-wrap: anywhere;
     font-family: var(--font-display);
-    font-size: 0.98rem;
+    font-size: clamp(1.05rem, 2.5vw, 1.25rem);
     font-weight: 650;
-    letter-spacing: -0.025em;
-    line-height: 1.25;
+    letter-spacing: -0.035em;
+    line-height: 1.18;
     color: rgb(var(--reading-ink));
   }
 
-  .bl-article-row__deck {
+  .bl-story-card__deck {
+    overflow-wrap: anywhere;
+    font-size: 0.84rem;
+    line-height: 1.48;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .bl-chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.85rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .bl-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    border: 1px solid rgb(var(--border) / 0.18);
+    border-radius: 999px;
+    padding: 0.45rem 0.75rem;
+    background: rgb(var(--reading-paper));
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .bl-topic-list {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 0.85rem;
+  }
+
+  .bl-topic-row {
+    box-sizing: border-box;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.15rem 0.85rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid rgb(var(--border) / 0.12);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .bl-topic-row:last-child {
+    border-bottom: 0;
+  }
+
+  .bl-topic-row__title {
+    grid-column: 1;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    color: rgb(var(--reading-ink));
+  }
+
+  .bl-topic-row__deck {
     grid-column: 1;
     font-size: 0.82rem;
     line-height: 1.45;
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .bl-article-row__arrow {
+  .bl-topic-row__arrow {
     grid-column: 2;
-    grid-row: 1 / span 3;
+    grid-row: 1 / span 2;
     align-self: center;
-    font-size: 0.95rem;
     color: rgb(var(--reading-ink-secondary) / 0.65);
   }
 
   .bl-help-link {
-    padding: 1.35rem 0 0.25rem;
+    margin-top: clamp(2rem, 5vw, 3rem);
+    padding-top: 1.25rem;
     border-top: 1px solid rgb(var(--border) / 0.14);
   }
 
@@ -392,12 +470,29 @@ const selectedArticles: Array<{ series: string; title: string; deck: string; hre
 
   .bl-help-link a {
     margin-left: 0.25rem;
-    font-weight: 600;
+    font-weight: 650;
     color: rgb(var(--reading-ink));
     text-underline-offset: 2px;
   }
 
   .bl-help-link a:hover {
     color: rgb(var(--reading-accent-iris));
+  }
+
+  @media (min-width: 760px) {
+    .bl-lead-card {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .bl-surface {
+      padding-inline: 1.35rem;
+    }
+
+    .bl-story-card {
+      min-height: auto;
+    }
   }
 </style>
