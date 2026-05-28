@@ -1,7 +1,6 @@
 ---
-/* CONTRACT: Editorial hub (E2) — «Bedre lyd» #125F / #125J.
-   Situasjonskort → featured → artikkelkort → AI seeds. Motflate til Hjelp A3.
-   Hero uten metaintro — innganger og kort bærer innholdet.
+/* CONTRACT: Editorial hub — «Bedre lyd» #125F / #125J / editorial R1.
+   Aktuelt først → AI seeds → temakategorier → bro til Hjelp. Motflate til /no/hjelp/.
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/nav/Footer.astro";
@@ -10,49 +9,18 @@ import "../../styles/r1-dialog-article.css";
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
 const pageTitle = "Bedre lyd";
-
-const situations: Array<{ label: string; hint: string; href: string }> = [
-  {
-    label: "Ny med høreapparat",
-    hint: "Forventninger, tilvenning og de første ukene.",
-    href: "/no/artikkel/de-forste-ukene-med-horeapparat",
-  },
-  {
-    label: "Små lyder og lydglede",
-    hint: "Fugler, regn, musikk, stemmer og det som gjør verden nær.",
-    href: "/no/artikkel/fra-skuff-til-daglig-bruk",
-  },
-  {
-    label: "Sosialt liv og samtaler",
-    hint: "Middag, restaurant, familie og støy.",
-    href: "/no/artikkel/for-restaurant-eller-stort-selskap",
-  },
-  {
-    label: "Lyd og energi",
-    hint: "Når hjernen blir sliten, og hvordan du kan ta pauser.",
-    href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
-  },
-  {
-    label: "På jobb",
-    hint: "Møter, Teams, kollegaer og konsentrasjon.",
-    href: "/no/artikkel/slik-tar-du-praten",
-  },
-  {
-    label: "For pårørende",
-    hint: "Hvordan støtte uten å presse.",
-    href: "/no/artikkel/stotte-uten-a-ta-over-samtalen",
-  },
-];
+const pageIntro =
+  "Små grep, bedre situasjoner og mer av lyden som gjør hverdagen tydelig.";
 
 const featuredStory = {
   eyebrow: "Lyd og energi",
-  title: "Den usynlige utmattelsen: hvorfor du er helt skutt etter jobb",
+  title: "Når lyden blir for mye",
   deck:
     "Lyttetrøtthet er mer enn en dårlig dag. Slik kan du kjenne den igjen og gjøre hverdagen lettere.",
   href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
 };
 
-const articles: Array<{
+const currentArticles: Array<{
   series: string;
   title: string;
   deck: string;
@@ -60,39 +28,65 @@ const articles: Array<{
   href: string;
 }> = [
   {
-    series: "Erfaring",
-    title: "Slik løste jeg middagsbordet",
+    series: "Lydglede",
+    title: "Små lyder og følelsen av å være påkoblet",
+    deck: "Fugler, regn, musikk og stemmer — og hvordan du kan legge merke til dem.",
+    visual: "joy",
+    href: "/no/artikkel/fra-skuff-til-daglig-bruk",
+  },
+  {
+    series: "Sosialt",
+    title: "Hvorfor selskap fortsatt kan være krevende",
     deck: "Erfaringer fra et støyende bord — uten å gi opp sosialt liv.",
     visual: "social",
     href: "/no/artikkel/for-restaurant-eller-stort-selskap",
   },
   {
-    series: "Normalt?",
-    title: "Hva som er normalt de første ukene",
-    deck: "Forventninger, tilpasning og tegn på at ting går riktig vei.",
-    visual: "start",
-    href: "/no/artikkel/de-forste-ukene-med-horeapparat",
-  },
-  {
-    series: "Energi",
-    title: "Når lyden blir for mye",
-    deck: "Hvorfor dagen kan føles tyngre — og hva som hjelper.",
-    visual: "energy",
-    href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
-  },
-  {
-    series: "Relasjon",
-    title: "Slik kan du be kollegaene dine hjelpe",
-    deck: "Ord og små grep som gjør hverdagen på jobb enklere.",
-    visual: "work",
-    href: "/no/artikkel/slik-tar-du-praten",
-  },
-  {
     series: "Lydglede",
-    title: "Små lyder som gjør verden nær",
-    deck: "Fugler, regn, musikk og stemmer — og hvordan du kan legge merke til dem.",
+    title: "Musikk med høreapparat",
+    deck: "Små grep for å få mer ut av musikk, podkast og lyd du liker.",
     visual: "joy",
     href: "/no/artikkel/fra-skuff-til-daglig-bruk",
+  },
+];
+
+const themeGroups: Array<{
+  title: string;
+  hint: string;
+  links: Array<{ label: string; href: string }>;
+}> = [
+  {
+    title: "Situasjoner",
+    hint: "Selskap, restaurant, møter, bil og TV",
+    links: [
+      { label: "Selskap og restaurant", href: "/no/artikkel/for-restaurant-eller-stort-selskap" },
+      { label: "Møter og samtaler på jobb", href: "/no/artikkel/slik-tar-du-praten" },
+      { label: "De første ukene med høreapparat", href: "/no/artikkel/de-forste-ukene-med-horeapparat" },
+    ],
+  },
+  {
+    title: "Lydkvalitet",
+    hint: "Musikk, tale, støy og små lyder",
+    links: [
+      { label: "Små lyder som gjør verden nær", href: "/no/artikkel/fra-skuff-til-daglig-bruk" },
+      { label: "Tale og tilvenning", href: "/no/artikkel/de-forste-ukene-med-horeapparat" },
+    ],
+  },
+  {
+    title: "Energi og nærvær",
+    hint: "Lytteutmattelse, ro, fokus og sosial deltakelse",
+    links: [
+      { label: "Når lyden blir for mye", href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen" },
+      { label: "Støtte uten å ta over samtalen", href: "/no/artikkel/stotte-uten-a-ta-over-samtalen" },
+    ],
+  },
+  {
+    title: "Hjemme med andre",
+    hint: "TV, samtaler og felles lydvaner",
+    links: [
+      { label: "Slik løste jeg middagsbordet", href: "/no/artikkel/for-restaurant-eller-stort-selskap" },
+      { label: "For pårørende hjemme", href: "/no/artikkel/stotte-uten-a-ta-over-samtalen" },
+    ],
   },
 ];
 
@@ -115,27 +109,14 @@ const editorialSeeds = [
           <span aria-hidden="true">/</span>
           <span>{pageTitle}</span>
         </nav>
-        <p class="ed-kicker">{pageTitle}</p>
         <h1>{pageTitle}</h1>
+        <p class="ed-lead">{pageIntro}</p>
       </header>
 
       <div class="ed-core">
 
-        <section class="ed-block ed-block--situations" aria-label="Temaer i hverdagen">
-          <ul class="ed-situation-grid" role="list">
-            {situations.map((situation) => (
-              <li>
-                <a href={situation.href} class="ed-situation-card">
-                  <span class="ed-situation-card__label">{situation.label}</span>
-                  <span class="ed-situation-card__hint">{situation.hint}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section class="ed-block ed-block--featured" aria-labelledby="featured-heading">
-          <h2 id="featured-heading" class="ed-block__title">Utvalgt nå</h2>
+        <section class="ed-block ed-block--current" aria-labelledby="current-heading">
+          <h2 id="current-heading" class="ed-block__title">Aktuelt</h2>
           <a href={featuredStory.href} class="ed-featured">
             <div class="ed-featured__media" aria-hidden="true"></div>
             <div class="ed-featured__body">
@@ -144,12 +125,8 @@ const editorialSeeds = [
               <p class="ed-featured__deck">{featuredStory.deck}</p>
             </div>
           </a>
-        </section>
-
-        <section class="ed-block" aria-labelledby="articles-heading">
-          <h2 id="articles-heading" class="ed-block__title">Artikler og serier</h2>
-          <ul class="ed-article-grid" role="list">
-            {articles.map((article) => (
+          <ul class="ed-current-grid" role="list">
+            {currentArticles.map((article) => (
               <li>
                 <a href={article.href} class="ed-article-card" data-visual={article.visual}>
                   <span class="ed-article-card__visual" aria-hidden="true"></span>
@@ -177,7 +154,7 @@ const editorialSeeds = [
                     {editorialSeeds.map((seed) => (
                       <li class="inline-chat-shell__seed-item">
                         <a
-                          href={`/no/chat?seed=${encodeURIComponent(seed)}&from=lyd-i-hverdagen`}
+                          href={`/no/chat?seed=${encodeURIComponent(seed)}&from=bedre-lyd`}
                           class="inline-chat-shell__seed-btn inline-chat-shell__seed-row"
                         >
                           <span class="inline-chat-shell__seed-question">{seed}</span>
@@ -191,9 +168,32 @@ const editorialSeeds = [
           </div>
         </section>
 
+        <section class="ed-block ed-block--themes" aria-labelledby="themes-heading">
+          <h2 id="themes-heading" class="ed-block__title">Utforsk etter tema</h2>
+          <p class="ed-themes-intro">Finn artikler og grep etter situasjon — uten å starte med problemløsning.</p>
+          <div class="ed-theme-stack">
+            {themeGroups.map((group) => (
+              <article class="ed-theme-group">
+                <h3 class="ed-theme-group__title">{group.title}</h3>
+                <p class="ed-theme-group__hint">{group.hint}</p>
+                <ul class="ed-theme-gateway-list" role="list">
+                  {group.links.map((link) => (
+                    <li>
+                      <a href={link.href} class="ed-theme-gateway">
+                        <span class="ed-theme-gateway__label">{link.label}</span>
+                        <span class="ed-theme-gateway__arrow" aria-hidden="true">→</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <footer class="ed-help-link">
           <p>
-            Trenger du rask problemløsning?
+            Trenger du konkret hjelp nå?
             <a href="/no/hjelp/">Gå til Hjelp</a>
           </p>
         </footer>
@@ -260,6 +260,14 @@ const editorialSeeds = [
     color: rgb(var(--reading-ink));
   }
 
+  .ed-lead {
+    margin: 0.85rem 0 0;
+    max-width: 36rem;
+    font-size: clamp(1rem, 2.4vw, 1.12rem);
+    line-height: 1.6;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
   .ed-core {
     display: flex;
     flex-direction: column;
@@ -284,63 +292,110 @@ const editorialSeeds = [
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .ed-block--situations {
+  .ed-block--current {
     padding-top: clamp(1.5rem, 4vw, 2rem);
   }
 
-  /* Situations — self-explanatory cards, no section instruction */
-  .ed-situation-grid {
-    margin: 0;
+  .ed-current-grid {
+    margin: 1.15rem 0 0;
     padding: 0;
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.65rem;
+    gap: 0.85rem;
   }
 
-  .ed-situation-card {
+  .ed-block--themes {
+    padding-top: clamp(1.75rem, 4vw, 2.25rem);
+  }
+
+  .ed-themes-intro {
+    margin: -0.1rem 0 1rem;
+    max-width: 34rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .ed-theme-stack {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    min-height: 4.25rem;
-    padding: 0.85rem 0.9rem;
-    border-radius: 10px;
-    border: 1px solid rgb(var(--border) / 0.14);
-    background: transparent;
+    gap: 1.35rem;
+  }
+
+  .ed-theme-group {
+    padding: 0.95rem 0 0;
+    border-top: 1px solid rgb(var(--border) / 0.12);
+  }
+
+  .ed-theme-group:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .ed-theme-group__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    color: rgb(var(--reading-ink));
+  }
+
+  .ed-theme-group__hint {
+    margin: 0.35rem 0 0.65rem;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: rgb(var(--reading-ink-secondary));
+  }
+
+  .ed-theme-gateway-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .ed-theme-gateway {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid rgb(var(--border) / 0.1);
+    background: rgb(var(--reading-paper) / 0.55);
     color: inherit;
     text-decoration: none;
-    transition: background-color 150ms ease, border-color 150ms ease;
+    transition: border-color 150ms ease, background-color 150ms ease;
   }
 
-  .ed-situation-card:hover {
+  .ed-theme-gateway:hover {
+    border-color: rgb(var(--border) / 0.24);
     background: rgb(var(--reading-paper));
-    border-color: rgb(var(--border) / 0.28);
   }
 
-  .ed-situation-card:focus-visible {
+  .ed-theme-gateway:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
   }
 
-  .ed-situation-card__label {
-    font-size: 0.9rem;
-    font-weight: 650;
-    letter-spacing: -0.025em;
-    line-height: 1.25;
+  .ed-theme-gateway__label {
+    font-size: 0.88rem;
+    font-weight: 550;
+    line-height: 1.35;
     color: rgb(var(--reading-ink));
   }
 
-  .ed-situation-card__hint {
-    font-size: 0.78rem;
-    line-height: 1.4;
-    color: rgb(var(--reading-ink-secondary));
+  .ed-theme-gateway__arrow {
+    flex-shrink: 0;
+    font-size: 0.9rem;
+    color: rgb(var(--reading-ink-secondary) / 0.7);
   }
 
   /* Featured — stacked, media-first editorial weight */
-  .ed-block--featured {
-    padding-top: clamp(2rem, 5vw, 2.75rem);
-  }
-
   .ed-featured {
     display: flex;
     flex-direction: column;
@@ -557,7 +612,7 @@ const editorialSeeds = [
   }
 
   @media (max-width: 479px) {
-    .ed-situation-grid {
+    .ed-current-grid {
       grid-template-columns: 1fr;
     }
   }
@@ -567,18 +622,14 @@ const editorialSeeds = [
       padding: 0 1.25rem 5rem;
     }
 
-    .ed-article-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .ed-current-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
   @media (min-width: 640px) {
     .ed-container {
       padding: 0 1.75rem 5.5rem;
-    }
-
-    .ed-situation-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .ed-featured__media {

@@ -175,7 +175,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "closed",
     stakeholderSafe: true,
     description:
-      "Editorial production slice QA-godkjent på /no/bedre-lyd/ (tidligere /no/lyd-i-hverdagen/). Label: Bedre lyd.",
+      "Bedre lyd R1: editorial oppbygning — Aktuelt først, temakategorier sekundært. CBA R1, ikke design lock. Etter #125J.",
   },
   {
     id: "interaction-states",
