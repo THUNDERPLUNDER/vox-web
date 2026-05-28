@@ -1,203 +1,124 @@
 ---
-/* CONTRACT: Editorial hub — «Bedre lyd» #125F / #125J / editorial R1.
-   Aktuelt først → AI seeds → temakategorier → bro til Hjelp. Motflate til /no/hjelp/.
+/* CONTRACT: Editorial hub — «Bedre lyd» #125J / editorial R2.
+   Situation-first: hero → situasjonsinnganger → utvalgte artikler → bro til Hjelp.
+   Ingen AI-seeds på landing. Surface-paritet med /no/hjelp/ (46rem).
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/nav/Footer.astro";
-import "../../styles/r1-dialog-article.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
 const pageTitle = "Bedre lyd";
 const pageIntro =
-  "Små grep, bedre situasjoner og mer av lyden som gjør hverdagen tydelig.";
+  "Grep, forklaringer og historier som hjelper deg å få mer ut av lyden rundt deg.";
 
-const featuredStory = {
-  eyebrow: "Lyd og energi",
-  title: "Når lyden blir for mye",
-  deck:
-    "Lyttetrøtthet er mer enn en dårlig dag. Slik kan du kjenne den igjen og gjøre hverdagen lettere.",
-  href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
-};
-
-const currentArticles: Array<{
-  series: string;
-  title: string;
-  deck: string;
-  visual: string;
-  href: string;
-}> = [
+const situationGateways: Array<{ title: string; hint: string; href: string }> = [
   {
-    series: "Lydglede",
-    title: "Små lyder og følelsen av å være påkoblet",
-    deck: "Fugler, regn, musikk og stemmer — og hvordan du kan legge merke til dem.",
-    visual: "joy",
-    href: "/no/artikkel/fra-skuff-til-daglig-bruk",
-  },
-  {
-    series: "Sosialt",
-    title: "Hvorfor selskap fortsatt kan være krevende",
-    deck: "Erfaringer fra et støyende bord — uten å gi opp sosialt liv.",
-    visual: "social",
+    title: "I selskap og restaurant",
+    hint: "Middag, støy og samtaler uten å gi opp sosialt liv.",
     href: "/no/artikkel/for-restaurant-eller-stort-selskap",
   },
   {
-    series: "Lydglede",
-    title: "Musikk med høreapparat",
-    deck: "Små grep for å få mer ut av musikk, podkast og lyd du liker.",
-    visual: "joy",
+    title: "Med TV, mobil og bil",
+    hint: "Små grep når lyden kommer fra skjerm, telefon eller kjøretur.",
+    href: "/no/artikkel/slik-tar-du-praten",
+  },
+  {
+    title: "Når lyden blir for mye",
+    hint: "Lyttetrøtthet, pauser og tegn på at dagen blir tung.",
+    href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
+  },
+  {
+    title: "Små lyder og nærvær",
+    hint: "Musikk, fugler, stemmer og det som gjør verden nær.",
     href: "/no/artikkel/fra-skuff-til-daglig-bruk",
   },
 ];
 
-const themeGroups: Array<{
-  title: string;
-  hint: string;
-  links: Array<{ label: string; href: string }>;
-}> = [
+const selectedArticles: Array<{ series: string; title: string; deck: string; href: string }> = [
   {
-    title: "Situasjoner",
-    hint: "Selskap, restaurant, møter, bil og TV",
-    links: [
-      { label: "Selskap og restaurant", href: "/no/artikkel/for-restaurant-eller-stort-selskap" },
-      { label: "Møter og samtaler på jobb", href: "/no/artikkel/slik-tar-du-praten" },
-      { label: "De første ukene med høreapparat", href: "/no/artikkel/de-forste-ukene-med-horeapparat" },
-    ],
+    series: "Erfaring",
+    title: "Slik løste jeg middagsbordet",
+    deck: "Erfaringer fra et støyende bord — uten å gi opp sosialt liv.",
+    href: "/no/artikkel/for-restaurant-eller-stort-selskap",
   },
   {
-    title: "Lydkvalitet",
-    hint: "Musikk, tale, støy og små lyder",
-    links: [
-      { label: "Små lyder som gjør verden nær", href: "/no/artikkel/fra-skuff-til-daglig-bruk" },
-      { label: "Tale og tilvenning", href: "/no/artikkel/de-forste-ukene-med-horeapparat" },
-    ],
+    series: "Normalt?",
+    title: "Hva som er normalt de første ukene",
+    deck: "Forventninger, tilpasning og tegn på at ting går riktig vei.",
+    href: "/no/artikkel/de-forste-ukene-med-horeapparat",
   },
   {
-    title: "Energi og nærvær",
-    hint: "Lytteutmattelse, ro, fokus og sosial deltakelse",
-    links: [
-      { label: "Når lyden blir for mye", href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen" },
-      { label: "Støtte uten å ta over samtalen", href: "/no/artikkel/stotte-uten-a-ta-over-samtalen" },
-    ],
+    series: "Relasjon",
+    title: "Slik kan du be kollegaene dine hjelpe",
+    deck: "Ord og små grep som gjør hverdagen på jobb enklere.",
+    href: "/no/artikkel/slik-tar-du-praten",
   },
   {
-    title: "Hjemme med andre",
-    hint: "TV, samtaler og felles lydvaner",
-    links: [
-      { label: "Slik løste jeg middagsbordet", href: "/no/artikkel/for-restaurant-eller-stort-selskap" },
-      { label: "For pårørende hjemme", href: "/no/artikkel/stotte-uten-a-ta-over-samtalen" },
-    ],
+    series: "Pårørende",
+    title: "Støtte uten å ta over samtalen",
+    deck: "Hvordan hjelpe hjemme uten å presse.",
+    href: "/no/artikkel/stotte-uten-a-ta-over-samtalen",
   },
-];
-
-const editorialSeeds = [
-  "Spør om lyttetrøtthet",
-  "Få forslag til hva jeg kan si til kollegaene mine",
-  "Hjelp meg å forstå om dette er normalt",
 ];
 ---
 
 <BaseLayout title={`Viddel - ${pageTitle}`} currentPath="/no/bedre-lyd" shellVariant="article">
   <meta slot="head" name="robots" content="noindex,follow" />
 
-  <main class="ed-page" data-editorial-hub>
-    <div class="ed-container">
+  <main class="bl-page" data-bedre-lyd>
+    <div class="bl-container">
+      <div class="bl-surface">
+        <header class="bl-header">
+          <nav class="bl-breadcrumb" aria-label="Du er her">
+            <a href="/no">Forside</a>
+            <span aria-hidden="true">/</span>
+            <span>{pageTitle}</span>
+          </nav>
+          <h1>{pageTitle}</h1>
+          <p class="bl-lead">{pageIntro}</p>
+        </header>
 
-      <header class="ed-header">
-        <nav class="ed-breadcrumb" aria-label="Du er her">
-          <a href="/no">Forside</a>
-          <span aria-hidden="true">/</span>
-          <span>{pageTitle}</span>
-        </nav>
-        <h1>{pageTitle}</h1>
-        <p class="ed-lead">{pageIntro}</p>
-      </header>
+        <div class="bl-body">
+          <section class="bl-block" aria-labelledby="situations-heading">
+            <h2 id="situations-heading" class="bl-block__title">Velg en situasjon</h2>
+            <p class="bl-block__hint">Start der du er — finn grep og forklaringer for hverdagslytting.</p>
+            <ul class="bl-situation-grid" role="list">
+              {situationGateways.map((item) => (
+                <li>
+                  <a href={item.href} class="bl-situation-card">
+                    <span class="bl-situation-card__title">{item.title}</span>
+                    <span class="bl-situation-card__hint">{item.hint}</span>
+                    <span class="bl-situation-card__arrow" aria-hidden="true">→</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-      <div class="ed-core">
+          <section class="bl-block" aria-labelledby="articles-heading">
+            <h2 id="articles-heading" class="bl-block__title">Utvalgte artikler</h2>
+            <ul class="bl-article-list" role="list">
+              {selectedArticles.map((article) => (
+                <li class="bl-article-row">
+                  <a href={article.href} class="bl-article-row__action">
+                    <span class="bl-article-row__series">{article.series}</span>
+                    <span class="bl-article-row__title">{article.title}</span>
+                    <span class="bl-article-row__deck">{article.deck}</span>
+                    <span class="bl-article-row__arrow" aria-hidden="true">→</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-        <section class="ed-block ed-block--current" aria-labelledby="current-heading">
-          <h2 id="current-heading" class="ed-block__title">Aktuelt</h2>
-          <a href={featuredStory.href} class="ed-featured">
-            <div class="ed-featured__media" aria-hidden="true"></div>
-            <div class="ed-featured__body">
-              <p class="ed-eyebrow">{featuredStory.eyebrow}</p>
-              <h3 class="ed-featured__title">{featuredStory.title}</h3>
-              <p class="ed-featured__deck">{featuredStory.deck}</p>
-            </div>
-          </a>
-          <ul class="ed-current-grid" role="list">
-            {currentArticles.map((article) => (
-              <li>
-                <a href={article.href} class="ed-article-card" data-visual={article.visual}>
-                  <span class="ed-article-card__visual" aria-hidden="true"></span>
-                  <span class="ed-article-card__body">
-                    <span class="ed-article-card__series">{article.series}</span>
-                    <span class="ed-article-card__title">{article.title}</span>
-                    <span class="ed-article-card__deck">{article.deck}</span>
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section class="ed-block ed-block--ai" aria-labelledby="ai-heading">
-          <h2 id="ai-heading" class="ed-block__title">Videre samtale etter lesing</h2>
-          <p class="ed-ai-intro">
-            Spørsmål som videreføring av det du har lest — ikke supportboks.
-          </p>
-          <div class="ed-seed-bridge" data-r1-editorial>
-            <section class="r1-ai-bridge">
-              <section class="inline-chat-shell" data-inline-chat-mode="progressive">
-                <div class="inline-chat-shell__seed-suggestions">
-                  <ul class="inline-chat-shell__seed-list inline-chat-shell__seed-list--rows" role="list">
-                    {editorialSeeds.map((seed) => (
-                      <li class="inline-chat-shell__seed-item">
-                        <a
-                          href={`/no/chat?seed=${encodeURIComponent(seed)}&from=bedre-lyd`}
-                          class="inline-chat-shell__seed-btn inline-chat-shell__seed-row"
-                        >
-                          <span class="inline-chat-shell__seed-question">{seed}</span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </section>
-            </section>
-          </div>
-        </section>
-
-        <section class="ed-block ed-block--themes" aria-labelledby="themes-heading">
-          <h2 id="themes-heading" class="ed-block__title">Utforsk etter tema</h2>
-          <p class="ed-themes-intro">Finn artikler og grep etter situasjon — uten å starte med problemløsning.</p>
-          <div class="ed-theme-stack">
-            {themeGroups.map((group) => (
-              <article class="ed-theme-group">
-                <h3 class="ed-theme-group__title">{group.title}</h3>
-                <p class="ed-theme-group__hint">{group.hint}</p>
-                <ul class="ed-theme-gateway-list" role="list">
-                  {group.links.map((link) => (
-                    <li>
-                      <a href={link.href} class="ed-theme-gateway">
-                        <span class="ed-theme-gateway__label">{link.label}</span>
-                        <span class="ed-theme-gateway__arrow" aria-hidden="true">→</span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <footer class="ed-help-link">
-          <p>
-            Trenger du konkret hjelp nå?
-            <a href="/no/hjelp/">Gå til Hjelp</a>
-          </p>
-        </footer>
-
+          <footer class="bl-help-link">
+            <p>
+              Trenger du konkret hjelp nå?
+              <a href="/no/hjelp/">Gå til Hjelp</a>
+            </p>
+          </footer>
+        </div>
       </div>
     </div>
   </main>
@@ -206,27 +127,53 @@ const editorialSeeds = [
 </BaseLayout>
 
 <style>
-  [data-editorial-hub] {
+  [data-bedre-lyd] {
+    --bl-hover: rgb(var(--reading-paper));
+  }
+
+  .bl-page {
     background: rgb(var(--article-page-canvas));
+    padding: 0.5rem 0 clamp(3rem, 6vw, 4rem);
     min-height: 100vh;
   }
 
-  .ed-container {
-    max-width: min(100%, 52rem);
+  @media (min-width: 640px) {
+    .bl-page {
+      padding-top: 0.75rem;
+    }
+  }
+
+  .bl-container {
     margin: 0 auto;
-    padding: 0 1rem 4.5rem;
+    padding: 0 1rem;
   }
 
-  .ed-header {
-    padding: clamp(2rem, 6vw, 3.5rem) 0 clamp(1.25rem, 3vw, 1.75rem);
-    border-bottom: 1px solid rgb(var(--border) / 0.2);
+  @media (min-width: 640px) {
+    .bl-container {
+      padding-inline: 1.5rem;
+    }
   }
 
-  .ed-breadcrumb {
+  .bl-surface {
+    max-width: min(100%, 46rem);
+    margin: 0 auto;
+    background: rgb(var(--reading-paper));
+    border-radius: var(--radius-md);
+    padding: 2.5rem 1.75rem;
+    color: rgb(var(--reading-ink));
+  }
+
+  @media (min-width: 640px) {
+    .bl-surface {
+      padding: 3rem 2.5rem;
+    }
+  }
+
+  .bl-breadcrumb {
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.75rem;
     font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.12em;
@@ -234,57 +181,47 @@ const editorialSeeds = [
     color: rgb(var(--reading-ink-secondary) / 0.6);
   }
 
-  .ed-breadcrumb a {
+  .bl-breadcrumb a {
     color: inherit;
     text-decoration: underline;
     text-underline-offset: 2px;
   }
 
-  .ed-kicker {
-    margin: 0 0 0.55rem;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: rgb(var(--reading-accent-iris));
-  }
-
-  [data-editorial-hub] h1 {
+  [data-bedre-lyd] h1 {
     margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(2.2rem, 7vw, 3.8rem);
+    font-size: clamp(2rem, 5.8vw, 2.6rem);
     font-weight: 650;
-    line-height: 0.99;
-    letter-spacing: -0.065em;
+    line-height: 1.05;
+    letter-spacing: -0.055em;
     text-wrap: balance;
     color: rgb(var(--reading-ink));
   }
 
-  .ed-lead {
+  .bl-lead {
     margin: 0.85rem 0 0;
     max-width: 36rem;
-    font-size: clamp(1rem, 2.4vw, 1.12rem);
+    font-size: clamp(1rem, 2.2vw, 1.08rem);
     line-height: 1.6;
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .ed-core {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+  .bl-body {
+    padding-top: clamp(1.35rem, 3vw, 1.75rem);
   }
 
-  .ed-block {
-    padding: clamp(1.75rem, 4.5vw, 2.35rem) 0;
-    border-bottom: 1px solid rgb(var(--border) / 0.14);
+  .bl-block {
+    padding: clamp(1.35rem, 3.5vw, 1.85rem) 0;
+    border-top: 1px solid rgb(var(--border) / 0.14);
   }
 
-  .ed-block:last-of-type {
-    border-bottom: 0;
+  .bl-block:first-child {
+    border-top: 0;
+    padding-top: 0;
   }
 
-  .ed-block__title {
-    margin: 0 0 0.55rem;
+  .bl-block__title {
+    margin: 0;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -292,244 +229,123 @@ const editorialSeeds = [
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .ed-block--current {
-    padding-top: clamp(1.5rem, 4vw, 2rem);
-  }
-
-  .ed-current-grid {
-    margin: 1.15rem 0 0;
-    padding: 0;
-    list-style: none;
-    display: grid;
-    gap: 0.85rem;
-  }
-
-  .ed-block--themes {
-    padding-top: clamp(1.75rem, 4vw, 2.25rem);
-  }
-
-  .ed-themes-intro {
-    margin: -0.1rem 0 1rem;
+  .bl-block__hint {
+    margin: 0.45rem 0 1rem;
     max-width: 34rem;
-    font-size: 0.86rem;
+    font-size: 0.88rem;
     line-height: 1.55;
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .ed-theme-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 1.35rem;
-  }
-
-  .ed-theme-group {
-    padding: 0.95rem 0 0;
-    border-top: 1px solid rgb(var(--border) / 0.12);
-  }
-
-  .ed-theme-group:first-child {
-    padding-top: 0;
-    border-top: 0;
-  }
-
-  .ed-theme-group__title {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-    font-weight: 650;
-    letter-spacing: -0.03em;
-    line-height: 1.2;
-    color: rgb(var(--reading-ink));
-  }
-
-  .ed-theme-group__hint {
-    margin: 0.35rem 0 0.65rem;
-    font-size: 0.8rem;
-    line-height: 1.45;
-    color: rgb(var(--reading-ink-secondary));
-  }
-
-  .ed-theme-gateway-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-  }
-
-  .ed-theme-gateway {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.65rem 0.75rem;
-    border-radius: 8px;
-    border: 1px solid rgb(var(--border) / 0.1);
-    background: rgb(var(--reading-paper) / 0.55);
-    color: inherit;
-    text-decoration: none;
-    transition: border-color 150ms ease, background-color 150ms ease;
-  }
-
-  .ed-theme-gateway:hover {
-    border-color: rgb(var(--border) / 0.24);
-    background: rgb(var(--reading-paper));
-  }
-
-  .ed-theme-gateway:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
-  }
-
-  .ed-theme-gateway__label {
-    font-size: 0.88rem;
-    font-weight: 550;
-    line-height: 1.35;
-    color: rgb(var(--reading-ink));
-  }
-
-  .ed-theme-gateway__arrow {
-    flex-shrink: 0;
-    font-size: 0.9rem;
-    color: rgb(var(--reading-ink-secondary) / 0.7);
-  }
-
-  /* Featured — stacked, media-first editorial weight */
-  .ed-featured {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    color: inherit;
-    text-decoration: none;
-    border-radius: 12px;
-    overflow: hidden;
-    background: rgb(var(--reading-paper));
-    border: 1px solid rgb(var(--border) / 0.12);
-    transition: box-shadow 180ms ease, border-color 180ms ease;
-  }
-
-  .ed-featured:hover {
-    border-color: rgb(var(--border) / 0.28);
-    box-shadow: 0 8px 32px rgb(var(--reading-ink) / 0.06);
-  }
-
-  .ed-featured:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
-  }
-
-  .ed-featured__media {
-    aspect-ratio: 16 / 9;
-    min-height: 11rem;
-    background:
-      linear-gradient(145deg, rgb(19 77 106 / 0.38), rgb(95 82 220 / 0.14)),
-      linear-gradient(165deg, rgb(30 58 80 / 0.18), rgb(253 252 250));
-  }
-
-  .ed-featured__body {
-    padding: clamp(1.15rem, 3vw, 1.5rem) clamp(1.1rem, 3vw, 1.45rem) clamp(1.35rem, 3.5vw, 1.65rem);
-  }
-
-  .ed-eyebrow {
-    margin: 0;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgb(var(--reading-accent-iris));
-  }
-
-  .ed-featured__title {
-    margin: 0.5rem 0 0;
-    font-family: var(--font-display);
-    font-size: clamp(1.45rem, 4.5vw, 2.15rem);
-    font-weight: 650;
-    letter-spacing: -0.045em;
-    line-height: 1.08;
-    text-wrap: balance;
-    color: rgb(var(--reading-ink));
-  }
-
-  .ed-featured__deck {
-    margin: 0.75rem 0 0;
-    max-width: 40rem;
-    font-size: clamp(0.92rem, 2.2vw, 1.02rem);
-    line-height: 1.6;
-    color: rgb(var(--reading-ink-secondary));
-  }
-
-  /* Article cards — editorial, not FAQ rows */
-  .ed-article-grid {
+  .bl-situation-grid {
     margin: 0;
     padding: 0;
     list-style: none;
     display: grid;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
-  .ed-article-card {
+  @media (min-width: 640px) {
+    .bl-situation-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem;
+    }
+  }
+
+  .bl-situation-card {
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: 0.4rem;
+    min-height: 6.5rem;
+    padding: 1.15rem 1.2rem 1.1rem;
+    border: 1px solid rgb(var(--border) / 0.22);
+    border-radius: var(--radius-md);
+    background: rgb(var(--reading-paper));
+    box-shadow: 0 1px 2px rgb(var(--reading-ink) / 0.04);
     color: inherit;
     text-decoration: none;
-    border-radius: 10px;
-    overflow: hidden;
-    background: rgb(var(--reading-paper));
-    border: 1px solid rgb(var(--border) / 0.12);
-    transition: box-shadow 150ms ease, border-color 150ms ease, transform 150ms ease;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease,
+      transform 150ms ease;
   }
 
-  .ed-article-card:hover {
+  .bl-situation-card:hover {
     border-color: rgb(var(--border) / 0.28);
     box-shadow: 0 4px 18px rgb(var(--reading-ink) / 0.05);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
   }
 
-  .ed-article-card:focus-visible {
+  .bl-situation-card:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
   }
 
-  .ed-article-card__visual {
-    display: block;
-    height: 5.5rem;
-    background: linear-gradient(145deg, rgb(19 77 106 / 0.12), rgb(224 242 254 / 0.45));
+  .bl-situation-card__title {
+    padding-right: 1.25rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 2.8vw, 1.2rem);
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: rgb(var(--reading-ink));
   }
 
-  [data-visual="social"] .ed-article-card__visual {
-    background: linear-gradient(145deg, rgb(95 82 220 / 0.14), rgb(238 235 255));
+  .bl-situation-card__hint {
+    font-size: 0.84rem;
+    line-height: 1.45;
+    color: rgb(var(--reading-ink-secondary));
   }
 
-  [data-visual="start"] .ed-article-card__visual {
-    background: linear-gradient(145deg, rgb(14 165 233 / 0.14), rgb(234 246 255));
+  .bl-situation-card__arrow {
+    margin-top: auto;
+    font-size: 0.95rem;
+    color: rgb(var(--reading-ink-secondary) / 0.65);
   }
 
-  [data-visual="energy"] .ed-article-card__visual {
-    background: linear-gradient(145deg, rgb(19 77 106 / 0.16), rgb(243 241 255));
-  }
-
-  [data-visual="work"] .ed-article-card__visual {
-    background: linear-gradient(145deg, rgb(96 165 250 / 0.14), rgb(248 250 255));
-  }
-
-  [data-visual="mind"] .ed-article-card__visual {
-    background: linear-gradient(145deg, rgb(200 192 176 / 0.22), rgb(252 250 245));
-  }
-
-  [data-visual="joy"] .ed-article-card__visual {
-    background: linear-gradient(145deg, rgb(34 197 94 / 0.16), rgb(234 246 255 / 0.55));
-  }
-
-  .ed-article-card__body {
+  .bl-article-list {
+    margin: 0.65rem 0 0;
+    padding: 0;
+    list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    padding: 0.85rem 0.95rem 1rem;
+    gap: 0;
+    border: 1px solid rgb(var(--border) / 0.16);
+    border-radius: var(--radius-md);
+    overflow: hidden;
   }
 
-  .ed-article-card__series {
+  .bl-article-row {
+    border-bottom: 1px solid rgb(var(--border) / 0.12);
+  }
+
+  .bl-article-row:last-child {
+    border-bottom: 0;
+  }
+
+  .bl-article-row__action {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto auto;
+    gap: 0.2rem 0.75rem;
+    padding: 0.95rem 1rem;
+    color: inherit;
+    text-decoration: none;
+    background: rgb(var(--reading-paper));
+    transition: background-color 150ms ease;
+  }
+
+  .bl-article-row__action:hover {
+    background: rgb(var(--surface-subtle) / 0.35);
+  }
+
+  .bl-article-row__action:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px rgb(14 165 233 / 0.32);
+  }
+
+  .bl-article-row__series {
+    grid-column: 1;
     font-size: 0.6rem;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -537,104 +353,51 @@ const editorialSeeds = [
     color: rgb(var(--reading-accent-iris));
   }
 
-  .ed-article-card__title {
+  .bl-article-row__title {
+    grid-column: 1;
     font-family: var(--font-display);
-    font-size: 1rem;
+    font-size: 0.98rem;
     font-weight: 650;
-    letter-spacing: -0.03em;
-    line-height: 1.22;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
     color: rgb(var(--reading-ink));
   }
 
-  .ed-article-card__deck {
-    font-size: 0.8rem;
-    line-height: 1.5;
+  .bl-article-row__deck {
+    grid-column: 1;
+    font-size: 0.82rem;
+    line-height: 1.45;
     color: rgb(var(--reading-ink-secondary));
   }
 
-  /* AI seeds */
-  .ed-block--ai {
-    padding-bottom: clamp(1.25rem, 3vw, 1.75rem);
+  .bl-article-row__arrow {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
+    font-size: 0.95rem;
+    color: rgb(var(--reading-ink-secondary) / 0.65);
   }
 
-  .ed-ai-intro {
-    margin: -0.15rem 0 0.85rem;
-    font-size: 0.86rem;
-    line-height: 1.6;
-    color: rgb(var(--reading-ink-secondary));
+  .bl-help-link {
+    padding: 1.35rem 0 0.25rem;
+    border-top: 1px solid rgb(var(--border) / 0.14);
   }
 
-  .ed-seed-bridge {
-    padding: 0.85rem;
-    border-radius: 10px;
-    background: rgb(var(--reading-paper));
-  }
-
-  .ed-seed-bridge .inline-chat-shell__seed-row {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  /* Hjelp cross-link */
-  .ed-help-link {
-    padding: 1.25rem 0 0.5rem;
-    border-top: 1px solid rgb(var(--border) / 0.12);
-  }
-
-  .ed-help-link p {
+  .bl-help-link p {
     margin: 0;
     font-size: 0.84rem;
     line-height: 1.55;
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .ed-help-link a {
+  .bl-help-link a {
     margin-left: 0.25rem;
     font-weight: 600;
     color: rgb(var(--reading-ink));
     text-underline-offset: 2px;
   }
 
-  .ed-help-link a:hover {
+  .bl-help-link a:hover {
     color: rgb(var(--reading-accent-iris));
-  }
-
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  @media (max-width: 479px) {
-    .ed-current-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  @media (min-width: 480px) {
-    .ed-container {
-      padding: 0 1.25rem 5rem;
-    }
-
-    .ed-current-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: 640px) {
-    .ed-container {
-      padding: 0 1.75rem 5.5rem;
-    }
-
-    .ed-featured__media {
-      aspect-ratio: 21 / 9;
-      min-height: 14rem;
-    }
   }
 </style>

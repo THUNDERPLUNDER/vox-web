@@ -175,7 +175,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "closed",
     stakeholderSafe: true,
     description:
-      "Bedre lyd R1: editorial oppbygning — Aktuelt først, temakategorier sekundært. CBA R1, ikke design lock. Etter #125J.",
+      "Bedre lyd R2: situation-first editorial — situasjonsinnganger før artikler, ingen AI-seeds på landing. CBA R2, QA pending.",
   },
   {
     id: "interaction-states",
