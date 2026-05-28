@@ -2,7 +2,7 @@
 /* CONTRACT: Editorial magazine frontpage — «Bedre lyd» #125J / editorial R4.
    Article-first: compact semantic hero → lead story → current stories → theme chips → help bridge.
    No AI seeds on landing; no global nav/footer/routes changes.
-   Expected image slots: lead image, small sounds, social listening, music, TV/mobile/car, first weeks.
+   Image slots: lead image, small sounds, social listening, music; TV/mobile/car and first weeks remain text-only until approved images exist.
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/nav/Footer.astro";
@@ -17,44 +17,65 @@ const leadArticle = {
   deck:
     "Lyttetretthet er mer enn en dårlig dag. Slik kan du kjenne den igjen og gjøre hverdagen lettere.",
   href: "/no/artikkel/lyden-blir-slitsom-utpa-dagen",
-  imageSlot: "lead image",
+  image: {
+    src: "/images/editorial/bedre-lyd/viddel-sound-too-much-recovery.webp",
+    alt: "Person i lyst rom med kopp ved vinduet.",
+  },
 };
 
-const currentStories: Array<{ series: string; title: string; deck: string; href: string; imageSlot: string }> = [
+type StoryCard = {
+  series: string;
+  title: string;
+  deck: string;
+  href: string;
+  image?: {
+    src: string;
+    alt: string;
+  };
+};
+
+const currentStories: Array<StoryCard> = [
   {
     series: "Lydglede",
     title: "Små lyder og følelsen av å være påkoblet",
     deck: "Fugler, regn, musikk og stemmer — og hvordan du kan legge merke til dem.",
     href: "/no/artikkel/fra-skuff-til-daglig-bruk",
-    imageSlot: "small sounds",
+    image: {
+      src: "/images/editorial/bedre-lyd/viddel-small-sounds-presence-portrait.webp",
+      alt: "Person med kopp i lyst kjøkken.",
+    },
   },
   {
     series: "Sosialt",
     title: "Hvorfor selskap fortsatt kan være krevende",
     deck: "Erfaringer fra et støyende bord — uten å gi opp sosialt liv.",
     href: "/no/artikkel/for-restaurant-eller-stort-selskap",
-    imageSlot: "social listening",
+    image: {
+      src: "/images/editorial/bedre-lyd/viddel-social-listening-dinner.webp",
+      alt: "Middagsselskap med flere personer rundt bordet.",
+    },
   },
   {
     series: "Lydglede",
     title: "Musikk med høreapparat",
     deck: "Små grep for å få mer ut av musikk, podkast og lyd du liker.",
     href: "/no/artikkel/fra-skuff-til-daglig-bruk",
-    imageSlot: "music",
+    image: {
+      src: "/images/editorial/bedre-lyd/viddel-music-with-hearing-aids.webp",
+      alt: "Person som lytter til musikk hjemme.",
+    },
   },
   {
     series: "Hverdagsteknikk",
     title: "TV, mobil og bil: når lyden går feil vei",
     deck: "Når lydkilden flytter seg, kan små vaner gjøre det lettere å følge med.",
     href: "/no/artikkel/slik-tar-du-praten",
-    imageSlot: "TV/mobile/car",
   },
   {
     series: "Ny start",
     title: "De første ukene med høreapparat",
     deck: "Hva som er vanlig, hva som tar tid, og hvordan du kan gi lyden en sjanse.",
     href: "/no/artikkel/de-forste-ukene-med-horeapparat",
-    imageSlot: "first weeks",
   },
 ];
 
@@ -87,7 +108,9 @@ const themeChips = [
         <section class="bl-lead-story" aria-labelledby="lead-story-heading">
           <p class="bl-eyebrow">{leadArticle.series}</p>
           <a href={leadArticle.href} class="bl-lead-card">
-            <span class="bl-image-slot bl-image-slot--lead" data-image-slot={leadArticle.imageSlot} aria-hidden="true"></span>
+            <span class="bl-image-frame bl-image-frame--lead">
+              <img src={leadArticle.image.src} alt={leadArticle.image.alt} loading="eager" decoding="async" />
+            </span>
             <span class="bl-lead-card__body">
               <h2 id="lead-story-heading">{leadArticle.title}</h2>
               <span class="bl-lead-card__deck">{leadArticle.deck}</span>
@@ -101,8 +124,14 @@ const themeChips = [
           <ul class="bl-story-grid" role="list">
             {currentStories.map((story) => (
               <li>
-                <a href={story.href} class="bl-story-card">
-                  <span class="bl-image-slot bl-image-slot--story" data-image-slot={story.imageSlot} aria-hidden="true"></span>
+                <a href={story.href} class:list={["bl-story-card", story.image && "bl-story-card--with-image"]}>
+                  {
+                    story.image ? (
+                      <span class="bl-image-frame bl-image-frame--story">
+                        <img src={story.image.src} alt={story.image.alt} loading="lazy" decoding="async" />
+                      </span>
+                    ) : null
+                  }
                   <span class="bl-story-card__series">{story.series}</span>
                   <span class="bl-story-card__title">{story.title}</span>
                   <span class="bl-story-card__deck">{story.deck}</span>
@@ -278,33 +307,28 @@ const themeChips = [
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .bl-image-slot {
+  .bl-image-frame {
     display: block;
-    position: relative;
     overflow: hidden;
     border-radius: var(--radius-md);
     border: 1px solid rgb(var(--border) / 0.1);
-    background:
-      linear-gradient(135deg, rgb(var(--reading-ink) / 0.035), transparent 58%),
-      rgb(var(--surface-subtle) / 0.34);
+    background: rgb(var(--surface-subtle) / 0.34);
   }
 
-  .bl-image-slot::after {
-    content: attr(data-image-slot);
-    position: absolute;
-    inset: auto 0.65rem 0.55rem;
-    font-size: 0.54rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgb(var(--reading-ink-secondary) / 0.42);
+  .bl-image-frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
-  .bl-image-slot--lead {
+  .bl-image-frame--lead {
+    aspect-ratio: 16 / 10;
     min-height: clamp(10rem, 24vw, 14rem);
   }
 
-  .bl-image-slot--story {
+  .bl-image-frame--story {
+    aspect-ratio: 16 / 9;
     min-height: 4.75rem;
     margin-bottom: 0.2rem;
   }

@@ -175,7 +175,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "closed",
     stakeholderSafe: true,
     description:
-      "Bedre lyd R4: image-ready magazine-frontpage — dempet semantic hero, hovedsak bærer toppen, image slots dokumentert. QA pending.",
+      "Bedre lyd image pass v0.1: first editorial images added as MVP placeholders. Final image strategy deferred. QA pending.",
   },
   {
     id: "interaction-states",
