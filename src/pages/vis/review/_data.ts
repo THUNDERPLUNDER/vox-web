@@ -175,7 +175,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "closed",
     stakeholderSafe: true,
     description:
-      "Editorial production slice QA-godkjent på /no/bedre-lyd/ (tidligere /no/lyd-i-hverdagen/). Label: Bedre lyd.",
+      "Bedre lyd image pass v0.1: first editorial images added as MVP placeholders. Final image strategy deferred. QA pending.",
   },
   {
     id: "interaction-states",
