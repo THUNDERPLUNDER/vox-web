@@ -1,88 +1,515 @@
 ---
 /* CONTRACT: Demo chat surface with product-owned frame and stable CES engine as the only visible conversation mode. */
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Section from "../../components/layout/Section.astro";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+
+const exampleQuestions = [
+  "Appen finner ikke høreapparatet",
+  "Lyden blir slitsom utover dagen",
+  "Hvordan kobler jeg høreapparatet til mobilen?",
+  "Når bør jeg kontakte audiograf?",
+];
 ---
 
 <BaseLayout title="Viddel - Spør Viddel" currentPath="/no/chat">
   <meta slot="head" name="robots" content="noindex,follow" />
 
-  <main class="relative pb-2 sm:pb-3">
-    <Section class="!pt-1 !pb-4 sm:!pt-2 sm:!pb-5">
-      <div class="mx-auto max-w-[920px] space-y-6">
-        <div>
-          <h1 class="font-display text-2xl font-semibold tracking-[-0.03em] text-balance sm:text-3xl">Spør Viddel</h1>
-          <p class="mt-2 max-w-2xl text-sm leading-relaxed text-[rgb(var(--muted))]">
-            Skriv det du vil, uten forhåndsvalgt tema. Kom du fra en artikkel med valgt spørsmål, fyller vi inn utgangspunktet for deg.
+  <main class="chat-page" data-standalone-chat>
+    <div class="chat-container">
+      <div class="chat-surface">
+        <header class="chat-hero">
+          <nav class="chat-breadcrumb" aria-label="Du er her">
+            <a href="/no">Forside</a>
+            <span aria-hidden="true">/</span>
+            <span>Spør Viddel</span>
+          </nav>
+          <p class="chat-kicker">Direkte spørsmål</p>
+          <h1>Spør Viddel</h1>
+          <p class="chat-lead">
+            Still et spørsmål om høreapparat, app, lyd i hverdagen eller hva du bør prøve videre.
           </p>
-          <div id="seed-strip" class="mt-5 hidden border-l-2 border-[rgb(var(--primary))/0.35] pl-3">
-            <p class="text-[11px] uppercase tracking-wide text-[rgb(var(--muted))]">Valgt startspørsmål</p>
-            <p id="seed-text" class="mt-0.5 text-sm text-[rgb(var(--text))]"></p>
-            <button
-              id="seed-start-button"
-              type="button"
-              class="mt-3 inline-flex items-center justify-center rounded-none bg-[rgb(var(--text))] px-3 py-2 text-xs font-semibold text-[rgb(var(--surface))] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-            >
+        </header>
+
+        <section class="chat-compose-block" aria-label="Still et spørsmål">
+          <form class="chat-compose" action="/no/chat" method="get">
+            <label class="sr-only" for="chat-compose-input">Skriv spørsmålet ditt</label>
+            <div class="chat-compose__input-wrap">
+              <input
+                id="chat-compose-input"
+                type="search"
+                name="seed"
+                class="chat-compose__input"
+                required
+                autocomplete="off"
+                enterkeyhint="send"
+                placeholder="F.eks. piping, Bluetooth, TV-lyd eller når du bør kontakte audiograf..."
+              />
+            </div>
+            <input type="hidden" name="from" value="chat" />
+            <button type="submit" class="chat-compose__send" aria-label="Send spørsmål">
+              <span aria-hidden="true">↑</span>
+            </button>
+          </form>
+
+          <div class="chat-examples" aria-label="Eksempelspørsmål">
+            <p class="chat-examples__label">Eksempler</p>
+            <ul class="chat-examples__list" role="list">
+              {exampleQuestions.map((question) => (
+                <li>
+                  <a class="chat-example-chip" href={`/no/chat?seed=${encodeURIComponent(question)}&from=chat`}>
+                    {question}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div id="seed-strip" class="chat-seed-strip hidden">
+            <p class="chat-seed-strip__label">Valgt startspørsmål</p>
+            <p id="seed-text" class="chat-seed-strip__text"></p>
+            <button id="seed-start-button" type="button" class="chat-seed-strip__button">
               Start samtale med dette spørsmålet
             </button>
-            <p id="seed-sync-status" class="mt-0.5 text-xs text-[rgb(var(--muted))]"></p>
+            <p id="seed-sync-status" class="chat-seed-strip__status"></p>
           </div>
-        </div>
+        </section>
 
-        <div class="vox-surface-embedded-app" data-kl-surface="embedded-app">
-          <chat-messenger
-            id="ces-demo-widget"
-            url-allowlist="*"
-            class="block h-[min(70vh,680px)] w-full overflow-hidden rounded-none bg-[rgb(var(--surface-subtle))]"
-          >
-            <chat-messenger-container
-              chat-title="Hørehjelpen"
-              enable-file-upload
-              enable-audio-input
-            ></chat-messenger-container>
-          </chat-messenger>
-        </div>
+        <section class="chat-widget-shell" aria-label="Samtale med Viddel">
+          <div class="chat-widget-shell__header">
+            <p class="chat-widget-shell__label">Viddel svarer</p>
+            <p class="chat-widget-shell__hint">Skriv direkte i chatten, eller start med et av forslagene over.</p>
+          </div>
+          <div class="vox-surface-embedded-app chat-widget-frame" data-kl-surface="embedded-app">
+            <chat-messenger id="ces-demo-widget" url-allowlist="*" class="chat-widget">
+              <chat-messenger-container chat-title="Viddel" enable-file-upload enable-audio-input></chat-messenger-container>
+            </chat-messenger>
+          </div>
+        </section>
 
-        <div
-          id="no-chat-debug-panel"
-          class="hidden border border-[rgb(var(--border))] bg-[rgb(var(--surface-subtle))] p-3 text-xs text-[rgb(var(--muted))]"
-        >
-          <p class="mb-2 font-semibold uppercase tracking-wide text-[rgb(var(--text))]">No chat debug</p>
-          <pre id="no-chat-debug-output" class="whitespace-pre-wrap break-words font-mono leading-relaxed"></pre>
-          <div class="mt-3 border-t border-[rgb(var(--border))] pt-3">
-            <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
-              <p class="font-semibold uppercase tracking-wide text-[rgb(var(--text))]">Kopierbar status</p>
-              <button
-                id="no-chat-debug-copy"
-                type="button"
-                class="inline-flex items-center justify-center rounded-none border border-[rgb(var(--border))] px-2.5 py-1 text-[11px] font-semibold text-[rgb(var(--text))]"
-              >
+        <p class="chat-safety-note">
+          Viddel gir generell støtte og kan ikke erstatte råd fra audiograf eller helsepersonell.
+        </p>
+
+        <div id="no-chat-debug-panel" class="chat-debug-panel hidden">
+          <p class="chat-debug-panel__title">No chat debug</p>
+          <pre id="no-chat-debug-output" class="chat-debug-panel__output"></pre>
+          <div class="chat-debug-panel__report">
+            <div class="chat-debug-panel__report-head">
+              <p class="chat-debug-panel__title">Kopierbar status</p>
+              <button id="no-chat-debug-copy" type="button" class="chat-debug-panel__copy">
                 Kopier debugstatus
               </button>
             </div>
-            <textarea
-              id="no-chat-debug-report"
-              class="min-h-[180px] w-full resize-y rounded-none border border-[rgb(var(--border))] bg-[rgb(var(--surface))] p-2 font-mono text-[11px] leading-relaxed text-[rgb(var(--text))]"
-              readonly
-            ></textarea>
-            <p id="no-chat-debug-copy-status" class="mt-1 text-[11px] text-[rgb(var(--muted))]"></p>
+            <textarea id="no-chat-debug-report" class="chat-debug-panel__textarea" readonly></textarea>
+            <p id="no-chat-debug-copy-status" class="chat-debug-panel__copy-status"></p>
           </div>
         </div>
-        <div class="flex justify-end">
-          <button
-            id="no-chat-debug-toggle"
-            type="button"
-            class="inline-flex items-center justify-center rounded-none border border-[rgb(var(--border))] bg-[rgb(var(--surface))] px-2.5 py-1 text-[11px] font-semibold text-[rgb(var(--muted))]"
-            aria-pressed="false"
-          >
+        <div class="chat-debug-toggle-row">
+          <button id="no-chat-debug-toggle" type="button" class="chat-debug-toggle" aria-pressed="false">
             Debug
           </button>
         </div>
       </div>
-    </Section>
+    </div>
   </main>
+
+  <style>
+    .chat-page {
+      background: rgb(var(--article-page-canvas));
+      padding: 0.5rem 0 clamp(3rem, 6vw, 4rem);
+    }
+
+    @media (min-width: 640px) {
+      .chat-page {
+        padding-top: 0.75rem;
+      }
+    }
+
+    .chat-container {
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .chat-container {
+        padding-inline: 1.5rem;
+      }
+    }
+
+    .chat-surface {
+      max-width: min(100%, 52rem);
+      margin: 0 auto;
+      background: rgb(var(--reading-paper));
+      border-radius: var(--radius-md);
+      padding: 2.25rem 1.15rem;
+      color: rgb(var(--reading-ink));
+    }
+
+    @media (min-width: 640px) {
+      .chat-surface {
+        padding: 3rem 2.5rem;
+      }
+    }
+
+    .chat-hero {
+      padding-bottom: clamp(1rem, 2.5vw, 1.25rem);
+      border-bottom: 1px solid rgb(var(--border) / 0.16);
+    }
+
+    .chat-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.85rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-ink-secondary) / 0.6);
+    }
+
+    .chat-breadcrumb a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .chat-kicker,
+    .chat-widget-shell__label,
+    .chat-examples__label,
+    .chat-seed-strip__label {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 750;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    [data-standalone-chat] h1 {
+      margin: 0.45rem 0 0;
+      font-family: var(--font-display);
+      font-size: clamp(2.05rem, 6vw, 3rem);
+      font-weight: 650;
+      line-height: 1.02;
+      letter-spacing: -0.058em;
+      text-wrap: balance;
+      color: rgb(var(--reading-ink));
+    }
+
+    .chat-lead {
+      margin: 0.8rem 0 0;
+      max-width: 38rem;
+      font-size: clamp(0.95rem, 2.2vw, 1.04rem);
+      line-height: 1.55;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .chat-compose-block {
+      padding: clamp(1.1rem, 2.8vw, 1.4rem) 0 0;
+    }
+
+    .chat-compose {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: flex-end;
+      gap: 0.55rem;
+      padding: 0.62rem;
+      border: 1px solid rgb(var(--border) / 0.42);
+      border-radius: 1.15rem;
+      background: rgb(var(--reading-paper));
+      box-shadow: 0 10px 30px rgb(var(--reading-ink) / 0.035);
+      transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease;
+    }
+
+    .chat-compose:focus-within {
+      border-color: rgb(var(--border) / 0.68);
+      box-shadow: 0 0 0 3px rgb(14 165 233 / 0.14), 0 10px 30px rgb(var(--reading-ink) / 0.045);
+    }
+
+    .chat-compose__input-wrap {
+      min-width: 0;
+    }
+
+    .chat-compose__input {
+      width: 100%;
+      min-height: 3rem;
+      padding: 0.5rem 0.4rem;
+      border: 0;
+      background: transparent;
+      color: rgb(var(--reading-ink));
+      font: inherit;
+      font-size: 0.95rem;
+      line-height: 1.45;
+      outline: 0;
+    }
+
+    .chat-compose__input::placeholder {
+      color: rgb(var(--reading-ink-secondary) / 0.7);
+    }
+
+    .chat-compose__send,
+    .chat-seed-strip__button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: rgb(var(--reading-ink));
+      color: rgb(var(--reading-paper));
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 150ms ease;
+    }
+
+    .chat-compose__send {
+      width: 2.85rem;
+      height: 2.85rem;
+      min-height: 2.85rem;
+      padding: 0;
+      border-radius: 999px;
+      font-size: 1.02rem;
+      line-height: 1;
+    }
+
+    .chat-compose__send:hover,
+    .chat-seed-strip__button:hover {
+      opacity: 0.9;
+    }
+
+    .chat-compose__send:focus-visible,
+    .chat-seed-strip__button:focus-visible,
+    .chat-example-chip:focus-visible,
+    .chat-debug-toggle:focus-visible,
+    .chat-debug-panel__copy:focus-visible {
+      outline: 2px solid rgb(14 165 233 / 0.42);
+      outline-offset: 3px;
+    }
+
+    .chat-examples {
+      margin-top: 1rem;
+    }
+
+    .chat-examples__list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0.55rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .chat-example-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.25rem;
+      padding: 0.52rem 0.78rem;
+      border: 1px solid rgb(var(--border) / 0.28);
+      border-radius: 999px;
+      background: rgb(var(--reading-paper));
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.82rem;
+      font-weight: 600;
+      line-height: 1.25;
+      text-decoration: none;
+      transition:
+        border-color 150ms ease,
+        color 150ms ease,
+        transform 150ms ease,
+        box-shadow 150ms ease;
+    }
+
+    .chat-example-chip:hover {
+      border-color: rgb(var(--border) / 0.46);
+      color: rgb(var(--reading-ink));
+      box-shadow: 0 8px 22px rgb(var(--reading-ink) / 0.045);
+      transform: translateY(-1px);
+    }
+
+    .chat-seed-strip {
+      margin-top: 1rem;
+      padding: 0.85rem 0.95rem;
+      border: 1px solid rgb(var(--border) / 0.2);
+      border-radius: 0.9rem;
+      background: rgb(var(--surface-subtle));
+    }
+
+    .chat-seed-strip__text {
+      margin: 0.35rem 0 0;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      color: rgb(var(--reading-ink));
+    }
+
+    .chat-seed-strip__button {
+      margin-top: 0.75rem;
+      min-height: 2.3rem;
+      padding: 0.58rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+    }
+
+    .chat-seed-strip__button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .chat-seed-strip__status {
+      margin: 0.45rem 0 0;
+      font-size: 0.78rem;
+      line-height: 1.4;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .chat-widget-shell {
+      margin-top: clamp(1.5rem, 3.5vw, 2rem);
+      padding: 1rem;
+      border: 1px solid rgb(var(--border) / 0.18);
+      border-radius: 1.25rem;
+      background: rgb(var(--reading-paper));
+      box-shadow: 0 16px 40px rgb(var(--reading-ink) / 0.055);
+    }
+
+    @media (min-width: 640px) {
+      .chat-widget-shell {
+        padding: 1.15rem;
+      }
+    }
+
+    .chat-widget-shell__header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.28rem;
+      padding: 0.1rem 0.1rem 0.85rem;
+    }
+
+    @media (min-width: 640px) {
+      .chat-widget-shell__header {
+        flex-direction: row;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+    }
+
+    .chat-widget-shell__hint {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .chat-widget-frame {
+      overflow: hidden;
+      border: 1px solid rgb(var(--border) / 0.12);
+      border-radius: 1rem;
+      background: rgb(var(--surface-subtle));
+    }
+
+    .chat-widget {
+      display: block;
+      width: 100%;
+      height: min(68vh, 660px);
+      min-height: 520px;
+      overflow: hidden;
+      background: rgb(var(--surface-subtle));
+    }
+
+    .chat-safety-note {
+      margin: 1rem 0 0;
+      max-width: 42rem;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .chat-debug-panel {
+      margin-top: 1rem;
+      border: 1px solid rgb(var(--border));
+      background: rgb(var(--surface-subtle));
+      padding: 0.9rem;
+      font-size: 0.75rem;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .chat-debug-panel__title {
+      margin: 0 0 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-ink));
+    }
+
+    .chat-debug-panel__output {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: var(--font-mono, monospace);
+      line-height: 1.55;
+    }
+
+    .chat-debug-panel__report {
+      margin-top: 0.85rem;
+      border-top: 1px solid rgb(var(--border));
+      padding-top: 0.85rem;
+    }
+
+    .chat-debug-panel__report-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .chat-debug-panel__copy,
+    .chat-debug-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgb(var(--border));
+      background: rgb(var(--reading-paper));
+      color: rgb(var(--reading-ink-secondary));
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .chat-debug-panel__copy {
+      padding: 0.34rem 0.6rem;
+    }
+
+    .chat-debug-panel__textarea {
+      min-height: 180px;
+      width: 100%;
+      resize: vertical;
+      border: 1px solid rgb(var(--border));
+      background: rgb(var(--reading-paper));
+      padding: 0.5rem;
+      font-family: var(--font-mono, monospace);
+      font-size: 0.7rem;
+      line-height: 1.55;
+      color: rgb(var(--reading-ink));
+    }
+
+    .chat-debug-panel__copy-status {
+      margin: 0.35rem 0 0;
+      font-size: 0.7rem;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .chat-debug-toggle-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.7rem;
+    }
+
+    .chat-debug-toggle {
+      padding: 0.34rem 0.62rem;
+    }
+  </style>
 
   <script is:inline>
     (() => {
@@ -346,9 +773,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
       if (seedTextEl) seedTextEl.textContent = initialQuestion;
       if (seedStartBtn && initialQuestion) seedStartBtn.setAttribute("disabled", "");
       if (statusEl && initialQuestion) {
-        setSeedStatus(from
-          ? `Hentet fra ${from === "article" ? "artikkel" : "hjelp"}. Kobler til Viddel ...`
-          : "Kobler til Viddel ...");
+        const sourceLabel = from === "article" ? "artikkel" : from === "hjelp" ? "hjelp" : "Spør Viddel";
+        setSeedStatus(from ? `Hentet fra ${sourceLabel}. Kobler til Viddel ...` : "Kobler til Viddel ...");
       }
       renderDebug();
 
