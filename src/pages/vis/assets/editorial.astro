@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: VIS-only asset browser for Editorial Image Library v0.1 candidates. */
+/* CONTRACT: VIS-only asset browser for Editorial Image Library v0.2 candidates. */
 import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
 import {
   editorialImageLibrary,
@@ -10,20 +10,26 @@ import {
 const base = import.meta.env.BASE_URL;
 
 const groupOrder: Array<EditorialImageGroup> = [
+  "app-adjustments",
   "car",
   "city-life-cafe",
   "hearing-aid-box",
   "listening-music",
+  "product-environment",
+  "product-imagery",
   "quiet-home",
   "social",
   "tv",
 ];
 
 const groupLabels: Record<EditorialImageGroup, string> = {
+  "app-adjustments": "App Adjustments",
   car: "Car",
   "city-life-cafe": "City Life Cafe",
   "hearing-aid-box": "Hearing Aid Box",
   "listening-music": "Listening Music",
+  "product-environment": "Product Environment",
+  "product-imagery": "Product Imagery",
   "quiet-home": "Quiet home",
   social: "Social",
   tv: "TV",
