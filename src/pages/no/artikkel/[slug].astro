@@ -230,7 +230,7 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
           {article.moduleBlocks.map((block, modIndex) => {
             if (block.component === "module_phrase_cards") {
               return (
-                <section class="space-y-4 border-l-2 border-[rgb(var(--reading-accent-iris))/0.45] pl-5">
+                <section class="space-y-4 border-l-2 border-[rgb(var(--reading-ink-secondary))/0.24] pl-5">
                   <h3 class="font-display text-lg font-semibold tracking-[-0.03em] text-[rgb(var(--reading-ink))]">
                     {block.title || "Eksempelfraser"}
                   </h3>
@@ -273,7 +273,7 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
             if (isObservationCallout) {
               return (
                 <aside class="vox-reading-inline" aria-label="Observasjon">
-                  <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-accent-iris))]">
+                  <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-ink-secondary))]">
                     {moduleToneLabel[block.component]}
                   </p>
                   {block.title ? (
@@ -297,7 +297,7 @@ const firstObservationCalloutIndex = article.moduleBlocks.findIndex((b) => b.com
 
             return (
               <section class="space-y-3">
-                <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-accent-iris))]">
+                <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[rgb(var(--reading-ink-secondary))]">
                   {moduleToneLabel[block.component]}
                 </p>
                 {block.title ? (
