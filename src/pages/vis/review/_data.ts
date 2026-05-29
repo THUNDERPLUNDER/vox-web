@@ -175,7 +175,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "closed",
     stakeholderSafe: true,
     description:
-      "Bedre lyd image pass v0.1: first editorial images added as MVP placeholders. Final image strategy deferred. QA pending.",
+      "Bedre lyd R5: magazine top, edge-to-edge card images, grey editorial labels, CTA/copy cleanup. Bedre lyd beholdes som CBA; Tips/Life hacks parkert.",
   },
   {
     id: "interaction-states",

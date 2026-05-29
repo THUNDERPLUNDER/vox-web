@@ -30,6 +30,7 @@ Offentlig IA, synlig copy og norske URL-er er synkronisert med Content / IA CBA 
 3. **Spør Viddel** — global header-CTA; ikke dupliseres som standardlabel overalt.
 4. **Hørehjelpen** — ut av synlig hovedcopy/hoved-IA (tekniske widget-parametre kan beholdes).
 5. **Still et spørsmål** — ikke global standard; bruk lokal kontekstcopy der relevant.
+6. Unngå lange tankestreker i synlig Viddel-copy. Bruk komma, punktum eller enklere norsk setningsrytme.
 
 ---
 
