@@ -1,8 +1,8 @@
-# Editorial Image Library v0.1
+# Editorial Image Library v0.2
 
 ## Hva dette er
 
-Editorial Image Library v0.1 er en enkel, webklar kandidatbank for Viddel MVP-artikler. Den gjør Thomas' sorterte Midjourney-bilder tilgjengelige i repoet uten å være et fullverdig DAM, upload-system eller VIS Asset Registry.
+Editorial Image Library v0.2 er en enkel, webklar kandidatbank for Viddel MVP-artikler. Den gjør Thomas' sorterte Midjourney-bilder tilgjengelige i repoet uten å være et fullverdig DAM, upload-system eller VIS Asset Registry.
 
 ## Prinsipp
 
@@ -14,7 +14,7 @@ Editorial Image Library v0.1 er en enkel, webklar kandidatbank for Viddel MVP-ar
 
 ## Kilde
 
-Bildene i v0.1 er importert fra Thomas' sorterte lokale Drive-synkede mappe:
+Bildene i v0.2 er importert fra Thomas' sorterte lokale Drive-synkede mappe:
 
 ```text
 /Users/thomas26/Library/CloudStorage/GoogleDrive-raddum@gmail.com/My Drive/[@OMNI_OS]/80_JOBB_PROSJEKTER /2026.02.15 business model hørsel/Bilder/viddel-kontaktark/inbox
@@ -23,25 +23,31 @@ Bildene i v0.1 er importert fra Thomas' sorterte lokale Drive-synkede mappe:
 Kun disse sorterte undermappene er importert:
 
 
-| Gruppe            | Antall |
-| ----------------- | ------ |
-| `car`             | 5      |
-| `city-life-cafe`  | 73     |
-| `hearing-aid-box` | 6      |
-| `listening-music` | 4      |
-| `quiet-home`      | 24     |
-| `social`          | 6      |
-| `tv`              | 55     |
+| Gruppe | Antall |
+| ------ | ------ |
+| `app-adjustments` | 2 |
+| `car` | 5 |
+| `city-life-cafe` | 73 |
+| `hearing-aid-box` | 6 |
+| `listening-music` | 9 |
+| `product-environment` | 2 |
+| `product-imagery` | 10 |
+| `quiet-home` | 24 |
+| `social` | 15 |
+| `tv` | 55 |
 
 
 ## Mappestruktur i repo
 
 ```text
 public/images/editorial/library/
+  app-adjustments/
   car/
   city-life-cafe/
   hearing-aid-box/
   listening-music/
+  product-environment/
+  product-imagery/
   quiet-home/
   social/
   tv/
@@ -52,10 +58,13 @@ public/images/editorial/library/
 Filer navngis per gruppe med tre sifre:
 
 ```text
+viddel-app-adjustments-001.webp
 viddel-car-001.webp
 viddel-city-life-cafe-001.webp
 viddel-hearing-aid-box-001.webp
 viddel-listening-music-001.webp
+viddel-product-environment-001.webp
+viddel-product-imagery-001.webp
 viddel-quiet-home-001.webp
 viddel-social-001.webp
 viddel-tv-001.webp
@@ -63,6 +72,26 @@ viddel-tv-001.webp
 
 Tallene er løpenummer innenfor sortert kildegruppe. Filnavnet er stabilt nok for MVP-kandidatbruk, men ikke en endelig asset-ID-strategi.
 
+## v0.2 import
+
+- Nye bilder importert: 28.
+- Totalt i biblioteket etter import: 201.
+- Kun sorterte undermapper er importert. Løse filer direkte fra inbox er fortsatt ikke importert.
+- Duplikater er filtrert bort med `sourceFilename` fra manifestet.
+- Ingen public pages er endret.
+
+| Gruppe | Nye | Totalt |
+| ------ | --- | ------ |
+| `app-adjustments` | 2 | 2 |
+| `car` | 0 | 5 |
+| `city-life-cafe` | 0 | 73 |
+| `hearing-aid-box` | 0 | 6 |
+| `listening-music` | 0 | 9 |
+| `product-environment` | 2 | 2 |
+| `product-imagery` | 10 | 10 |
+| `quiet-home` | 0 | 24 |
+| `social` | 0 | 15 |
+| `tv` | 0 | 55 |
 ## Manifest
 
 Manifestet ligger her:
@@ -96,7 +125,7 @@ Foreløpig finnes bare én status:
 | `candidate` | Webklart kandidatbilde. Må QA-es visuelt før publisering i artikkel eller flate. |
 
 
-## Importregler v0.1
+## Importregler v0.2
 
 - Importer kun sorterte mapper, ikke usortert inbox-innhold.
 - Ikke importer kontaktark.
