@@ -178,6 +178,18 @@ export const reviewRegistry: ReviewRegistryItem[] = [
       "Bedre lyd R5: magazine top, edge-to-edge card images, grey editorial labels, CTA/copy cleanup. Bedre lyd beholdes som CBA; Tips/Life hacks parkert.",
   },
   {
+    id: "editorial-image-library-browser",
+    title: "Editorial Image Library browser",
+    href: "/vis/assets/editorial/",
+    sprint: "2026-W21",
+    issue: "#125K",
+    type: "active",
+    status: "in-review",
+    stakeholderSafe: true,
+    description:
+      "VIS Asset Browser v0.1: intern reviewflate for 173 webklare editorial image-kandidater fra manifestet.",
+  },
+  {
     id: "interaction-states",
     title: "Interaction states",
     href: "/vis/sprints/2026-w21/primitives/interaction-states/",

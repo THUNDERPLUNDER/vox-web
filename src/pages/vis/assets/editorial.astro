@@ -1,0 +1,385 @@
+---
+/* CONTRACT: VIS-only asset browser for Editorial Image Library v0.1 candidates. */
+import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+import {
+  editorialImageLibrary,
+  type EditorialImageGroup,
+  type EditorialImageLibraryEntry,
+} from "../../../data/assets/editorial-image-library";
+
+const base = import.meta.env.BASE_URL;
+
+const groupOrder: Array<EditorialImageGroup> = [
+  "car",
+  "city-life-cafe",
+  "hearing-aid-box",
+  "listening-music",
+  "quiet-home",
+  "social",
+  "tv",
+];
+
+const groupLabels: Record<EditorialImageGroup, string> = {
+  car: "Car",
+  "city-life-cafe": "City Life Cafe",
+  "hearing-aid-box": "Hearing Aid Box",
+  "listening-music": "Listening Music",
+  "quiet-home": "Quiet home",
+  social: "Social",
+  tv: "TV",
+};
+
+const groupedImages = groupOrder
+  .map((group) => ({
+    group,
+    label: groupLabels[group],
+    items: editorialImageLibrary.filter((image) => image.group === group),
+  }))
+  .filter((section) => section.items.length > 0);
+
+const totalImages = editorialImageLibrary.length;
+
+const pathForImage = (entry: EditorialImageLibraryEntry) =>
+  entry.webPath.startsWith("/") ? entry.webPath : `/${entry.webPath}`;
+---
+
+<PrototypeLayout title="Editorial Image Library">
+  <main class="asset-page">
+    <nav class="asset-breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <span>Assets</span>
+      <span aria-hidden="true">/</span>
+      <span>Editorial</span>
+    </nav>
+
+    <header class="asset-hero">
+      <p class="asset-kicker">VIS Asset Browser v0.1</p>
+      <h1>Editorial Image Library</h1>
+      <p>
+        Editorial Image Library viser webklare kandidatbilder for MVP-artikler. Originaler og
+        arbeidsmateriale ligger utenfor repo. Dette er ikke en DAM.
+      </p>
+      <dl class="asset-stats" aria-label="Bibliotekstatus">
+        <div>
+          <dt>Bilder</dt>
+          <dd>{totalImages}</dd>
+        </div>
+        <div>
+          <dt>Grupper</dt>
+          <dd>{groupedImages.length}</dd>
+        </div>
+        <div>
+          <dt>Status</dt>
+          <dd>candidate</dd>
+        </div>
+      </dl>
+    </header>
+
+    <section class="asset-nav" aria-label="Grupper">
+      {groupedImages.map(({ group, label, items }) => (
+        <a href={`#${group}`}>
+          <span>{label}</span>
+          <strong>{items.length}</strong>
+        </a>
+      ))}
+    </section>
+
+    <div class="asset-groups">
+      {groupedImages.map(({ group, label, items }) => (
+        <section class="asset-group" id={group} aria-labelledby={`${group}-heading`}>
+          <header class="asset-group__header">
+            <div>
+              <p class="asset-kicker">Group</p>
+              <h2 id={`${group}-heading`}>{label}</h2>
+            </div>
+            <span>{items.length} bilder</span>
+          </header>
+
+          <ul class="asset-grid" role="list">
+            {items.map((entry) => (
+              <li class="asset-card">
+                <figure>
+                  <img src={pathForImage(entry)} alt={entry.alt} loading="lazy" decoding="async" />
+                </figure>
+                <div class="asset-card__body">
+                  <div class="asset-card__meta">
+                    <span>{entry.id}</span>
+                    <span>{entry.group}</span>
+                    <span>{entry.status}</span>
+                  </div>
+                  <p class="asset-card__label">Mulig bruk</p>
+                  <ul class="asset-uses" role="list">
+                    {entry.possibleUses.map((use) => (
+                      <li>{use}</li>
+                    ))}
+                  </ul>
+                  <p class="asset-card__label">Alt</p>
+                  <p class="asset-card__text">{entry.alt}</p>
+                  <p class="asset-card__label">Web path</p>
+                  <code class="asset-path">{entry.webPath}</code>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </main>
+</PrototypeLayout>
+
+<style>
+  .asset-page {
+    min-height: 100vh;
+    background: #f4f5f5;
+    color: #17202c;
+    padding: 1.25rem;
+  }
+
+  @media (min-width: 720px) {
+    .asset-page {
+      padding: 2rem;
+    }
+  }
+
+  .asset-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+    color: #647084;
+    font-size: 0.75rem;
+  }
+
+  .asset-breadcrumb a {
+    color: #17202c;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .asset-hero {
+    margin-top: 1.25rem;
+    max-width: 62rem;
+    border: 1px solid #d8dde5;
+    border-radius: 0.75rem;
+    background: #fff;
+    padding: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .asset-kicker {
+    margin: 0;
+    color: #647084;
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .asset-hero h1,
+  .asset-group h2 {
+    margin: 0;
+    color: #111827;
+    font-size: clamp(1.45rem, 3vw, 2.15rem);
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+  }
+
+  .asset-hero h1 {
+    margin-top: 0.35rem;
+  }
+
+  .asset-hero > p:not(.asset-kicker) {
+    max-width: 44rem;
+    margin: 0.7rem 0 0;
+    color: #4b5563;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .asset-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 1rem 0 0;
+  }
+
+  .asset-stats div {
+    border: 1px solid #e1e5eb;
+    border-radius: 0.55rem;
+    background: #f8fafc;
+    padding: 0.75rem;
+  }
+
+  .asset-stats dt {
+    color: #647084;
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .asset-stats dd {
+    margin: 0.2rem 0 0;
+    color: #111827;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .asset-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 1rem;
+    max-width: 72rem;
+  }
+
+  .asset-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border: 1px solid #cfd5df;
+    border-radius: 999px;
+    background: #fff;
+    padding: 0.42rem 0.7rem;
+    color: #243042;
+    font-size: 0.78rem;
+    text-decoration: none;
+  }
+
+  .asset-nav strong {
+    color: #647084;
+    font-size: 0.72rem;
+  }
+
+  .asset-groups {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .asset-group {
+    max-width: 92rem;
+    scroll-margin-top: 1rem;
+  }
+
+  .asset-group__header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid #d8dde5;
+    padding-bottom: 0.7rem;
+  }
+
+  .asset-group__header span {
+    flex: 0 0 auto;
+    color: #647084;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .asset-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 720px) {
+    .asset-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .asset-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .asset-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .asset-card {
+    overflow: hidden;
+    border: 1px solid #d8dde5;
+    border-radius: 0.75rem;
+    background: #fff;
+  }
+
+  .asset-card figure {
+    aspect-ratio: 16 / 11;
+    margin: 0;
+    background: #e9edf2;
+  }
+
+  .asset-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .asset-card__body {
+    padding: 0.85rem;
+  }
+
+  .asset-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .asset-card__meta span,
+  .asset-uses li {
+    border: 1px solid #d8dde5;
+    border-radius: 999px;
+    background: #f8fafc;
+    padding: 0.2rem 0.45rem;
+    color: #334155;
+    font-size: 0.68rem;
+    line-height: 1.2;
+  }
+
+  .asset-card__label {
+    margin: 0.8rem 0 0.35rem;
+    color: #647084;
+    font-size: 0.66rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .asset-uses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .asset-card__text {
+    margin: 0;
+    color: #4b5563;
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  .asset-path {
+    display: block;
+    overflow-wrap: anywhere;
+    border: 1px solid #d8dde5;
+    border-radius: 0.45rem;
+    background: #f8fafc;
+    padding: 0.5rem;
+    color: #1f2937;
+    font-size: 0.7rem;
+    line-height: 1.4;
+  }
+</style>

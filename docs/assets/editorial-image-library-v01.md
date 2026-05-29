@@ -22,15 +22,17 @@ Bildene i v0.1 er importert fra Thomas' sorterte lokale Drive-synkede mappe:
 
 Kun disse sorterte undermappene er importert:
 
-| Gruppe | Antall |
-|--------|--------|
-| `car` | 5 |
-| `city-life-cafe` | 73 |
-| `hearing-aid-box` | 6 |
-| `listening-music` | 4 |
-| `quiet-home` | 24 |
-| `social` | 6 |
-| `tv` | 55 |
+
+| Gruppe            | Antall |
+| ----------------- | ------ |
+| `car`             | 5      |
+| `city-life-cafe`  | 73     |
+| `hearing-aid-box` | 6      |
+| `listening-music` | 4      |
+| `quiet-home`      | 24     |
+| `social`          | 6      |
+| `tv`              | 55     |
+
 
 ## Mappestruktur i repo
 
@@ -69,6 +71,8 @@ Manifestet ligger her:
 src/data/assets/editorial-image-library.ts
 ```
 
+VIS Asset Browser v0.1 finnes på `/vis/assets/editorial/` og leser manifestet.
+
 Hver entry har:
 
 - `id`
@@ -85,9 +89,11 @@ Hver entry har:
 
 Foreløpig finnes bare én status:
 
-| Status | Betydning |
-|--------|-----------|
+
+| Status      | Betydning                                                                        |
+| ----------- | -------------------------------------------------------------------------------- |
 | `candidate` | Webklart kandidatbilde. Må QA-es visuelt før publisering i artikkel eller flate. |
+
 
 ## Importregler v0.1
 
