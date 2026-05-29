@@ -6,6 +6,16 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/nav/Footer.astro";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+
+const helpEntryImage = {
+  src: "/images/editorial/library/app-adjustments/viddel-app-adjustments-001.webp",
+  alt: "Hender som bruker mobil ved siden av høreapparater og ladeetui på et lyst bord.",
+};
+
+const editorialEntryImage = {
+  src: "/images/editorial/library/social/viddel-social-012.webp",
+  alt: "To personer i en lys hverdagssamtale ved kjøkkenbordet.",
+};
 ---
 
 <BaseLayout title="Viddel" currentPath="/no" shellVariant="article">
@@ -24,6 +34,9 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
         <ul class="land-entry-grid" role="list">
           <li>
             <a href="/no/hjelp/" class="land-entry land-entry--help">
+              <span class="land-entry__media">
+                <img src={helpEntryImage.src} alt={helpEntryImage.alt} loading="eager" decoding="async" />
+              </span>
               <span class="land-entry__kicker">Hjelp</span>
               <span class="land-entry__title">Noe virker ikke?</span>
               <span class="land-entry__hint">
@@ -34,6 +47,9 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
           </li>
           <li>
             <a href="/no/bedre-lyd/" class="land-entry land-entry--editorial">
+              <span class="land-entry__media">
+                <img src={editorialEntryImage.src} alt={editorialEntryImage.alt} loading="eager" decoding="async" />
+              </span>
               <span class="land-entry__kicker">Bedre lyd</span>
               <span class="land-entry__title">Vil du forstå og mestre mer?</span>
               <span class="land-entry__hint">
@@ -141,9 +157,10 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 0.38rem;
+    gap: 0;
     min-height: 100%;
-    padding: 1rem 1rem 2.15rem;
+    overflow: hidden;
+    padding: 0 0 2.15rem;
     border: 1px solid rgb(var(--border) / 0.22);
     border-radius: 10px;
     background: rgb(var(--reading-paper));
@@ -160,7 +177,23 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
     box-shadow: 0 0 0 3px rgb(14 165 233 / 0.32);
   }
 
+  .land-entry__media {
+    display: block;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    border-bottom: 1px solid rgb(var(--border) / 0.16);
+    background: rgb(var(--surface-subtle));
+  }
+
+  .land-entry__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
   .land-entry__kicker {
+    margin: 0.95rem 1rem 0;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -169,6 +202,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
   }
 
   .land-entry__title {
+    margin: 0.34rem 1rem 0;
     font-size: 1.02rem;
     font-weight: 650;
     letter-spacing: -0.025em;
@@ -178,6 +212,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
   .land-entry__hint {
     flex: 1;
+    margin: 0.38rem 1rem 0;
     font-size: 0.82rem;
     line-height: 1.48;
     color: rgb(var(--reading-ink-secondary));
