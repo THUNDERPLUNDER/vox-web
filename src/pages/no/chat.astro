@@ -509,6 +509,156 @@ const exampleQuestions = [
     .chat-debug-toggle {
       padding: 0.34rem 0.62rem;
     }
+
+    @media (max-width: 639px) {
+      .chat-page {
+        --chat-mobile-shell-offset: 7rem;
+        --chat-mobile-composer-height: 5.85rem;
+        --chat-mobile-safe-bottom: env(safe-area-inset-bottom, 0px);
+        height: calc(100svh - var(--chat-mobile-shell-offset));
+        min-height: calc(100svh - var(--chat-mobile-shell-offset));
+        margin-inline: -1rem;
+        padding: 0;
+        overflow: hidden;
+        background: rgb(var(--reading-paper));
+      }
+
+      @supports (height: 100dvh) {
+        .chat-page {
+          height: calc(100dvh - var(--chat-mobile-shell-offset));
+          min-height: calc(100dvh - var(--chat-mobile-shell-offset));
+        }
+      }
+
+      .chat-container {
+        height: 100%;
+        min-height: inherit;
+        padding: 0;
+      }
+
+      .chat-surface {
+        display: flex;
+        height: 100%;
+        min-height: inherit;
+        max-width: none;
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: auto;
+        border-radius: 0;
+        padding: 1rem 1rem calc(var(--chat-mobile-composer-height) + var(--chat-mobile-safe-bottom));
+        box-shadow: none;
+      }
+
+      .chat-hero {
+        flex: 0 0 auto;
+        padding-bottom: 0.8rem;
+      }
+
+      .chat-breadcrumb {
+        margin-bottom: 0.65rem;
+        font-size: 0.62rem;
+      }
+
+      [data-standalone-chat] h1 {
+        margin-top: 0.32rem;
+        font-size: clamp(1.75rem, 10vw, 2.2rem);
+      }
+
+      .chat-lead {
+        margin-top: 0.6rem;
+        font-size: 0.9rem;
+        line-height: 1.48;
+      }
+
+      .chat-compose-block {
+        flex: 0 0 auto;
+        padding-top: 0.85rem;
+      }
+
+      .chat-compose {
+        position: fixed;
+        z-index: 35;
+        right: 1rem;
+        bottom: calc(0.75rem + var(--chat-mobile-safe-bottom));
+        left: 1rem;
+        padding: 0.52rem;
+        border-color: rgb(var(--border) / 0.32);
+        border-radius: 1.1rem;
+        box-shadow: 0 18px 42px rgb(var(--reading-ink) / 0.16);
+      }
+
+      .chat-compose__input {
+        min-height: 2.75rem;
+        font-size: 0.9rem;
+      }
+
+      .chat-compose__send {
+        width: 2.65rem;
+        height: 2.65rem;
+        min-height: 2.65rem;
+      }
+
+      .chat-examples {
+        margin-top: 0;
+      }
+
+      .chat-examples__list {
+        gap: 0.42rem;
+      }
+
+      .chat-example-chip {
+        min-height: 2.1rem;
+        padding: 0.48rem 0.7rem;
+        font-size: 0.78rem;
+      }
+
+      .chat-seed-strip {
+        margin-top: 0.75rem;
+      }
+
+      .chat-widget-shell {
+        display: flex;
+        flex: 1 1 auto;
+        min-height: 16rem;
+        flex-direction: column;
+        margin-top: 1rem;
+        padding: 0.85rem;
+        border-radius: 1rem;
+        box-shadow: none;
+      }
+
+      .chat-widget-shell__header {
+        flex: 0 0 auto;
+        padding-bottom: 0.65rem;
+      }
+
+      .chat-widget-shell__hint {
+        font-size: 0.78rem;
+      }
+
+      .chat-widget-frame {
+        display: flex;
+        flex: 1 1 auto;
+        min-height: 0;
+        border-radius: 0.85rem;
+      }
+
+      .chat-widget {
+        height: auto;
+        min-height: 0;
+        flex: 1 1 auto;
+      }
+
+      .chat-safety-note {
+        flex: 0 0 auto;
+        margin-top: 0.85rem;
+        font-size: 0.73rem;
+      }
+
+      .chat-debug-toggle-row {
+        padding-bottom: 0.25rem;
+      }
+    }
   </style>
 
   <script is:inline>
