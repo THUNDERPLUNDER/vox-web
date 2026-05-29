@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-05-29 - Standalone AI: CES headless, ikke widget (#125M-A)
+- Beslutning: `/no/chat/` skal **ikke** bruke CES-widget (synlig, skjult, innpakket eller via `sendQuery()`). Standalone AI bygges som **Viddel-eid UI** mot **CES `runSession`** via server-side API. Branch `feature/125m-standalone-ai-polish-r1` er **stoppet** og skal **ikke** merges.
+- Begrunnelse: #125M R1 polerte widget-wrapper — feil retning etter Thomas QA. Spike (#125M-A) kartla at headless er mulig via CES API access, men repo mangler adapter, API-endpoint, SA/secrets og bekreftet API access deployment.
+- Konsekvens: Produksjon `/no/chat/` endres **ikke** før Fase 0 (GCP) og Fase 1 (beskyttet sandbox PoC) er fullført. Se `docs/project/decisions/DECISION_125M_CES_HEADLESS_INTEGRATION_CBA.md`.
+
 ## 2026-05-06 - Privacy-first metrics & State v0.1 dokumentert i repo (#99 → #105)
 - Beslutning: Arbeidsmodell for **event-vokabular**, **payload-grenser**, **State v0.1**, **fire datadeler** og **pilot vs. senere** er landet i `docs/project/20_VIDDEL_PRIVACY_FIRST_METRICS_AND_STATE_v0_1.md`, i tråd med GitHub **#99**. Større lagring og stackvalg forankres videre i **#105**.
 - Begrunnelse: MVP trenger et skriftlig, privacy-first grunnlag før måling og «Min side light» skaleres; dokumentet skiller hjelpedata fra uttrekk og henter inn safe-read av faktisk kodebase (Article AI Bridge, CES, mangel på sentral analytics i dag).

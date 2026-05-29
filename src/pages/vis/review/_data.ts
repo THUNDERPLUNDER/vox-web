@@ -154,6 +154,18 @@ export const reviewRegistry: ReviewRegistryItem[] = [
       "CBA v0.3: Hjelp /no/hjelp/, Bedre lyd /no/bedre-lyd/, Spør Viddel → /no/chat/. Gamle ruter redirectes. Domeneflytt viddel.no ikke gjort.",
   },
   {
+    id: "standalone-ai-headless-125m-a",
+    title: "Standalone AI — CES headless CBA",
+    href: "/no/sandbox/chat-shell",
+    sprint: "2026-W21",
+    issue: "#125M-A",
+    type: "reference",
+    status: "decision-candidate",
+    stakeholderSafe: true,
+    description:
+      "#125M-A spike completed. /no/chat/ skal ikke bruke CES-widget. Riktig retning: Viddel UI → server/API → CES runSession. Implementation blocked pending GCP/API access. Branch feature/125m-standalone-ai-polish-r1 stopped — do not merge.",
+  },
+  {
     id: "forside-routing",
     title: "Forside / routing",
     href: "/no/",
