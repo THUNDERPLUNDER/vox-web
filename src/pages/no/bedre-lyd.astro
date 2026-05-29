@@ -1,8 +1,8 @@
 ---
-/* CONTRACT: Editorial magazine frontpage — «Bedre lyd» #125J / editorial R4.
+/* CONTRACT: Editorial magazine frontpage — «Bedre lyd» #125J / editorial R5.
    Article-first: compact semantic hero → lead story → current stories → theme chips → help bridge.
    No AI seeds on landing; no global nav/footer/routes changes.
-   Image slots: lead image, small sounds, social listening, music; TV/mobile/car and first weeks remain text-only until approved images exist.
+   Image treatment: edge-to-edge card images; TV/mobile/car and first weeks remain text-only until approved images exist.
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/nav/Footer.astro";
@@ -38,7 +38,7 @@ const currentStories: Array<StoryCard> = [
   {
     series: "Lydglede",
     title: "Små lyder og følelsen av å være påkoblet",
-    deck: "Fugler, regn, musikk og stemmer — og hvordan du kan legge merke til dem.",
+    deck: "Fugler, regn, musikk og stemmer. Hvordan du kan legge merke til dem.",
     href: "/no/artikkel/fra-skuff-til-daglig-bruk",
     image: {
       src: "/images/editorial/bedre-lyd/viddel-small-sounds-presence-portrait.webp",
@@ -48,7 +48,7 @@ const currentStories: Array<StoryCard> = [
   {
     series: "Sosialt",
     title: "Hvorfor selskap fortsatt kan være krevende",
-    deck: "Erfaringer fra et støyende bord — uten å gi opp sosialt liv.",
+    deck: "Erfaringer fra et støyende bord, uten å gi opp sosialt liv.",
     href: "/no/artikkel/for-restaurant-eller-stort-selskap",
     image: {
       src: "/images/editorial/bedre-lyd/viddel-social-listening-dinner.webp",
@@ -97,11 +97,6 @@ const themeChips = [
     <div class="bl-container">
       <article class="bl-surface">
         <header class="bl-hero">
-          <nav class="bl-breadcrumb" aria-label="Du er her">
-            <a href="/no">Forside</a>
-            <span aria-hidden="true">/</span>
-            <span>{pageTitle}</span>
-          </nav>
           <h1>{pageTitle}</h1>
         </header>
 
@@ -115,7 +110,6 @@ const themeChips = [
               <h2 id="lead-story-heading">{leadArticle.title}</h2>
               <span class="bl-lead-card__deck">{leadArticle.deck}</span>
             </span>
-            <span class="bl-lead-card__meta" aria-hidden="true">Les saken →</span>
           </a>
         </section>
 
@@ -132,9 +126,11 @@ const themeChips = [
                       </span>
                     ) : null
                   }
-                  <span class="bl-story-card__series">{story.series}</span>
-                  <span class="bl-story-card__title">{story.title}</span>
-                  <span class="bl-story-card__deck">{story.deck}</span>
+                  <span class="bl-story-card__body">
+                    <span class="bl-story-card__series">{story.series}</span>
+                    <span class="bl-story-card__title">{story.title}</span>
+                    <span class="bl-story-card__deck">{story.deck}</span>
+                  </span>
                 </a>
               </li>
             ))}
@@ -197,42 +193,23 @@ const themeChips = [
     padding: clamp(1.75rem, 4vw, 2.4rem) clamp(1.5rem, 4vw, 3rem) clamp(2.35rem, 5vw, 3.4rem);
   }
 
-  .bl-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    margin-bottom: 0.85rem;
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgb(var(--reading-ink-secondary) / 0.6);
-  }
-
-  .bl-breadcrumb a {
-    color: inherit;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-
   [data-bedre-lyd] h1 {
     margin: 0;
-    font-family: var(--font-display);
-    font-size: clamp(1.45rem, 3vw, 2rem);
-    font-weight: 650;
-    line-height: 1.05;
-    letter-spacing: -0.045em;
-    text-wrap: balance;
-    color: rgb(var(--reading-ink));
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: rgb(var(--reading-ink-secondary));
   }
 
   .bl-hero {
-    padding-bottom: clamp(0.85rem, 2.2vw, 1.1rem);
+    padding-bottom: 0.55rem;
     border-bottom: 1px solid rgb(var(--border) / 0.12);
   }
 
   .bl-lead-story {
-    margin-top: clamp(1.1rem, 3vw, 1.65rem);
+    margin-top: clamp(1rem, 2.6vw, 1.35rem);
   }
 
   .bl-eyebrow,
@@ -242,17 +219,17 @@ const themeChips = [
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgb(var(--reading-accent-iris));
+    color: rgb(var(--reading-ink-secondary));
   }
 
   .bl-lead-card {
     box-sizing: border-box;
     max-width: 100%;
     min-width: 0;
-    display: grid;
-    gap: clamp(1rem, 3vw, 1.4rem);
+    display: block;
+    overflow: hidden;
     margin-top: 0.65rem;
-    padding: clamp(1rem, 3vw, 1.35rem);
+    padding: 0;
     border: 1px solid rgb(var(--border) / 0.16);
     border-radius: calc(var(--radius-md) + 4px);
     background: rgb(var(--reading-paper));
@@ -290,6 +267,11 @@ const themeChips = [
     color: rgb(var(--reading-ink));
   }
 
+  .bl-lead-card__body {
+    display: block;
+    padding: clamp(1.25rem, 3.6vw, 1.85rem);
+  }
+
   .bl-lead-card__deck {
     display: block;
     min-width: 0;
@@ -300,18 +282,11 @@ const themeChips = [
     color: rgb(var(--reading-ink-secondary));
   }
 
-  .bl-lead-card__meta {
-    align-self: end;
-    font-size: 0.82rem;
-    font-weight: 650;
-    color: rgb(var(--reading-ink-secondary));
-  }
-
   .bl-image-frame {
     display: block;
     overflow: hidden;
-    border-radius: var(--radius-md);
-    border: 1px solid rgb(var(--border) / 0.1);
+    border-radius: 0;
+    border: 0;
     background: rgb(var(--surface-subtle) / 0.34);
   }
 
@@ -323,14 +298,14 @@ const themeChips = [
   }
 
   .bl-image-frame--lead {
-    aspect-ratio: 16 / 10;
-    min-height: clamp(10rem, 24vw, 14rem);
+    aspect-ratio: 16 / 9;
+    min-height: clamp(11rem, 30vw, 18rem);
   }
 
   .bl-image-frame--story {
     aspect-ratio: 16 / 9;
-    min-height: 4.75rem;
-    margin-bottom: 0.2rem;
+    min-height: 5rem;
+    margin: 0;
   }
 
   .bl-block {
@@ -366,8 +341,9 @@ const themeChips = [
     min-height: 12rem;
     height: 100%;
     flex-direction: column;
-    gap: 0.4rem;
-    padding: 1.1rem 1.15rem;
+    gap: 0;
+    overflow: hidden;
+    padding: 0;
     border: 1px solid rgb(var(--border) / 0.14);
     border-radius: var(--radius-md);
     background: rgb(var(--reading-paper));
@@ -386,14 +362,17 @@ const themeChips = [
   }
 
   .bl-story-card__series {
+    display: block;
+    margin-bottom: 0.35rem;
     font-size: 0.6rem;
     font-weight: 750;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgb(var(--reading-accent-iris));
+    color: rgb(var(--reading-ink-secondary));
   }
 
   .bl-story-card__title {
+    display: block;
     overflow-wrap: anywhere;
     font-family: var(--font-display);
     font-size: clamp(1.05rem, 2.5vw, 1.25rem);
@@ -404,10 +383,17 @@ const themeChips = [
   }
 
   .bl-story-card__deck {
+    display: block;
+    margin-top: 0.35rem;
     overflow-wrap: anywhere;
     font-size: 0.84rem;
     line-height: 1.48;
     color: rgb(var(--reading-ink-secondary));
+  }
+
+  .bl-story-card__body {
+    display: block;
+    padding: 1rem 1.1rem 1.1rem;
   }
 
   .bl-chip-list {
@@ -458,13 +444,8 @@ const themeChips = [
   }
 
   @media (min-width: 760px) {
-    .bl-lead-card {
-      grid-template-columns: minmax(17rem, 0.92fr) minmax(0, 1fr);
-      align-items: center;
-    }
-
-    .bl-lead-card__meta {
-      grid-column: 2;
+    .bl-lead-card__body {
+      padding-inline: clamp(1.5rem, 4vw, 2.2rem);
     }
   }
 
