@@ -1,0 +1,153 @@
+---
+/* CONTRACT: Protected sandbox PoC — Viddel-eid UI calling /api/chat (CES runSession), no CES widget. */
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Section from "../../../components/layout/Section.astro";
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+---
+
+<BaseLayout title="Viddel Lab — CES headless spike" currentPath="/no/sandbox/ces-headless-spike" headerBrand="viddel">
+  <meta slot="head" name="robots" content="noindex,follow" />
+
+  <main class="relative pb-10 sm:pb-12">
+    <Section class="!pt-2 !pb-6 sm:!pt-3 sm:!pb-8">
+      <div class="mx-auto max-w-2xl space-y-3">
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-[rgb(var(--muted))]">Viddel Lab · #125M-B</p>
+        <h1 class="font-display text-2xl font-semibold tracking-[-0.03em] text-balance sm:text-3xl">CES headless spike</h1>
+        <p class="max-w-xl text-sm leading-relaxed text-[rgb(var(--muted))]">
+          Beskyttet sandbox for Viddel-eid composer mot server-side <code class="text-[rgb(var(--text))]">runSession</code>.
+          Ingen CES-widget, ingen skjult bridge.
+        </p>
+      </div>
+    </Section>
+
+    <Section tone="band" class="!py-6 sm:!py-8">
+      <div class="mx-auto max-w-2xl">
+        <div class="vox-surface-lifted space-y-4 p-4 sm:p-5">
+          <div
+            id="ces-headless-transcript"
+            class="min-h-[12rem] space-y-3 rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.45] bg-[rgb(var(--surface-subtle))/0.55] p-4"
+            aria-live="polite"
+            aria-relevant="additions text"
+          >
+            <p class="text-sm leading-relaxed text-[rgb(var(--muted))]">
+              Skriv et spørsmål nedenfor. Svaret kommer som ren tekst fra CES via <code>/api/chat</code>.
+            </p>
+          </div>
+
+          <p id="ces-headless-status" class="min-h-[1.25rem] text-xs text-[rgb(var(--muted))]" role="status"></p>
+
+          <form id="ces-headless-form" class="space-y-3">
+            <label for="ces-headless-input" class="sr-only">Skriv spørsmål</label>
+            <textarea
+              id="ces-headless-input"
+              rows="3"
+              placeholder="Hei, hvordan kobler jeg høreapparatet til mobilen?"
+              class="w-full resize-y rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.55] bg-[rgb(var(--surface))] px-3 py-2.5 text-sm leading-relaxed text-[rgb(var(--text))] placeholder:text-[rgb(var(--muted))] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.45]"
+            ></textarea>
+            <button
+              type="submit"
+              id="ces-headless-send"
+              class="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--text))] px-4 py-2.5 text-sm font-semibold text-[rgb(var(--surface))] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Send til Viddel
+            </button>
+          </form>
+        </div>
+      </div>
+    </Section>
+  </main>
+
+  <script is:inline>
+    (() => {
+      const STORAGE_KEY = "viddel-ces-headless-session";
+      const SESSION_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}$/;
+      const form = document.getElementById("ces-headless-form");
+      const input = document.getElementById("ces-headless-input");
+      const sendBtn = document.getElementById("ces-headless-send");
+      const statusEl = document.getElementById("ces-headless-status");
+      const transcriptEl = document.getElementById("ces-headless-transcript");
+
+      if (!form || !input || !sendBtn || !statusEl || !transcriptEl) return;
+
+      const ensureSessionId = () => {
+        try {
+          const existing = sessionStorage.getItem(STORAGE_KEY);
+          if (existing && SESSION_PATTERN.test(existing)) return existing;
+        } catch (_) {}
+        const created = `viddel-${crypto.randomUUID().replace(/-/g, "").slice(0, 24)}`;
+        try {
+          sessionStorage.setItem(STORAGE_KEY, created);
+        } catch (_) {}
+        return created;
+      };
+
+      const setStatus = (text) => {
+        statusEl.textContent = text || "";
+      };
+
+      const appendBubble = (role, text) => {
+        const wrap = document.createElement("div");
+        wrap.className =
+          role === "user"
+            ? "ml-auto max-w-[92%] rounded-[var(--radius-md)] bg-[rgb(var(--surface))] px-3 py-2 text-sm leading-relaxed text-[rgb(var(--text))] shadow-[var(--shadow-sm)]"
+            : "max-w-[92%] rounded-[var(--radius-md)] border border-[rgb(var(--border))/0.4] bg-[rgb(var(--surface))] px-3 py-2 text-sm leading-relaxed text-[rgb(var(--text))]";
+        const label = document.createElement("p");
+        label.className = "mb-1 text-[10px] font-semibold uppercase tracking-wide text-[rgb(var(--muted))]";
+        label.textContent = role === "user" ? "Du" : "Viddel";
+        const body = document.createElement("p");
+        body.className = "whitespace-pre-wrap";
+        body.textContent = text;
+        wrap.append(label, body);
+        transcriptEl.append(wrap);
+        wrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      };
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const message = (input.value || "").trim();
+        if (!message) return;
+
+        const sessionId = ensureSessionId();
+        sendBtn.disabled = true;
+        input.disabled = true;
+        setStatus("Henter svar …");
+        appendBubble("user", message);
+        input.value = "";
+
+        try {
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message, sessionId }),
+          });
+
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            const detail =
+              payload?.message ||
+              (payload?.error === "configuration_missing"
+                ? "Server mangler CES secrets. Sett env vars i Vercel."
+                : "Kunne ikke hente svar.");
+            setStatus(detail);
+            return;
+          }
+
+          if (typeof payload.text !== "string" || !payload.text.trim()) {
+            setStatus("Tomt svar fra server.");
+            return;
+          }
+
+          appendBubble("assistant", payload.text.trim());
+          setStatus("");
+        } catch (_) {
+          setStatus("Nettverksfeil. Prøv igjen.");
+        } finally {
+          sendBtn.disabled = false;
+          input.disabled = false;
+          input.focus();
+        }
+      });
+    })();
+  </script>
+</BaseLayout>

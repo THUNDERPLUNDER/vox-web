@@ -1,7 +1,7 @@
 # Decision #125M-A — CES Headless Integration CBA
 
-Status: **CBA / spike completed — implementation blocked pending GCP**  
-Date: 2026-05-29  
+Status: **CBA locked — Fase 0 complete, Fase 1 PoC in #125M-B**  
+Date: 2026-05-29 (updated 2026-05-29)  
 Sprint: 2026-W21 (Viddel Lab)  
 Route (target): `/no/chat/`  
 Related: #125 Reskin MVP Surfaces, #125I Cross-surface polish ([#157](https://github.com/THUNDERPLUNDER/vox-web/issues/157)), #125J (Spør Viddel CTA → `/no/chat/`)
@@ -16,7 +16,7 @@ Standalone AI på `/no/chat/` skal **ikke** bruke CES-widget (`<chat-messenger>`
 
 Riktig retning: **Viddel-eid UI** → **server-side API** → **CES `runSession`**.
 
-Implementasjon av produksjonsflate venter til **Fase 0 (GCP)** er fullført og **Fase 1 (beskyttet sandbox PoC)** er QA-godkjent.
+**Fase 0 (GCP)** er fullført (API access + Cloud Shell `runSession`). **Fase 1** leveres som #125M-B sandbox PoC — se [DECISION_125M_B_CES_HEADLESS_SANDBOX_POC.md](./DECISION_125M_B_CES_HEADLESS_SANDBOX_POC.md). Produksjon `/no/chat/` venter til sandbox QA.
 
 ---
 

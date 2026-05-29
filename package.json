@@ -16,6 +16,7 @@
     "vis:github:snapshot": "node scripts/vis-github-live-snapshot.mjs"
   },
   "dependencies": {
+    "@astrojs/vercel": "^9.0.5",
     "@storyblok/astro": "^9.0.3",
     "@tailwindcss/vite": "^4.2.1",
     "astro": "^5.17.1",

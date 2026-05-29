@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import { storyblok } from '@storyblok/astro';
 import { loadEnv } from 'vite';
@@ -29,6 +30,10 @@ const base = ghRepo ? `/${ghRepo}/` : '/';
 export default defineConfig({
   site: 'https://thunderplunder.github.io',
   base,
+
+  // Static by default (Astro 5); /api/* opts out via export const prerender = false.
+  // Requires @astrojs/vercel adapter for on-demand API routes on Vercel.
+  adapter: vercel(),
 
   integrations: [...(storyblokIntegration ? [storyblokIntegration] : [])],
 
