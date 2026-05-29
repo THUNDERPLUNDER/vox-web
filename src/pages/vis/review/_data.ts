@@ -187,7 +187,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "in-review",
     stakeholderSafe: true,
     description:
-      "VIS Asset Browser v0.1: intern reviewflate for 173 webklare editorial image-kandidater fra manifestet.",
+      "VIS Asset Browser v0.1 added and /vis/ refreshed for current MVP work. Follow-up: more automatic VIS index/registry.",
   },
   {
     id: "interaction-states",

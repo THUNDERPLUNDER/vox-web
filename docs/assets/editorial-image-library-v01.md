@@ -72,6 +72,7 @@ src/data/assets/editorial-image-library.ts
 ```
 
 VIS Asset Browser v0.1 finnes på `/vis/assets/editorial/` og leser manifestet.
+VIS-forsiden er oppdatert med inngang til browseren og dagens MVP-flater. Senere bør `/vis/` genereres fra et lite registry i stedet for manuelt kuraterte kort.
 
 Hver entry har:
 
