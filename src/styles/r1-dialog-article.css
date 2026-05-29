@@ -57,7 +57,7 @@
       flex-wrap: wrap;
       align-items: center;
       gap: 0.45rem;
-      color: rgb(var(--reading-accent-iris));
+      color: rgb(var(--reading-ink-secondary));
     }
 
     [data-r1-editorial] .r1-storyblok-kicker-row p {
@@ -221,6 +221,10 @@
       display: flex;
       flex-direction: column;
       gap: 2.5rem;
+    }
+
+    [data-r1-editorial] .vox-reading-inline {
+      border-left-color: rgb(var(--reading-ink-secondary) / 0.24);
     }
 
     @media (max-width: 560px) {
@@ -486,7 +490,7 @@
       color: rgb(var(--reading-ink));
       margin: 0;
       padding-bottom: 0.4rem;
-      border-bottom: 1px solid rgb(var(--reading-accent-iris) / 0.22);
+      border-bottom: 1px solid rgb(var(--reading-ink-secondary) / 0.18);
       display: inline-block;
       max-width: 100%;
     }
@@ -517,7 +521,7 @@
       width: 0.28rem;
       height: 0.28rem;
       border-radius: 999px;
-      background: rgb(var(--reading-accent-iris) / 0.5);
+      background: rgb(var(--reading-ink-secondary) / 0.45);
     }
 
     [data-r1-editorial] .r1-orientation {

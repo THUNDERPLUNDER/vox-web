@@ -151,7 +151,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
     text-decoration: none;
     transition:
       border-color 150ms ease,
-      box-shadow 150ms ease;
+      box-shadow 150ms ease,
+      transform 150ms ease;
   }
 
   .land-entry:focus-visible {
@@ -194,7 +195,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
   .land-entry:hover {
     border-color: rgb(var(--border) / 0.36);
-    box-shadow: 0 2px 12px rgb(var(--reading-ink) / 0.05);
+    box-shadow: 0 8px 26px rgb(var(--reading-ink) / 0.055);
+    transform: translateY(-1px);
   }
 
   .land-entry:hover .land-entry__arrow {
