@@ -4,8 +4,8 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## Siste sync
 
-- **generated_at (UTC):** 2026-05-28T10:05:50.862Z
-- **generated_at (Europe/Oslo):** 28.5.2026, 12:05:50
+- **generated_at (UTC):** 2026-05-29T09:57:14.572Z
+- **generated_at (Europe/Oslo):** 29.5.2026, 11:57:14
 - **timezone:** Europe/Oslo
 - **repo:** THUNDERPLUNDER/vox-web
 - **data_warnings:** (ingen)
@@ -76,7 +76,7 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## SISTE 24T
 
-Vindu: commits/issues lukket/oppdatert etter **2026-05-27T10:05:50Z** (sirket ~24 timer).
+Vindu: commits/issues lukket/oppdatert etter **2026-05-28T09:57:14Z** (sirket ~24 timer).
 
 ### Lukkede issues
 
@@ -88,7 +88,19 @@ _Ingen treff i søkt utsnitt._
 
 ### Commits
 
-_Ingen eller ikke tilgjengelig._
+- **74d9e29** (2026-05-29T08:54:18Z) Merge pull request #174 from THUNDERPLUNDER/feature/bedre-lyd-editorial-r5
+- **fc85b80** (2026-05-29T08:24:46Z) feat(bedre-lyd): editorial R5 magazine card polish
+- **3804510** (2026-05-28T17:02:32Z) Merge pull request #173 from THUNDERPLUNDER/feature/bedre-lyd-editorial-r1
+- **f613224** (2026-05-28T16:50:41Z) feat(bedre-lyd): add editorial image pass v0.1
+- **66cabb8** (2026-05-28T15:09:00Z) feat(bedre-lyd): editorial R4 image-ready magazine frontpage
+- **d8ef991** (2026-05-28T14:36:26Z) feat(bedre-lyd): editorial R3 magazine frontpage
+- **6a785ec** (2026-05-28T13:24:51Z) feat(bedre-lyd): editorial R2 — situation-first, no AI seeds
+- **f0f5233** (2026-05-28T13:12:53Z) docs(qa): add README for Bedre lyd R1 QA pack
+- **ab77503** (2026-05-28T13:12:46Z) docs(qa): Bedre lyd R1 screenshot pack for PR #173 review
+- **38ce36a** (2026-05-28T13:01:11Z) feat(bedre-lyd): editorial page polish R1 — Aktuelt først
+- **d1d1a06** (2026-05-28T12:52:12Z) Merge pull request #172 from THUNDERPLUNDER/feature/125j-copy-nav-routes
+- **a6eb19e** (2026-05-28T12:43:05Z) feat(#125J): copy/nav/route pass — Hjelp, Bedre lyd, Spør Viddel
+- **37fce87** (2026-05-28T10:05:52Z) chore(vis): refresh GitHub runtime status for navigator
 
 ## BLOCKERS
 
