@@ -1,8 +1,8 @@
-# Editorial Image Library v0.1
+# Editorial Image Library v0.2
 
 ## Hva dette er
 
-Editorial Image Library v0.1 er en enkel, webklar kandidatbank for Viddel MVP-artikler. Den gjør Thomas' sorterte Midjourney-bilder tilgjengelige i repoet uten å være et fullverdig DAM, upload-system eller VIS Asset Registry.
+Editorial Image Library v0.2 er en enkel, webklar kandidatbank for Viddel MVP-artikler. Den gjør Thomas' sorterte Midjourney-bilder tilgjengelige i repoet uten å være et fullverdig DAM, upload-system eller VIS Asset Registry.
 
 ## Prinsipp
 
@@ -14,7 +14,7 @@ Editorial Image Library v0.1 er en enkel, webklar kandidatbank for Viddel MVP-ar
 
 ## Kilde
 
-Bildene i v0.1 er importert fra Thomas' sorterte lokale Drive-synkede mappe:
+Bildene i v0.2 er importert fra Thomas' sorterte lokale Drive-synkede mappe:
 
 ```text
 /Users/thomas26/Library/CloudStorage/GoogleDrive-raddum@gmail.com/My Drive/[@OMNI_OS]/80_JOBB_PROSJEKTER /2026.02.15 business model hørsel/Bilder/viddel-kontaktark/inbox
@@ -25,13 +25,13 @@ Kun disse sorterte undermappene er importert:
 
 | Gruppe            | Antall |
 | ----------------- | ------ |
-| `car`             | 5      |
-| `city-life-cafe`  | 73     |
-| `hearing-aid-box` | 6      |
-| `listening-music` | 4      |
-| `quiet-home`      | 24     |
-| `social`          | 6      |
-| `tv`              | 55     |
+| `car`               | 5      |
+| `city-life-cafe`    | 73     |
+| `hearing-aid-box`   | 6      |
+| `listening-music`   | 9      |
+| `quiet-home`        | 24     |
+| `social`            | 15     |
+| `tv`                | 55     |
 
 
 ## Mappestruktur i repo
@@ -62,6 +62,24 @@ viddel-tv-001.webp
 ```
 
 Tallene er løpenummer innenfor sortert kildegruppe. Filnavnet er stabilt nok for MVP-kandidatbruk, men ikke en endelig asset-ID-strategi.
+
+## v0.2 import
+
+- Nye bilder importert: 14.
+- Totalt i biblioteket etter import: 187.
+- Kun sorterte undermapper er importert. Løse filer direkte fra inbox er fortsatt ikke importert.
+- Duplikater er filtrert bort med `sourceFilename` fra manifestet.
+- Ingen public pages er endret.
+
+| Gruppe | Nye | Totalt |
+| ------ | --- | ------ |
+| `car` | 0 | 5 |
+| `city-life-cafe` | 0 | 73 |
+| `hearing-aid-box` | 0 | 6 |
+| `listening-music` | 5 | 9 |
+| `quiet-home` | 0 | 24 |
+| `social` | 9 | 15 |
+| `tv` | 0 | 55 |
 
 ## Manifest
 
@@ -96,7 +114,7 @@ Foreløpig finnes bare én status:
 | `candidate` | Webklart kandidatbilde. Må QA-es visuelt før publisering i artikkel eller flate. |
 
 
-## Importregler v0.1
+## Importregler v0.2
 
 - Importer kun sorterte mapper, ikke usortert inbox-innhold.
 - Ikke importer kontaktark.
