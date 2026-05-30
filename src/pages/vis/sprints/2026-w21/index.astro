@@ -110,6 +110,11 @@ const typographyLabDirections = [
       <p class="sprint-preview__purpose">
         Teste typography, color tokens og primitives samlet før MVP-reskin.
       </p>
+      <p class="sprint-preview__canonical-link">
+        <strong>Canonical designsystem:</strong>
+        <a href={`${base}designsystem/`}>Design System Source of Truth v0.1 →</a>
+        <span class="sprint-preview__canonical-note">Sprint-VIS = historikk · <code>/designsystem/</code> = gjeldende sannhet</span>
+      </p>
     </header>
 
     <!-- 2. Sprint scope -->
@@ -131,7 +136,8 @@ const typographyLabDirections = [
         <li><strong>Applied:</strong> #125J Copy/nav/routes — CBA v0.3 (redirects fra gamle URL-er)</li>
         <li><strong>In progress:</strong> Bedre lyd R5 på <code>/no/bedre-lyd/</code> — magazine top, edge-to-edge card images, grey labels</li>
         <li><strong>Parked:</strong> #125I-B Layout shift / FOUC — known issue</li>
-        <li><strong>In progress:</strong> #125M-C Standalone AI custom chat R1 på <code>/no/chat/</code> — headless, pending QA</li>
+        <li><strong>Applied:</strong> #125M-C Standalone AI custom chat R1 på <code>/no/chat/</code> — QA-godkjent, merged main (e896d377)</li>
+        <li><strong>Canonical:</strong> Design System Source of Truth v0.1 på <a href={`${base}designsystem/`}><code>/designsystem/</code></a></li>
         <li><strong>Senere:</strong> ikonpass · composer-paritet · footer/shell · VIS card overview/discoverability · viddel.no domain</li>
       </ul>
     </section>
@@ -641,6 +647,30 @@ const typographyLabDirections = [
       max-width: 44rem;
       font-size: 0.92rem;
       line-height: 1.65;
+      color: rgb(var(--reading-ink-secondary));
+    }
+
+    .sprint-preview__canonical-link {
+      margin: 1rem 0 0;
+      max-width: 44rem;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .sprint-preview__canonical-link a {
+      color: rgb(var(--reading-accent-iris));
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .sprint-preview__canonical-link a:hover {
+      text-decoration: underline;
+    }
+
+    .sprint-preview__canonical-note {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.8125rem;
       color: rgb(var(--reading-ink-secondary));
     }
 

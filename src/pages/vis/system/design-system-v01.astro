@@ -316,12 +316,18 @@ const referenceLinks = [
       <span>Design System Overview v0.1</span>
     </nav>
 
+    <aside class="ds-canonical-banner" role="note">
+      <strong>Canonical hjem:</strong>
+      <a href={`${base}designsystem/`}>Design System Source of Truth v0.1</a>
+      — denne VIS-siden er historikk og beslutningsgrunnlag, ikke gjeldende referanse.
+    </aside>
+
     <header class="ds-hero">
-      <p class="ds-kicker">Viddel · arbeidskart</p>
+      <p class="ds-kicker">Viddel · arbeidskart · legacy</p>
       <h1>Design System Overview v0.1</h1>
       <p>
         En tidlig VIS-oversikt over tokens, surfaces og patterns slik de faktisk brukes nå.
-        Dette er et rolig kart for designledelse og review, ikke en ferdig designsystemportal.
+        Dette er et rolig kart for designledelse og review — se <a href={`${base}designsystem/`}><code>/designsystem/</code></a> for canonical MVP-referanse.
       </p>
       <div class="ds-hero-links" aria-label="Primærreferanser">
         <a href={`${base}vis/system/article/foundations`}>Foundations</a>
@@ -619,6 +625,23 @@ const referenceLinks = [
     }
 
     .ds-breadcrumb a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .ds-canonical-banner {
+      margin-bottom: 1rem;
+      padding: 0.85rem 1rem;
+      border: 1px solid rgb(var(--reading-accent-iris) / 0.35);
+      border-radius: var(--radius-md);
+      background: rgb(var(--reading-accent-iris) / 0.06);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .ds-canonical-banner a {
+      color: rgb(var(--reading-accent-iris));
+      font-weight: 600;
       text-decoration: underline;
       text-underline-offset: 2px;
     }
