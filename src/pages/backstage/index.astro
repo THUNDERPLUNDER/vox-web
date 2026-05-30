@@ -1,28 +1,42 @@
 ---
-/* CONTRACT: Backstage v0.1 — intern noindex referanse for AI-flow, API, guards, env-vars og production (#184). */
+/* CONTRACT: Backstage v0.1 — pedagogisk intern referanse; forståelse først, teknikk nederst (#184). */
 import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
 import {
   backstageMeta,
   beforeExternalSharing,
+  cesExplainer,
   chatFlowSteps,
   envVarNotes,
   envVars,
-  errorStates,
-  guardLimits,
   productionChecklist,
-  systemFlowSteps,
+  protectionRules,
+  quickAnswers,
+  sourceFiles,
+  statusPanel,
+  systemMapLayers,
+  troubleshootingCases,
+  upstashExplainer,
 } from "../../data/backstage-v01.ts";
 
 const base = import.meta.env.BASE_URL;
 
 const envGroups = [
-  { id: "upstash", label: "Upstash (rate limit)" },
-  { id: "ces", label: "CES (AI runtime)" },
+  { id: "upstash", label: "Upstash (teller)" },
+  { id: "ces", label: "CES (AI-motor)" },
   { id: "auth", label: "Google auth" },
 ] as const;
+
+const layerTone: Record<string, string> = {
+  Bruker: "bs-map__band--user",
+  Brukerflate: "bs-map__band--surface",
+  "Viddel-server": "bs-map__band--server",
+  Beskyttelse: "bs-map__band--guard",
+  "AI-motor": "bs-map__band--ai",
+  Svar: "bs-map__band--response",
+};
 ---
 
-<PrototypeLayout title="Backstage — Viddel system">
+<PrototypeLayout title="Backstage — Viddel">
   <main class="bs">
     <nav class="bs__crumb" aria-label="Du er her">
       <a href={`${base}vis/`}>VIS</a>
@@ -31,105 +45,139 @@ const envGroups = [
     </nav>
 
     <header class="bs__hero">
-      <p class="bs__kicker">Intern · Systemreferanse · {backstageMeta.issue}</p>
+      <p class="bs__kicker">Intern · {backstageMeta.issue}</p>
       <h1>{backstageMeta.title}</h1>
       <p class="bs__lead">{backstageMeta.lead}</p>
-      <p class="bs__meta">
-        Oppdatert {backstageMeta.updatedAt} · Guard ref {backstageMeta.relatedIssue} ·
-        <code>/designsystem/</code> = UI · <code>/backstage/</code> = system
-      </p>
     </header>
 
-    <section class="bs__section" aria-labelledby="bs-system-map">
-      <h2 id="bs-system-map" class="bs__section-title">Systemkart</h2>
-      <div class="bs__flow" role="list" aria-label="AI-chat flyt oversikt">
-        {systemFlowSteps.map((step, index) => (
-          <div class="bs__flow-item" role="listitem">
-            <span class="bs__flow-step">{step.label}</span>
-            {index < systemFlowSteps.length - 1 ? (
-              <span class="bs__flow-arrow" aria-hidden="true">→</span>
+    <section class="bs__status" aria-label="Status nå">
+      {statusPanel.map((item) => (
+        <div class:list={["bs__status-item", `bs__status-item--${item.tone}`]}>
+          <p class="bs__status-label">{item.label}</p>
+          <p class="bs__status-value">{item.value}</p>
+        </div>
+      ))}
+    </section>
+
+    <section class="bs__quick" aria-labelledby="bs-quick">
+      <h2 id="bs-quick" class="bs__visually-hidden">Tre spørsmål</h2>
+      <div class="bs__quick-grid">
+        {quickAnswers.map((item) => (
+          <article class="bs__quick-card">
+            <h3 class="bs__quick-q">{item.question}</h3>
+            <p class="bs__quick-a">{item.answer}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="bs__anchor" aria-labelledby="bs-system-map">
+      <h2 id="bs-system-map" class="bs__anchor-title">Systemkart</h2>
+      <p class="bs__anchor-lead">Slik flyter et spørsmål gjennom Viddel — fra bruker til svar.</p>
+
+      <figure class="bs-map" aria-label="Systemkart for Spør Viddel">
+        {systemMapLayers.map((node, index) => (
+          <div class="bs-map__row">
+            <div class:list={["bs-map__band", layerTone[node.layer]]}>
+              <span class="bs-map__layer">{node.layer}</span>
+            </div>
+            <div class="bs-map__node">
+              <h3 class="bs-map__title">{node.title}</h3>
+              <p class="bs-map__human">{node.human}</p>
+              {node.tech ? <p class="bs-map__tech">({node.tech})</p> : null}
+            </div>
+            {index < systemMapLayers.length - 1 ? (
+              <div class="bs-map__connector" aria-hidden="true">
+                <span class="bs-map__arrow">↓</span>
+              </div>
             ) : null}
           </div>
         ))}
-      </div>
-      <p class="bs__flow-note">Headless flyt — ingen CES-widget i nettleseren.</p>
+      </figure>
     </section>
 
-    <section class="bs__section" aria-labelledby="bs-chat-flow">
-      <h2 id="bs-chat-flow" class="bs__section-title">AI-chat flow</h2>
-      <ol class="bs__steps">
-        {chatFlowSteps.map((step, index) => (
-          <li>
-            <span class="bs__step-index">{index + 1}</span>
-            <div>
-              <h3 class="bs__step-title">{step.title}</h3>
-              <p class="bs__step-detail">{step.detail}</p>
+    <section class="bs__section" aria-labelledby="bs-user-flow">
+      <h2 id="bs-user-flow" class="bs__section-title">Hva skjer når brukeren spør?</h2>
+      <p class="bs__section-lead">Steg for steg — menneskelig forklaring først.</p>
+
+      <ol class="bs-flow">
+        {chatFlowSteps.map((step) => (
+          <li class="bs-flow__step">
+            <span class="bs-flow__num">{step.step}</span>
+            <div class="bs-flow__body">
+              <h3 class="bs-flow__title">{step.title}</h3>
+              <p class="bs-flow__human">{step.human}</p>
+              {step.why ? <p class="bs-flow__why">{step.why}</p> : null}
+              {step.tech ? <p class="bs-flow__tech">{step.tech}</p> : null}
             </div>
           </li>
         ))}
       </ol>
     </section>
 
-    <section class="bs__section" aria-labelledby="bs-guards">
-      <h2 id="bs-guards" class="bs__section-title">Guard &amp; limits</h2>
-      <ul class="bs__cards">
-        {guardLimits.map((item) => (
-          <li class="bs__card">
-            <p class="bs__card-label">{item.label}</p>
-            <p class="bs__card-value">{item.value}</p>
-            <p class="bs__card-note">{item.note}</p>
+    <section class="bs__section" aria-labelledby="bs-protection">
+      <h2 id="bs-protection" class="bs__section-title">Hva beskytter oss?</h2>
+      <ul class="bs-protect">
+        {protectionRules.map((rule) => (
+          <li class="bs-protect__item">
+            <p class="bs-protect__head">
+              <span class="bs-protect__title">{rule.title}</span>
+              <span class="bs-protect__value">{rule.value}</span>
+            </p>
+            <p class="bs-protect__human">{rule.human}</p>
+            {"tech" in rule && rule.tech ? <p class="bs-protect__tech">{rule.tech}</p> : null}
           </li>
         ))}
       </ul>
     </section>
 
-    <section class="bs__section" aria-labelledby="bs-env">
-      <h2 id="bs-env" class="bs__section-title">Env-vars</h2>
-      <p class="bs__section-lead">Oversikt uten verdier — sett kun i Vercel dashboard.</p>
-      {
-        envGroups.map((group) => (
-          <div class="bs__env-group">
-            <h3 class="bs__env-group-title">{group.label}</h3>
-            <ul class="bs__env-list">
-              {envVars
-                .filter((v) => v.group === group.id)
-                .map((v) => (
-                  <li>
-                    <code class="bs__env-name">{v.name}</code>
-                    <span class="bs__env-controls">{v.controls}</span>
-                  </li>
-                ))}
-            </ul>
-          </div>
-        ))
-      }
-      <ul class="bs__bullets">
-        {envVarNotes.map((note) => (
-          <li>{note}</li>
-        ))}
-      </ul>
+    <section class="bs__explainers">
+      <article class="bs-explainer" aria-labelledby="bs-upstash">
+        <h2 id="bs-upstash" class="bs-explainer__title">{upstashExplainer.title}</h2>
+        <p class="bs-explainer__body">{upstashExplainer.body}</p>
+      </article>
+      <article class="bs-explainer" aria-labelledby="bs-ces">
+        <h2 id="bs-ces" class="bs-explainer__title">{cesExplainer.title}</h2>
+        <p class="bs-explainer__body">{cesExplainer.body}</p>
+      </article>
     </section>
 
-    <section class="bs__section" aria-labelledby="bs-errors">
-      <h2 id="bs-errors" class="bs__section-title">Feilstater</h2>
-      <ul class="bs__errors">
-        {errorStates.map((err) => (
-          <li class="bs__error">
-            <p class="bs__error-code"><code>{err.code}</code></p>
-            <dl class="bs__error-dl">
+    <section class="bs__section" aria-labelledby="bs-troubleshoot">
+      <h2 id="bs-troubleshoot" class="bs__section-title">Når noe ikke virker</h2>
+      <p class="bs__section-lead">Start med hva brukeren ser — deretter hva det betyr og hva vi sjekker.</p>
+
+      <ul class="bs-fix">
+        {troubleshootingCases.map((item) => (
+          <li class="bs-fix__case">
+            <p class="bs-fix__user">
+              <span class="bs-fix__label">Brukeren ser</span>
+              {item.userSees}
+            </p>
+            <div class="bs-fix__cols">
               <div>
-                <dt>Betyr</dt>
-                <dd>{err.meaning}</dd>
+                <p class="bs-fix__label">Kan bety</p>
+                <ul class="bs-fix__list">
+                  {item.usuallyMeans.map((line) => (
+                    <li>{line}</li>
+                  ))}
+                </ul>
               </div>
               <div>
-                <dt>Bruker ser</dt>
-                <dd>{err.userSees}</dd>
+                <p class="bs-fix__label">Vi sjekker</p>
+                <ul class="bs-fix__list">
+                  {item.weCheck.map((line) => (
+                    <li>{line}</li>
+                  ))}
+                </ul>
               </div>
-              <div>
-                <dt>Vi sjekker</dt>
-                <dd>{err.weCheck}</dd>
-              </div>
-            </dl>
+            </div>
+            {item.techCodes?.length ? (
+              <p class="bs-fix__tech">
+                Teknisk: {item.techCodes.map((c) => (
+                  <code>{c}</code>
+                ))}
+              </p>
+            ) : null}
           </li>
         ))}
       </ul>
@@ -137,7 +185,7 @@ const envGroups = [
 
     <section class="bs__section" aria-labelledby="bs-checklist">
       <h2 id="bs-checklist" class="bs__section-title">Production checklist</h2>
-      <ul class="bs__checklist">
+      <ul class="bs-checklist">
         {productionChecklist.map((item) => (
           <li>{item}</li>
         ))}
@@ -146,28 +194,72 @@ const envGroups = [
 
     <section class="bs__section bs__section--note" aria-labelledby="bs-external">
       <h2 id="bs-external" class="bs__section-title">Før ekstern deling</h2>
-      <ul class="bs__bullets">
+      <ul class="bs-note-list">
         {beforeExternalSharing.map((item) => (
           <li>{item}</li>
         ))}
       </ul>
     </section>
 
+    <details class="bs-tech">
+      <summary>Teknisk referanse</summary>
+      <div class="bs-tech__body">
+        <p class="bs-tech__lead">Env-vars (uten verdier) og kildefiler — for utvikling og feilsøking.</p>
+
+        {envGroups.map((group) => (
+          <div class="bs-tech__group">
+            <h3 class="bs-tech__group-title">{group.label}</h3>
+            <ul class="bs-tech__env">
+              {envVars
+                .filter((v) => v.group === group.id)
+                .map((v) => (
+                  <li>
+                    <code>{v.name}</code>
+                    <span>{v.controls}</span>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        ))}
+
+        <ul class="bs-tech__notes">
+          {envVarNotes.map((note) => (
+            <li>{note}</li>
+          ))}
+        </ul>
+
+        <p class="bs-tech__files-label">Kildefiler</p>
+        <ul class="bs-tech__files">
+          {sourceFiles.map((file) => (
+            <li><code>{file}</code></li>
+          ))}
+        </ul>
+      </div>
+    </details>
+
     <footer class="bs__footer">
-      <p>
-        Kildekode: <code>src/pages/api/chat.ts</code> · <code>src/lib/chat-api-guard.ts</code> ·
-        <code>src/lib/ces-env.ts</code>
-      </p>
-      <p><a href={`${base}vis/`}>← Tilbake til VIS kontrollrom</a></p>
+      <p>Oppdatert {backstageMeta.updatedAt} · <a href={`${base}vis/`}>← VIS kontrollrom</a></p>
     </footer>
   </main>
 
   <style>
     .bs {
-      max-width: 52rem;
+      max-width: 44rem;
       margin: 0 auto;
-      padding: 2rem 1rem 3rem;
+      padding: 2.5rem 1.25rem 4rem;
       color: rgb(17 24 39);
+    }
+
+    .bs__visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .bs__crumb {
@@ -186,7 +278,7 @@ const envGroups = [
     }
 
     .bs__kicker {
-      margin: 1.25rem 0 0;
+      margin: 1.5rem 0 0;
       font-size: 0.68rem;
       font-weight: 600;
       letter-spacing: 0.12em;
@@ -195,289 +287,553 @@ const envGroups = [
     }
 
     .bs__hero h1 {
-      margin: 0.35rem 0 0;
-      font-size: clamp(1.45rem, 3vw, 1.85rem);
+      margin: 0.4rem 0 0;
+      font-size: clamp(1.75rem, 4vw, 2.25rem);
       font-weight: 650;
       letter-spacing: -0.03em;
+      line-height: 1.1;
     }
 
     .bs__lead {
-      margin: 0.6rem 0 0;
-      max-width: 38rem;
-      font-size: 0.94rem;
+      margin: 1rem 0 0;
+      max-width: 36rem;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: rgb(55 65 81);
+    }
+
+    .bs__status {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 2.25rem;
+    }
+
+    @media (min-width: 640px) {
+      .bs__status {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .bs__status-item {
+      padding: 1rem 1.1rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgb(229 231 235);
+      background: rgb(249 250 251);
+    }
+
+    .bs__status-item--live {
+      border-color: rgb(167 243 208);
+      background: rgb(236 253 245);
+    }
+
+    .bs__status-item--wait {
+      border-color: rgb(254 240 138);
+      background: rgb(254 252 232);
+    }
+
+    .bs__status-label {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .bs__status-value {
+      margin: 0.35rem 0 0;
+      font-size: 0.95rem;
+      font-weight: 650;
+      line-height: 1.35;
+      color: rgb(31 41 55);
+    }
+
+    .bs__quick {
+      margin-top: 2.75rem;
+    }
+
+    .bs__quick-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .bs__quick-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .bs__quick-card {
+      padding: 1.1rem 1.15rem;
+      border-radius: 0.5rem;
+      background: rgb(255 255 255);
+      border: 1px solid rgb(243 244 246);
+      box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+    }
+
+    .bs__quick-q {
+      margin: 0;
+      font-size: 0.88rem;
+      font-weight: 650;
+      line-height: 1.35;
+      color: rgb(31 41 55);
+    }
+
+    .bs__quick-a {
+      margin: 0.5rem 0 0;
+      font-size: 0.84rem;
+      line-height: 1.55;
+      color: rgb(75 85 99);
+    }
+
+    .bs__anchor {
+      margin-top: 3.5rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid rgb(243 244 246);
+    }
+
+    .bs__anchor-title {
+      margin: 0;
+      font-size: clamp(1.25rem, 3vw, 1.55rem);
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      color: rgb(17 24 39);
+    }
+
+    .bs__anchor-lead {
+      margin: 0.5rem 0 0;
+      font-size: 0.92rem;
+      color: rgb(107 114 128);
+    }
+
+    .bs-map {
+      margin: 1.75rem 0 0;
+      padding: 0;
+    }
+
+    .bs-map__row {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .bs-map__band {
+      align-self: flex-start;
+      padding: 0.2rem 0.55rem;
+      border-radius: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .bs-map__band--user { background: rgb(243 244 246); }
+    .bs-map__band--surface { background: rgb(219 234 254); color: rgb(30 64 175); }
+    .bs-map__band--server { background: rgb(224 231 255); color: rgb(55 48 163); }
+    .bs-map__band--guard { background: rgb(254 243 199); color: rgb(146 64 14); }
+    .bs-map__band--ai { background: rgb(237 233 254); color: rgb(91 33 182); }
+    .bs-map__band--response { background: rgb(209 250 229); color: rgb(6 95 70); }
+
+    .bs-map__layer {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .bs-map__node {
+      padding: 1.1rem 1.25rem;
+      border: 1px solid rgb(229 231 235);
+      border-radius: 0.6rem;
+      background: rgb(255 255 255);
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.04);
+    }
+
+    .bs-map__title {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 650;
+      color: rgb(17 24 39);
+    }
+
+    .bs-map__human {
+      margin: 0.4rem 0 0;
+      font-size: 0.92rem;
       line-height: 1.55;
       color: rgb(55 65 81);
     }
 
-    .bs__meta {
-      margin: 0.5rem 0 0;
+    .bs-map__tech {
+      margin: 0.35rem 0 0;
       font-size: 0.72rem;
       color: rgb(156 163 175);
     }
 
-    .bs__meta code,
-    .bs__env-name,
-    .bs__error-code code {
-      font-family: ui-monospace, monospace;
-      font-size: 0.85em;
+    .bs-map__connector {
+      display: flex;
+      justify-content: center;
+      padding: 0.35rem 0;
+    }
+
+    .bs-map__arrow {
+      font-size: 1.1rem;
+      color: rgb(156 163 175);
+      line-height: 1;
     }
 
     .bs__section {
-      margin-top: 2.5rem;
+      margin-top: 3rem;
     }
 
     .bs__section--note {
-      padding: 1rem 0 0;
+      padding-top: 1.5rem;
       border-top: 1px solid rgb(243 244 246);
     }
 
     .bs__section-title {
       margin: 0;
-      font-size: 0.72rem;
+      font-size: clamp(1.05rem, 2.5vw, 1.25rem);
       font-weight: 650;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgb(107 114 128);
+      letter-spacing: -0.01em;
+      color: rgb(17 24 39);
     }
 
     .bs__section-lead {
-      margin: 0.35rem 0 0;
-      font-size: 0.82rem;
+      margin: 0.4rem 0 0;
+      font-size: 0.88rem;
       color: rgb(107 114 128);
     }
 
-    .bs__flow {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.25rem;
-      margin-top: 1rem;
-    }
-
-    .bs__flow-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    .bs__flow-step {
-      display: inline-block;
-      padding: 0.35rem 0.55rem;
-      border: 1px solid rgb(229 231 235);
-      border-radius: 0.35rem;
-      background: rgb(249 250 251);
-      font-size: 0.72rem;
-      font-weight: 550;
-      color: rgb(31 41 55);
-    }
-
-    .bs__flow-arrow {
-      font-size: 0.75rem;
-      color: rgb(156 163 175);
-    }
-
-    .bs__flow-note {
-      margin: 0.65rem 0 0;
-      font-size: 0.78rem;
-      color: rgb(107 114 128);
-    }
-
-    .bs__steps {
-      margin: 1rem 0 0;
+    .bs-flow {
+      margin: 1.5rem 0 0;
       padding: 0;
       list-style: none;
     }
 
-    .bs__steps li {
+    .bs-flow__step {
       display: flex;
-      gap: 0.75rem;
-      padding: 0.65rem 0;
+      gap: 1rem;
+      padding: 1.1rem 0;
       border-bottom: 1px solid rgb(243 244 246);
     }
 
-    .bs__steps li:last-child {
+    .bs-flow__step:last-child {
       border-bottom: none;
     }
 
-    .bs__step-index {
+    .bs-flow__num {
       flex-shrink: 0;
-      width: 1.25rem;
-      font-size: 0.78rem;
-      font-weight: 650;
-      color: rgb(156 163 175);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 999px;
+      background: rgb(243 244 246);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: rgb(75 85 99);
     }
 
-    .bs__step-title {
+    .bs-flow__title {
       margin: 0;
-      font-size: 0.92rem;
+      font-size: 1rem;
       font-weight: 650;
       color: rgb(31 41 55);
     }
 
-    .bs__step-detail {
-      margin: 0.2rem 0 0;
+    .bs-flow__human {
+      margin: 0.3rem 0 0;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: rgb(55 65 81);
+    }
+
+    .bs-flow__why {
+      margin: 0.45rem 0 0;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: rgb(107 114 128);
+      font-style: italic;
+    }
+
+    .bs-flow__tech {
+      margin: 0.25rem 0 0;
+      font-size: 0.72rem;
+      color: rgb(156 163 175);
+    }
+
+    .bs-protect {
+      margin: 1.25rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .bs-protect__item {
+      padding: 1rem 0;
+      border-bottom: 1px solid rgb(243 244 246);
+    }
+
+    .bs-protect__item:last-child {
+      border-bottom: none;
+    }
+
+    .bs-protect__head {
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.5rem 1rem;
+    }
+
+    .bs-protect__title {
+      font-size: 0.95rem;
+      font-weight: 650;
+      color: rgb(31 41 55);
+    }
+
+    .bs-protect__value {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: rgb(107 114 128);
+    }
+
+    .bs-protect__human {
+      margin: 0.35rem 0 0;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: rgb(75 85 99);
+    }
+
+    .bs-protect__tech {
+      margin: 0.25rem 0 0;
+      font-size: 0.68rem;
+      color: rgb(156 163 175);
+      font-family: ui-monospace, monospace;
+    }
+
+    .bs__explainers {
+      display: grid;
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .bs__explainers {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .bs-explainer {
+      padding: 1.25rem 1.35rem;
+      border-radius: 0.6rem;
+      background: rgb(249 250 251);
+      border: 1px solid rgb(243 244 246);
+    }
+
+    .bs-explainer__title {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 650;
+      color: rgb(31 41 55);
+    }
+
+    .bs-explainer__body {
+      margin: 0.5rem 0 0;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: rgb(75 85 99);
+    }
+
+    .bs-fix {
+      margin: 1.25rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .bs-fix__case {
+      padding: 1.25rem 0;
+      border-bottom: 1px solid rgb(243 244 246);
+    }
+
+    .bs-fix__case:last-child {
+      border-bottom: none;
+    }
+
+    .bs-fix__label {
+      display: block;
+      margin: 0 0 0.25rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .bs-fix__user {
+      margin: 0;
+      font-size: 0.92rem;
+      font-weight: 550;
+      line-height: 1.45;
+      color: rgb(31 41 55);
+    }
+
+    .bs-fix__cols {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .bs-fix__cols {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .bs-fix__list {
+      margin: 0.25rem 0 0;
+      padding-left: 1rem;
       font-size: 0.84rem;
       line-height: 1.5;
       color: rgb(75 85 99);
     }
 
-    .bs__cards {
-      display: grid;
-      gap: 0.65rem;
-      margin: 1rem 0 0;
-      padding: 0;
-      list-style: none;
+    .bs-fix__list li + li {
+      margin-top: 0.25rem;
     }
 
-    @media (min-width: 640px) {
-      .bs__cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    .bs__card {
-      padding: 0.65rem 0.75rem;
-      border: 1px solid rgb(243 244 246);
-      border-radius: 0.35rem;
-    }
-
-    .bs__card-label {
-      margin: 0;
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: rgb(107 114 128);
-    }
-
-    .bs__card-value {
-      margin: 0.25rem 0 0;
-      font-size: 0.92rem;
-      font-weight: 650;
-      color: rgb(31 41 55);
-    }
-
-    .bs__card-note {
-      margin: 0.25rem 0 0;
-      font-size: 0.78rem;
-      line-height: 1.45;
-      color: rgb(107 114 128);
-    }
-
-    .bs__env-group {
-      margin-top: 1rem;
-    }
-
-    .bs__env-group-title {
-      margin: 0 0 0.35rem;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: rgb(55 65 81);
-    }
-
-    .bs__env-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .bs__env-list li {
-      padding: 0.45rem 0;
-      border-bottom: 1px solid rgb(243 244 246);
-    }
-
-    .bs__env-name {
-      display: block;
-      font-size: 0.78rem;
-      color: rgb(31 41 55);
-    }
-
-    .bs__env-controls {
-      display: block;
-      margin-top: 0.15rem;
-      font-size: 0.78rem;
-      line-height: 1.45;
-      color: rgb(107 114 128);
-    }
-
-    .bs__bullets {
+    .bs-fix__tech {
       margin: 0.75rem 0 0;
-      padding-left: 1.1rem;
-      font-size: 0.84rem;
-      line-height: 1.55;
-      color: rgb(75 85 99);
-    }
-
-    .bs__bullets li + li {
-      margin-top: 0.35rem;
-    }
-
-    .bs__errors {
-      margin: 1rem 0 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .bs__error {
-      padding: 0.75rem 0;
-      border-bottom: 1px solid rgb(243 244 246);
-    }
-
-    .bs__error-code {
-      margin: 0;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: rgb(31 41 55);
-    }
-
-    .bs__error-dl {
-      margin: 0.45rem 0 0;
-      display: grid;
-      gap: 0.45rem;
-    }
-
-    .bs__error-dl dt {
       font-size: 0.68rem;
-      font-weight: 650;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
       color: rgb(156 163 175);
     }
 
-    .bs__error-dl dd {
-      margin: 0.1rem 0 0;
-      font-size: 0.82rem;
-      line-height: 1.45;
-      color: rgb(75 85 99);
+    .bs-fix__tech code {
+      margin-right: 0.35rem;
+      font-family: ui-monospace, monospace;
     }
 
-    .bs__checklist {
+    .bs-checklist {
       margin: 1rem 0 0;
       padding: 0;
       list-style: none;
     }
 
-    .bs__checklist li {
+    .bs-checklist li {
       position: relative;
-      padding: 0.35rem 0 0.35rem 1.35rem;
-      font-size: 0.86rem;
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      font-size: 0.92rem;
       line-height: 1.45;
       color: rgb(55 65 81);
     }
 
-    .bs__checklist li::before {
+    .bs-checklist li::before {
       content: "☐";
       position: absolute;
       left: 0;
       color: rgb(156 163 175);
     }
 
+    .bs-note-list {
+      margin: 0.75rem 0 0;
+      padding-left: 1.1rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: rgb(75 85 99);
+    }
+
+    .bs-note-list li + li {
+      margin-top: 0.4rem;
+    }
+
+    .bs-tech {
+      margin-top: 3rem;
+      padding: 1rem 1.1rem;
+      border: 1px solid rgb(243 244 246);
+      border-radius: 0.5rem;
+      background: rgb(249 250 251);
+      font-size: 0.82rem;
+      color: rgb(75 85 99);
+    }
+
+    .bs-tech summary {
+      cursor: pointer;
+      font-weight: 650;
+      color: rgb(107 114 128);
+    }
+
+    .bs-tech__body {
+      margin-top: 1rem;
+    }
+
+    .bs-tech__lead {
+      margin: 0 0 1rem;
+      line-height: 1.5;
+    }
+
+    .bs-tech__group {
+      margin-top: 0.75rem;
+    }
+
+    .bs-tech__group-title {
+      margin: 0;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: rgb(55 65 81);
+    }
+
+    .bs-tech__env {
+      margin: 0.35rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .bs-tech__env li {
+      padding: 0.3rem 0;
+      border-bottom: 1px solid rgb(243 244 246);
+    }
+
+    .bs-tech__env code {
+      display: block;
+      font-size: 0.72rem;
+      color: rgb(31 41 55);
+    }
+
+    .bs-tech__env span {
+      display: block;
+      margin-top: 0.1rem;
+      font-size: 0.72rem;
+      color: rgb(107 114 128);
+    }
+
+    .bs-tech__notes {
+      margin: 1rem 0 0;
+      padding-left: 1rem;
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    .bs-tech__files-label {
+      margin: 1rem 0 0.35rem;
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .bs-tech__files {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .bs-tech__files code {
+      font-size: 0.72rem;
+      color: rgb(75 85 99);
+    }
+
     .bs__footer {
       margin-top: 2.5rem;
       padding-top: 1rem;
-      border-top: 1px solid rgb(243 244 246);
-      font-size: 0.72rem;
-      line-height: 1.5;
+      font-size: 0.78rem;
       color: rgb(156 163 175);
     }
 
