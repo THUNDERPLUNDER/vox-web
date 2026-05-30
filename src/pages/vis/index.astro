@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: VIS backstage index — curated operational overview over raw VIS artifacts. */
+/* CONTRACT: VIS backstage index — curated operational overview; MVP status from mvp-current-state registry. */
 import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
 import {
   featuredVisEntries,
@@ -8,12 +8,14 @@ import {
   visTypeLabelNo,
   wireframeIndexEntries,
 } from "../../lib/vis-wireframes";
+import { getVisFrontpageEntries, mvpCurrentState } from "../../data/mvp-current-state.ts";
 
 const entries = wireframeIndexEntries();
 const featured = featuredVisEntries(entries, 4);
 const grouped = groupedVisEntries(entries);
 const recent = recentVisEntries(entries, 4);
 const base = import.meta.env.BASE_URL;
+const mvpNowEntries = getVisFrontpageEntries(base);
 
 const chipClassByType = (kind: string) => {
   if (kind === "sprint") {
@@ -28,83 +30,59 @@ const chipClassByType = (kind: string) => {
   return "border-gray-300 bg-gray-50 text-gray-600 font-medium tracking-[0.06em]";
 };
 
-const mvpNowEntries = [
-  {
-    title: "Editorial Image Library",
-    description: "Webklare kandidatbilder for MVP-artikler og flater.",
-    href: `${base}vis/assets/editorial/`,
-    ready: true,
-  },
-  {
-    title: "Review registry",
-    description: "Status og QA for pågående surface-arbeid.",
-    href: `${base}vis/review/`,
-    ready: true,
-  },
-  {
-    title: "Sprint preview 2026-W21",
-    description: "MVP Design Lock / surface work.",
-    href: `${base}vis/sprints/2026-w21/`,
-    ready: true,
-  },
-  {
-    title: "Forside production",
-    description: "Offentlig forside.",
-    href: `${base}no/`,
-    ready: true,
-  },
-  {
-    title: "Hjelp production",
-    description: "Praktisk hjelpeflate.",
-    href: `${base}no/hjelp/`,
-    ready: true,
-  },
-  {
-    title: "Bedre lyd production",
-    description: "Editorial/magasinflate.",
-    href: `${base}no/bedre-lyd/`,
-    ready: true,
-  },
-  {
-    title: "Spør Viddel production",
-    description: "Standalone AI-inngang.",
-    href: `${base}no/chat/`,
-    ready: true,
-  },
-];
+const statusClass = (status: string) => {
+  if (status.includes("Canonical")) return "text-blue-700";
+  if (status === "Applied") return "text-emerald-700";
+  if (status === "Historikk") return "text-gray-500";
+  return "text-gray-600";
+};
 ---
 
 <PrototypeLayout title="Oversikt">
   <main class="px-4 py-6 sm:px-6 sm:py-8">
     <h1 class="text-lg font-semibold text-gray-900">VIS operativ oversikt</h1>
     <p class="mt-2 max-w-prose text-sm text-gray-600">
-      VIS er intern visnings- og reviewflate for Viddel MVP. GitHub Projects er fortsatt oppgavebuss.
+      VIS er intern reviewflate for Viddel MVP. GitHub Projects er oppgavebuss.
+      <a href={`${base}designsystem/`} class="text-gray-800 underline underline-offset-2 hover:text-gray-950">
+        /designsystem/
+      </a>
+      er canonical designreferanse.
     </p>
 
-    <section class="mt-6 rounded-md border border-gray-300 bg-gray-50 px-3 py-3">
-      <div class="flex items-center justify-between gap-3">
+    <section class="mt-6">
+      <div class="flex flex-wrap items-baseline justify-between gap-2">
         <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-800">MVP nå</h2>
-        <span class="text-[10px] font-medium uppercase tracking-wide text-gray-500">Aktuelle flater</span>
+        <span class="text-[10px] text-gray-500">Oppdatert {mvpCurrentState.updatedAt}</span>
       </div>
-      <div class="mt-3 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+      <p class="mt-1 max-w-prose text-xs leading-relaxed text-gray-600">{mvpCurrentState.currentFocus}</p>
+      <ul class="mt-4 grid gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
         {mvpNowEntries.map((item) => (
-          <a
-            href={item.href}
-            class="border-l-2 border-gray-300 px-2 py-1.5 hover:border-gray-500"
-          >
-            <p class="text-sm font-semibold text-gray-900">{item.title}</p>
-            <p class="mt-1 text-xs leading-relaxed text-gray-600">{item.description}</p>
-            {!item.ready ? (
-              <span class="mt-2 inline-flex rounded-sm border border-gray-300 bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-gray-600">
-                Klargjøres
-              </span>
-            ) : null}
-          </a>
+          <li class="list-none">
+            <a href={item.href} class="group block">
+              <div class="mb-2 overflow-hidden rounded-md bg-gray-100/80 px-3 py-2.5 group-hover:bg-gray-100">
+                <span class={`text-[10px] font-semibold uppercase tracking-wide ${statusClass(item.status)}`}>
+                  {item.status}
+                </span>
+              </div>
+              <p class="text-sm font-semibold text-gray-900 group-hover:text-gray-950">{item.title}</p>
+              <p class="mt-0.5 text-xs leading-relaxed text-gray-600">{item.description}</p>
+              {item.note ? <p class="mt-1 text-[11px] leading-snug text-amber-800/90">{item.note}</p> : null}
+            </a>
+          </li>
         ))}
-      </div>
-      <p class="mt-3 text-xs text-gray-500">
-        Follow-up: VIS frontpage should later be generated from a small registry rather than manually curated cards.
-      </p>
+      </ul>
+    </section>
+
+    <section class="mt-8 max-w-prose">
+      <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-500">Neste risiko</h2>
+      <ul class="mt-2 space-y-1.5 p-0 text-xs text-gray-600">
+        {mvpCurrentState.nextRisks.map((risk) => (
+          <li class="list-none">
+            <span class="font-medium text-gray-800">{risk.label}</span>
+            {risk.detail ? <span> — {risk.detail}</span> : null}
+          </li>
+        ))}
+      </ul>
     </section>
 
     {
@@ -115,17 +93,17 @@ const mvpNowEntries = [
         </p>
       ) : (
         <>
-          <section class="mt-8">
+          <section class="mt-10 border-t border-gray-200 pt-8">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-800">Arkiv / eldre prototyper</h2>
             <p class="mt-1 max-w-prose text-xs leading-relaxed text-gray-600">
-              Historiske wireframes og eldre VIS-dokumenter er fortsatt tilgjengelige, men de er ikke primær inngang til dagens MVP-arbeid.
+              Historiske wireframes og eldre VIS-dokumenter — ikke primær inngang til dagens MVP-arbeid.
             </p>
             <ul class="mt-2.5 grid gap-2.5 p-0 sm:grid-cols-2">
               {featured.map(({ filename: name, slug, displayTitle, description, visType }) => {
                 const view = `${base}vis/${encodeURIComponent(slug)}`;
                 const typeLabel = visTypeLabelNo(visType);
                 return (
-                  <li class="list-none border-b border-gray-300 px-0 pb-3 pt-1 last:border-b-0">
+                  <li class="list-none border-b border-gray-200 px-0 pb-3 pt-1 last:border-b-0">
                     <span class:list={[
                       "inline-flex rounded-sm border px-1.5 py-0.5 text-[10px] uppercase",
                       chipClassByType(visType),
@@ -150,8 +128,8 @@ const mvpNowEntries = [
             <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Historiske wireframes og dokumenter</h2>
             <div class="mt-2.5 space-y-2.5">
               {grouped.map((group) => (
-                <section class="rounded-md border border-gray-300 bg-white">
-                  <h3 class="border-b border-gray-300 bg-gray-50 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-700">
+                <section class="rounded-md border border-gray-200 bg-white">
+                  <h3 class="border-b border-gray-200 bg-gray-50 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-700">
                     {group.section}
                   </h3>
                   <ul class="divide-y divide-gray-200">
@@ -199,7 +177,7 @@ const mvpNowEntries = [
           <section id="siste-endringer" class="mt-8">
             <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Siste endringer i arkivet</h2>
             {recent.length > 0 ? (
-              <ul class="mt-2.5 rounded-md border border-gray-300 bg-white">
+              <ul class="mt-2.5 rounded-md border border-gray-200 bg-white">
                 {recent.map(({ filename: name, slug, displayTitle, visUpdatedRaw }) => {
                   const view = `${base}vis/${encodeURIComponent(slug)}`;
                   return (

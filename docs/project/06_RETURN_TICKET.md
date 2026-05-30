@@ -24,8 +24,21 @@ Hva ble faktisk landet
 Avvik fra plan
 - 
 
+Designsystem impact
+- 
+
+Current-state / VIS frontpage impact
+- (Hvis ikke relevant: «Current-state update: Ikke nødvendig — ingen endring i MVP-status, designmønstre eller applied surfaces.»)
+
+Applied surfaces impacted
+- 
+
+Follow-up needed
+- 
+
 Hva må oppdateres
-- [ ] VIS
+- [ ] VIS (`src/data/mvp-current-state.ts` ved MVP-statusendring)
+- [ ] `/designsystem/` (ved mønsterendring)
 - [ ] roadmap
 - [ ] Google Doc
 - [ ] GitHub-kort

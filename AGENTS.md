@@ -22,7 +22,10 @@ Do not assume access to ChatGPT project memory. Read repo context before coding.
 For non-trivial tasks, first inspect relevant project docs and files.
 Prefer reading:
 - README.md
+- docs/project/OPERATING_RULES.md
 - docs/project/00_STATE.md
+- src/data/mvp-current-state.ts
+- `/designsystem/` (for UI/pattern work)
 - docs/project/03_DECISIONS.md
 - docs/project/07_GITHUB_TASK_FLOW.md
 - files directly related to the requested route/component
@@ -42,6 +45,18 @@ For ambiguous or larger tasks:
 - Commit messages, branch names, code and filenames may be in English.
 - User-facing summaries and QA should be in Norwegian.
 
+## Operating rules v0.1
+
+Full doc: `docs/project/OPERATING_RULES.md`
+
+**Designsystem:** Before UI changes, read `/designsystem/`. Reuse patterns; update `/designsystem/` or explain in Return Ticket if changing patterns.
+
+**Current state:** When MVP status, surfaces, patterns, AI status or risks change, update `src/data/mvp-current-state.ts`. VIS frontpage reads from this file.
+
+**Source of truth:** `/designsystem/` = design patterns · `src/data/mvp-current-state.ts` = operativ MVP-status · `/vis/sprints/...` = historikk.
+
+**Return Ticket extras (when relevant):** Designsystem impact · Current-state / VIS impact · Applied surfaces · Follow-up. If N/A: `Current-state update: Ikke nødvendig — ingen endring i MVP-status, designmønstre eller applied surfaces.`
+
 ## Verification
 Run relevant checks before finishing.
 Default check:
@@ -58,6 +73,9 @@ End every task with a Norwegian return ticket:
 - Tester kjørt
 - Hva Thomas bør verifisere
 - Eventuelle risikoer eller åpne punkter
+- Designsystem impact (when relevant)
+- Current-state / VIS frontpage impact (when relevant)
+- Applied surfaces impacted (when relevant)
 
 ## Agent Workflow v0.1
 Dette er operativ minimumsflyt for Codex og Cursor i dette repoet.
