@@ -49,7 +49,7 @@ export type RecentChange = {
 export const mvpCurrentState = {
   updatedAt: "2026-05-30",
   currentFocus:
-    "Public AI guard v0.1 implementert på /api/chat (#180). Neste: QA guard, deretter Upstash + CES production env-vars før AI aktivering.",
+    "Test Access Gate v0.1 (#181) — enkel testkode før CES production env-vars og offentlig AI-test.",
   mvpSurfaces: [
     {
       id: "frontpage",
@@ -83,10 +83,10 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Applied",
-      note: "Production UI live. Public AI guard v0.1 on /api/chat (Needs QA). AI blocked until Upstash + CES prod env-vars.",
+      note: "Production UI live. Public AI guard v0.1 applied (#180). Test Access Gate v0.1 (#181) — Needs QA. AI blocked until access code + CES prod env-vars.",
       visFrontpage: true,
       kind: "public",
-      frontpageDescription: "Standalone headless AI — guard på plass, prod AI venter Upstash + CES.",
+      frontpageDescription: "Standalone headless AI — guard + test access gate, prod AI venter CES.",
     },
     {
       id: "designsystem",
@@ -126,19 +126,14 @@ export const mvpCurrentState = {
   ] satisfies CanonicalReference[],
   nextRisks: [
     {
-      id: "public-ai-guard-qa",
-      label: "Public AI guard v0.1 — QA",
-      detail: "Rate limit + origin guard implementert (#180). QA på preview før prod Upstash + CES.",
-    },
-    {
-      id: "upstash-prod-env",
-      label: "Upstash Redis (production)",
-      detail: "UPSTASH_REDIS_REST_URL + TOKEN i Vercel Production — påkrevd før public AI.",
+      id: "test-access-gate-qa",
+      label: "Test Access Gate v0.1 — QA",
+      detail: "Sett VIDDEL_CHAT_ACCESS_CODE i Vercel Production etter merge. QA gate + guard før CES prod env-vars (#181).",
     },
     {
       id: "ces-prod-env",
       label: "CES production env-vars",
-      detail: "Sett CES i Vercel Production etter guard QA og Upstash — aktiverer ikke AI alene uten Upstash.",
+      detail: "Sett CES i Vercel Production etter Test Access Gate QA — aktiverer ikke AI alene uten Upstash + access code.",
     },
     {
       id: "transcript-qa",
@@ -157,6 +152,12 @@ export const mvpCurrentState = {
     },
   ] satisfies NextRisk[],
   recentChanges: [
+    {
+      date: "2026-05-30",
+      summary: "Test Access Gate v0.1 — testkode for /no/chat/ og /api/chat (#181)",
+      issue: "#181",
+      commit: "—",
+    },
     {
       date: "2026-05-30",
       summary: "Public AI guard v0.1 — rate limit + origin guard on /api/chat (#180)",
