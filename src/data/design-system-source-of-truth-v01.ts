@@ -8,6 +8,10 @@ export type PatternRecord = {
   id: string;
   name: string;
   status: PatternStatus;
+  /** One-line card description */
+  summary: string;
+  /** Main rule — shown prominently in detail */
+  rule: string;
   purpose: string;
   usedOn: string[];
   sourceFiles: string[];
@@ -22,7 +26,7 @@ export const designSystemMeta = {
   version: "v0.1",
   title: "Design System Source of Truth",
   canonicalPath: "/designsystem/",
-  updated: "2026-05-29",
+  updated: "2026-05-30",
   issue: "#157",
   relatedDecisions: [
     "docs/project/decisions/DECISION_125M_C_STANDALONE_AI_CUSTOM_R1.md",
@@ -31,7 +35,7 @@ export const designSystemMeta = {
 };
 
 export const workingRule =
-  "Før UI-endringer skal relevante /designsystem/-kilder leses. Hvis et mønster finnes, skal det gjenbrukes. Hvis et nytt mønster innføres, skal /designsystem/ oppdateres eller Return Ticket forklare hvorfor det ikke trengs.";
+  "Før UI-endringer skal relevante /designsystem/-mønstre leses. Finnes mønsteret, skal det gjenbrukes. Innføres nytt mønster, skal /designsystem/ oppdateres eller Return Ticket forklare hvorfor det ikke trengs.";
 
 export const returnTicketRule =
   "Alle UI Return Tickets skal inneholde: hvilke mønstre ble brukt, om nye mønstre ble introdusert, om /designsystem/ ble oppdatert, og hvilke applied surfaces som påvirkes.";
@@ -103,6 +107,8 @@ export const patterns: PatternRecord[] = [
     id: "ai-composer",
     name: "AI Composer",
     status: "Applied",
+    summary: "Rolig input + rund send-knapp for å fortsette samtalen.",
+    rule: "Bruk inline-chat-shell__compose — aldri CES-widget eller glass default.",
     purpose: "Rolig editorial/action input for å fortsette samtale etter lesing eller i standalone chat.",
     usedOn: ["/no/artikkel/[slug] (Article AI)", "/no/chat/ (standalone)"],
     sourceFiles: [
@@ -133,6 +139,8 @@ export const patterns: PatternRecord[] = [
     id: "seed-questions",
     name: "Seed Questions",
     status: "Applied",
+    summary: "Konkrete startspørsmål som rolige action-rader — ikke chips.",
+    rule: "Bruk seed-row med «Spør om dette:» — aldri chip soup.",
     purpose: "Konkrete startspørsmål som action-rader — gjør neste steg tydelig uten chip-støy.",
     usedOn: ["/no/artikkel/[slug] (Spør om dette:)", "/no/chat/ (Spør om dette:)"],
     sourceFiles: [
@@ -161,6 +169,8 @@ export const patterns: PatternRecord[] = [
     id: "transcript",
     name: "Transcript",
     status: "Needs QA",
+    summary: "Samtalelogg med editorial rytme — user surface + Viddel eyebrow.",
+    rule: "User på surface, assistant transparent — aldri kundeservice-bobler.",
     purpose: "Samtalelogg med editorial rytme — user surface + Viddel eyebrow, ikke chat-bobler.",
     usedOn: ["/no/chat/ (standalone)", "Article AI (progressive, via ArticleInlineChatShell)"],
     sourceFiles: [
@@ -189,6 +199,8 @@ export const patterns: PatternRecord[] = [
     id: "standalone-chat-shell",
     name: "Standalone Chat Shell",
     status: "Applied",
+    summary: "Full /no/chat/ — Article AI start + native scroll-konvensjon.",
+    rule: "Headless via /api/chat — aldri chat-messenger, sendQuery eller synlig Hørehjelpen.",
     purpose: "Full `/no/chat/` — Article AI visuelt startpunkt + native chat-konvensjon (ChatGPT-scroll).",
     usedOn: ["/no/chat/"],
     sourceFiles: [
@@ -221,6 +233,8 @@ export const patterns: PatternRecord[] = [
     id: "article-to-ai-transition",
     name: "Article-to-AI Transition",
     status: "Applied",
+    summary: "Rolig overgang fra artikkel til AI-handling via divider + bridge.",
+    rule: "AI slekter på editorial layer — aldri detached floating widget.",
     purpose: "Rolig overgang fra artikkelinnhold til AI-handling — divider + bridge, editorial slekt.",
     usedOn: ["/no/artikkel/[slug]"],
     sourceFiles: [
@@ -248,6 +262,8 @@ export const patterns: PatternRecord[] = [
     id: "loading-error-states",
     name: "Loading / Error States",
     status: "Candidate",
+    summary: "Kort, trygg feedback under AI-forespørsler — uten teknisk jargon.",
+    rule: "Norsk, ikke-teknisk copy — aldri CES/debug i synlig UI.",
     purpose: "Trygg, kort feedback under AI-forespørsler — uten teknisk jargon.",
     usedOn: ["/no/chat/", "Article AI (ArticleInlineChatShell progressive)"],
     sourceFiles: [
@@ -275,6 +291,8 @@ export const patterns: PatternRecord[] = [
     id: "helper-note-box",
     name: "Helper / Note Box",
     status: "Candidate",
+    summary: "Trygghetsnote og hjelpetekst i muted editorial tone.",
+    rule: "Kort og muted — skal ikke konkurrere med action patterns.",
     purpose: "Trygghetsnote og hjelpetekst i editorial tone — ikke klinisk, ikke widget.",
     usedOn: ["/no/chat/ (safety note)", "artikkel callouts / publishing notes (inspect)"],
     sourceFiles: ["src/pages/no/chat.astro", "src/pages/no/artikkel/[slug].astro"],

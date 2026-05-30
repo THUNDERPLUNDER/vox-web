@@ -1,9 +1,11 @@
 ---
-/* CONTRACT: Canonical MVP design system source-of-truth v0.1 — HITL reference for patterns, primitives, applied surfaces.
-   Not production UI. Cursor/UI work should read this before changes.
-*/
+/* CONTRACT: Canonical MVP design system v0.1 — visual HITL catalog for patterns, primitives, applied surfaces. */
 import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
+import PatternPreview from "../../components/designsystem/PatternPreview.astro";
 import "../../styles/global.css";
+import "../../styles/r1-dialog-article.css";
+import "../../styles/viddel-standalone-chat.css";
+import "../../styles/designsystem-catalog.css";
 import {
   designSystemMeta,
   workingRule,
@@ -19,132 +21,111 @@ import {
 const base = import.meta.env.BASE_URL;
 
 const statusClass: Record<PatternStatus, string> = {
-  Candidate: "ds-sot-status--candidate",
-  Accepted: "ds-sot-status--accepted",
-  Applied: "ds-sot-status--applied",
-  "Needs QA": "ds-sot-status--needs-qa",
-  Deprecated: "ds-sot-status--deprecated",
+  Candidate: "ds-status--candidate",
+  Accepted: "ds-status--accepted",
+  Applied: "ds-status--applied",
+  "Needs QA": "ds-status--needs-qa",
+  Deprecated: "ds-status--deprecated",
+};
+
+const primitiveSwatchClass: Record<string, string> = {
+  Surfaces: "ds-catalog__primitive-swatch--surfaces",
+  Buttons: "ds-catalog__primitive-swatch--buttons",
+  Inputs: "ds-catalog__primitive-swatch--input",
+  "Pills / chips": "ds-catalog__primitive-swatch--pills",
+  Focus: "ds-catalog__primitive-swatch--focus",
+  Elevation: "ds-catalog__primitive-swatch--elevation",
+  Radius: "ds-catalog__primitive-swatch--radius",
+  Strokes: "ds-catalog__primitive-swatch--strokes",
 };
 ---
 
-<PrototypeLayout title="Design System Source of Truth v0.1">
-  <main class="ds-sot" data-design-system-sot>
-    <nav class="ds-sot__breadcrumb" aria-label="Du er her">
+<PrototypeLayout title="Designsystem — Viddel MVP">
+  <main class="ds-catalog" data-design-system-catalog>
+    <nav class="ds-catalog__breadcrumb" aria-label="Du er her">
       <a href={`${base}vis`}>VIS</a>
       <span aria-hidden="true">/</span>
-      <span>Design System</span>
+      <span>Designsystem</span>
     </nav>
 
-    <header class="ds-sot__hero">
-      <p class="ds-sot__kicker">Viddel · canonical reference · {designSystemMeta.version}</p>
-      <h1>{designSystemMeta.title}</h1>
-      <p class="ds-sot__lead">
-        Praktisk HITL-flate for gjeldende MVP-designsystem. Patterns, primitives-referanser og applied surfaces —
-        uten redesign, token-implementering eller produksjonsendringer.
+    <header class="ds-catalog__hero">
+      <h1>Designsystem</h1>
+      <p class="ds-catalog__hero-lead">Gjeldende mønstre for Viddel MVP.</p>
+      <p class="ds-catalog__hero-note">
+        <code>/designsystem/</code> er gjeldende sannhet. <code>/vis/sprints/…</code> er historikk og beslutningsgrunnlag.
       </p>
-      <dl class="ds-sot__meta">
-        <div><dt>Canonical path</dt><dd><code>{designSystemMeta.canonicalPath}</code></dd></div>
-        <div><dt>Oppdatert</dt><dd>{designSystemMeta.updated}</dd></div>
-        <div><dt>Issue</dt><dd>{designSystemMeta.issue}</dd></div>
-      </dl>
     </header>
 
-    <section class="ds-sot__rules" aria-labelledby="rules-heading">
-      <h2 id="rules-heading" class="visually-hidden">Arbeidsregler</h2>
-      <article class="ds-sot__rule ds-sot__rule--primary">
-        <p class="ds-sot__rule-label">Working Rule</p>
-        <p>{workingRule}</p>
-      </article>
-      <article class="ds-sot__rule">
-        <p class="ds-sot__rule-label">Return Ticket-regel</p>
-        <p>{returnTicketRule}</p>
-      </article>
-      <aside class="ds-sot__note" role="note">
-        <strong>Merk:</strong> {canonicalNote}
-      </aside>
-    </section>
+    <aside class="ds-catalog__rule" aria-label="Working Rule">
+      <span class="ds-catalog__rule-label">Working Rule</span>
+      {workingRule}
+    </aside>
 
-    <section class="ds-sot__section" aria-labelledby="primitives-heading">
-      <div class="ds-sot__section-head">
-        <p class="ds-sot__kicker">01</p>
-        <h2 id="primitives-heading">Primitives</h2>
-        <p>
-          Grunnleggende byggeklosser. Detaljert lab ligger historisk under Primitives Lab — canonical status og retning
-          oppdateres her.
-        </p>
+    <section class="ds-catalog__section" aria-labelledby="patterns-overview">
+      <div class="ds-catalog__section-head">
+        <p class="ds-catalog__kicker">Mønstre</p>
+        <h2 id="patterns-overview">Pattern overview</h2>
+        <p>Visuell referanse først — detaljer under hvert mønster.</p>
       </div>
-      <div class="ds-sot__grid ds-sot__grid--primitives">
-        {primitiveCategories.map((cat) => (
-          <article class="ds-sot__card">
-            <div class="ds-sot__card-head">
-              <h3>{cat.name}</h3>
-              <span class:list={["ds-sot-status", statusClass[cat.status]]}>{cat.status}</span>
+
+      <div class="ds-catalog__pattern-grid">
+        {patterns.map((pattern) => (
+          <a class="ds-catalog__pattern-card" href={`#pattern-${pattern.id}`}>
+            <div class="ds-catalog__pattern-card-head">
+              <h3>{pattern.name}</h3>
+              <span class:list={["ds-status", statusClass[pattern.status]]}>{pattern.status}</span>
             </div>
-            <p>{cat.summary}</p>
-            <p class="ds-sot__source">
-              <span>Kilde:</span> <code>{cat.source}</code>
-            </p>
-            <a class="ds-sot__link" href={`${base}${cat.labHref.replace(/^\//, "")}`}>
-              Primitives Lab →
-            </a>
-          </article>
+            <div class="ds-catalog__pattern-card-preview" aria-hidden="true">
+              <PatternPreview id={pattern.id} size="sm" />
+            </div>
+            <div class="ds-catalog__pattern-card-body">
+              <p>{pattern.summary}</p>
+              <p class="ds-catalog__pattern-card-used">
+                <strong>Brukes på:</strong> {pattern.usedOn.join(" · ")}
+              </p>
+              <span class="ds-catalog__pattern-card-link">Åpne detaljer ↓</span>
+            </div>
+          </a>
         ))}
       </div>
     </section>
 
-    <section class="ds-sot__section" aria-labelledby="patterns-heading">
-      <div class="ds-sot__section-head">
-        <p class="ds-sot__kicker">02</p>
-        <h2 id="patterns-heading">Patterns</h2>
-        <p>
-          Sammensatte UI-mønstre — spesielt AI/action. Gjenbruk disse før nye varianter introduseres.
-        </p>
+    <section class="ds-catalog__section" aria-labelledby="patterns-detail">
+      <div class="ds-catalog__section-head">
+        <p class="ds-catalog__kicker">Detaljer</p>
+        <h2 id="patterns-detail">Pattern details</h2>
       </div>
-      <div class="ds-sot__patterns">
+
+      <div class="ds-catalog__detail-list">
         {patterns.map((pattern) => (
-          <article class="ds-sot__pattern" id={`pattern-${pattern.id}`}>
-            <header class="ds-sot__pattern-head">
+          <article class="ds-catalog__detail" id={`pattern-${pattern.id}`}>
+            <header class="ds-catalog__detail-head">
               <h3>{pattern.name}</h3>
-              <span class:list={["ds-sot-status", statusClass[pattern.status]]}>{pattern.status}</span>
+              <span class:list={["ds-status", statusClass[pattern.status]]}>{pattern.status}</span>
             </header>
-            <dl class="ds-sot__pattern-meta">
-              <div>
-                <dt>Formål</dt>
-                <dd>{pattern.purpose}</dd>
+
+            <div class="ds-catalog__detail-preview" aria-hidden="true">
+              <PatternPreview id={pattern.id} size="lg" />
+            </div>
+
+            <div class="ds-catalog__detail-grid">
+              <div class="ds-catalog__detail-block ds-catalog__detail-block--rule">
+                <h4>Regel</h4>
+                <p>{pattern.rule}</p>
               </div>
-              <div>
-                <dt>Brukes på</dt>
-                <dd>
-                  <ul role="list">
-                    {pattern.usedOn.map((route) => (
-                      <li>{route}</li>
-                    ))}
-                  </ul>
-                </dd>
+              <div class="ds-catalog__detail-block">
+                <h4>Når brukes dette?</h4>
+                <p>{pattern.purpose}</p>
               </div>
-              <div>
-                <dt>Kildefiler</dt>
-                <dd>
-                  <ul role="list" class="ds-sot__file-list">
-                    {pattern.sourceFiles.map((file) => (
-                      <li><code>{file}</code></li>
-                    ))}
-                  </ul>
-                </dd>
+              <div class="ds-catalog__detail-block">
+                <h4>Brukes på</h4>
+                <ul role="list">
+                  {pattern.usedOn.map((route) => (
+                    <li>{route}</li>
+                  ))}
+                </ul>
               </div>
-              {(pattern.issueRef || pattern.commitRef) && (
-                <div>
-                  <dt>Issue / commit</dt>
-                  <dd>
-                    {pattern.issueRef && <span>{pattern.issueRef}</span>}
-                    {pattern.issueRef && pattern.commitRef && " · "}
-                    {pattern.commitRef && <code>{pattern.commitRef}</code>}
-                  </dd>
-                </div>
-              )}
-            </dl>
-            <div class="ds-sot__do-dont">
-              <div>
+              <div class="ds-catalog__detail-block">
                 <h4>Do</h4>
                 <ul role="list">
                   {pattern.do.map((item) => (
@@ -152,7 +133,7 @@ const statusClass: Record<PatternStatus, string> = {
                   ))}
                 </ul>
               </div>
-              <div>
+              <div class="ds-catalog__detail-block">
                 <h4>Don't</h4>
                 <ul role="list">
                   {pattern.dont.map((item) => (
@@ -161,32 +142,80 @@ const statusClass: Record<PatternStatus, string> = {
                 </ul>
               </div>
             </div>
-            <div class="ds-sot__qa">
-              <h4>QA-spørsmål</h4>
+
+            <details class="ds-catalog__detail-tech">
+              <summary>Kilde / implementasjon</summary>
               <ul role="list">
-                {pattern.qaQuestions.map((q) => (
-                  <li>{q}</li>
+                {pattern.sourceFiles.map((file) => (
+                  <li><code>{file}</code></li>
                 ))}
               </ul>
-            </div>
+              {(pattern.issueRef || pattern.commitRef) && (
+                <p>
+                  {pattern.issueRef && <span>{pattern.issueRef}</span>}
+                  {pattern.issueRef && pattern.commitRef && " · "}
+                  {pattern.commitRef && <code>{pattern.commitRef}</code>}
+                </p>
+              )}
+            </details>
           </article>
         ))}
       </div>
     </section>
 
-    <section class="ds-sot__section" aria-labelledby="applied-heading">
-      <div class="ds-sot__section-head">
-        <p class="ds-sot__kicker">03</p>
-        <h2 id="applied-heading">Applied surfaces</h2>
-        <p>Hvor patterns faktisk er i bruk i MVP — uten å endre disse flatene i denne oppgaven.</p>
+    <section class="ds-catalog__section" aria-labelledby="primitives-heading">
+      <div class="ds-catalog__section-head">
+        <p class="ds-catalog__kicker">Sekundært</p>
+        <h2 id="primitives-heading">Primitives</h2>
+        <p>Grunnleggende byggeklosser — detaljert lab under Primitives Lab (historikk).</p>
       </div>
-      <div class="ds-sot__table-wrap">
-        <table class="ds-sot__table">
+      <div class="ds-catalog__primitive-grid">
+        {primitiveCategories.map((cat) => (
+          <article class="ds-catalog__primitive">
+            <div class="ds-catalog__primitive-head">
+              <b>{cat.name}</b>
+              <span class:list={["ds-status", statusClass[cat.status]]}>{cat.status}</span>
+            </div>
+            <div class:list={["ds-catalog__primitive-swatch", primitiveSwatchClass[cat.name]]} aria-hidden="true">
+              {cat.name === "Surfaces" && (
+                <>
+                  <span /><span /><span /><span />
+                </>
+              )}
+              {cat.name === "Buttons" && (
+                <>
+                  <span>Primary</span><span>Quiet</span>
+                </>
+              )}
+              {cat.name === "Inputs" && "AI prompt …"}
+              {cat.name === "Pills / chips" && (
+                <>
+                  <span>Seed</span><span>Tag</span>
+                </>
+              )}
+              {cat.name === "Focus" && <span />}
+              {cat.name === "Elevation" && null}
+              {cat.name === "Radius" && null}
+              {cat.name === "Strokes" && null}
+            </div>
+            <a href={`${base}${cat.labHref.replace(/^\//, "")}`}>Lab →</a>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="ds-catalog__section" aria-labelledby="applied-heading">
+      <div class="ds-catalog__section-head">
+        <p class="ds-catalog__kicker">Produksjon</p>
+        <h2 id="applied-heading">Applied surfaces</h2>
+      </div>
+      <div class="ds-catalog__table-wrap">
+        <table class="ds-catalog__table">
           <thead>
             <tr>
               <th scope="col">Route</th>
+              <th scope="col">Mønstre</th>
               <th scope="col">Status</th>
-              <th scope="col">Patterns</th>
               <th scope="col">Note</th>
             </tr>
           </thead>
@@ -194,10 +223,10 @@ const statusClass: Record<PatternStatus, string> = {
             {appliedSurfaces.map((surface) => (
               <tr>
                 <td><code>{surface.route}</code></td>
+                <td>{surface.patterns.join(", ")}</td>
                 <td>
-                  <span class:list={["ds-sot-status", statusClass[surface.status]]}>{surface.status}</span>
+                  <span class:list={["ds-status", statusClass[surface.status]]}>{surface.status}</span>
                 </td>
-                <td>{surface.patterns.join(" · ")}</td>
                 <td>{surface.note}</td>
               </tr>
             ))}
@@ -206,440 +235,40 @@ const statusClass: Record<PatternStatus, string> = {
       </div>
     </section>
 
-    <section class="ds-sot__section" aria-labelledby="history-heading">
-      <div class="ds-sot__section-head">
-        <p class="ds-sot__kicker">04</p>
-        <h2 id="history-heading">Historikk og beslutningsgrunnlag</h2>
-        <p>Sprint-VIS og labs — pek hit for detaljer, ikke som canonical sannhet.</p>
+    <footer class="ds-catalog__tech" aria-labelledby="tech-heading">
+      <h2 id="tech-heading">Technical reference</h2>
+      <div class="ds-catalog__tech-grid">
+        <div>
+          <strong>Return Ticket-regel</strong>
+          <p>{returnTicketRule}</p>
+        </div>
+        <div>
+          <strong>Meta</strong>
+          <p>
+            {designSystemMeta.version} · {designSystemMeta.updated} · {designSystemMeta.issue} ·{" "}
+            <code>{designSystemMeta.canonicalPath}</code>
+          </p>
+        </div>
+        <div>
+          <strong>Historikk / beslutningsgrunnlag</strong>
+          <ul role="list">
+            {historicalVisLinks.map((link) => (
+              <li>
+                <a href={`${base}${link.href.replace(/^\//, "")}`}>{link.label}</a> — {link.role}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <strong>Decision docs</strong>
+          <ul role="list">
+            {designSystemMeta.relatedDecisions.map((doc) => (
+              <li><code>{doc}</code></li>
+            ))}
+          </ul>
+        </div>
+        <p><em>{canonicalNote}</em></p>
       </div>
-      <ul class="ds-sot__history-list" role="list">
-        {historicalVisLinks.map((link) => (
-          <li>
-            <a href={`${base}${link.href.replace(/^\//, "")}`}>{link.label}</a>
-            <span>{link.role}</span>
-          </li>
-        ))}
-      </ul>
-      <ul class="ds-sot__decisions" role="list">
-        {designSystemMeta.relatedDecisions.map((doc) => (
-          <li><code>{doc}</code></li>
-        ))}
-      </ul>
-    </section>
+    </footer>
   </main>
 </PrototypeLayout>
-
-<style>
-  .ds-sot {
-    --ds-sot-max: 72rem;
-    --ds-sot-ink: #0f172a;
-    --ds-sot-muted: #64748b;
-    --ds-sot-border: #e2e8f0;
-    --ds-sot-surface: #f8fafc;
-    --ds-sot-accent: #0ea5e9;
-    --ds-sot-accepted: #059669;
-    --ds-sot-applied: #2563eb;
-    --ds-sot-candidate: #d97706;
-    --ds-sot-needs-qa: #9333ea;
-    --ds-sot-deprecated: #94a3b8;
-    max-width: var(--ds-sot-max);
-    margin: 0 auto;
-    padding: 2rem 1.25rem 4rem;
-    color: var(--ds-sot-ink);
-    font-family: var(--font-sans, system-ui, sans-serif);
-    line-height: 1.55;
-  }
-
-  .ds-sot__breadcrumb {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    align-items: center;
-    font-size: 0.8125rem;
-    color: var(--ds-sot-muted);
-    margin-bottom: 1.5rem;
-  }
-
-  .ds-sot__breadcrumb a {
-    color: var(--ds-sot-accent);
-    text-decoration: none;
-  }
-
-  .ds-sot__breadcrumb a:hover {
-    text-decoration: underline;
-  }
-
-  .ds-sot__kicker {
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ds-sot-muted);
-    margin: 0 0 0.5rem;
-  }
-
-  .ds-sot__hero h1 {
-    font-size: clamp(1.75rem, 4vw, 2.25rem);
-    line-height: 1.15;
-    margin: 0 0 0.75rem;
-  }
-
-  .ds-sot__lead {
-    max-width: 42rem;
-    color: var(--ds-sot-muted);
-    margin: 0 0 1.25rem;
-  }
-
-  .ds-sot__meta {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-    gap: 0.75rem 1.5rem;
-    margin: 0;
-    padding: 1rem 1.25rem;
-    background: var(--ds-sot-surface);
-    border: 1px solid var(--ds-sot-border);
-    border-radius: 0.75rem;
-    font-size: 0.875rem;
-  }
-
-  .ds-sot__meta dt {
-    font-size: 0.6875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--ds-sot-muted);
-    margin-bottom: 0.15rem;
-  }
-
-  .ds-sot__meta dd {
-    margin: 0;
-    font-weight: 500;
-  }
-
-  .ds-sot__rules {
-    display: grid;
-    gap: 0.75rem;
-    margin: 2rem 0;
-  }
-
-  .ds-sot__rule {
-    margin: 0;
-    padding: 1rem 1.25rem;
-    border: 1px solid var(--ds-sot-border);
-    border-radius: 0.75rem;
-    background: #fff;
-  }
-
-  .ds-sot__rule--primary {
-    border-color: #bae6fd;
-    background: #f0f9ff;
-  }
-
-  .ds-sot__rule-label {
-    font-size: 0.6875rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--ds-sot-muted);
-    margin: 0 0 0.35rem;
-  }
-
-  .ds-sot__rule p:last-child {
-    margin: 0;
-  }
-
-  .ds-sot__note {
-    margin: 0;
-    padding: 0.85rem 1.1rem;
-    border-left: 3px solid var(--ds-sot-accent);
-    background: var(--ds-sot-surface);
-    font-size: 0.9375rem;
-  }
-
-  .ds-sot__section {
-    margin-top: 2.75rem;
-  }
-
-  .ds-sot__section-head h2 {
-    font-size: 1.375rem;
-    margin: 0 0 0.35rem;
-  }
-
-  .ds-sot__section-head p {
-    color: var(--ds-sot-muted);
-    max-width: 42rem;
-    margin: 0;
-  }
-
-  .ds-sot__grid {
-    display: grid;
-    gap: 1rem;
-    margin-top: 1.25rem;
-  }
-
-  .ds-sot__grid--primitives {
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-  }
-
-  .ds-sot__card,
-  .ds-sot__pattern {
-    border: 1px solid var(--ds-sot-border);
-    border-radius: 0.75rem;
-    background: #fff;
-    padding: 1rem 1.15rem;
-  }
-
-  .ds-sot__card-head,
-  .ds-sot__pattern-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .ds-sot__card h3,
-  .ds-sot__pattern h3 {
-    font-size: 1rem;
-    margin: 0;
-  }
-
-  .ds-sot__card p {
-    margin: 0 0 0.65rem;
-    font-size: 0.9375rem;
-    color: var(--ds-sot-muted);
-  }
-
-  .ds-sot__source {
-    font-size: 0.8125rem;
-    margin-bottom: 0.65rem !important;
-  }
-
-  .ds-sot__source span {
-    color: var(--ds-sot-ink);
-    font-weight: 500;
-  }
-
-  .ds-sot__link {
-    font-size: 0.8125rem;
-    color: var(--ds-sot-accent);
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  .ds-sot__link:hover {
-    text-decoration: underline;
-  }
-
-  .ds-sot__patterns {
-    display: grid;
-    gap: 1.25rem;
-    margin-top: 1.25rem;
-  }
-
-  .ds-sot__pattern-meta {
-    display: grid;
-    gap: 0.75rem;
-    margin: 0 0 1rem;
-    font-size: 0.9375rem;
-  }
-
-  .ds-sot__pattern-meta dt {
-    font-size: 0.6875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--ds-sot-muted);
-    margin-bottom: 0.2rem;
-  }
-
-  .ds-sot__pattern-meta dd {
-    margin: 0;
-  }
-
-  .ds-sot__pattern-meta ul {
-    margin: 0;
-    padding-left: 1.1rem;
-  }
-
-  .ds-sot__file-list code {
-    font-size: 0.8125rem;
-    word-break: break-all;
-  }
-
-  .ds-sot__do-dont {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    font-size: 0.875rem;
-  }
-
-  @media (max-width: 640px) {
-    .ds-sot__do-dont {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .ds-sot__do-dont h4 {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin: 0 0 0.35rem;
-    color: var(--ds-sot-muted);
-  }
-
-  .ds-sot__do-dont ul {
-    margin: 0;
-    padding-left: 1.1rem;
-  }
-
-  .ds-sot__qa h4 {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin: 0 0 0.35rem;
-    color: var(--ds-sot-muted);
-  }
-
-  .ds-sot__qa ul {
-    margin: 0;
-    padding-left: 1.1rem;
-    font-size: 0.875rem;
-    color: var(--ds-sot-muted);
-  }
-
-  .ds-sot-status {
-    display: inline-block;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    padding: 0.2rem 0.5rem;
-    border-radius: 999px;
-    border: 1px solid transparent;
-    white-space: nowrap;
-  }
-
-  .ds-sot-status--accepted {
-    color: var(--ds-sot-accepted);
-    background: #ecfdf5;
-    border-color: #a7f3d0;
-  }
-
-  .ds-sot-status--applied {
-    color: var(--ds-sot-applied);
-    background: #eff6ff;
-    border-color: #bfdbfe;
-  }
-
-  .ds-sot-status--candidate {
-    color: var(--ds-sot-candidate);
-    background: #fffbeb;
-    border-color: #fde68a;
-  }
-
-  .ds-sot-status--needs-qa {
-    color: var(--ds-sot-needs-qa);
-    background: #faf5ff;
-    border-color: #e9d5ff;
-  }
-
-  .ds-sot-status--deprecated {
-    color: var(--ds-sot-deprecated);
-    background: #f1f5f9;
-    border-color: #cbd5e1;
-  }
-
-  .ds-sot__table-wrap {
-    overflow-x: auto;
-    margin-top: 1.25rem;
-    border: 1px solid var(--ds-sot-border);
-    border-radius: 0.75rem;
-  }
-
-  .ds-sot__table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-    background: #fff;
-  }
-
-  .ds-sot__table th,
-  .ds-sot__table td {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    vertical-align: top;
-    border-bottom: 1px solid var(--ds-sot-border);
-  }
-
-  .ds-sot__table th {
-    font-size: 0.6875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--ds-sot-muted);
-    background: var(--ds-sot-surface);
-  }
-
-  .ds-sot__table tr:last-child td {
-    border-bottom: none;
-  }
-
-  .ds-sot__history-list {
-    margin: 1rem 0 0;
-    padding: 0;
-    list-style: none;
-    display: grid;
-    gap: 0.65rem;
-  }
-
-  .ds-sot__history-list li {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem 0.75rem;
-    align-items: baseline;
-    padding: 0.65rem 0.85rem;
-    border: 1px solid var(--ds-sot-border);
-    border-radius: 0.5rem;
-    background: #fff;
-  }
-
-  .ds-sot__history-list a {
-    color: var(--ds-sot-accent);
-    font-weight: 500;
-    text-decoration: none;
-  }
-
-  .ds-sot__history-list a:hover {
-    text-decoration: underline;
-  }
-
-  .ds-sot__history-list span {
-    font-size: 0.8125rem;
-    color: var(--ds-sot-muted);
-  }
-
-  .ds-sot__decisions {
-    margin: 1rem 0 0;
-    padding-left: 1.1rem;
-    font-size: 0.8125rem;
-    color: var(--ds-sot-muted);
-  }
-
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  code {
-    font-size: 0.85em;
-    background: var(--ds-sot-surface);
-    padding: 0.1em 0.35em;
-    border-radius: 0.25rem;
-  }
-</style>

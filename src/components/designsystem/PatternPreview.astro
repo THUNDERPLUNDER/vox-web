@@ -1,0 +1,231 @@
+---
+/* CONTRACT: Static visual previews for /designsystem/ — uses production AI markup/CSS, non-interactive. */
+export interface Props {
+  id: string;
+  size?: "sm" | "lg";
+}
+
+const { id, size = "lg" } = Astro.props;
+
+const seeds = [
+  "Hvorfor blir lyden så slitsom på restaurant?",
+  "Hvordan kobler jeg høreapparatet til mobilen?",
+  "Hva gjør jeg når appen ikke finner høreapparatet?",
+];
+
+const showSeeds = size === "lg" ? seeds : seeds.slice(0, size === "sm" ? 2 : 3);
+---
+
+<div class:list={["ds-preview", size === "sm" && "ds-preview--sm"]} data-ds-preview={id}>
+  {
+    id === "ai-composer" && (
+      <div class="ds-preview__frame" data-r1-editorial>
+        <div class="r1-editorial-container">
+          <section class="r1-ai-bridge">
+            <section
+              class="inline-chat-shell"
+              data-inline-chat-mode="progressive"
+              data-inline-chat-conversation="idle"
+              aria-hidden="true"
+            >
+              <div class="inline-chat-shell__compose-stack">
+                <form class="inline-chat-shell__compose" tabindex="-1">
+                  <div class="inline-chat-shell__compose-input-wrap">
+                    <textarea
+                      class="inline-chat-shell__compose-input"
+                      rows="1"
+                      readonly
+                      tabindex="-1"
+                      placeholder="Beskriv situasjonen eller spørsmålet ditt ..."
+                    />
+                  </div>
+                  <button type="button" class="inline-chat-shell__compose-send" tabindex="-1" aria-hidden="true">
+                    <span aria-hidden="true">↑</span>
+                  </button>
+                </form>
+              </div>
+            </section>
+          </section>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    id === "seed-questions" && (
+      <div class="ds-preview__frame" data-r1-editorial>
+        <div class="r1-editorial-container">
+          <section class="r1-ai-bridge">
+            <section class="inline-chat-shell" data-inline-chat-mode="progressive" aria-hidden="true">
+              <header class="inline-chat-shell__header">
+                <h2 class="inline-chat-shell__title">Spør om dette:</h2>
+              </header>
+              <ul class="inline-chat-shell__seed-list inline-chat-shell__seed-list--rows" role="list">
+                {showSeeds.map((question) => (
+                  <li class="inline-chat-shell__seed-item">
+                    <span class="inline-chat-shell__seed-btn inline-chat-shell__seed-row ds-preview__static-seed">
+                      <span class="inline-chat-shell__seed-question">{question}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </section>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    id === "standalone-chat-shell" && (
+      <div class="ds-preview__frame ds-preview__frame--shell" data-r1-editorial>
+        <div class="r1-editorial-container">
+          <section class="r1-ai-bridge">
+            <section
+              class="inline-chat-shell"
+              data-inline-chat-mode="progressive"
+              data-inline-chat-conversation="active"
+              aria-hidden="true"
+            >
+              <div class="inline-chat-shell__dialog-thread">
+                <div class="inline-chat-shell__transcript-divider">
+                  <span class="inline-chat-shell__transcript-divider-line" aria-hidden="true" />
+                  <span class="inline-chat-shell__transcript-divider-label">Dialog med Viddel</span>
+                </div>
+                <div class="inline-chat-shell__transcript">
+                  <article class="inline-chat-shell__message inline-chat-shell__message--user">
+                    <p class="inline-chat-shell__message-text">Hvordan kobler jeg høreapparatet til mobilen?</p>
+                  </article>
+                  <article class="inline-chat-shell__message inline-chat-shell__message--assistant">
+                    <p class="inline-chat-shell__message-eyebrow">Viddel</p>
+                    <p class="inline-chat-shell__message-text">
+                      Start med å åpne appen fra produsenten og slå på Bluetooth på mobilen …
+                    </p>
+                  </article>
+                </div>
+              </div>
+              <div class="inline-chat-shell__compose-stack">
+                <form class="inline-chat-shell__compose" tabindex="-1">
+                  <div class="inline-chat-shell__compose-input-wrap">
+                    <textarea
+                      class="inline-chat-shell__compose-input"
+                      rows="1"
+                      readonly
+                      tabindex="-1"
+                      placeholder="Beskriv situasjonen eller spørsmålet ditt ..."
+                    />
+                  </div>
+                  <button type="button" class="inline-chat-shell__compose-send" tabindex="-1" aria-hidden="true">
+                    <span aria-hidden="true">↑</span>
+                  </button>
+                </form>
+              </div>
+            </section>
+          </section>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    id === "article-to-ai-transition" && (
+      <div class="ds-preview__frame ds-preview__frame--article" data-r1-editorial>
+        <div class="r1-editorial-container">
+          <p class="ds-preview__article-end">
+            … når lyden blir slitsom utover dagen, hjelper det ofte å ta korte pauser og senke kravet til detaljlyd.
+          </p>
+          <hr class="r1-article-to-klarlyd-divider" aria-hidden="true" />
+          <section class="r1-ai-bridge">
+            <section class="inline-chat-shell" data-inline-chat-mode="progressive" aria-hidden="true">
+              <header class="inline-chat-shell__header">
+                <h2 class="inline-chat-shell__title">Spør om dette:</h2>
+              </header>
+              <ul class="inline-chat-shell__seed-list inline-chat-shell__seed-list--rows" role="list">
+                <li class="inline-chat-shell__seed-item">
+                  <span class="inline-chat-shell__seed-btn inline-chat-shell__seed-row ds-preview__static-seed">
+                    <span class="inline-chat-shell__seed-question">Hva kan jeg gjøre når lyden blir slitsom?</span>
+                  </span>
+                </li>
+              </ul>
+              <div class="inline-chat-shell__compose-stack">
+                <form class="inline-chat-shell__compose" tabindex="-1">
+                  <div class="inline-chat-shell__compose-input-wrap">
+                    <textarea
+                      class="inline-chat-shell__compose-input"
+                      rows="1"
+                      readonly
+                      tabindex="-1"
+                      placeholder="Beskriv situasjonen eller spørsmålet ditt ..."
+                    />
+                  </div>
+                  <button type="button" class="inline-chat-shell__compose-send" tabindex="-1" aria-hidden="true">
+                    <span aria-hidden="true">↑</span>
+                  </button>
+                </form>
+              </div>
+            </section>
+          </section>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    id === "transcript" && (
+      <div class="ds-preview__frame" data-r1-editorial>
+        <div class="r1-editorial-container">
+          <section class="r1-ai-bridge">
+            <section
+              class="inline-chat-shell"
+              data-inline-chat-mode="progressive"
+              data-inline-chat-conversation="active"
+              aria-hidden="true"
+            >
+              <div class="inline-chat-shell__transcript">
+                <article class="inline-chat-shell__message inline-chat-shell__message--user">
+                  <p class="inline-chat-shell__message-text">Hva kan jeg prøve på restaurant?</p>
+                </article>
+                <article class="inline-chat-shell__message inline-chat-shell__message--assistant">
+                  <p class="inline-chat-shell__message-eyebrow">Viddel</p>
+                  <p class="inline-chat-shell__message-text">
+                    Prøv å sitte med ryggen mot støy, og bruk retningsprogram om du har det tilgjengelig.
+                  </p>
+                </article>
+              </div>
+            </section>
+          </section>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    id === "loading-error-states" && (
+      <div class="ds-preview__frame ds-preview__frame--states" data-r1-editorial>
+        <div class="r1-editorial-container">
+          <section class="r1-ai-bridge">
+            <section class="inline-chat-shell" data-inline-chat-mode="progressive" aria-hidden="true">
+              <div class="inline-chat-shell__compose-stack">
+                <p class="inline-chat-shell__status inline-chat-shell__status--dock">Viddel svarer …</p>
+                <p class="viddel-chat-standalone__error ds-preview__error-sample">
+                  Vi får ikke kontakt med Viddel akkurat nå. Prøv igjen om litt.
+                </p>
+              </div>
+            </section>
+          </section>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    id === "helper-note-box" && (
+      <div class="ds-preview__frame ds-preview__frame--note">
+        <p class="viddel-chat-standalone__safety">
+          Viddel kan gi praktiske forslag og hjelpe deg å finne neste steg. Ved medisinske spørsmål bør du kontakte
+          audiograf eller annet helsepersonell.
+        </p>
+      </div>
+    )
+  }
+</div>
