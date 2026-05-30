@@ -29,14 +29,14 @@ const statusClass: Record<PatternStatus, string> = {
 };
 
 const primitiveSwatchClass: Record<string, string> = {
-  Surfaces: "ds-catalog__primitive-swatch--surfaces",
-  Buttons: "ds-catalog__primitive-swatch--buttons",
-  Inputs: "ds-catalog__primitive-swatch--input",
-  "Pills / chips": "ds-catalog__primitive-swatch--pills",
-  Focus: "ds-catalog__primitive-swatch--focus",
-  Elevation: "ds-catalog__primitive-swatch--elevation",
-  Radius: "ds-catalog__primitive-swatch--radius",
-  Strokes: "ds-catalog__primitive-swatch--strokes",
+  Surfaces: "ds-catalog__swatch--surfaces",
+  Buttons: "ds-catalog__swatch--buttons",
+  Inputs: "ds-catalog__swatch--input",
+  "Pills / chips": "ds-catalog__swatch--pills",
+  Focus: "ds-catalog__swatch--focus",
+  Elevation: "ds-catalog__swatch--elevation",
+  Radius: "ds-catalog__swatch--radius",
+  Strokes: "ds-catalog__swatch--strokes",
 };
 ---
 
@@ -52,49 +52,39 @@ const primitiveSwatchClass: Record<string, string> = {
       <h1>Designsystem</h1>
       <p class="ds-catalog__hero-lead">Gjeldende mønstre for Viddel MVP.</p>
       <p class="ds-catalog__hero-note">
-        <code>/designsystem/</code> er gjeldende sannhet. <code>/vis/sprints/…</code> er historikk og beslutningsgrunnlag.
+        <code>/designsystem/</code> er gjeldende sannhet. <code>/vis/sprints/…</code> er historikk.
       </p>
     </header>
 
-    <aside class="ds-catalog__rule" aria-label="Working Rule">
+    <p class="ds-catalog__rule" aria-label="Working Rule">
       <span class="ds-catalog__rule-label">Working Rule</span>
       {workingRule}
-    </aside>
+    </p>
 
     <section class="ds-catalog__section" aria-labelledby="patterns-overview">
-      <div class="ds-catalog__section-head">
-        <p class="ds-catalog__kicker">Mønstre</p>
-        <h2 id="patterns-overview">Pattern overview</h2>
-        <p>Visuell referanse først — detaljer under hvert mønster.</p>
-      </div>
+      <h2 id="patterns-overview" class="ds-catalog__section-title">Mønstre</h2>
 
       <div class="ds-catalog__pattern-grid">
         {patterns.map((pattern) => (
           <a class="ds-catalog__pattern-card" href={`#pattern-${pattern.id}`}>
-            <div class="ds-catalog__pattern-card-head">
-              <h3>{pattern.name}</h3>
-              <span class:list={["ds-status", statusClass[pattern.status]]}>{pattern.status}</span>
-            </div>
             <div class="ds-catalog__pattern-card-preview" aria-hidden="true">
               <PatternPreview id={pattern.id} size="sm" />
             </div>
-            <div class="ds-catalog__pattern-card-body">
-              <p>{pattern.summary}</p>
-              <p class="ds-catalog__pattern-card-used">
-                <strong>Brukes på:</strong> {pattern.usedOn.join(" · ")}
-              </p>
-              <span class="ds-catalog__pattern-card-link">Åpne detaljer ↓</span>
+            <div class="ds-catalog__pattern-card-meta">
+              <div class="ds-catalog__pattern-card-head">
+                <h3>{pattern.name}</h3>
+                <span class:list={["ds-status", statusClass[pattern.status]]}>{pattern.status}</span>
+              </div>
+              <p class="ds-catalog__pattern-card-summary">{pattern.summary}</p>
+              <p class="ds-catalog__pattern-card-used">{pattern.usedOn.join(" · ")}</p>
             </div>
           </a>
         ))}
       </div>
     </section>
 
-    <section class="ds-catalog__section" aria-labelledby="patterns-detail">
-      <div class="ds-catalog__section-head">
-        <p class="ds-catalog__kicker">Detaljer</p>
-        <h2 id="patterns-detail">Pattern details</h2>
-      </div>
+    <section class="ds-catalog__section ds-catalog__section--details" aria-labelledby="patterns-detail">
+      <h2 id="patterns-detail" class="ds-catalog__section-title ds-catalog__section-title--sub">Detaljer</h2>
 
       <div class="ds-catalog__detail-list">
         {patterns.map((pattern) => (
@@ -108,24 +98,19 @@ const primitiveSwatchClass: Record<string, string> = {
               <PatternPreview id={pattern.id} size="lg" />
             </div>
 
-            <div class="ds-catalog__detail-grid">
-              <div class="ds-catalog__detail-block ds-catalog__detail-block--rule">
-                <h4>Regel</h4>
-                <p>{pattern.rule}</p>
-              </div>
-              <div class="ds-catalog__detail-block">
+            <div class="ds-catalog__detail-copy">
+              <div>
                 <h4>Når brukes dette?</h4>
                 <p>{pattern.purpose}</p>
               </div>
-              <div class="ds-catalog__detail-block">
-                <h4>Brukes på</h4>
-                <ul role="list">
-                  {pattern.usedOn.map((route) => (
-                    <li>{route}</li>
-                  ))}
-                </ul>
+              <div>
+                <h4>Regel</h4>
+                <p>{pattern.rule}</p>
               </div>
-              <div class="ds-catalog__detail-block">
+            </div>
+
+            <div class="ds-catalog__do-dont">
+              <div>
                 <h4>Do</h4>
                 <ul role="list">
                   {pattern.do.map((item) => (
@@ -133,7 +118,7 @@ const primitiveSwatchClass: Record<string, string> = {
                   ))}
                 </ul>
               </div>
-              <div class="ds-catalog__detail-block">
+              <div>
                 <h4>Don't</h4>
                 <ul role="list">
                   {pattern.dont.map((item) => (
@@ -151,8 +136,8 @@ const primitiveSwatchClass: Record<string, string> = {
                 ))}
               </ul>
               {(pattern.issueRef || pattern.commitRef) && (
-                <p>
-                  {pattern.issueRef && <span>{pattern.issueRef}</span>}
+                <p class="ds-catalog__detail-tech-meta">
+                  {pattern.issueRef}
                   {pattern.issueRef && pattern.commitRef && " · "}
                   {pattern.commitRef && <code>{pattern.commitRef}</code>}
                 </p>
@@ -163,20 +148,12 @@ const primitiveSwatchClass: Record<string, string> = {
       </div>
     </section>
 
-    <section class="ds-catalog__section" aria-labelledby="primitives-heading">
-      <div class="ds-catalog__section-head">
-        <p class="ds-catalog__kicker">Sekundært</p>
-        <h2 id="primitives-heading">Primitives</h2>
-        <p>Grunnleggende byggeklosser — detaljert lab under Primitives Lab (historikk).</p>
-      </div>
-      <div class="ds-catalog__primitive-grid">
+    <section class="ds-catalog__section ds-catalog__section--secondary" aria-labelledby="primitives-heading">
+      <h2 id="primitives-heading" class="ds-catalog__section-title ds-catalog__section-title--sub">Primitives</h2>
+      <ul class="ds-catalog__primitive-list" role="list">
         {primitiveCategories.map((cat) => (
-          <article class="ds-catalog__primitive">
-            <div class="ds-catalog__primitive-head">
-              <b>{cat.name}</b>
-              <span class:list={["ds-status", statusClass[cat.status]]}>{cat.status}</span>
-            </div>
-            <div class:list={["ds-catalog__primitive-swatch", primitiveSwatchClass[cat.name]]} aria-hidden="true">
+          <li class="ds-catalog__primitive-item">
+            <span class:list={["ds-catalog__swatch", primitiveSwatchClass[cat.name]]} aria-hidden="true">
               {cat.name === "Surfaces" && (
                 <>
                   <span /><span /><span /><span />
@@ -184,91 +161,60 @@ const primitiveSwatchClass: Record<string, string> = {
               )}
               {cat.name === "Buttons" && (
                 <>
-                  <span>Primary</span><span>Quiet</span>
+                  <span /><span />
                 </>
               )}
-              {cat.name === "Inputs" && "AI prompt …"}
+              {cat.name === "Inputs" && <span />}
               {cat.name === "Pills / chips" && (
                 <>
-                  <span>Seed</span><span>Tag</span>
+                  <span /><span />
                 </>
               )}
               {cat.name === "Focus" && <span />}
-              {cat.name === "Elevation" && null}
-              {cat.name === "Radius" && null}
-              {cat.name === "Strokes" && null}
-            </div>
-            <a href={`${base}${cat.labHref.replace(/^\//, "")}`}>Lab →</a>
-          </article>
+            </span>
+            <span class="ds-catalog__primitive-name">{cat.name}</span>
+            <span class:list={["ds-status", "ds-status--plain", statusClass[cat.status]]}>{cat.status}</span>
+            <a href={`${base}${cat.labHref.replace(/^\//, "")}`}>Lab</a>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
 
-    <section class="ds-catalog__section" aria-labelledby="applied-heading">
-      <div class="ds-catalog__section-head">
-        <p class="ds-catalog__kicker">Produksjon</p>
-        <h2 id="applied-heading">Applied surfaces</h2>
-      </div>
-      <div class="ds-catalog__table-wrap">
-        <table class="ds-catalog__table">
-          <thead>
-            <tr>
-              <th scope="col">Route</th>
-              <th scope="col">Mønstre</th>
-              <th scope="col">Status</th>
-              <th scope="col">Note</th>
-            </tr>
-          </thead>
-          <tbody>
-            {appliedSurfaces.map((surface) => (
-              <tr>
-                <td><code>{surface.route}</code></td>
-                <td>{surface.patterns.join(", ")}</td>
-                <td>
-                  <span class:list={["ds-status", statusClass[surface.status]]}>{surface.status}</span>
-                </td>
-                <td>{surface.note}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <section class="ds-catalog__section ds-catalog__section--secondary" aria-labelledby="applied-heading">
+      <h2 id="applied-heading" class="ds-catalog__section-title ds-catalog__section-title--sub">Applied surfaces</h2>
+      <ul class="ds-catalog__surface-list" role="list">
+        {appliedSurfaces.map((surface) => (
+          <li class="ds-catalog__surface-item">
+            <div class="ds-catalog__surface-main">
+              <code>{surface.route}</code>
+              <span class:list={["ds-status", "ds-status--plain", statusClass[surface.status]]}>{surface.status}</span>
+            </div>
+            <p class="ds-catalog__surface-patterns">{surface.patterns.join(" · ")}</p>
+            <p class="ds-catalog__surface-note">{surface.note}</p>
+          </li>
+        ))}
+      </ul>
     </section>
 
-    <footer class="ds-catalog__tech" aria-labelledby="tech-heading">
-      <h2 id="tech-heading">Technical reference</h2>
-      <div class="ds-catalog__tech-grid">
-        <div>
-          <strong>Return Ticket-regel</strong>
-          <p>{returnTicketRule}</p>
-        </div>
-        <div>
-          <strong>Meta</strong>
+    <footer class="ds-catalog__tech">
+      <details>
+        <summary>Technical reference</summary>
+        <div class="ds-catalog__tech-body">
+          <p><strong>Return Ticket:</strong> {returnTicketRule}</p>
           <p>
             {designSystemMeta.version} · {designSystemMeta.updated} · {designSystemMeta.issue} ·{" "}
             <code>{designSystemMeta.canonicalPath}</code>
           </p>
-        </div>
-        <div>
-          <strong>Historikk / beslutningsgrunnlag</strong>
+          <p>{canonicalNote}</p>
           <ul role="list">
             {historicalVisLinks.map((link) => (
               <li>
-                <a href={`${base}${link.href.replace(/^\//, "")}`}>{link.label}</a> — {link.role}
+                <a href={`${base}${link.href.replace(/^\//, "")}`}>{link.label}</a>
               </li>
             ))}
           </ul>
         </div>
-        <div>
-          <strong>Decision docs</strong>
-          <ul role="list">
-            {designSystemMeta.relatedDecisions.map((doc) => (
-              <li><code>{doc}</code></li>
-            ))}
-          </ul>
-        </div>
-        <p><em>{canonicalNote}</em></p>
-      </div>
+      </details>
     </footer>
   </main>
 </PrototypeLayout>

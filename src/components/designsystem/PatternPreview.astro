@@ -13,10 +13,10 @@ const seeds = [
   "Hva gjør jeg når appen ikke finner høreapparatet?",
 ];
 
-const showSeeds = size === "lg" ? seeds : seeds.slice(0, size === "sm" ? 2 : 3);
+const showSeeds = size === "sm" ? seeds.slice(0, 2) : seeds;
 ---
 
-<div class:list={["ds-preview", size === "sm" && "ds-preview--sm"]} data-ds-preview={id}>
+<div class:list={["ds-preview", size === "sm" && "ds-preview--sm", size === "lg" && "ds-preview--lg"]} data-ds-preview={id}>
   {
     id === "ai-composer" && (
       <div class="ds-preview__frame" data-r1-editorial>
