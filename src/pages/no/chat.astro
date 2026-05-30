@@ -128,10 +128,6 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         height: 100dvh;
       }
 
-      body.vox-shell--standalone-chat:not([data-viddel-chat-active]) {
-        overflow: auto;
-      }
-
       body.vox-shell--standalone-chat .vox-shell-standalone-chat__stage {
         flex: 1 1 auto;
         min-height: 0;
@@ -198,7 +194,9 @@ const aiHeadingId = "viddel-standalone-chat-ai";
 
       const syncComposeReserve = () => {
         const h = composeStack.getBoundingClientRect().height;
-        shell.style.setProperty("--inline-chat-bottom-reserve", `${Math.ceil(h + 12)}px`);
+        const reserve = `${Math.ceil(h + 12)}px`;
+        shell.style.setProperty("--inline-chat-bottom-reserve", reserve);
+        document.body.style.setProperty("--viddel-chat-compose-reserve", reserve);
       };
 
       const activateConversation = () => {
