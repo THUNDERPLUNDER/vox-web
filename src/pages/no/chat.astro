@@ -266,6 +266,9 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       };
 
       const friendlyError = (payload) => {
+        if (typeof payload?.message === "string" && payload.message.trim()) {
+          return payload.message.trim();
+        }
         if (payload?.error === "configuration_missing") {
           return "Viddel er ikke tilgjengelig akkurat nå. Prøv igjen om litt.";
         }

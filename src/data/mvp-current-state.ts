@@ -49,7 +49,7 @@ export type RecentChange = {
 export const mvpCurrentState = {
   updatedAt: "2026-05-30",
   currentFocus:
-    "Standalone Spør Viddel og designsystem-katalog er merged. Neste: Public AI guard v0.1 og production CES env-vars før bred AI-aktivering.",
+    "Public AI guard v0.1 implementert på /api/chat (#180). Neste: QA guard, deretter Upstash + CES production env-vars før AI aktivering.",
   mvpSurfaces: [
     {
       id: "frontpage",
@@ -83,10 +83,10 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Applied",
-      note: "Production UI live. Production AI blocked until CES env-vars + Public AI guard/rate limit.",
+      note: "Production UI live. Public AI guard v0.1 on /api/chat (Needs QA). AI blocked until Upstash + CES prod env-vars.",
       visFrontpage: true,
       kind: "public",
-      frontpageDescription: "Standalone headless AI — UI live, prod AI venter env-vars/guard.",
+      frontpageDescription: "Standalone headless AI — guard på plass, prod AI venter Upstash + CES.",
     },
     {
       id: "designsystem",
@@ -126,14 +126,19 @@ export const mvpCurrentState = {
   ] satisfies CanonicalReference[],
   nextRisks: [
     {
-      id: "public-ai-guard",
-      label: "Public AI guard v0.1",
-      detail: "Rate limit og trygg public AI-aktivering før bred bruk av /no/chat/.",
+      id: "public-ai-guard-qa",
+      label: "Public AI guard v0.1 — QA",
+      detail: "Rate limit + origin guard implementert (#180). QA på preview før prod Upstash + CES.",
+    },
+    {
+      id: "upstash-prod-env",
+      label: "Upstash Redis (production)",
+      detail: "UPSTASH_REDIS_REST_URL + TOKEN i Vercel Production — påkrevd før public AI.",
     },
     {
       id: "ces-prod-env",
       label: "CES production env-vars",
-      detail: "Vercel Production må ha CES-konfigurasjon for /api/chat.",
+      detail: "Sett CES i Vercel Production etter guard QA og Upstash — aktiverer ikke AI alene uten Upstash.",
     },
     {
       id: "transcript-qa",
@@ -154,9 +159,9 @@ export const mvpCurrentState = {
   recentChanges: [
     {
       date: "2026-05-30",
-      summary: "Design System Source of Truth v0.1 merged — canonical /designsystem/",
-      issue: "#157",
-      commit: "1fcef2f6",
+      summary: "Public AI guard v0.1 — rate limit + origin guard on /api/chat (#180)",
+      issue: "#180",
+      commit: "—",
     },
     {
       date: "2026-05-30",

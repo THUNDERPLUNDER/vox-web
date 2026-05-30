@@ -1,12 +1,17 @@
-/* CONTRACT: Server proxy for CES runSession — validates input, never exposes credentials or diagnosticInfo. */
+/* CONTRACT: Server proxy for CES runSession — validates input, guards, never exposes credentials or diagnosticInfo. */
 import type { APIRoute } from "astro";
+import {
+  CHAT_GUARD_MESSAGES,
+  CHAT_MAX_MESSAGE_LENGTH,
+  checkChatOrigin,
+  checkChatRateLimit,
+} from "../../lib/chat-api-guard";
 import { resolveCesEnv } from "../../lib/ces-env";
 import { CesRunSessionError, runCesSession } from "../../lib/ces-run-session";
 
 export const prerender = false;
 
 const SESSION_ID_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}$/;
-const MAX_MESSAGE_LENGTH = 2000;
 
 type ChatRequestBody = {
   message?: unknown;
@@ -21,22 +26,14 @@ function jsonResponse(body: Record<string, unknown>, status: number): Response {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  const env = resolveCesEnv();
-  if (!env.ok) {
-    return jsonResponse(
-      {
-        error: "configuration_missing",
-        message: "Viddel er ikke tilgjengelig akkurat nå.",
-      },
-      503,
-    );
-  }
-
   let body: ChatRequestBody;
   try {
     body = (await request.json()) as ChatRequestBody;
   } catch {
-    return jsonResponse({ error: "invalid_json", message: "Ugyldig forespørsel." }, 400);
+    return jsonResponse(
+      { error: "invalid_json", message: CHAT_GUARD_MESSAGES.invalidRequest },
+      400,
+    );
   }
 
   const message = typeof body.message === "string" ? body.message.trim() : "";
@@ -46,12 +43,39 @@ export const POST: APIRoute = async ({ request }) => {
     return jsonResponse({ error: "invalid_message", message: "Skriv et spørsmål før du sender." }, 400);
   }
 
-  if (message.length > MAX_MESSAGE_LENGTH) {
-    return jsonResponse({ error: "message_too_long", message: "Spørsmålet er for langt." }, 400);
+  if (message.length > CHAT_MAX_MESSAGE_LENGTH) {
+    return jsonResponse(
+      { error: "message_too_long", message: CHAT_GUARD_MESSAGES.messageTooLong },
+      400,
+    );
   }
 
   if (!sessionId || !SESSION_ID_PATTERN.test(sessionId)) {
-    return jsonResponse({ error: "invalid_session", message: "Ugyldig samtale." }, 400);
+    return jsonResponse(
+      { error: "invalid_session", message: CHAT_GUARD_MESSAGES.invalidRequest },
+      400,
+    );
+  }
+
+  const originCheck = checkChatOrigin(request);
+  if (!originCheck.ok) {
+    return jsonResponse({ error: "forbidden_origin", message: originCheck.message }, 403);
+  }
+
+  const rateLimit = await checkChatRateLimit(request);
+  if (!rateLimit.ok) {
+    return jsonResponse({ error: rateLimit.error, message: rateLimit.message }, rateLimit.status);
+  }
+
+  const env = resolveCesEnv();
+  if (!env.ok) {
+    return jsonResponse(
+      {
+        error: "configuration_missing",
+        message: "Viddel er ikke tilgjengelig akkurat nå.",
+      },
+      503,
+    );
   }
 
   try {
@@ -77,13 +101,13 @@ export const POST: APIRoute = async ({ request }) => {
           message:
             error.code === "auth"
               ? "Viddel er ikke tilgjengelig akkurat nå."
-              : "Vi fikk ikke tak i svaret akkurat nå. Prøv igjen.",
+              : CHAT_GUARD_MESSAGES.invalidRequest,
         },
         error.status,
       );
     }
 
     console.error("[api/chat] unexpected_error");
-    return jsonResponse({ error: "internal_error", message: "Noe gikk galt. Prøv igjen." }, 500);
+    return jsonResponse({ error: "internal_error", message: CHAT_GUARD_MESSAGES.invalidRequest }, 500);
   }
 };

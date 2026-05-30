@@ -19,6 +19,8 @@
     "@astrojs/vercel": "^9.0.5",
     "@storyblok/astro": "^9.0.3",
     "@tailwindcss/vite": "^4.2.1",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.38.0",
     "astro": "^5.17.1",
     "tailwindcss": "^4.2.1"
   }
