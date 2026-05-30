@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-05-29 - Standalone AI custom chat R1 (#125M-C)
+- Beslutning: `/no/chat/` erstattes med Viddel-eid headless AI-flate (`POST /api/chat` → CES `runSession`). Ingen widget, bridge eller Debug.
+- Begrunnelse: #125M-B PoC QA-verifisert; produksjonsflaten skal føles som native samtaleflate, ikke embedded widget.
+- Konsekvens: Se `docs/project/decisions/DECISION_125M_C_STANDALONE_AI_CUSTOM_R1.md`. Rate limit før offentlig prod anbefales.
+
 ## 2026-05-06 - Privacy-first metrics & State v0.1 dokumentert i repo (#99 → #105)
 - Beslutning: Arbeidsmodell for **event-vokabular**, **payload-grenser**, **State v0.1**, **fire datadeler** og **pilot vs. senere** er landet i `docs/project/20_VIDDEL_PRIVACY_FIRST_METRICS_AND_STATE_v0_1.md`, i tråd med GitHub **#99**. Større lagring og stackvalg forankres videre i **#105**.
 - Begrunnelse: MVP trenger et skriftlig, privacy-first grunnlag før måling og «Min side light» skaleres; dokumentet skiller hjelpedata fra uttrekk og henter inn safe-read av faktisk kodebase (Article AI Bridge, CES, mangel på sentral analytics i dag).

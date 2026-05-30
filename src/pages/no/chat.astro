@@ -1,542 +1,502 @@
 ---
-/* CONTRACT: Demo chat surface with product-owned frame and stable CES engine as the only visible conversation mode. */
+/* CONTRACT: Standalone Viddel AI chat — headless CES via /api/chat, no widget. #125M-C R1 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Section from "../../components/layout/Section.astro";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+
+const exampleQuestions = [
+  "Hvordan kobler jeg høreapparatet til mobilen?",
+  "Hvorfor blir lyden så slitsom på restaurant?",
+  "Hva gjør jeg når appen ikke finner høreapparatet?",
+  "Hvordan vet jeg om jeg bør kontakte audiograf?",
+  "Hva kan jeg prøve hvis lyden fra TV-en blir utydelig?",
+];
 ---
 
-<BaseLayout title="Viddel - Spør Viddel" currentPath="/no/chat">
+<BaseLayout
+  title="Viddel - Spør Viddel"
+  currentPath="/no/chat"
+  headerBrand="viddel"
+  shellVariant="standalone-chat"
+  showHeaderDevtoolsToggle={false}
+>
   <meta slot="head" name="robots" content="noindex,follow" />
 
-  <main class="relative pb-2 sm:pb-3">
-    <Section class="!pt-1 !pb-4 sm:!pt-2 sm:!pb-5">
-      <div class="mx-auto max-w-[920px] space-y-6">
-        <div>
-          <h1 class="font-display text-2xl font-semibold tracking-[-0.03em] text-balance sm:text-3xl">Spør Viddel</h1>
-          <p class="mt-2 max-w-2xl text-sm leading-relaxed text-[rgb(var(--muted))]">
-            Skriv det du vil, uten forhåndsvalgt tema. Kom du fra en artikkel med valgt spørsmål, fyller vi inn utgangspunktet for deg.
-          </p>
-          <div id="seed-strip" class="mt-5 hidden border-l-2 border-[rgb(var(--primary))/0.35] pl-3">
-            <p class="text-[11px] uppercase tracking-wide text-[rgb(var(--muted))]">Valgt startspørsmål</p>
-            <p id="seed-text" class="mt-0.5 text-sm text-[rgb(var(--text))]"></p>
-            <button
-              id="seed-start-button"
-              type="button"
-              class="mt-3 inline-flex items-center justify-center rounded-none bg-[rgb(var(--text))] px-3 py-2 text-xs font-semibold text-[rgb(var(--surface))] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Start samtale med dette spørsmålet
-            </button>
-            <p id="seed-sync-status" class="mt-0.5 text-xs text-[rgb(var(--muted))]"></p>
-          </div>
-        </div>
+  <main class="viddel-chat" data-viddel-chat data-state="idle">
+    <div class="viddel-chat__inner">
+      <section class="viddel-chat__intro" data-viddel-chat-intro aria-labelledby="viddel-chat-title">
+        <h1 id="viddel-chat-title" class="viddel-chat__title">Spør Viddel</h1>
+        <p class="viddel-chat__lede">
+          Spør om høreapparat, app, lyd, innstillinger eller situasjoner i hverdagen. Viddel svarer best når du
+          beskriver hva du prøver å få til.
+        </p>
 
-        <div class="vox-surface-embedded-app" data-kl-surface="embedded-app">
-          <chat-messenger
-            id="ces-demo-widget"
-            url-allowlist="*"
-            class="block h-[min(70vh,680px)] w-full overflow-hidden rounded-none bg-[rgb(var(--surface-subtle))]"
-          >
-            <chat-messenger-container
-              chat-title="Hørehjelpen"
-              enable-file-upload
-              enable-audio-input
-            ></chat-messenger-container>
-          </chat-messenger>
-        </div>
+        <ul class="viddel-chat__examples" role="list" data-viddel-chat-examples>
+          {
+            exampleQuestions.map((question) => (
+              <li>
+                <button type="button" class="viddel-chat__example" data-viddel-chat-example={question}>
+                  {question}
+                </button>
+              </li>
+            ))
+          }
+        </ul>
 
-        <div
-          id="no-chat-debug-panel"
-          class="hidden border border-[rgb(var(--border))] bg-[rgb(var(--surface-subtle))] p-3 text-xs text-[rgb(var(--muted))]"
-        >
-          <p class="mb-2 font-semibold uppercase tracking-wide text-[rgb(var(--text))]">No chat debug</p>
-          <pre id="no-chat-debug-output" class="whitespace-pre-wrap break-words font-mono leading-relaxed"></pre>
-          <div class="mt-3 border-t border-[rgb(var(--border))] pt-3">
-            <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
-              <p class="font-semibold uppercase tracking-wide text-[rgb(var(--text))]">Kopierbar status</p>
-              <button
-                id="no-chat-debug-copy"
-                type="button"
-                class="inline-flex items-center justify-center rounded-none border border-[rgb(var(--border))] px-2.5 py-1 text-[11px] font-semibold text-[rgb(var(--text))]"
-              >
-                Kopier debugstatus
-              </button>
-            </div>
-            <textarea
-              id="no-chat-debug-report"
-              class="min-h-[180px] w-full resize-y rounded-none border border-[rgb(var(--border))] bg-[rgb(var(--surface))] p-2 font-mono text-[11px] leading-relaxed text-[rgb(var(--text))]"
-              readonly
-            ></textarea>
-            <p id="no-chat-debug-copy-status" class="mt-1 text-[11px] text-[rgb(var(--muted))]"></p>
-          </div>
-        </div>
-        <div class="flex justify-end">
-          <button
-            id="no-chat-debug-toggle"
-            type="button"
-            class="inline-flex items-center justify-center rounded-none border border-[rgb(var(--border))] bg-[rgb(var(--surface))] px-2.5 py-1 text-[11px] font-semibold text-[rgb(var(--muted))]"
-            aria-pressed="false"
-          >
-            Debug
+        <p class="viddel-chat__safety">
+          Viddel kan gi praktiske forslag og hjelpe deg å finne neste steg. Ved medisinske spørsmål eller vedvarende
+          problemer bør du kontakte audiograf eller annet helsepersonell.
+        </p>
+      </section>
+
+      <div class="viddel-chat__transcript-wrap hidden" data-viddel-chat-transcript-wrap>
+        <div class="viddel-chat__transcript" data-viddel-chat-transcript role="log" aria-live="polite" aria-relevant="additions text"></div>
+      </div>
+
+      <p class="viddel-chat__status hidden" data-viddel-chat-loading role="status">Viddel svarer …</p>
+      <p class="viddel-chat__error hidden" data-viddel-chat-error role="alert"></p>
+
+      <form class="viddel-chat__compose" data-viddel-chat-form>
+        <label for="viddel-chat-input" class="sr-only">Skriv spørsmål til Viddel</label>
+        <div class="viddel-chat__compose-row">
+          <textarea
+            id="viddel-chat-input"
+            data-viddel-chat-input
+            rows="1"
+            placeholder="Beskriv situasjonen eller spørsmålet ditt …"
+            class="viddel-chat__input"
+          ></textarea>
+          <button type="submit" class="viddel-chat__send" data-viddel-chat-send aria-label="Send spørsmål">
+            <span aria-hidden="true">↑</span>
           </button>
         </div>
-      </div>
-    </Section>
+      </form>
+    </div>
   </main>
+
+  <style is:global>
+    body.vox-shell--standalone-chat {
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+    }
+
+    @media (max-width: 639px) {
+      body.vox-shell--standalone-chat {
+        height: 100dvh;
+        overflow: hidden;
+      }
+
+      body.vox-shell--standalone-chat .vox-shell-standalone-chat__stage {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+      }
+    }
+
+    @media (min-width: 640px) {
+      body.vox-shell--standalone-chat .vox-shell-standalone-chat__stage {
+        max-width: 42rem;
+      }
+    }
+  </style>
+
+  <style>
+    .viddel-chat {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      min-height: 0;
+      width: 100%;
+    }
+
+    .viddel-chat__inner {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: 0.85rem;
+      min-height: 0;
+      width: 100%;
+    }
+
+    @media (max-width: 639px) {
+      .viddel-chat {
+        height: 100%;
+        min-height: 0;
+        padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+      }
+
+      .viddel-chat__transcript-wrap:not(.hidden) {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .viddel-chat__compose {
+        flex-shrink: 0;
+        margin-top: auto;
+      }
+    }
+
+    @media (min-width: 640px) {
+      .viddel-chat {
+        padding-bottom: 2rem;
+      }
+
+      .viddel-chat__inner {
+        gap: 1.25rem;
+      }
+    }
+
+    .viddel-chat__title {
+      font-family: var(--font-display, inherit);
+      font-size: clamp(1.65rem, 4vw, 2.15rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      color: rgb(var(--text));
+    }
+
+    .viddel-chat__lede {
+      margin-top: 0.65rem;
+      max-width: 36rem;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: rgb(var(--muted));
+    }
+
+    .viddel-chat__examples {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin-top: 1.1rem;
+    }
+
+    .viddel-chat__example {
+      width: 100%;
+      border: 1px solid rgb(var(--border) / 0.5);
+      border-radius: var(--radius-md);
+      background: rgb(var(--surface));
+      padding: 0.72rem 0.85rem;
+      text-align: left;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      color: rgb(var(--text));
+      transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+
+    .viddel-chat__example:hover {
+      border-color: rgb(var(--border) / 0.75);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .viddel-chat__example:focus-visible {
+      outline: 2px solid rgb(var(--focus-ring) / 0.5);
+      outline-offset: 2px;
+    }
+
+    .viddel-chat__safety {
+      margin-top: 1rem;
+      max-width: 36rem;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: rgb(var(--muted));
+    }
+
+    .viddel-chat__transcript-wrap.hidden,
+    .viddel-chat__status.hidden,
+    .viddel-chat__error.hidden,
+    .viddel-chat__intro.hidden {
+      display: none;
+    }
+
+    .viddel-chat__transcript {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      padding: 0.15rem 0 0.5rem;
+    }
+
+    .viddel-chat__bubble {
+      max-width: min(100%, 34rem);
+      border-radius: var(--radius-md);
+      padding: 0.72rem 0.85rem;
+      font-size: 0.94rem;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .viddel-chat__bubble--user {
+      margin-left: auto;
+      background: rgb(var(--text));
+      color: rgb(var(--surface));
+    }
+
+    .viddel-chat__bubble--assistant {
+      border: 1px solid rgb(var(--border) / 0.45);
+      background: rgb(var(--surface));
+      color: rgb(var(--text));
+    }
+
+    .viddel-chat__bubble-label {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.72;
+    }
+
+    .viddel-chat__status {
+      font-size: 0.82rem;
+      color: rgb(var(--muted));
+    }
+
+    .viddel-chat__error {
+      font-size: 0.82rem;
+      color: rgb(var(--text));
+    }
+
+    .viddel-chat__compose {
+      margin-top: 0.35rem;
+    }
+
+    .viddel-chat[data-state="active"] .viddel-chat__compose {
+      margin-top: 0;
+    }
+
+    .viddel-chat__compose-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.55rem;
+      align-items: flex-end;
+      border: 1px solid rgb(var(--border) / 0.55);
+      border-radius: 1rem;
+      background: rgb(var(--surface));
+      padding: 0.45rem 0.45rem 0.45rem 0.65rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .viddel-chat__input {
+      width: 100%;
+      min-height: 2.75rem;
+      max-height: min(9rem, 32vh);
+      resize: none;
+      border: 0;
+      background: transparent;
+      font: inherit;
+      font-size: 0.95rem;
+      line-height: 1.45;
+      color: rgb(var(--text));
+      outline: 0;
+    }
+
+    .viddel-chat__input::placeholder {
+      color: rgb(var(--muted));
+    }
+
+    .viddel-chat__send {
+      display: inline-flex;
+      height: 2.65rem;
+      width: 2.65rem;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 0.85rem;
+      background: rgb(var(--text));
+      color: rgb(var(--surface));
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1;
+      transition: opacity 0.15s ease;
+    }
+
+    .viddel-chat__send:hover:not(:disabled) {
+      opacity: 0.9;
+    }
+
+    .viddel-chat__send:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .viddel-chat__send:focus-visible {
+      outline: 2px solid rgb(var(--focus-ring) / 0.5);
+      outline-offset: 2px;
+    }
+  </style>
 
   <script is:inline>
     (() => {
-      const widget = document.getElementById("ces-demo-widget");
-      const seedStrip = document.getElementById("seed-strip");
-      const seedTextEl = document.getElementById("seed-text");
-      const seedStartBtn = document.getElementById("seed-start-button");
-      const statusEl = document.getElementById("seed-sync-status");
+      const root = document.querySelector("[data-viddel-chat]");
+      const intro = document.querySelector("[data-viddel-chat-intro]");
+      const transcriptWrap = document.querySelector("[data-viddel-chat-transcript-wrap]");
+      const transcript = document.querySelector("[data-viddel-chat-transcript]");
+      const loadingEl = document.querySelector("[data-viddel-chat-loading]");
+      const errorEl = document.querySelector("[data-viddel-chat-error]");
+      const form = document.querySelector("[data-viddel-chat-form]");
+      const input = document.querySelector("[data-viddel-chat-input]");
+      const sendBtn = document.querySelector("[data-viddel-chat-send]");
+      const exampleButtons = document.querySelectorAll("[data-viddel-chat-example]");
+
+      if (!root || !intro || !transcriptWrap || !transcript || !loadingEl || !errorEl || !form || !input || !sendBtn) {
+        return;
+      }
+
+      const SESSION_KEY = "viddel-chat-session";
+      const SESSION_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}$/;
       const params = new URLSearchParams(window.location.search);
-      const initialQuestion = (params.get("seed") || "").trim();
-      const from = (params.get("from") || "").trim();
-      let debugEnabled = params.get("debug") === "1";
-      const debugPanel = document.getElementById("no-chat-debug-panel");
-      const debugOutput = document.getElementById("no-chat-debug-output");
-      const debugToggleBtn = document.getElementById("no-chat-debug-toggle");
-      const debugReportEl = document.getElementById("no-chat-debug-report");
-      const debugCopyBtn = document.getElementById("no-chat-debug-copy");
-      const debugCopyStatus = document.getElementById("no-chat-debug-copy-status");
-      const debugState = {
-        widgetExists: false,
-        tagName: "(missing)",
-        nodeName: "(missing)",
-        sessionInputType: "undefined",
-        sendQueryType: "undefined",
-        renderCustomTextType: "undefined",
-        startNewSessionType: "undefined",
-        customElementDefined: false,
-        chatMessengerLoaded: false,
-        voxCesRegister: false,
-        cesMessengerConnected: false,
-        readinessPolls: 0,
-        startNewSessionCalled: false,
-        startNewSessionResult: "",
-        startNewSessionError: "",
-        sendQueryCalled: false,
-        sendQueryResult: "",
-        sendQueryError: "",
-        cooldownUsed: false,
-        cooldownMsWaited: 0,
-        lastSeedSendAt: "",
-        lastCesErrorAt: "",
-        lastCesErrorTimeMs: 0,
-        lastCesErrorMessage: "",
-        lastCesErrorStatus: "",
-        lastResponseReceivedAt: "",
-        lastResponseReceivedTimeMs: 0,
-        responseReceivedAfterError: false,
-        msFromErrorToResponse: "",
-        lastSeedStatus: "Script startet.",
-        lifecycleEvents: [],
-      };
-      const seedCooldownMs = 6000;
-      const seedCooldownKey = "vox:no-chat:last-seed-send-at";
-
-      const stringifyDebugPayload = (payload) => {
-        if (payload === undefined) return "";
-        if (payload === null) return "null";
-        if (typeof payload === "string") return payload;
-        try {
-          return JSON.stringify(payload);
-        } catch (error) {
-          try {
-            return String(payload);
-          } catch {
-            return "[unserializable payload]";
-          }
-        }
-      };
-
-      const addLifecycleEvent = (name, payload) => {
-        const time = new Date().toISOString();
-        const detail = stringifyDebugPayload(payload);
-        debugState.lifecycleEvents = [
-          ...debugState.lifecycleEvents,
-          detail ? `${time} ${name} ${detail}` : `${time} ${name}`,
-        ].slice(-24);
-        renderDebug();
-      };
-
-      const updateDebugState = () => {
-        const currentWidget = document.getElementById("ces-demo-widget");
-        debugState.widgetExists = Boolean(currentWidget);
-        debugState.tagName = currentWidget?.tagName || "(missing)";
-        debugState.nodeName = currentWidget?.nodeName || "(missing)";
-        debugState.sessionInputType = typeof currentWidget?.sessionInput;
-        debugState.sendQueryType = typeof currentWidget?.sendQuery;
-        debugState.renderCustomTextType = typeof currentWidget?.renderCustomText;
-        debugState.startNewSessionType = typeof currentWidget?.startNewSession;
-        debugState.customElementDefined = Boolean(window.customElements?.get("chat-messenger"));
-      };
-
-      const getLastSeedSendAt = () => {
-        try {
-          return Number(window.sessionStorage.getItem(seedCooldownKey) || "0") || 0;
-        } catch {
-          return 0;
-        }
-      };
-
-      const setLastSeedSendAt = (value) => {
-        try {
-          window.sessionStorage.setItem(seedCooldownKey, String(value));
-        } catch {
-          // Ignore storage failures; cooldown is a best-effort CES throttle.
-        }
-        debugState.lastSeedSendAt = value ? new Date(value).toISOString() : "";
-      };
-
-      const updateDebugToggle = () => {
-        if (!debugToggleBtn) return;
-        debugToggleBtn.setAttribute("aria-pressed", debugEnabled ? "true" : "false");
-        debugToggleBtn.classList.toggle("text-[rgb(var(--text))]", debugEnabled);
-        debugToggleBtn.classList.toggle("text-[rgb(var(--muted))]", !debugEnabled);
-        debugToggleBtn.classList.toggle("bg-[rgb(var(--surface-subtle))]", debugEnabled);
-      };
-
-      const buildDebugReport = () => [
-        `current URL: ${window.location.href}`,
-        `seed: ${initialQuestion || "(none)"}`,
-        `tidspunkt: ${new Date().toISOString()}`,
-        `typeof widget.sendQuery: ${debugState.sendQueryType}`,
-        `typeof widget.startNewSession: ${debugState.startNewSessionType}`,
-        `startNewSession kalt: ${debugState.startNewSessionCalled}`,
-        `startNewSession result: ${debugState.startNewSessionResult || "(none)"}`,
-        `startNewSession error: ${debugState.startNewSessionError || "(none)"}`,
-        `sendQuery kalt: ${debugState.sendQueryCalled}`,
-        `sendQuery result: ${debugState.sendQueryResult || "(none)"}`,
-        `sendQuery error: ${debugState.sendQueryError || "(none)"}`,
-        `cooldown brukt: ${debugState.cooldownUsed}`,
-        `cooldown ms ventet: ${debugState.cooldownMsWaited}`,
-        `last seed send timestamp: ${debugState.lastSeedSendAt || "(none)"}`,
-        `last CES error at: ${debugState.lastCesErrorAt || "(none)"}`,
-        `last CES error message: ${debugState.lastCesErrorMessage || "(none)"}`,
-        `last CES error status: ${debugState.lastCesErrorStatus || "(none)"}`,
-        `last response received at: ${debugState.lastResponseReceivedAt || "(none)"}`,
-        `response received after error: ${debugState.responseReceivedAfterError}`,
-        `ms from error to response: ${debugState.msFromErrorToResponse || "(none)"}`,
-        `siste seed-status: ${debugState.lastSeedStatus}`,
-        "",
-        "CES lifecycle-logg:",
-        ...(debugState.lifecycleEvents.length ? debugState.lifecycleEvents : ["(none)"]),
-      ].join("\n");
-
-      const renderDebug = () => {
-        updateDebugToggle();
-        if (!debugEnabled) {
-          if (debugPanel) debugPanel.classList.add("hidden");
-          return;
-        }
-        updateDebugState();
-        if (debugPanel) debugPanel.classList.remove("hidden");
-        if (debugOutput) {
-          debugOutput.textContent = [
-            `#ces-demo-widget finnes: ${debugState.widgetExists}`,
-            `tagName: ${debugState.tagName}`,
-            `nodeName: ${debugState.nodeName}`,
-            `typeof widget.sessionInput: ${debugState.sessionInputType}`,
-            `typeof widget.sendQuery: ${debugState.sendQueryType}`,
-            `typeof widget.renderCustomText: ${debugState.renderCustomTextType}`,
-            `typeof widget.startNewSession: ${debugState.startNewSessionType}`,
-            `customElements.get("chat-messenger"): ${debugState.customElementDefined}`,
-            `chat-messenger-loaded mottatt: ${debugState.chatMessengerLoaded}`,
-            `vox-ces-register mottatt: ${debugState.voxCesRegister}`,
-            `ces-messenger-connected mottatt: ${debugState.cesMessengerConnected}`,
-            `readiness polling ticks: ${debugState.readinessPolls}`,
-            `startNewSession kalt: ${debugState.startNewSessionCalled}`,
-            `startNewSession result: ${debugState.startNewSessionResult || "(none)"}`,
-            `startNewSession error: ${debugState.startNewSessionError || "(none)"}`,
-            `sendQuery kalt: ${debugState.sendQueryCalled}`,
-            `sendQuery result: ${debugState.sendQueryResult || "(none)"}`,
-            `sendQuery error: ${debugState.sendQueryError || "(none)"}`,
-            `cooldown brukt: ${debugState.cooldownUsed}`,
-            `cooldown ms ventet: ${debugState.cooldownMsWaited}`,
-            `last seed send timestamp: ${debugState.lastSeedSendAt || "(none)"}`,
-            `last CES error at: ${debugState.lastCesErrorAt || "(none)"}`,
-            `last CES error message: ${debugState.lastCesErrorMessage || "(none)"}`,
-            `last CES error status: ${debugState.lastCesErrorStatus || "(none)"}`,
-            `last response received at: ${debugState.lastResponseReceivedAt || "(none)"}`,
-            `response received after error: ${debugState.responseReceivedAfterError}`,
-            `ms from error to response: ${debugState.msFromErrorToResponse || "(none)"}`,
-            `siste seed-status: ${debugState.lastSeedStatus}`,
-            "",
-            "CES lifecycle:",
-            ...(debugState.lifecycleEvents.length ? debugState.lifecycleEvents : ["(none)"]),
-          ].join("\n");
-        }
-        if (debugReportEl) debugReportEl.value = buildDebugReport();
-        window.__voxNoChatDebug = {
-          ...debugState,
-          refresh: () => {
-            renderDebug();
-            return window.__voxNoChatDebug;
-          },
-        };
-        console.debug("[vox-no-chat-debug]", { ...debugState });
-      };
-
-      const setDebugEnabled = (next) => {
-        debugEnabled = next;
-        const nextUrl = new URL(window.location.href);
-        if (debugEnabled) nextUrl.searchParams.set("debug", "1");
-        else nextUrl.searchParams.delete("debug");
-        window.history.replaceState({}, "", nextUrl);
-        renderDebug();
-      };
-
-      if (debugToggleBtn) {
-        debugToggleBtn.addEventListener("click", () => setDebugEnabled(!debugEnabled));
-      }
-
-      if (debugCopyBtn) {
-        debugCopyBtn.addEventListener("click", async () => {
-          renderDebug();
-          const report = debugReportEl?.value || buildDebugReport();
-          try {
-            await navigator.clipboard?.writeText(report);
-            if (debugCopyStatus) debugCopyStatus.textContent = "Debugstatus kopiert";
-          } catch {
-            debugReportEl?.focus();
-            debugReportEl?.select();
-            if (debugCopyStatus) debugCopyStatus.textContent = "Marker teksten manuelt hvis kopiering ikke virker.";
-          }
-        });
-      }
-
-      const setSeedStatus = (text) => {
-        debugState.lastSeedStatus = text;
-        if (statusEl && initialQuestion) statusEl.textContent = text;
-        renderDebug();
-      };
-
-      const recordCesError = (detail) => {
-        const now = Date.now();
-        debugState.lastCesErrorAt = new Date(now).toISOString();
-        debugState.lastCesErrorTimeMs = now;
-        debugState.lastCesErrorMessage = String(detail?.message || detail?.error?.message || "unknown");
-        debugState.lastCesErrorStatus = String(detail?.status ?? detail?.error?.status ?? "unknown");
-        debugState.responseReceivedAfterError = false;
-        debugState.msFromErrorToResponse = "";
-        if (debugState.sendQueryCalled && !debugState.lastResponseReceivedAt) {
-          setSeedStatus("Viddel meldte en midlertidig feil, men vi venter fortsatt på svar ...");
-        } else {
-          renderDebug();
-        }
-      };
-
-      const recordCesResponse = () => {
-        const now = Date.now();
-        debugState.lastResponseReceivedAt = new Date(now).toISOString();
-        debugState.lastResponseReceivedTimeMs = now;
-        if (debugState.lastCesErrorTimeMs && debugState.lastCesErrorTimeMs <= now) {
-          debugState.responseReceivedAfterError = true;
-          debugState.msFromErrorToResponse = String(now - debugState.lastCesErrorTimeMs);
-          setSeedStatus("Svar mottatt etter midlertidig feil.");
-          return;
-        }
-        renderDebug();
-      };
-
-      if (seedStrip && initialQuestion) seedStrip.classList.remove("hidden");
-      if (seedTextEl) seedTextEl.textContent = initialQuestion;
-      if (seedStartBtn && initialQuestion) seedStartBtn.setAttribute("disabled", "");
-      if (statusEl && initialQuestion) {
-        setSeedStatus(from
-          ? `Hentet fra ${from === "article" ? "artikkel" : "hjelp"}. Kobler til Viddel ...`
-          : "Kobler til Viddel ...");
-      }
-      renderDebug();
+      const seedFromUrl = (params.get("seed") || params.get("q") || "").trim();
 
       let isSending = false;
-      let sendQueryReadyAt = 0;
-      let seedSessionReset = false;
-      const sendQueryStabilizeMs = 700;
-      const seedSessionTokenTimeoutMs = 3500;
+      let hasConversation = false;
+      let pendingSeed = seedFromUrl;
 
-      const hasSendQuery = () => typeof widget?.sendQuery === "function";
-
-      const markReady = () => {
-        renderDebug();
-        if (!widget) return false;
-        if (!hasSendQuery()) return false;
-        if (!sendQueryReadyAt) sendQueryReadyAt = Date.now();
-        // The hosted widget can expose sendQuery before its session is settled.
-        if (Date.now() - sendQueryReadyAt < sendQueryStabilizeMs) return false;
-        if (!isSending && seedStartBtn) seedStartBtn.removeAttribute("disabled");
-        if (!isSending) setSeedStatus("Klar til å starte");
-        return true;
-      };
-
-      const observeReadiness = () => {
-        if (markReady()) return;
-        let tries = 0;
-        const timer = setInterval(() => {
-          tries += 1;
-          debugState.readinessPolls += 1;
-          if (markReady() || tries > 120) clearInterval(timer);
-        }, 250);
-      };
-
-      const waitForSeedCooldown = async () => {
-        const lastSendAt = getLastSeedSendAt();
-        debugState.lastSeedSendAt = lastSendAt ? new Date(lastSendAt).toISOString() : "";
-        const elapsed = lastSendAt ? Date.now() - lastSendAt : seedCooldownMs;
-        const waitMs = Math.max(0, seedCooldownMs - elapsed);
-        debugState.cooldownUsed = waitMs > 0;
-        debugState.cooldownMsWaited = waitMs;
-        renderDebug();
-        if (!waitMs) return;
-        setSeedStatus("Klargjør ny samtale ...");
-        addLifecycleEvent("seed cooldown wait", { waitMs });
-        await new Promise((resolve) => setTimeout(resolve, waitMs));
-      };
-
-      const resetSeedSession = async () => {
-        if (seedSessionReset) return;
-        seedSessionReset = true;
-        if (typeof widget?.startNewSession !== "function") return;
-        debugState.startNewSessionCalled = true;
-        debugState.startNewSessionResult = "";
-        debugState.startNewSessionError = "";
-        addLifecycleEvent("reset/startNewSession called");
-        renderDebug();
-        const tokenReady = new Promise((resolve) => {
-          const timer = setTimeout(() => {
-            window.removeEventListener("chat-messenger-access-token-resolved", onTokenResolved);
-            resolve("timeout");
-          }, seedSessionTokenTimeoutMs);
-          function onTokenResolved() {
-            clearTimeout(timer);
-            resolve("access-token-resolved");
-          }
-          window.addEventListener("chat-messenger-access-token-resolved", onTokenResolved, { once: true });
-        });
+      const ensureSessionId = () => {
         try {
-          widget.startNewSession();
-          debugState.startNewSessionResult = await tokenReady;
-          renderDebug();
-        } catch (error) {
-          debugState.startNewSessionError = String(error?.message || error || "unknown");
-          renderDebug();
+          const existing = sessionStorage.getItem(SESSION_KEY);
+          if (existing && SESSION_PATTERN.test(existing)) return existing;
+        } catch (_) {}
+        const created = `viddel-${crypto.randomUUID().replace(/-/g, "").slice(0, 24)}`;
+        try {
+          sessionStorage.setItem(SESSION_KEY, created);
+        } catch (_) {}
+        return created;
+      };
+
+      const setState = (state) => {
+        root.dataset.state = state;
+      };
+
+      const showError = (message) => {
+        errorEl.textContent = message;
+        errorEl.classList.remove("hidden");
+      };
+
+      const clearError = () => {
+        errorEl.textContent = "";
+        errorEl.classList.add("hidden");
+      };
+
+      const setLoading = (active) => {
+        loadingEl.classList.toggle("hidden", !active);
+      };
+
+      const activateConversation = () => {
+        if (hasConversation) return;
+        hasConversation = true;
+        intro.classList.add("hidden");
+        transcriptWrap.classList.remove("hidden");
+        setState("active");
+      };
+
+      const appendBubble = (role, text) => {
+        const bubble = document.createElement("article");
+        bubble.className = `viddel-chat__bubble viddel-chat__bubble--${role === "user" ? "user" : "assistant"}`;
+        const label = document.createElement("span");
+        label.className = "viddel-chat__bubble-label";
+        label.textContent = role === "user" ? "Du" : "Viddel";
+        const body = document.createElement("p");
+        body.className = "m-0";
+        body.textContent = text;
+        bubble.append(label, body);
+        transcript.append(bubble);
+        bubble.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      };
+
+      const friendlyError = (payload) => {
+        if (payload?.error === "configuration_missing") {
+          return "Viddel er ikke tilgjengelig akkurat nå. Prøv igjen om litt.";
         }
+        if (payload?.error === "invalid_message") {
+          return "Skriv et spørsmål før du sender.";
+        }
+        return "Vi fikk ikke tak i svaret akkurat nå. Prøv igjen.";
       };
 
-      const sendSeed = async () => {
-        if (!widget || !initialQuestion) return false;
-        if (!hasSendQuery()) return false;
-        await waitForSeedCooldown();
-        await resetSeedSession();
-        debugState.sendQueryCalled = true;
-        debugState.sendQueryResult = "";
-        debugState.sendQueryError = "";
-        addLifecycleEvent("sendQuery called", { seedLength: initialQuestion.length });
-        renderDebug();
-        setLastSeedSendAt(Date.now());
-        const result = await widget.sendQuery(initialQuestion);
-        debugState.sendQueryResult = result === undefined ? "resolved: undefined" : `resolved: ${String(result)}`;
-        addLifecycleEvent("sendQuery resolved", { result: debugState.sendQueryResult });
-        setSeedStatus("Spørsmålet er sendt");
-        isSending = false;
-        return true;
-      };
+      const sendMessage = async (rawMessage) => {
+        const message = (rawMessage || "").trim();
+        if (!message || isSending) return;
 
-      const sendSeedWithRetry = async () => {
+        clearError();
+        activateConversation();
+        appendBubble("user", message);
+        input.value = "";
         isSending = true;
-        if (seedStartBtn) seedStartBtn.setAttribute("disabled", "");
-        setSeedStatus("Sender spørsmålet til Viddel ...");
+        sendBtn.disabled = true;
+        input.disabled = true;
+        setLoading(true);
+
         try {
-          if (await sendSeed()) return;
-        } catch (error) {
-          console.error("chat-messenger-error", error);
-          debugState.sendQueryResult = "rejected";
-          debugState.sendQueryError = String(error?.message || error || "unknown");
-          addLifecycleEvent("sendQuery rejected", { error: debugState.sendQueryError });
-          isSending = false;
-          setSeedStatus("Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.");
-          if (seedStartBtn) seedStartBtn.removeAttribute("disabled");
-          return;
-        }
-        let tries = 0;
-        const timer = setInterval(async () => {
-          tries += 1;
-          debugState.readinessPolls += 1;
-          if (hasSendQuery()) {
-            clearInterval(timer);
-            try {
-              await sendSeed();
-            } catch (error) {
-              console.error("chat-messenger-error", error);
-              debugState.sendQueryResult = "rejected";
-              debugState.sendQueryError = String(error?.message || error || "unknown");
-              addLifecycleEvent("sendQuery rejected", { error: debugState.sendQueryError });
-              isSending = false;
-              setSeedStatus("Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.");
-              if (seedStartBtn) seedStartBtn.removeAttribute("disabled");
-            }
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message,
+              sessionId: ensureSessionId(),
+            }),
+          });
+
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            showError(friendlyError(payload));
             return;
           }
-          if (tries > 120) {
-            clearInterval(timer);
-            isSending = false;
-            setSeedStatus("Kunne ikke sende spørsmålet akkurat nå. Prøv igjen.");
-            if (seedStartBtn) seedStartBtn.removeAttribute("disabled");
+
+          const text = typeof payload.text === "string" ? payload.text.trim() : "";
+          if (!text) {
+            showError("Vi fikk ikke tak i svaret akkurat nå. Prøv igjen.");
+            return;
           }
-        }, 250);
+
+          appendBubble("assistant", text);
+        } catch (_) {
+          showError("Nettverksfeil. Sjekk tilkoblingen og prøv igjen.");
+        } finally {
+          isSending = false;
+          sendBtn.disabled = false;
+          input.disabled = false;
+          setLoading(false);
+          input.focus();
+        }
       };
 
-      if (seedStartBtn) {
-        seedStartBtn.addEventListener("click", sendSeedWithRetry);
-      }
-      window.addEventListener("chat-messenger-start-new-session", (event) => {
-        addLifecycleEvent("chat-messenger-start-new-session event", event?.detail);
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        sendMessage(input.value);
       });
-      window.addEventListener("chat-messenger-access-token-resolved", (event) => {
-        addLifecycleEvent("chat-messenger-access-token-resolved event", event?.detail);
+
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          sendMessage(input.value);
+        }
       });
-      window.addEventListener("chat-messenger-response-received", (event) => {
-        recordCesResponse();
-        addLifecycleEvent("chat-messenger-response-received event", event?.detail);
-      });
-      if (widget) {
-        widget.addEventListener("chat-messenger-error-v2", (event) => {
-          recordCesError(event?.detail || {});
-          addLifecycleEvent("chat-messenger-error-v2 event", event?.detail);
+
+      exampleButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const question = button.getAttribute("data-viddel-chat-example") || "";
+          sendMessage(question);
         });
-        widget.addEventListener("chat-messenger-error", (event) => {
-          addLifecycleEvent("chat-messenger-error event", event?.detail);
-        });
-      }
-      window.addEventListener("vox-ces-register", (event) => {
-        debugState.voxCesRegister = true;
-        const detail = event?.detail || {};
-        renderDebug();
-        if (detail.widgetId !== "ces-demo-widget") return;
-        if (detail.success) observeReadiness();
       });
-      window.addEventListener(
-        "chat-messenger-loaded",
-        () => {
-          debugState.chatMessengerLoaded = true;
-          renderDebug();
-          observeReadiness();
-        },
-        { once: true },
-      );
-      window.addEventListener(
-        "ces-messenger-connected",
-        () => {
-          debugState.cesMessengerConnected = true;
-          renderDebug();
-          observeReadiness();
-        },
-        { once: true },
-      );
-      observeReadiness();
+
+      if (pendingSeed) {
+        input.value = pendingSeed;
+        window.setTimeout(() => {
+          if (pendingSeed) {
+            sendMessage(pendingSeed);
+            pendingSeed = "";
+          }
+        }, 120);
+      } else {
+        input.focus();
+      }
     })();
   </script>
 </BaseLayout>

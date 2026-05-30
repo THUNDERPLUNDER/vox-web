@@ -21,6 +21,7 @@ const {
   showHeaderDevtoolsToggle?: boolean;
 };
 const isSandboxWhite = shellVariant === "sandbox-white";
+const isStandaloneChat = shellVariant === "standalone-chat";
 ---
 
 <!doctype html>
@@ -92,6 +93,7 @@ const isSandboxWhite = shellVariant === "sandbox-white";
       "min-h-screen antialiased",
       shellVariant === "article" && "vox-shell--article",
       isSandboxWhite && "vox-shell--sandbox-white",
+      isStandaloneChat && "vox-shell--standalone-chat",
     ]}
   >
     <div class="fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
@@ -145,7 +147,13 @@ const isSandboxWhite = shellVariant === "sandbox-white";
 
     <MobileMenuSheet currentPath={currentPath} brand={headerBrand} showDevtoolsToggle={showHeaderDevtoolsToggle} />
 
-    <div class="mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-30 lg:px-8">
+    <div
+      class:list={[
+        isStandaloneChat
+          ? "vox-shell-standalone-chat__stage mx-auto flex min-h-0 w-full max-w-none flex-1 flex-col px-3 pt-[6.75rem] sm:max-w-3xl sm:px-6 sm:pt-30 lg:px-8"
+          : "mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-30 lg:px-8",
+      ]}
+    >
       <slot />
     </div>
 
