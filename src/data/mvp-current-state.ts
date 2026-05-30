@@ -77,7 +77,7 @@ export const mvpCurrentState = {
   } satisfies CurrentSprint,
   closedSprints: [] satisfies ClosedSprint[],
   currentFocus:
-    "CES production live på /no/chat/ — intern test med Thomas og Vibeke. Upstash guard aktiv (#180). Access Gate (#181) parkert/revertet. Neste: AI usage monitoring v0.1 og Backstage v0.1 før ekstern deling.",
+    "CES production live på /no/chat/ — intern test med Thomas og Vibeke. Upstash guard aktiv (#180). Backstage v0.1 live (#184) med build-time guard. Neste: AI usage monitoring v0.1 før ekstern deling.",
   mvpSurfaces: [
     {
       id: "frontpage",
@@ -111,7 +111,7 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Applied",
-      note: "Production UI live. CES prod env aktiv — live AI-svar i production. Public AI guard v0.1 (#180). Intern test Thomas/Vibeke. Access gate (#181) parkert/revertet. Ekstern deling venter monitoring + backstage.",
+      note: "Production UI live. CES prod env aktiv — live AI-svar i production. Public AI guard v0.1 (#180). Intern test Thomas/Vibeke. Backstage v0.1 (#184) live. Ekstern deling venter monitoring.",
       visFrontpage: true,
       kind: "public",
       frontpageDescription: "Standalone headless AI — live i production (intern test). Guard aktiv.",
@@ -133,6 +133,13 @@ export const mvpCurrentState = {
       label: "Designsystem",
       route: "/designsystem/",
       role: "Gjeldende designsystem-sannhet",
+      visFrontpage: false,
+    },
+    {
+      id: "backstage",
+      label: "Backstage",
+      route: "/backstage/",
+      role: "System/API/guard/env — canonical referanse",
       visFrontpage: false,
     },
     {
@@ -165,8 +172,8 @@ export const mvpCurrentState = {
     },
     {
       id: "backstage-v01",
-      label: "Backstage v0.1",
-      detail: "Påkrevd før ekstern deling — intern operativ flate.",
+      label: "Backstage v0.1 — live",
+      detail: "Intern systemreferanse på /backstage/ — AI-flow, guards, env-vars og production checklist (#184).",
     },
     {
       id: "test-access-gate-parked",
@@ -192,8 +199,8 @@ export const mvpCurrentState = {
   recentChanges: [
     {
       date: "2026-05-30",
-      summary: "VIS sprint guard — currentSprint registry; W21 aktiv i kontrollrom",
-      issue: "#185",
+      summary: "Backstage guardrail — operating rules, Return Ticket-felt, build-time verify (#184)",
+      issue: "#184",
       commit: "—",
     },
     {

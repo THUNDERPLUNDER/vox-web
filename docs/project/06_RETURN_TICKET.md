@@ -30,6 +30,9 @@ Designsystem impact
 Current-state / VIS frontpage impact
 - (Hvis ikke relevant: «Current-state update: Ikke nødvendig — ingen endring i MVP-status, designmønstre eller applied surfaces.»)
 
+Backstage impact
+- `Oppdatert: ...` / `Ikke relevant: ingen endring i systemflyt, API, guard, env-vars, monitoring eller production-status.` / `Må følges opp: ...`
+
 Applied surfaces impacted
 - 
 
@@ -38,6 +41,7 @@ Follow-up needed
 
 Hva må oppdateres
 - [ ] VIS (`src/data/mvp-current-state.ts` ved MVP-statusendring)
+- [ ] `/backstage/` (ved endring i systemflyt, API, guard, env-vars, monitoring eller production)
 - [ ] `/designsystem/` (ved mønsterendring)
 - [ ] roadmap
 - [ ] Google Doc

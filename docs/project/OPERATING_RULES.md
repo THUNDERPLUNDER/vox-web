@@ -7,6 +7,7 @@ Operative regler for Cursor, Codex og menneskelig HITL i Viddel Lab.
 | Flate | Rolle |
 |-------|--------|
 | `/designsystem/` | Gjeldende designsystem-sannhet (mønstre, primitives, applied surfaces) |
+| `/backstage/` | Gjeldende systemreferanse (AI-flow, API, guards, env-vars, production) |
 | `src/data/mvp-current-state.ts` | Gjeldende operativ MVP-status og `currentSprint` |
 | `/vis/sprints/...` | Aktiv sprint (control room) eller historikk (arkiv) — avhenger av `currentSprint.status` |
 | GitHub Projects / issues | Oppgavebuss |
@@ -42,6 +43,18 @@ Ved sprintskifte:
 
 Validering: `src/lib/vis-sprint-guard.ts` — aktiv sprint kan ikke ligge i `closedSprints` eller eksponeres som `historikk`-hub.
 
+## B3. Backstage-regel (systemreferanse)
+
+Backstage impact skal vurderes ved alle endringer i AI/API/system/production.
+
+Hvis en oppgave endrer systemflyt, API, guard, limits, env-vars, Vercel/Upstash/CES-kobling, monitoring, access/login eller production-aktivering:
+
+→ oppdater `/backstage/` (`src/data/backstage-v01.ts` + `src/pages/backstage/index.astro`) **eller** forklar eksplisitt i Return Ticket hvorfor Backstage ikke påvirkes.
+
+Ved endring i `src/lib/chat-api-guard.ts` (limits, max length): oppdater Backstage protection rules og runbooks i samme PR.
+
+Validering: `npm run verify:backstage-guard` (kjøres automatisk før `npm run build`).
+
 ## C. VIS frontpage-regel
 
 - VIS-forsiden viser gjeldende MVP-status fra `getVisFrontpageEntries()` / `mvpCurrentState`.
@@ -54,10 +67,21 @@ Alle relevante Return Tickets skal inneholde:
 
 1. **Designsystem impact** — mønstre brukt / nye / `/designsystem/` oppdatert?
 2. **Current-state / VIS frontpage impact** — skal `mvp-current-state.ts` oppdateres?
-3. **Applied surfaces impacted** — hvilke routes?
-4. **Follow-up needed** — åpne risiko eller neste steg?
+3. **Backstage impact** — skal `/backstage/` oppdateres? (Se under.)
+4. **Applied surfaces impacted** — hvilke routes?
+5. **Follow-up needed** — åpne risiko eller neste steg?
+
+**Backstage impact** — forventet innhold:
+
+- `Oppdatert: ...` (hva i runbooks, tjenestekart, feilstater eller lenker)
+- `Ikke relevant: ingen endring i systemflyt, API, guard, env-vars, monitoring eller production-status.`
+- `Må følges opp: ...`
 
 Hvis ikke relevant, skriv eksplisitt:
+
+> Backstage impact: Ikke relevant — ingen endring i systemflyt, API, guard, env-vars, monitoring eller production-status.
+
+Hvis current-state ikke endres:
 
 > Current-state update: Ikke nødvendig — ingen endring i MVP-status, designmønstre eller applied surfaces.
 
@@ -66,8 +90,9 @@ Hvis ikke relevant, skriv eksplisitt:
 1. Les issue/prompt og relevante docs.
 2. Les `/designsystem/` ved UI-arbeid.
 3. Les `src/data/mvp-current-state.ts` ved status-/VIS-arbeid.
-4. Hold endringer små; `npm run build` før ferdig.
-5. Return Ticket på relevant issue.
+4. Vurder Backstage (`/backstage/`) ved endringer i API, guard, env-vars eller production.
+5. Hold endringer små; `npm run build` før ferdig.
+6. Return Ticket på relevant issue.
 
 ## Filer
 
