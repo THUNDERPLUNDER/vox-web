@@ -2,13 +2,15 @@
 
 export type VisHubAvailability = "active" | "planned" | "historikk";
 
+export type VisHubTier = "primary" | "secondary";
+
 export type VisFrontpageHub = {
   id: string;
   title: string;
   mandate: string;
   href?: string;
   availability: VisHubAvailability;
-  statusLabel: string;
+  tier: VisHubTier;
   issue?: string;
 };
 
@@ -20,75 +22,72 @@ export function getVisFrontpageHubs(baseUrl: string): VisFrontpageHub[] {
     {
       id: "designsystem",
       title: "Designsystem",
-      mandate: "Gjeldende UI-mønstre, komponenter og applied surfaces.",
+      mandate: "UI-mønstre, komponenter og applied surfaces.",
       href: `${base}designsystem/`,
       availability: "active",
-      statusLabel: "Applied / Canonical",
+      tier: "primary",
     },
     {
       id: "backstage",
       title: "Backstage",
-      mandate: "Hvordan AI, API, guards, env-vars, feilstater og production fungerer.",
+      mandate: "AI, API, guards, env-vars og production.",
       availability: "planned",
-      statusLabel: "Planned · Next",
+      tier: "primary",
       issue: "#184",
     },
     {
       id: "gitbuss",
       title: "Gitbuss",
-      mandate:
-        "Operativ oversikt over GitHub issues, arbeidsspor og Return Tickets. GitHub er source of truth for oppgaver — VIS viser inngang og status.",
+      mandate: "GitHub issues, arbeidsspor og Return Tickets.",
       href: `${base}vis/system/github-runtime-status`,
       availability: "active",
-      statusLabel: "Runtime feed",
+      tier: "primary",
     },
     {
       id: "roadmap",
       title: "Roadmap",
-      mandate: "Retning og kommende faser for MVP. Viser neste større bevegelse, ikke alle småoppgaver.",
+      mandate: "Retning og kommende faser — ikke alle småoppgaver.",
       href: `${base}vis/system/roadmap-timeline-v01`,
       availability: "active",
-      statusLabel: "Retning / faser",
+      tier: "primary",
     },
     {
       id: "dam",
       title: "DAM / bildebank",
-      mandate: "Visuelle assets, bildebruk, prompt-/asset-kilder og hvilke bilder som er aktuelle for MVP.",
+      mandate: "Visuelle assets og bildebruk for MVP.",
       href: `${base}vis/assets/editorial`,
       availability: "active",
-      statusLabel: "Editorial library v0.2",
+      tier: "secondary",
     },
     {
       id: "review",
       title: "Review",
-      mandate: "Flater for QA, sammenligning og godkjenning.",
+      mandate: "QA, sammenligning og godkjenning.",
       href: `${base}vis/review/`,
       availability: "active",
-      statusLabel: "Review registry",
+      tier: "secondary",
     },
     {
       id: "sprint",
       title: "Sprint / historikk",
-      mandate: "Hvordan vi kom hit. Ikke gjeldende sannhet.",
+      mandate: "Hvordan vi kom hit — ikke gjeldende sannhet.",
       href: `${base}vis/sprints/2026-w21/`,
       availability: "historikk",
-      statusLabel: "Historikk · W21",
+      tier: "secondary",
     },
   ] satisfies VisFrontpageHub[];
 }
 
 export const visFrontpageMandate = {
   title: "VIS kontrollrom",
-  lead: "VIS-forsiden gir rask oversikt over hva som er sant nå, hvilke interne huber som finnes, og hva som er neste arbeid. Den er ikke backlog.",
-  bullets: [
-    "VIS er intern visnings- og reviewflate",
-    "GitHub Projects/issues er oppgavebuss",
-    "/designsystem/ er UI/mønster-sannhet",
-    "/backstage/ blir system/API/guard-sannhet (#184)",
-    "Roadmap viser retning, ikke detaljerte oppgaver",
-    "DAM/bildebank viser visuelle assets og kildebruk",
-  ],
+  lead: "Rask oversikt over hva som er sant nå, neste steg og hvor du går videre. Ikke backlog.",
 } as const;
+
+export const visPrimaryNextWorkIds = [
+  "internal-ai-test-qa",
+  "ai-usage-monitoring",
+  "backstage-v01",
+] as const;
 
 export const visSourceOfTruthNotes = [
   { label: "src/data/mvp-current-state.ts", role: "Gjeldende MVP-status" },

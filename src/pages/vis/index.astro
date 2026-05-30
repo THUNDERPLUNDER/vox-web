@@ -1,208 +1,654 @@
 ---
-/* CONTRACT: VIS frontpage v0.1 — kontrollrom / hub inngang; MVP status from registry, hubs from vis-frontpage-hubs-v01. */
+/* CONTRACT: VIS frontpage v0.1 — kontrollrom med visuell prioritet; MVP from registry, hubs from vis-frontpage-hubs-v01. */
 import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
-import {
-  featuredVisEntries,
-  groupedVisEntries,
-  visTypeLabelNo,
-  wireframeIndexEntries,
-} from "../../lib/vis-wireframes";
+import { groupedVisEntries, visTypeLabelNo, wireframeIndexEntries } from "../../lib/vis-wireframes";
 import { getVisFrontpageEntries, mvpCurrentState } from "../../data/mvp-current-state.ts";
 import {
   getVisFrontpageHubs,
   visFrontpageMandate,
+  visPrimaryNextWorkIds,
   visSourceOfTruthNotes,
 } from "../../data/vis-frontpage-hubs-v01.ts";
 
 const base = import.meta.env.BASE_URL;
 const mvpNowEntries = getVisFrontpageEntries(base);
 const hubs = getVisFrontpageHubs(base);
-const nextWork = mvpCurrentState.nextRisks.slice(0, 6);
+const primaryHubs = hubs.filter((h) => h.tier === "primary");
+const secondaryHubs = hubs.filter((h) => h.tier === "secondary");
+
+const chatEntry = mvpNowEntries.find((e) => e.title === "Spør Viddel production");
+const designsystemEntry = mvpNowEntries.find((e) => e.title === "Designsystem");
+const otherMvpEntries = mvpNowEntries.filter(
+  (e) => e.title !== "Spør Viddel production" && e.title !== "Designsystem",
+);
+
+const primaryNextWork = visPrimaryNextWorkIds
+  .map((id) => mvpCurrentState.nextRisks.find((r) => r.id === id))
+  .filter((r): r is (typeof mvpCurrentState.nextRisks)[number] => !!r);
+const laterNextWork = mvpCurrentState.nextRisks.filter((r) => !visPrimaryNextWorkIds.includes(r.id as (typeof visPrimaryNextWorkIds)[number]));
 
 const archiveEntries = wireframeIndexEntries();
-const archiveFeatured = featuredVisEntries(archiveEntries, 3);
 const archiveGrouped = groupedVisEntries(archiveEntries);
 
-const statusClass = (status: string) => {
-  if (status.includes("Canonical")) return "text-blue-700";
-  if (status === "Applied") return "text-emerald-700";
-  return "text-gray-600";
-};
-
-const hubAvailabilityClass = (availability: string) => {
-  if (availability === "active") return "border-emerald-200 bg-emerald-50/60 text-emerald-800";
-  if (availability === "planned") return "border-amber-200 bg-amber-50/50 text-amber-900";
-  return "border-gray-200 bg-gray-50 text-gray-600";
-};
+const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
 ---
 
 <PrototypeLayout title="VIS kontrollrom">
-  <main class="px-4 py-6 sm:px-6 sm:py-8">
-    <header class="max-w-prose">
-      <h1 class="text-lg font-semibold text-gray-900">{visFrontpageMandate.title}</h1>
-      <p class="mt-2 text-sm leading-relaxed text-gray-600">{visFrontpageMandate.lead}</p>
-      <ul class="mt-3 space-y-1 p-0 text-xs leading-relaxed text-gray-600">
-        {visFrontpageMandate.bullets.map((item) => (
-          <li class="list-none pl-0">{item}</li>
-        ))}
-      </ul>
+  <main class="vis-room">
+    <header class="vis-room__header">
+      <p class="vis-room__kicker">Intern · VIS</p>
+      <h1>{visFrontpageMandate.title}</h1>
+      <p class="vis-room__lead">{visFrontpageMandate.lead}</p>
     </header>
 
-    <section class="mt-8" aria-labelledby="vis-mvp-now">
-      <div class="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="vis-mvp-now" class="text-sm font-semibold uppercase tracking-wide text-gray-800">MVP nå</h2>
-        <span class="text-[10px] text-gray-500">Oppdatert {mvpCurrentState.updatedAt}</span>
-      </div>
-      <p class="mt-1 max-w-prose text-xs leading-relaxed text-gray-600">{mvpCurrentState.currentFocus}</p>
-      <ul class="mt-4 grid gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
-        {mvpNowEntries.map((item) => (
-          <li class="list-none">
-            <a href={item.href} class="group block rounded-md border border-gray-200 bg-white px-3 py-3 hover:border-gray-300 hover:bg-gray-50/80">
-              <span class={`text-[10px] font-semibold uppercase tracking-wide ${statusClass(item.status)}`}>
-                {item.status}
-              </span>
-              <p class="mt-1.5 text-sm font-semibold text-gray-900 group-hover:text-gray-950">{item.title}</p>
-              <p class="mt-0.5 line-clamp-2 text-xs leading-relaxed text-gray-600">{item.description}</p>
-              {item.note ? <p class="mt-1.5 line-clamp-2 text-[11px] leading-snug text-amber-800/90">{item.note}</p> : null}
+    <section class="vis-room__hero" aria-label="Kontrollrom-status">
+      <div class="vis-room__hero-grid">
+        <article class="vis-room__panel vis-room__panel--primary" aria-labelledby="vis-now-status">
+          <p id="vis-now-status" class="vis-room__panel-label">Nå-status</p>
+          {chatEntry ? (
+            <a href={chatEntry.href} class="vis-room__hero-link">
+              <span class="vis-room__live-dot" aria-hidden="true"></span>
+              <span class="vis-room__hero-title">Spør Viddel — live i production</span>
+              <span class="vis-room__hero-meta">CES aktiv · Upstash guard · intern test</span>
             </a>
-          </li>
-        ))}
-      </ul>
+          ) : (
+            <p class="vis-room__hero-title">MVP-status utilgjengelig</p>
+          )}
+          <p class="vis-room__focus">{mvpCurrentState.currentFocus}</p>
+          <p class="vis-room__updated">Oppdatert {mvpCurrentState.updatedAt}</p>
+        </article>
+
+        <article class="vis-room__panel" aria-labelledby="vis-next-priority">
+          <p id="vis-next-priority" class="vis-room__panel-label">Neste arbeid</p>
+          <ol class="vis-room__priority-list">
+            {primaryNextWork.map((item, index) => (
+              <li>
+                <span class="vis-room__priority-index">{index + 1}</span>
+                <span class="vis-room__priority-label">{item.label}</span>
+              </li>
+            ))}
+          </ol>
+        </article>
+
+        <nav class="vis-room__panel" aria-labelledby="vis-go-next">
+          <p id="vis-go-next" class="vis-room__panel-label">Gå videre</p>
+          <ul class="vis-room__go-list">
+            {quickHubLinks.map((hub) => (
+              <li>
+                <a href={hub.href}>{hub.title}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
     </section>
 
-    <section class="mt-10" aria-labelledby="vis-hubs">
-      <h2 id="vis-hubs" class="text-sm font-semibold uppercase tracking-wide text-gray-800">Hovedhuber</h2>
-      <p class="mt-1 max-w-prose text-xs text-gray-600">Faste kunnskapsområder — huber med mandat, ikke backlog.</p>
-      <ul class="mt-4 grid gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
-        {hubs.map((hub) => {
-          const chipClass = hubAvailabilityClass(hub.availability);
-          const inner = (
-            <>
-              <div class="flex flex-wrap items-center gap-2">
-                <span class={`inline-flex rounded-sm border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${chipClass}`}>
-                  {hub.statusLabel}
-                </span>
-                {hub.issue ? <span class="text-[10px] text-gray-500">{hub.issue}</span> : null}
-              </div>
-              <p class="mt-2 text-sm font-semibold text-gray-900">{hub.title}</p>
-              <p class="mt-1 text-xs leading-relaxed text-gray-600">{hub.mandate}</p>
-              {!hub.href ? (
-                <p class="mt-2 text-[11px] font-medium text-gray-500">Kommer — ikke implementert ennå</p>
-              ) : null}
-            </>
-          );
+    <section class="vis-room__section" aria-labelledby="vis-mvp-now">
+      <h2 id="vis-mvp-now" class="vis-room__section-title">MVP nå</h2>
+      <div class="vis-room__mvp">
+        {chatEntry ? (
+          <a href={chatEntry.href} class="vis-room__mvp-primary">
+            <span class="vis-room__mvp-primary-label">Hovedstatus</span>
+            <span class="vis-room__mvp-primary-title">{chatEntry.title}</span>
+            <span class="vis-room__mvp-primary-desc">{chatEntry.description}</span>
+          </a>
+        ) : null}
+        <ul class="vis-room__mvp-secondary">
+          {otherMvpEntries.map((item) => (
+            <li>
+              <a href={item.href}>
+                <span class="vis-room__mvp-secondary-title">{item.title.replace(" production", "")}</span>
+                <span class="vis-room__mvp-secondary-status">{item.status}</span>
+              </a>
+            </li>
+          ))}
+          {designsystemEntry ? (
+            <li class="vis-room__mvp-secondary--ref">
+              <a href={designsystemEntry.href}>
+                <span class="vis-room__mvp-secondary-title">Designsystem</span>
+                <span class="vis-room__mvp-secondary-status">Canonical referanse</span>
+              </a>
+            </li>
+          ) : null}
+        </ul>
+      </div>
+    </section>
 
-          return (
-            <li class="list-none">
+    <section class="vis-room__section" aria-labelledby="vis-hubs">
+      <h2 id="vis-hubs" class="vis-room__section-title">Huber</h2>
+      <p class="vis-room__section-lead">Innganger til faste kunnskapsområder — ikke backlog.</p>
+
+      <div class="vis-room__hub-group">
+        <h3 class="vis-room__hub-group-title">Primære</h3>
+        <ul class="vis-room__hub-list vis-room__hub-list--primary">
+          {primaryHubs.map((hub) => (
+            <li class:list={[!hub.href && "vis-room__hub-item--planned"]}>
               {hub.href ? (
-                <a
-                  href={hub.href}
-                  class="block h-full rounded-md border border-gray-200 bg-white px-3 py-3 hover:border-gray-300 hover:bg-gray-50/80"
-                >
-                  {inner}
+                <a href={hub.href}>
+                  <span class="vis-room__hub-title">{hub.title}</span>
+                  <span class="vis-room__hub-mandate">{hub.mandate}</span>
                 </a>
               ) : (
-                <div class="h-full rounded-md border border-dashed border-gray-300 bg-gray-50/50 px-3 py-3">{inner}</div>
+                <div>
+                  <span class="vis-room__hub-title">{hub.title}</span>
+                  <span class="vis-room__hub-planned">Kommer {hub.issue ?? ""}</span>
+                  <span class="vis-room__hub-mandate">{hub.mandate}</span>
+                </div>
               )}
             </li>
-          );
-        })}
-      </ul>
+          ))}
+        </ul>
+      </div>
+
+      <div class="vis-room__hub-group vis-room__hub-group--secondary">
+        <h3 class="vis-room__hub-group-title">Sekundære</h3>
+        <ul class="vis-room__hub-list vis-room__hub-list--secondary">
+          {secondaryHubs.map((hub) => (
+            <li>
+              <a href={hub.href}>
+                <span class="vis-room__hub-title">{hub.title}</span>
+                <span class="vis-room__hub-mandate">{hub.mandate}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
 
-    <section class="mt-10 max-w-prose" aria-labelledby="vis-next-work">
-      <h2 id="vis-next-work" class="text-sm font-semibold uppercase tracking-wide text-gray-800">Neste arbeid</h2>
-      <p class="mt-1 text-xs text-gray-600">Kort liste fra current-state — ikke full oppgavebuss.</p>
-      <ul class="mt-3 space-y-2 p-0 text-xs text-gray-600">
-        {nextWork.map((item) => (
-          <li class="list-none rounded-md border border-gray-200 bg-white px-3 py-2">
-            <span class="font-medium text-gray-900">{item.label}</span>
-            {item.detail ? <p class="mt-0.5 leading-relaxed">{item.detail}</p> : null}
-          </li>
-        ))}
-      </ul>
-    </section>
+    {
+      laterNextWork.length > 0 ? (
+        <details class="vis-room__details">
+          <summary>Senere / parkert ({laterNextWork.length})</summary>
+          <ul class="vis-room__later-list">
+            {laterNextWork.map((item) => (
+              <li>
+                <span class="vis-room__later-label">{item.label}</span>
+                {item.detail ? <span class="vis-room__later-detail">{item.detail}</span> : null}
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null
+    }
 
-    <section class="mt-10 border-t border-gray-200 pt-8" aria-labelledby="vis-archive">
-      <h2 id="vis-archive" class="text-xs font-semibold uppercase tracking-wide text-gray-500">Historikk / arkiv</h2>
-      <p class="mt-1 max-w-prose text-xs text-gray-500">Lavere vekt — ikke gjeldende operativ sannhet.</p>
-      <ul class="mt-3 flex flex-wrap gap-2 p-0 text-xs">
-        <li class="list-none">
-          <a href={`${base}vis/sprints/2026-w21/`} class="rounded-sm border border-gray-200 bg-white px-2.5 py-1.5 text-gray-700 hover:bg-gray-50">
-            Sprint W21
-          </a>
-        </li>
-        <li class="list-none">
-          <a href={`${base}vis/system/`} class="rounded-sm border border-gray-200 bg-white px-2.5 py-1.5 text-gray-700 hover:bg-gray-50">
-            System legacy
-          </a>
-        </li>
+    <details class="vis-room__details vis-room__details--archive">
+      <summary>Historikk / arkiv</summary>
+      <ul class="vis-room__archive-links">
+        <li><a href={`${base}vis/sprints/2026-w21/`}>Sprint W21</a></li>
+        <li><a href={`${base}vis/system/`}>System legacy</a></li>
       </ul>
-
       {
         archiveEntries.length > 0 ? (
-          <div class="mt-5 space-y-4">
-            {archiveFeatured.length > 0 ? (
-              <ul class="grid gap-2 p-0 sm:grid-cols-2 lg:grid-cols-3">
-                {archiveFeatured.map(({ filename: name, slug, displayTitle, visType }) => {
-                  const view = `${base}vis/${encodeURIComponent(slug)}`;
-                  const typeLabel = visTypeLabelNo(visType);
-                  return (
-                    <li class="list-none">
-                      <a href={view} class="block rounded-sm border border-gray-200 bg-gray-50/80 px-2.5 py-2 hover:bg-gray-100">
-                        <span class="text-[10px] uppercase tracking-wide text-gray-500">{typeLabel}</span>
-                        <p class="mt-1 text-xs font-medium text-gray-800">{displayTitle}</p>
-                        <p class="mt-0.5 truncate font-mono text-[10px] text-gray-400">{name}</p>
-                      </a>
+          <div class="vis-room__archive-groups">
+            {archiveGrouped.map((group) => (
+              <section>
+                <h3>{group.section}</h3>
+                <ul>
+                  {group.items.map(({ filename: name, slug, displayTitle }) => (
+                    <li>
+                      <a href={`${base}vis/${encodeURIComponent(slug)}`}>{displayTitle}</a>
+                      <span class="vis-room__archive-file">{name}</span>
                     </li>
-                  );
-                })}
-              </ul>
-            ) : null}
-
-            <details class="rounded-md border border-gray-200 bg-white">
-              <summary class="cursor-pointer px-3 py-2 text-xs font-medium text-gray-700">
-                Eldre wireframes og VIS-dokumenter ({archiveEntries.length})
-              </summary>
-              <div class="border-t border-gray-200 px-1 py-2">
-                {archiveGrouped.map((group) => (
-                  <section class="mb-3 last:mb-0">
-                    <h3 class="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">{group.section}</h3>
-                    <ul class="divide-y divide-gray-100">
-                      {group.items.map(({ filename: name, slug, displayTitle }) => {
-                        const view = `${base}vis/${encodeURIComponent(slug)}`;
-                        return (
-                          <li class="flex items-center justify-between gap-2 px-2 py-1.5">
-                            <div class="min-w-0">
-                              <p class="truncate text-xs text-gray-800">{displayTitle}</p>
-                              <p class="truncate font-mono text-[10px] text-gray-400">{name}</p>
-                            </div>
-                            <a href={view} class="shrink-0 text-[11px] text-gray-600 underline underline-offset-2">
-                              Åpne
-                            </a>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </section>
-                ))}
-              </div>
-            </details>
+                  ))}
+                </ul>
+              </section>
+            ))}
           </div>
         ) : null
       }
-    </section>
+    </details>
 
-    <section class="mt-10 max-w-prose border-t border-gray-200 pt-6" aria-labelledby="vis-sot">
-      <h2 id="vis-sot" class="text-xs font-semibold uppercase tracking-wide text-gray-500">Source of truth</h2>
-      <ul class="mt-2 space-y-1.5 p-0 text-xs text-gray-600">
-        {visSourceOfTruthNotes.map((note) => (
-          <li class="list-none">
-            <code class="font-mono text-[11px] text-gray-800">{note.label}</code>
-            <span> — {note.role}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
+    <footer class="vis-room__sot">
+      <p class="vis-room__sot-title">Source of truth</p>
+      <p class="vis-room__sot-line">
+        {visSourceOfTruthNotes.map((note) => `${note.label} (${note.role})`).join(" · ")}
+      </p>
+    </footer>
   </main>
+
+  <style>
+    .vis-room {
+      max-width: 56rem;
+      margin: 0 auto;
+      padding: 2rem 1rem 3rem;
+      color: rgb(17 24 39);
+    }
+
+    .vis-room__kicker {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__header h1 {
+      margin: 0.35rem 0 0;
+      font-size: clamp(1.5rem, 3vw, 1.85rem);
+      font-weight: 650;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .vis-room__lead {
+      margin: 0.55rem 0 0;
+      max-width: 34rem;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: rgb(75 85 99);
+    }
+
+    .vis-room__hero {
+      margin-top: 2rem;
+    }
+
+    .vis-room__hero-grid {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .vis-room__panel {
+      padding: 0.15rem 0;
+    }
+
+    .vis-room__panel-label {
+      margin: 0 0 0.65rem;
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__panel--primary {
+      padding-bottom: 0.25rem;
+    }
+
+    .vis-room__hero-link {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .vis-room__hero-link:hover .vis-room__hero-title {
+      color: rgb(17 24 39);
+    }
+
+    .vis-room__live-dot {
+      display: inline-block;
+      width: 0.5rem;
+      height: 0.5rem;
+      margin-right: 0.35rem;
+      border-radius: 999px;
+      background: rgb(16 185 129);
+      vertical-align: 0.05em;
+    }
+
+    .vis-room__hero-title {
+      display: block;
+      font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      color: rgb(31 41 55);
+    }
+
+    .vis-room__hero-meta {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.82rem;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__focus {
+      margin: 0.85rem 0 0;
+      max-width: 38rem;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: rgb(75 85 99);
+    }
+
+    .vis-room__updated {
+      margin: 0.45rem 0 0;
+      font-size: 0.72rem;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__priority-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vis-room__priority-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 0.55rem;
+      padding: 0.28rem 0;
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+
+    .vis-room__priority-index {
+      flex-shrink: 0;
+      width: 1.1rem;
+      font-size: 0.78rem;
+      font-weight: 650;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__priority-label {
+      color: rgb(31 41 55);
+      font-weight: 550;
+    }
+
+    .vis-room__go-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vis-room__go-list a {
+      display: block;
+      padding: 0.22rem 0;
+      font-size: 0.92rem;
+      font-weight: 550;
+      color: rgb(31 41 55);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgb(209 213 219);
+    }
+
+    .vis-room__go-list a:hover {
+      text-decoration-color: rgb(107 114 128);
+    }
+
+    .vis-room__section {
+      margin-top: 2.75rem;
+    }
+
+    .vis-room__section-title {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 650;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__section-lead {
+      margin: 0.35rem 0 0;
+      font-size: 0.82rem;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__mvp {
+      margin-top: 1rem;
+    }
+
+    .vis-room__mvp-primary {
+      display: block;
+      padding: 0.2rem 0 1rem;
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid rgb(229 231 235);
+    }
+
+    .vis-room__mvp-primary-label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__mvp-primary-title {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 1.05rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .vis-room__mvp-primary-desc {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.84rem;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__mvp-secondary {
+      margin: 0;
+      padding: 0.65rem 0 0;
+      list-style: none;
+    }
+
+    .vis-room__mvp-secondary li + li {
+      margin-top: 0.15rem;
+    }
+
+    .vis-room__mvp-secondary a {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.35rem 0;
+      color: inherit;
+      text-decoration: none;
+      font-size: 0.86rem;
+    }
+
+    .vis-room__mvp-secondary a:hover .vis-room__mvp-secondary-title {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .vis-room__mvp-secondary-title {
+      color: rgb(55 65 81);
+    }
+
+    .vis-room__mvp-secondary-status {
+      flex-shrink: 0;
+      font-size: 0.72rem;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__mvp-secondary--ref .vis-room__mvp-secondary-title,
+    .vis-room__mvp-secondary--ref .vis-room__mvp-secondary-status {
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__hub-group {
+      margin-top: 1.25rem;
+    }
+
+    .vis-room__hub-group--secondary {
+      margin-top: 1.75rem;
+    }
+
+    .vis-room__hub-group-title {
+      margin: 0 0 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__hub-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vis-room__hub-list--primary .vis-room__hub-title {
+      font-size: 1rem;
+    }
+
+    .vis-room__hub-list--secondary .vis-room__hub-title {
+      font-size: 0.92rem;
+      font-weight: 550;
+    }
+
+    .vis-room__hub-list li + li {
+      margin-top: 0.15rem;
+    }
+
+    .vis-room__hub-list a,
+    .vis-room__hub-item--planned > div {
+      display: block;
+      padding: 0.55rem 0;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .vis-room__hub-list a:hover .vis-room__hub-title {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .vis-room__hub-title {
+      display: block;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+      color: rgb(31 41 55);
+    }
+
+    .vis-room__hub-mandate {
+      display: block;
+      margin-top: 0.15rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__hub-planned {
+      display: block;
+      margin-top: 0.1rem;
+      font-size: 0.72rem;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__hub-item--planned .vis-room__hub-title {
+      color: rgb(75 85 99);
+    }
+
+    .vis-room__details {
+      margin-top: 2.5rem;
+      font-size: 0.82rem;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__details summary {
+      cursor: pointer;
+      font-weight: 550;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__details--archive {
+      margin-top: 1.25rem;
+    }
+
+    .vis-room__later-list,
+    .vis-room__archive-links {
+      margin: 0.75rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vis-room__later-list li + li,
+    .vis-room__archive-links li + li {
+      margin-top: 0.45rem;
+    }
+
+    .vis-room__later-label {
+      display: block;
+      font-weight: 550;
+      color: rgb(75 85 99);
+    }
+
+    .vis-room__later-detail {
+      display: block;
+      margin-top: 0.1rem;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .vis-room__archive-links a {
+      color: rgb(75 85 99);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .vis-room__archive-groups {
+      margin-top: 1rem;
+    }
+
+    .vis-room__archive-groups h3 {
+      margin: 0.75rem 0 0.35rem;
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__archive-groups ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vis-room__archive-groups li {
+      padding: 0.2rem 0;
+    }
+
+    .vis-room__archive-groups a {
+      font-size: 0.78rem;
+      color: rgb(75 85 99);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .vis-room__archive-file {
+      display: block;
+      font-family: ui-monospace, monospace;
+      font-size: 0.65rem;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__sot {
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgb(243 244 246);
+    }
+
+    .vis-room__sot-title {
+      margin: 0;
+      font-size: 0.65rem;
+      font-weight: 650;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__sot-line {
+      margin: 0.35rem 0 0;
+      font-size: 0.68rem;
+      line-height: 1.5;
+      color: rgb(156 163 175);
+    }
+
+    @media (min-width: 768px) {
+      .vis-room {
+        padding: 2.5rem 1.5rem 3.5rem;
+      }
+
+      .vis-room__hero-grid {
+        grid-template-columns: 1.4fr 1fr 0.85fr;
+        gap: 2rem;
+        align-items: start;
+      }
+    }
+  </style>
 </PrototypeLayout>
