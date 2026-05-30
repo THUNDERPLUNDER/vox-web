@@ -17,6 +17,9 @@ import {
   troubleshootingCases,
   upstashExplainer,
   changeRunbooks,
+  services,
+  serviceMapFlow,
+  firstCheckRules,
 } from "../../data/backstage-v01.ts";
 
 const base = import.meta.env.BASE_URL;
@@ -143,6 +146,58 @@ const layerTone: Record<string, string> = {
       </article>
     </section>
 
+    <section class="bs__section" aria-labelledby="bs-services">
+      <h2 id="bs-services" class="bs__section-title">Hvor gjør vi hva?</h2>
+      <p class="bs__section-lead">Hvilke tjenester som gjør jobben — og når vi åpner dem.</p>
+
+      <div class="bs-svc-flow" aria-label="Tjenesteflyt oversikt">
+        {serviceMapFlow.map((step, index) => (
+          <div class="bs-svc-flow__item">
+            <span class="bs-svc-flow__label">{step.label}</span>
+            <span class="bs-svc-flow__hint">{step.hint}</span>
+            {index < serviceMapFlow.length - 1 ? (
+              <span class="bs-svc-flow__arrow" aria-hidden="true">→</span>
+            ) : null}
+          </div>
+        ))}
+      </div>
+
+      <ul class="bs-svc-grid">
+        {services.map((svc) => (
+          <li class="bs-svc-card">
+            <div class="bs-svc-card__head">
+              <h3 class="bs-svc-card__name">{svc.name}</h3>
+              <span class="bs-svc-card__layer">{svc.layer}</span>
+            </div>
+            <div class="bs-svc-card__block">
+              <p class="bs-svc-card__label">Gjør</p>
+              <ul class="bs-svc-card__list">
+                {svc.role.map((line) => (
+                  <li>{line}</li>
+                ))}
+              </ul>
+            </div>
+            <div class="bs-svc-card__block">
+              <p class="bs-svc-card__label">Når åpner vi?</p>
+              <ul class="bs-svc-card__list">
+                {svc.whenToOpen.map((line) => (
+                  <li>{line}</li>
+                ))}
+              </ul>
+            </div>
+            <div class="bs-svc-card__block">
+              <p class="bs-svc-card__label">Typiske steder</p>
+              <ul class="bs-svc-card__places">
+                {svc.places.map((line) => (
+                  <li>{line}</li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
     <section class="bs__section" aria-labelledby="bs-change">
       <h2 id="bs-change" class="bs__section-title">Når vi må endre noe</h2>
       <p class="bs__section-lead">Slik går vi frem når vi senere må justere verdier, koblinger eller tilgang.</p>
@@ -152,6 +207,10 @@ const layerTone: Record<string, string> = {
           <li class="bs-runbook__card">
             <h3 class="bs-runbook__title">{book.title}</h3>
             <dl class="bs-runbook__dl">
+              <div class="bs-runbook__go">
+                <dt>Hvor går vi?</dt>
+                <dd>{book.whereToGo}</dd>
+              </div>
               <div>
                 <dt>Hva endres?</dt>
                 <dd>{book.whatChanges}</dd>
@@ -185,6 +244,19 @@ const layerTone: Record<string, string> = {
     <section class="bs__section" aria-labelledby="bs-troubleshoot">
       <h2 id="bs-troubleshoot" class="bs__section-title">Når noe ikke virker</h2>
       <p class="bs__section-lead">Start med hva brukeren ser — deretter hva det betyr og hva vi sjekker.</p>
+
+      <div class="bs-first-check" aria-labelledby="bs-first-check">
+        <h3 id="bs-first-check" class="bs-first-check__title">Første sted å sjekke</h3>
+        <ul class="bs-first-check__list">
+          {firstCheckRules.map((rule) => (
+            <li>
+              <span class="bs-first-check__symptom">{rule.symptom}</span>
+              <span class="bs-first-check__arrow" aria-hidden="true">→</span>
+              <span class="bs-first-check__check">{rule.check}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <ul class="bs-fix">
         {troubleshootingCases.map((item) => (
@@ -679,6 +751,224 @@ const layerTone: Record<string, string> = {
       margin: 0.5rem 0 0;
       font-size: 0.88rem;
       line-height: 1.6;
+      color: rgb(75 85 99);
+    }
+
+    .bs-runbook__dl {
+      margin: 0.75rem 0 0;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .bs-runbook__go {
+      padding: 0.65rem 0.75rem;
+      margin-bottom: 0.15rem;
+      border-radius: 0.35rem;
+      background: rgb(239 246 255);
+      border: 1px solid rgb(219 234 254);
+    }
+
+    .bs-runbook__go dt {
+      color: rgb(29 78 216);
+    }
+
+    .bs-runbook__go dd {
+      color: rgb(30 58 138);
+      font-weight: 550;
+    }
+
+    .bs-svc-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      gap: 0.35rem;
+      margin-top: 1.25rem;
+      padding: 1rem;
+      border-radius: 0.6rem;
+      background: rgb(249 250 251);
+      border: 1px solid rgb(243 244 246);
+    }
+
+    .bs-svc-flow__item {
+      flex: 1 1 7rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 0.4rem;
+      background: rgb(255 255 255);
+      border: 1px solid rgb(229 231 235);
+      min-width: 6.5rem;
+    }
+
+    .bs-svc-flow__label {
+      font-size: 0.82rem;
+      font-weight: 650;
+      color: rgb(31 41 55);
+    }
+
+    .bs-svc-flow__hint {
+      font-size: 0.72rem;
+      color: rgb(107 114 128);
+    }
+
+    .bs-svc-flow__arrow {
+      display: none;
+    }
+
+    @media (min-width: 640px) {
+      .bs-svc-flow__item:not(:last-child)::after {
+        content: "→";
+        position: absolute;
+        right: -0.65rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.85rem;
+        color: rgb(156 163 175);
+        z-index: 1;
+      }
+    }
+
+    .bs-svc-grid {
+      display: grid;
+      gap: 1rem;
+      margin: 1.5rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    @media (min-width: 640px) {
+      .bs-svc-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 960px) {
+      .bs-svc-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .bs-svc-grid li:last-child:nth-child(odd) {
+        grid-column: span 1;
+      }
+    }
+
+    .bs-svc-card {
+      padding: 1.1rem 1.15rem;
+      border-radius: 0.55rem;
+      border: 1px solid rgb(229 231 235);
+      background: rgb(255 255 255);
+      box-shadow: 0 2px 6px rgb(0 0 0 / 0.04);
+    }
+
+    .bs-svc-card__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.35rem 0.75rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid rgb(243 244 246);
+    }
+
+    .bs-svc-card__name {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 650;
+      color: rgb(17 24 39);
+    }
+
+    .bs-svc-card__layer {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .bs-svc-card__block {
+      margin-top: 0.65rem;
+    }
+
+    .bs-svc-card__label {
+      margin: 0;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .bs-svc-card__list,
+    .bs-svc-card__places {
+      margin: 0.25rem 0 0;
+      padding-left: 1rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: rgb(55 65 81);
+    }
+
+    .bs-svc-card__list li + li,
+    .bs-svc-card__places li + li {
+      margin-top: 0.2rem;
+    }
+
+    .bs-svc-card__places {
+      list-style: none;
+      padding-left: 0;
+      font-family: ui-monospace, monospace;
+      font-size: 0.72rem;
+      color: rgb(75 85 99);
+    }
+
+    .bs-first-check {
+      margin-top: 1rem;
+      padding: 1rem 1.1rem;
+      border-radius: 0.5rem;
+      background: rgb(254 252 232);
+      border: 1px solid rgb(254 240 138);
+    }
+
+    .bs-first-check__title {
+      margin: 0;
+      font-size: 0.82rem;
+      font-weight: 650;
+      color: rgb(113 63 18);
+    }
+
+    .bs-first-check__list {
+      margin: 0.65rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .bs-first-check__list li {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.35rem 0.5rem;
+      padding: 0.35rem 0;
+      font-size: 0.84rem;
+      line-height: 1.45;
+      border-bottom: 1px solid rgb(254 240 138 / 0.5);
+    }
+
+    .bs-first-check__list li:last-child {
+      border-bottom: none;
+    }
+
+    .bs-first-check__symptom {
+      font-weight: 600;
+      color: rgb(92 58 15);
+    }
+
+    .bs-first-check__arrow {
+      color: rgb(180 130 50);
+      font-size: 0.75rem;
+    }
+
+    .bs-first-check__check {
       color: rgb(75 85 99);
     }
 

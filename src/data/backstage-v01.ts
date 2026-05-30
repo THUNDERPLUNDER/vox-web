@@ -169,11 +169,154 @@ export type ChangeRunbook = {
   title: string;
   whatChanges: string;
   where: string;
+  whereToGo: string;
   after: string;
   test: string;
   tech?: string;
   envVars?: readonly string[];
 };
+
+export type ServiceEntry = {
+  id: string;
+  name: string;
+  layer: string;
+  role: readonly string[];
+  whenToOpen: readonly string[];
+  places: readonly string[];
+};
+
+/** Overordnet flyt — hvilke tjenester som henger sammen. */
+export const serviceMapFlow = [
+  { label: "Brukerflate", hint: "Spør Viddel" },
+  { label: "Vercel", hint: "Nettsted + API" },
+  { label: "Upstash · CES", hint: "Teller + AI" },
+  { label: "GitHub · VIS", hint: "Styring + status" },
+] as const;
+
+/** Tjenestekart — hvor gjør vi hva? */
+export const services: ServiceEntry[] = [
+  {
+    id: "vercel",
+    name: "Vercel",
+    layer: "Kjører production",
+    role: [
+      "Kjører Viddel-siden og /api/chat i production",
+      "Har environment variables",
+      "Har deployments og runtime logs",
+    ],
+    whenToOpen: [
+      "Sette eller endre env-vars",
+      "Redeploye etter endring",
+      "Se runtime logs",
+      "Når production ikke virker",
+    ],
+    places: [
+      "Project: vox-web",
+      "Settings → Environment Variables",
+      "Deployments",
+      "Runtime Logs",
+    ],
+  },
+  {
+    id: "upstash",
+    name: "Upstash",
+    layer: "Teller bruk",
+    role: [
+      "Teller bruk for rate limit",
+      "Holder styr på spørsmål per IP",
+      "Lagrer ikke samtalehistorikk",
+    ],
+    whenToOpen: [
+      "Sjekke rate limit / bruk",
+      "Bytte eller rotere Redis-token",
+      "Når rate limit oppfører seg rart",
+    ],
+    places: [
+      "Redis: viddel-chat-rate-limit",
+      "REST URL / REST TOKEN",
+      "Usage / Monitor",
+    ],
+  },
+  {
+    id: "google-ces",
+    name: "Google Cloud / CES",
+    layer: "AI-motor",
+    role: [
+      "AI-motoren som lager svarene",
+      "Viddel-agent og deployment",
+      "Kalles fra /api/chat via service account",
+    ],
+    whenToOpen: [
+      "AI-svar kommer ikke",
+      "Agent/deployment skal sjekkes",
+      "CES-id-er eller service account må oppdateres",
+      "Kunnskapsgrunnlag eller agentoppsett endres",
+    ],
+    places: [
+      "Google Cloud project",
+      "CES / Agent deployment",
+      "Service account / credentials",
+    ],
+  },
+  {
+    id: "github",
+    name: "GitHub",
+    layer: "Kode og oppgaver",
+    role: [
+      "Kode, PR-er, issues og Return Tickets",
+      "Oppgavebuss og beslutningshistorikk",
+    ],
+    whenToOpen: [
+      "Se hva som er gjort",
+      "Opprette eller endre arbeidsspor",
+      "Lese Return Tickets",
+      "Når Cursor har pushet branch/PR",
+    ],
+    places: [
+      "THUNDERPLUNDER/vox-web → Issues",
+      "Pull requests",
+      "Commit history",
+    ],
+  },
+  {
+    id: "vis",
+    name: "VIS",
+    layer: "Intern styring",
+    role: [
+      "Intern visnings- og reviewflate",
+      "Current-state, huber, sprint og systemflater",
+    ],
+    whenToOpen: [
+      "Se hvor prosjektet står",
+      "QA-e flater",
+      "Navigere til /designsystem/ eller /backstage/",
+    ],
+    places: ["/vis/", "/designsystem/", "/backstage/"],
+  },
+];
+
+export const firstCheckRules = [
+  {
+    symptom: "Siden laster ikke",
+    check: "Vercel → vox-web → Deployments / logs",
+  },
+  {
+    symptom: "Chatten svarer ikke",
+    check: "Vercel → Runtime Logs først",
+  },
+  {
+    symptom: "Rate limit slår inn",
+    check: "Upstash + Vercel logs",
+  },
+  {
+    symptom: "AI feiler",
+    check: "Vercel logs + Google Cloud / CES",
+  },
+  {
+    symptom: "Status i VIS er feil",
+    check: "src/data/mvp-current-state.ts → sjekk /vis/",
+  },
+] as const;
 
 /** Runbooks — hvordan vi endrer operative verdier senere. */
 export const changeRunbooks: ChangeRunbook[] = [
@@ -182,6 +325,8 @@ export const changeRunbooks: ChangeRunbook[] = [
     title: "Endre rate limits",
     whatChanges: "Hvor mange spørsmål som tillates — per 10 minutter og per døgn (per IP).",
     where: "I chat guard-koden. Nåværende grenser: 10 per 10 min og 50 per døgn.",
+    whereToGo:
+      "GitHub/Cursor for kodeendring i guard. Etterpå Vercel → Deployments. Ikke Vercel env alene — grensene ligger i kode i dag.",
     after: "Commit, deploy til Production, og test at chat fortsatt fungerer.",
     test: "Ett vanlig spørsmål (skal fungere). 11 raske spørsmål (skal stoppe med tydelig melding). For lang melding (skal avvises).",
     tech: "src/lib/chat-api-guard.ts",
@@ -191,6 +336,7 @@ export const changeRunbooks: ChangeRunbook[] = [
     title: "Endre maks lengde på spørsmål",
     whatChanges: "Hvor langt spørsmål brukeren kan sende — i dag 2000 tegn.",
     where: "I input-valideringen for chat guard.",
+    whereToGo: "GitHub/Cursor for kodeendring i guard. Etterpå Vercel → Deployments.",
     after: "Commit, deploy, og test med spørsmål på og rett over grensen.",
     test: "Send spørsmål med 2000 tegn (skal fungere). Send 2001 tegn eller mer (skal avvises med tydelig melding).",
     tech: "src/lib/chat-api-guard.ts · brukt av src/pages/api/chat.ts",
@@ -199,7 +345,9 @@ export const changeRunbooks: ChangeRunbook[] = [
     id: "upstash",
     title: "Endre eller bytte Upstash",
     whatChanges: "Bytte telleren som holder styr på bruk — f.eks. ny Upstash-database eller nye nøkler.",
-    where: "Vercel → Environment Variables → Production.",
+    where: "Upstash Console for Redis/REST-token. Vercel for env-vars.",
+    whereToGo:
+      "Upstash Console → Redis viddel-chat-rate-limit. Vercel → Settings → Environment Variables. Vercel → Deployments for redeploy.",
     after: "Redeploy Production. Test at chat svarer og at rate limit fortsatt virker.",
     test: "Ett vanlig spørsmål i Spør Viddel. Sjekk at feilmelding er trygg hvis noe er feil — ikke teknisk rot.",
     envVars: ["UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN"],
@@ -209,7 +357,9 @@ export const changeRunbooks: ChangeRunbook[] = [
     id: "ces",
     title: "Endre CES / AI-motor-kobling",
     whatChanges: "Bytte eller oppdatere koblingen til AI-agenten — ny versjon, deployment eller prosjekt.",
-    where: "Vercel Environment Variables (Production) og oppsett i Google/CES.",
+    where: "Google Cloud/CES for agent/deployment. Vercel for env-vars.",
+    whereToGo:
+      "Google Cloud / CES for agent og deployment. Vercel → Environment Variables. Vercel → Deployments for redeploy.",
     after: "Redeploy Production. Test ekte svar i Spør Viddel.",
     test: "Send et enkelt spørsmål og bekreft at svaret kommer tilbake i chatten.",
     envVars: [
@@ -226,7 +376,9 @@ export const changeRunbooks: ChangeRunbook[] = [
     id: "disable-ai",
     title: "Slå av AI midlertidig",
     whatChanges: "Stoppe AI-svar midlertidig — ved feil, kostnadsbekymring eller uventet adferd.",
-    where: "Trygg metode: fjern eller deaktiver nødvendig CES-konfig i Vercel Production (CES env-vars).",
+    where: "Fjern eller deaktiver CES env-vars i Vercel Production.",
+    whereToGo:
+      "Vercel → Environment Variables / Deployments. Kontrollert handling — påvirker production. Oppdater VIS/current-state etterpå.",
     after: "Redeploy. Oppdater VIS current-state så teamet vet at AI er av.",
     test: "Brukeren skal se trygg feilmelding («Viddel er ikke tilgjengelig akkurat nå») — ikke rå teknisk feil.",
     tech: "configuration_missing · src/lib/ces-env.ts",
@@ -235,8 +387,10 @@ export const changeRunbooks: ChangeRunbook[] = [
     id: "access",
     title: "Tilgang / passord / ekstern pilot",
     whatChanges: "Hvem som får bruke Spør Viddel ved ekstern pilot — ikke relevant nå (access er parkert).",
-    where: "Fremtidig retning: «Mine sider» / innlogget tilstand i globalmenyen — ikke kodefelt inne i chatten.",
-    after: "Eget arbeidsspor før ekstern pilot. Server-side må fortsatt beskytte /api/chat.",
+    where: "Fremtidig retning: «Mine sider» / innlogget tilstand i globalmenyen.",
+    whereToGo:
+      "Ikke nå — eget arbeidsspor før ekstern pilot. UI-retning: «Mine sider» i globalmenyen, ikke kodefelt i chatten.",
+    after: "Server-side må fortsatt beskytte /api/chat når det kommer.",
     test: "Når det kommer: chatten skal oppleves som tilgjengelig når brukeren er inne — uten passord i selve chat-flaten.",
     tech: "Access Gate #181 parkert/revertet.",
   },
@@ -245,9 +399,10 @@ export const changeRunbooks: ChangeRunbook[] = [
     title: "Når vi endrer status",
     whatChanges: "Hva som er sant nå — live AI, guard, neste steg, risiko.",
     where: "Registry-filen for MVP-status.",
+    whereToGo: "GitHub/Cursor → src/data/mvp-current-state.ts. VIS → /vis/ for kontroll etterpå.",
     after: "Sjekk /vis/ etterpå. Legg Return Ticket på relevant issue.",
     test: "VIS kontrollrom viser oppdatert nå-status og neste arbeid.",
-    tech: "src/data/mvp-current-state.ts · UI-mønster → vurder /designsystem/ · systemflyt → oppdater /backstage/",
+    tech: "UI-mønster → vurder /designsystem/ · systemflyt → oppdater /backstage/",
   },
 ];
 
