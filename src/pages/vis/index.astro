@@ -2,7 +2,8 @@
 /* CONTRACT: VIS frontpage v0.1 — kontrollrom med visuell prioritet; MVP from registry, hubs from vis-frontpage-hubs-v01. */
 import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
 import { groupedVisEntries, visTypeLabelNo, wireframeIndexEntries } from "../../lib/vis-wireframes";
-import { getVisFrontpageEntries, mvpCurrentState } from "../../data/mvp-current-state.ts";
+import { getVisFrontpageEntries, getCurrentSprintVisEntry, mvpCurrentState } from "../../data/mvp-current-state.ts";
+import { getClosedSprintArchiveLinks } from "../../lib/vis-sprint-guard.ts";
 import {
   getVisFrontpageHubs,
   visFrontpageMandate,
@@ -12,6 +13,8 @@ import {
 
 const base = import.meta.env.BASE_URL;
 const mvpNowEntries = getVisFrontpageEntries(base);
+const currentSprint = getCurrentSprintVisEntry(base);
+const closedSprintArchiveLinks = getClosedSprintArchiveLinks(base);
 const hubs = getVisFrontpageHubs(base);
 const primaryHubs = hubs.filter((h) => h.tier === "primary");
 const secondaryHubs = hubs.filter((h) => h.tier === "secondary");
@@ -81,6 +84,21 @@ const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
           </ul>
         </nav>
       </div>
+
+      {
+        currentSprint.isActive ? (
+          <article class="vis-room__sprint-strip" aria-labelledby="vis-current-sprint">
+            <p id="vis-current-sprint" class="vis-room__panel-label">Denne sprinten</p>
+            <a href={currentSprint.href} class="vis-room__sprint-link">
+              <span class="vis-room__sprint-title">{currentSprint.title}</span>
+              <span class="vis-room__sprint-focus">{currentSprint.weekFocus}</span>
+              {currentSprint.issue ? (
+                <span class="vis-room__sprint-meta">Issue {currentSprint.issue}</span>
+              ) : null}
+            </a>
+          </article>
+        ) : null
+      }
     </section>
 
     <section class="vis-room__section" aria-labelledby="vis-mvp-now">
@@ -173,8 +191,18 @@ const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
 
     <details class="vis-room__details vis-room__details--archive">
       <summary>Historikk / arkiv</summary>
+      {
+        closedSprintArchiveLinks.length > 0 ? (
+          <ul class="vis-room__archive-links">
+            {closedSprintArchiveLinks.map((link) => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        ) : null
+      }
       <ul class="vis-room__archive-links">
-        <li><a href={`${base}vis/sprints/2026-w21/`}>Sprint W21</a></li>
         <li><a href={`${base}vis/system/`}>System legacy</a></li>
       </ul>
       {
@@ -362,6 +390,47 @@ const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
 
     .vis-room__go-list a:hover {
       text-decoration-color: rgb(107 114 128);
+    }
+
+    .vis-room__sprint-strip {
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgb(243 244 246);
+    }
+
+    .vis-room__sprint-link {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .vis-room__sprint-link:hover .vis-room__sprint-title {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .vis-room__sprint-title {
+      display: block;
+      font-size: 1rem;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+      color: rgb(31 41 55);
+    }
+
+    .vis-room__sprint-focus {
+      display: block;
+      margin-top: 0.3rem;
+      max-width: 40rem;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: rgb(75 85 99);
+    }
+
+    .vis-room__sprint-meta {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.72rem;
+      color: rgb(156 163 175);
     }
 
     .vis-room__section {

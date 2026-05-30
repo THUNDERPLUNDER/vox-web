@@ -1,5 +1,7 @@
 /* CONTRACT: VIS frontpage hub definitions v0.1 — mandate, links and active/planned status for /vis/ IA. */
 
+import { mvpCurrentState } from "./mvp-current-state.ts";
+
 export type VisHubAvailability = "active" | "planned" | "historikk";
 
 export type VisHubTier = "primary" | "secondary";
@@ -17,8 +19,10 @@ export type VisFrontpageHub = {
 /** Main hubs on VIS frontpage — hub & spoke model, not backlog. */
 export function getVisFrontpageHubs(baseUrl: string): VisFrontpageHub[] {
   const base = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
+  const sprint = mvpCurrentState.currentSprint;
+  const sprintActive = sprint.status === "active";
 
-  return [
+  const staticHubs: VisFrontpageHub[] = [
     {
       id: "designsystem",
       title: "Designsystem",
@@ -67,15 +71,27 @@ export function getVisFrontpageHubs(baseUrl: string): VisFrontpageHub[] {
       availability: "active",
       tier: "secondary",
     },
-    {
-      id: "sprint",
-      title: "Sprint / historikk",
-      mandate: "Hvordan vi kom hit — ikke gjeldende sannhet.",
-      href: `${base}vis/sprints/2026-w21/`,
-      availability: "historikk",
-      tier: "secondary",
-    },
-  ] satisfies VisFrontpageHub[];
+  ];
+
+  const sprintHub: VisFrontpageHub = {
+    id: "sprint",
+    title: sprintActive ? `Sprint ${sprint.label}` : "Sprint / historikk",
+    mandate: sprintActive
+      ? "Operativ sprintflate — labs, guardrails og beslutningsgrunnlag."
+      : "Hvordan vi kom hit — ikke gjeldende sannhet.",
+    href: `${base}${sprint.route.replace(/^\//, "")}`,
+    availability: sprintActive ? "active" : "historikk",
+    tier: sprintActive ? "primary" : "secondary",
+    issue: sprint.issue,
+  };
+
+  if (sprintActive) {
+    const primaryHubs = staticHubs.filter((h) => h.tier === "primary");
+    const secondaryHubs = staticHubs.filter((h) => h.tier === "secondary");
+    return [...primaryHubs, sprintHub, ...secondaryHubs];
+  }
+
+  return [...staticHubs, sprintHub];
 }
 
 export const visFrontpageMandate = {
@@ -96,5 +112,5 @@ export const visSourceOfTruthNotes = [
   { label: "GitHub issues/projects", role: "Oppgavebuss" },
   { label: "Roadmap", role: "Retning / faser" },
   { label: "DAM / bildebank", role: "Assetoversikt" },
-  { label: "Sprint-sider", role: "Historikk" },
+  { label: "Sprint-sider", role: "Aktiv sprint (currentSprint) · lukkede i arkiv" },
 ] as const;
