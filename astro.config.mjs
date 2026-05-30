@@ -20,8 +20,10 @@ const storyblokIntegration =
 
 // GitHub Pages project sites are served under https://<user>.github.io/<repo>/ — without this,
 // hardcoded paths like /vis/ resolve to the domain root and 404. CI sets GITHUB_REPOSITORY=owner/repo.
+// Vercel must keep base `/` — GITHUB_REPOSITORY is also present there and would break asset paths.
+const isVercel = Boolean(process.env.VERCEL);
 const ghRepo =
-  typeof process.env.GITHUB_REPOSITORY === 'string'
+  !isVercel && typeof process.env.GITHUB_REPOSITORY === 'string'
     ? process.env.GITHUB_REPOSITORY.split('/')[1]
     : '';
 const base = ghRepo ? `/${ghRepo}/` : '/';
