@@ -35,9 +35,9 @@ export function getVisFrontpageHubs(baseUrl: string): VisFrontpageHub[] {
       id: "backstage",
       title: "Backstage",
       mandate: "AI, API, guards, env-vars og production.",
-      availability: "planned",
+      href: `${base}backstage/`,
+      availability: "active",
       tier: "primary",
-      issue: "#184",
     },
     {
       id: "gitbuss",
@@ -102,13 +102,12 @@ export const visFrontpageMandate = {
 export const visPrimaryNextWorkIds = [
   "internal-ai-test-qa",
   "ai-usage-monitoring",
-  "backstage-v01",
 ] as const;
 
 export const visSourceOfTruthNotes = [
   { label: "src/data/mvp-current-state.ts", role: "Gjeldende MVP-status" },
   { label: "/designsystem/", role: "Gjeldende UI/mønstre" },
-  { label: "/backstage/", role: "System/API/guard når etablert (#184)" },
+  { label: "/backstage/", role: "System/API/guard/env — canonical referanse" },
   { label: "GitHub issues/projects", role: "Oppgavebuss" },
   { label: "Roadmap", role: "Retning / faser" },
   { label: "DAM / bildebank", role: "Assetoversikt" },

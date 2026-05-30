@@ -7,6 +7,7 @@ Operative regler for Cursor, Codex og menneskelig HITL i Viddel Lab.
 | Flate | Rolle |
 |-------|--------|
 | `/designsystem/` | Gjeldende designsystem-sannhet (mønstre, primitives, applied surfaces) |
+| `/backstage/` | Gjeldende systemreferanse (AI-flow, API, guards, env-vars, production) |
 | `src/data/mvp-current-state.ts` | Gjeldende operativ MVP-status og `currentSprint` |
 | `/vis/sprints/...` | Aktiv sprint (control room) eller historikk (arkiv) — avhenger av `currentSprint.status` |
 | GitHub Projects / issues | Oppgavebuss |
