@@ -16,6 +16,7 @@ import {
   systemMapLayers,
   troubleshootingCases,
   upstashExplainer,
+  changeRunbooks,
 } from "../../data/backstage-v01.ts";
 
 const base = import.meta.env.BASE_URL;
@@ -140,6 +141,45 @@ const layerTone: Record<string, string> = {
         <h2 id="bs-ces" class="bs-explainer__title">{cesExplainer.title}</h2>
         <p class="bs-explainer__body">{cesExplainer.body}</p>
       </article>
+    </section>
+
+    <section class="bs__section" aria-labelledby="bs-change">
+      <h2 id="bs-change" class="bs__section-title">Når vi må endre noe</h2>
+      <p class="bs__section-lead">Slik går vi frem når vi senere må justere verdier, koblinger eller tilgang.</p>
+
+      <ul class="bs-runbook">
+        {changeRunbooks.map((book) => (
+          <li class="bs-runbook__card">
+            <h3 class="bs-runbook__title">{book.title}</h3>
+            <dl class="bs-runbook__dl">
+              <div>
+                <dt>Hva endres?</dt>
+                <dd>{book.whatChanges}</dd>
+              </div>
+              <div>
+                <dt>Hvor endres det?</dt>
+                <dd>{book.where}</dd>
+              </div>
+              <div>
+                <dt>Hva må vi gjøre etterpå?</dt>
+                <dd>{book.after}</dd>
+              </div>
+              <div>
+                <dt>Hva må vi teste?</dt>
+                <dd>{book.test}</dd>
+              </div>
+            </dl>
+            {book.envVars?.length ? (
+              <p class="bs-runbook__env">
+                Variabler (uten verdier): {book.envVars.map((v) => (
+                  <code>{v}</code>
+                ))}
+              </p>
+            ) : null}
+            {book.tech ? <p class="bs-runbook__tech">{book.tech}</p> : null}
+          </li>
+        ))}
+      </ul>
     </section>
 
     <section class="bs__section" aria-labelledby="bs-troubleshoot">
@@ -640,6 +680,72 @@ const layerTone: Record<string, string> = {
       font-size: 0.88rem;
       line-height: 1.6;
       color: rgb(75 85 99);
+    }
+
+    .bs-runbook {
+      margin: 1.25rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .bs-runbook__card {
+      padding: 1.15rem 1.25rem;
+      border: 1px solid rgb(243 244 246);
+      border-radius: 0.5rem;
+      background: rgb(255 255 255);
+      box-shadow: 0 1px 3px rgb(0 0 0 / 0.04);
+    }
+
+    .bs-runbook__title {
+      margin: 0;
+      font-size: 0.98rem;
+      font-weight: 650;
+      color: rgb(31 41 55);
+    }
+
+    .bs-runbook__dl {
+      margin: 0.75rem 0 0;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .bs-runbook__dl dt {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .bs-runbook__dl dd {
+      margin: 0.15rem 0 0;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: rgb(55 65 81);
+    }
+
+    .bs-runbook__env {
+      margin: 0.65rem 0 0;
+      font-size: 0.72rem;
+      line-height: 1.5;
+      color: rgb(107 114 128);
+    }
+
+    .bs-runbook__env code {
+      display: inline-block;
+      margin: 0.15rem 0.35rem 0 0;
+      font-family: ui-monospace, monospace;
+      font-size: 0.68rem;
+      color: rgb(75 85 99);
+    }
+
+    .bs-runbook__tech {
+      margin: 0.45rem 0 0;
+      font-size: 0.68rem;
+      line-height: 1.45;
+      color: rgb(156 163 175);
     }
 
     .bs-fix {

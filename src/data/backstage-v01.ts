@@ -164,6 +164,93 @@ export const cesExplainer = {
   body: "CES er AI-motoren som lager svaret. Viddel eier grensesnittet rundt — chatten, feilmeldingene og hvordan det føles for brukeren.",
 } as const;
 
+export type ChangeRunbook = {
+  id: string;
+  title: string;
+  whatChanges: string;
+  where: string;
+  after: string;
+  test: string;
+  tech?: string;
+  envVars?: readonly string[];
+};
+
+/** Runbooks — hvordan vi endrer operative verdier senere. */
+export const changeRunbooks: ChangeRunbook[] = [
+  {
+    id: "rate-limits",
+    title: "Endre rate limits",
+    whatChanges: "Hvor mange spørsmål som tillates — per 10 minutter og per døgn (per IP).",
+    where: "I chat guard-koden. Nåværende grenser: 10 per 10 min og 50 per døgn.",
+    after: "Commit, deploy til Production, og test at chat fortsatt fungerer.",
+    test: "Ett vanlig spørsmål (skal fungere). 11 raske spørsmål (skal stoppe med tydelig melding). For lang melding (skal avvises).",
+    tech: "src/lib/chat-api-guard.ts",
+  },
+  {
+    id: "max-length",
+    title: "Endre maks lengde på spørsmål",
+    whatChanges: "Hvor langt spørsmål brukeren kan sende — i dag 2000 tegn.",
+    where: "I input-valideringen for chat guard.",
+    after: "Commit, deploy, og test med spørsmål på og rett over grensen.",
+    test: "Send spørsmål med 2000 tegn (skal fungere). Send 2001 tegn eller mer (skal avvises med tydelig melding).",
+    tech: "src/lib/chat-api-guard.ts · brukt av src/pages/api/chat.ts",
+  },
+  {
+    id: "upstash",
+    title: "Endre eller bytte Upstash",
+    whatChanges: "Bytte telleren som holder styr på bruk — f.eks. ny Upstash-database eller nye nøkler.",
+    where: "Vercel → Environment Variables → Production.",
+    after: "Redeploy Production. Test at chat svarer og at rate limit fortsatt virker.",
+    test: "Ett vanlig spørsmål i Spør Viddel. Sjekk at feilmelding er trygg hvis noe er feil — ikke teknisk rot.",
+    envVars: ["UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN"],
+    tech: "Verdier aldri i repo, ChatGPT eller Cursor.",
+  },
+  {
+    id: "ces",
+    title: "Endre CES / AI-motor-kobling",
+    whatChanges: "Bytte eller oppdatere koblingen til AI-agenten — ny versjon, deployment eller prosjekt.",
+    where: "Vercel Environment Variables (Production) og oppsett i Google/CES.",
+    after: "Redeploy Production. Test ekte svar i Spør Viddel.",
+    test: "Send et enkelt spørsmål og bekreft at svaret kommer tilbake i chatten.",
+    envVars: [
+      "CES_PROJECT_ID",
+      "CES_LOCATION",
+      "CES_APP_ID",
+      "CES_APP_VERSION_ID",
+      "CES_DEPLOYMENT_ID",
+      "GOOGLE_SERVICE_ACCOUNT_JSON",
+    ],
+    tech: "Service account JSON kun i Vercel — aldri i repo.",
+  },
+  {
+    id: "disable-ai",
+    title: "Slå av AI midlertidig",
+    whatChanges: "Stoppe AI-svar midlertidig — ved feil, kostnadsbekymring eller uventet adferd.",
+    where: "Trygg metode: fjern eller deaktiver nødvendig CES-konfig i Vercel Production (CES env-vars).",
+    after: "Redeploy. Oppdater VIS current-state så teamet vet at AI er av.",
+    test: "Brukeren skal se trygg feilmelding («Viddel er ikke tilgjengelig akkurat nå») — ikke rå teknisk feil.",
+    tech: "configuration_missing · src/lib/ces-env.ts",
+  },
+  {
+    id: "access",
+    title: "Tilgang / passord / ekstern pilot",
+    whatChanges: "Hvem som får bruke Spør Viddel ved ekstern pilot — ikke relevant nå (access er parkert).",
+    where: "Fremtidig retning: «Mine sider» / innlogget tilstand i globalmenyen — ikke kodefelt inne i chatten.",
+    after: "Eget arbeidsspor før ekstern pilot. Server-side må fortsatt beskytte /api/chat.",
+    test: "Når det kommer: chatten skal oppleves som tilgjengelig når brukeren er inne — uten passord i selve chat-flaten.",
+    tech: "Access Gate #181 parkert/revertet.",
+  },
+  {
+    id: "status",
+    title: "Når vi endrer status",
+    whatChanges: "Hva som er sant nå — live AI, guard, neste steg, risiko.",
+    where: "Registry-filen for MVP-status.",
+    after: "Sjekk /vis/ etterpå. Legg Return Ticket på relevant issue.",
+    test: "VIS kontrollrom viser oppdatert nå-status og neste arbeid.",
+    tech: "src/data/mvp-current-state.ts · UI-mønster → vurder /designsystem/ · systemflyt → oppdater /backstage/",
+  },
+];
+
 export type TroubleshootingCase = {
   id: string;
   userSees: string;
