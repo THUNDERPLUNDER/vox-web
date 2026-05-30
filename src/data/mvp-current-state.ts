@@ -49,7 +49,7 @@ export type RecentChange = {
 export const mvpCurrentState = {
   updatedAt: "2026-05-30",
   currentFocus:
-    "Test Access Gate v0.1 (#181) — enkel testkode før CES production env-vars og offentlig AI-test.",
+    "Public AI guard live (#180, Upstash OK). Neste: CES production env-vars for intern test (Thomas og Vibeke). Deretter AI usage monitoring v0.1 og Backstage v0.1. Test Access Gate (#181) parkert til ekstern pilot.",
   mvpSurfaces: [
     {
       id: "frontpage",
@@ -83,10 +83,10 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Applied",
-      note: "Production UI live. Public AI guard v0.1 applied (#180). Test Access Gate v0.1 (#181) — Needs QA. AI blocked until access code + CES prod env-vars.",
+      note: "Production UI live. Public AI guard v0.1 applied (#180). AI blocked until CES prod env-vars. Test Access Gate (#181) parkert — intern test uten access code.",
       visFrontpage: true,
       kind: "public",
-      frontpageDescription: "Standalone headless AI — guard + test access gate, prod AI venter CES.",
+      frontpageDescription: "Standalone headless AI — guard på plass, prod AI venter CES (intern test).",
     },
     {
       id: "designsystem",
@@ -126,14 +126,24 @@ export const mvpCurrentState = {
   ] satisfies CanonicalReference[],
   nextRisks: [
     {
-      id: "test-access-gate-qa",
-      label: "Test Access Gate v0.1 — QA",
-      detail: "Sett VIDDEL_CHAT_ACCESS_CODE i Vercel Production etter merge. QA gate + guard før CES prod env-vars (#181).",
+      id: "ces-prod-env",
+      label: "CES production env-vars (intern test)",
+      detail: "Sett CES i Vercel Production for intern test med Thomas og Vibeke — krever Upstash guard (#180). Ikke ekstern pilot ennå.",
     },
     {
-      id: "ces-prod-env",
-      label: "CES production env-vars",
-      detail: "Sett CES i Vercel Production etter Test Access Gate QA — aktiverer ikke AI alene uten Upstash + access code.",
+      id: "ai-usage-monitoring",
+      label: "AI usage monitoring v0.1",
+      detail: "Eget spor etter CES prod env-vars — overvåkning før bredere bruk.",
+    },
+    {
+      id: "backstage-v01",
+      label: "Backstage v0.1",
+      detail: "Eget spor etter monitoring — intern operativ flate.",
+    },
+    {
+      id: "test-access-gate-parked",
+      label: "Test Access Gate v0.1 — parkert",
+      detail: "#181 parkert til ekstern testgruppe. Kode kan gjenåpnes senere; ikke aktivt for intern Thomas/Vibeke-test.",
     },
     {
       id: "transcript-qa",
@@ -154,7 +164,7 @@ export const mvpCurrentState = {
   recentChanges: [
     {
       date: "2026-05-30",
-      summary: "Test Access Gate v0.1 — testkode for /no/chat/ og /api/chat (#181)",
+      summary: "Test Access Gate (#181) parkert — intern test uten access code; CES prod env neste",
       issue: "#181",
       commit: "—",
     },
