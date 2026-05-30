@@ -77,7 +77,7 @@ export const mvpCurrentState = {
   } satisfies CurrentSprint,
   closedSprints: [] satisfies ClosedSprint[],
   currentFocus:
-    "CES production live på /no/chat/ — intern test med Thomas og Vibeke. Upstash guard aktiv (#180). Backstage v0.1 live (#184). Neste: AI usage monitoring v0.1 før ekstern deling.",
+    "CES production live på /no/chat/ — intern test med Thomas og Vibeke. Upstash guard aktiv (#180). Backstage v0.1 live (#184) med build-time guard. Neste: AI usage monitoring v0.1 før ekstern deling.",
   mvpSurfaces: [
     {
       id: "frontpage",
@@ -199,7 +199,7 @@ export const mvpCurrentState = {
   recentChanges: [
     {
       date: "2026-05-30",
-      summary: "Backstage v0.1 — intern systemreferanse på /backstage/ (#184)",
+      summary: "Backstage guardrail — operating rules, Return Ticket-felt, build-time verify (#184)",
       issue: "#184",
       commit: "—",
     },

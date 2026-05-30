@@ -1,5 +1,5 @@
 ---
-description: Viddel operating rules — designsystem, current-state registry, VIS frontpage, Return Tickets
+description: Viddel operating rules — designsystem, current-state registry, VIS frontpage, Backstage, Return Tickets
 alwaysApply: true
 ---
 
@@ -8,6 +8,7 @@ alwaysApply: true
 ## Source of truth
 
 - `/designsystem/` = gjeldende designsystem-sannhet
+- `/backstage/` = gjeldende systemreferanse (AI-flow, API, guards, env-vars, production)
 - `src/data/mvp-current-state.ts` = gjeldende operativ MVP-status
 - `/vis/sprints/...` = historikk og beslutningsgrunnlag
 
@@ -22,14 +23,35 @@ Update `src/data/mvp-current-state.ts` when work affects:
 
 VIS frontpage (`src/pages/vis/index.astro`) reads from this registry — do not hand-code «MVP nå» cards.
 
+## Backstage impact (always consider)
+
+Vurder `/backstage/` ved endringer i:
+
+- `src/pages/api/chat.ts`
+- `src/lib/chat-api-guard.ts`
+- `.env.example` (if present)
+- `src/data/mvp-current-state.ts` (when system/production status changes)
+- Vercel / Upstash / CES-relaterte docs
+- access / login
+- monitoring
+- production activation
+- routes eller systemflyt som Backstage forklarer
+
+If system understanding changes → update `src/data/backstage-v01.ts` in the same PR, or state explicitly in Return Ticket why Backstage is unaffected.
+
+Run `npm run verify:backstage-guard` before merge (included in `npm run build`).
+
 ## Return Ticket (required fields when relevant)
 
 - Designsystem impact
 - Current-state / VIS frontpage impact
+- **Backstage impact** (`Oppdatert` / `Ikke relevant` / `Må følges opp`)
 - Applied surfaces impacted
 - Follow-up needed
 
-If not applicable: `Current-state update: Ikke nødvendig — ingen endring i MVP-status, designmønstre eller applied surfaces.`
+If not applicable:
+- `Current-state update: Ikke nødvendig — ingen endring i MVP-status, designmønstre eller applied surfaces.`
+- `Backstage impact: Ikke relevant — ingen endring i systemflyt, API, guard, env-vars, monitoring eller production-status.`
 
 ## Docs
 
