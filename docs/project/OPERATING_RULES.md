@@ -97,6 +97,7 @@ Hvis current-state ikke endres:
 ## Filer
 
 - Registry: `src/data/mvp-current-state.ts`
+- Backstage: `src/data/backstage-v01.ts`, `src/lib/backstage-guard.ts`
 - Agent entry: `AGENTS.md`
 - Cursor: `.cursor/rules/viddel-operating-rules.mdc`
 - Return Ticket-mal: `docs/project/06_RETURN_TICKET.md`
