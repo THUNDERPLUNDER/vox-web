@@ -49,7 +49,7 @@ export type RecentChange = {
 export const mvpCurrentState = {
   updatedAt: "2026-05-30",
   currentFocus:
-    "Public AI guard live (#180, Upstash OK). Neste: CES production env-vars for intern test (Thomas og Vibeke). Deretter AI usage monitoring v0.1 og Backstage v0.1. Test Access Gate (#181) parkert til ekstern pilot.",
+    "Public AI guard live (#180, Upstash OK). Test Access Gate (#181) revertet/parkert. Neste: CES production env-vars for intern test (Thomas og Vibeke). Deretter AI usage monitoring v0.1 og Backstage v0.1.",
   mvpSurfaces: [
     {
       id: "frontpage",
@@ -83,7 +83,7 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Applied",
-      note: "Production UI live. Public AI guard v0.1 applied (#180). AI blocked until CES prod env-vars. Test Access Gate (#181) parkert — intern test uten access code.",
+      note: "Production UI live. Public AI guard v0.1 applied (#180). AI blocked until CES prod env-vars. Access gate (#181) parkert — kode revertet; intern test uten testkode.",
       visFrontpage: true,
       kind: "public",
       frontpageDescription: "Standalone headless AI — guard på plass, prod AI venter CES (intern test).",
@@ -142,8 +142,8 @@ export const mvpCurrentState = {
     },
     {
       id: "test-access-gate-parked",
-      label: "Test Access Gate v0.1 — parkert",
-      detail: "#181 parkert til ekstern testgruppe. Kode kan gjenåpnes senere; ikke aktivt for intern Thomas/Vibeke-test.",
+      label: "Access / Mine sider — parkert",
+      detail: "#181 parkert. Testkode-kode revertet. Fremtidig ekstern pilot via innlogget «Mine sider» i globalmeny, ikke kodefelt i chat.",
     },
     {
       id: "transcript-qa",
@@ -162,6 +162,12 @@ export const mvpCurrentState = {
     },
   ] satisfies NextRisk[],
   recentChanges: [
+    {
+      date: "2026-05-30",
+      summary: "Test Access Gate code reverted/parked after scope decision (#181)",
+      issue: "#181",
+      commit: "—",
+    },
     {
       date: "2026-05-30",
       summary: "Test Access Gate (#181) parkert — intern test uten access code; CES prod env neste",

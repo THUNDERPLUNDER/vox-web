@@ -1,13 +1,10 @@
 ---
 /* CONTRACT: Standalone Viddel AI chat — headless CES via /api/chat, no widget. #125M-C R1 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { isChatAccessGateEnforced } from "../../lib/chat-api-access-gate";
 import "../../styles/r1-dialog-article.css";
 import "../../styles/viddel-standalone-chat.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
-
-const accessGateEnforced = isChatAccessGateEnforced();
 
 const exampleQuestions = [
   "Hvordan kobler jeg høreapparatet til mobilen?",
@@ -29,7 +26,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
 >
   <meta slot="head" name="robots" content="noindex,follow" />
 
-  <main class="viddel-chat-standalone" data-viddel-chat data-access-gate-enforced={accessGateEnforced ? "true" : "false"}>
+  <main class="viddel-chat-standalone" data-viddel-chat>
     <div class="r1-editorial-container">
       <div data-r1-editorial class="viddel-chat-standalone__editorial">
         <header class="viddel-chat-standalone__intro" data-viddel-chat-intro aria-labelledby="viddel-chat-title">
@@ -44,32 +41,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
           </p>
         </header>
 
-        <section
-          class="viddel-chat-standalone__access-gate hidden"
-          data-viddel-chat-access-gate
-          aria-labelledby="viddel-chat-access-title"
-        >
-          <h2 id="viddel-chat-access-title" class="viddel-chat-standalone__access-title">Testtilgang</h2>
-          <p class="viddel-chat-standalone__access-lede">Skriv inn testkoden for å prøve Spør Viddel.</p>
-          <form class="viddel-chat-standalone__access-form" data-viddel-chat-access-form>
-            <label class="viddel-chat-standalone__access-label" for="viddel-chat-access-input">Testkode</label>
-            <input
-              id="viddel-chat-access-input"
-              data-viddel-chat-access-input
-              class="viddel-chat-standalone__access-input"
-              type="password"
-              autocomplete="off"
-              placeholder="Testkode"
-              required
-            />
-            <button type="submit" class="viddel-chat-standalone__access-submit" data-viddel-chat-access-submit>
-              Åpne Spør Viddel
-            </button>
-          </form>
-          <p class="viddel-chat-standalone__access-error hidden" data-viddel-chat-access-error role="alert"></p>
-        </section>
-
-        <section class="r1-ai-bridge px-0.5 py-1" data-viddel-chat-panel>
+        <section class="r1-ai-bridge px-0.5 py-1">
           <section
             class="inline-chat-shell"
             aria-labelledby={aiHeadingId}
@@ -166,13 +138,6 @@ const aiHeadingId = "viddel-standalone-chat-ai";
   <script is:inline>
     (() => {
       const root = document.querySelector("[data-viddel-chat]");
-      const accessGateEnforced = root?.getAttribute("data-access-gate-enforced") === "true";
-      const accessGate = document.querySelector("[data-viddel-chat-access-gate]");
-      const accessForm = document.querySelector("[data-viddel-chat-access-form]");
-      const accessInput = document.querySelector("[data-viddel-chat-access-input]");
-      const accessSubmit = document.querySelector("[data-viddel-chat-access-submit]");
-      const accessError = document.querySelector("[data-viddel-chat-access-error]");
-      const chatPanel = document.querySelector("[data-viddel-chat-panel]");
       const shell = document.querySelector("[data-viddel-chat-shell]");
       const intro = document.querySelector("[data-viddel-chat-intro]");
       const header = shell?.querySelector("[data-inline-chat-header]");
@@ -189,7 +154,6 @@ const aiHeadingId = "viddel-standalone-chat-ai";
 
       if (
         !root ||
-        !chatPanel ||
         !shell ||
         !intro ||
         !header ||
@@ -207,9 +171,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       }
 
       const SESSION_KEY = "viddel-chat-session";
-      const ACCESS_KEY = "viddel-chat-access";
       const SESSION_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}$/;
-      const ACCESS_VERIFY_SESSION = "viddel-access-verify";
       const params = new URLSearchParams(window.location.search);
       const seedFromUrl = (params.get("seed") || params.get("q") || "").trim();
 
@@ -217,71 +179,6 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       let hasConversation = false;
       let pendingSeed = seedFromUrl;
       let activeTurn = null;
-      let storedAccessCode = "";
-
-      const readStoredAccessCode = () => {
-        try {
-          const value = localStorage.getItem(ACCESS_KEY);
-          return typeof value === "string" ? value.trim() : "";
-        } catch (_) {
-          return "";
-        }
-      };
-
-      const writeStoredAccessCode = (value) => {
-        try {
-          localStorage.setItem(ACCESS_KEY, value);
-        } catch (_) {}
-      };
-
-      const showAccessGate = () => {
-        accessGate?.classList.remove("hidden");
-        chatPanel.classList.add("hidden");
-      };
-
-      const hideAccessGate = () => {
-        accessGate?.classList.add("hidden");
-        chatPanel.classList.remove("hidden");
-      };
-
-      const showAccessError = (message) => {
-        if (!accessError) return;
-        accessError.textContent = message;
-        accessError.classList.remove("hidden");
-      };
-
-      const clearAccessError = () => {
-        if (!accessError) return;
-        accessError.textContent = "";
-        accessError.classList.add("hidden");
-      };
-
-      const isAccessGrantedResponse = (response, payload) => {
-        if (response.ok) return true;
-        if (payload?.error === "configuration_missing") return true;
-        if (payload?.error === "guard_unavailable") return true;
-        return false;
-      };
-
-      const verifyAccessCode = async (accessCode) => {
-        const response = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: "test",
-            sessionId: ACCESS_VERIFY_SESSION,
-            accessCode,
-          }),
-        });
-        const payload = await response.json().catch(() => ({}));
-        return { response, payload };
-      };
-
-      const grantAccess = (accessCode) => {
-        storedAccessCode = accessCode;
-        writeStoredAccessCode(accessCode);
-        hideAccessGate();
-      };
 
       const ensureSessionId = () => {
         try {
@@ -372,12 +269,6 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         if (typeof payload?.message === "string" && payload.message.trim()) {
           return payload.message.trim();
         }
-        if (payload?.error === "access_denied") {
-          return "Du trenger en gyldig testkode for å bruke Spør Viddel.";
-        }
-        if (payload?.error === "access_unavailable") {
-          return "Spør Viddel er ikke åpnet for testing akkurat nå.";
-        }
         if (payload?.error === "configuration_missing") {
           return "Viddel er ikke tilgjengelig akkurat nå. Prøv igjen om litt.";
         }
@@ -401,19 +292,14 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         input.disabled = true;
         setLoading(true);
 
-        const requestBody = {
-          message,
-          sessionId: ensureSessionId(),
-        };
-        if (accessGateEnforced && storedAccessCode) {
-          requestBody.accessCode = storedAccessCode;
-        }
-
         try {
           const response = await fetch("/api/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(requestBody),
+            body: JSON.stringify({
+              message,
+              sessionId: ensureSessionId(),
+            }),
           });
 
           const payload = await response.json().catch(() => ({}));
@@ -468,75 +354,19 @@ const aiHeadingId = "viddel-standalone-chat-ai";
 
       window.addEventListener("resize", syncComposeReserve, { passive: true });
 
-      const initChat = () => {
-        if (pendingSeed) {
-          input.value = pendingSeed;
-          window.setTimeout(() => {
-            if (pendingSeed) {
-              sendMessage(pendingSeed);
-              pendingSeed = "";
-            }
-          }, 120);
-        } else {
-          input.focus();
-        }
-
-        syncComposeReserve();
-      };
-
-      if (accessGateEnforced) {
-        storedAccessCode = readStoredAccessCode();
-        if (storedAccessCode) {
-          hideAccessGate();
-          initChat();
-        } else if (accessForm && accessInput && accessSubmit) {
-          showAccessGate();
-          accessForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
-            clearAccessError();
-            const code = (accessInput.value || "").trim();
-            if (!code) {
-              showAccessError("Koden stemmer ikke. Prøv igjen.");
-              return;
-            }
-
-            accessSubmit.disabled = true;
-            accessInput.disabled = true;
-
-            try {
-              const { response, payload } = await verifyAccessCode(code);
-              if (payload?.error === "access_denied") {
-                showAccessError("Koden stemmer ikke. Prøv igjen.");
-                return;
-              }
-              if (payload?.error === "access_unavailable") {
-                showAccessError(
-                  typeof payload.message === "string" && payload.message.trim()
-                    ? payload.message.trim()
-                    : "Spør Viddel er ikke åpnet for testing akkurat nå.",
-                );
-                return;
-              }
-              if (!isAccessGrantedResponse(response, payload)) {
-                showAccessError("Vi fikk ikke tak i svaret akkurat nå. Prøv igjen.");
-                return;
-              }
-
-              grantAccess(code);
-              initChat();
-            } catch (_) {
-              showAccessError("Nettverksfeil. Sjekk tilkoblingen og prøv igjen.");
-            } finally {
-              accessSubmit.disabled = false;
-              accessInput.disabled = false;
-            }
-          });
-        } else {
-          initChat();
-        }
+      if (pendingSeed) {
+        input.value = pendingSeed;
+        window.setTimeout(() => {
+          if (pendingSeed) {
+            sendMessage(pendingSeed);
+            pendingSeed = "";
+          }
+        }, 120);
       } else {
-        initChat();
+        input.focus();
       }
+
+      syncComposeReserve();
     })();
   </script>
 </BaseLayout>
