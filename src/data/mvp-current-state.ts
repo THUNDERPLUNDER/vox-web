@@ -46,8 +46,36 @@ export type RecentChange = {
   commit?: string;
 };
 
+export type SprintStatus = "active" | "closed";
+
+/** Canonical active sprint — VIS control room reads this; never label active sprint as historikk. */
+export type CurrentSprint = {
+  id: string;
+  label: string;
+  route: string;
+  status: SprintStatus;
+  weekFocus: string;
+  issue?: string;
+};
+
+export type ClosedSprint = {
+  id: string;
+  label: string;
+  route: string;
+  closedAt?: string;
+};
+
 export const mvpCurrentState = {
   updatedAt: "2026-05-30",
+  currentSprint: {
+    id: "2026-w21",
+    label: "2026-W21",
+    route: "/vis/sprints/2026-w21/",
+    status: "active",
+    weekFocus: "MVP Design Lock v0.1 — intern AI-test, backstage og monitoring før ekstern deling.",
+    issue: "#126",
+  } satisfies CurrentSprint,
+  closedSprints: [] satisfies ClosedSprint[],
   currentFocus:
     "CES production live på /no/chat/ — intern test med Thomas og Vibeke. Upstash guard aktiv (#180). Access Gate (#181) parkert/revertet. Neste: AI usage monitoring v0.1 og Backstage v0.1 før ekstern deling.",
   mvpSurfaces: [
@@ -112,16 +140,16 @@ export const mvpCurrentState = {
       label: "Review registry",
       route: "/vis/review/",
       role: "Stakeholder review og surface QA",
-      visFrontpage: true,
+      visFrontpage: false,
       frontpageDescription: "Status og QA for pågående surface-arbeid.",
     },
     {
       id: "sprint-w21",
       label: "Sprint preview 2026-W21",
       route: "/vis/sprints/2026-w21/",
-      role: "Historikk · guardrails · produktanatomi",
-      visFrontpage: true,
-      frontpageDescription: "MVP Design Lock — historikk og beslutningsgrunnlag.",
+      role: "Aktiv sprint — labs, guardrails og beslutningsgrunnlag",
+      visFrontpage: false,
+      frontpageDescription: "Operativ sprintflate for 2026-W21.",
     },
   ] satisfies CanonicalReference[],
   nextRisks: [
@@ -164,8 +192,8 @@ export const mvpCurrentState = {
   recentChanges: [
     {
       date: "2026-05-30",
-      summary: "CES production env-vars aktivert — /no/chat/ live AI i production (intern test)",
-      issue: "#180",
+      summary: "VIS sprint guard — currentSprint registry; W21 aktiv i kontrollrom",
+      issue: "#185",
       commit: "—",
     },
     {
@@ -225,9 +253,29 @@ export function getVisFrontpageEntries(baseUrl: string): VisFrontpageEntry[] {
     title: r.label,
     description: r.frontpageDescription ?? r.role,
     href: `${base}${r.route.replace(/^\//, "")}`,
-    status: r.id === "sprint-w21" ? "Historikk" : "Reference",
+    status:
+      r.id === "sprint-w21"
+        ? mvpCurrentState.currentSprint.status === "active"
+          ? "Aktiv sprint"
+          : "Historikk"
+        : "Reference",
     kind: "reference" as const,
   }));
 
   return [...surfaceEntries, ...refEntries];
+}
+
+/** Active sprint for VIS control room — derived from registry. */
+export function getCurrentSprintVisEntry(baseUrl: string) {
+  const base = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
+  const sprint = mvpCurrentState.currentSprint;
+  return {
+    id: sprint.id,
+    title: `Sprint ${sprint.label}`,
+    href: `${base}${sprint.route.replace(/^\//, "")}`,
+    status: sprint.status === "active" ? "Aktiv sprint" : "Historikk",
+    weekFocus: sprint.weekFocus,
+    issue: sprint.issue,
+    isActive: sprint.status === "active",
+  };
 }

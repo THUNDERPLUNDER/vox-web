@@ -7,8 +7,8 @@ Operative regler for Cursor, Codex og menneskelig HITL i Viddel Lab.
 | Flate | Rolle |
 |-------|--------|
 | `/designsystem/` | Gjeldende designsystem-sannhet (mønstre, primitives, applied surfaces) |
-| `src/data/mvp-current-state.ts` | Gjeldende operativ MVP-status |
-| `/vis/sprints/...` | Historikk og beslutningsgrunnlag |
+| `src/data/mvp-current-state.ts` | Gjeldende operativ MVP-status og `currentSprint` |
+| `/vis/sprints/...` | Aktiv sprint (control room) eller historikk (arkiv) — avhenger av `currentSprint.status` |
 | GitHub Projects / issues | Oppgavebuss |
 | VIS (`/vis/`) | Intern reviewflate — leser MVP-status fra registry |
 
@@ -26,6 +26,21 @@ Hvis en oppgave endrer **MVP-status**, public flater, designmønstre, AI-status,
 → oppdater `src/data/mvp-current-state.ts`
 
 VIS-forsiden (`/vis/`) henter «MVP nå» fra denne filen. Ikke hardkod statuskort i VIS-forsiden.
+
+## B2. VIS sprint guard (maskinlesbar)
+
+Aktiv sprint styres av `mvpCurrentState.currentSprint` i `src/data/mvp-current-state.ts`:
+
+- `status: "active"` → vises som **Denne sprinten** i kontrollrom og som primær hub. **Ikke** i «Historikk / arkiv».
+- `status: "closed"` → flytt til `closedSprints[]` og vis kun i arkiv.
+
+Ved sprintskifte:
+
+1. Sett gammel sprint til `closed` og legg den i `closedSprints`.
+2. Oppdater `currentSprint` med ny id, route, label og `status: "active"`.
+3. Kjør `npm run verify:vis-sprint-guard` (kjøres automatisk før `npm run build`).
+
+Validering: `src/lib/vis-sprint-guard.ts` — aktiv sprint kan ikke ligge i `closedSprints` eller eksponeres som `historikk`-hub.
 
 ## C. VIS frontpage-regel
 

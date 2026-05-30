@@ -4,7 +4,8 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs && astro build",
+    "verify:vis-sprint-guard": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "storyblok:bootstrap:slice01": "node scripts/storyblok-bootstrap-slice-01.mjs",

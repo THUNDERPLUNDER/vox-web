@@ -1,206 +1,723 @@
 ---
-/* CONTRACT: VIS backstage index — curated operational overview; MVP status from mvp-current-state registry. */
+/* CONTRACT: VIS frontpage v0.1 — kontrollrom med visuell prioritet; MVP from registry, hubs from vis-frontpage-hubs-v01. */
 import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
+import { groupedVisEntries, visTypeLabelNo, wireframeIndexEntries } from "../../lib/vis-wireframes";
+import { getVisFrontpageEntries, getCurrentSprintVisEntry, mvpCurrentState } from "../../data/mvp-current-state.ts";
+import { getClosedSprintArchiveLinks } from "../../lib/vis-sprint-guard.ts";
 import {
-  featuredVisEntries,
-  groupedVisEntries,
-  recentVisEntries,
-  visTypeLabelNo,
-  wireframeIndexEntries,
-} from "../../lib/vis-wireframes";
-import { getVisFrontpageEntries, mvpCurrentState } from "../../data/mvp-current-state.ts";
+  getVisFrontpageHubs,
+  visFrontpageMandate,
+  visPrimaryNextWorkIds,
+  visSourceOfTruthNotes,
+} from "../../data/vis-frontpage-hubs-v01.ts";
 
-const entries = wireframeIndexEntries();
-const featured = featuredVisEntries(entries, 4);
-const grouped = groupedVisEntries(entries);
-const recent = recentVisEntries(entries, 4);
 const base = import.meta.env.BASE_URL;
 const mvpNowEntries = getVisFrontpageEntries(base);
+const currentSprint = getCurrentSprintVisEntry(base);
+const closedSprintArchiveLinks = getClosedSprintArchiveLinks(base);
+const hubs = getVisFrontpageHubs(base);
+const primaryHubs = hubs.filter((h) => h.tier === "primary");
+const secondaryHubs = hubs.filter((h) => h.tier === "secondary");
 
-const chipClassByType = (kind: string) => {
-  if (kind === "sprint") {
-    return "border-gray-500 bg-gray-200 text-gray-900 font-semibold tracking-[0.08em]";
-  }
-  if (kind === "strategy") {
-    return "border-gray-400 bg-gray-100 text-gray-800 font-medium tracking-[0.06em]";
-  }
-  if (kind === "wireframe") {
-    return "border-dashed border-gray-400 bg-white text-gray-700 font-medium tracking-[0.09em]";
-  }
-  return "border-gray-300 bg-gray-50 text-gray-600 font-medium tracking-[0.06em]";
-};
+const chatEntry = mvpNowEntries.find((e) => e.title === "Spør Viddel production");
+const designsystemEntry = mvpNowEntries.find((e) => e.title === "Designsystem");
+const otherMvpEntries = mvpNowEntries.filter(
+  (e) => e.title !== "Spør Viddel production" && e.title !== "Designsystem",
+);
 
-const statusClass = (status: string) => {
-  if (status.includes("Canonical")) return "text-blue-700";
-  if (status === "Applied") return "text-emerald-700";
-  if (status === "Historikk") return "text-gray-500";
-  return "text-gray-600";
-};
+const primaryNextWork = visPrimaryNextWorkIds
+  .map((id) => mvpCurrentState.nextRisks.find((r) => r.id === id))
+  .filter((r): r is (typeof mvpCurrentState.nextRisks)[number] => !!r);
+const laterNextWork = mvpCurrentState.nextRisks.filter((r) => !visPrimaryNextWorkIds.includes(r.id as (typeof visPrimaryNextWorkIds)[number]));
+
+const archiveEntries = wireframeIndexEntries();
+const archiveGrouped = groupedVisEntries(archiveEntries);
+
+const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
 ---
 
-<PrototypeLayout title="Oversikt">
-  <main class="px-4 py-6 sm:px-6 sm:py-8">
-    <h1 class="text-lg font-semibold text-gray-900">VIS operativ oversikt</h1>
-    <p class="mt-2 max-w-prose text-sm text-gray-600">
-      VIS er intern reviewflate for Viddel MVP. GitHub Projects er oppgavebuss.
-      <a href={`${base}designsystem/`} class="text-gray-800 underline underline-offset-2 hover:text-gray-950">
-        /designsystem/
-      </a>
-      er canonical designreferanse.
-    </p>
+<PrototypeLayout title="VIS kontrollrom">
+  <main class="vis-room">
+    <header class="vis-room__header">
+      <p class="vis-room__kicker">Intern · VIS</p>
+      <h1>{visFrontpageMandate.title}</h1>
+      <p class="vis-room__lead">{visFrontpageMandate.lead}</p>
+    </header>
 
-    <section class="mt-6">
-      <div class="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-800">MVP nå</h2>
-        <span class="text-[10px] text-gray-500">Oppdatert {mvpCurrentState.updatedAt}</span>
-      </div>
-      <p class="mt-1 max-w-prose text-xs leading-relaxed text-gray-600">{mvpCurrentState.currentFocus}</p>
-      <ul class="mt-4 grid gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
-        {mvpNowEntries.map((item) => (
-          <li class="list-none">
-            <a href={item.href} class="group block">
-              <div class="mb-2 overflow-hidden rounded-md bg-gray-100/80 px-3 py-2.5 group-hover:bg-gray-100">
-                <span class={`text-[10px] font-semibold uppercase tracking-wide ${statusClass(item.status)}`}>
-                  {item.status}
-                </span>
-              </div>
-              <p class="text-sm font-semibold text-gray-900 group-hover:text-gray-950">{item.title}</p>
-              <p class="mt-0.5 text-xs leading-relaxed text-gray-600">{item.description}</p>
-              {item.note ? <p class="mt-1 text-[11px] leading-snug text-amber-800/90">{item.note}</p> : null}
+    <section class="vis-room__hero" aria-label="Kontrollrom-status">
+      <div class="vis-room__hero-grid">
+        <article class="vis-room__panel vis-room__panel--primary" aria-labelledby="vis-now-status">
+          <p id="vis-now-status" class="vis-room__panel-label">Nå-status</p>
+          {chatEntry ? (
+            <a href={chatEntry.href} class="vis-room__hero-link">
+              <span class="vis-room__live-dot" aria-hidden="true"></span>
+              <span class="vis-room__hero-title">Spør Viddel — live i production</span>
+              <span class="vis-room__hero-meta">CES aktiv · Upstash guard · intern test</span>
             </a>
-          </li>
-        ))}
-      </ul>
+          ) : (
+            <p class="vis-room__hero-title">MVP-status utilgjengelig</p>
+          )}
+          <p class="vis-room__focus">{mvpCurrentState.currentFocus}</p>
+          <p class="vis-room__updated">Oppdatert {mvpCurrentState.updatedAt}</p>
+        </article>
+
+        <article class="vis-room__panel" aria-labelledby="vis-next-priority">
+          <p id="vis-next-priority" class="vis-room__panel-label">Neste arbeid</p>
+          <ol class="vis-room__priority-list">
+            {primaryNextWork.map((item, index) => (
+              <li>
+                <span class="vis-room__priority-index">{index + 1}</span>
+                <span class="vis-room__priority-label">{item.label}</span>
+              </li>
+            ))}
+          </ol>
+        </article>
+
+        <nav class="vis-room__panel" aria-labelledby="vis-go-next">
+          <p id="vis-go-next" class="vis-room__panel-label">Gå videre</p>
+          <ul class="vis-room__go-list">
+            {quickHubLinks.map((hub) => (
+              <li>
+                <a href={hub.href}>{hub.title}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+
+      {
+        currentSprint.isActive ? (
+          <article class="vis-room__sprint-strip" aria-labelledby="vis-current-sprint">
+            <p id="vis-current-sprint" class="vis-room__panel-label">Denne sprinten</p>
+            <a href={currentSprint.href} class="vis-room__sprint-link">
+              <span class="vis-room__sprint-title">{currentSprint.title}</span>
+              <span class="vis-room__sprint-focus">{currentSprint.weekFocus}</span>
+              {currentSprint.issue ? (
+                <span class="vis-room__sprint-meta">Issue {currentSprint.issue}</span>
+              ) : null}
+            </a>
+          </article>
+        ) : null
+      }
     </section>
 
-    <section class="mt-8 max-w-prose">
-      <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-500">Neste risiko</h2>
-      <ul class="mt-2 space-y-1.5 p-0 text-xs text-gray-600">
-        {mvpCurrentState.nextRisks.map((risk) => (
-          <li class="list-none">
-            <span class="font-medium text-gray-800">{risk.label}</span>
-            {risk.detail ? <span> — {risk.detail}</span> : null}
-          </li>
-        ))}
-      </ul>
+    <section class="vis-room__section" aria-labelledby="vis-mvp-now">
+      <h2 id="vis-mvp-now" class="vis-room__section-title">MVP nå</h2>
+      <div class="vis-room__mvp">
+        {chatEntry ? (
+          <a href={chatEntry.href} class="vis-room__mvp-primary">
+            <span class="vis-room__mvp-primary-label">Hovedstatus</span>
+            <span class="vis-room__mvp-primary-title">{chatEntry.title}</span>
+            <span class="vis-room__mvp-primary-desc">{chatEntry.description}</span>
+          </a>
+        ) : null}
+        <ul class="vis-room__mvp-secondary">
+          {otherMvpEntries.map((item) => (
+            <li>
+              <a href={item.href}>
+                <span class="vis-room__mvp-secondary-title">{item.title.replace(" production", "")}</span>
+                <span class="vis-room__mvp-secondary-status">{item.status}</span>
+              </a>
+            </li>
+          ))}
+          {designsystemEntry ? (
+            <li class="vis-room__mvp-secondary--ref">
+              <a href={designsystemEntry.href}>
+                <span class="vis-room__mvp-secondary-title">Designsystem</span>
+                <span class="vis-room__mvp-secondary-status">Canonical referanse</span>
+              </a>
+            </li>
+          ) : null}
+        </ul>
+      </div>
+    </section>
+
+    <section class="vis-room__section" aria-labelledby="vis-hubs">
+      <h2 id="vis-hubs" class="vis-room__section-title">Huber</h2>
+      <p class="vis-room__section-lead">Innganger til faste kunnskapsområder — ikke backlog.</p>
+
+      <div class="vis-room__hub-group">
+        <h3 class="vis-room__hub-group-title">Primære</h3>
+        <ul class="vis-room__hub-list vis-room__hub-list--primary">
+          {primaryHubs.map((hub) => (
+            <li class:list={[!hub.href && "vis-room__hub-item--planned"]}>
+              {hub.href ? (
+                <a href={hub.href}>
+                  <span class="vis-room__hub-title">{hub.title}</span>
+                  <span class="vis-room__hub-mandate">{hub.mandate}</span>
+                </a>
+              ) : (
+                <div>
+                  <span class="vis-room__hub-title">{hub.title}</span>
+                  <span class="vis-room__hub-planned">Kommer {hub.issue ?? ""}</span>
+                  <span class="vis-room__hub-mandate">{hub.mandate}</span>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="vis-room__hub-group vis-room__hub-group--secondary">
+        <h3 class="vis-room__hub-group-title">Sekundære</h3>
+        <ul class="vis-room__hub-list vis-room__hub-list--secondary">
+          {secondaryHubs.map((hub) => (
+            <li>
+              <a href={hub.href}>
+                <span class="vis-room__hub-title">{hub.title}</span>
+                <span class="vis-room__hub-mandate">{hub.mandate}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
 
     {
-      entries.length === 0 ? (
-        <p class="mt-6 text-sm text-gray-500">
-          Ingen historiske <code class="font-mono">.html</code>-artefakter funnet i{" "}
-          <code class="font-mono">public/vis/raw/</code>.
-        </p>
-      ) : (
-        <>
-          <section class="mt-10 border-t border-gray-200 pt-8">
-            <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-800">Arkiv / eldre prototyper</h2>
-            <p class="mt-1 max-w-prose text-xs leading-relaxed text-gray-600">
-              Historiske wireframes og eldre VIS-dokumenter — ikke primær inngang til dagens MVP-arbeid.
-            </p>
-            <ul class="mt-2.5 grid gap-2.5 p-0 sm:grid-cols-2">
-              {featured.map(({ filename: name, slug, displayTitle, description, visType }) => {
-                const view = `${base}vis/${encodeURIComponent(slug)}`;
-                const typeLabel = visTypeLabelNo(visType);
-                return (
-                  <li class="list-none border-b border-gray-200 px-0 pb-3 pt-1 last:border-b-0">
-                    <span class:list={[
-                      "inline-flex rounded-sm border px-1.5 py-0.5 text-[10px] uppercase",
-                      chipClassByType(visType),
-                    ]}>
-                      {typeLabel}
-                    </span>
-                    <p class="mt-2 text-sm font-semibold text-gray-900">{displayTitle}</p>
-                    {description ? <p class="mt-1 text-xs text-gray-600">{description}</p> : null}
-                    <div class="mt-3">
-                      <a href={view} class="rounded-sm bg-gray-900 px-2.5 py-1.5 font-mono text-xs font-medium text-white hover:bg-gray-800">
-                        Åpne
-                      </a>
-                    </div>
-                    <p class="mt-2 truncate font-mono text-[10px] text-gray-500">{name}</p>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-
-          <section class="mt-8">
-            <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Historiske wireframes og dokumenter</h2>
-            <div class="mt-2.5 space-y-2.5">
-              {grouped.map((group) => (
-                <section class="rounded-md border border-gray-200 bg-white">
-                  <h3 class="border-b border-gray-200 bg-gray-50 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-700">
-                    {group.section}
-                  </h3>
-                  <ul class="divide-y divide-gray-200">
-                    {group.items.map(({ filename: name, slug, displayTitle, description, visType }) => {
-                      const view = `${base}vis/${encodeURIComponent(slug)}`;
-                      const rawUrl = `${base}vis/raw/${encodeURIComponent(name)}`;
-                      const typeLabel = visTypeLabelNo(visType);
-                      return (
-                        <li class="flex flex-col gap-2 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
-                          <div class="min-w-0">
-                            <div class="flex flex-wrap items-center gap-2">
-                              <span
-                                class:list={[
-                                  "inline-flex shrink-0 rounded-sm border px-1.5 py-0.5 text-[10px] uppercase",
-                                  chipClassByType(visType),
-                                ]}
-                              >
-                                {typeLabel}
-                              </span>
-                              <p class="text-sm font-semibold leading-snug text-gray-900">{displayTitle}</p>
-                            </div>
-                            {description ? <p class="mt-1 text-xs leading-relaxed text-gray-600">{description}</p> : null}
-                            <p class="mt-1 truncate font-mono text-[10px] text-gray-500">{name}</p>
-                          </div>
-                          <div class="flex shrink-0 flex-wrap items-center gap-2">
-                            <a href={view} class="rounded-sm bg-gray-900 px-3 py-1.5 font-mono text-xs font-medium text-white hover:bg-gray-800">
-                              Åpne
-                            </a>
-                            <a
-                              href={rawUrl}
-                              class="rounded-sm border border-gray-300 bg-white px-3 py-1.5 font-mono text-xs text-gray-700 hover:bg-gray-100"
-                            >
-                              Direkte fil
-                            </a>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </section>
-              ))}
-            </div>
-          </section>
-
-          <section id="siste-endringer" class="mt-8">
-            <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Siste endringer i arkivet</h2>
-            {recent.length > 0 ? (
-              <ul class="mt-2.5 rounded-md border border-gray-200 bg-white">
-                {recent.map(({ filename: name, slug, displayTitle, visUpdatedRaw }) => {
-                  const view = `${base}vis/${encodeURIComponent(slug)}`;
-                  return (
-                    <li class="flex items-center justify-between gap-3 border-b border-gray-200 px-3 py-2 last:border-b-0">
-                      <div class="min-w-0">
-                        <p class="truncate text-sm font-medium text-gray-900">{displayTitle}</p>
-                        <p class="text-[10px] text-gray-500">{visUpdatedRaw || "ukjent dato"}</p>
-                      </div>
-                      <a href={view} class="rounded-sm bg-gray-900 px-2.5 py-1 text-xs text-white hover:bg-gray-800">
-                        Åpne
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <p class="mt-2 text-xs text-gray-600">
-                Ingen `vis:updated` metadata funnet ennå. Seksjonen aktiveres automatisk når feltet tas i bruk.
-              </p>
-            )}
-          </section>
-        </>
-      )
+      laterNextWork.length > 0 ? (
+        <details class="vis-room__details">
+          <summary>Senere / parkert ({laterNextWork.length})</summary>
+          <ul class="vis-room__later-list">
+            {laterNextWork.map((item) => (
+              <li>
+                <span class="vis-room__later-label">{item.label}</span>
+                {item.detail ? <span class="vis-room__later-detail">{item.detail}</span> : null}
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null
     }
+
+    <details class="vis-room__details vis-room__details--archive">
+      <summary>Historikk / arkiv</summary>
+      {
+        closedSprintArchiveLinks.length > 0 ? (
+          <ul class="vis-room__archive-links">
+            {closedSprintArchiveLinks.map((link) => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        ) : null
+      }
+      <ul class="vis-room__archive-links">
+        <li><a href={`${base}vis/system/`}>System legacy</a></li>
+      </ul>
+      {
+        archiveEntries.length > 0 ? (
+          <div class="vis-room__archive-groups">
+            {archiveGrouped.map((group) => (
+              <section>
+                <h3>{group.section}</h3>
+                <ul>
+                  {group.items.map(({ filename: name, slug, displayTitle }) => (
+                    <li>
+                      <a href={`${base}vis/${encodeURIComponent(slug)}`}>{displayTitle}</a>
+                      <span class="vis-room__archive-file">{name}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        ) : null
+      }
+    </details>
+
+    <footer class="vis-room__sot">
+      <p class="vis-room__sot-title">Source of truth</p>
+      <p class="vis-room__sot-line">
+        {visSourceOfTruthNotes.map((note) => `${note.label} (${note.role})`).join(" · ")}
+      </p>
+    </footer>
   </main>
+
+  <style>
+    .vis-room {
+      max-width: 56rem;
+      margin: 0 auto;
+      padding: 2rem 1rem 3rem;
+      color: rgb(17 24 39);
+    }
+
+    .vis-room__kicker {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__header h1 {
+      margin: 0.35rem 0 0;
+      font-size: clamp(1.5rem, 3vw, 1.85rem);
+      font-weight: 650;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .vis-room__lead {
+      margin: 0.55rem 0 0;
+      max-width: 34rem;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: rgb(75 85 99);
+    }
+
+    .vis-room__hero {
+      margin-top: 2rem;
+    }
+
+    .vis-room__hero-grid {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .vis-room__panel {
+      padding: 0.15rem 0;
+    }
+
+    .vis-room__panel-label {
+      margin: 0 0 0.65rem;
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__panel--primary {
+      padding-bottom: 0.25rem;
+    }
+
+    .vis-room__hero-link {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .vis-room__hero-link:hover .vis-room__hero-title {
+      color: rgb(17 24 39);
+    }
+
+    .vis-room__live-dot {
+      display: inline-block;
+      width: 0.5rem;
+      height: 0.5rem;
+      margin-right: 0.35rem;
+      border-radius: 999px;
+      background: rgb(16 185 129);
+      vertical-align: 0.05em;
+    }
+
+    .vis-room__hero-title {
+      display: block;
+      font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      color: rgb(31 41 55);
+    }
+
+    .vis-room__hero-meta {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.82rem;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__focus {
+      margin: 0.85rem 0 0;
+      max-width: 38rem;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: rgb(75 85 99);
+    }
+
+    .vis-room__updated {
+      margin: 0.45rem 0 0;
+      font-size: 0.72rem;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__priority-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vis-room__priority-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 0.55rem;
+      padding: 0.28rem 0;
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+
+    .vis-room__priority-index {
+      flex-shrink: 0;
+      width: 1.1rem;
+      font-size: 0.78rem;
+      font-weight: 650;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__priority-label {
+      color: rgb(31 41 55);
+      font-weight: 550;
+    }
+
+    .vis-room__go-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vis-room__go-list a {
+      display: block;
+      padding: 0.22rem 0;
+      font-size: 0.92rem;
+      font-weight: 550;
+      color: rgb(31 41 55);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgb(209 213 219);
+    }
+
+    .vis-room__go-list a:hover {
+      text-decoration-color: rgb(107 114 128);
+    }
+
+    .vis-room__sprint-strip {
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgb(243 244 246);
+    }
+
+    .vis-room__sprint-link {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .vis-room__sprint-link:hover .vis-room__sprint-title {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .vis-room__sprint-title {
+      display: block;
+      font-size: 1rem;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+      color: rgb(31 41 55);
+    }
+
+    .vis-room__sprint-focus {
+      display: block;
+      margin-top: 0.3rem;
+      max-width: 40rem;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: rgb(75 85 99);
+    }
+
+    .vis-room__sprint-meta {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.72rem;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__section {
+      margin-top: 2.75rem;
+    }
+
+    .vis-room__section-title {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 650;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__section-lead {
+      margin: 0.35rem 0 0;
+      font-size: 0.82rem;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__mvp {
+      margin-top: 1rem;
+    }
+
+    .vis-room__mvp-primary {
+      display: block;
+      padding: 0.2rem 0 1rem;
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid rgb(229 231 235);
+    }
+
+    .vis-room__mvp-primary-label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__mvp-primary-title {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 1.05rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .vis-room__mvp-primary-desc {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.84rem;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__mvp-secondary {
+      margin: 0;
+      padding: 0.65rem 0 0;
+      list-style: none;
+    }
+
+    .vis-room__mvp-secondary li + li {
+      margin-top: 0.15rem;
+    }
+
+    .vis-room__mvp-secondary a {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.35rem 0;
+      color: inherit;
+      text-decoration: none;
+      font-size: 0.86rem;
+    }
+
+    .vis-room__mvp-secondary a:hover .vis-room__mvp-secondary-title {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .vis-room__mvp-secondary-title {
+      color: rgb(55 65 81);
+    }
+
+    .vis-room__mvp-secondary-status {
+      flex-shrink: 0;
+      font-size: 0.72rem;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__mvp-secondary--ref .vis-room__mvp-secondary-title,
+    .vis-room__mvp-secondary--ref .vis-room__mvp-secondary-status {
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__hub-group {
+      margin-top: 1.25rem;
+    }
+
+    .vis-room__hub-group--secondary {
+      margin-top: 1.75rem;
+    }
+
+    .vis-room__hub-group-title {
+      margin: 0 0 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__hub-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vis-room__hub-list--primary .vis-room__hub-title {
+      font-size: 1rem;
+    }
+
+    .vis-room__hub-list--secondary .vis-room__hub-title {
+      font-size: 0.92rem;
+      font-weight: 550;
+    }
+
+    .vis-room__hub-list li + li {
+      margin-top: 0.15rem;
+    }
+
+    .vis-room__hub-list a,
+    .vis-room__hub-item--planned > div {
+      display: block;
+      padding: 0.55rem 0;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .vis-room__hub-list a:hover .vis-room__hub-title {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .vis-room__hub-title {
+      display: block;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+      color: rgb(31 41 55);
+    }
+
+    .vis-room__hub-mandate {
+      display: block;
+      margin-top: 0.15rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__hub-planned {
+      display: block;
+      margin-top: 0.1rem;
+      font-size: 0.72rem;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__hub-item--planned .vis-room__hub-title {
+      color: rgb(75 85 99);
+    }
+
+    .vis-room__details {
+      margin-top: 2.5rem;
+      font-size: 0.82rem;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__details summary {
+      cursor: pointer;
+      font-weight: 550;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__details--archive {
+      margin-top: 1.25rem;
+    }
+
+    .vis-room__later-list,
+    .vis-room__archive-links {
+      margin: 0.75rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vis-room__later-list li + li,
+    .vis-room__archive-links li + li {
+      margin-top: 0.45rem;
+    }
+
+    .vis-room__later-label {
+      display: block;
+      font-weight: 550;
+      color: rgb(75 85 99);
+    }
+
+    .vis-room__later-detail {
+      display: block;
+      margin-top: 0.1rem;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .vis-room__archive-links a {
+      color: rgb(75 85 99);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .vis-room__archive-groups {
+      margin-top: 1rem;
+    }
+
+    .vis-room__archive-groups h3 {
+      margin: 0.75rem 0 0.35rem;
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__archive-groups ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vis-room__archive-groups li {
+      padding: 0.2rem 0;
+    }
+
+    .vis-room__archive-groups a {
+      font-size: 0.78rem;
+      color: rgb(75 85 99);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .vis-room__archive-file {
+      display: block;
+      font-family: ui-monospace, monospace;
+      font-size: 0.65rem;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__sot {
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgb(243 244 246);
+    }
+
+    .vis-room__sot-title {
+      margin: 0;
+      font-size: 0.65rem;
+      font-weight: 650;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__sot-line {
+      margin: 0.35rem 0 0;
+      font-size: 0.68rem;
+      line-height: 1.5;
+      color: rgb(156 163 175);
+    }
+
+    @media (min-width: 768px) {
+      .vis-room {
+        padding: 2.5rem 1.5rem 3.5rem;
+      }
+
+      .vis-room__hero-grid {
+        grid-template-columns: 1.4fr 1fr 0.85fr;
+        gap: 2rem;
+        align-items: start;
+      }
+    }
+  </style>
 </PrototypeLayout>
