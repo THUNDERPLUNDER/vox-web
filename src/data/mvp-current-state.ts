@@ -49,7 +49,7 @@ export type RecentChange = {
 export const mvpCurrentState = {
   updatedAt: "2026-05-30",
   currentFocus:
-    "Public AI guard live (#180, Upstash OK). Test Access Gate (#181) revertet/parkert. Neste: CES production env-vars for intern test (Thomas og Vibeke). Deretter AI usage monitoring v0.1 og Backstage v0.1.",
+    "CES production live på /no/chat/ — intern test med Thomas og Vibeke. Upstash guard aktiv (#180). Access Gate (#181) parkert/revertet. Neste: AI usage monitoring v0.1 og Backstage v0.1 før ekstern deling.",
   mvpSurfaces: [
     {
       id: "frontpage",
@@ -83,10 +83,10 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Applied",
-      note: "Production UI live. Public AI guard v0.1 applied (#180). AI blocked until CES prod env-vars. Access gate (#181) parkert — kode revertet; intern test uten testkode.",
+      note: "Production UI live. CES prod env aktiv — live AI-svar i production. Public AI guard v0.1 (#180). Intern test Thomas/Vibeke. Access gate (#181) parkert/revertet. Ekstern deling venter monitoring + backstage.",
       visFrontpage: true,
       kind: "public",
-      frontpageDescription: "Standalone headless AI — guard på plass, prod AI venter CES (intern test).",
+      frontpageDescription: "Standalone headless AI — live i production (intern test). Guard aktiv.",
     },
     {
       id: "designsystem",
@@ -126,19 +126,19 @@ export const mvpCurrentState = {
   ] satisfies CanonicalReference[],
   nextRisks: [
     {
-      id: "ces-prod-env",
-      label: "CES production env-vars (intern test)",
-      detail: "Sett CES i Vercel Production for intern test med Thomas og Vibeke — krever Upstash guard (#180). Ikke ekstern pilot ennå.",
+      id: "internal-ai-test-qa",
+      label: "Intern AI-test QA (Thomas og Vibeke)",
+      detail: "CES live i production — systematisk intern test av /no/chat/ før bredere deling.",
     },
     {
       id: "ai-usage-monitoring",
       label: "AI usage monitoring v0.1",
-      detail: "Eget spor etter CES prod env-vars — overvåkning før bredere bruk.",
+      detail: "Påkrevd før ekstern deling — overvåkning av bruk, kost og misbruk.",
     },
     {
       id: "backstage-v01",
       label: "Backstage v0.1",
-      detail: "Eget spor etter monitoring — intern operativ flate.",
+      detail: "Påkrevd før ekstern deling — intern operativ flate.",
     },
     {
       id: "test-access-gate-parked",
@@ -164,8 +164,8 @@ export const mvpCurrentState = {
   recentChanges: [
     {
       date: "2026-05-30",
-      summary: "Test Access Gate code reverted/parked after scope decision (#181)",
-      issue: "#181",
+      summary: "CES production env-vars aktivert — /no/chat/ live AI i production (intern test)",
+      issue: "#180",
       commit: "—",
     },
     {
