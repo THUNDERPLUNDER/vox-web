@@ -1,7 +1,7 @@
 # Decision #125M-A — CES Headless Integration CBA
 
-Status: **CBA locked — Fase 0 complete, Fase 1 PoC in #125M-B**  
-Date: 2026-05-29 (updated 2026-05-29)  
+Status: **CBA locked — Fase 1 PoC (#125M-B) QA verified; Fase 2 = #125M-C**  
+Date: 2026-05-29 (updated 2026-05-29, QA verified)  
 Sprint: 2026-W21 (Viddel Lab)  
 Route (target): `/no/chat/`  
 Related: #125 Reskin MVP Surfaces, #125I Cross-surface polish ([#157](https://github.com/THUNDERPLUNDER/vox-web/issues/157)), #125J (Spør Viddel CTA → `/no/chat/`)
@@ -16,7 +16,7 @@ Standalone AI på `/no/chat/` skal **ikke** bruke CES-widget (`<chat-messenger>`
 
 Riktig retning: **Viddel-eid UI** → **server-side API** → **CES `runSession`**.
 
-**Fase 0 (GCP)** er fullført (API access + Cloud Shell `runSession`). **Fase 1** leveres som #125M-B sandbox PoC — se [DECISION_125M_B_CES_HEADLESS_SANDBOX_POC.md](./DECISION_125M_B_CES_HEADLESS_SANDBOX_POC.md). Produksjon `/no/chat/` venter til sandbox QA.
+**Fase 0 (GCP)** er fullført. **Fase 1 (#125M-B)** er **QA-verifisert** på Vercel Preview — se [DECISION_125M_B_CES_HEADLESS_SANDBOX_POC.md](./DECISION_125M_B_CES_HEADLESS_SANDBOX_POC.md). **Fase 2 (#125M-C)** erstatter `/no/chat/` med Viddel-eid headless UI — ikke startet.
 
 ---
 

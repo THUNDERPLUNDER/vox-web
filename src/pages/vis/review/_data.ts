@@ -163,7 +163,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "decision-candidate",
     stakeholderSafe: true,
     description:
-      "#125M-A spike completed. /no/chat/ skal ikke bruke CES-widget. Riktig retning: Viddel UI → server/API → CES runSession. Implementation blocked pending GCP/API access. Branch feature/125m-standalone-ai-polish-r1 stopped — do not merge.",
+      "#125M-B headless sandbox PoC QA verified on Vercel Preview. Live runSession, custom UI, no widget. /no/chat/ unchanged. Next: #125M-C Standalone AI custom chat R1. Branch feature/125m-standalone-ai-polish-r1 stopped — do not merge.",
   },
   {
     id: "forside-routing",
