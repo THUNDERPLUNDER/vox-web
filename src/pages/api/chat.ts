@@ -1,6 +1,5 @@
 /* CONTRACT: Server proxy for CES runSession — validates input, guards, never exposes credentials or diagnosticInfo. */
 import type { APIRoute } from "astro";
-import { checkChatAccessCode } from "../../lib/chat-api-access-gate";
 import {
   CHAT_GUARD_MESSAGES,
   CHAT_MAX_MESSAGE_LENGTH,
@@ -17,7 +16,6 @@ const SESSION_ID_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}$/;
 type ChatRequestBody = {
   message?: unknown;
   sessionId?: unknown;
-  accessCode?: unknown;
 };
 
 function jsonResponse(body: Record<string, unknown>, status: number): Response {
@@ -36,11 +34,6 @@ export const POST: APIRoute = async ({ request }) => {
       { error: "invalid_json", message: CHAT_GUARD_MESSAGES.invalidRequest },
       400,
     );
-  }
-
-  const accessCheck = checkChatAccessCode(body.accessCode);
-  if (!accessCheck.ok) {
-    return jsonResponse({ error: accessCheck.error, message: accessCheck.message }, accessCheck.status);
   }
 
   const message = typeof body.message === "string" ? body.message.trim() : "";
