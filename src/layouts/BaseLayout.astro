@@ -58,8 +58,17 @@ const isStandaloneChat = shellVariant === "standalone-chat";
     />
     <InspectDrawerArmScript />
     <slot name="head" />
-    <script defer src="https://www.gstatic.com/ces-console/fast/chat-messenger/prod/v1.15/chat-messenger.js"></script>
-    <link rel="stylesheet" href="https://www.gstatic.com/ces-console/fast/chat-messenger/prod/v1.15/themes/chat-messenger.css">
+    {
+      !isStandaloneChat ? (
+        <>
+          <script defer src="https://www.gstatic.com/ces-console/fast/chat-messenger/prod/v1.15/chat-messenger.js" />
+          <link
+            rel="stylesheet"
+            href="https://www.gstatic.com/ces-console/fast/chat-messenger/prod/v1.15/themes/chat-messenger.css"
+          />
+        </>
+      ) : null
+    }
     <style is:global>
       /* Sonic gradient blob: light ~5%; dark / system→dark ~17% for glass depth */
       .vox-sonic-blob {
@@ -157,6 +166,8 @@ const isStandaloneChat = shellVariant === "standalone-chat";
       <slot />
     </div>
 
+    {
+      !isStandaloneChat ? (
     <script is:inline>
       const deploymentName =
         "projects/1088102295663/locations/eu/apps/1741e68d-0528-4625-8b83-99a0dbb5298f/deployments/dc1619d0-44a1-401b-92a6-1357c29274ea";
@@ -318,6 +329,8 @@ const isStandaloneChat = shellVariant === "standalone-chat";
           });
       });
     </script>
+      ) : null
+    }
     {showHeaderDevtoolsToggle ? <InspectToolsDrawer /> : null}
     {
       showHeaderDevtoolsToggle ? (

@@ -31,17 +31,20 @@ const exampleQuestions = [
           beskriver hva du prøver å få til.
         </p>
 
-        <ul class="viddel-chat__examples" role="list" data-viddel-chat-examples>
-          {
-            exampleQuestions.map((question) => (
-              <li>
-                <button type="button" class="viddel-chat__example" data-viddel-chat-example={question}>
-                  {question}
-                </button>
-              </li>
-            ))
-          }
-        </ul>
+        <div class="viddel-chat__seed" data-viddel-chat-seed>
+          <h2 class="viddel-chat__seed-title" id="viddel-chat-seed-title">Spør om dette</h2>
+          <ul class="viddel-chat__seed-list" role="list" aria-labelledby="viddel-chat-seed-title" data-viddel-chat-examples>
+            {
+              exampleQuestions.map((question) => (
+                <li class="viddel-chat__seed-item">
+                  <button type="button" class="viddel-chat__seed-row" data-viddel-chat-example={question}>
+                    <span class="viddel-chat__seed-question">{question}</span>
+                  </button>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
 
         <p class="viddel-chat__safety">
           Viddel kan gi praktiske forslag og hjelpe deg å finne neste steg. Ved medisinske spørsmål eller vedvarende
@@ -49,28 +52,41 @@ const exampleQuestions = [
         </p>
       </section>
 
-      <div class="viddel-chat__transcript-wrap hidden" data-viddel-chat-transcript-wrap>
-        <div class="viddel-chat__transcript" data-viddel-chat-transcript role="log" aria-live="polite" aria-relevant="additions text"></div>
+      <div class="viddel-chat__dialog hidden" data-viddel-chat-dialog>
+        <div class="viddel-chat__transcript-divider hidden" data-viddel-chat-divider aria-hidden="true">
+          <span class="viddel-chat__transcript-divider-line"></span>
+          <span class="viddel-chat__transcript-divider-label" id="viddel-chat-dialog-label">Dialog med Viddel</span>
+        </div>
+        <div
+          class="viddel-chat__transcript"
+          data-viddel-chat-transcript
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions text"
+        >
+        </div>
       </div>
 
-      <p class="viddel-chat__status hidden" data-viddel-chat-loading role="status">Viddel svarer …</p>
-      <p class="viddel-chat__error hidden" data-viddel-chat-error role="alert"></p>
+      <div class="viddel-chat__compose-stack" data-viddel-chat-compose-stack>
+        <p class="viddel-chat__status hidden" data-viddel-chat-loading role="status">Viddel svarer …</p>
+        <p class="viddel-chat__error hidden" data-viddel-chat-error role="alert"></p>
 
-      <form class="viddel-chat__compose" data-viddel-chat-form>
-        <label for="viddel-chat-input" class="sr-only">Skriv spørsmål til Viddel</label>
-        <div class="viddel-chat__compose-row">
-          <textarea
-            id="viddel-chat-input"
-            data-viddel-chat-input
-            rows="1"
-            placeholder="Beskriv situasjonen eller spørsmålet ditt …"
-            class="viddel-chat__input"
-          ></textarea>
+        <form class="viddel-chat__compose" data-viddel-chat-form>
+          <label for="viddel-chat-input" class="sr-only">Skriv spørsmål til Viddel</label>
+          <div class="viddel-chat__compose-input-wrap">
+            <textarea
+              id="viddel-chat-input"
+              data-viddel-chat-input
+              rows="1"
+              placeholder="Beskriv situasjonen eller spørsmålet ditt ..."
+              class="viddel-chat__input"
+            ></textarea>
+          </div>
           <button type="submit" class="viddel-chat__send" data-viddel-chat-send aria-label="Send spørsmål">
             <span aria-hidden="true">↑</span>
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </main>
 
@@ -103,11 +119,30 @@ const exampleQuestions = [
 
   <style>
     .viddel-chat {
+      --viddel-ai-dialog-measure: min(100%, 46rem);
+      --viddel-ai-user-measure: min(92%, 32rem);
+      --viddel-ai-input-radius: 1.15rem;
+      --viddel-ai-user-surface: rgb(244 245 247);
+      --viddel-ai-seed-hover: rgb(248 250 252 / 0.72);
+      --viddel-chat-compose-reserve: 6.5rem;
+
       display: flex;
       flex: 1 1 auto;
       flex-direction: column;
       min-height: 0;
       width: 100%;
+    }
+
+    html[data-theme="dark"] .viddel-chat {
+      --viddel-ai-user-surface: rgb(var(--reading-inline));
+      --viddel-ai-seed-hover: rgb(var(--surface-subtle) / 0.92);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html[data-theme="system"] .viddel-chat {
+        --viddel-ai-user-surface: rgb(var(--reading-inline));
+        --viddel-ai-seed-hover: rgb(var(--surface-subtle) / 0.92);
+      }
     }
 
     .viddel-chat__inner {
@@ -117,26 +152,36 @@ const exampleQuestions = [
       gap: 0.85rem;
       min-height: 0;
       width: 100%;
+      max-width: var(--viddel-ai-dialog-measure);
+      margin-inline: auto;
     }
 
     @media (max-width: 639px) {
       .viddel-chat {
         height: 100%;
         min-height: 0;
-        padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
       }
 
-      .viddel-chat__transcript-wrap:not(.hidden) {
+      .viddel-chat[data-state="active"] .viddel-chat__dialog:not(.hidden) {
         flex: 1 1 auto;
         min-height: 0;
         overflow-y: auto;
         overscroll-behavior: contain;
         -webkit-overflow-scrolling: touch;
+        padding-bottom: calc(var(--viddel-chat-compose-reserve) + env(safe-area-inset-bottom, 0px));
       }
 
-      .viddel-chat__compose {
-        flex-shrink: 0;
-        margin-top: auto;
+      .viddel-chat[data-state="active"] .viddel-chat__compose-stack {
+        position: fixed;
+        z-index: 24;
+        left: 50%;
+        bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+        width: min(var(--viddel-ai-dialog-measure), calc(100vw - 1.5rem));
+        transform: translateX(-50%);
+        border: 1px solid rgb(var(--border) / 0.44);
+        border-radius: 1.12rem;
+        background: rgb(var(--surface) / 0.98);
+        padding: 0.42rem 0.58rem 0.55rem;
       }
     }
 
@@ -146,7 +191,12 @@ const exampleQuestions = [
       }
 
       .viddel-chat__inner {
-        gap: 1.25rem;
+        gap: 1.15rem;
+      }
+
+      .viddel-chat[data-state="active"] .viddel-chat__compose-stack {
+        position: sticky;
+        bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
       }
     }
 
@@ -167,36 +217,64 @@ const exampleQuestions = [
       color: rgb(var(--muted));
     }
 
-    .viddel-chat__examples {
+    .viddel-chat__seed {
+      margin-top: 1.15rem;
+    }
+
+    .viddel-chat__seed-title {
+      font-size: 1.08rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      color: rgb(var(--reading-ink, var(--text)));
+    }
+
+    .viddel-chat__seed-list {
+      display: grid;
+      gap: 0.32rem;
+      margin: 0.45rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .viddel-chat__seed-item {
       display: flex;
-      flex-direction: column;
-      gap: 0.45rem;
-      margin-top: 1.1rem;
+      justify-content: flex-end;
     }
 
-    .viddel-chat__example {
-      width: 100%;
-      border: 1px solid rgb(var(--border) / 0.5);
-      border-radius: var(--radius-md);
-      background: rgb(var(--surface));
-      padding: 0.72rem 0.85rem;
+    .viddel-chat__seed-row {
+      display: flex;
+      width: var(--viddel-ai-user-measure);
+      align-items: flex-start;
+      justify-content: flex-start;
+      border: 1px solid rgb(var(--border) / 0.32);
+      border-radius: var(--viddel-ai-input-radius);
+      background: transparent;
+      padding: 0.7rem 0.84rem;
+      cursor: pointer;
       text-align: left;
-      font-size: 0.9rem;
-      line-height: 1.45;
-      color: rgb(var(--text));
+      color: rgb(var(--reading-ink, var(--text)));
       transition:
-        border-color 0.15s ease,
-        box-shadow 0.15s ease;
+        background-color 140ms ease,
+        border-color 140ms ease;
     }
 
-    .viddel-chat__example:hover {
-      border-color: rgb(var(--border) / 0.75);
-      box-shadow: var(--shadow-sm);
+    .viddel-chat__seed-row:hover {
+      border-color: rgb(var(--border) / 0.52);
+      background: var(--viddel-ai-seed-hover);
     }
 
-    .viddel-chat__example:focus-visible {
-      outline: 2px solid rgb(var(--focus-ring) / 0.5);
+    .viddel-chat__seed-row:focus-visible {
+      outline: 2px solid rgb(var(--reading-accent-iris, var(--focus-ring)) / 0.34);
       outline-offset: 2px;
+    }
+
+    .viddel-chat__seed-question {
+      min-width: 0;
+      flex: 1;
+      font-size: 0.94rem;
+      line-height: 1.42;
+      letter-spacing: -0.006em;
     }
 
     .viddel-chat__safety {
@@ -207,84 +285,158 @@ const exampleQuestions = [
       color: rgb(var(--muted));
     }
 
-    .viddel-chat__transcript-wrap.hidden,
+    .viddel-chat__dialog.hidden,
     .viddel-chat__status.hidden,
     .viddel-chat__error.hidden,
-    .viddel-chat__intro.hidden {
+    .viddel-chat__intro.hidden,
+    .viddel-chat__transcript-divider.hidden {
       display: none;
     }
 
+    .viddel-chat__transcript-divider {
+      display: grid;
+      grid-template-columns: minmax(1.4rem, 1fr) auto;
+      gap: 0.55rem;
+      align-items: center;
+      margin: 0.15rem 0 0.75rem;
+    }
+
+    .viddel-chat__transcript-divider-line {
+      display: block;
+      min-width: 0;
+      border-top: 1px solid rgb(var(--border) / 0.48);
+    }
+
+    .viddel-chat__transcript-divider-label {
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.12em;
+      line-height: 1.2;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: rgb(var(--reading-ink-secondary, var(--muted)));
+    }
+
     .viddel-chat__transcript {
-      display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
+      display: grid;
+      gap: 0.55rem;
       padding: 0.15rem 0 0.5rem;
     }
 
-    .viddel-chat__bubble {
-      max-width: min(100%, 34rem);
-      border-radius: var(--radius-md);
-      padding: 0.72rem 0.85rem;
-      font-size: 0.94rem;
-      line-height: 1.55;
+    .viddel-chat__turn {
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .viddel-chat__message {
+      max-width: var(--viddel-ai-dialog-measure);
+    }
+
+    .viddel-chat__message--user {
+      margin-left: auto;
+      width: var(--viddel-ai-user-measure);
+      border-radius: var(--viddel-ai-input-radius);
+      background: var(--viddel-ai-user-surface);
+      padding: 0.78rem 0.9rem;
+    }
+
+    html[data-theme="dark"] .viddel-chat__message--user {
+      border: 1px solid rgb(var(--border) / 0.38);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html[data-theme="system"] .viddel-chat__message--user {
+        border: 1px solid rgb(var(--border) / 0.38);
+      }
+    }
+
+    .viddel-chat__message--assistant {
+      width: min(100%, 40rem);
+      padding: 0.45rem 0;
+      background: transparent;
+    }
+
+    .viddel-chat__message-eyebrow {
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(var(--reading-ink-secondary, var(--muted)));
+    }
+
+    .viddel-chat__message-text {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.48;
+      color: rgb(var(--reading-ink, var(--text)));
       white-space: pre-wrap;
     }
 
-    .viddel-chat__bubble--user {
-      margin-left: auto;
-      background: rgb(var(--text));
-      color: rgb(var(--surface));
+    .viddel-chat__message--assistant .viddel-chat__message-text {
+      margin-top: 0.28rem;
     }
 
-    .viddel-chat__bubble--assistant {
-      border: 1px solid rgb(var(--border) / 0.45);
-      background: rgb(var(--surface));
-      color: rgb(var(--text));
+    .viddel-chat__message--user .viddel-chat__message-text {
+      margin-top: 0;
     }
 
-    .viddel-chat__bubble-label {
-      display: block;
-      margin-bottom: 0.35rem;
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      opacity: 0.72;
+    .viddel-chat__compose-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-top: 0.35rem;
+    }
+
+    .viddel-chat[data-state="active"] .viddel-chat__compose-stack {
+      margin-top: 0;
+    }
+
+    .viddel-chat__status,
+    .viddel-chat__error {
+      margin: 0;
+      padding: 0.1rem 0.35rem 0.2rem;
+      font-size: 0.8rem;
+      line-height: 1.35;
     }
 
     .viddel-chat__status {
-      font-size: 0.82rem;
-      color: rgb(var(--muted));
+      color: rgb(var(--reading-ink-secondary, var(--muted)));
     }
 
     .viddel-chat__error {
-      font-size: 0.82rem;
       color: rgb(var(--text));
     }
 
     .viddel-chat__compose {
-      margin-top: 0.35rem;
-    }
-
-    .viddel-chat[data-state="active"] .viddel-chat__compose {
-      margin-top: 0;
-    }
-
-    .viddel-chat__compose-row {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 0.55rem;
       align-items: flex-end;
-      border: 1px solid rgb(var(--border) / 0.55);
-      border-radius: 1rem;
-      background: rgb(var(--surface));
-      padding: 0.45rem 0.45rem 0.45rem 0.65rem;
-      box-shadow: var(--shadow-sm);
+      border: 1px solid rgb(var(--border) / 0.5);
+      border-radius: var(--viddel-ai-input-radius);
+      background: rgb(var(--surface) / 0.97);
+      padding: 0.58rem;
+    }
+
+    .viddel-chat__compose:focus-within {
+      border-color: rgb(var(--reading-accent-iris, var(--focus-ring)) / 0.46);
+    }
+
+    .viddel-chat[data-state="active"] .viddel-chat__compose-stack .viddel-chat__compose {
+      background: transparent;
+      border: 0;
+      border-radius: 0.85rem;
+      padding: 0.35rem 0.28rem 0.28rem;
+    }
+
+    .viddel-chat__compose-input-wrap {
+      display: grid;
+      min-width: 0;
     }
 
     .viddel-chat__input {
       width: 100%;
-      min-height: 2.75rem;
+      min-height: 2.35rem;
       max-height: min(9rem, 32vh);
       resize: none;
       border: 0;
@@ -292,29 +444,41 @@ const exampleQuestions = [
       font: inherit;
       font-size: 0.95rem;
       line-height: 1.45;
-      color: rgb(var(--text));
+      color: rgb(var(--reading-ink, var(--text)));
       outline: 0;
+      padding: 0.42rem 0.34rem;
+      overflow-y: auto;
     }
 
     .viddel-chat__input::placeholder {
-      color: rgb(var(--muted));
+      color: rgb(var(--reading-ink-secondary, var(--muted)) / 0.72);
     }
 
     .viddel-chat__send {
       display: inline-flex;
-      height: 2.65rem;
-      width: 2.65rem;
       flex-shrink: 0;
       align-items: center;
       justify-content: center;
+      width: 2.35rem;
+      height: 2.35rem;
+      min-height: 2.35rem;
       border: 0;
-      border-radius: 0.85rem;
-      background: rgb(var(--text));
+      border-radius: 999px;
+      background: rgb(var(--reading-ink, var(--text)));
       color: rgb(var(--surface));
-      font-size: 1.15rem;
-      font-weight: 700;
+      font-size: 0.82rem;
+      font-weight: 650;
       line-height: 1;
+      cursor: pointer;
       transition: opacity 0.15s ease;
+    }
+
+    .viddel-chat[data-state="active"] .viddel-chat__send {
+      width: 2.68rem;
+      height: 2.68rem;
+      min-height: 2.68rem;
+      font-size: 1.02rem;
+      font-weight: 700;
     }
 
     .viddel-chat__send:hover:not(:disabled) {
@@ -323,12 +487,12 @@ const exampleQuestions = [
 
     .viddel-chat__send:disabled {
       cursor: not-allowed;
-      opacity: 0.45;
+      opacity: 0.46;
     }
 
     .viddel-chat__send:focus-visible {
-      outline: 2px solid rgb(var(--focus-ring) / 0.5);
-      outline-offset: 2px;
+      outline: 2px solid rgb(var(--reading-accent-iris, var(--focus-ring)) / 0.42);
+      outline-offset: 3px;
     }
   </style>
 
@@ -336,8 +500,10 @@ const exampleQuestions = [
     (() => {
       const root = document.querySelector("[data-viddel-chat]");
       const intro = document.querySelector("[data-viddel-chat-intro]");
-      const transcriptWrap = document.querySelector("[data-viddel-chat-transcript-wrap]");
+      const dialog = document.querySelector("[data-viddel-chat-dialog]");
+      const divider = document.querySelector("[data-viddel-chat-divider]");
       const transcript = document.querySelector("[data-viddel-chat-transcript]");
+      const composeStack = document.querySelector("[data-viddel-chat-compose-stack]");
       const loadingEl = document.querySelector("[data-viddel-chat-loading]");
       const errorEl = document.querySelector("[data-viddel-chat-error]");
       const form = document.querySelector("[data-viddel-chat-form]");
@@ -345,7 +511,19 @@ const exampleQuestions = [
       const sendBtn = document.querySelector("[data-viddel-chat-send]");
       const exampleButtons = document.querySelectorAll("[data-viddel-chat-example]");
 
-      if (!root || !intro || !transcriptWrap || !transcript || !loadingEl || !errorEl || !form || !input || !sendBtn) {
+      if (
+        !root ||
+        !intro ||
+        !dialog ||
+        !divider ||
+        !transcript ||
+        !composeStack ||
+        !loadingEl ||
+        !errorEl ||
+        !form ||
+        !input ||
+        !sendBtn
+      ) {
         return;
       }
 
@@ -388,26 +566,50 @@ const exampleQuestions = [
         loadingEl.classList.toggle("hidden", !active);
       };
 
+      const syncComposeReserve = () => {
+        const h = composeStack.getBoundingClientRect().height;
+        root.style.setProperty("--viddel-chat-compose-reserve", `${Math.ceil(h + 12)}px`);
+      };
+
       const activateConversation = () => {
         if (hasConversation) return;
         hasConversation = true;
         intro.classList.add("hidden");
-        transcriptWrap.classList.remove("hidden");
+        dialog.classList.remove("hidden");
+        divider.classList.remove("hidden");
+        divider.removeAttribute("aria-hidden");
+        root.setAttribute("aria-labelledby", "viddel-chat-dialog-label");
         setState("active");
+        syncComposeReserve();
       };
 
-      const appendBubble = (role, text) => {
-        const bubble = document.createElement("article");
-        bubble.className = `viddel-chat__bubble viddel-chat__bubble--${role === "user" ? "user" : "assistant"}`;
-        const label = document.createElement("span");
-        label.className = "viddel-chat__bubble-label";
-        label.textContent = role === "user" ? "Du" : "Viddel";
+      const appendMessage = (role, text) => {
+        const turn = document.createElement("div");
+        turn.className = "viddel-chat__turn";
+
+        const message = document.createElement("article");
+        message.className = `viddel-chat__message viddel-chat__message--${role === "user" ? "user" : "assistant"}`;
+
+        if (role === "assistant") {
+          const eyebrow = document.createElement("p");
+          eyebrow.className = "viddel-chat__message-eyebrow";
+          eyebrow.textContent = "Viddel";
+          message.append(eyebrow);
+        }
+
         const body = document.createElement("p");
-        body.className = "m-0";
+        body.className = "viddel-chat__message-text";
         body.textContent = text;
-        bubble.append(label, body);
-        transcript.append(bubble);
-        bubble.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        message.append(body);
+        turn.append(message);
+        transcript.append(turn);
+        message.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      };
+
+      const resizeInput = () => {
+        input.style.height = "auto";
+        input.style.height = `${input.scrollHeight}px`;
+        syncComposeReserve();
       };
 
       const friendlyError = (payload) => {
@@ -426,8 +628,9 @@ const exampleQuestions = [
 
         clearError();
         activateConversation();
-        appendBubble("user", message);
+        appendMessage("user", message);
         input.value = "";
+        resizeInput();
         isSending = true;
         sendBtn.disabled = true;
         input.disabled = true;
@@ -455,7 +658,7 @@ const exampleQuestions = [
             return;
           }
 
-          appendBubble("assistant", text);
+          appendMessage("assistant", text);
         } catch (_) {
           showError("Nettverksfeil. Sjekk tilkoblingen og prøv igjen.");
         } finally {
@@ -464,6 +667,7 @@ const exampleQuestions = [
           input.disabled = false;
           setLoading(false);
           input.focus();
+          syncComposeReserve();
         }
       };
 
@@ -479,12 +683,21 @@ const exampleQuestions = [
         }
       });
 
+      input.addEventListener("input", resizeInput);
+
       exampleButtons.forEach((button) => {
         button.addEventListener("click", () => {
           const question = button.getAttribute("data-viddel-chat-example") || "";
           sendMessage(question);
         });
       });
+
+      if ("ResizeObserver" in window) {
+        const observer = new ResizeObserver(syncComposeReserve);
+        observer.observe(composeStack);
+      }
+
+      window.addEventListener("resize", syncComposeReserve, { passive: true });
 
       if (pendingSeed) {
         input.value = pendingSeed;
@@ -497,6 +710,8 @@ const exampleQuestions = [
       } else {
         input.focus();
       }
+
+      syncComposeReserve();
     })();
   </script>
 </BaseLayout>
