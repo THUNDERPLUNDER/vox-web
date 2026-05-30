@@ -112,7 +112,7 @@ export const mvpCurrentState = {
       label: "Review registry",
       route: "/vis/review/",
       role: "Stakeholder review og surface QA",
-      visFrontpage: true,
+      visFrontpage: false,
       frontpageDescription: "Status og QA for pågående surface-arbeid.",
     },
     {
@@ -120,7 +120,7 @@ export const mvpCurrentState = {
       label: "Sprint preview 2026-W21",
       route: "/vis/sprints/2026-w21/",
       role: "Historikk · guardrails · produktanatomi",
-      visFrontpage: true,
+      visFrontpage: false,
       frontpageDescription: "MVP Design Lock — historikk og beslutningsgrunnlag.",
     },
   ] satisfies CanonicalReference[],
@@ -164,8 +164,8 @@ export const mvpCurrentState = {
   recentChanges: [
     {
       date: "2026-05-30",
-      summary: "CES production env-vars aktivert — /no/chat/ live AI i production (intern test)",
-      issue: "#180",
+      summary: "VIS IA / frontpage mandate v0.1 — hub & spoke struktur på /vis/",
+      issue: "—",
       commit: "—",
     },
     {

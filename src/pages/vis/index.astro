@@ -1,206 +1,208 @@
 ---
-/* CONTRACT: VIS backstage index — curated operational overview; MVP status from mvp-current-state registry. */
+/* CONTRACT: VIS frontpage v0.1 — kontrollrom / hub inngang; MVP status from registry, hubs from vis-frontpage-hubs-v01. */
 import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
 import {
   featuredVisEntries,
   groupedVisEntries,
-  recentVisEntries,
   visTypeLabelNo,
   wireframeIndexEntries,
 } from "../../lib/vis-wireframes";
 import { getVisFrontpageEntries, mvpCurrentState } from "../../data/mvp-current-state.ts";
+import {
+  getVisFrontpageHubs,
+  visFrontpageMandate,
+  visSourceOfTruthNotes,
+} from "../../data/vis-frontpage-hubs-v01.ts";
 
-const entries = wireframeIndexEntries();
-const featured = featuredVisEntries(entries, 4);
-const grouped = groupedVisEntries(entries);
-const recent = recentVisEntries(entries, 4);
 const base = import.meta.env.BASE_URL;
 const mvpNowEntries = getVisFrontpageEntries(base);
+const hubs = getVisFrontpageHubs(base);
+const nextWork = mvpCurrentState.nextRisks.slice(0, 6);
 
-const chipClassByType = (kind: string) => {
-  if (kind === "sprint") {
-    return "border-gray-500 bg-gray-200 text-gray-900 font-semibold tracking-[0.08em]";
-  }
-  if (kind === "strategy") {
-    return "border-gray-400 bg-gray-100 text-gray-800 font-medium tracking-[0.06em]";
-  }
-  if (kind === "wireframe") {
-    return "border-dashed border-gray-400 bg-white text-gray-700 font-medium tracking-[0.09em]";
-  }
-  return "border-gray-300 bg-gray-50 text-gray-600 font-medium tracking-[0.06em]";
-};
+const archiveEntries = wireframeIndexEntries();
+const archiveFeatured = featuredVisEntries(archiveEntries, 3);
+const archiveGrouped = groupedVisEntries(archiveEntries);
 
 const statusClass = (status: string) => {
   if (status.includes("Canonical")) return "text-blue-700";
   if (status === "Applied") return "text-emerald-700";
-  if (status === "Historikk") return "text-gray-500";
   return "text-gray-600";
+};
+
+const hubAvailabilityClass = (availability: string) => {
+  if (availability === "active") return "border-emerald-200 bg-emerald-50/60 text-emerald-800";
+  if (availability === "planned") return "border-amber-200 bg-amber-50/50 text-amber-900";
+  return "border-gray-200 bg-gray-50 text-gray-600";
 };
 ---
 
-<PrototypeLayout title="Oversikt">
+<PrototypeLayout title="VIS kontrollrom">
   <main class="px-4 py-6 sm:px-6 sm:py-8">
-    <h1 class="text-lg font-semibold text-gray-900">VIS operativ oversikt</h1>
-    <p class="mt-2 max-w-prose text-sm text-gray-600">
-      VIS er intern reviewflate for Viddel MVP. GitHub Projects er oppgavebuss.
-      <a href={`${base}designsystem/`} class="text-gray-800 underline underline-offset-2 hover:text-gray-950">
-        /designsystem/
-      </a>
-      er canonical designreferanse.
-    </p>
+    <header class="max-w-prose">
+      <h1 class="text-lg font-semibold text-gray-900">{visFrontpageMandate.title}</h1>
+      <p class="mt-2 text-sm leading-relaxed text-gray-600">{visFrontpageMandate.lead}</p>
+      <ul class="mt-3 space-y-1 p-0 text-xs leading-relaxed text-gray-600">
+        {visFrontpageMandate.bullets.map((item) => (
+          <li class="list-none pl-0">{item}</li>
+        ))}
+      </ul>
+    </header>
 
-    <section class="mt-6">
+    <section class="mt-8" aria-labelledby="vis-mvp-now">
       <div class="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-800">MVP nå</h2>
+        <h2 id="vis-mvp-now" class="text-sm font-semibold uppercase tracking-wide text-gray-800">MVP nå</h2>
         <span class="text-[10px] text-gray-500">Oppdatert {mvpCurrentState.updatedAt}</span>
       </div>
       <p class="mt-1 max-w-prose text-xs leading-relaxed text-gray-600">{mvpCurrentState.currentFocus}</p>
-      <ul class="mt-4 grid gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
+      <ul class="mt-4 grid gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
         {mvpNowEntries.map((item) => (
           <li class="list-none">
-            <a href={item.href} class="group block">
-              <div class="mb-2 overflow-hidden rounded-md bg-gray-100/80 px-3 py-2.5 group-hover:bg-gray-100">
-                <span class={`text-[10px] font-semibold uppercase tracking-wide ${statusClass(item.status)}`}>
-                  {item.status}
-                </span>
-              </div>
-              <p class="text-sm font-semibold text-gray-900 group-hover:text-gray-950">{item.title}</p>
-              <p class="mt-0.5 text-xs leading-relaxed text-gray-600">{item.description}</p>
-              {item.note ? <p class="mt-1 text-[11px] leading-snug text-amber-800/90">{item.note}</p> : null}
+            <a href={item.href} class="group block rounded-md border border-gray-200 bg-white px-3 py-3 hover:border-gray-300 hover:bg-gray-50/80">
+              <span class={`text-[10px] font-semibold uppercase tracking-wide ${statusClass(item.status)}`}>
+                {item.status}
+              </span>
+              <p class="mt-1.5 text-sm font-semibold text-gray-900 group-hover:text-gray-950">{item.title}</p>
+              <p class="mt-0.5 line-clamp-2 text-xs leading-relaxed text-gray-600">{item.description}</p>
+              {item.note ? <p class="mt-1.5 line-clamp-2 text-[11px] leading-snug text-amber-800/90">{item.note}</p> : null}
             </a>
           </li>
         ))}
       </ul>
     </section>
 
-    <section class="mt-8 max-w-prose">
-      <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-500">Neste risiko</h2>
-      <ul class="mt-2 space-y-1.5 p-0 text-xs text-gray-600">
-        {mvpCurrentState.nextRisks.map((risk) => (
-          <li class="list-none">
-            <span class="font-medium text-gray-800">{risk.label}</span>
-            {risk.detail ? <span> — {risk.detail}</span> : null}
+    <section class="mt-10" aria-labelledby="vis-hubs">
+      <h2 id="vis-hubs" class="text-sm font-semibold uppercase tracking-wide text-gray-800">Hovedhuber</h2>
+      <p class="mt-1 max-w-prose text-xs text-gray-600">Faste kunnskapsområder — huber med mandat, ikke backlog.</p>
+      <ul class="mt-4 grid gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
+        {hubs.map((hub) => {
+          const chipClass = hubAvailabilityClass(hub.availability);
+          const inner = (
+            <>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class={`inline-flex rounded-sm border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${chipClass}`}>
+                  {hub.statusLabel}
+                </span>
+                {hub.issue ? <span class="text-[10px] text-gray-500">{hub.issue}</span> : null}
+              </div>
+              <p class="mt-2 text-sm font-semibold text-gray-900">{hub.title}</p>
+              <p class="mt-1 text-xs leading-relaxed text-gray-600">{hub.mandate}</p>
+              {!hub.href ? (
+                <p class="mt-2 text-[11px] font-medium text-gray-500">Kommer — ikke implementert ennå</p>
+              ) : null}
+            </>
+          );
+
+          return (
+            <li class="list-none">
+              {hub.href ? (
+                <a
+                  href={hub.href}
+                  class="block h-full rounded-md border border-gray-200 bg-white px-3 py-3 hover:border-gray-300 hover:bg-gray-50/80"
+                >
+                  {inner}
+                </a>
+              ) : (
+                <div class="h-full rounded-md border border-dashed border-gray-300 bg-gray-50/50 px-3 py-3">{inner}</div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+
+    <section class="mt-10 max-w-prose" aria-labelledby="vis-next-work">
+      <h2 id="vis-next-work" class="text-sm font-semibold uppercase tracking-wide text-gray-800">Neste arbeid</h2>
+      <p class="mt-1 text-xs text-gray-600">Kort liste fra current-state — ikke full oppgavebuss.</p>
+      <ul class="mt-3 space-y-2 p-0 text-xs text-gray-600">
+        {nextWork.map((item) => (
+          <li class="list-none rounded-md border border-gray-200 bg-white px-3 py-2">
+            <span class="font-medium text-gray-900">{item.label}</span>
+            {item.detail ? <p class="mt-0.5 leading-relaxed">{item.detail}</p> : null}
           </li>
         ))}
       </ul>
     </section>
 
-    {
-      entries.length === 0 ? (
-        <p class="mt-6 text-sm text-gray-500">
-          Ingen historiske <code class="font-mono">.html</code>-artefakter funnet i{" "}
-          <code class="font-mono">public/vis/raw/</code>.
-        </p>
-      ) : (
-        <>
-          <section class="mt-10 border-t border-gray-200 pt-8">
-            <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-800">Arkiv / eldre prototyper</h2>
-            <p class="mt-1 max-w-prose text-xs leading-relaxed text-gray-600">
-              Historiske wireframes og eldre VIS-dokumenter — ikke primær inngang til dagens MVP-arbeid.
-            </p>
-            <ul class="mt-2.5 grid gap-2.5 p-0 sm:grid-cols-2">
-              {featured.map(({ filename: name, slug, displayTitle, description, visType }) => {
-                const view = `${base}vis/${encodeURIComponent(slug)}`;
-                const typeLabel = visTypeLabelNo(visType);
-                return (
-                  <li class="list-none border-b border-gray-200 px-0 pb-3 pt-1 last:border-b-0">
-                    <span class:list={[
-                      "inline-flex rounded-sm border px-1.5 py-0.5 text-[10px] uppercase",
-                      chipClassByType(visType),
-                    ]}>
-                      {typeLabel}
-                    </span>
-                    <p class="mt-2 text-sm font-semibold text-gray-900">{displayTitle}</p>
-                    {description ? <p class="mt-1 text-xs text-gray-600">{description}</p> : null}
-                    <div class="mt-3">
-                      <a href={view} class="rounded-sm bg-gray-900 px-2.5 py-1.5 font-mono text-xs font-medium text-white hover:bg-gray-800">
-                        Åpne
-                      </a>
-                    </div>
-                    <p class="mt-2 truncate font-mono text-[10px] text-gray-500">{name}</p>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
+    <section class="mt-10 border-t border-gray-200 pt-8" aria-labelledby="vis-archive">
+      <h2 id="vis-archive" class="text-xs font-semibold uppercase tracking-wide text-gray-500">Historikk / arkiv</h2>
+      <p class="mt-1 max-w-prose text-xs text-gray-500">Lavere vekt — ikke gjeldende operativ sannhet.</p>
+      <ul class="mt-3 flex flex-wrap gap-2 p-0 text-xs">
+        <li class="list-none">
+          <a href={`${base}vis/sprints/2026-w21/`} class="rounded-sm border border-gray-200 bg-white px-2.5 py-1.5 text-gray-700 hover:bg-gray-50">
+            Sprint W21
+          </a>
+        </li>
+        <li class="list-none">
+          <a href={`${base}vis/system/`} class="rounded-sm border border-gray-200 bg-white px-2.5 py-1.5 text-gray-700 hover:bg-gray-50">
+            System legacy
+          </a>
+        </li>
+      </ul>
 
-          <section class="mt-8">
-            <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Historiske wireframes og dokumenter</h2>
-            <div class="mt-2.5 space-y-2.5">
-              {grouped.map((group) => (
-                <section class="rounded-md border border-gray-200 bg-white">
-                  <h3 class="border-b border-gray-200 bg-gray-50 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-700">
-                    {group.section}
-                  </h3>
-                  <ul class="divide-y divide-gray-200">
-                    {group.items.map(({ filename: name, slug, displayTitle, description, visType }) => {
-                      const view = `${base}vis/${encodeURIComponent(slug)}`;
-                      const rawUrl = `${base}vis/raw/${encodeURIComponent(name)}`;
-                      const typeLabel = visTypeLabelNo(visType);
-                      return (
-                        <li class="flex flex-col gap-2 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
-                          <div class="min-w-0">
-                            <div class="flex flex-wrap items-center gap-2">
-                              <span
-                                class:list={[
-                                  "inline-flex shrink-0 rounded-sm border px-1.5 py-0.5 text-[10px] uppercase",
-                                  chipClassByType(visType),
-                                ]}
-                              >
-                                {typeLabel}
-                              </span>
-                              <p class="text-sm font-semibold leading-snug text-gray-900">{displayTitle}</p>
-                            </div>
-                            {description ? <p class="mt-1 text-xs leading-relaxed text-gray-600">{description}</p> : null}
-                            <p class="mt-1 truncate font-mono text-[10px] text-gray-500">{name}</p>
-                          </div>
-                          <div class="flex shrink-0 flex-wrap items-center gap-2">
-                            <a href={view} class="rounded-sm bg-gray-900 px-3 py-1.5 font-mono text-xs font-medium text-white hover:bg-gray-800">
-                              Åpne
-                            </a>
-                            <a
-                              href={rawUrl}
-                              class="rounded-sm border border-gray-300 bg-white px-3 py-1.5 font-mono text-xs text-gray-700 hover:bg-gray-100"
-                            >
-                              Direkte fil
-                            </a>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </section>
-              ))}
-            </div>
-          </section>
-
-          <section id="siste-endringer" class="mt-8">
-            <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Siste endringer i arkivet</h2>
-            {recent.length > 0 ? (
-              <ul class="mt-2.5 rounded-md border border-gray-200 bg-white">
-                {recent.map(({ filename: name, slug, displayTitle, visUpdatedRaw }) => {
+      {
+        archiveEntries.length > 0 ? (
+          <div class="mt-5 space-y-4">
+            {archiveFeatured.length > 0 ? (
+              <ul class="grid gap-2 p-0 sm:grid-cols-2 lg:grid-cols-3">
+                {archiveFeatured.map(({ filename: name, slug, displayTitle, visType }) => {
                   const view = `${base}vis/${encodeURIComponent(slug)}`;
+                  const typeLabel = visTypeLabelNo(visType);
                   return (
-                    <li class="flex items-center justify-between gap-3 border-b border-gray-200 px-3 py-2 last:border-b-0">
-                      <div class="min-w-0">
-                        <p class="truncate text-sm font-medium text-gray-900">{displayTitle}</p>
-                        <p class="text-[10px] text-gray-500">{visUpdatedRaw || "ukjent dato"}</p>
-                      </div>
-                      <a href={view} class="rounded-sm bg-gray-900 px-2.5 py-1 text-xs text-white hover:bg-gray-800">
-                        Åpne
+                    <li class="list-none">
+                      <a href={view} class="block rounded-sm border border-gray-200 bg-gray-50/80 px-2.5 py-2 hover:bg-gray-100">
+                        <span class="text-[10px] uppercase tracking-wide text-gray-500">{typeLabel}</span>
+                        <p class="mt-1 text-xs font-medium text-gray-800">{displayTitle}</p>
+                        <p class="mt-0.5 truncate font-mono text-[10px] text-gray-400">{name}</p>
                       </a>
                     </li>
                   );
                 })}
               </ul>
-            ) : (
-              <p class="mt-2 text-xs text-gray-600">
-                Ingen `vis:updated` metadata funnet ennå. Seksjonen aktiveres automatisk når feltet tas i bruk.
-              </p>
-            )}
-          </section>
-        </>
-      )
-    }
+            ) : null}
+
+            <details class="rounded-md border border-gray-200 bg-white">
+              <summary class="cursor-pointer px-3 py-2 text-xs font-medium text-gray-700">
+                Eldre wireframes og VIS-dokumenter ({archiveEntries.length})
+              </summary>
+              <div class="border-t border-gray-200 px-1 py-2">
+                {archiveGrouped.map((group) => (
+                  <section class="mb-3 last:mb-0">
+                    <h3 class="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">{group.section}</h3>
+                    <ul class="divide-y divide-gray-100">
+                      {group.items.map(({ filename: name, slug, displayTitle }) => {
+                        const view = `${base}vis/${encodeURIComponent(slug)}`;
+                        return (
+                          <li class="flex items-center justify-between gap-2 px-2 py-1.5">
+                            <div class="min-w-0">
+                              <p class="truncate text-xs text-gray-800">{displayTitle}</p>
+                              <p class="truncate font-mono text-[10px] text-gray-400">{name}</p>
+                            </div>
+                            <a href={view} class="shrink-0 text-[11px] text-gray-600 underline underline-offset-2">
+                              Åpne
+                            </a>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </section>
+                ))}
+              </div>
+            </details>
+          </div>
+        ) : null
+      }
+    </section>
+
+    <section class="mt-10 max-w-prose border-t border-gray-200 pt-6" aria-labelledby="vis-sot">
+      <h2 id="vis-sot" class="text-xs font-semibold uppercase tracking-wide text-gray-500">Source of truth</h2>
+      <ul class="mt-2 space-y-1.5 p-0 text-xs text-gray-600">
+        {visSourceOfTruthNotes.map((note) => (
+          <li class="list-none">
+            <code class="font-mono text-[11px] text-gray-800">{note.label}</code>
+            <span> — {note.role}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
   </main>
 </PrototypeLayout>
