@@ -164,6 +164,98 @@ export const cesExplainer = {
   body: "CES er AI-motoren som lager svaret. Viddel eier grensesnittet rundt — chatten, feilmeldingene og hvordan det føles for brukeren.",
 } as const;
 
+export type BackstageLink = {
+  label: string;
+  href: string;
+  /** Open in new tab for external consoles */
+  external?: boolean;
+};
+
+/** Klikkbare handlingslenker — ingen secrets, kun offentlige konsoll-URL-er. */
+export const backstageLinks = {
+  vercelProject: {
+    label: "Åpne Vercel-prosjekt",
+    href: "https://vercel.com/raddum-5965s-projects/vox-web",
+    external: true,
+  },
+  vercelEnv: {
+    label: "Åpne Vercel env-vars",
+    href: "https://vercel.com/raddum-5965s-projects/vox-web/settings/environment-variables",
+    external: true,
+  },
+  vercelDeployments: {
+    label: "Åpne Vercel Deployments",
+    href: "https://vercel.com/raddum-5965s-projects/vox-web/deployments",
+    external: true,
+  },
+  vercelLogs: {
+    label: "Åpne Runtime Logs",
+    href: "https://vercel.com/raddum-5965s-projects/vox-web/logs",
+    external: true,
+  },
+  upstashConsole: {
+    label: "Åpne Upstash Console",
+    href: "https://console.upstash.com/",
+    external: true,
+  },
+  googleCloud: {
+    label: "Åpne Google Cloud",
+    href: "https://console.cloud.google.com/?project=hearing-aid-mvp",
+    external: true,
+  },
+  githubRepo: {
+    label: "Åpne GitHub repo",
+    href: "https://github.com/THUNDERPLUNDER/vox-web",
+    external: true,
+  },
+  githubIssues: {
+    label: "Åpne GitHub issues",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/issues",
+    external: true,
+  },
+  githubIssue181: {
+    label: "Issue #181 (access parkert)",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/issues/181",
+    external: true,
+  },
+  githubPulls: {
+    label: "Åpne PR-er",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/pulls",
+    external: true,
+  },
+  guardFile: {
+    label: "Åpne guard-koden",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/src/lib/chat-api-guard.ts",
+    external: true,
+  },
+  apiRouteFile: {
+    label: "Åpne API-ruten",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/src/pages/api/chat.ts",
+    external: true,
+  },
+  currentStateFile: {
+    label: "Åpne current-state-filen",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/src/data/mvp-current-state.ts",
+    external: true,
+  },
+  vis: {
+    label: "Åpne VIS",
+    href: "https://vox.raddum.no/vis/",
+  },
+  backstage: {
+    label: "Åpne Backstage",
+    href: "https://vox.raddum.no/backstage/",
+  },
+  designsystem: {
+    label: "Åpne Designsystem",
+    href: "https://vox.raddum.no/designsystem/",
+  },
+  chat: {
+    label: "Åpne Spør Viddel",
+    href: "https://vox.raddum.no/no/chat/",
+  },
+} as const satisfies Record<string, BackstageLink>;
+
 export type ChangeRunbook = {
   id: string;
   title: string;
@@ -172,6 +264,7 @@ export type ChangeRunbook = {
   whereToGo: string;
   after: string;
   test: string;
+  actionLinks: readonly BackstageLink[];
   tech?: string;
   envVars?: readonly string[];
 };
@@ -183,6 +276,7 @@ export type ServiceEntry = {
   role: readonly string[];
   whenToOpen: readonly string[];
   places: readonly string[];
+  actionLinks: readonly BackstageLink[];
 };
 
 /** Overordnet flyt — hvilke tjenester som henger sammen. */
@@ -216,6 +310,12 @@ export const services: ServiceEntry[] = [
       "Deployments",
       "Runtime Logs",
     ],
+    actionLinks: [
+      backstageLinks.vercelProject,
+      backstageLinks.vercelEnv,
+      backstageLinks.vercelDeployments,
+      backstageLinks.vercelLogs,
+    ],
   },
   {
     id: "upstash",
@@ -236,6 +336,7 @@ export const services: ServiceEntry[] = [
       "REST URL / REST TOKEN",
       "Usage / Monitor",
     ],
+    actionLinks: [backstageLinks.upstashConsole],
   },
   {
     id: "google-ces",
@@ -257,6 +358,7 @@ export const services: ServiceEntry[] = [
       "CES / Agent deployment",
       "Service account / credentials",
     ],
+    actionLinks: [backstageLinks.googleCloud],
   },
   {
     id: "github",
@@ -277,6 +379,11 @@ export const services: ServiceEntry[] = [
       "Pull requests",
       "Commit history",
     ],
+    actionLinks: [
+      backstageLinks.githubRepo,
+      backstageLinks.githubIssues,
+      backstageLinks.githubPulls,
+    ],
   },
   {
     id: "vis",
@@ -292,29 +399,35 @@ export const services: ServiceEntry[] = [
       "Navigere til /designsystem/ eller /backstage/",
     ],
     places: ["/vis/", "/designsystem/", "/backstage/"],
+    actionLinks: [backstageLinks.vis, backstageLinks.designsystem, backstageLinks.backstage],
   },
 ];
 
 export const firstCheckRules = [
   {
     symptom: "Siden laster ikke",
-    check: "Vercel → vox-web → Deployments / logs",
+    check: "Vercel → Deployments / logs",
+    links: [backstageLinks.vercelDeployments, backstageLinks.vercelLogs],
   },
   {
     symptom: "Chatten svarer ikke",
-    check: "Vercel → Runtime Logs først",
+    check: "Vercel → Runtime Logs først, deretter Google Cloud / CES",
+    links: [backstageLinks.vercelLogs, backstageLinks.googleCloud, backstageLinks.chat],
   },
   {
     symptom: "Rate limit slår inn",
     check: "Upstash + Vercel logs",
+    links: [backstageLinks.upstashConsole, backstageLinks.vercelLogs],
   },
   {
     symptom: "AI feiler",
     check: "Vercel logs + Google Cloud / CES",
+    links: [backstageLinks.vercelLogs, backstageLinks.googleCloud],
   },
   {
     symptom: "Status i VIS er feil",
-    check: "src/data/mvp-current-state.ts → sjekk /vis/",
+    check: "current-state-filen → sjekk VIS",
+    links: [backstageLinks.currentStateFile, backstageLinks.vis],
   },
 ] as const;
 
@@ -329,6 +442,11 @@ export const changeRunbooks: ChangeRunbook[] = [
       "GitHub/Cursor for kodeendring i guard. Etterpå Vercel → Deployments. Ikke Vercel env alene — grensene ligger i kode i dag.",
     after: "Commit, deploy til Production, og test at chat fortsatt fungerer.",
     test: "Ett vanlig spørsmål (skal fungere). 11 raske spørsmål (skal stoppe med tydelig melding). For lang melding (skal avvises).",
+    actionLinks: [
+      backstageLinks.guardFile,
+      backstageLinks.githubPulls,
+      backstageLinks.vercelDeployments,
+    ],
     tech: "src/lib/chat-api-guard.ts",
   },
   {
@@ -339,6 +457,7 @@ export const changeRunbooks: ChangeRunbook[] = [
     whereToGo: "GitHub/Cursor for kodeendring i guard. Etterpå Vercel → Deployments.",
     after: "Commit, deploy, og test med spørsmål på og rett over grensen.",
     test: "Send spørsmål med 2000 tegn (skal fungere). Send 2001 tegn eller mer (skal avvises med tydelig melding).",
+    actionLinks: [backstageLinks.guardFile, backstageLinks.vercelDeployments],
     tech: "src/lib/chat-api-guard.ts · brukt av src/pages/api/chat.ts",
   },
   {
@@ -350,6 +469,11 @@ export const changeRunbooks: ChangeRunbook[] = [
       "Upstash Console → Redis viddel-chat-rate-limit. Vercel → Settings → Environment Variables. Vercel → Deployments for redeploy.",
     after: "Redeploy Production. Test at chat svarer og at rate limit fortsatt virker.",
     test: "Ett vanlig spørsmål i Spør Viddel. Sjekk at feilmelding er trygg hvis noe er feil — ikke teknisk rot.",
+    actionLinks: [
+      backstageLinks.upstashConsole,
+      backstageLinks.vercelEnv,
+      backstageLinks.vercelDeployments,
+    ],
     envVars: ["UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN"],
     tech: "Verdier aldri i repo, ChatGPT eller Cursor.",
   },
@@ -362,6 +486,12 @@ export const changeRunbooks: ChangeRunbook[] = [
       "Google Cloud / CES for agent og deployment. Vercel → Environment Variables. Vercel → Deployments for redeploy.",
     after: "Redeploy Production. Test ekte svar i Spør Viddel.",
     test: "Send et enkelt spørsmål og bekreft at svaret kommer tilbake i chatten.",
+    actionLinks: [
+      backstageLinks.googleCloud,
+      backstageLinks.vercelEnv,
+      backstageLinks.vercelDeployments,
+      backstageLinks.chat,
+    ],
     envVars: [
       "CES_PROJECT_ID",
       "CES_LOCATION",
@@ -381,6 +511,12 @@ export const changeRunbooks: ChangeRunbook[] = [
       "Vercel → Environment Variables / Deployments. Kontrollert handling — påvirker production. Oppdater VIS/current-state etterpå.",
     after: "Redeploy. Oppdater VIS current-state så teamet vet at AI er av.",
     test: "Brukeren skal se trygg feilmelding («Viddel er ikke tilgjengelig akkurat nå») — ikke rå teknisk feil.",
+    actionLinks: [
+      backstageLinks.vercelEnv,
+      backstageLinks.vercelDeployments,
+      backstageLinks.currentStateFile,
+      backstageLinks.vis,
+    ],
     tech: "configuration_missing · src/lib/ces-env.ts",
   },
   {
@@ -392,6 +528,12 @@ export const changeRunbooks: ChangeRunbook[] = [
       "Ikke nå — eget arbeidsspor før ekstern pilot. UI-retning: «Mine sider» i globalmenyen, ikke kodefelt i chatten.",
     after: "Server-side må fortsatt beskytte /api/chat når det kommer.",
     test: "Når det kommer: chatten skal oppleves som tilgjengelig når brukeren er inne — uten passord i selve chat-flaten.",
+    actionLinks: [
+      backstageLinks.githubIssues,
+      backstageLinks.githubIssue181,
+      backstageLinks.vis,
+      backstageLinks.backstage,
+    ],
     tech: "Access Gate #181 parkert/revertet.",
   },
   {
@@ -402,6 +544,11 @@ export const changeRunbooks: ChangeRunbook[] = [
     whereToGo: "GitHub/Cursor → src/data/mvp-current-state.ts. VIS → /vis/ for kontroll etterpå.",
     after: "Sjekk /vis/ etterpå. Legg Return Ticket på relevant issue.",
     test: "VIS kontrollrom viser oppdatert nå-status og neste arbeid.",
+    actionLinks: [
+      backstageLinks.currentStateFile,
+      backstageLinks.vis,
+      backstageLinks.githubIssues,
+    ],
     tech: "UI-mønster → vurder /designsystem/ · systemflyt → oppdater /backstage/",
   },
 ];

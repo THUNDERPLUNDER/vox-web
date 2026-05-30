@@ -193,6 +193,20 @@ const layerTone: Record<string, string> = {
                 ))}
               </ul>
             </div>
+            {svc.actionLinks.length > 0 ? (
+              <div class="bs-link-chips" aria-label={`Gå hit — ${svc.name}`}>
+                {svc.actionLinks.map((link) => (
+                  <a
+                    href={link.href}
+                    class="bs-link-chip"
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noopener noreferrer" : undefined}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            ) : null}
           </li>
         ))}
       </ul>
@@ -210,6 +224,20 @@ const layerTone: Record<string, string> = {
               <div class="bs-runbook__go">
                 <dt>Hvor går vi?</dt>
                 <dd>{book.whereToGo}</dd>
+                {book.actionLinks.length > 0 ? (
+                  <div class="bs-link-chips bs-link-chips--in-go">
+                    {book.actionLinks.map((link) => (
+                      <a
+                        href={link.href}
+                        class="bs-link-chip"
+                        target={link.external ? "_blank" : undefined}
+                        rel={link.external ? "noopener noreferrer" : undefined}
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
               </div>
               <div>
                 <dt>Hva endres?</dt>
@@ -253,6 +281,20 @@ const layerTone: Record<string, string> = {
               <span class="bs-first-check__symptom">{rule.symptom}</span>
               <span class="bs-first-check__arrow" aria-hidden="true">→</span>
               <span class="bs-first-check__check">{rule.check}</span>
+              {"links" in rule && rule.links.length > 0 ? (
+                <div class="bs-link-chips bs-link-chips--inline">
+                  {rule.links.map((link) => (
+                    <a
+                      href={link.href}
+                      class="bs-link-chip bs-link-chip--sm"
+                      target={link.external ? "_blank" : undefined}
+                      rel={link.external ? "noopener noreferrer" : undefined}
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              ) : null}
             </li>
           ))}
         </ul>
@@ -777,6 +819,60 @@ const layerTone: Record<string, string> = {
       font-weight: 550;
     }
 
+    .bs-link-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.65rem;
+    }
+
+    .bs-link-chips--in-go {
+      margin-top: 0.75rem;
+    }
+
+    .bs-link-chips--inline {
+      flex-basis: 100%;
+      margin-top: 0.45rem;
+      margin-left: 0;
+    }
+
+    .bs-link-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.28rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgb(209 213 219);
+      background: rgb(255 255 255);
+      font-size: 0.72rem;
+      font-weight: 550;
+      line-height: 1.2;
+      color: rgb(55 65 81);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .bs-link-chip:hover {
+      border-color: rgb(156 163 175);
+      background: rgb(249 250 251);
+      color: rgb(17 24 39);
+    }
+
+    .bs-link-chip--sm {
+      font-size: 0.68rem;
+      padding: 0.22rem 0.48rem;
+    }
+
+    .bs-link-chips--in-go .bs-link-chip {
+      border-color: rgb(191 219 254);
+      background: rgb(255 255 255);
+      color: rgb(29 78 216);
+    }
+
+    .bs-link-chips--in-go .bs-link-chip:hover {
+      background: rgb(239 246 255);
+      border-color: rgb(147 197 253);
+    }
+
     .bs-svc-flow {
       display: flex;
       flex-wrap: wrap;
@@ -948,7 +1044,7 @@ const layerTone: Record<string, string> = {
       flex-wrap: wrap;
       align-items: baseline;
       gap: 0.35rem 0.5rem;
-      padding: 0.35rem 0;
+      padding: 0.5rem 0;
       font-size: 0.84rem;
       line-height: 1.45;
       border-bottom: 1px solid rgb(254 240 138 / 0.5);
