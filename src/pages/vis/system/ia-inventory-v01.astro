@@ -1,0 +1,479 @@
+---
+/* CONTRACT: VIS IA Inventory v0.1 — intern analyseflate for kartlegging før tremeny. */
+import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+import {
+  getVisIaEntriesByRecommendation,
+  getVisIaEntriesByStatus,
+  getVisIaInventoryEntries,
+  visIaConsolidationNotes,
+  visIaInventoryMeta,
+  visIaTreeProposal,
+  type VisIaEntry,
+  type VisIaStatus,
+} from "../../../data/vis-ia-inventory-v01.ts";
+
+const base = import.meta.env.BASE_URL;
+const entries = getVisIaInventoryEntries();
+
+const statusOrder: VisIaStatus[] = [
+  "active",
+  "canonical",
+  "lab",
+  "reference",
+  "planned",
+  "historical",
+  "legacy",
+  "unknown",
+];
+
+const statusLabels: Record<VisIaStatus, string> = {
+  active: "Active",
+  canonical: "Canonical",
+  planned: "Planned",
+  reference: "Reference",
+  lab: "Lab",
+  historical: "Historical",
+  legacy: "Legacy",
+  unknown: "Unknown",
+};
+
+const recommendationLabels = {
+  behold: "Behold",
+  "slå sammen": "Slå sammen",
+  flytt: "Flytt",
+  arkiver: "Arkiver",
+  "vurder sletting": "Vurder sletting",
+} as const;
+
+function groupByStatus(items: VisIaEntry[]) {
+  return statusOrder
+    .map((status) => ({
+      status,
+      items: items.filter((e) => e.status === status),
+    }))
+    .filter((g) => g.items.length > 0);
+}
+
+const grouped = groupByStatus(entries);
+const archiveCandidates = getVisIaEntriesByRecommendation("arkiver");
+const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
+---
+
+<PrototypeLayout title="VIS IA Inventory v0.1">
+  <main class="ia-inv">
+    <nav class="ia-inv__crumb">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={`${base}vis/system`}>System</a>
+      <span aria-hidden="true">/</span>
+      <span>IA Inventory</span>
+    </nav>
+
+    <header class="ia-inv__hero">
+      <p class="ia-inv__kicker">VIS · IA · analyse {visIaInventoryMeta.version}</p>
+      <h1>VIS IA Inventory</h1>
+      <p>{visIaInventoryMeta.purpose}</p>
+      <p class="ia-inv__meta">Oppdatert {visIaInventoryMeta.updatedAt} · {entries.length} flater kartlagt</p>
+    </header>
+
+    <section class="ia-inv__section" aria-labelledby="ia-inv-tree">
+      <h2 id="ia-inv-tree">Foreslått tremeny v0.1</h2>
+      <p class="ia-inv__lead">Thomas QA — før implementasjon av lokal navigasjon.</p>
+      <ul class="ia-inv__tree">
+        {
+          visIaTreeProposal.map((root) => (
+            <li class="ia-inv__tree-root">
+              <span class="ia-inv__tree-label">
+                {root.href ? <a href={`${base}${root.href.replace(/^\//, "")}`}>{root.label}</a> : root.label}
+              </span>
+              {root.note ? <span class="ia-inv__tree-note">{root.note}</span> : null}
+              {
+                root.children ? (
+                  <ul>
+                    {root.children.map((child) => (
+                      <li>
+                        <span class="ia-inv__tree-label">
+                          {child.href ? (
+                            <a href={`${base}${child.href.replace(/^\//, "")}`}>{child.label}</a>
+                          ) : (
+                            child.label
+                          )}
+                        </span>
+                        {child.note ? <span class="ia-inv__tree-note">{child.note}</span> : null}
+                        {
+                          child.children ? (
+                            <ul>
+                              {child.children.map((leaf) => (
+                                <li>
+                                  <span class="ia-inv__tree-label">
+                                    {leaf.href ? (
+                                      <a href={`${base}${leaf.href.replace(/^\//, "")}`}>{leaf.label}</a>
+                                    ) : (
+                                      leaf.label
+                                    )}
+                                  </span>
+                                  {leaf.note ? <span class="ia-inv__tree-note">{leaf.note}</span> : null}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : null
+                        }
+                      </li>
+                    ))}
+                  </ul>
+                ) : null
+              }
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="ia-inv__section" aria-labelledby="ia-inv-consolidation">
+      <h2 id="ia-inv-consolidation">Konsolidering — viktige vurderinger</h2>
+      <ul class="ia-inv__cards">
+        {
+          visIaConsolidationNotes.map((note) => (
+            <li class="ia-inv__card">
+              <h3>{note.title}</h3>
+              <p class="ia-inv__card-rec">{note.recommendation}</p>
+              <p>{note.rationale}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="ia-inv__section" aria-labelledby="ia-inv-archive">
+      <h2 id="ia-inv-archive">Arkiv / sletting senere</h2>
+      <div class="ia-inv__summary-grid">
+        <article>
+          <h3>Anbefalt arkivering ({archiveCandidates.length})</h3>
+          <ul>
+            {archiveCandidates.map((e) => (
+              <li>{e.title}</li>
+            ))}
+          </ul>
+        </article>
+        <article>
+          <h3>Vurder sletting ({deleteCandidates.length})</h3>
+          <ul>
+            {deleteCandidates.map((e) => (
+              <li>{e.title}</li>
+            ))}
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="ia-inv__section" aria-labelledby="ia-inv-full">
+      <h2 id="ia-inv-full">Fullt inventar</h2>
+      {
+        grouped.map(({ status, items }) => (
+          <div class="ia-inv__group">
+            <h3>{statusLabels[status]} ({items.length})</h3>
+            <div class="ia-inv__table-wrap">
+              <table class="ia-inv__table">
+                <thead>
+                  <tr>
+                    <th>Flate</th>
+                    <th>Route</th>
+                    <th>Foreslått</th>
+                    <th>Anbefaling</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((entry) => (
+                    <tr>
+                      <td>
+                        <strong>{entry.title}</strong>
+                        <span class="ia-inv__rationale">{entry.rationale}</span>
+                      </td>
+                      <td>
+                        <code>{entry.route}</code>
+                        {entry.sourceFile ? <span class="ia-inv__file">{entry.sourceFile}</span> : null}
+                      </td>
+                      <td>{entry.suggestedPlacement}</td>
+                      <td>
+                        <span class={`ia-inv__pill ia-inv__pill--${entry.recommendation.replace(/\s+/g, "-")}`}>
+                          {recommendationLabels[entry.recommendation]}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ))
+      }
+    </section>
+  </main>
+
+  <style>
+    .ia-inv {
+      max-width: 56rem;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+      color: rgb(17 24 39);
+    }
+
+    .ia-inv__crumb {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      font-size: 0.72rem;
+      color: rgb(107 114 128);
+      margin-bottom: 1rem;
+    }
+
+    .ia-inv__crumb a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .ia-inv__kicker {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .ia-inv__hero h1 {
+      margin: 0.35rem 0 0;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 650;
+      letter-spacing: -0.03em;
+    }
+
+    .ia-inv__hero p {
+      margin: 0.55rem 0 0;
+      max-width: 40rem;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: rgb(75 85 99);
+    }
+
+    .ia-inv__meta {
+      font-size: 0.78rem !important;
+      color: rgb(156 163 175) !important;
+    }
+
+    .ia-inv__section {
+      margin-top: 2.25rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgb(243 244 246);
+    }
+
+    .ia-inv__section h2 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .ia-inv__lead {
+      margin: 0.35rem 0 0.85rem;
+      font-size: 0.84rem;
+      color: rgb(107 114 128);
+    }
+
+    .ia-inv__tree {
+      margin: 0;
+      padding-left: 0;
+      list-style: none;
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+
+    .ia-inv__tree ul {
+      margin: 0.25rem 0 0.35rem;
+      padding-left: 1.15rem;
+      list-style: none;
+      border-left: 1px solid rgb(229 231 235);
+    }
+
+    .ia-inv__tree-root + .ia-inv__tree-root {
+      margin-top: 0.5rem;
+    }
+
+    .ia-inv__tree-label {
+      font-weight: 600;
+      color: rgb(31 41 55);
+    }
+
+    .ia-inv__tree-label a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-color: rgb(209 213 219);
+    }
+
+    .ia-inv__tree-note {
+      display: block;
+      margin-top: 0.1rem;
+      font-size: 0.76rem;
+      color: rgb(156 163 175);
+    }
+
+    .ia-inv__cards {
+      margin: 0.85rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .ia-inv__card {
+      padding: 0.85rem 0;
+      border-bottom: 1px solid rgb(243 244 246);
+    }
+
+    .ia-inv__card h3 {
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: 650;
+    }
+
+    .ia-inv__card-rec {
+      margin: 0.25rem 0 0;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: rgb(55 65 81);
+    }
+
+    .ia-inv__card p:last-child {
+      margin: 0.35rem 0 0;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: rgb(107 114 128);
+    }
+
+    .ia-inv__summary-grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 0.85rem;
+    }
+
+    .ia-inv__summary-grid h3 {
+      margin: 0 0 0.45rem;
+      font-size: 0.82rem;
+      font-weight: 650;
+      color: rgb(75 85 99);
+    }
+
+    .ia-inv__summary-grid ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.8rem;
+      color: rgb(107 114 128);
+    }
+
+    .ia-inv__group {
+      margin-top: 1.25rem;
+    }
+
+    .ia-inv__group h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 650;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .ia-inv__table-wrap {
+      overflow-x: auto;
+    }
+
+    .ia-inv__table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+
+    .ia-inv__table th,
+    .ia-inv__table td {
+      padding: 0.55rem 0.45rem;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid rgb(243 244 246);
+    }
+
+    .ia-inv__table th {
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .ia-inv__rationale {
+      display: block;
+      margin-top: 0.2rem;
+      font-weight: 400;
+      color: rgb(156 163 175);
+      line-height: 1.4;
+    }
+
+    .ia-inv__file {
+      display: block;
+      margin-top: 0.15rem;
+      font-family: ui-monospace, monospace;
+      font-size: 0.65rem;
+      color: rgb(156 163 175);
+    }
+
+    .ia-inv__table code {
+      font-size: 0.7rem;
+      word-break: break-all;
+    }
+
+    .ia-inv__pill {
+      display: inline-block;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      border: 1px solid rgb(229 231 235);
+      white-space: nowrap;
+    }
+
+    .ia-inv__pill--behold {
+      border-color: rgb(209 250 229);
+      color: rgb(6 95 70);
+      background: rgb(236 253 245);
+    }
+
+    .ia-inv__pill--slå-sammen,
+    .ia-inv__pill--flytt {
+      border-color: rgb(191 219 254);
+      color: rgb(30 64 175);
+      background: rgb(239 246 255);
+    }
+
+    .ia-inv__pill--arkiver {
+      border-color: rgb(254 243 199);
+      color: rgb(146 64 14);
+      background: rgb(255 251 235);
+    }
+
+    .ia-inv__pill--vurder-sletting {
+      border-color: rgb(254 202 202);
+      color: rgb(153 27 27);
+      background: rgb(254 242 242);
+    }
+
+    @media (min-width: 768px) {
+      .ia-inv {
+        padding: 2rem 1.5rem 3.5rem;
+      }
+
+      .ia-inv__summary-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</PrototypeLayout>
