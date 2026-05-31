@@ -4,9 +4,10 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs && node --experimental-strip-types scripts/verify-backstage-guard.mjs && astro build",
+    "build": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs && node --experimental-strip-types scripts/verify-backstage-guard.mjs && node --experimental-strip-types scripts/verify-vis-runtime-feed.mjs && astro build",
     "verify:vis-sprint-guard": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs",
     "verify:backstage-guard": "node --experimental-strip-types scripts/verify-backstage-guard.mjs",
+    "verify:vis-runtime-feed": "node --experimental-strip-types scripts/verify-vis-runtime-feed.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "storyblok:bootstrap:slice01": "node scripts/storyblok-bootstrap-slice-01.mjs",

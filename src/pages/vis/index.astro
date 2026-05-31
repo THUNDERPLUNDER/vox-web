@@ -10,6 +10,9 @@ import {
   visPrimaryNextWorkIds,
   visSourceOfTruthNotes,
 } from "../../data/vis-frontpage-hubs-v01.ts";
+import { getVisRuntimeFeed } from "../../data/vis-runtime-feed.ts";
+
+const runtimeFeed = getVisRuntimeFeed();
 
 const base = import.meta.env.BASE_URL;
 const mvpNowEntries = getVisFrontpageEntries(base);
@@ -34,6 +37,9 @@ const archiveEntries = wireframeIndexEntries();
 const archiveGrouped = groupedVisEntries(archiveEntries);
 
 const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
+const activeWork = runtimeFeed.activeNow[0];
+const primaryLinks = runtimeFeed.links.primary;
+const secondaryLinks = runtimeFeed.links.secondary ?? [];
 ---
 
 <PrototypeLayout title="VIS kontrollrom">
@@ -43,6 +49,103 @@ const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
       <h1>{visFrontpageMandate.title}</h1>
       <p class="vis-room__lead">{visFrontpageMandate.lead}</p>
     </header>
+
+    {
+      activeWork ? (
+        <aside class="vis-room__runtime" aria-label="Akkurat nå">
+          <div class="vis-room__runtime-head">
+            <h2 class="vis-room__runtime-title">Akkurat nå</h2>
+            <span class="vis-room__runtime-updated">{runtimeFeed.updatedAt}</span>
+          </div>
+
+          <p class="vis-room__runtime-headline">{activeWork.headline}</p>
+
+          <ol class="vis-room__runtime-progress" aria-label="Fremdrift">
+            {activeWork.progressSteps.map((step, index) => (
+              <li
+                class:list={[
+                  "vis-room__runtime-step",
+                  step.state === "done" && "vis-room__runtime-step--done",
+                  step.state === "current" && "vis-room__runtime-step--current",
+                  step.state === "upcoming" && "vis-room__runtime-step--upcoming",
+                ]}
+              >
+                {index > 0 ? <span class="vis-room__runtime-step-arrow" aria-hidden="true">→</span> : null}
+                <span class="vis-room__runtime-step-label">{step.label}</span>
+              </li>
+            ))}
+          </ol>
+
+          <dl class="vis-room__runtime-meta">
+            <div class="vis-room__runtime-row">
+              <dt>Arbeid</dt>
+              <dd>
+                {activeWork.issueLink ? (
+                  <a href={activeWork.issueLink}>{activeWork.workTitle}</a>
+                ) : (
+                  activeWork.workTitle
+                )}
+              </dd>
+            </div>
+            <div class="vis-room__runtime-row">
+              <dt>Område</dt>
+              <dd>{activeWork.area}</dd>
+            </div>
+            <div class="vis-room__runtime-row">
+              <dt>Hvorfor</dt>
+              <dd>{activeWork.why}</dd>
+            </div>
+            <div class="vis-room__runtime-row">
+              <dt>Status</dt>
+              <dd>{activeWork.status}</dd>
+            </div>
+            <div class="vis-room__runtime-row">
+              <dt>Mulig løsning</dt>
+              <dd>{activeWork.possibleSolution}</dd>
+            </div>
+            <div class="vis-room__runtime-row vis-room__runtime-row--decision">
+              <dt>Neste beslutning</dt>
+              <dd>{activeWork.nextDecision}</dd>
+            </div>
+          </dl>
+
+          <p class="vis-room__runtime-foot">
+            <span class="vis-room__runtime-foot-label">Sist ferdigstilt</span>
+            {runtimeFeed.recentlyCompletedSummary}
+          </p>
+
+          <p class="vis-room__runtime-foot vis-room__runtime-foot--muted">
+            <span class="vis-room__runtime-foot-label">Siste retur</span>
+            {runtimeFeed.lastReturnTicketSummary}
+          </p>
+
+          {
+            primaryLinks.length > 0 || secondaryLinks.length > 0 ? (
+              <nav class="vis-room__runtime-nav" aria-label="Runtime-lenker">
+                {primaryLinks.map((link) => (
+                  <a
+                    href={link.href}
+                    class="vis-room__runtime-nav-link vis-room__runtime-nav-link--primary"
+                    rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+                {secondaryLinks.map((link) => (
+                  <a
+                    href={link.href}
+                    class="vis-room__runtime-nav-link vis-room__runtime-nav-link--secondary"
+                    rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
+            ) : null
+          }
+        </aside>
+      ) : null
+    }
 
     <section class="vis-room__hero" aria-label="Kontrollrom-status">
       <div class="vis-room__hero-grid">
@@ -267,8 +370,192 @@ const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
       color: rgb(75 85 99);
     }
 
+    .vis-room__runtime {
+      margin-top: 1.35rem;
+      padding-bottom: 1.15rem;
+      border-bottom: 1px solid rgb(243 244 246);
+      max-width: 44rem;
+    }
+
+    .vis-room__runtime-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .vis-room__runtime-title {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__runtime-updated {
+      font-size: 0.72rem;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__runtime-headline {
+      margin: 0;
+      max-width: 40rem;
+      font-size: 0.94rem;
+      line-height: 1.5;
+      font-weight: 550;
+      color: rgb(31 41 55);
+    }
+
+    .vis-room__runtime-progress {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem 0.15rem;
+      margin: 0.75rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vis-room__runtime-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.15rem;
+    }
+
+    .vis-room__runtime-step-label {
+      display: inline-block;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 550;
+      line-height: 1.3;
+      border: 1px solid rgb(229 231 235);
+      color: rgb(107 114 128);
+      background: rgb(255 255 255);
+    }
+
+    .vis-room__runtime-step--done .vis-room__runtime-step-label {
+      border-color: rgb(209 250 229);
+      color: rgb(6 95 70);
+      background: rgb(236 253 245);
+    }
+
+    .vis-room__runtime-step--current .vis-room__runtime-step-label {
+      border-color: rgb(191 219 254);
+      color: rgb(30 64 175);
+      background: rgb(239 246 255);
+    }
+
+    .vis-room__runtime-step-arrow {
+      margin: 0 0.15rem;
+      font-size: 0.68rem;
+      color: rgb(209 213 219);
+    }
+
+    .vis-room__runtime-meta {
+      margin: 0.85rem 0 0;
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .vis-room__runtime-row {
+      display: grid;
+      grid-template-columns: 7.5rem 1fr;
+      gap: 0.65rem;
+      align-items: start;
+    }
+
+    .vis-room__runtime-row dt {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 650;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__runtime-row dd {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.48;
+      color: rgb(55 65 81);
+    }
+
+    .vis-room__runtime-row dd a {
+      color: rgb(31 41 55);
+      font-weight: 550;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-color: rgb(209 213 219);
+    }
+
+    .vis-room__runtime-row dd a:hover {
+      text-decoration-color: rgb(107 114 128);
+    }
+
+    .vis-room__runtime-row--decision dd {
+      font-weight: 550;
+      color: rgb(31 41 55);
+    }
+
+    .vis-room__runtime-foot {
+      margin: 0.75rem 0 0;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: rgb(75 85 99);
+    }
+
+    .vis-room__runtime-foot--muted {
+      margin-top: 0.35rem;
+      font-size: 0.76rem;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__runtime-foot-label {
+      display: block;
+      margin-bottom: 0.12rem;
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__runtime-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.85rem;
+      margin-top: 0.75rem;
+    }
+
+    .vis-room__runtime-nav-link {
+      font-size: 0.8rem;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .vis-room__runtime-nav-link--primary {
+      font-weight: 600;
+      color: rgb(31 41 55);
+      text-decoration-color: rgb(209 213 219);
+    }
+
+    .vis-room__runtime-nav-link--primary:hover {
+      text-decoration-color: rgb(107 114 128);
+    }
+
+    .vis-room__runtime-nav-link--secondary {
+      font-weight: 500;
+      color: rgb(156 163 175);
+      text-decoration-color: rgb(229 231 235);
+    }
+
+    .vis-room__runtime-nav-link--secondary:hover {
+      color: rgb(107 114 128);
+    }
+
     .vis-room__hero {
-      margin-top: 2rem;
+      margin-top: 1.75rem;
     }
 
     .vis-room__hero-grid {
@@ -706,6 +993,13 @@ const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
       font-size: 0.68rem;
       line-height: 1.5;
       color: rgb(156 163 175);
+    }
+
+    @media (max-width: 520px) {
+      .vis-room__runtime-row {
+        grid-template-columns: 1fr;
+        gap: 0.15rem;
+      }
     }
 
     @media (min-width: 768px) {
