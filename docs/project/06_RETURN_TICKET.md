@@ -35,12 +35,16 @@ Backstage impact
 
 VIS runtime update
 - Oppdatert: ja / nei
-- Headline (første setning uten kontekst):
-- Arbeid / område / hvorfor / status / mulig løsning / neste beslutning:
-- Fremdrift (progressSteps):
-- Sist ferdigstilt (kort linje):
-- Siste retur:
-- Lenker (primary + secondary):
+- Hva skjer nå? (én menneskelig setning)
+- Hvorfor gjør vi det?
+- Område
+- Status / fremdrift
+- Neste beslutning
+- Sist ferdigstilt
+- Siste retur
+- Lenker (primary + secondary)
+
+**Presisering:** Intern shorthand er ikke nok. Return Ticket skal gi nok språk til at VIS kan forstås dagen etter, også uten muntlig kontekst.
 
 Hvis ikke relevant: `VIS runtime update: Ikke nødvendig — ingen endring i hva Cursor/rigger jobber med akkurat nå.`
 

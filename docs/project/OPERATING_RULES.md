@@ -55,6 +55,28 @@ Ved endring i `src/lib/chat-api-guard.ts` (limits, max length): oppdater Backsta
 
 Validering: `npm run verify:backstage-guard` (kjøres automatisk før `npm run build`).
 
+## B4. VIS Runtime Feed — kommunikasjonsregel
+
+`src/data/vis-runtime-feed.ts` vises øverst på `/vis/` som kort kontrollrom-sammendrag.
+
+**Skriv for Thomas og Vibeke** — ikke som intern teknisk status.
+
+- Første setning (`headline`) skal forklare arbeidet **uten forkunnskap**.
+- Teknisk status kan stå sekundært (Arbeid, Status, lenker), men **ikke** være hovedbudskap.
+- Tekniske ord (Hybrid, PostHog, Upstash, CES) i hovedbudskap skal forklares med vanlige ord.
+
+**God retning:**
+
+> «Vi vurderer hvordan Viddel skal måle bruk av AI-chatten før vi deler den med flere.»
+
+**For intern — ikke bruk som headline/hovedtekst:**
+
+> «Solution assessment ferdig — Thomas vurderer Hybrid v0.1.»
+
+Etter viktig Return Ticket: oppdater feed **eller** forklar i Return Ticket hvorfor VIS runtime ikke påvirkes.
+
+Validering: `npm run verify:vis-runtime-feed` (kjøres automatisk før `npm run build`).
+
 ## C. VIS frontpage-regel
 
 - VIS-forsiden viser gjeldende MVP-status fra `getVisFrontpageEntries()` / `mvpCurrentState`.
@@ -68,8 +90,9 @@ Alle relevante Return Tickets skal inneholde:
 1. **Designsystem impact** — mønstre brukt / nye / `/designsystem/` oppdatert?
 2. **Current-state / VIS frontpage impact** — skal `mvp-current-state.ts` oppdateres?
 3. **Backstage impact** — skal `/backstage/` oppdateres? (Se under.)
-4. **Applied surfaces impacted** — hvilke routes?
-5. **Follow-up needed** — åpne risiko eller neste steg?
+4. **VIS runtime update** — skal `vis-runtime-feed.ts` oppdateres? (Se under.)
+5. **Applied surfaces impacted** — hvilke routes?
+6. **Follow-up needed** — åpne risiko eller neste steg?
 
 **Backstage impact** — forventet innhold:
 
@@ -85,18 +108,33 @@ Hvis current-state ikke endres:
 
 > Current-state update: Ikke nødvendig — ingen endring i MVP-status, designmønstre eller applied surfaces.
 
+**VIS runtime update** — forventet format:
+
+- Oppdatert: ja / nei
+- Hva skjer nå? (én menneskelig setning)
+- Hvorfor gjør vi det?
+- Område
+- Status / fremdrift
+- Neste beslutning
+- Sist ferdigstilt
+- Lenker
+
+Intern shorthand er **ikke nok**. Return Ticket skal gi nok språk til at VIS kan forstås dagen etter, også uten muntlig kontekst.
+
 ## E. Agent-sjekkliste (kort)
 
 1. Les issue/prompt og relevante docs.
 2. Les `/designsystem/` ved UI-arbeid.
 3. Les `src/data/mvp-current-state.ts` ved status-/VIS-arbeid.
 4. Vurder Backstage (`/backstage/`) ved endringer i API, guard, env-vars eller production.
-5. Hold endringer små; `npm run build` før ferdig.
-6. Return Ticket på relevant issue.
+5. Vurder VIS Runtime Feed (`vis-runtime-feed.ts`) ved viktig Return Ticket — skriv for Thomas/Vibeke.
+6. Hold endringer små; `npm run build` før ferdig.
+7. Return Ticket på relevant issue.
 
 ## Filer
 
 - Registry: `src/data/mvp-current-state.ts`
+- VIS Runtime Feed: `src/data/vis-runtime-feed.ts`, `src/lib/vis-runtime-feed-guard.ts`
 - Backstage: `src/data/backstage-v01.ts`, `src/lib/backstage-guard.ts`
 - Agent entry: `AGENTS.md`
 - Cursor: `.cursor/rules/viddel-operating-rules.mdc`

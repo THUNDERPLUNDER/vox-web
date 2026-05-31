@@ -24,6 +24,24 @@ Update `src/data/mvp-current-state.ts` when work affects:
 
 VIS frontpage (`src/pages/vis/index.astro`) reads from this registry — do not hand-code «MVP nå» cards.
 
+## VIS Runtime Feed (after important Return Tickets)
+
+After a significant Return Ticket, update `src/data/vis-runtime-feed.ts` **or** state explicitly in the Return Ticket why VIS runtime is unaffected.
+
+Run `npm run verify:vis-runtime-feed` before merge (included in `npm run build`).
+
+### Communication standard (required)
+
+Write for **Thomas and Vibeke** — a short control-room summary, not internal technical status.
+
+- `headline` must explain the work **without prior context** (full human sentence).
+- Technical status is secondary — not the main message.
+- When Hybrid, PostHog, Upstash, CES appear in the main message, explain them in plain language.
+
+Good: «Vi vurderer hvordan Viddel skal måle bruk av AI-chatten før vi deler den med flere.»
+
+Avoid as headline/main text: «Solution assessment ferdig — Thomas vurderer Hybrid v0.1.»
+
 ## Backstage impact (always consider)
 
 Vurder `/backstage/` ved endringer i:
@@ -47,7 +65,7 @@ Run `npm run verify:backstage-guard` before merge (included in `npm run build`).
 - Designsystem impact
 - Current-state / VIS frontpage impact
 - **Backstage impact** (`Oppdatert` / `Ikke relevant` / `Må følges opp`)
-- **VIS runtime update** (ja/nei + statuslinje, eller «Ikke nødvendig»)
+- **VIS runtime update** (ja/nei + menneskelig språk per format i `06_RETURN_TICKET.md`, eller «Ikke nødvendig»)
 - Applied surfaces impacted
 - Follow-up needed
 

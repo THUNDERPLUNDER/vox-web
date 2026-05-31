@@ -7,6 +7,49 @@ import { getVisRuntimeFeed, type VisRuntimeActiveWork } from "../data/vis-runtim
 
 const srcRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 
+/** Patterns that indicate internal shorthand — not valid as human headline. */
+const INTERNAL_HEADLINE_PATTERNS = [
+  /solution assessment/i,
+  /thomas vurderer/i,
+  /^hybrid v0/i,
+  /— thomas/i,
+] as const;
+
+const MIN_HEADLINE_LENGTH = 40;
+const MIN_WHY_LENGTH = 30;
+const MIN_NEXT_DECISION_LENGTH = 15;
+
+function humanLanguageErrors(entry: VisRuntimeActiveWork): string[] {
+  const errors: string[] = [];
+  const key = entry.id || "?";
+  const headline = entry.headline.trim();
+
+  if (headline.length < MIN_HEADLINE_LENGTH) {
+    errors.push(
+      `activeNow "${key}" headline too short (${headline.length} chars) — use a full human sentence`,
+    );
+  }
+
+  for (const pattern of INTERNAL_HEADLINE_PATTERNS) {
+    if (pattern.test(headline)) {
+      errors.push(
+        `activeNow "${key}" headline looks like internal shorthand — write for Thomas/Vibeke`,
+      );
+      break;
+    }
+  }
+
+  if (entry.why.trim().length < MIN_WHY_LENGTH) {
+    errors.push(`activeNow "${key}" why too short — explain why in plain language`);
+  }
+
+  if (entry.nextDecision.trim().length < MIN_NEXT_DECISION_LENGTH) {
+    errors.push(`activeNow "${key}" nextDecision too short — state the decision clearly`);
+  }
+
+  return errors;
+}
+
 function activeWorkErrors(entries: VisRuntimeActiveWork[], section: string): string[] {
   const errors: string[] = [];
   if (entries.length === 0) {
@@ -26,6 +69,7 @@ function activeWorkErrors(entries: VisRuntimeActiveWork[], section: string): str
     if (!Array.isArray(entry.progressSteps) || entry.progressSteps.length === 0) {
       errors.push(`${section} entry "${key}" missing progressSteps`);
     }
+    errors.push(...humanLanguageErrors(entry));
   }
   return errors;
 }
