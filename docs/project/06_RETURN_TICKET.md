@@ -35,11 +35,12 @@ Backstage impact
 
 VIS runtime update
 - Oppdatert: ja / nei
-- Statuslinje:
-- Aktivt nå:
-- Sist ferdigstilt:
-- Neste beslutning:
-- Lenker:
+- Headline (første setning uten kontekst):
+- Arbeid / område / hvorfor / status / mulig løsning / neste beslutning:
+- Fremdrift (progressSteps):
+- Sist ferdigstilt (kort linje):
+- Siste retur:
+- Lenker (primary + secondary):
 
 Hvis ikke relevant: `VIS runtime update: Ikke nødvendig — ingen endring i hva Cursor/rigger jobber med akkurat nå.`
 

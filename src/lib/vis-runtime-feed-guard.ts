@@ -3,47 +3,28 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  getVisRuntimeFeed,
-  type VisRuntimeActiveEntry,
-  type VisRuntimeFeedEntry,
-} from "../data/vis-runtime-feed.ts";
+import { getVisRuntimeFeed, type VisRuntimeActiveWork } from "../data/vis-runtime-feed.ts";
 
 const srcRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-function activeEntryErrors(entries: VisRuntimeActiveEntry[], section: string): string[] {
+function activeWorkErrors(entries: VisRuntimeActiveWork[], section: string): string[] {
   const errors: string[] = [];
   if (entries.length === 0) {
     errors.push(`${section} must have at least one entry`);
     return errors;
   }
   for (const entry of entries) {
+    const key = entry.id || "?";
     if (!entry.id?.trim()) errors.push(`${section} entry missing id`);
-    if (!entry.title?.trim()) errors.push(`${section} entry "${entry.id || "?"}" missing title`);
-    if (!entry.area?.trim()) errors.push(`${section} entry "${entry.id || "?"}" missing area`);
-    if (!entry.status?.trim()) errors.push(`${section} entry "${entry.id || "?"}" missing status`);
-    if (!entry.goal?.trim()) errors.push(`${section} entry "${entry.id || "?"}" missing goal`);
-    if (!entry.progress?.trim()) errors.push(`${section} entry "${entry.id || "?"}" missing progress`);
-    if (!entry.next?.trim()) errors.push(`${section} entry "${entry.id || "?"}" missing next`);
-  }
-  return errors;
-}
-
-function entryErrors(entries: VisRuntimeFeedEntry[], section: string): string[] {
-  const errors: string[] = [];
-  if (entries.length === 0) {
-    errors.push(`${section} must have at least one entry`);
-    return errors;
-  }
-  for (const entry of entries) {
-    if (!entry.id?.trim()) {
-      errors.push(`${section} entry missing id`);
-    }
-    if (!entry.title?.trim()) {
-      errors.push(`${section} entry "${entry.id || "?"}" missing title`);
-    }
-    if (!entry.status?.trim()) {
-      errors.push(`${section} entry "${entry.id || "?"}" missing status`);
+    if (!entry.headline?.trim()) errors.push(`${section} entry "${key}" missing headline`);
+    if (!entry.workTitle?.trim()) errors.push(`${section} entry "${key}" missing workTitle`);
+    if (!entry.area?.trim()) errors.push(`${section} entry "${key}" missing area`);
+    if (!entry.why?.trim()) errors.push(`${section} entry "${key}" missing why`);
+    if (!entry.status?.trim()) errors.push(`${section} entry "${key}" missing status`);
+    if (!entry.possibleSolution?.trim()) errors.push(`${section} entry "${key}" missing possibleSolution`);
+    if (!entry.nextDecision?.trim()) errors.push(`${section} entry "${key}" missing nextDecision`);
+    if (!Array.isArray(entry.progressSteps) || entry.progressSteps.length === 0) {
+      errors.push(`${section} entry "${key}" missing progressSteps`);
     }
   }
   return errors;
@@ -77,34 +58,29 @@ export function validateVisRuntimeFeedGuard(): string[] {
     errors.push("visRuntimeFeed.updatedAt is required");
   }
 
-  if (!feed.statusLine?.trim()) {
-    errors.push("visRuntimeFeed.statusLine is required");
+  if (!feed.recentlyCompletedSummary?.trim()) {
+    errors.push("visRuntimeFeed.recentlyCompletedSummary is required");
   }
 
   if (!feed.lastReturnTicketSummary?.trim()) {
     errors.push("visRuntimeFeed.lastReturnTicketSummary is required");
   }
 
-  errors.push(...activeEntryErrors(feed.activeNow, "activeNow"));
-  errors.push(...entryErrors(feed.recentlyCompleted, "recentlyCompleted"));
+  errors.push(...activeWorkErrors(feed.activeNow, "activeNow"));
 
-  if (!feed.nextDecision?.title?.trim()) {
-    errors.push("nextDecision.title is required");
-  }
-  if (!feed.nextDecision?.detail?.trim()) {
-    errors.push("nextDecision.detail is required");
-  }
-
-  if (!Array.isArray(feed.links) || feed.links.length === 0) {
-    errors.push("links must have at least one entry");
+  if (!Array.isArray(feed.links?.primary) || feed.links.primary.length === 0) {
+    errors.push("links.primary must have at least one entry");
   } else {
-    for (const link of feed.links) {
-      if (!link.label?.trim()) {
-        errors.push("links entry missing label");
-      }
-      if (!link.href?.trim()) {
-        errors.push(`links entry "${link.label || "?"}" missing href`);
-      }
+    for (const link of feed.links.primary) {
+      if (!link.label?.trim()) errors.push("links.primary entry missing label");
+      if (!link.href?.trim()) errors.push(`links.primary entry "${link.label || "?"}" missing href`);
+    }
+  }
+
+  if (feed.links.secondary) {
+    for (const link of feed.links.secondary) {
+      if (!link.label?.trim()) errors.push("links.secondary entry missing label");
+      if (!link.href?.trim()) errors.push(`links.secondary entry "${link.label || "?"}" missing href`);
     }
   }
 
