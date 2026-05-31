@@ -10,6 +10,9 @@ import {
   visPrimaryNextWorkIds,
   visSourceOfTruthNotes,
 } from "../../data/vis-frontpage-hubs-v01.ts";
+import { getVisRuntimeFeed } from "../../data/vis-runtime-feed.ts";
+
+const runtimeFeed = getVisRuntimeFeed();
 
 const base = import.meta.env.BASE_URL;
 const mvpNowEntries = getVisFrontpageEntries(base);
@@ -43,6 +46,82 @@ const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
       <h1>{visFrontpageMandate.title}</h1>
       <p class="vis-room__lead">{visFrontpageMandate.lead}</p>
     </header>
+
+    <section class="vis-room__runtime" aria-label="Runtime feed">
+      <p class="vis-room__runtime-kicker">Runtime feed</p>
+      <p class="vis-room__runtime-status">{runtimeFeed.statusLine}</p>
+      <p class="vis-room__runtime-updated">Feed oppdatert {runtimeFeed.updatedAt}</p>
+
+      <div class="vis-room__runtime-grid">
+        <article class="vis-room__runtime-panel" aria-labelledby="vis-runtime-active">
+          <h2 id="vis-runtime-active" class="vis-room__runtime-label">Akkurat nå</h2>
+          <ul class="vis-room__runtime-list">
+            {runtimeFeed.activeNow.map((item) => (
+              <li class="vis-room__runtime-item">
+                {item.link ? (
+                  <a href={item.link} class="vis-room__runtime-link">
+                    <span class="vis-room__runtime-title">{item.title}</span>
+                  </a>
+                ) : (
+                  <span class="vis-room__runtime-title">{item.title}</span>
+                )}
+                <span class="vis-room__runtime-statusline">{item.status}</span>
+                {item.next ? <span class="vis-room__runtime-next">Neste: {item.next}</span> : null}
+              </li>
+            ))}
+          </ul>
+        </article>
+
+        <article class="vis-room__runtime-panel" aria-labelledby="vis-runtime-done">
+          <h2 id="vis-runtime-done" class="vis-room__runtime-label">Sist ferdigstilt</h2>
+          <ul class="vis-room__runtime-list">
+            {runtimeFeed.recentlyCompleted.map((item) => (
+              <li class="vis-room__runtime-item">
+                {item.link ? (
+                  <a href={item.link} class="vis-room__runtime-link">
+                    <span class="vis-room__runtime-title">{item.title}</span>
+                  </a>
+                ) : (
+                  <span class="vis-room__runtime-title">{item.title}</span>
+                )}
+                <span class="vis-room__runtime-statusline">{item.status}</span>
+              </li>
+            ))}
+          </ul>
+        </article>
+
+        <article class="vis-room__runtime-panel" aria-labelledby="vis-runtime-decision">
+          <h2 id="vis-runtime-decision" class="vis-room__runtime-label">Neste beslutning</h2>
+          <div class="vis-room__runtime-item">
+            {runtimeFeed.nextDecision.link ? (
+              <a href={runtimeFeed.nextDecision.link} class="vis-room__runtime-link">
+                <span class="vis-room__runtime-title">{runtimeFeed.nextDecision.title}</span>
+              </a>
+            ) : (
+              <span class="vis-room__runtime-title">{runtimeFeed.nextDecision.title}</span>
+            )}
+            <span class="vis-room__runtime-statusline">{runtimeFeed.nextDecision.detail}</span>
+          </div>
+        </article>
+      </div>
+
+      {
+        runtimeFeed.links.length > 0 ? (
+          <nav class="vis-room__runtime-links" aria-label="Runtime-lenker">
+            <p class="vis-room__runtime-label">Lenker</p>
+            <ul class="vis-room__runtime-linklist">
+              {runtimeFeed.links.map((link) => (
+                <li>
+                  <a href={link.href} rel={link.kind === "external" || link.href.startsWith("http") ? "noopener noreferrer" : undefined}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ) : null
+      }
+    </section>
 
     <section class="vis-room__hero" aria-label="Kontrollrom-status">
       <div class="vis-room__hero-grid">
@@ -265,6 +344,126 @@ const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
       font-size: 0.92rem;
       line-height: 1.55;
       color: rgb(75 85 99);
+    }
+
+    .vis-room__runtime {
+      margin-top: 1.75rem;
+      padding: 1.15rem 1.1rem 1.05rem;
+      border: 1px solid rgb(229 231 235);
+      border-radius: 0.65rem;
+      background: rgb(249 250 251);
+    }
+
+    .vis-room__runtime-kicker {
+      margin: 0;
+      font-size: 0.65rem;
+      font-weight: 650;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__runtime-status {
+      margin: 0.45rem 0 0;
+      max-width: 42rem;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: rgb(31 41 55);
+      font-weight: 550;
+    }
+
+    .vis-room__runtime-updated {
+      margin: 0.35rem 0 0;
+      font-size: 0.72rem;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__runtime-grid {
+      display: grid;
+      gap: 1.15rem;
+      margin-top: 1rem;
+    }
+
+    .vis-room__runtime-label {
+      margin: 0 0 0.5rem;
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__runtime-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vis-room__runtime-item + .vis-room__runtime-item {
+      margin-top: 0.65rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid rgb(229 231 235);
+    }
+
+    .vis-room__runtime-link {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .vis-room__runtime-link:hover .vis-room__runtime-title {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .vis-room__runtime-title {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+      color: rgb(31 41 55);
+    }
+
+    .vis-room__runtime-statusline {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: rgb(75 85 99);
+    }
+
+    .vis-room__runtime-next {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.75rem;
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__runtime-links {
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgb(229 231 235);
+    }
+
+    .vis-room__runtime-linklist {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 1rem;
+    }
+
+    .vis-room__runtime-linklist a {
+      font-size: 0.8rem;
+      font-weight: 550;
+      color: rgb(55 65 81);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-color: rgb(209 213 219);
+    }
+
+    .vis-room__runtime-linklist a:hover {
+      text-decoration-color: rgb(107 114 128);
     }
 
     .vis-room__hero {
@@ -711,6 +910,12 @@ const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
     @media (min-width: 768px) {
       .vis-room {
         padding: 2.5rem 1.5rem 3.5rem;
+      }
+
+      .vis-room__runtime-grid {
+        grid-template-columns: 1.1fr 1fr 0.95fr;
+        gap: 1.25rem;
+        align-items: start;
       }
 
       .vis-room__hero-grid {

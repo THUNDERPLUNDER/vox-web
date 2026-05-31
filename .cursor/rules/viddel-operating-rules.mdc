@@ -10,6 +10,7 @@ alwaysApply: true
 - `/designsystem/` = gjeldende designsystem-sannhet
 - `/backstage/` = gjeldende systemreferanse (AI-flow, API, guards, env-vars, production)
 - `src/data/mvp-current-state.ts` = gjeldende operativ MVP-status
+- `src/data/vis-runtime-feed.ts` = kondensert agent-status på VIS-forsiden
 - `/vis/sprints/...` = historikk og beslutningsgrunnlag
 
 ## Before UI changes
@@ -46,6 +47,7 @@ Run `npm run verify:backstage-guard` before merge (included in `npm run build`).
 - Designsystem impact
 - Current-state / VIS frontpage impact
 - **Backstage impact** (`Oppdatert` / `Ikke relevant` / `Må følges opp`)
+- **VIS runtime update** (ja/nei + statuslinje, eller «Ikke nødvendig»)
 - Applied surfaces impacted
 - Follow-up needed
 

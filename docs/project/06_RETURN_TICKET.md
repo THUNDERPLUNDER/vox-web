@@ -33,6 +33,16 @@ Current-state / VIS frontpage impact
 Backstage impact
 - `Oppdatert: ...` / `Ikke relevant: ingen endring i systemflyt, API, guard, env-vars, monitoring eller production-status.` / `Må følges opp: ...`
 
+VIS runtime update
+- Oppdatert: ja / nei
+- Statuslinje:
+- Aktivt nå:
+- Sist ferdigstilt:
+- Neste beslutning:
+- Lenker:
+
+Hvis ikke relevant: `VIS runtime update: Ikke nødvendig — ingen endring i hva Cursor/rigger jobber med akkurat nå.`
+
 Applied surfaces impacted
 - 
 
@@ -41,6 +51,7 @@ Follow-up needed
 
 Hva må oppdateres
 - [ ] VIS (`src/data/mvp-current-state.ts` ved MVP-statusendring)
+- [ ] VIS Runtime Feed (`src/data/vis-runtime-feed.ts` ved viktig Return Ticket)
 - [ ] `/backstage/` (ved endring i systemflyt, API, guard, env-vars, monitoring eller production)
 - [ ] `/designsystem/` (ved mønsterendring)
 - [ ] roadmap
