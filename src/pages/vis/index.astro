@@ -37,6 +37,8 @@ const archiveEntries = wireframeIndexEntries();
 const archiveGrouped = groupedVisEntries(archiveEntries);
 
 const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
+const activeWork = runtimeFeed.activeNow[0];
+const completedTitles = runtimeFeed.recentlyCompleted.map((item) => item.title).join(" · ");
 ---
 
 <PrototypeLayout title="VIS kontrollrom">
@@ -47,81 +49,80 @@ const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
       <p class="vis-room__lead">{visFrontpageMandate.lead}</p>
     </header>
 
-    <section class="vis-room__runtime" aria-label="Runtime feed">
-      <p class="vis-room__runtime-kicker">Runtime feed</p>
-      <p class="vis-room__runtime-status">{runtimeFeed.statusLine}</p>
-      <p class="vis-room__runtime-updated">Feed oppdatert {runtimeFeed.updatedAt}</p>
+    {
+      activeWork ? (
+        <aside class="vis-room__runtime" aria-label="Runtime feed">
+          <div class="vis-room__runtime-head">
+            <span class="vis-room__runtime-kicker">Runtime</span>
+            <span class="vis-room__runtime-updated">{runtimeFeed.updatedAt}</span>
+          </div>
 
-      <div class="vis-room__runtime-grid">
-        <article class="vis-room__runtime-panel" aria-labelledby="vis-runtime-active">
-          <h2 id="vis-runtime-active" class="vis-room__runtime-label">Akkurat nå</h2>
-          <ul class="vis-room__runtime-list">
-            {runtimeFeed.activeNow.map((item) => (
-              <li class="vis-room__runtime-item">
-                {item.link ? (
-                  <a href={item.link} class="vis-room__runtime-link">
-                    <span class="vis-room__runtime-title">{item.title}</span>
-                  </a>
-                ) : (
-                  <span class="vis-room__runtime-title">{item.title}</span>
-                )}
-                <span class="vis-room__runtime-statusline">{item.status}</span>
-                {item.next ? <span class="vis-room__runtime-next">Neste: {item.next}</span> : null}
-              </li>
-            ))}
-          </ul>
-        </article>
+          <p class="vis-room__runtime-line">
+            <span class="vis-room__runtime-key">Akkurat nå</span>
+            {activeWork.link ? (
+              <a href={activeWork.link} class="vis-room__runtime-em">{activeWork.title}</a>
+            ) : (
+              <span class="vis-room__runtime-em">{activeWork.title}</span>
+            )}
+            <span class="vis-room__runtime-dot" aria-hidden="true">·</span>
+            <span class="vis-room__runtime-area">{activeWork.area}</span>
+          </p>
 
-        <article class="vis-room__runtime-panel" aria-labelledby="vis-runtime-done">
-          <h2 id="vis-runtime-done" class="vis-room__runtime-label">Sist ferdigstilt</h2>
-          <ul class="vis-room__runtime-list">
-            {runtimeFeed.recentlyCompleted.map((item) => (
-              <li class="vis-room__runtime-item">
-                {item.link ? (
-                  <a href={item.link} class="vis-room__runtime-link">
-                    <span class="vis-room__runtime-title">{item.title}</span>
-                  </a>
-                ) : (
-                  <span class="vis-room__runtime-title">{item.title}</span>
-                )}
-                <span class="vis-room__runtime-statusline">{item.status}</span>
-              </li>
-            ))}
-          </ul>
-        </article>
+          <p class="vis-room__runtime-line vis-room__runtime-line--sub">{activeWork.status}</p>
 
-        <article class="vis-room__runtime-panel" aria-labelledby="vis-runtime-decision">
-          <h2 id="vis-runtime-decision" class="vis-room__runtime-label">Neste beslutning</h2>
-          <div class="vis-room__runtime-item">
+          <p class="vis-room__runtime-line vis-room__runtime-line--sub">
+            <span class="vis-room__runtime-key-inline">Mål</span> {activeWork.goal}
+            <span class="vis-room__runtime-dot" aria-hidden="true">·</span>
+            <span class="vis-room__runtime-key-inline">Fremdrift</span> {activeWork.progress}
+          </p>
+
+          <p class="vis-room__runtime-line vis-room__runtime-line--sub">
+            <span class="vis-room__runtime-key-inline">Neste</span> {activeWork.next}
+          </p>
+
+          <p class="vis-room__runtime-line">
+            <span class="vis-room__runtime-key">Sist ferdigstilt</span>
+            <span>{completedTitles}</span>
+          </p>
+
+          <p class="vis-room__runtime-line">
+            <span class="vis-room__runtime-key">Beslutning</span>
             {runtimeFeed.nextDecision.link ? (
-              <a href={runtimeFeed.nextDecision.link} class="vis-room__runtime-link">
-                <span class="vis-room__runtime-title">{runtimeFeed.nextDecision.title}</span>
+              <a href={runtimeFeed.nextDecision.link} class="vis-room__runtime-link-inline">
+                {runtimeFeed.nextDecision.title}
               </a>
             ) : (
-              <span class="vis-room__runtime-title">{runtimeFeed.nextDecision.title}</span>
+              <span>{runtimeFeed.nextDecision.title}</span>
             )}
-            <span class="vis-room__runtime-statusline">{runtimeFeed.nextDecision.detail}</span>
-          </div>
-        </article>
-      </div>
+            <span class="vis-room__runtime-dot" aria-hidden="true">—</span>
+            <span>{runtimeFeed.nextDecision.detail}</span>
+          </p>
 
-      {
-        runtimeFeed.links.length > 0 ? (
-          <nav class="vis-room__runtime-links" aria-label="Runtime-lenker">
-            <p class="vis-room__runtime-label">Lenker</p>
-            <ul class="vis-room__runtime-linklist">
-              {runtimeFeed.links.map((link) => (
-                <li>
-                  <a href={link.href} rel={link.kind === "external" || link.href.startsWith("http") ? "noopener noreferrer" : undefined}>
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        ) : null
-      }
-    </section>
+          <p class="vis-room__runtime-line vis-room__runtime-line--muted">
+            <span class="vis-room__runtime-key">Siste RT</span>
+            <span>{runtimeFeed.lastReturnTicketSummary}</span>
+          </p>
+
+          {
+            runtimeFeed.links.length > 0 ? (
+              <p class="vis-room__runtime-links">
+                {runtimeFeed.links.map((link, index) => (
+                  <span>
+                    {index > 0 ? <span class="vis-room__runtime-dot" aria-hidden="true"> · </span> : null}
+                    <a
+                      href={link.href}
+                      rel={link.kind === "external" || link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    >
+                      {link.label}
+                    </a>
+                  </span>
+                ))}
+              </p>
+            ) : null
+          }
+        </aside>
+      ) : null
+    }
 
     <section class="vis-room__hero" aria-label="Kontrollrom-status">
       <div class="vis-room__hero-grid">
@@ -347,127 +348,110 @@ const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
     }
 
     .vis-room__runtime {
-      margin-top: 1.75rem;
-      padding: 1.15rem 1.1rem 1.05rem;
-      border: 1px solid rgb(229 231 235);
-      border-radius: 0.65rem;
-      background: rgb(249 250 251);
+      margin-top: 1.35rem;
+      padding-bottom: 1.1rem;
+      border-bottom: 1px solid rgb(243 244 246);
+      max-width: 44rem;
+    }
+
+    .vis-room__runtime-head {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.45rem;
     }
 
     .vis-room__runtime-kicker {
       margin: 0;
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       font-weight: 650;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__runtime-status {
-      margin: 0.45rem 0 0;
-      max-width: 42rem;
-      font-size: 0.88rem;
-      line-height: 1.5;
-      color: rgb(31 41 55);
-      font-weight: 550;
-    }
-
-    .vis-room__runtime-updated {
-      margin: 0.35rem 0 0;
-      font-size: 0.72rem;
       color: rgb(156 163 175);
     }
 
-    .vis-room__runtime-grid {
-      display: grid;
-      gap: 1.15rem;
-      margin-top: 1rem;
+    .vis-room__runtime-updated {
+      font-size: 0.68rem;
+      color: rgb(156 163 175);
     }
 
-    .vis-room__runtime-label {
-      margin: 0 0 0.5rem;
-      font-size: 0.68rem;
-      font-weight: 650;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+    .vis-room__runtime-line {
+      margin: 0;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: rgb(55 65 81);
+    }
+
+    .vis-room__runtime-line + .vis-room__runtime-line {
+      margin-top: 0.22rem;
+    }
+
+    .vis-room__runtime-line--sub {
       color: rgb(107 114 128);
     }
 
-    .vis-room__runtime-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
+    .vis-room__runtime-line--muted {
+      color: rgb(156 163 175);
+      font-size: 0.72rem;
     }
 
-    .vis-room__runtime-item + .vis-room__runtime-item {
-      margin-top: 0.65rem;
-      padding-top: 0.65rem;
-      border-top: 1px solid rgb(229 231 235);
-    }
-
-    .vis-room__runtime-link {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .vis-room__runtime-link:hover .vis-room__runtime-title {
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-
-    .vis-room__runtime-title {
-      display: block;
-      font-size: 0.9rem;
+    .vis-room__runtime-key {
       font-weight: 650;
-      letter-spacing: -0.01em;
+      color: rgb(107 114 128);
+      margin-right: 0.35rem;
+    }
+
+    .vis-room__runtime-key-inline {
+      font-weight: 600;
+      color: rgb(156 163 175);
+    }
+
+    .vis-room__runtime-em {
+      font-weight: 650;
       color: rgb(31 41 55);
     }
 
-    .vis-room__runtime-statusline {
-      display: block;
-      margin-top: 0.2rem;
-      font-size: 0.8rem;
-      line-height: 1.45;
-      color: rgb(75 85 99);
-    }
-
-    .vis-room__runtime-next {
-      display: block;
-      margin-top: 0.25rem;
-      font-size: 0.75rem;
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__runtime-links {
-      margin-top: 1rem;
-      padding-top: 0.85rem;
-      border-top: 1px solid rgb(229 231 235);
-    }
-
-    .vis-room__runtime-linklist {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem 1rem;
-    }
-
-    .vis-room__runtime-linklist a {
-      font-size: 0.8rem;
-      font-weight: 550;
-      color: rgb(55 65 81);
+    a.vis-room__runtime-em,
+    .vis-room__runtime-link-inline {
+      color: rgb(31 41 55);
       text-decoration: underline;
       text-underline-offset: 2px;
       text-decoration-color: rgb(209 213 219);
     }
 
-    .vis-room__runtime-linklist a:hover {
+    a.vis-room__runtime-em:hover,
+    .vis-room__runtime-link-inline:hover {
+      text-decoration-color: rgb(107 114 128);
+    }
+
+    .vis-room__runtime-area {
+      color: rgb(107 114 128);
+    }
+
+    .vis-room__runtime-dot {
+      margin: 0 0.3rem;
+      color: rgb(209 213 219);
+    }
+
+    .vis-room__runtime-links {
+      margin: 0.45rem 0 0;
+      font-size: 0.72rem;
+    }
+
+    .vis-room__runtime-links a {
+      font-weight: 550;
+      color: rgb(75 85 99);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-color: rgb(209 213 219);
+    }
+
+    .vis-room__runtime-links a:hover {
       text-decoration-color: rgb(107 114 128);
     }
 
     .vis-room__hero {
-      margin-top: 2rem;
+      margin-top: 1.75rem;
     }
 
     .vis-room__hero-grid {
@@ -910,12 +894,6 @@ const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
     @media (min-width: 768px) {
       .vis-room {
         padding: 2.5rem 1.5rem 3.5rem;
-      }
-
-      .vis-room__runtime-grid {
-        grid-template-columns: 1.1fr 1fr 0.95fr;
-        gap: 1.25rem;
-        align-items: start;
       }
 
       .vis-room__hero-grid {

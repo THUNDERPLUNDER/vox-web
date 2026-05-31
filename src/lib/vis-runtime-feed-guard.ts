@@ -3,9 +3,31 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { getVisRuntimeFeed, type VisRuntimeFeedEntry } from "../data/vis-runtime-feed.ts";
+import {
+  getVisRuntimeFeed,
+  type VisRuntimeActiveEntry,
+  type VisRuntimeFeedEntry,
+} from "../data/vis-runtime-feed.ts";
 
 const srcRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+
+function activeEntryErrors(entries: VisRuntimeActiveEntry[], section: string): string[] {
+  const errors: string[] = [];
+  if (entries.length === 0) {
+    errors.push(`${section} must have at least one entry`);
+    return errors;
+  }
+  for (const entry of entries) {
+    if (!entry.id?.trim()) errors.push(`${section} entry missing id`);
+    if (!entry.title?.trim()) errors.push(`${section} entry "${entry.id || "?"}" missing title`);
+    if (!entry.area?.trim()) errors.push(`${section} entry "${entry.id || "?"}" missing area`);
+    if (!entry.status?.trim()) errors.push(`${section} entry "${entry.id || "?"}" missing status`);
+    if (!entry.goal?.trim()) errors.push(`${section} entry "${entry.id || "?"}" missing goal`);
+    if (!entry.progress?.trim()) errors.push(`${section} entry "${entry.id || "?"}" missing progress`);
+    if (!entry.next?.trim()) errors.push(`${section} entry "${entry.id || "?"}" missing next`);
+  }
+  return errors;
+}
 
 function entryErrors(entries: VisRuntimeFeedEntry[], section: string): string[] {
   const errors: string[] = [];
@@ -59,7 +81,11 @@ export function validateVisRuntimeFeedGuard(): string[] {
     errors.push("visRuntimeFeed.statusLine is required");
   }
 
-  errors.push(...entryErrors(feed.activeNow, "activeNow"));
+  if (!feed.lastReturnTicketSummary?.trim()) {
+    errors.push("visRuntimeFeed.lastReturnTicketSummary is required");
+  }
+
+  errors.push(...activeEntryErrors(feed.activeNow, "activeNow"));
   errors.push(...entryErrors(feed.recentlyCompleted, "recentlyCompleted"));
 
   if (!feed.nextDecision?.title?.trim()) {
