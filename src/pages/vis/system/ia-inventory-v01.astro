@@ -1,0 +1,717 @@
+---
+/* CONTRACT: VIS IA Inventory v0.3 — konsolideringsklarhet før tremeny. */
+import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+import VisIaSurfaceCard from "../../../components/vis/VisIaSurfaceCard.astro";
+import {
+  getVisIaDeleteCandidates,
+  getVisIaEntriesByTopTask,
+  getVisIaInventoryEntriesFull,
+  getVisIaMergeCandidates,
+  getVisIaThomasReviewEntries,
+  visIaInventoryMeta,
+  visIaTopTaskLabels,
+  type VisIaTopTask,
+} from "../../../data/vis-ia-inventory-v01.ts";
+import {
+  visIaConsolidationMeta,
+  visIaClosedDecisions,
+  visIaDeepDiveAreas,
+  visIaMetadataStrategy,
+  visIaNextImplementation,
+  visIaPageContractV03Example,
+  visIaPageContractV03Fields,
+  visIaTreeProposalV03,
+} from "../../../data/vis-ia-consolidation-v03.ts";
+
+const base = import.meta.env.BASE_URL;
+const entries = getVisIaInventoryEntriesFull();
+const thomasReview = getVisIaThomasReviewEntries();
+const mergeCandidates = getVisIaMergeCandidates();
+const deleteCandidates = getVisIaDeleteCandidates();
+
+const topTaskOrder: VisIaTopTask[] = [
+  "status-nå",
+  "jobber-med",
+  "finn-flate",
+  "beslutninger-qa",
+  "forstå-system",
+  "historikk",
+  "unngå-forveksling",
+];
+
+function entriesForTask(task: VisIaTopTask) {
+  return entries.filter(
+    (e) => e.mandate.primaryTask === task || e.mandate.secondaryTask === task,
+  );
+}
+
+const preserveValues = [
+  ...new Set(entries.flatMap((e) => e.consolidation.functionalValue)),
+].sort();
+---
+
+<PrototypeLayout title="VIS IA Inventory v0.3.1">
+  <main class="ia-inv">
+    <nav class="ia-inv__crumb">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={`${base}vis/system`}>System</a>
+      <span aria-hidden="true">/</span>
+      <span>IA Inventory</span>
+    </nav>
+
+    <header class="ia-inv__hero">
+      <p class="ia-inv__kicker">VIS · IA · {visIaConsolidationMeta.passName}</p>
+      <h1>Konsolideringsklarhet før tremeny</h1>
+      <p>{visIaInventoryMeta.purpose}</p>
+      <p class="ia-inv__meta">
+        Oppdatert {visIaInventoryMeta.updatedAt} · {entries.length} flater vurdert
+      </p>
+    </header>
+
+    <section class="ia-inv__dashboard" aria-label="QA-oppsummering">
+      <article class="ia-inv__stat ia-inv__stat--ok">
+        <span class="ia-inv__stat-n">{visIaClosedDecisions.length}</span>
+        <span class="ia-inv__stat-l">Avklaringer lukket</span>
+      </article>
+      <article class="ia-inv__stat">
+        <span class="ia-inv__stat-n">{thomasReview.length}</span>
+        <span class="ia-inv__stat-l">Åpne for Thomas</span>
+      </article>
+      <article class="ia-inv__stat">
+        <span class="ia-inv__stat-n">{mergeCandidates.length}</span>
+        <span class="ia-inv__stat-l">Data/nav-konsolidering</span>
+      </article>
+      <article class="ia-inv__stat">
+        <span class="ia-inv__stat-n">{deleteCandidates.length}</span>
+        <span class="ia-inv__stat-l">Vurder sletting senere</span>
+      </article>
+    </section>
+
+    <section class="ia-inv__section ia-inv__section--decisions" aria-labelledby="ia-inv-decisions">
+      <h2 id="ia-inv-decisions">Avklarte beslutninger (v0.3.1)</h2>
+      <p class="ia-inv__lead">Innarbeidet som anbefalinger — ikke lenger åpne spørsmål.</p>
+      <ul class="ia-inv__decisions">
+        {visIaClosedDecisions.map((d) => (
+          <li>
+            <h3>{d.topic}</h3>
+            <p class="ia-inv__decision">{d.decision}</p>
+            <p class="ia-inv__decision-why">{d.rationale}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {
+      thomasReview.length ? (
+        <section class="ia-inv__section ia-inv__section--accent" aria-labelledby="ia-inv-thomas">
+          <h2 id="ia-inv-thomas">Dette må Thomas vurdere</h2>
+          <ul class="ia-inv__review-list">
+            {thomasReview.map((e) => (
+              <li>
+                <a href={`#${e.id}`}>{e.title}</a>
+                <span>{e.consolidation.futurePlacement}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null
+    }
+
+    <section class="ia-inv__section" aria-labelledby="ia-inv-deep">
+      <h2 id="ia-inv-deep">Grundig vurdering — seks konfliktområder</h2>
+      <p class="ia-inv__lead">
+        Vi skiller mellom «ligner på hverandre» og «løser samme behov». Route-overlapp er ikke alltid reelt overlapp.
+      </p>
+      <div class="ia-inv__deep-grid">
+        {
+          visIaDeepDiveAreas.map((area) => (
+            <article class="ia-inv__deep">
+              <p class="ia-inv__deep-letter">{area.letter}</p>
+              <h3>{area.title}</h3>
+              <p class="ia-inv__deep-summary">{area.summary}</p>
+              <dl class="ia-inv__deep-dl">
+                {area.clarifications.map((item) => (
+                  <div class="ia-inv__deep-qa">
+                    <dt>{item.question}</dt>
+                    <dd>{item.answer}</dd>
+                  </div>
+                ))}
+              </dl>
+              <div class="ia-inv__deep-cols">
+                <div>
+                  <h4>Må bevares ved sammenslåing</h4>
+                  <ul>
+                    {area.preserveWhenMerging.map((item) => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h4>Skal ikke blandes</h4>
+                  <ul>
+                    {area.doNotMix.map((item) => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="ia-inv__section" aria-labelledby="ia-inv-preserve">
+      <h2 id="ia-inv-preserve">Funksjonalitet som må bevares</h2>
+      <p class="ia-inv__lead">
+        Før vi slår sammen eller flytter — dette er det vi ikke kan miste.
+      </p>
+      <ul class="ia-inv__preserve-tags">
+        {preserveValues.map((v) => (
+          <li>{v}</li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="ia-inv__section" aria-labelledby="ia-inv-tree">
+      <h2 id="ia-inv-tree">Anbefalt tremodell v0.3.1</h2>
+      <p class="ia-inv__lead">{visIaTreeProposalV03.note}</p>
+      {
+        visIaTreeProposalV03.excludedFromTree?.length ? (
+          <p class="ia-inv__exclude">
+            Ikke i tre: {visIaTreeProposalV03.excludedFromTree.join(", ")}
+          </p>
+        ) : null
+      }
+      <div class="ia-inv__tree-v03">
+        {
+          visIaTreeProposalV03.sections.map((section) => (
+            <article class="ia-inv__tree-section">
+              <h3>{section.label}</h3>
+              <ul>
+                {section.items.map((item) => (
+                  <li>
+                    {item.href ? (
+                      <a href={`${base}${item.href.replace(/^\//, "")}`}>{item.label}</a>
+                    ) : (
+                      item.label
+                    )}
+                    {item.note ? <span>{item.note}</span> : null}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="ia-inv__section" aria-labelledby="ia-inv-contract">
+      <h2 id="ia-inv-contract">Page contract — del av {visIaNextImplementation.name}</h2>
+      <p class="ia-inv__lead">{visIaNextImplementation.summary}</p>
+      <ul class="ia-inv__next-includes">
+        {visIaNextImplementation.includes.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+      <p class="ia-inv__lead">{visIaMetadataStrategy.summary}</p>
+      <div class="ia-inv__strategy-grid">
+        <article>
+          <h3>Per side</h3>
+          <p>{visIaMetadataStrategy.perPage}</p>
+        </article>
+        <article>
+          <h3>Sentral registry</h3>
+          <p>{visIaMetadataStrategy.centralRegistry}</p>
+        </article>
+        <article>
+          <h3>Gjeninnføre header-hensikt</h3>
+          <p>{visIaMetadataStrategy.headerRevival}</p>
+        </article>
+      </div>
+      <ul class="ia-inv__contract-fields">
+        {
+          visIaPageContractV03Fields.map((f) => (
+            <li>
+              <code>{f.field}</code>
+              {f.required ? " · påkrevd" : " · valgfri"}
+              <span>{f.description}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="ia-inv__header-goals">
+        VIS-header skal vise: {visIaNextImplementation.headerGoals.join(" · ")}
+      </p>
+      <details class="ia-inv__details">
+        <summary>Eksempel page contract</summary>
+        <pre class="ia-inv__pre">{JSON.stringify(visIaPageContractV03Example, null, 2)}</pre>
+      </details>
+    </section>
+
+    {
+      topTaskOrder.map((task) => {
+        const taskEntries = entriesForTask(task);
+        if (!taskEntries.length) return null;
+        return (
+          <section class="ia-inv__section ia-inv__section--task" aria-labelledby={`ia-task-${task}`}>
+            <h2 id={`ia-task-${task}`}>{visIaTopTaskLabels[task]}</h2>
+            <p class="ia-inv__lead">{taskEntries.length} flater · gruppert etter behov</p>
+            <div class="ia-inv__surface-grid">
+              {taskEntries.map((entry) => (
+                <VisIaSurfaceCard entry={entry} consolidation={entry.consolidation} base={base} />
+              ))}
+            </div>
+          </section>
+        );
+      })
+    }
+  </main>
+
+  <style>
+    .ia-inv {
+      max-width: 52rem;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3.5rem;
+      color: rgb(17 24 39);
+    }
+
+    .ia-inv__crumb {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      font-size: 0.72rem;
+      color: rgb(107 114 128);
+      margin-bottom: 1rem;
+    }
+
+    .ia-inv__crumb a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .ia-inv__kicker {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgb(107 114 128);
+    }
+
+    .ia-inv__hero h1 {
+      margin: 0.35rem 0 0;
+      font-size: clamp(1.45rem, 3vw, 1.9rem);
+      font-weight: 650;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    .ia-inv__hero p {
+      margin: 0.55rem 0 0;
+      max-width: 38rem;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: rgb(75 85 99);
+    }
+
+    .ia-inv__meta {
+      font-size: 0.78rem !important;
+      color: rgb(156 163 175) !important;
+    }
+
+    .ia-inv__dashboard {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.65rem;
+      margin-top: 1.5rem;
+    }
+
+    .ia-inv__stat {
+      padding: 0.85rem 1rem;
+      border: 1px solid rgb(243 244 246);
+      border-radius: 0.5rem;
+      background: rgb(249 250 251);
+    }
+
+    .ia-inv__stat--ok {
+      border-color: rgb(167 243 208);
+      background: rgb(236 253 245);
+    }
+
+    .ia-inv__section--decisions {
+      background: rgb(249 250 251);
+      margin-left: -1rem;
+      margin-right: -1rem;
+      padding: 1.25rem 1rem 1.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgb(229 231 235);
+    }
+
+    .ia-inv__decisions {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .ia-inv__decisions h3 {
+      margin: 0;
+      font-size: 0.88rem;
+      font-weight: 650;
+    }
+
+    .ia-inv__decision {
+      margin: 0.3rem 0 0;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: rgb(55 65 81);
+      font-weight: 500;
+    }
+
+    .ia-inv__decision-why {
+      margin: 0.25rem 0 0;
+      font-size: 0.78rem;
+      color: rgb(107 114 128);
+    }
+
+    .ia-inv__exclude {
+      margin: 0 0 0.85rem;
+      font-size: 0.78rem;
+      color: rgb(153 27 27);
+      background: rgb(254 242 242);
+      padding: 0.45rem 0.65rem;
+      border-radius: 0.35rem;
+    }
+
+    .ia-inv__next-includes {
+      margin: 0 0 1rem;
+      padding-left: 1.15rem;
+      font-size: 0.8rem;
+      color: rgb(75 85 99);
+      line-height: 1.45;
+    }
+
+    .ia-inv__header-goals {
+      margin: 0.85rem 0 0;
+      font-size: 0.78rem;
+      color: rgb(107 114 128);
+      font-style: italic;
+    }
+
+    .ia-inv__stat--highlight {
+      border-color: rgb(254 215 170);
+      background: rgb(255 251 245);
+    }
+
+    .ia-inv__stat-n {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 650;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .ia-inv__stat-l {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.72rem;
+      color: rgb(107 114 128);
+    }
+
+    .ia-inv__section {
+      margin-top: 2.5rem;
+      padding-top: 1.75rem;
+      border-top: 1px solid rgb(243 244 246);
+    }
+
+    .ia-inv__section--accent {
+      border-top-color: rgb(254 215 170);
+      background: rgb(255 251 245);
+      margin-left: -1rem;
+      margin-right: -1rem;
+      padding: 1.25rem 1rem 1.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgb(254 215 170);
+    }
+
+    .ia-inv__section h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .ia-inv__lead {
+      margin: 0.4rem 0 1rem;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: rgb(107 114 128);
+      max-width: 40rem;
+    }
+
+    .ia-inv__review-list {
+      margin: 0.75rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .ia-inv__review-list li {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: baseline;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid rgb(254 235 200);
+      font-size: 0.84rem;
+    }
+
+    .ia-inv__review-list a {
+      font-weight: 600;
+      color: rgb(194 65 12);
+    }
+
+    .ia-inv__review-list span {
+      font-size: 0.72rem;
+      color: rgb(107 114 128);
+    }
+
+    .ia-inv__deep-grid {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .ia-inv__deep {
+      padding: 1rem 0;
+      border-bottom: 1px solid rgb(243 244 246);
+    }
+
+    .ia-inv__deep-letter {
+      margin: 0;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: rgb(99 102 241);
+    }
+
+    .ia-inv__deep h3 {
+      margin: 0.2rem 0 0;
+      font-size: 0.92rem;
+      font-weight: 650;
+    }
+
+    .ia-inv__deep-summary {
+      margin: 0.4rem 0 0;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: rgb(75 85 99);
+    }
+
+    .ia-inv__deep-dl {
+      margin: 0.75rem 0 0;
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .ia-inv__deep-qa dt {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: rgb(55 65 81);
+    }
+
+    .ia-inv__deep-qa dd {
+      margin: 0.15rem 0 0;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: rgb(107 114 128);
+    }
+
+    .ia-inv__deep-cols {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 0.85rem;
+    }
+
+    .ia-inv__deep-cols h4 {
+      margin: 0 0 0.35rem;
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .ia-inv__deep-cols ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.78rem;
+      color: rgb(107 114 128);
+      line-height: 1.45;
+    }
+
+    .ia-inv__preserve-tags {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .ia-inv__preserve-tags li {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      background: rgb(236 253 245);
+      color: rgb(6 95 70);
+      border: 1px solid rgb(209 250 229);
+    }
+
+    .ia-inv__tree-v03 {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .ia-inv__tree-section {
+      padding: 0.85rem 1rem;
+      border: 1px solid rgb(243 244 246);
+      border-radius: 0.5rem;
+      background: rgb(249 250 251);
+    }
+
+    .ia-inv__tree-section h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.82rem;
+      font-weight: 650;
+      color: rgb(55 65 81);
+    }
+
+    .ia-inv__tree-section ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 0.8rem;
+    }
+
+    .ia-inv__tree-section li {
+      padding: 0.3rem 0;
+      border-bottom: 1px solid rgb(243 244 246);
+    }
+
+    .ia-inv__tree-section li:last-child {
+      border-bottom: none;
+    }
+
+    .ia-inv__tree-section a {
+      font-weight: 600;
+      color: rgb(31 41 55);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-color: rgb(209 213 219);
+    }
+
+    .ia-inv__tree-section span {
+      display: block;
+      margin-top: 0.1rem;
+      font-size: 0.72rem;
+      color: rgb(156 163 175);
+    }
+
+    .ia-inv__strategy-grid {
+      display: grid;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .ia-inv__strategy-grid article {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgb(243 244 246);
+    }
+
+    .ia-inv__strategy-grid h3 {
+      margin: 0 0 0.3rem;
+      font-size: 0.78rem;
+      font-weight: 650;
+      color: rgb(75 85 99);
+    }
+
+    .ia-inv__strategy-grid p {
+      margin: 0;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: rgb(107 114 128);
+    }
+
+    .ia-inv__contract-fields {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .ia-inv__contract-fields li {
+      font-size: 0.78rem;
+      color: rgb(75 85 99);
+    }
+
+    .ia-inv__contract-fields code {
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .ia-inv__contract-fields span {
+      display: block;
+      margin-top: 0.1rem;
+      color: rgb(156 163 175);
+    }
+
+    .ia-inv__details {
+      margin-top: 0.85rem;
+      font-size: 0.82rem;
+    }
+
+    .ia-inv__pre {
+      margin: 0.5rem 0 0;
+      padding: 0.75rem;
+      font-size: 0.72rem;
+      background: rgb(17 24 39);
+      color: rgb(229 231 235);
+      border-radius: 0.35rem;
+      overflow-x: auto;
+    }
+
+    .ia-inv__section--task {
+      scroll-margin-top: 1rem;
+    }
+
+    .ia-inv__surface-grid {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    @media (min-width: 768px) {
+      .ia-inv {
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      .ia-inv__dashboard {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .ia-inv__deep-cols {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .ia-inv__strategy-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .ia-inv__tree-v03 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</PrototypeLayout>
