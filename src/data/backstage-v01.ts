@@ -10,7 +10,7 @@ export const backstageMeta = {
 export const statusPanel = [
   { label: "Spør Viddel", value: "Live i production", tone: "live" as const },
   { label: "Guard", value: "Aktiv", tone: "ok" as const },
-  { label: "Ekstern deling", value: "Venter på usage monitoring", tone: "wait" as const },
+  { label: "Monitoring", value: "Hybrid v0.1 — intern test", tone: "ok" as const },
 ] as const;
 
 export const quickAnswers = [
@@ -30,6 +30,11 @@ export const quickAnswers = [
     question: "Hvor orienterer vi oss i VIS?",
     answer:
       "VIS kontrollrom (/vis/) og venstremenyen på interne flater — rolig orientering om hvor du er og hva siden er til for. Backstage er fortsatt canonical systemreferanse.",
+  },
+  {
+    question: "Hva måles når noen bruker AI-chatten?",
+    answer:
+      "Vi teller forespørsler og utfall (suksess, feil, rate limit) uten å lagre spørsmål eller svar. PostHog EU får få produkt-events — hvilken side, inngang og feilkode — aldri innhold.",
   },
 ] as const;
 
@@ -615,14 +620,70 @@ export const productionChecklist = [
 ] as const;
 
 export const beforeExternalSharing = [
-  "AI usage monitoring v0.1 først.",
+  "Hybrid monitoring v0.1 er aktiv — intern test med Thomas og Vibeke før ekstern deling.",
+  "Sjekk Upstash driftstall og PostHog EU for mønstre — ikke innhold.",
   "Access/login senere via «Mine sider» i globalmenyen — ikke kodefelt inne i chatten.",
   "Ekstern pilot krever egen beslutning.",
 ] as const;
 
+export const monitoringExplainer = {
+  title: "AI usage monitoring v0.1",
+  lead: "Trygghet før ekstern deling — smalt, trinnvis og uten innholdslogging.",
+  layers: [
+    {
+      id: "drift",
+      label: "Drift (Vercel + Upstash)",
+      human:
+        "Server-side tellere på /api/chat: forespørsel, suksess, feil, rate limit, for lang melding, guard utilgjengelig og manglende konfigurasjon. Vercel Runtime Logs viser strukturerte [chat-drift]-linjer.",
+      where: "Upstash Redis (dagsnøkler) + Vercel → Deployments → Runtime Logs",
+    },
+    {
+      id: "product",
+      label: "Produktinnsikt (PostHog EU)",
+      human:
+        "Få anonyme events: chat åpnet, inngang klikket, seed valgt, spørsmål sendt, svar OK/feil. Kun route, inngangsflate, artikkel-slug, seed-id og feilkode — aldri spørsmål eller svar.",
+      where: "PostHog EU-prosjekt (session replay av, ingen brukerprofiler)",
+    },
+    {
+      id: "ces",
+      label: "CES (AI-motor)",
+      human: "Operativ kjøring av AI — ikke produktanalytics. CES logger ikke i vårt lag.",
+      where: "Google CES / Vertex — se cesExplainer",
+    },
+  ],
+} as const;
+
+export const monitoringLogged = [
+  "Antall /api/chat-forespørsler per dag",
+  "Utfall: suksess, feil, rate_limited, message_too_long, guard_unavailable, configuration_missing",
+  "PostHog: chat_opened, ai_entry_clicked, article_ai_seed_clicked, chat_question_sent, chat_answer_success/error",
+  "Feilkoder (error_code) — aldri meldingstekst",
+  "Route, entry_surface, article_slug, seed_id (hash — ikke spørsmålstekst)",
+] as const;
+
+export const monitoringNotLogged = [
+  "Full spørsmålstekst",
+  "Full svartekst",
+  "Navn, e-post eller helseopplysninger",
+  "Session replay fra chat-input",
+  "Brukerprofiler eller persistent identitet",
+  "Høreapparatmodell som fritekst",
+] as const;
+
+export const monitoringEvents = [
+  { id: "chat_opened", layer: "PostHog", note: "Standalone /no/chat/ lastet" },
+  { id: "ai_entry_clicked", layer: "PostHog", note: "CTA til chat fra nav, hjelp m.m." },
+  { id: "article_ai_seed_clicked", layer: "PostHog", note: "Seed-spørsmål fra artikkel" },
+  { id: "chat_question_sent", layer: "PostHog", note: "Spørsmål sendt (seed/freeform — uten tekst)" },
+  { id: "chat_answer_success", layer: "PostHog", note: "Svar mottatt OK" },
+  { id: "chat_answer_error", layer: "PostHog", note: "Feil ved svar" },
+  { id: "chat_rate_limited", layer: "PostHog", note: "Rate limit truffet" },
+  { id: "chat_message_too_long", layer: "PostHog", note: "Melding for lang" },
+] as const;
+
 export type EnvVarEntry = {
   name: string;
-  group: "upstash" | "ces" | "auth";
+  group: "upstash" | "ces" | "auth" | "posthog";
   controls: string;
 };
 
@@ -635,6 +696,8 @@ export const envVars: EnvVarEntry[] = [
   { name: "CES_APP_VERSION_ID", group: "ces", controls: "App-versjon." },
   { name: "CES_DEPLOYMENT_ID", group: "ces", controls: "Aktiv deployment." },
   { name: "GOOGLE_SERVICE_ACCOUNT_JSON", group: "auth", controls: "Google auth — kun server-side." },
+  { name: "PUBLIC_POSTHOG_KEY", group: "posthog", controls: "PostHog prosjektnøkkel (public, EU)." },
+  { name: "PUBLIC_POSTHOG_HOST", group: "posthog", controls: "PostHog API-host — default https://eu.i.posthog.com" },
 ];
 
 export const envVarNotes = [
@@ -646,6 +709,9 @@ export const envVarNotes = [
 export const sourceFiles = [
   "src/pages/api/chat.ts",
   "src/lib/chat-api-guard.ts",
+  "src/lib/chat-usage-metrics.ts",
+  "src/lib/viddel-analytics-events.ts",
+  "src/components/analytics/ViddelAnalytics.astro",
   "src/lib/ces-env.ts",
   "src/lib/ces-run-session.ts",
 ] as const;

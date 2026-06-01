@@ -6,6 +6,11 @@ import {
   checkChatOrigin,
   checkChatRateLimit,
 } from "../../lib/chat-api-guard";
+import {
+  mapApiErrorToDriftSignal,
+  recordChatDriftSignal,
+  type ChatDriftSignal,
+} from "../../lib/chat-usage-metrics";
 import { resolveCesEnv } from "../../lib/ces-env";
 import { CesRunSessionError, runCesSession } from "../../lib/ces-run-session";
 
@@ -25,14 +30,28 @@ function jsonResponse(body: Record<string, unknown>, status: number): Response {
   });
 }
 
+function respond(
+  body: Record<string, unknown>,
+  status: number,
+  signal?: ChatDriftSignal,
+  errorCode?: string,
+): Response {
+  if (signal) {
+    recordChatDriftSignal(signal, errorCode ? { error_code: errorCode } : undefined);
+  }
+  return jsonResponse(body, status);
+}
+
 export const POST: APIRoute = async ({ request }) => {
   let body: ChatRequestBody;
   try {
     body = (await request.json()) as ChatRequestBody;
   } catch {
-    return jsonResponse(
+    return respond(
       { error: "invalid_json", message: CHAT_GUARD_MESSAGES.invalidRequest },
       400,
+      "error",
+      "invalid_json",
     );
   }
 
@@ -40,46 +59,66 @@ export const POST: APIRoute = async ({ request }) => {
   const sessionId = typeof body.sessionId === "string" ? body.sessionId.trim() : "";
 
   if (!message) {
-    return jsonResponse({ error: "invalid_message", message: "Skriv et spørsmål før du sender." }, 400);
+    return respond(
+      { error: "invalid_message", message: "Skriv et spørsmål før du sender." },
+      400,
+      "error",
+      "invalid_message",
+    );
   }
 
   if (message.length > CHAT_MAX_MESSAGE_LENGTH) {
-    return jsonResponse(
+    return respond(
       { error: "message_too_long", message: CHAT_GUARD_MESSAGES.messageTooLong },
       400,
+      "message_too_long",
+      "message_too_long",
     );
   }
 
   if (!sessionId || !SESSION_ID_PATTERN.test(sessionId)) {
-    return jsonResponse(
+    return respond(
       { error: "invalid_session", message: CHAT_GUARD_MESSAGES.invalidRequest },
       400,
+      "error",
+      "invalid_session",
     );
   }
 
   const originCheck = checkChatOrigin(request);
   if (!originCheck.ok) {
-    return jsonResponse({ error: "forbidden_origin", message: originCheck.message }, 403);
+    return respond(
+      { error: "forbidden_origin", message: originCheck.message },
+      403,
+      "error",
+      "forbidden_origin",
+    );
   }
 
   const rateLimit = await checkChatRateLimit(request);
   if (!rateLimit.ok) {
-    return jsonResponse({ error: rateLimit.error, message: rateLimit.message }, rateLimit.status);
+    const signal = mapApiErrorToDriftSignal(rateLimit.error);
+    return respond({ error: rateLimit.error, message: rateLimit.message }, rateLimit.status, signal, rateLimit.error);
   }
+
+  recordChatDriftSignal("request");
 
   const env = resolveCesEnv();
   if (!env.ok) {
-    return jsonResponse(
+    return respond(
       {
         error: "configuration_missing",
         message: "Viddel er ikke tilgjengelig akkurat nå.",
       },
       503,
+      "configuration_missing",
+      "configuration_missing",
     );
   }
 
   try {
     const result = await runCesSession(env.config, { message, sessionId });
+    recordChatDriftSignal("success");
     return jsonResponse(
       {
         text: result.text,
@@ -95,6 +134,7 @@ export const POST: APIRoute = async ({ request }) => {
         status: error.status,
         sessionIdLength: sessionId.length,
       });
+      recordChatDriftSignal("error", { error_code: error.code });
       return jsonResponse(
         {
           error: error.code,
@@ -108,6 +148,6 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     console.error("[api/chat] unexpected_error");
-    return jsonResponse({ error: "internal_error", message: CHAT_GUARD_MESSAGES.invalidRequest }, 500);
+    return respond({ error: "internal_error", message: CHAT_GUARD_MESSAGES.invalidRequest }, 500, "error", "internal_error");
   }
 };

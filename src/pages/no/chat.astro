@@ -174,6 +174,11 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       const SESSION_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}$/;
       const params = new URLSearchParams(window.location.search);
       const seedFromUrl = (params.get("seed") || params.get("q") || "").trim();
+      const entrySurface = (params.get("from") || "standalone").trim() || "standalone";
+
+      if (typeof window.viddelTrack === "function") {
+        window.viddelTrack("chat_opened", { entry_surface: entrySurface });
+      }
 
       let isSending = false;
       let hasConversation = false;
@@ -292,6 +297,20 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         input.disabled = true;
         setLoading(true);
 
+        const inputType = exampleButtons.length && Array.from(exampleButtons).some((btn) => btn.getAttribute("data-viddel-chat-example") === message)
+          ? "seed"
+          : seedFromUrl && message === seedFromUrl
+            ? "seed"
+            : "freeform";
+
+        if (typeof window.viddelTrack === "function") {
+          const trackProps = { entry_surface: entrySurface, input_type: inputType };
+          if (inputType === "seed" && typeof window.viddelSeedId === "function") {
+            trackProps.seed_id = window.viddelSeedId(message);
+          }
+          window.viddelTrack("chat_question_sent", trackProps);
+        }
+
         try {
           const response = await fetch("/api/chat", {
             method: "POST",
@@ -304,18 +323,37 @@ const aiHeadingId = "viddel-standalone-chat-ai";
 
           const payload = await response.json().catch(() => ({}));
           if (!response.ok) {
+            const errorCode = typeof payload?.error === "string" ? payload.error : "unknown";
+            if (typeof window.viddelTrack === "function") {
+              if (errorCode === "rate_limited") {
+                window.viddelTrack("chat_rate_limited", { entry_surface: entrySurface, error_code: errorCode });
+              } else if (errorCode === "message_too_long") {
+                window.viddelTrack("chat_message_too_long", { entry_surface: entrySurface, error_code: errorCode });
+              } else {
+                window.viddelTrack("chat_answer_error", { entry_surface: entrySurface, error_code: errorCode });
+              }
+            }
             showError(friendlyError(payload));
             return;
           }
 
           const text = typeof payload.text === "string" ? payload.text.trim() : "";
           if (!text) {
+            if (typeof window.viddelTrack === "function") {
+              window.viddelTrack("chat_answer_error", { entry_surface: entrySurface, error_code: "empty_response" });
+            }
             showError("Vi fikk ikke tak i svaret akkurat nå. Prøv igjen.");
             return;
           }
 
+          if (typeof window.viddelTrack === "function") {
+            window.viddelTrack("chat_answer_success", { entry_surface: entrySurface });
+          }
           appendAssistantMessage(text);
         } catch (_) {
+          if (typeof window.viddelTrack === "function") {
+            window.viddelTrack("chat_answer_error", { entry_surface: entrySurface, error_code: "network_error" });
+          }
           showError("Nettverksfeil. Sjekk tilkoblingen og prøv igjen.");
         } finally {
           isSending = false;

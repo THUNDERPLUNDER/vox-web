@@ -44,47 +44,47 @@ export const visRuntimeFeed = {
   updatedAt: "2026-06-01",
   activeNow: [
     {
-      id: "vis-tree-navigation-v01",
+      id: "ai-usage-monitoring-v01",
       headline:
-        "Vi bygger en enkel venstremeny på interne VIS-flater, så det er lettere å se hvor man er og hva siden er til for.",
-      workTitle: "#192 VIS Tree Navigation v0.1",
-      area: "VIS IA og intern navigasjon",
+        "Vi legger inn trygg måling av AI-chatten før vi deler Viddel med flere.",
+      workTitle: "AI usage monitoring v0.1 (#188)",
+      area: "Data, monitoring og innsikt",
       why:
-        "Thomas og Vibeke trenger orientering uten ny backlog-UI — felles tremeny, page contract og rolig sidebar.",
-      status: "v0.1 implementert. QA på desktop og mobil (~390px) gjenstår.",
-      possibleSolution:
-        "Felles datakilde (vis-navigation-v01), VisInternalLayout, sidebar på nøkkelsider.",
-      nextDecision: "Godkjenn tremeny og page contract som daglig mønster på flere VIS-flater.",
-      issue: "#192",
-      issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/192",
+        "Vi må se om chatten virker, om den feiler, og hvilke innganger som brukes — uten å lagre spørsmål eller svar.",
+      status: "Implementert i PR #194. Venter privacy/logging QA før merge.",
+      possibleSolution: "Drift via Upstash nå. PostHog EU aktiveres senere med egen Vercel-nøkkel.",
+      nextDecision: "Merge driftsspor først. PostHog aktiveres senere med egen Vercel-nøkkel.",
+      issue: "#188",
+      issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/188",
       progressSteps: [
-        { id: "data", label: "Felles datakilde", state: "done" },
-        { id: "sidebar", label: "Sidebar + layout", state: "done" },
-        { id: "qa", label: "QA og utrulling", state: "current" },
+        { id: "implement", label: "Implementert", state: "done" },
+        { id: "qa", label: "Privacy/logging QA", state: "current" },
+        { id: "merge", label: "Merge", state: "upcoming" },
       ],
     },
   ],
   recentlyCompletedSummary:
-    "VIS IA Inventory v0.3.1 (#191), Backstage v0.1 og VIS frontpage v0.1 i production.",
-  lastReturnTicketSummary: "#192 v0.1 — tremeny, page contract og layout på nøkkelsider.",
+    "VIS Tree Navigation v0.1 (#192), IA Inventory v0.3.1 (#191) og Backstage v0.1 i production.",
+  lastReturnTicketSummary:
+    "Privacy/logging QA er gjort i kode. Live Vercel logs og Upstash teller må fortsatt verifiseres.",
   links: {
     primary: [
       {
-        label: "Issue #192",
-        href: "https://github.com/THUNDERPLUNDER/vox-web/issues/192",
+        label: "Issue #188",
+        href: "https://github.com/THUNDERPLUNDER/vox-web/issues/188",
+        kind: "issue",
+      },
+      {
+        label: "PR #194",
+        href: "https://github.com/THUNDERPLUNDER/vox-web/pull/194",
         kind: "issue",
       },
     ],
     secondary: [
       {
-        label: "IA inventory (referanse)",
-        href: "/vis/system/ia-inventory-v01/",
+        label: "Backstage monitoring",
+        href: "/backstage/",
         kind: "page",
-      },
-      {
-        label: "Issue #188 (parkert)",
-        href: "https://github.com/THUNDERPLUNDER/vox-web/issues/188",
-        kind: "issue",
       },
     ],
   },
