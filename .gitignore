@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# local reliability probe output (metadata only; no content)
+tmp/chat-reliability/
