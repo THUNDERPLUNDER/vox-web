@@ -311,7 +311,9 @@ const aiHeadingId = "viddel-standalone-chat-ai";
           window.viddelTrack("chat_question_sent", trackProps);
         }
 
-        try {
+        const retryableErrors = new Set(["upstream", "empty_response"]);
+
+        const requestChat = async () => {
           const response = await fetch("/api/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -320,17 +322,29 @@ const aiHeadingId = "viddel-standalone-chat-ai";
               sessionId: ensureSessionId(),
             }),
           });
-
           const payload = await response.json().catch(() => ({}));
+          return { response, payload };
+        };
+
+        try {
+          let { response, payload } = await requestChat();
+          let errorCode = typeof payload?.error === "string" ? payload.error : "";
+
+          if (!response.ok && retryableErrors.has(errorCode)) {
+            await new Promise((resolve) => window.setTimeout(resolve, 600));
+            ({ response, payload } = await requestChat());
+            errorCode = typeof payload?.error === "string" ? payload.error : "";
+          }
+
           if (!response.ok) {
-            const errorCode = typeof payload?.error === "string" ? payload.error : "unknown";
+            const trackedCode = errorCode || "unknown";
             if (typeof window.viddelTrack === "function") {
-              if (errorCode === "rate_limited") {
-                window.viddelTrack("chat_rate_limited", { entry_surface: entrySurface, error_code: errorCode });
-              } else if (errorCode === "message_too_long") {
-                window.viddelTrack("chat_message_too_long", { entry_surface: entrySurface, error_code: errorCode });
+              if (trackedCode === "rate_limited") {
+                window.viddelTrack("chat_rate_limited", { entry_surface: entrySurface, error_code: trackedCode });
+              } else if (trackedCode === "message_too_long") {
+                window.viddelTrack("chat_message_too_long", { entry_surface: entrySurface, error_code: trackedCode });
               } else {
-                window.viddelTrack("chat_answer_error", { entry_surface: entrySurface, error_code: errorCode });
+                window.viddelTrack("chat_answer_error", { entry_surface: entrySurface, error_code: trackedCode });
               }
             }
             showError(friendlyError(payload));
@@ -346,6 +360,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
             return;
           }
 
+          clearError();
           if (typeof window.viddelTrack === "function") {
             window.viddelTrack("chat_answer_success", { entry_surface: entrySurface });
           }

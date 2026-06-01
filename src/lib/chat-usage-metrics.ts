@@ -45,21 +45,25 @@ export function mapApiErrorToDriftSignal(error: string): ChatDriftSignal {
 
 /** Fire-and-forget — never throws, never logs message/session/IP. */
 export function recordChatDriftSignal(signal: ChatDriftSignal, meta?: { error_code?: string }): void {
-  console.info("[chat-drift]", {
-    signal,
-    error_code: meta?.error_code ?? null,
-  });
-
-  const redis = getMetricsRedis();
-  if (!redis) return;
-
-  const key = `viddel:chat:drift:${signal}:${dayKey()}`;
-  void redis
-    .incr(key)
-    .then(() => redis.expire(key, 60 * 60 * 24 * 45))
-    .catch(() => {
-      console.error("[chat-drift] metrics_incr_failed", { signal });
+  try {
+    console.info("[chat-drift]", {
+      signal,
+      error_code: meta?.error_code ?? null,
     });
+
+    const redis = getMetricsRedis();
+    if (!redis) return;
+
+    const key = `viddel:chat:drift:${signal}:${dayKey()}`;
+    void redis
+      .incr(key)
+      .then(() => redis.expire(key, 60 * 60 * 24 * 45))
+      .catch(() => {
+        console.error("[chat-drift] metrics_incr_failed", { signal });
+      });
+  } catch {
+    console.error("[chat-drift] metrics_record_failed", { signal });
+  }
 }
 
 /** Test helper — reset cached redis client between tests. */
