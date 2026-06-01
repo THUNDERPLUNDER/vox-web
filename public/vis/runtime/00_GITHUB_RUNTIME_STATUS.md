@@ -4,8 +4,8 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## Siste sync
 
-- **generated_at (UTC):** 2026-05-29T09:57:14.572Z
-- **generated_at (Europe/Oslo):** 29.5.2026, 11:57:14
+- **generated_at (UTC):** 2026-06-01T11:39:04.393Z
+- **generated_at (Europe/Oslo):** 1.6.2026, 13:39:04
 - **timezone:** Europe/Oslo
 - **repo:** THUNDERPLUNDER/vox-web
 - **data_warnings:** (ingen)
@@ -76,31 +76,40 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## SISTE 24T
 
-Vindu: commits/issues lukket/oppdatert etter **2026-05-28T09:57:14Z** (sirket ~24 timer).
+Vindu: commits/issues lukket/oppdatert etter **2026-05-31T11:39:04Z** (sirket ~24 timer).
 
 ### Lukkede issues
 
-_Ingen._
+- **#192** VIS Tree Navigation v0.1
+  - **closed_at:** 2026-06-01T07:22:00Z
+  - **labels:** (ingen)
+  - **url:** https://github.com/THUNDERPLUNDER/vox-web/issues/192
 
 ### Kommentarer (Return Ticket-lignende)
 
-_Ingen treff i søkt utsnitt._
+- **#192** kommentar av **THUNDERPLUNDER** (2026-06-01T07:07:18Z): _## Return Ticket — VIS Tree Navigation v0.1 ### Oppsummering v0.1 av VIS Tree Navigation er implementert: felles datakilde, venstrestilt tremeny (Material/Aksel-inspirert), page contract intro og layout på nøkkelinterne …_
+- **#192** kommentar av **THUNDERPLUNDER** (2026-06-01T07:26:36Z): _## Return Ticket — merged ✅ ### Oppsummering VIS Tree Navigation v0.1 er visuelt QA-godkjent, merget til main og live i production. Venstrestilt orienteringsmeny + page contract på nøkkelinterne flater. ### Merge-status …_
+- **#190** kommentar av **THUNDERPLUNDER** (2026-05-31T16:04:41Z): _## Return Ticket — VIS IA Inventory v0.1 **Status:** ✅ Analyse levert — venter Thomas QA før tremeny-implementasjon ### Kort oppsummering 37 VIS-relaterte flater kartlagt med status, foreslått plassering og anbefaling. F…_
+- **#190** kommentar av **THUNDERPLUNDER** (2026-06-01T06:08:41Z): _## Return Ticket — VIS IA Mandate Pass v0.2 **Status:** Levert på PR #191 — **ikke merge ennå** (venter Thomas QA) ### Kort oppsummering Inventaret er utvidet fra ren route-kartlegging (v0.1) til mandatvurdering per flat…_
+- **#190** kommentar av **THUNDERPLUNDER** (2026-06-01T06:27:41Z): _## Return Ticket — VIS IA Consolidation Readiness v0.3 **Status:** Levert på PR #191 — **ikke merge ennå** (venter Thomas QA runde 3) ### Kort oppsummering v0.3 legger til konsolideringsklarhet: for hver flate dokumenter…_
+- **#190** kommentar av **THUNDERPLUNDER** (2026-06-01T06:39:54Z): _## Return Ticket — VIS IA Consolidation Readiness v0.3.1 **Status:** Avklaringer lukket — klar for merge-QA (tremeny bygges fortsatt ikke i denne PR) ### Kort oppsummering Fire åpne avklaringer er innarbeidet som anbefal…_
+- **#190** kommentar av **THUNDERPLUNDER** (2026-06-01T06:52:56Z): _## Return Ticket — PR #191 MERGED ✅ **Status:** Merged til main · Production deploy verifisert ### Kort oppsummering Thomas godkjente PR #191 som analyse- og beslutningsgrunnlag for VIS IA. Inventar v0.3.1 (kartlegging, …_
 
 ### Commits
 
-- **74d9e29** (2026-05-29T08:54:18Z) Merge pull request #174 from THUNDERPLUNDER/feature/bedre-lyd-editorial-r5
-- **fc85b80** (2026-05-29T08:24:46Z) feat(bedre-lyd): editorial R5 magazine card polish
-- **3804510** (2026-05-28T17:02:32Z) Merge pull request #173 from THUNDERPLUNDER/feature/bedre-lyd-editorial-r1
-- **f613224** (2026-05-28T16:50:41Z) feat(bedre-lyd): add editorial image pass v0.1
-- **66cabb8** (2026-05-28T15:09:00Z) feat(bedre-lyd): editorial R4 image-ready magazine frontpage
-- **d8ef991** (2026-05-28T14:36:26Z) feat(bedre-lyd): editorial R3 magazine frontpage
-- **6a785ec** (2026-05-28T13:24:51Z) feat(bedre-lyd): editorial R2 — situation-first, no AI seeds
-- **f0f5233** (2026-05-28T13:12:53Z) docs(qa): add README for Bedre lyd R1 QA pack
-- **ab77503** (2026-05-28T13:12:46Z) docs(qa): Bedre lyd R1 screenshot pack for PR #173 review
-- **38ce36a** (2026-05-28T13:01:11Z) feat(bedre-lyd): editorial page polish R1 — Aktuelt først
-- **d1d1a06** (2026-05-28T12:52:12Z) Merge pull request #172 from THUNDERPLUNDER/feature/125j-copy-nav-routes
-- **a6eb19e** (2026-05-28T12:43:05Z) feat(#125J): copy/nav/route pass — Hjelp, Bedre lyd, Spør Viddel
-- **37fce87** (2026-05-28T10:05:52Z) chore(vis): refresh GitHub runtime status for navigator
+- **3ed4f9e** (2026-06-01T11:19:45Z) Merge pull request #195 from THUNDERPLUNDER/hotfix/chat-error-state-upstream-retry
+- **f3e41f9** (2026-06-01T11:15:24Z) Hotfix chat UX for intermittent CES upstream errors.
+- **f73645b** (2026-06-01T09:00:37Z) Merge pull request #194 from THUNDERPLUNDER/feature/ai-usage-monitoring-v01
+- **816c894** (2026-06-01T08:43:47Z) Clarify #188 in VIS runtime feed for preview QA.
+- **8f1d905** (2026-06-01T07:35:21Z) Add Hybrid AI usage monitoring v0.1 for /api/chat and PostHog EU.
+- **9552ff4** (2026-06-01T07:21:58Z) Merge pull request #193 from THUNDERPLUNDER/feature/vis-tree-navigation-v01
+- **3cc60da** (2026-06-01T07:06:49Z) Add VIS Tree Navigation v0.1 with shared data source and sidebar layout.
+- **274bd8c** (2026-06-01T06:51:55Z) Merge pull request #191 from THUNDERPLUNDER/feature/vis-ia-inventory-v01
+- **f951a9c** (2026-06-01T06:39:49Z) chore(vis): fjern ubrukt import i ia-inventory
+- **c91b43e** (2026-06-01T06:39:39Z) docs(vis): lukk IA-avklaringer v0.3.1 — beslutninger innarbeidet
+- **546cad0** (2026-06-01T06:27:31Z) docs(vis): Consolidation Readiness v0.3 — funksjonell verdi og migrasjon
+- **73a8004** (2026-06-01T06:08:29Z) docs(vis): IA Mandate Pass v0.2 — behov, overlapp og tre-forslag
+- **b549c8b** (2026-05-31T16:02:34Z) docs(vis): IA Inventory v0.1 — kartlegging før tremeny
 
 ## BLOCKERS
 
