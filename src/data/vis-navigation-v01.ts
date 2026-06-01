@@ -378,7 +378,7 @@ export const visFrontpageMandate = {
 } as const;
 
 export const visPrimaryNextWorkIds = [
-  "vis-tree-navigation-v01",
+  "ai-usage-monitoring",
   "internal-ai-test-qa",
 ] as const;
 

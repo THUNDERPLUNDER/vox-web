@@ -46,27 +46,27 @@ export const visRuntimeFeed = {
     {
       id: "ai-usage-monitoring-v01",
       headline:
-        "Vi legger inn smal og trygg overvåkning av AI-chatten — driftstall og få produkt-events — før vi deler den med flere.",
-      workTitle: "#188 AI usage monitoring v0.1",
-      area: "Data, monitoring og trygg intern test",
+        "Vi legger inn trygg måling av AI-chatten før vi deler Viddel med flere.",
+      workTitle: "AI usage monitoring v0.1 (#188)",
+      area: "Data, monitoring og innsikt",
       why:
-        "Thomas og Vibeke trenger å se om chatten virker og om den misbrukes — uten å lagre spørsmål eller svar.",
-      status: "Hybrid v0.1 implementert. Intern test og verifisering gjenstår.",
-      possibleSolution:
-        "Upstash/Vercel for drift, PostHog EU for få anonyme produkt-events.",
-      nextDecision: "Godkjenn tall og mønstre etter intern test — deretter vurdere ekstern deling.",
+        "Vi må se om chatten virker, om den feiler, og hvilke innganger som brukes — uten å lagre spørsmål eller svar.",
+      status: "Implementert i PR #194. Venter privacy/logging QA før merge.",
+      possibleSolution: "Drift via Upstash nå. PostHog EU aktiveres senere med egen Vercel-nøkkel.",
+      nextDecision: "Merge driftsspor først. PostHog aktiveres senere med egen Vercel-nøkkel.",
       issue: "#188",
       issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/188",
       progressSteps: [
-        { id: "drift", label: "Driftssignaler", state: "done" },
-        { id: "posthog", label: "PostHog EU", state: "done" },
-        { id: "verify", label: "Intern test", state: "current" },
+        { id: "implement", label: "Implementert", state: "done" },
+        { id: "qa", label: "Privacy/logging QA", state: "current" },
+        { id: "merge", label: "Merge", state: "upcoming" },
       ],
     },
   ],
   recentlyCompletedSummary:
     "VIS Tree Navigation v0.1 (#192), IA Inventory v0.3.1 (#191) og Backstage v0.1 i production.",
-  lastReturnTicketSummary: "#188 Hybrid v0.1 — drift + PostHog implementert.",
+  lastReturnTicketSummary:
+    "Privacy/logging QA er gjort i kode. Live Vercel logs og Upstash teller må fortsatt verifiseres.",
   links: {
     primary: [
       {
@@ -75,15 +75,15 @@ export const visRuntimeFeed = {
         kind: "issue",
       },
       {
-        label: "Backstage monitoring",
-        href: "/backstage/",
-        kind: "page",
+        label: "PR #194",
+        href: "https://github.com/THUNDERPLUNDER/vox-web/pull/194",
+        kind: "issue",
       },
     ],
     secondary: [
       {
-        label: "Spør Viddel (test)",
-        href: "/no/chat/",
+        label: "Backstage monitoring",
+        href: "/backstage/",
         kind: "page",
       },
     ],
