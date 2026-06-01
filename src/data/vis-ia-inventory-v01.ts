@@ -131,11 +131,11 @@ export const visIaTopTaskLabels: Record<VisIaTopTask, string> = {
 };
 
 export const visIaInventoryMeta = {
-  version: "v0.3",
+  version: "v0.3.1",
   updatedAt: "2026-05-31",
   purpose:
-    "Konsolideringsklarhet før trebasert lokalmeny i VIS. Analyse og anbefaling — ingen routes slettet, flyttet eller slått sammen fysisk.",
-  mandatePass: "VIS IA Consolidation Readiness v0.3",
+    "Konsolideringsklarhet før trebasert lokalmeny i VIS. Avklarte beslutninger innarbeidet — ingen routes endret.",
+  mandatePass: "VIS IA Consolidation Readiness v0.3.1",
 } as const;
 
 /** Forslag til maskinlesbart page contract for VIS-sider. */
@@ -227,7 +227,7 @@ export const visIaOverlapClusters: VisIaOverlapCluster[] = [
     conflict:
       "Backstage er canonical systemreferanse. Control Center er agent/prosjektkontekst. /vis/system/ er flat link-liste som dupliserer begge.",
     resolution:
-      "Backstage = canonical under «Forstå system». Control Center = agent-sekundær. Flat /vis/system/ → arkiver når tremeny finnes. IA-prinsipper beholdes som dokumentasjon, ikke hub.",
+      "Backstage = canonical under «Forstå system». Agentdrift / runbook = agent-sekundær (ikke «Control Center»). Flat /vis/system/ → arkiver når tremeny finnes.",
   },
   {
     id: "roadmap-sprint-github",
@@ -252,7 +252,7 @@ export const visIaOverlapClusters: VisIaOverlapCluster[] = [
     title: "DAM / bildebank vs Editorial Image Library",
     surfaces: ["DAM / Editorial Image Library", "VIS frontpage hubs registry"],
     conflict: "Hub-kort sier «DAM / bildebank», side sier «Editorial Image Library v0.2». Samme rute, ulike navn.",
-    resolution: "Én label: «Innhold og assets» eller «Redaksjonelle bilder». Slå sammen hub-registry med fremtidig tre-data.",
+    resolution: "Én flate: hovedlabel «Redaksjonelle bilder», sekundær «DAM / bildebank». Hub-registry konsolideres i VIS Tree Navigation v0.1.",
   },
   {
     id: "sprint-active-history",
@@ -318,9 +318,9 @@ export const visIaTreeProposalV02: VisIaTreeNode[] = [
   },
   {
     id: "task-navigate",
-    label: "Finn flate — arbeidsområder",
+    label: "Arbeidsflater",
     primaryTask: "finn-flate",
-    note: "Top task 3: rask navigasjon til riktig intern sone",
+    note: "Top task 3 — navigasjonskategori (ikke «Finn flate»)",
     children: [
       {
         id: "design",
@@ -334,7 +334,7 @@ export const visIaTreeProposalV02: VisIaTreeNode[] = [
         id: "content",
         label: "Innhold og assets",
         children: [
-          { id: "dam", label: "Redaksjonelle bilder", href: "/vis/assets/editorial", note: "Slå sammen DAM + Editorial label" },
+          { id: "dam", label: "Redaksjonelle bilder", href: "/vis/assets/editorial", note: "Sekundær: DAM / bildebank" },
         ],
       },
       {
@@ -362,7 +362,7 @@ export const visIaTreeProposalV02: VisIaTreeNode[] = [
         href: "/vis/system/article/",
         note: "Foundations, components, templates, changelog",
       },
-      { id: "control-center", label: "Control Center (agenter)", href: "/vis/system/control-center", note: "Sekundær — Cursor/@rigger" },
+      { id: "control-center", label: "Agentdrift / runbook", href: "/vis/system/control-center", note: "Under Forstå system — ikke Control Center" },
     ],
   },
   {
@@ -466,8 +466,8 @@ export const visIaConsolidationNotes: VisIaConsolidationNote[] = [
   {
     id: "dam-editorial",
     title: "DAM / bildebank vs Editorial Image Library",
-    recommendation: "Slå sammen label → «Redaksjonelle bilder» eller «Innhold og assets»",
-    rationale: "Samme rute /vis/assets/editorial — én node, ett navn.",
+    recommendation: "Behold én flate — hovedlabel «Redaksjonelle bilder», sekundær «DAM / bildebank»",
+    rationale: "Avklart: ett område. Kun label oppdateres ved tremeny — innhold bevares.",
     surfaces: ["DAM / Editorial Image Library", "VIS frontpage hubs registry"],
   },
   {
@@ -494,8 +494,8 @@ export const visIaConsolidationNotes: VisIaConsolidationNote[] = [
   {
     id: "frontpage-hubs-merge",
     title: "vis-frontpage-hubs-v01.ts",
-    recommendation: "Slå sammen med fremtidig tre-data i v0.3",
-    rationale: "Hub-kort og tremeny definerer samme flater — én kilde.",
+    recommendation: "Konsolider i VIS Tree Navigation v0.1 — én datakilde med tremeny",
+    rationale: "Avklart: unngå parallelle sannheter mellom frontpage, hub-kort og lokalmeny.",
     surfaces: ["VIS frontpage hubs registry"],
   },
 ];
@@ -762,7 +762,7 @@ export const visIaInventoryEntries: VisIaEntry[] = [
     surfaceType: "canonical-external",
     status: "canonical",
     currentPlacement: "Global intern rute + primær VIS-hub",
-    suggestedPlacement: "Finn flate → Design → Designsystem",
+    suggestedPlacement: "Arbeidsflater → Design → Designsystem",
     recommendation: "behold",
     rationale: "Canonical UI/mønstre.",
     mandate: M.designsystem,
@@ -788,7 +788,7 @@ export const visIaInventoryEntries: VisIaEntry[] = [
     surfaceType: "runtime-tool",
     status: "active",
     currentPlacement: "VIS system — primær hub «Gitbuss»",
-    suggestedPlacement: "Finn flate → Operativt → Gitbuss",
+    suggestedPlacement: "Arbeidsflater → Operativt → Gitbuss",
     recommendation: "behold",
     rationale: "GitHub-feed — ikke kontrollrom.",
     mandate: M.gitbuss,
@@ -801,7 +801,7 @@ export const visIaInventoryEntries: VisIaEntry[] = [
     surfaceType: "runtime-tool",
     status: "active",
     currentPlacement: "VIS system — primær hub",
-    suggestedPlacement: "Finn flate → Operativt → Roadmap",
+    suggestedPlacement: "Arbeidsflater → Operativt → Roadmap",
     recommendation: "behold",
     rationale: "Retning/faser — ikke sprint-backlog.",
     mandate: M.roadmap,
@@ -810,13 +810,13 @@ export const visIaInventoryEntries: VisIaEntry[] = [
     id: "dam-editorial",
     route: "/vis/assets/editorial",
     sourceFile: "src/pages/vis/assets/editorial.astro",
-    title: "DAM / Editorial Image Library",
+    title: "Redaksjonelle bilder",
     surfaceType: "assets",
     status: "active",
-    currentPlacement: "Sekundær hub «DAM / bildebank»",
-    suggestedPlacement: "Finn flate → Innhold og assets",
-    recommendation: "slå sammen",
-    rationale: "Hub-navn og sideinnhold — konsolider label.",
+    currentPlacement: "Sekundær hub — label oppdateres til «Redaksjonelle bilder» (sekundær: DAM / bildebank)",
+    suggestedPlacement: "Arbeidsflater → Redaksjonelle bilder",
+    recommendation: "behold",
+    rationale: "Avklart ett område. Editorial Image Library UI bevares — kun navn harmoniseres.",
     mandate: M.dam,
   },
   {
@@ -827,7 +827,7 @@ export const visIaInventoryEntries: VisIaEntry[] = [
     surfaceType: "review",
     status: "active",
     currentPlacement: "Sekundær hub",
-    suggestedPlacement: "Finn flate → Design og QA → Review",
+    suggestedPlacement: "Arbeidsflater → Design og QA → Review",
     recommendation: "flytt under",
     rationale: "QA hører til design-spor.",
     mandate: M.review,
@@ -927,13 +927,13 @@ export const visIaInventoryEntries: VisIaEntry[] = [
     id: "control-center",
     route: "/vis/system/control-center",
     sourceFile: "src/pages/vis/system/control-center.astro",
-    title: "Viddel Control Center",
+    title: "Agentdrift / runbook",
     surfaceType: "system-doc",
     status: "reference",
-    currentPlacement: "VIS system — featured inngang",
-    suggestedPlacement: "Forstå system → Control Center (sekundær)",
+    currentPlacement: "VIS system — route /vis/system/control-center",
+    suggestedPlacement: "Forstå system → Agentdrift / runbook",
     recommendation: "behold",
-    rationale: "Agent-kontekst — ikke Thomas daglig.",
+    rationale: "Avklart: ikke «Control Center». Behold agent-runbook under Forstå system.",
     mandate: M.controlCenter,
   },
   {
@@ -953,7 +953,7 @@ export const visIaInventoryEntries: VisIaEntry[] = [
     id: "ia-inventory",
     route: "/vis/system/ia-inventory-v01",
     sourceFile: "src/pages/vis/system/ia-inventory-v01.astro",
-    title: "VIS IA Inventory v0.3",
+    title: "VIS IA Inventory v0.3.1",
     surfaceType: "system-doc",
     status: "active",
     currentPlacement: "VIS system (meta)",
@@ -1219,7 +1219,7 @@ export const visIaInventoryEntries: VisIaEntry[] = [
     currentPlacement: "Data — driver hub-kort på /vis/",
     suggestedPlacement: "Konsolider med tremeny-data",
     recommendation: "slå sammen",
-    rationale: "Overlapper med fremtidig tre.",
+    rationale: "Konsolideres med tremeny i VIS Tree Navigation v0.1 — avklart neste steg.",
     mandate: M.hubsRegistry,
   },
 ];

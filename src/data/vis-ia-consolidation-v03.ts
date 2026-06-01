@@ -63,10 +63,84 @@ export type VisIaMetadataStrategy = {
   headerRevival: string;
 };
 
+export type VisIaClosedDecision = {
+  id: string;
+  topic: string;
+  decision: string;
+  rationale: string;
+};
+
+/** Avklaringer lukket i Thomas QA — innarbeidet som anbefalinger, ikke åpne spørsmål. */
+export const visIaClosedDecisions: VisIaClosedDecision[] = [
+  {
+    id: "dam-label",
+    topic: "DAM / Editorial label",
+    decision:
+      "Ett område: hovedlabel «Redaksjonelle bilder», sekundær forklaring «DAM / bildebank». Route /vis/assets/editorial uendret.",
+    rationale: "Samme flate og innhold — kun navn var forvirrende. Hele Editorial Image Library UI bevares.",
+  },
+  {
+    id: "control-center-rename",
+    topic: "Control Center → Agentdrift / runbook",
+    decision:
+      "Ikke bruk «Control Center» (forveksles med VIS kontrollrom). Behold funksjonalitet under smalere navn «Agentdrift / runbook» under Forstå system. Ikke arkiver — egen agent-/runtime-verdi.",
+    rationale: "Dupliserer ikke Backstage fullt ut. Agent-runbook, filpeker og runtime-kontekst må bevares.",
+  },
+  {
+    id: "placeholders",
+    topic: "/vis/artikkel og /vis/hub",
+    decision:
+      "«Vurder sletting senere». Ikke primære trenoder. Nye previewflater bygges med page contract og konkret mandat.",
+    rationale: "Tomme placeholders uten funksjonell verdi i dag.",
+  },
+  {
+    id: "hub-registry",
+    topic: "Hub-registry / tremeny-data",
+    decision:
+      "Neste implementasjon (VIS Tree Navigation v0.1) konsoliderer hub-registry og tremeny til én felles datakilde eller tydelig delt kontrakt.",
+    rationale: "Unngå parallelle sannheter mellom VIS-frontpage, hub-kort og lokalmeny.",
+  },
+];
+
+/** Anbefalt neste steg etter merge av denne analysen — ikke implementert i denne PR. */
+export const visIaNextImplementation = {
+  id: "vis-tree-navigation-v01",
+  name: "VIS Tree Navigation v0.1",
+  summary:
+    "Tremeny, page contract og konsolidert hub/tre-data. Bygges som eget arbeid etter denne analysen er merget.",
+  includes: [
+    "Trebasert lokalmeny i VIS",
+    "Page contract på VIS-sider (VIS-header viser hensikt automatisk)",
+    "Én datakilde for hub-kort og tremeny",
+    "Label «Arbeidsflater» som navigasjonskategori",
+    "«Redaksjonelle bilder» som hovedlabel for assets",
+    "«Agentdrift / runbook» under Forstå system",
+  ],
+  pageContractFields: [
+    "title",
+    "type",
+    "status",
+    "purpose",
+    "primaryTask",
+    "audience",
+    "relatedArea",
+    "canonicalSource",
+    "lastReviewed",
+    "ownerRole",
+    "nextAction",
+  ] as const,
+  headerGoals: [
+    "Hva er denne siden?",
+    "Hva brukes den til?",
+    "Er den aktiv, canonical, lab, reference, historical eller legacy?",
+  ],
+} as const;
+
 export const visIaConsolidationMeta = {
-  version: "v0.3",
-  passName: "VIS IA Consolidation Readiness v0.3",
+  version: "v0.3.1",
+  passName: "VIS IA Consolidation Readiness v0.3.1",
   updatedAt: "2026-05-31",
+  treeNavCategoryLabel: "Arbeidsflater",
 } as const;
 
 /** Grundig vurdering av seks konfliktområder — Thomas/Vibeke-språk. */
@@ -126,12 +200,12 @@ export const visIaDeepDiveAreas: VisIaDeepDiveArea[] = [
       {
         question: "Skal Control Center fjernes som begrep?",
         answer:
-          "Begrepet «Control Center» forvirrer — det høres ut som forsiden. Behold siden som agent-runbook, men kall den noe tydeligere i tre (f.eks. «Agent-kontekst»). Den er ikke erstatning for Backstage.",
+          "Ja — bruk «Agentdrift / runbook» i stedet. Plassering under Forstå system, ikke egen toppkategori. Behold funksjonaliteten: siden dupliserer ikke Backstage, den har egen agent-/runtime-verdi.",
       },
     ],
     preserveWhenMerging: [
       "Backstage: hele pedagogiske systemreferansen",
-      "Control Center: filpeker og agent-instruksjoner",
+      "Agentdrift / runbook: filpeker og agent-instruksjoner",
       "IA-prinsipper og Hub Mandate: canonical dokumentasjon",
     ],
     doNotMix: ["Systemforklaring for mennesker", "Agent-runbook", "Flat link-liste"],
@@ -201,20 +275,22 @@ export const visIaDeepDiveAreas: VisIaDeepDiveArea[] = [
   {
     id: "area-e",
     letter: "E",
-    title: "DAM / Editorial Image Library",
-    summary: "Én flate, ett behov — navnet er det som er forvirrende, ikke funksjonen.",
+    title: "Redaksjonelle bilder (DAM / bildebank)",
+    summary:
+      "Avklart: ett område. Hovedlabel «Redaksjonelle bilder», sekundær «DAM / bildebank». Ikke to flater.",
     clarifications: [
       {
         question: "Ett område eller to?",
-        answer: "Ett. Hub-kort sier «DAM / bildebank», siden sier «Editorial Image Library». Samme rute, samme innhold.",
+        answer:
+          "Ett. Avklart label: hoved «Redaksjonelle bilder», sekundær «DAM / bildebank». Route /vis/assets/editorial uendret.",
       },
       {
         question: "Hva er mandatet?",
         answer: "Finne og velge redaksjonelle bilder til artikler og innhold. Støtte Vibeke og redaksjon.",
       },
       {
-        question: "Hva må bevares ved sammenslåing?",
-        answer: "Hele bildestrukturen, metadata, preview og eventuelle kategorier. Bare navnet i hub og meny endres.",
+        question: "Hva må bevares?",
+        answer: "Hele Editorial Image Library UI, bildestruktur, metadata og preview. Kun hub- og menylabel oppdateres ved tremeny.",
       },
     ],
     preserveWhenMerging: ["Editorial Image Library UI", "Asset-metadata", "Preview-funksjon"],
@@ -382,17 +458,19 @@ export const visIaConsolidationById: Record<string, VisIaConsolidationReadiness>
     needsThomasReview: false,
   }),
   "dam-editorial": c({
-    mandatePlain: "Finne og velge redaksjonelle bilder til artikler og innhold.",
+    mandatePlain:
+      "Redaksjonelle bilder — finne og velge bilder til artikler og innhold (sekundær: DAM / bildebank).",
     practicalHelp: "Vibeke og Thomas kan browse bilder uten å lete i mapper eller Storyblok blindt.",
     whatToDoHere: "Velg bilde til innhold. Noter valg til redaksjon/Storyblok.",
-    whatNotToDoHere: "Ikke splitt i to hub-navn (DAM vs Editorial) — det er samme flate.",
+    whatNotToDoHere: "Ikke behandle DAM og Editorial som to områder — avklart som én flate.",
     functionalValue: ["bilde-/assetstruktur", "nyttig preview", "lenker"],
     overlapKind: "route-navn",
-    overlapNote: "Kun navne-overlapp mellom hub-kort og sidetittel — ikke to løsninger.",
-    mergeRisk: "Endre bare label i hub og meny. Hele Editorial Image Library UI må bevares.",
-    futurePlacement: "slå sammen med annen flate",
-    migrationNote: "Én label: «Redaksjonelle bilder». Route /vis/assets/editorial uendret. Oppdater vis-frontpage-hubs-v01.ts.",
-    needsThomasReview: true,
+    overlapNote: "Var kun navne-overlapp — avklart: ett område, to label-nivåer.",
+    mergeRisk: "Kun label-endring i hub/meny. Hele Editorial Image Library UI må bevares urørt.",
+    futurePlacement: "behold som egen flate",
+    migrationNote:
+      "Hovedlabel «Redaksjonelle bilder», sekundær «DAM / bildebank». Route uendret. Hub-registry oppdateres i VIS Tree Navigation v0.1.",
+    needsThomasReview: false,
   }),
   review: c({
     mandatePlain: "QA-inngang: godkjenne design og sprint-labs før de blir canonical.",
@@ -493,17 +571,22 @@ export const visIaConsolidationById: Record<string, VisIaConsolidationReadiness>
     needsThomasReview: false,
   }),
   "control-center": c({
-    mandatePlain: "Agent-runbook: prosjektkontekst og filpeker for Cursor og agenter.",
-    practicalHelp: "Agenter finner riktig fil og kontekst raskere.",
-    whatToDoHere: "Start agent-oppgave her hvis du trenger filkart.",
-    whatNotToDoHere: "Ikke bruk som Thomas/Vibeke sin systemforklaring — det er Backstage.",
-    functionalValue: ["teknisk runbook", "lenker", "navigasjonshjelp"],
+    mandatePlain:
+      "Agentdrift / runbook — prosjektkontekst og filpeker for Cursor og agenter (ikke «Control Center»).",
+    practicalHelp: "Agenter finner riktig fil og runtime-kontekst raskere.",
+    whatToDoHere: "Start agent-oppgave her hvis du trenger filkart og driftsrunbook.",
+    whatNotToDoHere:
+      "Ikke kalle det Control Center — forveksles med VIS kontrollrom. Ikke erstatte Backstage.",
+    functionalValue: ["teknisk runbook", "lenker", "navigasjonshjelp", "runtime-status"],
     overlapKind: "reelt behov",
-    overlapNote: "Ligner Backstage — men Backstage er pedagogisk, Control Center er operativ agent-hjelp.",
-    mergeRisk: "Slå sammen med Backstage → mister agent-spesifikk filkart. Begrepet «Control Center» bør døpes om.",
+    overlapNote:
+      "Backstage er pedagogisk systemforklaring. Agentdrift / runbook er operativ agent-hjelp — ulikt mandat, begge bevares.",
+    mergeRisk:
+      "Slå sammen med Backstage → mister agent-spesifikk filkart. Arkivering avvist — egen runtime-verdi.",
     futurePlacement: "gjør om til seksjon under annen flate",
-    migrationNote: "Tremeny: «Agent-kontekst» under Forstå system. Vurder rename — ikke slett funksjon.",
-    needsThomasReview: true,
+    migrationNote:
+      "Tremeny under Forstå system: «Agentdrift / runbook». Route /vis/system/control-center uendret. Display-navn i tre og page contract.",
+    needsThomasReview: false,
   }),
   "ia-principles": c({
     mandatePlain: "Need-led IA-prinsipper — grunnmur for produktstruktur.",
@@ -656,30 +739,30 @@ export const visIaConsolidationById: Record<string, VisIaConsolidationReadiness>
     needsThomasReview: false,
   }),
   "vis-artikkel-placeholder": c({
-    mandatePlain: "Tom placeholder — ingen funksjon i dag.",
+    mandatePlain: "Tom placeholder — ingen funksjon i dag. Avklart: vurder sletting senere.",
     practicalHelp: "Ingen praktisk verdi.",
     whatToDoHere: "Ikke bruk. Gå til /no/artikkel/ eller sprint-labs.",
-    whatNotToDoHere: "Ikke lenke fra hub eller primær nav.",
+    whatNotToDoHere: "Ikke inkluder som primær trenode. Ikke lenke fra hub eller primær nav.",
     functionalValue: [],
     overlapKind: "route-navn",
-    overlapNote: "Route ligner production — men ingen reelt innhold.",
-    mergeRisk: "Sletting krever sjekk av inbound lenker.",
+    overlapNote: "Route ligner production — tom flate uten mandat.",
+    mergeRisk: "Sletting krever sjekk av inbound lenker. Ny preview bygges med page contract ved behov.",
     futurePlacement: "vurder sletting senere",
-    migrationNote: "Redirect til arkiv eller fjern lenker. QA inbound links.",
-    needsThomasReview: true,
+    migrationNote: "Ikke i tremeny. Ved sletting: QA inbound links. Eventuell ny flate krever konkret mandat.",
+    needsThomasReview: false,
   }),
   "vis-hub-placeholder": c({
-    mandatePlain: "Tom placeholder — ingen funksjon i dag.",
+    mandatePlain: "Tom placeholder — ingen funksjon i dag. Avklart: vurder sletting senere.",
     practicalHelp: "Ingen praktisk verdi.",
     whatToDoHere: "Ikke bruk. Gå til /no/hub/ eller sprint-labs.",
-    whatNotToDoHere: "Ikke lenke fra hub eller primær nav.",
+    whatNotToDoHere: "Ikke inkluder som primær trenode. Ikke lenke fra hub eller primær nav.",
     functionalValue: [],
     overlapKind: "route-navn",
-    overlapNote: "Route ligner production — tom flate.",
-    mergeRisk: "Sletting krever sjekk av inbound lenker.",
+    overlapNote: "Route ligner production — tom flate uten mandat.",
+    mergeRisk: "Sletting krever sjekk av inbound lenker. Ny preview bygges med page contract ved behov.",
     futurePlacement: "vurder sletting senere",
-    migrationNote: "Redirect til arkiv eller fjern lenker.",
-    needsThomasReview: true,
+    migrationNote: "Ikke i tremeny. Ved sletting: QA inbound links.",
+    needsThomasReview: false,
   }),
   "raw-wireframes": c({
     mandatePlain: "Samling eldre HTML-wireframes — historisk referanse.",
@@ -772,15 +855,16 @@ export const visIaConsolidationById: Record<string, VisIaConsolidationReadiness>
   "vis-frontpage-hubs": c({
     mandatePlain: "Definerer hub-kort på VIS-forsiden inntil tremeny finnes.",
     practicalHelp: "Styrer hvilke flater som vises som kort på /vis/.",
-    whatToDoHere: "Oppdater ved IA-endring. Konsolider med tremeny-data senere.",
-    whatNotToDoHere: "Ikke la hub-kort og tremeny divergere permanent.",
+    whatToDoHere: "Oppdater ved IA-endring inntil konsolidert datakilde finnes.",
+    whatNotToDoHere: "Ikke la hub-kort og tremeny divergere permanent — avklart løses i neste steg.",
     functionalValue: ["navigasjonshjelp", "lenker"],
     overlapKind: "route og behov",
-    overlapNote: "Samme behov som fremtidig tremeny — to kilder i dag.",
-    mergeRisk: "Slå sammen datakilder uten å miste hub-kort på forsiden under overgang.",
+    overlapNote: "Samme behov som fremtidig tremeny — parallelle kilder i dag.",
+    mergeRisk: "Konsolider uten å miste hub-kort på forsiden under overgang.",
     futurePlacement: "slå sammen med annen flate",
-    migrationNote: "vis-frontpage-hubs-v01.ts → vis-nav-tree.ts (forslag). Hub-kort filtreres fra tre.",
-    needsThomasReview: true,
+    migrationNote:
+      "VIS Tree Navigation v0.1: én felles datakilde (eller tydelig delt kontrakt) for hub-kort og tremeny. vis-frontpage-hubs-v01.ts merges inn.",
+    needsThomasReview: false,
   }),
 };
 
@@ -802,9 +886,10 @@ export function getVisIaConsolidationByFuture(
     .map(([id]) => id);
 }
 
-/** Tremodell v0.3 — etter mandat og konsolideringsvurdering. */
+/** Tremodell v0.3.1 — avklarte beslutninger innarbeidet. */
 export const visIaTreeProposalV03 = {
-  note: "Need-led tremodell etter Consolidation Readiness v0.3",
+  note: "Need-led tremodell v0.3.1 — «Arbeidsflater» som navigasjonskategori (top task 3 uendret)",
+  excludedFromTree: ["/vis/artikkel", "/vis/hub"],
   sections: [
     {
       id: "now",
@@ -816,13 +901,17 @@ export const visIaTreeProposalV03 = {
       ],
     },
     {
-      id: "find",
-      label: "Finn riktig flate",
+      id: "workspaces",
+      label: "Arbeidsflater",
       topTasks: ["finn-flate"] as VisIaTopTask[],
       items: [
         { label: "Designsystem", href: "/designsystem/", note: "Global canonical" },
         { label: "Review / QA", href: "/vis/review/", note: "Under Design i tre" },
-        { label: "Redaksjonelle bilder", href: "/vis/assets/editorial", note: "Ett navn — ikke DAM vs Editorial" },
+        {
+          label: "Redaksjonelle bilder",
+          href: "/vis/assets/editorial",
+          note: "Sekundær: DAM / bildebank — ett område",
+        },
         { label: "Gitbuss", href: "/vis/system/github-runtime-status", note: "Operativ GitHub" },
         { label: "Roadmap", href: "/vis/system/roadmap-timeline-v01", note: "Retning — ikke sprint" },
       ],
@@ -836,7 +925,11 @@ export const visIaTreeProposalV03 = {
         { label: "IA-prinsipper", href: "/vis/system/ia-principles-v01" },
         { label: "Hub Mandate", href: "/vis/system/hub-mandate-v01" },
         { label: "Artikkel-system", href: "/vis/system/article/" },
-        { label: "Agent-kontekst", href: "/vis/system/control-center", note: "Rename fra Control Center" },
+        {
+          label: "Agentdrift / runbook",
+          href: "/vis/system/control-center",
+          note: "Ikke «Control Center» — under Forstå system",
+        },
       ],
     },
     {
@@ -848,6 +941,7 @@ export const visIaTreeProposalV03 = {
         { label: "Design System v01 (legacy)", href: "/vis/system/design-system-v01" },
         { label: "Task bus live", href: "/vis/system/task-bus-live" },
         { label: "Lukkede sprintvisninger", note: "Ved sprintskifte" },
+        { label: "/vis/artikkel, /vis/hub", note: "Vurder sletting senere — ikke i tre" },
       ],
     },
   ],

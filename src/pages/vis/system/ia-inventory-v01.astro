@@ -15,8 +15,10 @@ import {
 } from "../../../data/vis-ia-inventory-v01.ts";
 import {
   visIaConsolidationMeta,
+  visIaClosedDecisions,
   visIaDeepDiveAreas,
   visIaMetadataStrategy,
+  visIaNextImplementation,
   visIaPageContractV03Example,
   visIaPageContractV03Fields,
   visIaTreeProposalV03,
@@ -26,7 +28,6 @@ const base = import.meta.env.BASE_URL;
 const entries = getVisIaInventoryEntriesFull();
 const thomasReview = getVisIaThomasReviewEntries();
 const mergeCandidates = getVisIaMergeCandidates();
-const archiveCandidates = getVisIaArchiveCandidates();
 const deleteCandidates = getVisIaDeleteCandidates();
 
 const topTaskOrder: VisIaTopTask[] = [
@@ -50,7 +51,7 @@ const preserveValues = [
 ].sort();
 ---
 
-<PrototypeLayout title="VIS IA Inventory v0.3">
+<PrototypeLayout title="VIS IA Inventory v0.3.1">
   <main class="ia-inv">
     <nav class="ia-inv__crumb">
       <a href={`${base}vis`}>VIS</a>
@@ -70,22 +71,36 @@ const preserveValues = [
     </header>
 
     <section class="ia-inv__dashboard" aria-label="QA-oppsummering">
-      <article class="ia-inv__stat ia-inv__stat--highlight">
+      <article class="ia-inv__stat ia-inv__stat--ok">
+        <span class="ia-inv__stat-n">{visIaClosedDecisions.length}</span>
+        <span class="ia-inv__stat-l">Avklaringer lukket</span>
+      </article>
+      <article class="ia-inv__stat">
         <span class="ia-inv__stat-n">{thomasReview.length}</span>
-        <span class="ia-inv__stat-l">Trenger Thomas</span>
+        <span class="ia-inv__stat-l">Åpne for Thomas</span>
       </article>
       <article class="ia-inv__stat">
         <span class="ia-inv__stat-n">{mergeCandidates.length}</span>
-        <span class="ia-inv__stat-l">Slå sammen (label/nav)</span>
-      </article>
-      <article class="ia-inv__stat">
-        <span class="ia-inv__stat-n">{archiveCandidates.length}</span>
-        <span class="ia-inv__stat-l">Arkiver</span>
+        <span class="ia-inv__stat-l">Data/nav-konsolidering</span>
       </article>
       <article class="ia-inv__stat">
         <span class="ia-inv__stat-n">{deleteCandidates.length}</span>
-        <span class="ia-inv__stat-l">Vurder sletting</span>
+        <span class="ia-inv__stat-l">Vurder sletting senere</span>
       </article>
+    </section>
+
+    <section class="ia-inv__section ia-inv__section--decisions" aria-labelledby="ia-inv-decisions">
+      <h2 id="ia-inv-decisions">Avklarte beslutninger (v0.3.1)</h2>
+      <p class="ia-inv__lead">Innarbeidet som anbefalinger — ikke lenger åpne spørsmål.</p>
+      <ul class="ia-inv__decisions">
+        {visIaClosedDecisions.map((d) => (
+          <li>
+            <h3>{d.topic}</h3>
+            <p class="ia-inv__decision">{d.decision}</p>
+            <p class="ia-inv__decision-why">{d.rationale}</p>
+          </li>
+        ))}
+      </ul>
     </section>
 
     {
@@ -161,8 +176,15 @@ const preserveValues = [
     </section>
 
     <section class="ia-inv__section" aria-labelledby="ia-inv-tree">
-      <h2 id="ia-inv-tree">Anbefalt tremodell v0.3</h2>
+      <h2 id="ia-inv-tree">Anbefalt tremodell v0.3.1</h2>
       <p class="ia-inv__lead">{visIaTreeProposalV03.note}</p>
+      {
+        visIaTreeProposalV03.excludedFromTree?.length ? (
+          <p class="ia-inv__exclude">
+            Ikke i tre: {visIaTreeProposalV03.excludedFromTree.join(", ")}
+          </p>
+        ) : null
+      }
       <div class="ia-inv__tree-v03">
         {
           visIaTreeProposalV03.sections.map((section) => (
@@ -187,7 +209,13 @@ const preserveValues = [
     </section>
 
     <section class="ia-inv__section" aria-labelledby="ia-inv-contract">
-      <h2 id="ia-inv-contract">Page contract — for VIS-header senere</h2>
+      <h2 id="ia-inv-contract">Page contract — del av {visIaNextImplementation.name}</h2>
+      <p class="ia-inv__lead">{visIaNextImplementation.summary}</p>
+      <ul class="ia-inv__next-includes">
+        {visIaNextImplementation.includes.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
       <p class="ia-inv__lead">{visIaMetadataStrategy.summary}</p>
       <div class="ia-inv__strategy-grid">
         <article>
@@ -214,6 +242,9 @@ const preserveValues = [
           ))
         }
       </ul>
+      <p class="ia-inv__header-goals">
+        VIS-header skal vise: {visIaNextImplementation.headerGoals.join(" · ")}
+      </p>
       <details class="ia-inv__details">
         <summary>Eksempel page contract</summary>
         <pre class="ia-inv__pre">{JSON.stringify(visIaPageContractV03Example, null, 2)}</pre>
@@ -303,6 +334,72 @@ const preserveValues = [
       border: 1px solid rgb(243 244 246);
       border-radius: 0.5rem;
       background: rgb(249 250 251);
+    }
+
+    .ia-inv__stat--ok {
+      border-color: rgb(167 243 208);
+      background: rgb(236 253 245);
+    }
+
+    .ia-inv__section--decisions {
+      background: rgb(249 250 251);
+      margin-left: -1rem;
+      margin-right: -1rem;
+      padding: 1.25rem 1rem 1.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgb(229 231 235);
+    }
+
+    .ia-inv__decisions {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .ia-inv__decisions h3 {
+      margin: 0;
+      font-size: 0.88rem;
+      font-weight: 650;
+    }
+
+    .ia-inv__decision {
+      margin: 0.3rem 0 0;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: rgb(55 65 81);
+      font-weight: 500;
+    }
+
+    .ia-inv__decision-why {
+      margin: 0.25rem 0 0;
+      font-size: 0.78rem;
+      color: rgb(107 114 128);
+    }
+
+    .ia-inv__exclude {
+      margin: 0 0 0.85rem;
+      font-size: 0.78rem;
+      color: rgb(153 27 27);
+      background: rgb(254 242 242);
+      padding: 0.45rem 0.65rem;
+      border-radius: 0.35rem;
+    }
+
+    .ia-inv__next-includes {
+      margin: 0 0 1rem;
+      padding-left: 1.15rem;
+      font-size: 0.8rem;
+      color: rgb(75 85 99);
+      line-height: 1.45;
+    }
+
+    .ia-inv__header-goals {
+      margin: 0.85rem 0 0;
+      font-size: 0.78rem;
+      color: rgb(107 114 128);
+      font-style: italic;
     }
 
     .ia-inv__stat--highlight {
