@@ -119,6 +119,13 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const result = await runCesSession(env.config, { message, sessionId });
     recordChatDriftSignal("success");
+    console.info("[api/chat] ces_run_session_ok", {
+      error_code: null,
+      upstream_http_status: null,
+      duration_bucket: result.meta.durationBucket,
+      retry_used: result.meta.retryUsed,
+      attempt_count: result.meta.attemptCount,
+    });
     return jsonResponse(
       {
         text: result.text,
@@ -130,9 +137,12 @@ export const POST: APIRoute = async ({ request }) => {
   } catch (error) {
     if (error instanceof CesRunSessionError) {
       console.error("[api/chat] ces_run_session_failed", {
-        code: error.code,
-        status: error.status,
-        sessionIdLength: sessionId.length,
+        error_code: error.code,
+        upstream_http_status: error.upstreamHttpStatus,
+        duration_bucket: error.durationBucket,
+        retry_used: error.retryUsed,
+        attempt_count: error.attemptCount,
+        session_id_length: sessionId.length,
       });
       recordChatDriftSignal("error", { error_code: error.code });
       return jsonResponse(
