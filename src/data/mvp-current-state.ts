@@ -77,7 +77,7 @@ export const mvpCurrentState = {
   } satisfies CurrentSprint,
   closedSprints: [] satisfies ClosedSprint[],
   currentFocus:
-    "#188 landet teknisk — reliability hardening v0.1 for stabil /no/chat/. Ekstern pilot venter. PostHog fortsatt av.",
+    "#188 åpen — guard strategy v0.2 for ops reliability-test uten å svekke public guard. Ekstern pilot venter. PostHog fortsatt av.",
   mvpSurfaces: [
     {
       id: "frontpage",
@@ -111,10 +111,10 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Applied",
-      note: "Production UI live. Reliability hardening v0.1 (#188 remaining). Guard aktiv. Ekstern pilot venter.",
+      note: "Production UI live. Guard strategy v0.2 (#188). Public guard aktiv. Ops reliability-test separat.",
       visFrontpage: true,
       kind: "public",
-      frontpageDescription: "Standalone headless AI — live i production (intern test). Guard aktiv.",
+      frontpageDescription: "Standalone headless AI — live i production (intern test). Public guard aktiv.",
     },
     {
       id: "designsystem",

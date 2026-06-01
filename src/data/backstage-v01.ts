@@ -3,7 +3,7 @@
 export const backstageMeta = {
   title: "Backstage",
   lead: "Backstage er kontrollrommet for hvordan Viddel fungerer bak scenen. Her forklarer vi AI-flyten, beskyttelsen, feilstater og hva som må sjekkes før vi deler med flere.",
-  updatedAt: "2026-05-30",
+  updatedAt: "2026-05-29",
   issue: "#184",
 } as const;
 
@@ -20,7 +20,8 @@ export const quickAnswers = [
   },
   {
     question: "Hva beskytter oss?",
-    answer: "Grenser på lengde og antall spørsmål, pluss sjekk av hvor forespørselen kommer fra. Mangler beskyttelsen i production, stenger Viddel trygt.",
+    answer:
+      "Public guard: grenser på lengde og antall spørsmål per IP, pluss sjekk av hvor forespørselen kommer fra. Separat ops-testmodus (hemmelig token) brukes kun internt for stabilitetstest — uten innholdslogging.",
   },
   {
     question: "Hva gjør vi når noe ikke virker?",
@@ -72,7 +73,8 @@ export const systemMapLayers: SystemMapLayer[] = [
     id: "guard",
     layer: "Beskyttelse",
     title: "Guard + Upstash",
-    human: "Viddel sjekker at spørsmålet er lovlig og innenfor grensen. Upstash teller bruk.",
+    human:
+      "Public guard beskytter brukere og kost — rate limit og origin-sjekk. Ops-test (hemmelig server-token) omgår kun IP-grenser for intern stabilitetstest.",
   },
   {
     id: "ai",
@@ -163,6 +165,22 @@ export const protectionRules = [
     tech: "guard_unavailable",
   },
 ] as const;
+
+/** Guard strategy v0.2 — public guard vs intern ops reliability testing. */
+export const guardStrategyExplainer = {
+  title: "Guard strategy v0.2",
+  lead: "To lag: public guard for ekte brukere, ops-test for intern stabilitet — uten å svekke offentlig sikkerhet.",
+  publicGuard: {
+    label: "Public guard (#180)",
+    human:
+      "Aktiv for alle uten gyldig ops-token. Origin-sjekk, maks meldingslengde, 10 / 10 min og 50 / døgn per IP. Fail closed hvis Upstash mangler i production.",
+  },
+  opsTest: {
+    label: "Ops reliability testing",
+    human:
+      "Kun script/ops med header x-viddel-ops-test-token og VIDDEL_OPS_TEST_TOKEN i Vercel. Omgår burst/daily IP-rate-limit — beholder validering, timeout, safe errors og ingen prompt/svar-logging. Token eksponeres aldri i frontend.",
+  },
+} as const;
 
 export const upstashExplainer = {
   title: "Hva betyr Upstash?",
@@ -444,6 +462,23 @@ export const firstCheckRules = [
 /** Runbooks — hvordan vi endrer operative verdier senere. */
 export const changeRunbooks: ChangeRunbook[] = [
   {
+    id: "ops-reliability",
+    title: "Ops reliability test-token",
+    whatChanges:
+      "Aktivere eller rotere hemmelig token for intern stabilitetstest — omgår kun public IP-rate-limit, ikke andre guard-regler.",
+    where:
+      "Vercel → Environment Variables: VIDDEL_OPS_TEST_TOKEN (Production, server-only). Script: scripts/chat-reliability-assessment.mjs.",
+    whereToGo:
+      "Vercel → Settings → Environment Variables. Generer sterk tilfeldig token lokalt — aldri i repo eller frontend. Redeploy Production.",
+    after:
+      "Redeploy. Kjør npm run chat:reliability med token i lokalt env — bekreft publicGuardBypassed: yes og at CES-signal kommer uten 429 fra IP-grense.",
+    test:
+      "Uten header: vanlig public guard. Feil token: ingen bypass. Riktig token fra script: reliability-serie uten rate_limit fra IP-grense.",
+    actionLinks: [backstageLinks.vercelEnv, backstageLinks.vercelDeployments, backstageLinks.guardFile],
+    envVars: ["VIDDEL_OPS_TEST_TOKEN"],
+    tech: "src/lib/chat-ops-test.ts · aldri PUBLIC_ prefix · aldri i klientkode",
+  },
+  {
     id: "rate-limits",
     title: "Endre rate limits",
     whatChanges: "Hvor mange spørsmål som tillates — per 10 minutter og per døgn (per IP).",
@@ -634,7 +669,7 @@ export const monitoringExplainer = {
       id: "drift",
       label: "Drift (Vercel + Upstash)",
       human:
-        "Server-side tellere på /api/chat: forespørsel, suksess, feil, rate limit, for lang melding, guard utilgjengelig og manglende konfigurasjon. Vercel Runtime Logs viser strukturerte [chat-drift]-linjer.",
+        "Server-side tellere på /api/chat: forespørsel, suksess, feil, rate limit, for lang melding, guard utilgjengelig og manglende konfigurasjon. Vercel Runtime Logs viser strukturerte [chat-drift]-linjer. Ops-test logges separat som [chat-ops-drift] (ops_test: true) — uten innhold, sessionId eller IP.",
       where: "Upstash Redis (dagsnøkler) + Vercel → Deployments → Runtime Logs",
     },
     {
@@ -656,6 +691,7 @@ export const monitoringExplainer = {
 export const monitoringLogged = [
   "Antall /api/chat-forespørsler per dag",
   "Utfall: suksess, feil, rate_limited, message_too_long, guard_unavailable, configuration_missing",
+  "Ops-test: [chat-ops-drift] med signal, error_code, upstream_http_status, duration_bucket, retry_used, attempt_count, ops_test: true",
   "PostHog: chat_opened, ai_entry_clicked, article_ai_seed_clicked, chat_question_sent, chat_answer_success/error",
   "Feilkoder (error_code) — aldri meldingstekst",
   "Route, entry_surface, article_slug, seed_id (hash — ikke spørsmålstekst)",
@@ -683,13 +719,14 @@ export const monitoringEvents = [
 
 export type EnvVarEntry = {
   name: string;
-  group: "upstash" | "ces" | "auth" | "posthog";
+  group: "upstash" | "ces" | "auth" | "posthog" | "ops";
   controls: string;
 };
 
 export const envVars: EnvVarEntry[] = [
   { name: "UPSTASH_REDIS_REST_URL", group: "upstash", controls: "Teller-endpoint." },
   { name: "UPSTASH_REDIS_REST_TOKEN", group: "upstash", controls: "Teller-autentisering." },
+  { name: "VIDDEL_OPS_TEST_TOKEN", group: "ops", controls: "Hemmelig ops reliability test — bypass public IP-rate-limit kun for script med riktig header. Aldri frontend." },
   { name: "CES_PROJECT_ID", group: "ces", controls: "CES prosjekt." },
   { name: "CES_LOCATION", group: "ces", controls: "CES region." },
   { name: "CES_APP_ID", group: "ces", controls: "Viddel-app i CES." },
@@ -709,6 +746,7 @@ export const envVarNotes = [
 export const sourceFiles = [
   "src/pages/api/chat.ts",
   "src/lib/chat-api-guard.ts",
+  "src/lib/chat-ops-test.ts",
   "src/lib/chat-usage-metrics.ts",
   "src/lib/viddel-analytics-events.ts",
   "src/components/analytics/ViddelAnalytics.astro",

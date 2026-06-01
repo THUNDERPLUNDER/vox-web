@@ -9,6 +9,7 @@ import {
   envVarNotes,
   envVars,
   productionChecklist,
+  guardStrategyExplainer,
   protectionRules,
   quickAnswers,
   sourceFiles,
@@ -32,6 +33,7 @@ const envGroups = [
   { id: "upstash", label: "Upstash (teller + drift)" },
   { id: "ces", label: "CES (AI-motor)" },
   { id: "auth", label: "Google auth" },
+  { id: "ops", label: "Ops reliability (intern test)" },
   { id: "posthog", label: "PostHog EU (produktinnsikt)" },
 ] as const;
 
@@ -138,6 +140,21 @@ const layerTone: Record<string, string> = {
           </li>
         ))}
       </ul>
+    </section>
+
+    <section class="bs__section" aria-labelledby="bs-guard-strategy">
+      <h2 id="bs-guard-strategy" class="bs__section-title">{guardStrategyExplainer.title}</h2>
+      <p class="bs__section-lead">{guardStrategyExplainer.lead}</p>
+      <div class="bs__quick-grid">
+        <article class="bs__quick-card">
+          <h3 class="bs__quick-q">{guardStrategyExplainer.publicGuard.label}</h3>
+          <p class="bs__quick-a">{guardStrategyExplainer.publicGuard.human}</p>
+        </article>
+        <article class="bs__quick-card">
+          <h3 class="bs__quick-q">{guardStrategyExplainer.opsTest.label}</h3>
+          <p class="bs__quick-a">{guardStrategyExplainer.opsTest.human}</p>
+        </article>
+      </div>
     </section>
 
     <section class="bs__explainers">

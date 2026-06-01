@@ -51,14 +51,15 @@ export const visRuntimeFeed = {
       area: "Data, monitoring og innsikt",
       why:
         "Vi må se om chatten virker, om den feiler, og hvilke innganger som brukes — uten å lagre spørsmål eller svar.",
-      status: "Landet teknisk (#194/#195). Reliability hardening v0.1 pågår — ekstern pilot venter på stabil chat.",
-      possibleSolution: "Drift via Upstash + script-basert driftcheck. PostHog EU aktiveres senere.",
-      nextDecision: "Merge reliability hardening. Ekstern pilot når chat >80% success over script-serie.",
+      status: "Landet teknisk (#194/#195/#197). Guard strategy v0.2 pågår — reliability testing blokkert av public guard er identifisert.",
+      possibleSolution: "Todelt guard: public guard + ops token for intern stabilitetstest. PostHog EU aktiveres senere.",
+      nextDecision: "Merge guard strategy v0.2. Ops-basert reliability-test for gyldig CES-signal. Ekstern pilot når chat >80% success.",
       issue: "#188",
       issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/188",
       progressSteps: [
         { id: "implement", label: "Monitoring levert", state: "done" },
-        { id: "reliability", label: "Reliability hardening", state: "current" },
+        { id: "reliability", label: "Reliability hardening", state: "done" },
+        { id: "guard-v02", label: "Guard strategy v0.2", state: "current" },
         { id: "pilot", label: "Ekstern pilot", state: "upcoming" },
       ],
     },
@@ -66,7 +67,7 @@ export const visRuntimeFeed = {
   recentlyCompletedSummary:
     "VIS Tree Navigation v0.1 (#192), IA Inventory v0.3.1 (#191) og Backstage v0.1 i production.",
   lastReturnTicketSummary:
-    "Chat reliability hardening v0.1: server-side retry, CES timeout, safe metadata logging. Ekstern pilot venter.",
+    "Guard strategy v0.2: ops token bypasser kun public IP-rate-limit for intern reliability-test. Public guard uendret.",
   links: {
     primary: [
       {
