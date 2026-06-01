@@ -5,6 +5,7 @@ import Header from "../components/nav/Header.astro";
 import MobileMenuSheet from "../components/nav/MobileMenuSheet.astro";
 import InspectDrawerArmScript from "../components/dev/InspectDrawerArmScript.astro";
 import InspectToolsDrawer from "../components/dev/InspectToolsDrawer.astro";
+import ViddelAnalytics from "../components/analytics/ViddelAnalytics.astro";
 
 const {
   title = "Viddel",
@@ -332,6 +333,7 @@ const isStandaloneChat = shellVariant === "standalone-chat";
       ) : null
     }
     {showHeaderDevtoolsToggle ? <InspectToolsDrawer /> : null}
+    <ViddelAnalytics />
     {
       showHeaderDevtoolsToggle ? (
       <script is:inline>

@@ -1,0 +1,107 @@
+---
+/* CONTRACT: Minimal PostHog EU init + safe client tracking wrapper (v0.1). */
+import {
+  VIDDEL_ANALYTICS_EVENTS,
+  VIDDEL_ANALYTICS_PROPERTIES,
+} from "../../lib/viddel-analytics-events.ts";
+
+const posthogKey = (import.meta.env.PUBLIC_POSTHOG_KEY ?? "").trim();
+const posthogHost = (import.meta.env.PUBLIC_POSTHOG_HOST ?? "https://eu.i.posthog.com").trim();
+const enabled = Boolean(posthogKey);
+const environment = import.meta.env.PROD
+  ? (import.meta.env.VERCEL_ENV ?? "production")
+  : "development";
+
+const allowedEvents = VIDDEL_ANALYTICS_EVENTS;
+const allowedProperties = VIDDEL_ANALYTICS_PROPERTIES;
+---
+
+{
+  enabled ? (
+    <script
+      define:vars={{ posthogKey, posthogHost, environment, allowedEvents, allowedProperties }}
+      is:inline
+    >
+      (function () {
+        var loaded = false;
+        var queue = [];
+
+        function hashSeed(label) {
+          var hash = 0;
+          for (var i = 0; i < label.length; i += 1) {
+            hash = (hash << 5) - hash + label.charCodeAt(i);
+            hash |= 0;
+          }
+          return "s" + Math.abs(hash).toString(36).slice(0, 10);
+        }
+
+        function articleSlugFromPath() {
+          var match = window.location.pathname.match(/\/no\/artikkel\/([^/]+)/);
+          return match ? match[1] : undefined;
+        }
+
+        function pickAllowed(props) {
+          var out = { environment: environment, route: window.location.pathname };
+          if (!props || typeof props !== "object") return out;
+          allowedProperties.forEach(function (key) {
+            if (props[key] !== undefined && props[key] !== null && props[key] !== "") {
+              out[key] = props[key];
+            }
+          });
+          return out;
+        }
+
+        window.viddelTrack = function (eventName, props) {
+          if (allowedEvents.indexOf(eventName) === -1) return;
+          var payload = pickAllowed(props);
+          if (!loaded || !window.posthog || typeof window.posthog.capture !== "function") {
+            queue.push([eventName, payload]);
+            return;
+          }
+          window.posthog.capture(eventName, payload);
+        };
+
+        window.viddelSeedId = hashSeed;
+
+        var script = document.createElement("script");
+        script.src = posthogHost.replace(/\/$/, "") + "/static/array.js";
+        script.async = true;
+        script.onload = function () {
+          if (!window.posthog || typeof window.posthog.init !== "function") return;
+          window.posthog.init(posthogKey, {
+            api_host: posthogHost,
+            autocapture: false,
+            capture_pageview: false,
+            disable_session_recording: true,
+            persistence: "memory",
+            person_profiles: "never",
+          });
+          loaded = true;
+          queue.forEach(function (item) {
+            window.posthog.capture(item[0], item[1]);
+          });
+          queue = [];
+        };
+        document.head.appendChild(script);
+
+        document.addEventListener(
+          "click",
+          function (event) {
+            var target = event.target;
+            if (!target || typeof target.closest !== "function") return;
+            var el = target.closest("[data-viddel-track]");
+            if (!el) return;
+            var trackEvent = el.getAttribute("data-viddel-track");
+            if (!trackEvent) return;
+            var entrySurface = el.getAttribute("data-viddel-entry-surface") || undefined;
+            var seedLabel = el.getAttribute("data-viddel-seed-label") || "";
+            var props = { entry_surface: entrySurface, article_slug: articleSlugFromPath() };
+            if (seedLabel) props.seed_id = hashSeed(seedLabel);
+            window.viddelTrack(trackEvent, props);
+          },
+          true,
+        );
+      })();
+    </script>
+  ) : null
+}

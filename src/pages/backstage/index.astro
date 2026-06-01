@@ -20,14 +20,19 @@ import {
   services,
   serviceMapFlow,
   firstCheckRules,
+  monitoringExplainer,
+  monitoringEvents,
+  monitoringLogged,
+  monitoringNotLogged,
 } from "../../data/backstage-v01.ts";
 
 const base = import.meta.env.BASE_URL;
 
 const envGroups = [
-  { id: "upstash", label: "Upstash (teller)" },
+  { id: "upstash", label: "Upstash (teller + drift)" },
   { id: "ces", label: "CES (AI-motor)" },
   { id: "auth", label: "Google auth" },
+  { id: "posthog", label: "PostHog EU (produktinnsikt)" },
 ] as const;
 
 const layerTone: Record<string, string> = {
@@ -335,6 +340,53 @@ const layerTone: Record<string, string> = {
           </li>
         ))}
       </ul>
+    </section>
+
+    <section class="bs__section" aria-labelledby="bs-monitoring">
+      <h2 id="bs-monitoring" class="bs__section-title">{monitoringExplainer.title}</h2>
+      <p class="bs__section-lead">{monitoringExplainer.lead}</p>
+      <div class="bs-monitoring-layers">
+        {monitoringExplainer.layers.map((layer) => (
+          <article class="bs-monitoring-layer">
+            <h3 class="bs-monitoring-layer__title">{layer.label}</h3>
+            <p class="bs-monitoring-layer__human">{layer.human}</p>
+            <p class="bs-monitoring-layer__where">
+              <span class="bs-monitoring-layer__where-label">Sjekk her:</span> {layer.where}
+            </p>
+          </article>
+        ))}
+      </div>
+      <div class="bs-monitoring-grid">
+        <div>
+          <h3 class="bs-monitoring-subtitle">Logges</h3>
+          <ul class="bs-note-list">
+            {monitoringLogged.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3 class="bs-monitoring-subtitle">Logges ikke</h3>
+          <ul class="bs-note-list">
+            {monitoringNotLogged.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <details class="bs-tech bs-tech--inline">
+        <summary>v0.1 PostHog-events</summary>
+        <ul class="bs-tech__env">
+          {monitoringEvents.map((event) => (
+            <li>
+              <code>{event.id}</code>
+              <span>
+                {event.layer} — {event.note}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </details>
     </section>
 
     <section class="bs__section" aria-labelledby="bs-checklist">
@@ -1233,6 +1285,73 @@ const layerTone: Record<string, string> = {
 
     .bs-note-list li + li {
       margin-top: 0.4rem;
+    }
+
+    .bs-monitoring-layers {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .bs-monitoring-layers {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .bs-monitoring-layer {
+      padding: 0.85rem 1rem;
+      border-radius: 0.5rem;
+      background: rgb(249 250 251);
+      border: 1px solid rgb(243 244 246);
+    }
+
+    .bs-monitoring-layer__title {
+      margin: 0;
+      font-size: 0.82rem;
+      font-weight: 650;
+      color: rgb(55 65 81);
+    }
+
+    .bs-monitoring-layer__human {
+      margin: 0.45rem 0 0;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: rgb(75 85 99);
+    }
+
+    .bs-monitoring-layer__where {
+      margin: 0.55rem 0 0;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: rgb(107 114 128);
+    }
+
+    .bs-monitoring-layer__where-label {
+      font-weight: 600;
+    }
+
+    .bs-monitoring-grid {
+      display: grid;
+      gap: 1.25rem;
+      margin-top: 1.25rem;
+    }
+
+    @media (min-width: 640px) {
+      .bs-monitoring-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .bs-monitoring-subtitle {
+      margin: 0;
+      font-size: 0.82rem;
+      font-weight: 650;
+      color: rgb(55 65 81);
+    }
+
+    .bs-tech--inline {
+      margin-top: 1rem;
     }
 
     .bs-tech {

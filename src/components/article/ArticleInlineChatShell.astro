@@ -62,6 +62,9 @@ const inspectLabelClass =
                 mode === "progressive" && "inline-chat-shell__seed-row",
               ]}
               data-inline-chat-seed={item.question}
+              data-viddel-track="article_ai_seed_clicked"
+              data-viddel-entry-surface="article_inline_shell"
+              data-viddel-seed-label={item.question}
             >
               <span class={mode === "progressive" ? "inline-chat-shell__seed-question" : undefined}>{item.question}</span>
             </button>

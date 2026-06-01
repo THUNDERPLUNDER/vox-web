@@ -99,6 +99,8 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
     </nav>
     <a
       href={chatHref}
+      data-viddel-track="ai_entry_clicked"
+      data-viddel-entry-surface="header_nav"
       class={`hidden items-center justify-center rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4] lg:inline-flex ${
         chatActive
           ? "border-[rgb(var(--text))/0.34] bg-[rgb(var(--reading-ink))] text-[rgb(var(--reading-paper))]"

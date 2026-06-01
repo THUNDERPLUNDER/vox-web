@@ -45,7 +45,13 @@ const inspectLabelClass =
     {
       items.map((item) => (
         <li class="prompt-group__item prompt_group__item" data-component="PromptGroupItem">
-          <a href={buildChatShellHref(item.question, seedFrom)} class="prompt-group__link prompt_group__link">
+          <a
+            href={buildChatShellHref(item.question, seedFrom)}
+            class="prompt-group__link prompt_group__link"
+            data-viddel-track="article_ai_seed_clicked"
+            data-viddel-entry-surface="article_prompt"
+            data-viddel-seed-label={item.question}
+          >
             <span class="prompt-group__question prompt_group__question">{item.question}</span>
             <span class="prompt-group__hint" aria-hidden="true">
               <svg class="prompt-group__hint-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -64,7 +70,13 @@ const inspectLabelClass =
     }
   </ul>
 
-  <a href={freeChatHref} class="prompt-group__cta" data-component="PromptGroupCta">
+  <a
+    href={freeChatHref}
+    class="prompt-group__cta"
+    data-component="PromptGroupCta"
+    data-viddel-track="ai_entry_clicked"
+    data-viddel-entry-surface="article_prompt_cta"
+  >
     <span class={inspectLabelClass} data-component-label>PromptGroupCta</span>
     {ctaLabel}
   </a>

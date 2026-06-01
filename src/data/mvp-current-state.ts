@@ -77,7 +77,7 @@ export const mvpCurrentState = {
   } satisfies CurrentSprint,
   closedSprints: [] satisfies ClosedSprint[],
   currentFocus:
-    "CES production live på /no/chat/ — intern test med Thomas og Vibeke. Upstash guard aktiv (#180). Backstage v0.1 live (#184) med build-time guard. Neste: AI usage monitoring v0.1 før ekstern deling.",
+    "Hybrid AI monitoring v0.1 (#188) implementeres — drift via Upstash/Vercel og smale PostHog EU-events. Intern test Thomas/Vibeke før ekstern deling.",
   mvpSurfaces: [
     {
       id: "frontpage",
@@ -111,7 +111,7 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Applied",
-      note: "Production UI live. CES prod env aktiv — live AI-svar i production. Public AI guard v0.1 (#180). Intern test Thomas/Vibeke. Backstage v0.1 (#184) live. Ekstern deling venter monitoring.",
+      note: "Production UI live. CES prod env aktiv. Upstash guard + Hybrid monitoring v0.1 (#188). Intern test Thomas/Vibeke.",
       visFrontpage: true,
       kind: "public",
       frontpageDescription: "Standalone headless AI — live i production (intern test). Guard aktiv.",
@@ -168,7 +168,7 @@ export const mvpCurrentState = {
     {
       id: "ai-usage-monitoring",
       label: "AI usage monitoring v0.1",
-      detail: "Påkrevd før ekstern deling — overvåkning av bruk, kost og misbruk.",
+      detail: "Hybrid v0.1 implementert — Upstash drift + PostHog EU. Intern test og verifisering før ekstern deling.",
     },
     {
       id: "backstage-v01",
