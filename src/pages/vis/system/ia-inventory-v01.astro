@@ -1,15 +1,24 @@
 ---
-/* CONTRACT: VIS IA Inventory v0.1 — intern analyseflate for kartlegging før tremeny. */
+/* CONTRACT: VIS IA Inventory v0.2 — mandatpass og kartlegging før tremeny. */
 import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+import VisIaTreeBranch from "../../../components/vis/VisIaTreeBranch.astro";
 import {
-  getVisIaEntriesByRecommendation,
-  getVisIaEntriesByStatus,
+  getVisIaArchiveCandidates,
+  getVisIaDeleteCandidates,
+  getVisIaEntriesByTopTask,
   getVisIaInventoryEntries,
+  getVisIaMergeCandidates,
   visIaConsolidationNotes,
   visIaInventoryMeta,
+  visIaOverlapClusters,
+  visIaPageContractExample,
+  visIaPageContractProposal,
+  visIaTopTaskLabels,
   visIaTreeProposal,
+  visIaTreeProposalV02,
   type VisIaEntry,
   type VisIaStatus,
+  type VisIaTopTask,
 } from "../../../data/vis-ia-inventory-v01.ts";
 
 const base = import.meta.env.BASE_URL;
@@ -40,10 +49,21 @@ const statusLabels: Record<VisIaStatus, string> = {
 const recommendationLabels = {
   behold: "Behold",
   "slå sammen": "Slå sammen",
-  flytt: "Flytt",
+  "flytt under": "Flytt under",
   arkiver: "Arkiver",
   "vurder sletting": "Vurder sletting",
+  "trenger avklaring": "Trenger avklaring",
 } as const;
+
+const topTaskOrder: VisIaTopTask[] = [
+  "status-nå",
+  "jobber-med",
+  "finn-flate",
+  "beslutninger-qa",
+  "forstå-system",
+  "historikk",
+  "unngå-forveksling",
+];
 
 function groupByStatus(items: VisIaEntry[]) {
   return statusOrder
@@ -55,11 +75,13 @@ function groupByStatus(items: VisIaEntry[]) {
 }
 
 const grouped = groupByStatus(entries);
-const archiveCandidates = getVisIaEntriesByRecommendation("arkiver");
-const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
+const mergeCandidates = getVisIaMergeCandidates();
+const archiveCandidates = getVisIaArchiveCandidates();
+const deleteCandidates = getVisIaDeleteCandidates();
+const needsContract = entries.filter((e) => e.mandate.needsPageContract);
 ---
 
-<PrototypeLayout title="VIS IA Inventory v0.1">
+<PrototypeLayout title="VIS IA Inventory v0.2">
   <main class="ia-inv">
     <nav class="ia-inv__crumb">
       <a href={`${base}vis`}>VIS</a>
@@ -70,59 +92,51 @@ const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
     </nav>
 
     <header class="ia-inv__hero">
-      <p class="ia-inv__kicker">VIS · IA · analyse {visIaInventoryMeta.version}</p>
+      <p class="ia-inv__kicker">VIS · IA · {visIaInventoryMeta.mandatePass}</p>
       <h1>VIS IA Inventory</h1>
       <p>{visIaInventoryMeta.purpose}</p>
-      <p class="ia-inv__meta">Oppdatert {visIaInventoryMeta.updatedAt} · {entries.length} flater kartlagt</p>
+      <p class="ia-inv__meta">
+        Oppdatert {visIaInventoryMeta.updatedAt} · {entries.length} flater · mandatvurdering per flate
+      </p>
     </header>
 
-    <section class="ia-inv__section" aria-labelledby="ia-inv-tree">
-      <h2 id="ia-inv-tree">Foreslått tremeny v0.1</h2>
-      <p class="ia-inv__lead">Thomas QA — før implementasjon av lokal navigasjon.</p>
-      <ul class="ia-inv__tree">
+    <section class="ia-inv__section" aria-labelledby="ia-inv-tasks">
+      <h2 id="ia-inv-tasks">Top tasks VIS skal støtte</h2>
+      <p class="ia-inv__lead">Grunnlag for tremodell v0.2 — behov først, routes etter.</p>
+      <ol class="ia-inv__task-list">
+        {topTaskOrder.map((task) => (
+          <li>
+            <strong>{visIaTopTaskLabels[task]}</strong>
+            <span class="ia-inv__task-count">
+              {getVisIaEntriesByTopTask(task).length} flater
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="ia-inv__section" aria-labelledby="ia-inv-tree-v02">
+      <h2 id="ia-inv-tree-v02">Foreslått tremeny v0.2 (need-led)</h2>
+      <p class="ia-inv__lead">Organisert etter top tasks — Thomas QA før implementasjon.</p>
+      <VisIaTreeBranch nodes={visIaTreeProposalV02} base={base} />
+    </section>
+
+    <section class="ia-inv__section" aria-labelledby="ia-inv-overlap">
+      <h2 id="ia-inv-overlap">Overlap-analyse — dobbel konfekt</h2>
+      <ul class="ia-inv__cards">
         {
-          visIaTreeProposal.map((root) => (
-            <li class="ia-inv__tree-root">
-              <span class="ia-inv__tree-label">
-                {root.href ? <a href={`${base}${root.href.replace(/^\//, "")}`}>{root.label}</a> : root.label}
-              </span>
-              {root.note ? <span class="ia-inv__tree-note">{root.note}</span> : null}
-              {
-                root.children ? (
-                  <ul>
-                    {root.children.map((child) => (
-                      <li>
-                        <span class="ia-inv__tree-label">
-                          {child.href ? (
-                            <a href={`${base}${child.href.replace(/^\//, "")}`}>{child.label}</a>
-                          ) : (
-                            child.label
-                          )}
-                        </span>
-                        {child.note ? <span class="ia-inv__tree-note">{child.note}</span> : null}
-                        {
-                          child.children ? (
-                            <ul>
-                              {child.children.map((leaf) => (
-                                <li>
-                                  <span class="ia-inv__tree-label">
-                                    {leaf.href ? (
-                                      <a href={`${base}${leaf.href.replace(/^\//, "")}`}>{leaf.label}</a>
-                                    ) : (
-                                      leaf.label
-                                    )}
-                                  </span>
-                                  {leaf.note ? <span class="ia-inv__tree-note">{leaf.note}</span> : null}
-                                </li>
-                              ))}
-                            </ul>
-                          ) : null
-                        }
-                      </li>
-                    ))}
-                  </ul>
-                ) : null
-              }
+          visIaOverlapClusters.map((cluster) => (
+            <li class="ia-inv__card ia-inv__card--overlap">
+              <h3>{cluster.title}</h3>
+              <p class="ia-inv__card-surfaces">
+                Flater: {cluster.surfaces.join(" · ")}
+              </p>
+              <p class="ia-inv__card-conflict">
+                <strong>Konflikt:</strong> {cluster.conflict}
+              </p>
+              <p class="ia-inv__card-resolution">
+                <strong>Anbefaling:</strong> {cluster.resolution}
+              </p>
             </li>
           ))
         }
@@ -130,25 +144,18 @@ const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
     </section>
 
     <section class="ia-inv__section" aria-labelledby="ia-inv-consolidation">
-      <h2 id="ia-inv-consolidation">Konsolidering — viktige vurderinger</h2>
-      <ul class="ia-inv__cards">
-        {
-          visIaConsolidationNotes.map((note) => (
-            <li class="ia-inv__card">
-              <h3>{note.title}</h3>
-              <p class="ia-inv__card-rec">{note.recommendation}</p>
-              <p>{note.rationale}</p>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    <section class="ia-inv__section" aria-labelledby="ia-inv-archive">
-      <h2 id="ia-inv-archive">Arkiv / sletting senere</h2>
-      <div class="ia-inv__summary-grid">
+      <h2 id="ia-inv-consolidation">Anbefalt konsolidering</h2>
+      <div class="ia-inv__summary-grid ia-inv__summary-grid--3">
         <article>
-          <h3>Anbefalt arkivering ({archiveCandidates.length})</h3>
+          <h3>Slå sammen ({mergeCandidates.length})</h3>
+          <ul>
+            {mergeCandidates.map((e) => (
+              <li>{e.title}</li>
+            ))}
+          </ul>
+        </article>
+        <article>
+          <h3>Arkiver ({archiveCandidates.length})</h3>
           <ul>
             {archiveCandidates.map((e) => (
               <li>{e.title}</li>
@@ -164,49 +171,135 @@ const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
           </ul>
         </article>
       </div>
+      <ul class="ia-inv__cards">
+        {
+          visIaConsolidationNotes.map((note) => (
+            <li class="ia-inv__card">
+              <h3>{note.title}</h3>
+              <p class="ia-inv__card-rec">{note.recommendation}</p>
+              <p>{note.rationale}</p>
+            </li>
+          ))
+        }
+      </ul>
     </section>
 
-    <section class="ia-inv__section" aria-labelledby="ia-inv-full">
-      <h2 id="ia-inv-full">Fullt inventar</h2>
+    <section class="ia-inv__section" aria-labelledby="ia-inv-contract">
+      <h2 id="ia-inv-contract">Forslag: page contract / metadata</h2>
+      <p class="ia-inv__lead">
+        Maskinlesbart format slik VIS-header senere kan vise hensikt, status og canonical kilde automatisk.
+        {needsContract.length} flater anbefalt merket.
+      </p>
+      <div class="ia-inv__table-wrap">
+        <table class="ia-inv__table">
+          <thead>
+            <tr>
+              <th>Felt</th>
+              <th>Påkrevd</th>
+              <th>Beskrivelse</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              visIaPageContractProposal.map((field) => (
+                <tr>
+                  <td><code>{field.field}</code></td>
+                  <td>{field.required ? "Ja" : "Nei"}</td>
+                  <td>
+                    {field.description}
+                    {field.example ? <span class="ia-inv__file">f.eks. {field.example}</span> : null}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <details class="ia-inv__details">
+        <summary>Eksempel page contract (JSON/frontmatter)</summary>
+        <pre class="ia-inv__pre">{JSON.stringify(visIaPageContractExample, null, 2)}</pre>
+      </details>
+    </section>
+
+    <section class="ia-inv__section" aria-labelledby="ia-inv-mandate">
+      <h2 id="ia-inv-mandate">Mandatvurdering per flate</h2>
       {
         grouped.map(({ status, items }) => (
           <div class="ia-inv__group">
             <h3>{statusLabels[status]} ({items.length})</h3>
-            <div class="ia-inv__table-wrap">
-              <table class="ia-inv__table">
-                <thead>
-                  <tr>
-                    <th>Flate</th>
-                    <th>Route</th>
-                    <th>Foreslått</th>
-                    <th>Anbefaling</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.map((entry) => (
-                    <tr>
-                      <td>
-                        <strong>{entry.title}</strong>
-                        <span class="ia-inv__rationale">{entry.rationale}</span>
-                      </td>
-                      <td>
-                        <code>{entry.route}</code>
-                        {entry.sourceFile ? <span class="ia-inv__file">{entry.sourceFile}</span> : null}
-                      </td>
-                      <td>{entry.suggestedPlacement}</td>
-                      <td>
-                        <span class={`ia-inv__pill ia-inv__pill--${entry.recommendation.replace(/\s+/g, "-")}`}>
-                          {recommendationLabels[entry.recommendation]}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div class="ia-inv__mandate-grid">
+              {items.map((entry) => (
+                <article class="ia-inv__mandate-card">
+                  <header>
+                    <h4>{entry.title}</h4>
+                    <code class="ia-inv__route">{entry.route}</code>
+                  </header>
+                  <dl class="ia-inv__mandate-dl">
+                    <div>
+                      <dt>Behov</dt>
+                      <dd>{entry.mandate.userNeed}</dd>
+                    </div>
+                    <div>
+                      <dt>Primær top task</dt>
+                      <dd>{visIaTopTaskLabels[entry.mandate.primaryTask]}</dd>
+                    </div>
+                    {
+                      entry.mandate.secondaryTask ? (
+                        <div>
+                          <dt>Sekundær top task</dt>
+                          <dd>{visIaTopTaskLabels[entry.mandate.secondaryTask]}</dd>
+                        </div>
+                      ) : null
+                    }
+                    <div>
+                      <dt>Målgruppe</dt>
+                      <dd>{entry.mandate.audience.length ? entry.mandate.audience.join(", ") : "—"}</dd>
+                    </div>
+                    <div>
+                      <dt>Kjerneinnhold</dt>
+                      <dd>{entry.mandate.coreContent}</dd>
+                    </div>
+                    <div>
+                      <dt>Etter bruk</dt>
+                      <dd>{entry.mandate.postUseAction}</dd>
+                    </div>
+                    {
+                      entry.mandate.overlappingSurfaces.length ? (
+                        <div>
+                          <dt>Overlapper med</dt>
+                          <dd>{entry.mandate.overlappingSurfaces.join(" · ")}</dd>
+                        </div>
+                      ) : null
+                    }
+                    <div>
+                      <dt>Hub-plassering</dt>
+                      <dd>{entry.mandate.hubPlacement}</dd>
+                    </div>
+                    <div>
+                      <dt>Foreslått i tre v0.2</dt>
+                      <dd>{entry.suggestedPlacement}</dd>
+                    </div>
+                  </dl>
+                  <footer>
+                    <span class={`ia-inv__pill ia-inv__pill--${entry.recommendation.replace(/\s+/g, "-")}`}>
+                      {recommendationLabels[entry.recommendation]}
+                    </span>
+                    {entry.mandate.needsPageContract ? (
+                      <span class="ia-inv__pill ia-inv__pill--contract">Page contract</span>
+                    ) : null}
+                  </footer>
+                </article>
+              ))}
             </div>
           </div>
         ))
       }
+    </section>
+
+    <section class="ia-inv__section" aria-labelledby="ia-inv-tree-v01">
+      <h2 id="ia-inv-tree-v01">Tremeny v0.1 (route-basert) — referanse</h2>
+      <p class="ia-inv__lead">Beholdt for sammenligning med v0.2.</p>
+      <VisIaTreeBranch nodes={visIaTreeProposal} base={base} />
     </section>
   </main>
 
@@ -280,6 +373,20 @@ const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
       color: rgb(107 114 128);
     }
 
+    .ia-inv__task-list {
+      margin: 0;
+      padding-left: 1.25rem;
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+
+    .ia-inv__task-count {
+      display: block;
+      font-size: 0.72rem;
+      color: rgb(156 163 175);
+      font-weight: 400;
+    }
+
     .ia-inv__tree {
       margin: 0;
       padding-left: 0;
@@ -296,7 +403,7 @@ const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
     }
 
     .ia-inv__tree-root + .ia-inv__tree-root {
-      margin-top: 0.5rem;
+      margin-top: 0.75rem;
     }
 
     .ia-inv__tree-label {
@@ -309,6 +416,14 @@ const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
       text-decoration: underline;
       text-underline-offset: 2px;
       text-decoration-color: rgb(209 213 219);
+    }
+
+    .ia-inv__tree-task {
+      display: block;
+      margin-top: 0.1rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: rgb(99 102 241);
     }
 
     .ia-inv__tree-note {
@@ -351,6 +466,19 @@ const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
       color: rgb(107 114 128);
     }
 
+    .ia-inv__card-surfaces {
+      margin: 0.25rem 0 0 !important;
+      font-size: 0.75rem !important;
+      color: rgb(156 163 175) !important;
+    }
+
+    .ia-inv__card-conflict,
+    .ia-inv__card-resolution {
+      margin: 0.45rem 0 0 !important;
+      font-size: 0.82rem !important;
+      line-height: 1.45;
+    }
+
     .ia-inv__summary-grid {
       display: grid;
       gap: 1rem;
@@ -376,12 +504,71 @@ const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
     }
 
     .ia-inv__group h3 {
-      margin: 0 0 0.5rem;
+      margin: 0 0 0.75rem;
       font-size: 0.78rem;
       font-weight: 650;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: rgb(107 114 128);
+    }
+
+    .ia-inv__mandate-grid {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .ia-inv__mandate-card {
+      padding: 0.85rem 1rem;
+      border: 1px solid rgb(243 244 246);
+      border-radius: 0.5rem;
+      background: rgb(249 250 251);
+    }
+
+    .ia-inv__mandate-card h4 {
+      margin: 0;
+      font-size: 0.88rem;
+      font-weight: 650;
+    }
+
+    .ia-inv__route {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 0.68rem;
+      color: rgb(107 114 128);
+      word-break: break-all;
+    }
+
+    .ia-inv__mandate-dl {
+      margin: 0.65rem 0 0;
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .ia-inv__mandate-dl div {
+      display: grid;
+      gap: 0.1rem;
+    }
+
+    .ia-inv__mandate-dl dt {
+      font-size: 0.65rem;
+      font-weight: 650;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgb(156 163 175);
+    }
+
+    .ia-inv__mandate-dl dd {
+      margin: 0;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: rgb(55 65 81);
+    }
+
+    .ia-inv__mandate-card footer {
+      margin-top: 0.65rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
     }
 
     .ia-inv__table-wrap {
@@ -410,14 +597,6 @@ const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
       color: rgb(156 163 175);
     }
 
-    .ia-inv__rationale {
-      display: block;
-      margin-top: 0.2rem;
-      font-weight: 400;
-      color: rgb(156 163 175);
-      line-height: 1.4;
-    }
-
     .ia-inv__file {
       display: block;
       margin-top: 0.15rem;
@@ -428,7 +607,21 @@ const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
 
     .ia-inv__table code {
       font-size: 0.7rem;
-      word-break: break-all;
+    }
+
+    .ia-inv__details {
+      margin-top: 0.85rem;
+      font-size: 0.82rem;
+    }
+
+    .ia-inv__pre {
+      margin: 0.5rem 0 0;
+      padding: 0.75rem;
+      font-size: 0.72rem;
+      background: rgb(17 24 39);
+      color: rgb(229 231 235);
+      border-radius: 0.35rem;
+      overflow-x: auto;
     }
 
     .ia-inv__pill {
@@ -448,7 +641,7 @@ const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
     }
 
     .ia-inv__pill--slå-sammen,
-    .ia-inv__pill--flytt {
+    .ia-inv__pill--flytt-under {
       border-color: rgb(191 219 254);
       color: rgb(30 64 175);
       background: rgb(239 246 255);
@@ -466,12 +659,26 @@ const deleteCandidates = getVisIaEntriesByRecommendation("vurder sletting");
       background: rgb(254 242 242);
     }
 
+    .ia-inv__pill--contract {
+      border-color: rgb(221 214 254);
+      color: rgb(91 33 182);
+      background: rgb(245 243 255);
+    }
+
     @media (min-width: 768px) {
       .ia-inv {
         padding: 2rem 1.5rem 3.5rem;
       }
 
       .ia-inv__summary-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .ia-inv__summary-grid--3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .ia-inv__mandate-grid {
         grid-template-columns: 1fr 1fr;
       }
     }

@@ -1,0 +1,36 @@
+---
+/* CONTRACT: Rekursiv VIS IA tre-node for inventory-analyse. */
+import VisIaTreeBranch from "./VisIaTreeBranch.astro";
+import { visIaTopTaskLabels, type VisIaTreeNode } from "../../data/vis-ia-inventory-v01.ts";
+
+interface Props {
+  nodes: VisIaTreeNode[];
+  base: string;
+  depth?: number;
+}
+
+const { nodes, base, depth = 0 } = Astro.props;
+---
+
+<ul class:list={depth === 0 ? "ia-inv__tree" : undefined}>
+  {
+    nodes.map((node) => (
+      <li class:list={depth === 0 ? "ia-inv__tree-root" : undefined}>
+        <span class="ia-inv__tree-label">
+          {node.href ? (
+            <a href={`${base}${node.href.replace(/^\//, "")}`}>{node.label}</a>
+          ) : (
+            node.label
+          )}
+        </span>
+        {node.primaryTask ? (
+          <span class="ia-inv__tree-task">{visIaTopTaskLabels[node.primaryTask]}</span>
+        ) : null}
+        {node.note ? <span class="ia-inv__tree-note">{node.note}</span> : null}
+        {node.children ? (
+          <VisIaTreeBranch nodes={node.children} base={base} depth={depth + 1} />
+        ) : null}
+      </li>
+    ))
+  }
+</ul>
