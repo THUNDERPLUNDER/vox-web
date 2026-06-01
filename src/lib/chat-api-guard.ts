@@ -2,6 +2,7 @@
 
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { isOpsReliabilityRequest } from "./chat-ops-test.ts";
 
 export const CHAT_MAX_MESSAGE_LENGTH = 2000;
 
@@ -120,11 +121,15 @@ function getRateLimiters(): RateLimitState | null {
 }
 
 export type RateLimitCheckResult =
-  | { ok: true; skipped?: boolean }
+  | { ok: true; skipped?: boolean; opsBypass?: boolean }
   | { ok: false; status: 429 | 503; error: string; message: string };
 
-/** Fail closed in production when Upstash env is missing. */
+/** Fail closed in production when Upstash env is missing. Ops reliability token bypasses burst/daily only. */
 export async function checkChatRateLimit(request: Request): Promise<RateLimitCheckResult> {
+  if (isOpsReliabilityRequest(request)) {
+    return { ok: true, skipped: true, opsBypass: true };
+  }
+
   const limiters = getRateLimiters();
   if (!limiters) {
     if (isChatGuardProduction()) {

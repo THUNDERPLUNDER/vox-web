@@ -41,32 +41,36 @@ export type VisRuntimeFeed = {
 
 /** Manually updated after important Return Tickets — not synced from GitHub. */
 export const visRuntimeFeed = {
-  updatedAt: "2026-06-01",
+  updatedAt: "2026-05-29",
   activeNow: [
     {
       id: "ai-usage-monitoring-v01",
       headline:
-        "Vi legger inn trygg måling av AI-chatten før vi deler Viddel med flere.",
+        "Vi skiller brukerbeskyttelse fra intern stabilitetstest av AI-chatten.",
       workTitle: "AI usage monitoring v0.1 (#188)",
       area: "Data, monitoring og innsikt",
       why:
         "Vi må se om chatten virker, om den feiler, og hvilke innganger som brukes — uten å lagre spørsmål eller svar.",
-      status: "Landet teknisk (#194/#195). Reliability hardening v0.1 pågår — ekstern pilot venter på stabil chat.",
-      possibleSolution: "Drift via Upstash + script-basert driftcheck. PostHog EU aktiveres senere.",
-      nextDecision: "Merge reliability hardening. Ekstern pilot når chat >80% success over script-serie.",
+      status:
+        "Monitoring er levert. Nå justerer vi guard-strategien slik at Cursor kan teste CES-stabilitet uten å bli stoppet av vanlig public rate limit.",
+      possibleSolution:
+        "Public guard står fast. Ops-test får hemmelig server-token for måling.",
+      nextDecision:
+        "Kjør ren ops-test. Hvis CES fortsatt er ustabil, start fallback-spike.",
       issue: "#188",
       issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/188",
       progressSteps: [
-        { id: "implement", label: "Monitoring levert", state: "done" },
-        { id: "reliability", label: "Reliability hardening", state: "current" },
-        { id: "pilot", label: "Ekstern pilot", state: "upcoming" },
+        { id: "monitoring", label: "Monitoring levert", state: "done" },
+        { id: "guard-v02", label: "Guard strategy v0.2", state: "current" },
+        { id: "ces-test", label: "Ren CES-test", state: "upcoming" },
+        { id: "fallback", label: "Fallback ved behov", state: "upcoming" },
       ],
     },
   ],
   recentlyCompletedSummary:
     "VIS Tree Navigation v0.1 (#192), IA Inventory v0.3.1 (#191) og Backstage v0.1 i production.",
   lastReturnTicketSummary:
-    "Chat reliability hardening v0.1: server-side retry, CES timeout, safe metadata logging. Ekstern pilot venter.",
+    "VIS-språk oppdatert: vi feilsøker chat-stabilitet og skiller public guard fra intern ops-test (#199).",
   links: {
     primary: [
       {
@@ -75,8 +79,8 @@ export const visRuntimeFeed = {
         kind: "issue",
       },
       {
-        label: "PR #194",
-        href: "https://github.com/THUNDERPLUNDER/vox-web/pull/194",
+        label: "PR #199",
+        href: "https://github.com/THUNDERPLUNDER/vox-web/pull/199",
         kind: "issue",
       },
     ],

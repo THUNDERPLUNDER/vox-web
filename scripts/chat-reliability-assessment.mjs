@@ -2,14 +2,15 @@
 /* CONTRACT: Safe chat reliability probe — metadata only, no prompt/answer logging. */
 
 import { createSign } from "node:crypto";
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+const OPS_TEST_HEADER = "x-viddel-ops-test-token";
 const DEFAULT_BASE = "https://vox.raddum.no";
-/** Stay under production burst guard (10 / 10 min per IP). */
+/** Stay under production burst guard (10 / 10 min per IP) unless ops token is set. */
 const DEFAULT_COUNT = 8;
 const DEFAULT_DELAY_MS = 8_000;
 
@@ -40,6 +41,24 @@ const FREEFORM_PROMPTS = [
   "Hva gjør jeg hvis bare ett apparat kobler til?",
 ];
 
+function loadEnvFile(path) {
+  if (!existsSync(path)) return {};
+  const env = {};
+  for (const line of readFileSync(path, "utf8").split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eq = trimmed.indexOf("=");
+    if (eq === -1) continue;
+    const key = trimmed.slice(0, eq);
+    let val = trimmed.slice(eq + 1);
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+      val = val.slice(1, -1);
+    }
+    env[key] = val;
+  }
+  return env;
+}
+
 function parseArgs(argv) {
   const args = {
     base: DEFAULT_BASE,
@@ -48,6 +67,7 @@ function parseArgs(argv) {
     direct: false,
     delayMs: DEFAULT_DELAY_MS,
     sessionPerRequest: true,
+    envFile: "",
   };
   for (const arg of argv) {
     if (arg.startsWith("--base=")) args.base = arg.slice(7).replace(/\/$/, "");
@@ -56,6 +76,7 @@ function parseArgs(argv) {
     else if (arg === "--direct") args.direct = true;
     else if (arg === "--shared-session") args.sessionPerRequest = false;
     else if (arg.startsWith("--delay-ms=")) args.delayMs = Number(arg.slice(11));
+    else if (arg.startsWith("--env-file=")) args.envFile = arg.slice(11);
   }
   return args;
 }
@@ -99,15 +120,19 @@ function buildPlan(count) {
   return plan;
 }
 
-async function callProxy(base, sessionId, message) {
+async function callProxy(base, sessionId, message, opsToken) {
   const started = performance.now();
+  const headers = {
+    "Content-Type": "application/json",
+    Origin: base,
+    Referer: `${base}/no/chat/`,
+  };
+  if (opsToken) {
+    headers[OPS_TEST_HEADER] = opsToken;
+  }
   const response = await fetch(`${base}/api/chat`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Origin: base,
-      Referer: `${base}/no/chat/`,
-    },
+    headers,
     body: JSON.stringify({ message, sessionId }),
   });
   const durationMs = Math.round(performance.now() - started);
@@ -216,7 +241,7 @@ async function callDirectCes(env, sessionId, message) {
   };
 }
 
-function summarize(results) {
+function summarize(results, opsConfig) {
   const total = results.length;
   const byCategory = {
     success: 0,
@@ -226,8 +251,15 @@ function summarize(results) {
     app_error: 0,
     other: 0,
   };
+  let beforeRateLimitTotal = 0;
+  let beforeRateLimitSuccess = 0;
   for (const row of results) {
     byCategory[row.category] = (byCategory[row.category] ?? 0) + 1;
+  }
+  for (const row of results) {
+    if (row.category === "rate_limit") break;
+    beforeRateLimitTotal += 1;
+    if (row.finalSuccess) beforeRateLimitSuccess += 1;
   }
   const buckets = {};
   for (const r of results) {
@@ -239,32 +271,52 @@ function summarize(results) {
     success,
     error: total - success,
     successRate: total ? Number(((success / total) * 100).toFixed(1)) : 0,
+    successBeforeRateLimit: beforeRateLimitSuccess,
+    callsBeforeRateLimit: beforeRateLimitTotal,
+    successRateBeforeRateLimit: beforeRateLimitTotal
+      ? Number(((beforeRateLimitSuccess / beforeRateLimitTotal) * 100).toFixed(1))
+      : 0,
     byCategory,
     durationBuckets: buckets,
-    guardNote:
-      "Default 8 calls / 8s spacing stays under 10-per-10min burst. One /api/chat per row (server retry is internal).",
+    opsMode: opsConfig,
+    retryUsedNote: "Server-side retry_used — see [chat-ops-drift] in Vercel logs when ops token active",
+    guardNote: opsConfig.publicGuardBypassed
+      ? "Ops token active — public burst/daily IP limits bypassed; one /api/chat per row."
+      : "No ops token — subject to public guard (10/10 min, 50/day per IP).",
   };
 }
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  const fileEnv = args.envFile ? loadEnvFile(args.envFile) : {};
+  const opsToken = (process.env.VIDDEL_OPS_TEST_TOKEN ?? fileEnv.VIDDEL_OPS_TEST_TOKEN ?? "").trim();
+  const opsConfig = {
+    tokenConfiguredLocally: Boolean(opsToken),
+    publicGuardBypassed: Boolean(opsToken),
+    header: OPS_TEST_HEADER,
+  };
+
   const sessionId = `viddel-rel-${Date.now().toString(36)}`;
   const plan = buildPlan(args.count);
   const results = [];
 
   console.log(
-    `chat-reliability: ${args.count} calls, ${args.delayMs}ms spacing, sessionPerRequest=${args.sessionPerRequest}`,
+    `chat-reliability: ${args.count} calls, ${args.delayMs}ms spacing, sessionPerRequest=${args.sessionPerRequest}, opsToken=${opsConfig.tokenConfiguredLocally ? "yes" : "no"}`,
   );
+  if (!opsConfig.tokenConfiguredLocally) {
+    console.log("WARN: VIDDEL_OPS_TEST_TOKEN not set — public IP rate limits apply.");
+  }
 
   for (const item of plan) {
     const requestSessionId = args.sessionPerRequest
       ? `viddel-rel-${Date.now().toString(36)}-${item.n}`
       : sessionId;
-    const proxy = await callProxy(args.base, requestSessionId, item.message);
+    const proxy = await callProxy(args.base, requestSessionId, item.message, opsToken || undefined);
     const row = {
       request: item.n,
       inputType: item.inputType,
       channel: "proxy",
+      opsTest: opsConfig.tokenConfiguredLocally,
       httpStatus: proxy.httpStatus,
       errorCode: proxy.errorCode,
       category: proxy.category,
@@ -301,7 +353,7 @@ async function main() {
     }
   }
 
-  const summary = summarize(results);
+  const summary = summarize(results, opsConfig);
   const cesEnv = readCesEnv();
   const report = {
     generatedAt: new Date().toISOString(),
@@ -310,6 +362,7 @@ async function main() {
       count: args.count,
       delayMs: args.delayMs,
       sessionPerRequest: args.sessionPerRequest,
+      opsTest: opsConfig,
     },
     sessionIdPrefix: sessionId.slice(0, 16),
     directEnvAvailable: cesEnv.missing.length === 0,

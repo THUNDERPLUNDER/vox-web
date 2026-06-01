@@ -66,7 +66,7 @@ export type ClosedSprint = {
 };
 
 export const mvpCurrentState = {
-  updatedAt: "2026-05-30",
+  updatedAt: "2026-05-29",
   currentSprint: {
     id: "2026-w21",
     label: "2026-W21",
@@ -77,7 +77,7 @@ export const mvpCurrentState = {
   } satisfies CurrentSprint,
   closedSprints: [] satisfies ClosedSprint[],
   currentFocus:
-    "#188 landet teknisk — reliability hardening v0.1 for stabil /no/chat/. Ekstern pilot venter. PostHog fortsatt av.",
+    "Monitoring levert (#188). Vi feilsøker chat-stabilitet — public guard står, ops-test gir ren CES-måling. Fallback ved behov.",
   mvpSurfaces: [
     {
       id: "frontpage",
@@ -111,10 +111,10 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Applied",
-      note: "Production UI live. Reliability hardening v0.1 (#188 remaining). Guard aktiv. Ekstern pilot venter.",
+      note: "Live i production. Public guard beskytter brukere; intern ops-test måler CES-stabilitet separat (#188).",
       visFrontpage: true,
       kind: "public",
-      frontpageDescription: "Standalone headless AI — live i production (intern test). Guard aktiv.",
+      frontpageDescription: "Headless AI-chat — live (intern test). Public guard aktiv.",
     },
     {
       id: "designsystem",
