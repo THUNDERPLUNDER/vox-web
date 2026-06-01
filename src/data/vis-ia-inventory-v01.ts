@@ -1,4 +1,9 @@
-/* CONTRACT: VIS IA Inventory v0.2 — kartlegging, mandatvurdering og foreslått tremeny (analyse, ikke implementasjon). */
+/* CONTRACT: VIS IA Inventory v0.3 — kartlegging, mandat og konsolideringsklarhet (analyse, ikke implementasjon). */
+
+import {
+  visIaConsolidationById,
+  type VisIaConsolidationReadiness,
+} from "./vis-ia-consolidation-v03.ts";
 
 export type VisIaStatus =
   | "active"
@@ -79,6 +84,10 @@ export type VisIaEntry = {
   mandate: VisIaMandate;
 };
 
+export type VisIaEntryFull = VisIaEntry & {
+  consolidation: VisIaConsolidationReadiness;
+};
+
 export type VisIaTreeNode = {
   id: string;
   label: string;
@@ -122,11 +131,11 @@ export const visIaTopTaskLabels: Record<VisIaTopTask, string> = {
 };
 
 export const visIaInventoryMeta = {
-  version: "v0.2",
+  version: "v0.3",
   updatedAt: "2026-05-31",
   purpose:
-    "Mandatpass og kartlegging før trebasert lokalmeny i VIS. Analyse og forslag — ingen routes slettet eller flyttet.",
-  mandatePass: "VIS IA Mandate Pass v0.2",
+    "Konsolideringsklarhet før trebasert lokalmeny i VIS. Analyse og anbefaling — ingen routes slettet, flyttet eller slått sammen fysisk.",
+  mandatePass: "VIS IA Consolidation Readiness v0.3",
 } as const;
 
 /** Forslag til maskinlesbart page contract for VIS-sider. */
@@ -944,7 +953,7 @@ export const visIaInventoryEntries: VisIaEntry[] = [
     id: "ia-inventory",
     route: "/vis/system/ia-inventory-v01",
     sourceFile: "src/pages/vis/system/ia-inventory-v01.astro",
-    title: "VIS IA Inventory v0.2",
+    title: "VIS IA Inventory v0.3",
     surfaceType: "system-doc",
     status: "active",
     currentPlacement: "VIS system (meta)",
@@ -1217,6 +1226,28 @@ export const visIaInventoryEntries: VisIaEntry[] = [
 
 export function getVisIaInventoryEntries(): VisIaEntry[] {
   return visIaInventoryEntries;
+}
+
+export function getVisIaInventoryEntriesFull(): VisIaEntryFull[] {
+  return visIaInventoryEntries.map((entry) => ({
+    ...entry,
+    consolidation: visIaConsolidationById[entry.id] ?? {
+      mandatePlain: entry.mandate.userNeed,
+      practicalHelp: entry.mandate.coreContent,
+      whatToDoHere: entry.mandate.postUseAction,
+      whatNotToDoHere: "—",
+      functionalValue: [],
+      overlapKind: "ingen" as const,
+      overlapNote: entry.mandate.overlappingSurfaces.join(", ") || "—",
+      mergeRisk: "Ikke vurdert",
+      futurePlacement: "trenger Thomas-avklaring" as const,
+      needsThomasReview: true,
+    },
+  }));
+}
+
+export function getVisIaThomasReviewEntries(): VisIaEntryFull[] {
+  return getVisIaInventoryEntriesFull().filter((e) => e.consolidation.needsThomasReview);
 }
 
 export function getVisIaEntriesByStatus(status: VisIaStatus): VisIaEntry[] {

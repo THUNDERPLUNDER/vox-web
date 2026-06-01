@@ -1,0 +1,337 @@
+---
+/* CONTRACT: Kort for én VIS-flate i IA inventory — skannbar Thomas/Vibeke-visning. */
+import {
+  visIaTopTaskLabels,
+  type VisIaEntry,
+  type VisIaStatus,
+} from "../../data/vis-ia-inventory-v01.ts";
+import type { VisIaConsolidationReadiness } from "../../data/vis-ia-consolidation-v03.ts";
+
+interface Props {
+  entry: VisIaEntry;
+  consolidation: VisIaConsolidationReadiness;
+  base: string;
+}
+
+const { entry, consolidation, base } = Astro.props;
+
+const statusLabels: Record<VisIaStatus, string> = {
+  active: "Aktiv",
+  canonical: "Canonical",
+  planned: "Planlagt",
+  reference: "Referanse",
+  lab: "Lab",
+  historical: "Historikk",
+  legacy: "Legacy",
+  unknown: "Ukjent",
+};
+
+const overlapLabels = {
+  ingen: "Ingen overlapp",
+  "route-navn": "Route/navn-overlapp",
+  "reelt behov": "Reelt behovsoverlapp",
+  "route og behov": "Route og behov",
+} as const;
+
+const futureClass: Record<string, string> = {
+  "behold som egen flate": "future-keep",
+  "behold som global flate og vis i VIS-tre": "future-global",
+  "slå sammen med annen flate": "future-merge",
+  "gjør om til seksjon under annen flate": "future-section",
+  "flytt til historikk / arkiv": "future-archive",
+  "vurder sletting senere": "future-delete",
+  "trenger Thomas-avklaring": "future-clarify",
+};
+
+const href =
+  entry.route.startsWith("/") && !entry.route.includes("(") && !entry.route.includes(" ")
+    ? `${base}${entry.route.replace(/^\//, "")}`
+    : null;
+---
+
+<article
+  class:list={["ia-surface", `ia-surface--${entry.status}`, consolidation.needsThomasReview && "ia-surface--review"]}
+  id={entry.id}
+>
+  <header class="ia-surface__head">
+    <div class="ia-surface__title-row">
+      <h3 class="ia-surface__title">
+        {href ? <a href={href}>{entry.title}</a> : entry.title}
+      </h3>
+      {consolidation.needsThomasReview ? (
+        <span class="ia-surface__flag">Trenger Thomas</span>
+      ) : null}
+    </div>
+    <div class="ia-surface__badges">
+      <span class={`ia-surface__status ia-surface__status--${entry.status}`}>
+        {statusLabels[entry.status]}
+      </span>
+      <span class={`ia-surface__future ${futureClass[consolidation.futurePlacement] ?? ""}`}>
+        {consolidation.futurePlacement}
+      </span>
+    </div>
+  </header>
+
+  <p class="ia-surface__mandate">{consolidation.mandatePlain}</p>
+
+  <div class="ia-surface__grid">
+    <div class="ia-surface__block">
+      <h4>Hva gjør vi her?</h4>
+      <p>{consolidation.whatToDoHere}</p>
+    </div>
+    <div class="ia-surface__block ia-surface__block--muted">
+      <h4>Hva gjør vi ikke her?</h4>
+      <p>{consolidation.whatNotToDoHere}</p>
+    </div>
+  </div>
+
+  <dl class="ia-surface__meta">
+    <div>
+      <dt>Top task</dt>
+      <dd>{visIaTopTaskLabels[entry.mandate.primaryTask]}</dd>
+    </div>
+    <div>
+      <dt>Hjelper oss med</dt>
+      <dd>{consolidation.practicalHelp}</dd>
+    </div>
+    <div>
+      <dt>Funksjon som må bevares</dt>
+      <dd>
+        {
+          consolidation.functionalValue.length ? (
+            <ul class="ia-surface__tags">
+              {consolidation.functionalValue.map((v) => (
+                <li>{v}</li>
+              ))}
+            </ul>
+          ) : (
+            "Ingen aktiv funksjon"
+          )
+        }
+      </dd>
+    </div>
+    <div>
+      <dt>Overlapp</dt>
+      <dd>
+        <span class="ia-surface__overlap">{overlapLabels[consolidation.overlapKind]}</span>
+        {consolidation.overlapNote}
+      </dd>
+    </div>
+    <div class="ia-surface__block--warn">
+      <dt>Risiko ved sammenslåing</dt>
+      <dd>{consolidation.mergeRisk}</dd>
+    </div>
+    {
+      consolidation.migrationNote ? (
+        <div>
+          <dt>Migration note</dt>
+          <dd>{consolidation.migrationNote}</dd>
+        </div>
+      ) : null
+    }
+  </dl>
+</article>
+
+<style>
+  .ia-surface {
+    padding: 1rem 1.1rem;
+    border: 1px solid rgb(229 231 235);
+    border-radius: 0.6rem;
+    background: rgb(255 255 255);
+  }
+
+  .ia-surface--review {
+    border-color: rgb(253 186 116);
+    box-shadow: 0 0 0 1px rgb(254 243 199);
+  }
+
+  .ia-surface--active {
+    border-left: 3px solid rgb(16 185 129);
+  }
+
+  .ia-surface--canonical {
+    border-left: 3px solid rgb(99 102 241);
+  }
+
+  .ia-surface--lab {
+    border-left: 3px solid rgb(59 130 246);
+  }
+
+  .ia-surface--reference {
+    border-left: 3px solid rgb(156 163 175);
+  }
+
+  .ia-surface--historical,
+  .ia-surface--legacy {
+    border-left: 3px solid rgb(209 213 219);
+    background: rgb(249 250 251);
+  }
+
+  .ia-surface__head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .ia-surface__title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .ia-surface__title {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+  }
+
+  .ia-surface__title a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgb(209 213 219);
+  }
+
+  .ia-surface__flag {
+    font-size: 0.65rem;
+    font-weight: 650;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgb(194 65 12);
+    background: rgb(255 247 237);
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+  }
+
+  .ia-surface__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .ia-surface__status,
+  .ia-surface__future {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.12rem 0.45rem;
+    border-radius: 999px;
+    border: 1px solid rgb(229 231 235);
+  }
+
+  .ia-surface__future.future-merge,
+  .ia-surface__future.future-section {
+    border-color: rgb(191 219 254);
+    color: rgb(30 64 175);
+    background: rgb(239 246 255);
+  }
+
+  .ia-surface__future.future-archive {
+    border-color: rgb(254 243 199);
+    color: rgb(146 64 14);
+    background: rgb(255 251 235);
+  }
+
+  .ia-surface__future.future-delete {
+    border-color: rgb(254 202 202);
+    color: rgb(153 27 27);
+    background: rgb(254 242 242);
+  }
+
+  .ia-surface__future.future-clarify {
+    border-color: rgb(253 186 116);
+    color: rgb(194 65 12);
+    background: rgb(255 247 237);
+  }
+
+  .ia-surface__mandate {
+    margin: 0.65rem 0 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: rgb(55 65 81);
+  }
+
+  .ia-surface__grid {
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 0.75rem;
+  }
+
+  .ia-surface__block h4 {
+    margin: 0 0 0.2rem;
+    font-size: 0.68rem;
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgb(107 114 128);
+  }
+
+  .ia-surface__block p {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: rgb(75 85 99);
+  }
+
+  .ia-surface__block--muted h4 {
+    color: rgb(156 163 175);
+  }
+
+  .ia-surface__meta {
+    margin: 0.85rem 0 0;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgb(243 244 246);
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .ia-surface__meta dt {
+    font-size: 0.62rem;
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgb(156 163 175);
+  }
+
+  .ia-surface__meta dd {
+    margin: 0.1rem 0 0;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: rgb(75 85 99);
+  }
+
+  .ia-surface__block--warn dd {
+    color: rgb(146 64 14);
+  }
+
+  .ia-surface__tags {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .ia-surface__tags li {
+    font-size: 0.68rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 999px;
+    background: rgb(243 244 246);
+    color: rgb(75 85 99);
+  }
+
+  .ia-surface__overlap {
+    display: inline-block;
+    font-weight: 600;
+    margin-right: 0.35rem;
+    color: rgb(55 65 81);
+  }
+
+  @media (min-width: 768px) {
+    .ia-surface__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>
