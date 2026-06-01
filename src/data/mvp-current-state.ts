@@ -77,7 +77,7 @@ export const mvpCurrentState = {
   } satisfies CurrentSprint,
   closedSprints: [] satisfies ClosedSprint[],
   currentFocus:
-    "Hybrid AI monitoring v0.1 (#188) implementeres — drift via Upstash/Vercel og smale PostHog EU-events. Intern test Thomas/Vibeke før ekstern deling.",
+    "#188 landet teknisk — reliability hardening v0.1 for stabil /no/chat/. Ekstern pilot venter. PostHog fortsatt av.",
   mvpSurfaces: [
     {
       id: "frontpage",
@@ -111,7 +111,7 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Applied",
-      note: "Production UI live. CES prod env aktiv. Upstash guard + Hybrid monitoring v0.1 (#188). Intern test Thomas/Vibeke.",
+      note: "Production UI live. Reliability hardening v0.1 (#188 remaining). Guard aktiv. Ekstern pilot venter.",
       visFrontpage: true,
       kind: "public",
       frontpageDescription: "Standalone headless AI — live i production (intern test). Guard aktiv.",

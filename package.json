@@ -16,7 +16,8 @@
     "storyblok:verify:viddel-mvp": "node scripts/storyblok-verify-viddel-mvp.mjs",
     "kl:tasks": "node scripts/kl-task-layer.mjs",
     "vis:github:runtime-status": "node scripts/generate-github-runtime-status.mjs",
-    "vis:github:snapshot": "node scripts/vis-github-live-snapshot.mjs"
+    "vis:github:snapshot": "node scripts/vis-github-live-snapshot.mjs",
+    "chat:reliability": "node scripts/chat-reliability-assessment.mjs"
   },
   "dependencies": {
     "@astrojs/vercel": "^9.0.5",
