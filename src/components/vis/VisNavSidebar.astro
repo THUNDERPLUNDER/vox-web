@@ -1,0 +1,180 @@
+---
+/* CONTRACT: Venstrestilt VIS tremeny v0.1 — orientering, ikke dominans. */
+import {
+  getVisNavSections,
+  isNavItemActive,
+  isSectionActive,
+  resolveItemHref,
+  resolveNavItemLabel,
+} from "../../lib/vis-navigation.ts";
+
+interface Props {
+  pathname: string;
+  baseUrl: string;
+  /** When true, sidebar is visible (mobile drawer open). */
+  mobileOpen?: boolean;
+}
+
+const { pathname, baseUrl } = Astro.props;
+const sections = getVisNavSections();
+---
+
+<aside
+  id="vis-tree-nav"
+  class="vis-tree-nav hidden w-[min(100%,16.5rem)] shrink-0 border-r border-gray-200/90 bg-gray-50/50 md:block md:w-56 lg:w-60"
+  aria-label="VIS-meny"
+>
+  <nav class="sticky top-10 max-h-[calc(100dvh-2.5rem)] overflow-y-auto px-3 py-4 sm:px-4">
+    {
+      sections.map((section) => {
+        const sectionActive = isSectionActive(section, pathname, baseUrl);
+        return (
+          <details class="vis-tree-nav__section group mb-4 last:mb-0" open={sectionActive}>
+            <summary class="vis-tree-nav__summary cursor-pointer list-none py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-500 marker:content-none [&::-webkit-details-marker]:hidden">
+              <span class="flex items-center justify-between gap-2">
+                {section.label}
+                <span class="text-[10px] text-gray-400 transition group-open:rotate-180" aria-hidden="true">
+                  ▾
+                </span>
+              </span>
+            </summary>
+            <ul class="mt-1 space-y-0.5 pb-1 pl-0.5">
+              {section.items.map((item) => {
+                const active = isNavItemActive(item, pathname, baseUrl);
+                const href = resolveItemHref(item, baseUrl);
+                const label = resolveNavItemLabel(item);
+                if (item.navOnly || !href) {
+                  return (
+                    <li>
+                      <span class="block rounded-md px-2.5 py-1.5 text-sm text-gray-400">{label}</span>
+                    </li>
+                  );
+                }
+                return (
+                  <li>
+                    <a
+                      href={href}
+                      class:list={[
+                        "block rounded-md px-2.5 py-1.5 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/40",
+                        active
+                          ? "bg-purple-100/70 font-medium text-purple-950"
+                          : "text-gray-700 hover:bg-gray-100/80 hover:text-gray-900",
+                      ]}
+                      aria-current={active ? "page" : undefined}
+                    >
+                      {label}
+                      {
+                        item.secondaryLabel ? (
+                          <span class="mt-0.5 block text-[11px] font-normal text-gray-500">{item.secondaryLabel}</span>
+                        ) : null
+                      }
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </details>
+        );
+      })
+    }
+  </nav>
+</aside>
+
+<!-- Mobile drawer clone -->
+<aside
+  id="vis-tree-nav-mobile"
+  class="vis-tree-nav-mobile fixed inset-y-0 left-0 z-[9998] hidden w-[min(18rem,88vw)] border-r border-gray-200 bg-gray-50 shadow-xl md:hidden"
+  aria-label="VIS-meny"
+  aria-hidden="true"
+>
+  <div class="flex h-10 items-center justify-between border-b border-gray-200 bg-gray-900 px-3">
+    <span class="text-xs font-bold uppercase tracking-widest text-purple-400">VIS-meny</span>
+    <button
+      type="button"
+      id="vis-tree-nav-mobile-close"
+      class="rounded px-2 py-1 text-xs text-gray-300 hover:bg-gray-800 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+    >
+      Lukk
+    </button>
+  </div>
+  <nav class="max-h-[calc(100dvh-2.5rem)] overflow-y-auto px-3 py-4">
+    {
+      sections.map((section) => {
+        const sectionActive = isSectionActive(section, pathname, baseUrl);
+        return (
+          <details class="group mb-4 last:mb-0" open={sectionActive}>
+            <summary class="cursor-pointer list-none py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-500 marker:content-none [&::-webkit-details-marker]:hidden">
+              {section.label}
+            </summary>
+            <ul class="mt-1 space-y-0.5">
+              {section.items.map((item) => {
+                const active = isNavItemActive(item, pathname, baseUrl);
+                const href = resolveItemHref(item, baseUrl);
+                const label = resolveNavItemLabel(item);
+                if (item.navOnly || !href) {
+                  return (
+                    <li>
+                      <span class="block rounded-md px-2.5 py-1.5 text-sm text-gray-400">{label}</span>
+                    </li>
+                  );
+                }
+                return (
+                  <li>
+                    <a
+                      href={href}
+                      class:list={[
+                        "block rounded-md px-2.5 py-1.5 text-sm",
+                        active ? "bg-purple-100/70 font-medium text-purple-950" : "text-gray-700 hover:bg-gray-100",
+                      ]}
+                      aria-current={active ? "page" : undefined}
+                    >
+                      {label}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </details>
+        );
+      })
+    }
+  </nav>
+</aside>
+
+<div
+  id="vis-tree-nav-backdrop"
+  class="fixed inset-0 z-[9997] hidden bg-black/30 md:hidden"
+  aria-hidden="true"
+/>
+
+<script is:inline>
+  (function () {
+    var openBtn = document.getElementById("vis-tree-nav-toggle");
+    var closeBtn = document.getElementById("vis-tree-nav-mobile-close");
+    var drawer = document.getElementById("vis-tree-nav-mobile");
+    var backdrop = document.getElementById("vis-tree-nav-backdrop");
+    function openDrawer() {
+      if (!drawer || !backdrop) return;
+      drawer.classList.remove("hidden");
+      drawer.setAttribute("aria-hidden", "false");
+      backdrop.classList.remove("hidden");
+      if (openBtn) openBtn.setAttribute("aria-expanded", "true");
+      document.body.style.overflow = "hidden";
+    }
+    function closeDrawer() {
+      if (!drawer || !backdrop) return;
+      drawer.classList.add("hidden");
+      drawer.setAttribute("aria-hidden", "true");
+      backdrop.classList.add("hidden");
+      if (openBtn) openBtn.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+      if (openBtn) openBtn.focus();
+    }
+    if (openBtn) openBtn.addEventListener("click", openDrawer);
+    if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
+    if (backdrop) backdrop.addEventListener("click", closeDrawer);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeDrawer();
+    });
+  })();
+</script>

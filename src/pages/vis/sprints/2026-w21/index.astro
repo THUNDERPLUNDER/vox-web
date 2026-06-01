@@ -17,7 +17,7 @@
    #131B: Stakeholder review entry at /vis/review/.
    Parent sprint: #120 MVP Design Lock v0.1.
 */
-import PrototypeLayout from "../../../../layouts/PrototypeLayout.astro";
+import VisInternalLayout from "../../../../layouts/VisInternalLayout.astro";
 import "../../../../styles/global.css";
 
 const base = import.meta.env.BASE_URL;
@@ -76,7 +76,7 @@ const typographyLabDirections = [
 ];
 ---
 
-<PrototypeLayout title="Sprint Preview — 2026-W21">
+<VisInternalLayout title="Sprint Preview — 2026-W21" showPageIntro={false} pageContractId="sprint-active">
   <main class="sprint-preview" data-sprint-preview>
     <nav class="sprint-preview__breadcrumb" aria-label="Du er her">
       <a href={`${base}vis`}>VIS</a>
@@ -1151,4 +1151,4 @@ const typographyLabDirections = [
       }
     }
   </style>
-</PrototypeLayout>
+</VisInternalLayout>

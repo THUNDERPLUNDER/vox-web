@@ -1,0 +1,26 @@
+---
+/* CONTRACT: Kort sidehensikt fra page contract — menneskelig språk, ikke metadata-dump. */
+import type { VisPageContract } from "../../data/vis-navigation-v01.ts";
+import { visStatusLabels } from "../../lib/vis-navigation.ts";
+
+interface Props {
+  contract: VisPageContract;
+}
+
+const { contract } = Astro.props;
+const statusLabel = visStatusLabels[contract.status];
+---
+
+<div class="vis-page-intro border-b border-gray-200/80 bg-gray-50/60 px-4 py-4 sm:px-6 sm:py-5">
+  <div class="mx-auto max-w-4xl">
+    <p class="text-[11px] font-medium uppercase tracking-wide text-gray-500">{statusLabel}</p>
+    <p class="mt-1 text-base leading-relaxed text-gray-800 sm:text-[1.05rem]">{contract.purpose}</p>
+    {
+      contract.nextAction ? (
+        <p class="mt-2 text-sm text-gray-600">
+          <span class="font-medium text-gray-700">Neste:</span> {contract.nextAction}
+        </p>
+      ) : null
+    }
+  </div>
+</div>

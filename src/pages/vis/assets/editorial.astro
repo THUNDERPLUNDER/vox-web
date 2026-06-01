@@ -1,6 +1,6 @@
 ---
 /* CONTRACT: VIS-only asset browser for Editorial Image Library v0.2 candidates. */
-import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+import VisInternalLayout from "../../../layouts/VisInternalLayout.astro";
 import {
   editorialImageLibrary,
   type EditorialImageGroup,
@@ -49,7 +49,7 @@ const pathForImage = (entry: EditorialImageLibraryEntry) =>
   entry.webPath.startsWith("/") ? entry.webPath : `/${entry.webPath}`;
 ---
 
-<PrototypeLayout title="Editorial Image Library">
+<VisInternalLayout title="Editorial Image Library" pageContractId="redaksjonelle-bilder">
   <main class="asset-page">
     <nav class="asset-breadcrumb" aria-label="Du er her">
       <a href={`${base}vis`}>VIS</a>
@@ -132,7 +132,7 @@ const pathForImage = (entry: EditorialImageLibraryEntry) =>
       ))}
     </div>
   </main>
-</PrototypeLayout>
+</VisInternalLayout>
 
 <style>
   .asset-page {

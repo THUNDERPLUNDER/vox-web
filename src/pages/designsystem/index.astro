@@ -1,6 +1,6 @@
 ---
 /* CONTRACT: Canonical MVP design system v0.1 — visual HITL catalog for patterns, primitives, applied surfaces. */
-import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
+import VisInternalLayout from "../../layouts/VisInternalLayout.astro";
 import PatternPreview from "../../components/designsystem/PatternPreview.astro";
 import "../../styles/global.css";
 import "../../styles/r1-dialog-article.css";
@@ -40,7 +40,7 @@ const primitiveSwatchClass: Record<string, string> = {
 };
 ---
 
-<PrototypeLayout title="Designsystem — Viddel MVP">
+<VisInternalLayout title="Designsystem — Viddel MVP" showPageIntro={false}>
   <main class="ds-catalog" data-design-system-catalog>
     <nav class="ds-catalog__breadcrumb" aria-label="Du er her">
       <a href={`${base}vis`}>VIS</a>
@@ -217,4 +217,4 @@ const primitiveSwatchClass: Record<string, string> = {
       </details>
     </footer>
   </main>
-</PrototypeLayout>
+</VisInternalLayout>

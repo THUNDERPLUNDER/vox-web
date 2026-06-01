@@ -1,6 +1,6 @@
 ---
 /* CONTRACT: VIS IA Inventory v0.3 — konsolideringsklarhet før tremeny. */
-import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+import VisInternalLayout from "../../../layouts/VisInternalLayout.astro";
 import VisIaSurfaceCard from "../../../components/vis/VisIaSurfaceCard.astro";
 import {
   getVisIaDeleteCandidates,
@@ -50,7 +50,7 @@ const preserveValues = [
 ].sort();
 ---
 
-<PrototypeLayout title="VIS IA Inventory v0.3.1">
+<VisInternalLayout title="VIS IA Inventory v0.3.1" pageContractId="ia-inventory">
   <main class="ia-inv">
     <nav class="ia-inv__crumb">
       <a href={`${base}vis`}>VIS</a>
@@ -714,4 +714,4 @@ const preserveValues = [
       }
     }
   </style>
-</PrototypeLayout>
+</VisInternalLayout>

@@ -1,6 +1,6 @@
 ---
 /* CONTRACT: Backstage v0.1 — pedagogisk intern referanse; forståelse først, teknikk nederst (#184). */
-import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
+import VisInternalLayout from "../../layouts/VisInternalLayout.astro";
 import {
   backstageMeta,
   beforeExternalSharing,
@@ -40,7 +40,7 @@ const layerTone: Record<string, string> = {
 };
 ---
 
-<PrototypeLayout title="Backstage — Viddel">
+<VisInternalLayout title="Backstage — Viddel" showPageIntro={false}>
   <main class="bs">
     <nav class="bs__crumb" aria-label="Du er her">
       <a href={`${base}vis/`}>VIS</a>
@@ -1335,4 +1335,4 @@ const layerTone: Record<string, string> = {
       text-underline-offset: 2px;
     }
   </style>
-</PrototypeLayout>
+</VisInternalLayout>

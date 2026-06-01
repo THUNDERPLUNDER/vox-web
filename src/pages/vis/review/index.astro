@@ -2,7 +2,7 @@
 /* CONTRACT: Stakeholder-safe VIS review entry (#131B / #131C).
    Renders from review registry — curated links only, no archive/KlarLyd/agent runtime.
 */
-import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+import VisInternalLayout from "../../../layouts/VisInternalLayout.astro";
 import "../../../styles/global.css";
 import {
   activeBySprint,
@@ -30,7 +30,7 @@ function statusClass(status: ReviewRegistryItem["status"]): string {
 }
 ---
 
-<PrototypeLayout title="Viddel Review">
+<VisInternalLayout title="Viddel Review" pageContractId="review">
   <main class="vreview" data-vis-review-page>
     <header class="vreview__hero">
       <p class="vreview__kicker">VIS · #131C · Review registry</p>
@@ -393,4 +393,4 @@ function statusClass(status: ReviewRegistryItem["status"]): string {
       text-underline-offset: 2px;
     }
   </style>
-</PrototypeLayout>
+</VisInternalLayout>

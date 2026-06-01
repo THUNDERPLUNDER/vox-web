@@ -2,7 +2,7 @@
 /* CONTRACT: VIS Control Center — human-readable front door for Viddel canonical project knowledge. */
 import fs from "node:fs";
 import path from "node:path";
-import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+import VisInternalLayout from "../../../layouts/VisInternalLayout.astro";
 
 const base = import.meta.env.BASE_URL;
 const mdPath = path.join(process.cwd(), "docs", "project", "VIDDEL_PROJECT_CONTROL_CENTER_v0_1.md");
@@ -89,7 +89,7 @@ const activeTracks = [
 ];
 ---
 
-<PrototypeLayout title="Viddel Control Center">
+<VisInternalLayout title="Viddel Control Center" pageContractId="agentdrift-runbook">
   <main class="control-page">
     <nav class="control-breadcrumb">
       <a href={`${base}vis`}>VIS</a>
@@ -477,4 +477,4 @@ const activeTracks = [
       }
     }
   </style>
-</PrototypeLayout>
+</VisInternalLayout>
