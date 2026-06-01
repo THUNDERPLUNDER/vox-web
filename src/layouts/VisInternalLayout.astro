@@ -1,0 +1,57 @@
+---
+/* CONTRACT: VIS intern layout v0.1 — PrototypeLayout + venstremeny + valgfri page contract intro. */
+import PrototypeLayout from "./PrototypeLayout.astro";
+import VisNavSidebar from "../components/vis/VisNavSidebar.astro";
+import VisPageIntro from "../components/vis/VisPageIntro.astro";
+import { resolvePageContract } from "../lib/vis-navigation.ts";
+
+interface Props {
+  title: string;
+  /** Override auto-detected page contract id. */
+  pageContractId?: string;
+  /** Show compact page intro from contract (default: true when contract resolves). */
+  showPageIntro?: boolean;
+  /** Enable VIS tree navigation (default: true). */
+  visNav?: boolean;
+}
+
+const { title, pageContractId, showPageIntro, visNav = true } = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+const pathname = Astro.url.pathname;
+const contract = resolvePageContract(pathname, base, pageContractId);
+const shouldShowIntro = showPageIntro ?? !!contract;
+---
+
+<PrototypeLayout title={title}>
+  {
+    visNav ? (
+      <div class="vis-internal-shell flex min-h-[calc(100dvh-2.5rem)] flex-col md:flex-row">
+        <div class="flex shrink-0 items-center border-b border-gray-200 bg-gray-50/80 px-3 py-2 md:hidden">
+          <button
+            type="button"
+            id="vis-tree-nav-toggle"
+            class="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/40"
+            aria-expanded="false"
+            aria-controls="vis-tree-nav-mobile"
+          >
+            VIS-meny
+            <span class="text-xs text-gray-400" aria-hidden="true">
+              ▾
+            </span>
+          </button>
+        </div>
+        <VisNavSidebar pathname={pathname} baseUrl={base} />
+        <div class="vis-internal-main min-w-0 flex-1">
+          {shouldShowIntro && contract ? <VisPageIntro contract={contract} /> : null}
+          <slot />
+        </div>
+      </div>
+    ) : (
+      <>
+        {shouldShowIntro && contract ? <VisPageIntro contract={contract} /> : null}
+        <slot />
+      </>
+    )
+  }
+</PrototypeLayout>

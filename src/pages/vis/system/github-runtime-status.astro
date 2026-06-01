@@ -2,7 +2,7 @@
 /* CONTRACT: VIS runtime-feed — viser generert GitHub-status (public/vis/runtime/00_GITHUB_RUNTIME_STATUS.md) for @navigator; kuratert /vis forblir separat. */
 import fs from "node:fs";
 import path from "node:path";
-import PrototypeLayout from "../../../layouts/PrototypeLayout.astro";
+import VisInternalLayout from "../../../layouts/VisInternalLayout.astro";
 
 const base = import.meta.env.BASE_URL;
 const mdPath = path.join(process.cwd(), "public", "vis", "runtime", "00_GITHUB_RUNTIME_STATUS.md");
@@ -23,7 +23,7 @@ function escapeHtml(s: string): string {
 const safe = escapeHtml(raw);
 ---
 
-<PrototypeLayout title="GitHub runtime status">
+<VisInternalLayout title="GitHub runtime status" pageContractId="gitbuss">
   <main class="px-4 py-6 sm:px-6 sm:py-8">
     <nav class="text-xs text-gray-500">
       <a href={`${base}vis/system`} class="underline underline-offset-2">System</a>
@@ -57,4 +57,4 @@ const safe = escapeHtml(raw);
       >
     </p>
   </main>
-</PrototypeLayout>
+</VisInternalLayout>

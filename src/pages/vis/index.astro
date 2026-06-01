@@ -1,6 +1,6 @@
 ---
 /* CONTRACT: VIS frontpage v0.1 — kontrollrom med visuell prioritet; MVP from registry, hubs from vis-frontpage-hubs-v01. */
-import PrototypeLayout from "../../layouts/PrototypeLayout.astro";
+import VisInternalLayout from "../../layouts/VisInternalLayout.astro";
 import { groupedVisEntries, visTypeLabelNo, wireframeIndexEntries } from "../../lib/vis-wireframes";
 import { getVisFrontpageEntries, getCurrentSprintVisEntry, mvpCurrentState } from "../../data/mvp-current-state.ts";
 import { getClosedSprintArchiveLinks } from "../../lib/vis-sprint-guard.ts";
@@ -42,7 +42,7 @@ const primaryLinks = runtimeFeed.links.primary;
 const secondaryLinks = runtimeFeed.links.secondary ?? [];
 ---
 
-<PrototypeLayout title="VIS kontrollrom">
+<VisInternalLayout title="VIS kontrollrom" showPageIntro={false}>
   <main class="vis-room">
     <header class="vis-room__header">
       <p class="vis-room__kicker">Intern · VIS</p>
@@ -1014,4 +1014,4 @@ const secondaryLinks = runtimeFeed.links.secondary ?? [];
       }
     }
   </style>
-</PrototypeLayout>
+</VisInternalLayout>

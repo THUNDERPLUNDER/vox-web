@@ -26,6 +26,11 @@ export const quickAnswers = [
     question: "Hva gjør vi når noe ikke virker?",
     answer: "Start med hva brukeren ser, sjekk env-vars i Vercel, Upstash og CES — se feilsøkingsseksjonen under.",
   },
+  {
+    question: "Hvor orienterer vi oss i VIS?",
+    answer:
+      "VIS kontrollrom (/vis/) og venstremenyen på interne flater — rolig orientering om hvor du er og hva siden er til for. Backstage er fortsatt canonical systemreferanse.",
+  },
 ] as const;
 
 export type SystemMapLayer = {

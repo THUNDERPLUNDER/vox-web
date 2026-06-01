@@ -1,115 +1,16 @@
-/* CONTRACT: VIS frontpage hub definitions v0.1 — mandate, links and active/planned status for /vis/ IA. */
+/* CONTRACT: VIS frontpage hub definitions v0.1 — delegates to vis-navigation-v01 (single source). */
 
-import { mvpCurrentState } from "./mvp-current-state.ts";
+export type { VisHubAvailability, VisHubTier, VisFrontpageHub } from "./vis-navigation-v01.ts";
 
-export type VisHubAvailability = "active" | "planned" | "historikk";
+export {
+  visFrontpageMandate,
+  visPrimaryNextWorkIds,
+  visSourceOfTruthNotes,
+} from "./vis-navigation-v01.ts";
 
-export type VisHubTier = "primary" | "secondary";
+import { getVisHubEntriesFromNav } from "../lib/vis-navigation.ts";
 
-export type VisFrontpageHub = {
-  id: string;
-  title: string;
-  mandate: string;
-  href?: string;
-  availability: VisHubAvailability;
-  tier: VisHubTier;
-  issue?: string;
-};
-
-/** Main hubs on VIS frontpage — hub & spoke model, not backlog. */
-export function getVisFrontpageHubs(baseUrl: string): VisFrontpageHub[] {
-  const base = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
-  const sprint = mvpCurrentState.currentSprint;
-  const sprintActive = sprint.status === "active";
-
-  const staticHubs: VisFrontpageHub[] = [
-    {
-      id: "designsystem",
-      title: "Designsystem",
-      mandate: "UI-mønstre, komponenter og applied surfaces.",
-      href: `${base}designsystem/`,
-      availability: "active",
-      tier: "primary",
-    },
-    {
-      id: "backstage",
-      title: "Backstage",
-      mandate: "AI, API, guards, env-vars og production.",
-      href: `${base}backstage/`,
-      availability: "active",
-      tier: "primary",
-    },
-    {
-      id: "gitbuss",
-      title: "Gitbuss",
-      mandate: "GitHub issues, arbeidsspor og Return Tickets.",
-      href: `${base}vis/system/github-runtime-status`,
-      availability: "active",
-      tier: "primary",
-    },
-    {
-      id: "roadmap",
-      title: "Roadmap",
-      mandate: "Retning og kommende faser — ikke alle småoppgaver.",
-      href: `${base}vis/system/roadmap-timeline-v01`,
-      availability: "active",
-      tier: "primary",
-    },
-    {
-      id: "dam",
-      title: "DAM / bildebank",
-      mandate: "Visuelle assets og bildebruk for MVP.",
-      href: `${base}vis/assets/editorial`,
-      availability: "active",
-      tier: "secondary",
-    },
-    {
-      id: "review",
-      title: "Review",
-      mandate: "QA, sammenligning og godkjenning.",
-      href: `${base}vis/review/`,
-      availability: "active",
-      tier: "secondary",
-    },
-  ];
-
-  const sprintHub: VisFrontpageHub = {
-    id: "sprint",
-    title: sprintActive ? `Sprint ${sprint.label}` : "Sprint / historikk",
-    mandate: sprintActive
-      ? "Operativ sprintflate — labs, guardrails og beslutningsgrunnlag."
-      : "Hvordan vi kom hit — ikke gjeldende sannhet.",
-    href: `${base}${sprint.route.replace(/^\//, "")}`,
-    availability: sprintActive ? "active" : "historikk",
-    tier: sprintActive ? "primary" : "secondary",
-    issue: sprint.issue,
-  };
-
-  if (sprintActive) {
-    const primaryHubs = staticHubs.filter((h) => h.tier === "primary");
-    const secondaryHubs = staticHubs.filter((h) => h.tier === "secondary");
-    return [...primaryHubs, sprintHub, ...secondaryHubs];
-  }
-
-  return [...staticHubs, sprintHub];
+/** Main hubs on VIS frontpage — derived from navigation registry. */
+export function getVisFrontpageHubs(baseUrl: string) {
+  return getVisHubEntriesFromNav(baseUrl);
 }
-
-export const visFrontpageMandate = {
-  title: "VIS kontrollrom",
-  lead: "Rask oversikt over hva som er sant nå, neste steg og hvor du går videre. Ikke backlog.",
-} as const;
-
-export const visPrimaryNextWorkIds = [
-  "internal-ai-test-qa",
-  "ai-usage-monitoring",
-] as const;
-
-export const visSourceOfTruthNotes = [
-  { label: "src/data/mvp-current-state.ts", role: "Gjeldende MVP-status" },
-  { label: "/designsystem/", role: "Gjeldende UI/mønstre" },
-  { label: "/backstage/", role: "System/API/guard/env — canonical referanse" },
-  { label: "GitHub issues/projects", role: "Oppgavebuss" },
-  { label: "Roadmap", role: "Retning / faser" },
-  { label: "DAM / bildebank", role: "Assetoversikt" },
-  { label: "Sprint-sider", role: "Aktiv sprint (currentSprint) · lukkede i arkiv" },
-] as const;
