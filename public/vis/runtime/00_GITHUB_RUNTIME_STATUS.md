@@ -4,8 +4,8 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## Siste sync
 
-- **generated_at (UTC):** 2026-06-02T10:27:39.962Z
-- **generated_at (Europe/Oslo):** 2.6.2026, 12:27:39
+- **generated_at (UTC):** 2026-06-03T11:03:27.136Z
+- **generated_at (Europe/Oslo):** 3.6.2026, 13:03:27
 - **timezone:** Europe/Oslo
 - **repo:** THUNDERPLUNDER/vox-web
 - **data_warnings:** (ingen)
@@ -76,7 +76,7 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## SISTE 24T
 
-Vindu: commits/issues lukket/oppdatert etter **2026-06-01T10:27:39Z** (sirket ~24 timer).
+Vindu: commits/issues lukket/oppdatert etter **2026-06-02T11:03:27Z** (sirket ~24 timer).
 
 ### Lukkede issues
 
@@ -88,16 +88,7 @@ _Ingen treff i søkt utsnitt._
 
 ### Commits
 
-- **1e071d2** (2026-06-01T14:33:38Z) Merge pull request #199 — Security / guard strategy v0.2
-- **0e2f188** (2026-06-01T14:30:11Z) docs(vis): clarify chat stability phase in runtime feed
-- **b70832d** (2026-06-01T14:26:06Z) feat(guard): split public guard from ops reliability testing v0.2
-- **fc264bc** (2026-06-01T12:57:18Z) Add CES env verification checklist and safe compare script.
-- **afa4bfd** (2026-06-01T12:46:24Z) Merge pull request #197 from THUNDERPLUNDER/feature/chat-reliability-hardening-v01
-- **c0dc8b0** (2026-06-01T12:28:17Z) Harden chat reliability: server retry, CES timeout, safe diagnostics.
-- **305f224** (2026-06-01T12:04:22Z) Add AI Chat Reliability Assessment v0.1 tooling and report.
-- **3489645** (2026-06-01T11:39:08Z) chore(vis): refresh GitHub runtime status for navigator
-- **3ed4f9e** (2026-06-01T11:19:45Z) Merge pull request #195 from THUNDERPLUNDER/hotfix/chat-error-state-upstream-retry
-- **f3e41f9** (2026-06-01T11:15:24Z) Hotfix chat UX for intermittent CES upstream errors.
+_Ingen eller ikke tilgjengelig._
 
 ## BLOCKERS
 
