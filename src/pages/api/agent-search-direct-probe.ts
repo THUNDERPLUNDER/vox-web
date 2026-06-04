@@ -1,7 +1,12 @@
 /* CONTRACT: Preview-only single-call Agent Search probe API — safe metadata, no content logging. */
 import type { APIRoute } from "astro";
 import { runAgentSearchDirectProbeOnce, resolveAgentSearchEnv } from "../../lib/agent-search-direct";
-import { isPreviewDiagnosticsEnabled, previewDiagnosticsDisabledReason } from "../../lib/preview-diagnostics";
+import {
+  buildProbeEnvelope,
+  probeDisabledBody,
+  probeEnabledBase,
+} from "../../lib/agent-search-probe-envelope";
+import { isPreviewDiagnosticsEnabled } from "../../lib/preview-diagnostics";
 
 export const prerender = false;
 
@@ -12,31 +17,57 @@ function json(body: Record<string, unknown>, status: number): Response {
   });
 }
 
-export const POST: APIRoute = async () => {
+export const GET: APIRoute = async () => {
   if (!isPreviewDiagnosticsEnabled()) {
-    return json({ enabled: false, error: "disabled", message: previewDiagnosticsDisabledReason() }, 404);
+    return json(probeDisabledBody(), 404);
+  }
+  return json(
+    {
+      ...probeEnabledBase(),
+      ready: true,
+      message: "POST for ett :answer-kall med safe metadata.",
+    },
+    200,
+  );
+};
+
+export const POST: APIRoute = async () => {
+  const envelope = buildProbeEnvelope();
+
+  if (!isPreviewDiagnosticsEnabled()) {
+    return json(probeDisabledBody(), 404);
   }
 
   const env = resolveAgentSearchEnv();
   if (!env.ok) {
     return json(
       {
-        enabled: true,
+        ...probeEnabledBase(),
         status: "error",
         error_code: "configuration_missing",
         missing_env: env.missing,
+        upstream_http_status: null,
+        duration_bucket: null,
+        has_answer: false,
+        has_citations: false,
+        support_score: null,
+        response_state: null,
+        google_call_attempted: false,
       },
       503,
     );
   }
 
   const meta = await runAgentSearchDirectProbeOnce(env.config);
-  return json({ enabled: true, ...meta }, meta.status === "success" ? 200 : 502);
-};
+  const httpStatus = meta.status === "success" ? 200 : 502;
 
-export const GET: APIRoute = async () => {
-  if (!isPreviewDiagnosticsEnabled()) {
-    return json({ enabled: false, error: "disabled", message: previewDiagnosticsDisabledReason() }, 404);
-  }
-  return json({ enabled: true, layer: "google_agent_search_direct" }, 200);
+  return json(
+    {
+      ...probeEnabledBase(),
+      ...meta,
+      google_call_attempted: true,
+      api_http_status: httpStatus,
+    },
+    httpStatus,
+  );
 };
