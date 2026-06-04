@@ -153,11 +153,7 @@ Probe and API return **metadata only** (`has_answer`, `has_citations`, `error_co
 - **Do not activate PostHog** for this spike.
 - **Do not reset** public guard limits until next decision.
 
-**Recommended next step:** Small assessment for optional backend mode:
-
-```bash
-VIDDEL_AI_BACKEND=ces_channel | google_agent_search_direct
-```
+**Recommended next step:** [VIDDEL_AI_BACKEND_MODE_ASSESSMENT_v0_1.md](./VIDDEL_AI_BACKEND_MODE_ASSESSMENT_v0_1.md) — optional env switch (`ces_channel` default); no production switch in that doc.
 
 Default remains `ces_channel` until QA and ops sign off on stability, session/multi-turn, and production env parity.
 

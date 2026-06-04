@@ -138,7 +138,7 @@ Direct API er **stabilt nok i preview** for neste vurdering — ikke for umiddel
 
 **Anbefalt neste steg:**
 
-- Liten assessment / design for `VIDDEL_AI_BACKEND=ces_channel | google_agent_search_direct`
+- Assessment: [VIDDEL_AI_BACKEND_MODE_ASSESSMENT_v0_1.md](./VIDDEL_AI_BACKEND_MODE_ASSESSMENT_v0_1.md) — implement env switch (default `ces_channel`), no prod switch yet
 - Default `ces_channel` til produksjons-QA og drift er ferdig
 - Ingen frontend-endring i første backend-modus-PR
 - **Ikke** aktiver PostHog, **ikke** reset guard limits, **ikke** fjerne channel-kode ennå
