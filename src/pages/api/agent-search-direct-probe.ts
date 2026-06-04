@@ -1,27 +1,42 @@
-/* CONTRACT: Preview-only single-call Agent Search probe API — safe metadata, no content logging. */
+/* CONTRACT: Preview-only Agent Search probe API — safe metadata, no content logging. */
 import type { APIRoute } from "astro";
-import { runAgentSearchDirectProbeOnce, resolveAgentSearchEnv } from "../../lib/agent-search-direct";
-import {
-  buildProbeEnvelope,
-  probeDisabledBody,
-  probeEnabledBase,
-} from "../../lib/agent-search-probe-envelope";
+import { executeAgentSearchProbeOnce } from "../../lib/agent-search-probe-handler";
+import { probeDisabledBody, probeEnabledBase } from "../../lib/agent-search-probe-envelope";
 import { isPreviewDiagnosticsEnabled } from "../../lib/preview-diagnostics";
 
 export const prerender = false;
 
+const JSON_HEADERS = {
+  "Content-Type": "application/json; charset=utf-8",
+  "Allow": "GET, POST, OPTIONS",
+};
+
 function json(body: Record<string, unknown>, status: number): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json; charset=utf-8" },
-  });
+  return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
 }
 
-export const GET: APIRoute = async () => {
+/** CORS preflight + Vercel OPTIONS allowlist compatibility for /api/*. */
+export const OPTIONS: APIRoute = async () => {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      ...JSON_HEADERS,
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Accept",
+      "Access-Control-Max-Age": "86400",
+    },
+  });
+};
+
+export const GET: APIRoute = async ({ request }) => {
+  const url = new URL(request.url);
+  const execute = url.searchParams.get("run") === "1";
+
   if (!isPreviewDiagnosticsEnabled()) {
     return json(
       {
         ...probeDisabledBody(),
+        method: execute ? "GET" : "GET",
         error_code: "disabled_in_production",
         error_source: "app",
         api_http_status: 404,
@@ -29,57 +44,39 @@ export const GET: APIRoute = async () => {
       404,
     );
   }
+
+  if (execute) {
+    const result = await executeAgentSearchProbeOnce("GET");
+    return json(result.body, result.status);
+  }
+
   return json(
     {
       ...probeEnabledBase(),
+      method: "GET",
       ready: true,
-      message: "POST for ett :answer-kall med safe metadata.",
+      message: "POST eller GET ?run=1 for ett :answer-kall med safe metadata.",
       api_http_status: 200,
+      probe_execute_url_hint: `${url.pathname}?run=1`,
     },
     200,
   );
 };
 
 export const POST: APIRoute = async () => {
-  const envelope = buildProbeEnvelope();
-
   if (!isPreviewDiagnosticsEnabled()) {
-    return json(probeDisabledBody(), 404);
-  }
-
-  const env = resolveAgentSearchEnv();
-  if (!env.ok) {
     return json(
       {
-        ...probeEnabledBase(),
-        status: "error",
-        error_code: "configuration_missing",
-        error_source: "config",
-        missing_env: env.missing,
-        upstream_http_status: null,
-        duration_bucket: null,
-        has_answer: false,
-        has_citations: false,
-        support_score: null,
-        response_state: null,
-        google_call_attempted: false,
-        api_http_status: 503,
+        ...probeDisabledBody(),
+        method: "POST",
+        error_code: "disabled_in_production",
+        error_source: "app",
+        api_http_status: 404,
       },
-      503,
+      404,
     );
   }
 
-  const meta = await runAgentSearchDirectProbeOnce(env.config);
-  const httpStatus = meta.status === "success" ? 200 : 502;
-
-  return json(
-    {
-      ...probeEnabledBase(),
-      ...meta,
-      error_source: meta.status === "success" ? null : "google",
-      google_call_attempted: true,
-      api_http_status: httpStatus,
-    },
-    httpStatus,
-  );
+  const result = await executeAgentSearchProbeOnce("POST");
+  return json(result.body, result.status);
 };

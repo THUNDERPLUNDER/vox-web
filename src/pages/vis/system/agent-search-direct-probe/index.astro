@@ -114,7 +114,8 @@ const buildPreview = getPreviewDiagnosticsState();
           </div>
 
           <p class="mt-6 max-w-prose text-xs text-gray-500">
-            5 kall med 8 sek mellomrom. Metadata only — ingen tokens, headers eller svarinnhold.
+            5 kall med 8 sek mellomrom via <strong>GET ?run=1</strong> (POST er ofte blokkert av Vercel Deployment Protection på
+            preview). Metadata only.
           </p>
         </>
       )
