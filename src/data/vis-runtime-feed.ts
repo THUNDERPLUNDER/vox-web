@@ -41,36 +41,36 @@ export type VisRuntimeFeed = {
 
 /** Manually updated after important Return Tickets — not synced from GitHub. */
 export const visRuntimeFeed = {
-  updatedAt: "2026-06-02",
+  updatedAt: "2026-06-04",
   activeNow: [
     {
       id: "ai-usage-monitoring-v01",
       headline:
-        "Vi forenkler reliability-test ved å styre public guard-grenser fra Vercel.",
+        "Vi tester om Googles dokumenterte Agent Search API er mer stabilt enn channel-laget vi først brukte.",
       workTitle: "AI usage monitoring v0.1 (#188)",
       area: "Data, monitoring og innsikt",
       why:
         "Vi må se om chatten virker, om den feiler, og hvilke innganger som brukes — uten å lagre spørsmål eller svar.",
       status:
-        "Monitoring og guard v0.2 er levert. Nå kan Thomas midlertidig heve burst/daily limits i Vercel (100/500) og kjøre reliability-test uten lokal token.",
+        "To reliability-serier (16 kall, guard 100/500): 25% success, 0 rate_limit, 75% upstream. Guard og testoppsett OK — CES er flaskehalsen.",
       possibleSolution:
-        "VIDDEL_CHAT_BURST_LIMIT og VIDDEL_CHAT_DAILY_LIMIT i Vercel — public guard forblir aktiv.",
+        "Google Agent Search direct API spike (#198): assessment + trygg probe, før evt. ekstern fallback.",
       nextDecision:
-        "Thomas setter høyere limits, redeployer, Cursor kjører reliability-test. Vurder CES — deretter fallback-spike ved behov.",
+        "Kjør agent-search:probe lokalt med SA. Hvis stabil → optional VIDDEL_AI_BACKEND. Guard 100/500 til beslutning.",
       issue: "#188",
       issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/188",
       progressSteps: [
         { id: "monitoring", label: "Monitoring levert", state: "done" },
-        { id: "guard-env", label: "Guard limits via Vercel", state: "current" },
-        { id: "ces-test", label: "Ren CES-test", state: "upcoming" },
-        { id: "fallback", label: "Fallback ved behov", state: "upcoming" },
+        { id: "guard-env", label: "Guard limits via Vercel", state: "done" },
+        { id: "ces-test", label: "Ren CES-test (2 serier)", state: "done" },
+        { id: "agent-search", label: "Agent Search direct #198", state: "current" },
       ],
     },
   ],
   recentlyCompletedSummary:
-    "Guard strategy v0.2 (#199) merged. INT-007 Anne-spor registrert i gitbuss (#200–#204).",
+    "Guard limits via Vercel (#212) og to rene CES-serier — 25% success, upstream dominant.",
   lastReturnTicketSummary:
-    "Guard limits via Vercel env v0.1 — reliability-test uten lokal ops-token.",
+    "Kontrollserie 25% — #198 er Google Agent Search direct API spike (ikke ekstern fallback ennå). Ingen flere channel-serier.",
   links: {
     primary: [
       {

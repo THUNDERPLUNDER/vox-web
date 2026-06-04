@@ -1,0 +1,147 @@
+---
+/* CONTRACT: Preview-only Agent Search direct API diagnostics — Thomas tests via Vercel Preview click, no terminal. */
+import VisInternalLayout from "../../../../layouts/VisInternalLayout.astro";
+import { agentSearchProbeApiPath } from "../../../../lib/agent-search-probe-path";
+import {
+  isPreviewDiagnosticsEnabled,
+  previewDiagnosticsDisabledReason,
+  getPreviewDiagnosticsState,
+} from "../../../../lib/preview-diagnostics";
+
+const base = import.meta.env.BASE_URL;
+const enabled = isPreviewDiagnosticsEnabled();
+/** Root-absolute — must not be resolved relative to /vis/system/... (that caused /vis/system/api/... 404). */
+const apiPath = agentSearchProbeApiPath(base);
+const probeConfigJson = JSON.stringify({ apiPath });
+const buildPreview = getPreviewDiagnosticsState();
+---
+
+<VisInternalLayout title="Agent Search direct probe" pageContractId="gitbuss" showPageIntro={false}>
+  <main class="px-4 py-6 sm:px-6 sm:py-8">
+    <nav class="text-xs text-gray-500">
+      <a href={`${base}vis/system`} class="underline underline-offset-2">System</a>
+      <span aria-hidden="true"> / </span>
+      <span class="text-gray-800">Agent Search direct probe</span>
+    </nav>
+
+    <h1 class="mt-4 text-lg font-semibold text-gray-900">Agent Search direct API probe</h1>
+    <p class="mt-2 max-w-prose text-sm leading-relaxed text-gray-600">
+      Intern preview-diagnostikk for #198. Ett Google <code class="rounded bg-gray-100 px-1 font-mono text-xs">:answer</code>-kall
+      per API-request — ingen prompt eller svar vises.
+    </p>
+
+    <p
+      id="probe-bootstrap-error"
+      class="mt-4 hidden max-w-prose rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900"
+      role="alert"
+    />
+
+    {
+      !enabled ? (
+        <div
+          class="mt-6 max-w-prose rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+          role="status"
+        >
+          <p class="font-medium">Deaktivert i production</p>
+          <p class="mt-1">{previewDiagnosticsDisabledReason()}</p>
+          <p class="mt-2 text-xs text-amber-800">
+            Åpne Vercel Preview-deploy for denne branchen og gå til samme URL der.
+          </p>
+          <p class="mt-2 text-xs">
+            Build-time VERCEL_ENV: <code class="font-mono">{buildPreview.vercel_env}</code>
+          </p>
+        </div>
+      ) : (
+        <>
+          <section class="mt-4 max-w-3xl rounded-md border border-gray-200 bg-gray-50/80 px-4 py-3 text-sm text-gray-700">
+            <p class="font-medium text-gray-900">Sammenligning mot channel-baseline</p>
+            <ul class="mt-2 list-inside list-disc space-y-1 text-sm">
+              <li>
+                <span class="font-medium">CES channel / runSession:</span> 4/16 success = 25% (2 reliability-serier, guard
+                100/500)
+              </li>
+              <li>
+                <span class="font-medium">Direct Agent Search :answer:</span> fylles inn etter preview-test nedenfor
+              </li>
+            </ul>
+            <p class="mt-2 text-xs text-gray-500">
+              Build-time preview: {buildPreview.preview_enabled ? "enabled" : "disabled"} · VERCEL_ENV={buildPreview.vercel_env}
+            </p>
+          </section>
+
+          <div
+            id="probe-readiness"
+            class="mt-4 max-w-3xl rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700"
+          >
+            <p class="text-gray-500">Laster API readiness…</p>
+          </div>
+
+          <div id="probe-diagnostics" class="mt-4 hidden max-w-3xl rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm" />
+
+          <div class="mt-6 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              id="probe-run"
+              class="inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Kjør 5 direct API-kall
+            </button>
+            <p id="probe-status" class="text-sm text-gray-500" aria-live="polite">
+              Vent på readiness, deretter start test.
+            </p>
+          </div>
+
+          <div id="probe-summary" class="mt-4 hidden max-w-3xl rounded-md border border-gray-200 bg-white px-4 py-3 text-sm" />
+
+          <div class="mt-6 overflow-x-auto">
+            <table id="probe-table" class="hidden min-w-full border-collapse text-left text-sm">
+              <thead>
+                <tr class="border-b border-gray-200 text-xs uppercase tracking-wide text-gray-500">
+                  <th class="py-2 pr-4">Call #</th>
+                  <th class="py-2 pr-4">Resultat</th>
+                  <th class="py-2 pr-4">API HTTP</th>
+                  <th class="py-2 pr-4">Status</th>
+                  <th class="py-2 pr-4">Duration</th>
+                  <th class="py-2 pr-4">has_answer</th>
+                  <th class="py-2 pr-4">has_citations</th>
+                  <th class="py-2 pr-4">support_score</th>
+                  <th class="py-2 pr-4">error_code</th>
+                  <th class="py-2 pr-4">Notat</th>
+                </tr>
+              </thead>
+              <tbody id="probe-tbody" class="text-gray-800" />
+            </table>
+          </div>
+
+          <p class="mt-6 max-w-prose text-xs text-gray-500">
+            5 kall med 8 sek mellomrom via <strong>GET ?run=1</strong> (POST er ofte blokkert av Vercel Deployment Protection på
+            preview). Metadata only.
+          </p>
+        </>
+      )
+    }
+  </main>
+</VisInternalLayout>
+
+{
+  enabled && (
+    <>
+      <script type="application/json" id="agent-search-probe-config" set:html={probeConfigJson} />
+      <script>
+        import { initAgentSearchDirectProbe } from "../../../../scripts/agent-search-direct-probe-client.ts";
+
+        const configEl = document.getElementById("agent-search-probe-config");
+        if (!configEl?.textContent) {
+          const err = document.getElementById("probe-bootstrap-error");
+          if (err) {
+            err.textContent = "Probe-klient: mangler #agent-search-probe-config.";
+            err.classList.remove("hidden");
+          }
+        } else {
+          const { apiPath } = JSON.parse(configEl.textContent) as { apiPath: string };
+          initAgentSearchDirectProbe(apiPath);
+        }
+      </script>
+    </>
+  )
+}
