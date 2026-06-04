@@ -125,7 +125,7 @@ Protobuf/JSON med ukjent felt → typisk **`INVALID_ARGUMENT` (HTTP 400)**.
 
 ## 7. Neste steg
 
-1. **Redeploy preview** etter contract-fix commit — forvent enten Google 200 + `has_answer`, eller mer spesifikk `google_error_hint`.
-2. Hvis fortsatt 400: prøv `AGENT_SEARCH_SERVING_CONFIG=default_search` (env).
-3. Hvis `LLM_ADDON_NOT_ENABLED` / edition: direct API passer ikke uten GCP endring — da CES channel fortsatt riktig vei.
-4. **Ikke** merge #213 før ett gyldig 200 eller presis GCP-blokker.
+1. ~~Redeploy etter contract-fix~~ — **Done:** Google svarer **403** `discoveryengine.servingConfigs.answer` denied.
+2. **GCP IAM:** se **[GOOGLE_AGENT_SEARCH_IAM_VERIFICATION_v0_1.md](./GOOGLE_AGENT_SEARCH_IAM_VERIFICATION_v0_1.md)** — legg til `roles/discoveryengine.user` på samme SA som `GOOGLE_SERVICE_ACCOUNT_JSON`.
+3. Hvis fortsatt feil etter IAM: `AGENT_SEARCH_SERVING_CONFIG`, engine ID, LLM add-on.
+4. **Ikke** merge #213 før 200 eller presis GCP-konklusjon.

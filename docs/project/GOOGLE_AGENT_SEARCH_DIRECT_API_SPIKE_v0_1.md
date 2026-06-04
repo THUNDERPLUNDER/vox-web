@@ -109,11 +109,10 @@ Logger kun safe metadata — ingen prompt/svar.
 
 ---
 
-## E. Contract audit (400 upstream)
+## E. Contract audit + IAM (400 → 403)
 
-Se **[GOOGLE_AGENT_SEARCH_ANSWER_CONTRACT_AUDIT_v0_1.md](./GOOGLE_AGENT_SEARCH_ANSWER_CONTRACT_AUDIT_v0_1.md)**.
-
-Kort: Preview QA viste deterministisk Google **HTTP 400** — sannsynlig `groundingSpec.includeGrounding` (ugyldig felt; skal være `includeGroundingSupports`). Fix i `agent-search-direct.ts` + `google_400_bad_request`.
+- **400 (payload):** [GOOGLE_AGENT_SEARCH_ANSWER_CONTRACT_AUDIT_v0_1.md](./GOOGLE_AGENT_SEARCH_ANSWER_CONTRACT_AUDIT_v0_1.md) — `includeGroundingSupports` fix i `e4401c11`.
+- **403 (IAM):** [GOOGLE_AGENT_SEARCH_IAM_VERIFICATION_v0_1.md](./GOOGLE_AGENT_SEARCH_IAM_VERIFICATION_v0_1.md) — SA trenger `roles/discoveryengine.user` (eller custom) i tillegg til `roles/ces.client`.
 
 ---
 
