@@ -166,12 +166,25 @@ function buildPlan(count) {
   return plan;
 }
 
-function checkResponseContract(payload) {
-  if (typeof payload.text !== "string" || !payload.text.trim()) return false;
-  if (typeof payload.turnCompleted !== "boolean") return false;
-  if (typeof payload.turnIndex !== "number" || !Number.isFinite(payload.turnIndex)) return false;
-  const extra = Object.keys(payload).filter((k) => !["text", "turnCompleted", "turnIndex"].includes(k));
-  return extra.length === 0;
+const ALLOWED_SUCCESS_KEYS = ["text", "turnCompleted", "turnIndex"];
+
+function evaluateResponseContract(payload) {
+  const payloadKeys = Object.keys(payload);
+  const contractExtraKeys = payloadKeys.filter((k) => !ALLOWED_SUCCESS_KEYS.includes(k));
+  const failures = [];
+  if (typeof payload.text !== "string") failures.push("text_not_string");
+  else if (!payload.text.trim()) failures.push("text_empty");
+  if (typeof payload.turnCompleted !== "boolean") failures.push("turnCompleted_invalid");
+  if (typeof payload.turnIndex !== "number" || !Number.isFinite(payload.turnIndex)) {
+    failures.push("turnIndex_invalid");
+  }
+  if (contractExtraKeys.length > 0) failures.push("extra_keys");
+  return {
+    ok: failures.length === 0,
+    payloadKeys,
+    contractExtraKeys,
+    failures,
+  };
 }
 
 function readOpsHeader(response, name) {
@@ -198,17 +211,18 @@ async function callProxy(base, sessionId, message, opsToken, protectionBypass) {
   });
   const durationMs = Math.round(performance.now() - started);
   const contentType = response.headers.get("content-type") ?? "";
-  const payload =
-    contentType.includes("application/json") ? await response.json().catch(() => ({})) : {};
+  const contentTypeIsJson = contentType.includes("application/json");
+  const payload = contentTypeIsJson ? await response.json().catch(() => ({})) : {};
   const deploymentBlocked =
-    response.status === 401 && !contentType.includes("application/json");
+    response.status === 401 && !contentTypeIsJson;
   const errorCode = deploymentBlocked
     ? "deployment_protection"
     : typeof payload.error === "string"
       ? payload.error
       : null;
   const hasText = typeof payload.text === "string" && payload.text.trim().length > 0;
-  const responseContractOk = hasText && checkResponseContract(payload);
+  const contractEvaluation = evaluateResponseContract(payload);
+  const responseContractOk = hasText && contractEvaluation.ok;
   const category = deploymentBlocked
     ? "deployment_protection"
     : hasText
@@ -231,7 +245,114 @@ async function callProxy(base, sessionId, message, opsToken, protectionBypass) {
     responseContractOk,
     deploymentBlocked,
     opsMetaErrorCode: readOpsHeader(response, OPS_META_ERROR),
+    contentTypeIsJson,
+    contractEvaluation,
+    opsMetaHeadersPresent: Boolean(readOpsHeader(response, OPS_META_BACKEND)),
   };
+}
+
+function printPreflightDiagnosis(diagnosis) {
+  console.log("\n--- preflight FAILED ---");
+  for (const item of diagnosis) {
+    console.log(JSON.stringify(item));
+  }
+  console.log("Fix the issues above before running the full series.");
+}
+
+async function runPreflight({ base, opsToken, protectionBypass, expectBackend, opsConfig }) {
+  const diagnosis = [];
+  const sessionId = `viddel-preflight-${Date.now().toString(36)}`;
+  const probe = await callProxy(
+    base,
+    sessionId,
+    SEED_PROMPTS[0],
+    opsToken || undefined,
+    protectionBypass || undefined,
+  );
+
+  if (expectBackend && !opsToken) {
+    diagnosis.push({
+      code: "ops_token_missing_local",
+      message:
+        "VIDDEL_OPS_TEST_TOKEN is required in --env-file when using --expect-backend (must match Preview Vercel env).",
+    });
+  }
+
+  if (!opsConfig.protectionBypassConfigured && probe.deploymentBlocked) {
+    diagnosis.push({
+      code: "deployment_protection_blocked",
+      message: "401 HTML from Vercel — set VERCEL_AUTOMATION_BYPASS_SECRET in env file.",
+      httpStatus: probe.httpStatus,
+    });
+  }
+
+  if (!probe.contentTypeIsJson) {
+    diagnosis.push({
+      code: "response_not_json",
+      message: "Expected application/json from /api/chat.",
+      httpStatus: probe.httpStatus,
+    });
+  }
+
+  if (expectBackend && opsToken && !probe.opsMetaHeadersPresent) {
+    diagnosis.push({
+      code: "ops_meta_headers_missing",
+      message:
+        "x-viddel-ops-meta-backend-mode not visible to script. Check: Preview redeploy includes #218, VIDDEL_OPS_TEST_TOKEN matches Preview env, Access-Control-Expose-Headers on /api/chat.",
+      httpStatus: probe.httpStatus,
+      opsTokenConfiguredLocally: true,
+      base,
+    });
+  }
+
+  if (expectBackend && probe.backendMode && probe.backendMode !== expectBackend) {
+    diagnosis.push({
+      code: "backend_mode_mismatch",
+      expected: expectBackend,
+      actual: probe.backendMode,
+      message: "Preview VIDDEL_AI_BACKEND does not match --expect-backend.",
+    });
+  }
+
+  if (probe.success && !probe.contractEvaluation.ok) {
+    diagnosis.push({
+      code: "response_contract_failed",
+      failures: probe.contractEvaluation.failures,
+      payloadKeys: probe.contractEvaluation.payloadKeys,
+      contractExtraKeys: probe.contractEvaluation.contractExtraKeys,
+    });
+  }
+
+  if (expectBackend && opsToken && probe.opsMetaHeadersPresent && !probe.success) {
+    diagnosis.push({
+      code: "preflight_call_failed",
+      message: "Ops headers OK but call did not succeed — fix upstream before full series.",
+      httpStatus: probe.httpStatus,
+      errorCode: probe.errorCode ?? probe.opsMetaErrorCode,
+      backendMode: probe.backendMode,
+    });
+  }
+
+  const failed = diagnosis.length > 0;
+  if (!failed) {
+    console.log("--- preflight OK ---");
+    console.log(
+      JSON.stringify({
+        httpStatus: probe.httpStatus,
+        backendMode: probe.backendMode,
+        responseContractOk: probe.responseContractOk,
+        durationBucket: probe.durationBucket,
+        hasCitations: probe.hasCitations,
+        base,
+        opsTokenConfiguredLocally: opsConfig.tokenConfiguredLocally,
+        protectionBypassConfigured: opsConfig.protectionBypassConfigured,
+      }),
+    );
+  } else {
+    printPreflightDiagnosis(diagnosis);
+  }
+
+  return { failed, diagnosis, probe };
 }
 
 function readCesEnv() {
@@ -425,7 +546,56 @@ async function main() {
     `publicGuard: active (server limits — default ${DEFAULT_BURST_LIMIT}/10m ${DEFAULT_DAILY_LIMIT}/day; set VIDDEL_CHAT_* in Vercel + redeploy for pre-pilot)`,
   );
   if (opsConfig.tokenConfiguredLocally) {
-    console.log("opsToken: yes (optional bypass — not required for standard pre-pilot flow)");
+    console.log("opsToken: yes (required for --expect-backend preflight)");
+  } else if (args.expectBackend) {
+    console.log("opsToken: MISSING — preflight will fail");
+  }
+
+  const preflight = await runPreflight({
+    base: args.base,
+    opsToken,
+    protectionBypass,
+    expectBackend: args.expectBackend,
+    opsConfig,
+  });
+
+  if (preflight.failed) {
+    const outPath =
+      args.out ||
+      join(
+        __dirname,
+        "..",
+        "tmp",
+        "chat-reliability",
+        `preflight-failed-${new Date().toISOString().replace(/[:.]/g, "-")}.json`,
+      );
+    mkdirSync(dirname(outPath), { recursive: true });
+    writeFileSync(
+      outPath,
+      `${JSON.stringify(
+        {
+          generatedAt: new Date().toISOString(),
+          label: args.label || null,
+          base: args.base,
+          preflightFailed: true,
+          diagnosis: preflight.diagnosis,
+          probe: {
+            httpStatus: preflight.probe.httpStatus,
+            errorCode: preflight.probe.errorCode,
+            backendMode: preflight.probe.backendMode,
+            responseContractOk: preflight.probe.responseContractOk,
+            contentTypeIsJson: preflight.probe.contentTypeIsJson,
+            opsMetaHeadersPresent: preflight.probe.opsMetaHeadersPresent,
+            contractEvaluation: preflight.probe.contractEvaluation,
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      "utf8",
+    );
+    console.log(`\nWrote ${outPath}`);
+    process.exit(2);
   }
 
   for (const item of plan) {
@@ -458,6 +628,9 @@ async function main() {
       hasCitations: proxy.hasCitations,
       responseContractOk: proxy.responseContractOk,
       deploymentBlocked: proxy.deploymentBlocked,
+      payloadKeys: proxy.contractEvaluation.payloadKeys,
+      contractExtraKeys: proxy.contractEvaluation.contractExtraKeys,
+      opsMetaHeadersPresent: proxy.opsMetaHeadersPresent,
     };
 
     if (args.direct) {
