@@ -72,6 +72,7 @@ export type ChatOpsDriftMeta = {
   duration_bucket?: string | null;
   retry_used?: boolean;
   attempt_count?: number;
+  backend_mode?: string | null;
 };
 
 /** Ops reliability tests — separate log stream and counters; never logs content, sessionId or IP. */
@@ -85,6 +86,7 @@ export function recordChatOpsDriftSignal(signal: ChatDriftSignal, meta?: ChatOps
       duration_bucket: meta?.duration_bucket ?? null,
       retry_used: meta?.retry_used ?? false,
       attempt_count: meta?.attempt_count ?? 1,
+      backend_mode: meta?.backend_mode ?? null,
     });
 
     const redis = getMetricsRedis();
