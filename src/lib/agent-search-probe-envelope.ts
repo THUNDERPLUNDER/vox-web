@@ -9,17 +9,26 @@ import {
 export type AgentSearchEnvReadiness = {
   has_project_id: boolean;
   has_location: boolean;
-  has_app_id_or_engine_id: boolean;
+  has_agent_search_engine_id: boolean;
+  has_ces_app_id: boolean;
   has_service_account: boolean;
 };
 
+function readEnvFlag(name: string): boolean {
+  return Boolean((process.env[name] ?? import.meta.env[name] ?? "").trim());
+}
+
 export function resolveAgentSearchEnvReadiness(): AgentSearchEnvReadiness {
   const env = resolveAgentSearchEnv();
+  const hasEngineId = readEnvFlag("AGENT_SEARCH_ENGINE_ID");
+  const hasCesAppId = readEnvFlag("CES_APP_ID");
+
   if (env.ok) {
     return {
       has_project_id: true,
       has_location: true,
-      has_app_id_or_engine_id: true,
+      has_agent_search_engine_id: true,
+      has_ces_app_id: hasCesAppId,
       has_service_account: true,
     };
   }
@@ -27,8 +36,8 @@ export function resolveAgentSearchEnvReadiness(): AgentSearchEnvReadiness {
   return {
     has_project_id: !missing.has("CES_PROJECT_ID"),
     has_location: !missing.has("CES_LOCATION") && !missing.has("AGENT_SEARCH_LOCATION"),
-    has_app_id_or_engine_id:
-      !missing.has("CES_APP_ID") && !missing.has("AGENT_SEARCH_ENGINE_ID"),
+    has_agent_search_engine_id: hasEngineId,
+    has_ces_app_id: hasCesAppId,
     has_service_account: !missing.has("GOOGLE_SERVICE_ACCOUNT_JSON"),
   };
 }
@@ -42,6 +51,8 @@ export type AgentSearchProbeEnvelope = {
   layer: "google_agent_search_direct";
   endpoint_host: string | null;
   env_readiness: AgentSearchEnvReadiness;
+  engine_id_source: "AGENT_SEARCH_ENGINE_ID" | null;
+  ces_app_id_not_engine: true;
   api_route_reached: "yes";
 };
 
@@ -63,6 +74,8 @@ export function buildProbeEnvelope(): AgentSearchProbeEnvelope {
     layer: "google_agent_search_direct",
     endpoint_host,
     env_readiness: readiness,
+    engine_id_source: env.ok ? "AGENT_SEARCH_ENGINE_ID" : null,
+    ces_app_id_not_engine: true,
     api_route_reached: "yes",
   };
 }

@@ -62,7 +62,7 @@ Fra `src/lib/agent-search-direct.ts` (preview QA `e4401c11`):
 | Project | `hearing-aid-mvp` |
 | Location | `eu` |
 | Collection | `default_collection` |
-| Engine ID | `CES_APP_ID` → `1741e68d-0528-4625-8b83-99a0dbb5298f` (overstyr med `AGENT_SEARCH_ENGINE_ID` hvis annet) |
+| Engine ID | **`AGENT_SEARCH_ENGINE_ID` påkrevd** — `CES_APP_ID` er **ikke** engine (se [engine verification](./GOOGLE_AGENT_SEARCH_ENGINE_RESOURCE_VERIFICATION_v0_1.md)) |
 | Serving config | `default_serving_config` (overstyr med `AGENT_SEARCH_SERVING_CONFIG`) |
 
 **Full resource name (servingConfig i path + IAM-feilmelding):**
@@ -161,27 +161,32 @@ Dette krever mer IAM-arbeid; `roles/discoveryengine.user` er raskest for spike/Q
 
 ---
 
-## 6. Engine / servingConfig (hvis IAM er OK men fortsatt feil)
+## 6. Engine / servingConfig (etter IAM-fix — bekreftet preview QA)
 
-Etter IAM-fix, hvis fortsatt feil:
+Etter `roles/discoveryengine.user`: **403 → 400** `INVALID_ARGUMENT` — *Cannot fetch Engine for: 1741e68d-…*
 
-| Sjekk | Handling |
-|-------|----------|
-| Engine ID ≠ CES app ID | GCP Agent Builder → App → resource name → sett `AGENT_SEARCH_ENGINE_ID` i Vercel |
-| Feil serving config | Prøv `AGENT_SEARCH_SERVING_CONFIG=default_search` (noen curl-eksempler bruker `default_search:answer`) |
-| LLM add-on / edition | Console-feil `LLM_ADDON_NOT_ENABLED` / FailedPrecondition — krever GCP produkt, ikke kode |
+| Sjekk | Konklusjon |
+|-------|------------|
+| IAM på SA | **OK** |
+| `1741e68d-…` som engine | **Feil** — det er `CES_APP_ID` (`apps/…`), ikke `engines/…` |
+| Neste steg | Finn engine-ID i GCP → `AGENT_SEARCH_ENGINE_ID` i Vercel Preview |
 
-403 **PERMISSION_DENIED** på `servingConfigs.answer` matcher **ikke** feil engine (404 mer typisk) og **ikke** LLM add-on (ofte annen status/message).
+Full guide: [GOOGLE_AGENT_SEARCH_ENGINE_RESOURCE_VERIFICATION_v0_1.md](./GOOGLE_AGENT_SEARCH_ENGINE_RESOURCE_VERIFICATION_v0_1.md)
+
+| Videre test | Handling |
+|-------------|----------|
+| Feil serving config | `AGENT_SEARCH_SERVING_CONFIG=default_search` |
+| LLM add-on / edition | `LLM_ADDON_NOT_ENABLED` / FailedPrecondition — GCP produkt |
 
 ---
 
 ## 7. Acceptance etter GCP-fix
 
-1. Preview: `/vis/system/agent-search-direct-probe/` → 5 kall
-2. Minst **ett** kall: Google HTTP **200**, `has_answer: ja`, `error_code` null
-3. Eller ny presis Google-feil (ikke 403 permission) → dokumenter neste steg
+1. Sett **`AGENT_SEARCH_ENGINE_ID`** (ekte engine fra GCP) i Vercel Preview
+2. Preview probe → minst **ett** kall: Google **200**, `has_answer: ja`
+3. Eller konklusjon: ingen engine for denne agenten → direct `:answer` passer ikke CES-only oppsett
 
-**Ikke merge #213** før IAM verifisert og minst ett gyldig 200 **eller** ny GCP-konklusjon.
+**Ikke merge #213** før 200 **eller** skriftlig engine/GCP-konklusjon.
 
 ---
 

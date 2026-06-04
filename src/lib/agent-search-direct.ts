@@ -30,12 +30,19 @@ export type AgentSearchProbeErrorCode =
   | "timeout"
   | "configuration_missing"
   | "google_400_bad_request"
+  | "google_engine_not_found"
   | "google_403"
   | "google_404"
   | "google_502";
 
-export function mapGoogleUpstreamErrorCode(httpStatus: number): AgentSearchProbeErrorCode {
-  if (httpStatus === 400) return "google_400_bad_request";
+export function mapGoogleUpstreamErrorCode(
+  httpStatus: number,
+  hint: string | null = null,
+): AgentSearchProbeErrorCode {
+  if (httpStatus === 400) {
+    if (hint?.includes("Cannot fetch Engine")) return "google_engine_not_found";
+    return "google_400_bad_request";
+  }
   if (httpStatus === 403) return "google_403";
   if (httpStatus === 404) return "google_404";
   if (httpStatus === 502 || httpStatus === 503 || httpStatus === 504) return "google_502";
@@ -76,14 +83,14 @@ export function discoveryHost(location: string): string {
 export function resolveAgentSearchEnv(): AgentSearchEnvResult {
   const projectId = readEnv("CES_PROJECT_ID");
   const location = readEnv("AGENT_SEARCH_LOCATION") || readEnv("CES_LOCATION");
-  const engineId = readEnv("AGENT_SEARCH_ENGINE_ID") || readEnv("CES_APP_ID");
+  const engineId = readEnv("AGENT_SEARCH_ENGINE_ID");
   const serviceAccountJson = readEnv("GOOGLE_SERVICE_ACCOUNT_JSON");
   const servingConfig = readEnv("AGENT_SEARCH_SERVING_CONFIG") || DEFAULT_ANSWER_SERVING;
 
   const missing: string[] = [];
   if (!projectId) missing.push("CES_PROJECT_ID");
   if (!location) missing.push("CES_LOCATION or AGENT_SEARCH_LOCATION");
-  if (!engineId) missing.push("CES_APP_ID or AGENT_SEARCH_ENGINE_ID");
+  if (!engineId) missing.push("AGENT_SEARCH_ENGINE_ID");
   if (!serviceAccountJson) missing.push("GOOGLE_SERVICE_ACCOUNT_JSON");
 
   if (missing.length > 0) {
@@ -241,7 +248,7 @@ export async function runAgentSearchDirectProbeOnce(
         ? null
         : response.ok
           ? "empty_response"
-          : mapGoogleUpstreamErrorCode(response.status),
+          : mapGoogleUpstreamErrorCode(response.status, safeErr.hint),
       upstream_http_status: response.status,
       google_rpc_status: safeErr.rpc_status,
       google_error_hint: safeErr.hint,

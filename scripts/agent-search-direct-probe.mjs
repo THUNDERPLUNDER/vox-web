@@ -89,12 +89,12 @@ function readProbeEnv(fileEnv) {
   }
   const projectId = merged.CES_PROJECT_ID?.trim() ?? "";
   const location = (merged.AGENT_SEARCH_LOCATION ?? merged.CES_LOCATION ?? "").trim();
-  const engineId = (merged.AGENT_SEARCH_ENGINE_ID ?? merged.CES_APP_ID ?? "").trim();
+  const engineId = (merged.AGENT_SEARCH_ENGINE_ID ?? "").trim();
   const saJson = merged.GOOGLE_SERVICE_ACCOUNT_JSON?.trim() ?? "";
   const missing = [];
   if (!projectId) missing.push("CES_PROJECT_ID");
   if (!location) missing.push("CES_LOCATION or AGENT_SEARCH_LOCATION");
-  if (!engineId) missing.push("CES_APP_ID or AGENT_SEARCH_ENGINE_ID");
+  if (!engineId) missing.push("AGENT_SEARCH_ENGINE_ID");
   if (!saJson) missing.push("GOOGLE_SERVICE_ACCOUNT_JSON");
   return { projectId, location, engineId, saJson, missing };
 }

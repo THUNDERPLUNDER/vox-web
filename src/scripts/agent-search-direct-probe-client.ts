@@ -224,7 +224,8 @@ function renderReadiness(data: Record<string, unknown>, fetchUrl: string): strin
       <li>VERCEL_ENV: <code class="rounded bg-gray-100 px-1 text-xs">${esc(data.vercel_env)}</code></li>
       <li>Preview enabled: <strong>${data.preview_enabled ? "ja" : "nei"}</strong></li>
       <li>Endpoint host: ${esc(data.endpoint_host)}</li>
-      <li>Env: project=${readiness.has_project_id ? "✓" : "✗"} location=${readiness.has_location ? "✓" : "✗"} engine=${readiness.has_app_id_or_engine_id ? "✓" : "✗"} SA=${readiness.has_service_account ? "✓" : "✗"}</li>
+      <li>Env: project=${readiness.has_project_id ? "✓" : "✗"} location=${readiness.has_location ? "✓" : "✗"} AGENT_SEARCH_ENGINE_ID=${readiness.has_agent_search_engine_id ? "✓" : "✗"} CES_APP_ID (ikke engine)=${readiness.has_ces_app_id ? "satt" : "—"} SA=${readiness.has_service_account ? "✓" : "✗"}</li>
+      ${data.ces_app_id_not_engine ? `<li class="text-xs text-amber-800">CES_APP_ID er CES apps/… — ikke bruk som Discovery Engine engines/…</li>` : ""}
     </ul>
     <p class="mt-2 text-xs text-gray-600">Probe-kjøring bruker <strong>GET ?run=1</strong> (POST er ofte blokkert av Vercel Deployment Protection på preview).</p>
     ${data.vercel_env_note ? `<p class="mt-2 text-xs text-amber-800">${esc(data.vercel_env_note)}</p>` : ""}
