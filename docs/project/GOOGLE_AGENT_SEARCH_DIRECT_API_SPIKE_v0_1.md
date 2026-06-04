@@ -1,0 +1,159 @@
+# Google Agent Search direct API spike v0.1
+
+Status: **Direct `:answer` validated in preview (5/5)** — ikke production-bytt.  
+Known-good config: [GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md](./GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md)  
+Related: [#198](https://github.com/THUNDERPLUNDER/vox-web/issues/198), [#188](https://github.com/THUNDERPLUNDER/vox-web/issues/188), [#213](https://github.com/THUNDERPLUNDER/vox-web/pull/213)
+
+---
+
+## Beslutning
+
+Etter to rene reliability-serier (guard 100/500): **25% success, 75% upstream (502), 0 rate_limit**.  
+Public guard er ikke problemet. Thomas vil **først** teste Googles dokumenterte **Agent Search answer/search API** direkte før ekstern fallback (OpenAI, Vercel AI Gateway, pgvector).
+
+**Hypotese:** Ustabilitet kan ligge i **CES channel / deployment / runSession-laget**, ikke nødvendigvis i Agent Search/RAG-kjernen.
+
+---
+
+## A. Dagens implementasjon (`/api/chat`)
+
+| Lag | Detalj |
+|-----|--------|
+| Entry | `POST /api/chat` → `src/pages/api/chat.ts` |
+| Backend | `runCesSession()` i `src/lib/ces-run-session.ts` |
+| API | **CES Conversational Agents** — `ces.googleapis.com/v1beta` |
+| Metode | `projects/.../apps/.../sessions/{id}:runSession` |
+| Auth | Service account JWT → `cloud-platform` scope (`src/lib/ces-auth.ts`) |
+| Deployment | `CES_DEPLOYMENT_ID` (API access channel, f.eks. `edb2938a-…`) |
+| Location | `CES_LOCATION=eu` (multi-region, **ikke** compute-region) |
+| Payload | `{ config: { session, deployment }, inputs: [{ text }] }` |
+| Upstream 502 | Kastes i `runCesSessionOnce` når `!response.ok` → `error_code=upstream` |
+
+**Gjenbruk ved alternativ backend:**
+
+- Public guard (`chat-api-guard.ts`, `chat-guard-limits.ts`)
+- Timeout/retry-mønster (`CES_FETCH_TIMEOUT_MS`, 2 forsøk)
+- Safe metadata (`chat-usage-metrics.ts`, `[chat-drift]`)
+- Frontend-kontrakt: `{ message, sessionId }` → `{ text, turnCompleted, turnIndex }`
+- Viddel-svarformat (ren tekst, ingen `diagnosticInfo` til klient)
+
+**Ikke gjenbruk direkte:** CES session/deployment resource paths, `runSession` payload.
+
+---
+
+## B. Google Agent Search direct API (Discovery Engine)
+
+Offisiell dokumentasjon: [Agent Search REST](https://cloud.google.com/generative-ai-app-builder/docs/reference/rest/v1/projects.locations.collections.engines.servingConfigs)
+
+| Metode | Formål | Serving config (typisk) |
+|--------|--------|-------------------------|
+| **`:search`** | Dokumentsøk / retrieval | `default_search` |
+| **`:answer`** | Generert svar + grounding | `default_serving_config` |
+| **`:streamAnswer`** | Streaming svar | `default_search` |
+
+**EU endpoint (viktig):** bruk host **`eu-discoveryengine.googleapis.com`**, ikke global default.
+
+```
+https://eu-discoveryengine.googleapis.com/v1/projects/{PROJECT}/locations/eu/collections/default_collection/engines/{ENGINE_ID}/servingConfigs/{SERVING_CONFIG}:{method}
+```
+
+**Vår app (known-good — se [known-good doc](./GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md)):**
+
+| Felt | Verdi |
+|------|-------|
+| project | `hearing-aid-mvp` |
+| location | `eu` |
+| **engine id** | `AGENT_SEARCH_ENGINE_ID` = `h-rehjelpen-v1-2_1771939983615` |
+| **CES app id** (ikke engine) | `CES_APP_ID` = `1741e68d-0528-4625-8b83-99a0dbb5298f` |
+
+**Auth / IAM:**
+
+- OAuth scope: `https://www.googleapis.com/auth/cloud-platform` (samme som i dag)
+- Permission: `discoveryengine.servingConfigs.answer` / `.search` (i tillegg til evt. `ces.sessions.runSession`)
+
+**Response-felt (answer) — kun metadata i probe:**
+
+- `answer.state` (f.eks. SUCCEEDED)
+- `answer.answerText` — **ikke logget** i probe
+- Grounding / citations via `groundingSpec` og svar-struktur
+- `relatedQuestions`, support scores avhengig av spec
+
+**Forskjell default_search vs default_serving_config:**
+
+- `default_search` — søk/retrieval + streamAnswer
+- `default_serving_config` — answer query (anbefalt for chat-lignende svar)
+
+**Multi-turn:** `session` — known-good single-turn probe **omits** session; optional full path via `AGENT_SEARCH_ANSWER_SESSION=full`. **Never** `session: "-"`.
+
+---
+
+## C. Sammenligning (vurdering)
+
+| Spørsmål | Channel/runSession (A) | Direct answer API (B) |
+|----------|------------------------|------------------------|
+| Stabilitet (observasjon) | **25%** (16 kall, 2 serier) | **100%** (5/5 preview probe, known-good env) |
+| Svar med kvalitet | Ja når 200 | TBD |
+| Citations/grounding | Via CES/agent (ikke eksponert) | `groundingSpec` i API |
+| Beholde `/api/chat`-kontrakt? | Ja (nåværende) | Ja — map `answerText` → `text` |
+| Vi mister | — | CES deployment/channel, runSession tools |
+| Vi vinner (hvis stabilt) | — | Færre lag, tydeligere API, EU host eksplisitt |
+
+---
+
+## D. Probe (preview-first)
+
+**Anbefalt for Thomas:** Vercel Preview → `/vis/system/agent-search-direct-probe/` → «Kjør 5 direct API-kall».  
+Bruker `POST /api/agent-search-direct-probe` (ett kall per request, deaktivert når `VERCEL_ENV=production`).
+
+Valgfritt CLI (utviklere): `npm run agent-search:probe -- --count=5 --delay-ms=8000`
+
+Logger kun safe metadata — ingen prompt/svar.
+
+---
+
+## E. Contract audit + IAM (400 → 403)
+
+- **400 (payload):** [GOOGLE_AGENT_SEARCH_ANSWER_CONTRACT_AUDIT_v0_1.md](./GOOGLE_AGENT_SEARCH_ANSWER_CONTRACT_AUDIT_v0_1.md) — `includeGroundingSupports` fix i `e4401c11`.
+- **403 (IAM):** [GOOGLE_AGENT_SEARCH_IAM_VERIFICATION_v0_1.md](./GOOGLE_AGENT_SEARCH_IAM_VERIFICATION_v0_1.md) — SA trenger `roles/discoveryengine.user` (eller custom) i tillegg til `roles/ces.client`.
+
+---
+
+## F. Final status (preview QA)
+
+| Resultat | Verdi |
+|----------|--------|
+| Direct `:answer` | **Teknisk validert** i Vercel Preview |
+| Første gyldige serie | **5/5** success, `has_answer` + citations |
+| Channel baseline | **4/16 (25%)** — uendret |
+| Production backend | **Ikke byttet** — fortsatt CES `runSession` |
+| PR #213 | **Ikke merge** ennå |
+
+Full config + troubleshooting: [GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md](./GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md).
+
+---
+
+## G. Beslutningspunkt (neste)
+
+Direct API er **stabilt nok i preview** for neste vurdering — ikke for umiddelbar prod-switch.
+
+**Anbefalt neste steg:**
+
+- Assessment: [VIDDEL_AI_BACKEND_MODE_ASSESSMENT_v0_1.md](./VIDDEL_AI_BACKEND_MODE_ASSESSMENT_v0_1.md) — implement env switch (default `ces_channel`), no prod switch yet
+- Default `ces_channel` til produksjons-QA og drift er ferdig
+- Ingen frontend-endring i første backend-modus-PR
+- **Ikke** aktiver PostHog, **ikke** reset guard limits, **ikke** fjerne channel-kode ennå
+
+**Hvis direct API feiler igjen i prod-lignende test:**
+
+- Videre fallback-assessment (OpenAI File Search, Vercel AI Gateway, pgvector, etc.)
+- **Ikke** implementer ekstern fallback uten eget mandat
+
+---
+
+## Out of scope
+
+- Production backend-bytt
+- Fjerne CES channel-kode
+- PostHog
+- Innholdslogging
+- Flere channel-reliability-serier
