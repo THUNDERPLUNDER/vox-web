@@ -1,7 +1,8 @@
 # Google Agent Search direct API spike v0.1
 
-Status: **Assessment + optional probe** — ikke production-bytt.  
-Related: [#198](https://github.com/THUNDERPLUNDER/vox-web/issues/198), [#188](https://github.com/THUNDERPLUNDER/vox-web/issues/188)
+Status: **Direct `:answer` validated in preview (5/5)** — ikke production-bytt.  
+Known-good config: [GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md](./GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md)  
+Related: [#198](https://github.com/THUNDERPLUNDER/vox-web/issues/198), [#188](https://github.com/THUNDERPLUNDER/vox-web/issues/188), [#213](https://github.com/THUNDERPLUNDER/vox-web/pull/213)
 
 ---
 
@@ -56,13 +57,14 @@ Offisiell dokumentasjon: [Agent Search REST](https://cloud.google.com/generative
 https://eu-discoveryengine.googleapis.com/v1/projects/{PROJECT}/locations/eu/collections/default_collection/engines/{ENGINE_ID}/servingConfigs/{SERVING_CONFIG}:{method}
 ```
 
-**Vår app (fra env):**
+**Vår app (known-good — se [known-good doc](./GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md)):**
 
 | Felt | Verdi |
 |------|-------|
 | project | `hearing-aid-mvp` |
 | location | `eu` |
-| engine/app id | `1741e68d-0528-4625-8b83-99a0dbb5298f` (må verifiseres som **engine** i Discovery Engine, ikke bare CES app) |
+| **engine id** | `AGENT_SEARCH_ENGINE_ID` = `h-rehjelpen-v1-2_1771939983615` |
+| **CES app id** (ikke engine) | `CES_APP_ID` = `1741e68d-0528-4625-8b83-99a0dbb5298f` |
 
 **Auth / IAM:**
 
@@ -81,7 +83,7 @@ https://eu-discoveryengine.googleapis.com/v1/projects/{PROJECT}/locations/eu/col
 - `default_search` — søk/retrieval + streamAnswer
 - `default_serving_config` — answer query (anbefalt for chat-lignende svar)
 
-**Multi-turn:** `session` felt i answer request (auto session med `-` eller eksplisitt session resource).
+**Multi-turn:** `session` — known-good single-turn probe **omits** session; optional full path via `AGENT_SEARCH_ANSWER_SESSION=full`. **Never** `session: "-"`.
 
 ---
 
@@ -89,7 +91,7 @@ https://eu-discoveryengine.googleapis.com/v1/projects/{PROJECT}/locations/eu/col
 
 | Spørsmål | Channel/runSession (A) | Direct answer API (B) |
 |----------|------------------------|------------------------|
-| Stabilitet (observasjon) | **25%** (16 kall, 2 serier) | **TBD** — kjør probe |
+| Stabilitet (observasjon) | **25%** (16 kall, 2 serier) | **100%** (5/5 preview probe, known-good env) |
 | Svar med kvalitet | Ja når 200 | TBD |
 | Citations/grounding | Via CES/agent (ikke eksponert) | `groundingSpec` i API |
 | Beholde `/api/chat`-kontrakt? | Ja (nåværende) | Ja — map `answerText` → `text` |
@@ -116,18 +118,35 @@ Logger kun safe metadata — ingen prompt/svar.
 
 ---
 
-## F. Beslutningspunkt
+## F. Final status (preview QA)
 
-**Hvis direct API er stabilt (f.eks. ≥80% has_answer over probe-serie):**
+| Resultat | Verdi |
+|----------|--------|
+| Direct `:answer` | **Teknisk validert** i Vercel Preview |
+| Første gyldige serie | **5/5** success, `has_answer` + citations |
+| Channel baseline | **4/16 (25%)** — uendret |
+| Production backend | **Ikke byttet** — fortsatt CES `runSession` |
+| PR #213 | **Ikke merge** ennå |
 
-- Anbefal liten PR: `VIDDEL_AI_BACKEND=ces_channel | google_agent_search_direct`
-- Default `ces_channel` til QA er ferdig
-- Ingen frontend-endring
+Full config + troubleshooting: [GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md](./GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md).
 
-**Hvis direct API også er ustabilt:**
+---
 
-- Anbefal videre fallback-assessment: OpenAI File Search, Vercel AI Gateway, Supabase pgvector / Pinecone, Anthropic citations
-- **Ikke** implementer ekstern fallback i samme PR
+## G. Beslutningspunkt (neste)
+
+Direct API er **stabilt nok i preview** for neste vurdering — ikke for umiddelbar prod-switch.
+
+**Anbefalt neste steg:**
+
+- Liten assessment / design for `VIDDEL_AI_BACKEND=ces_channel | google_agent_search_direct`
+- Default `ces_channel` til produksjons-QA og drift er ferdig
+- Ingen frontend-endring i første backend-modus-PR
+- **Ikke** aktiver PostHog, **ikke** reset guard limits, **ikke** fjerne channel-kode ennå
+
+**Hvis direct API feiler igjen i prod-lignende test:**
+
+- Videre fallback-assessment (OpenAI File Search, Vercel AI Gateway, pgvector, etc.)
+- **Ikke** implementer ekstern fallback uten eget mandat
 
 ---
 

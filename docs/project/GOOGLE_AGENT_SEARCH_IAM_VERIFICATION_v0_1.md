@@ -188,6 +188,8 @@ Full guide: [GOOGLE_AGENT_SEARCH_ENGINE_RESOURCE_VERIFICATION_v0_1.md](./GOOGLE_
 
 **Ikke merge #213** før 200 **eller** skriftlig engine/GCP-konklusjon.
 
+**Oppdatert:** Preview 5/5 success med IAM + riktig engine — se [known-good](./GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md).
+
 ---
 
 ## 8. Referanser

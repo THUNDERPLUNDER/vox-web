@@ -1,6 +1,6 @@
 # Google Agent Search — Engine / ServingConfig resource verification v0.1
 
-Status: **Konklusjon etter IAM-fix + preview QA**  
+Status: **Resolved** — working engine ID documented in [known-good](./GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md)  
 Related: [#198](https://github.com/THUNDERPLUNDER/vox-web/issues/198), [IAM audit](./GOOGLE_AGENT_SEARCH_IAM_VERIFICATION_v0_1.md)
 
 ---
