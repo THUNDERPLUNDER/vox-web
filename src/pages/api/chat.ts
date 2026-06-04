@@ -16,7 +16,11 @@ import {
 } from "../../lib/chat-usage-metrics";
 import { resolveCesEnv } from "../../lib/ces-env";
 import { CesRunSessionError, runCesSession } from "../../lib/ces-run-session";
-import { buildOpsChatMetaHeaders, type OpsChatResponseMeta } from "../../lib/chat-ops-meta";
+import {
+  buildOpsChatMetaHeaders,
+  OPS_META_EXPOSE_HEADER_NAMES,
+  type OpsChatResponseMeta,
+} from "../../lib/chat-ops-meta";
 import { resolveViddelAiBackend, type ViddelAiBackend } from "../../lib/viddel-ai-backend";
 
 export const prerender = false;
@@ -46,6 +50,7 @@ function chatResponse(
   };
   if (opsTest && opsMeta) {
     Object.assign(headers, buildOpsChatMetaHeaders(opsMeta));
+    headers["Access-Control-Expose-Headers"] = OPS_META_EXPOSE_HEADER_NAMES;
   }
   return new Response(JSON.stringify(body), { status, headers });
 }
@@ -281,7 +286,16 @@ export const POST: APIRoute = async ({ request }) => {
       };
       trackDrift(opsTest, "success", { ...meta, backend_mode: backendMode });
       logSuccess(opsTest, backendMode, meta);
-      return successResponse(opsTest, backendMode, result, meta);
+      return successResponse(
+        opsTest,
+        backendMode,
+        {
+          text: result.text,
+          turnCompleted: result.turnCompleted,
+          turnIndex: result.turnIndex,
+        },
+        meta,
+      );
     } catch (error) {
       if (error instanceof CesRunSessionError) {
         return handleBackendError(opsTest, error, sessionId, backendMode);
@@ -312,7 +326,16 @@ export const POST: APIRoute = async ({ request }) => {
     };
     trackDrift(opsTest, "success", { ...meta, backend_mode: backendMode });
     logSuccess(opsTest, backendMode, meta);
-    return successResponse(opsTest, backendMode, result, meta);
+    return successResponse(
+      opsTest,
+      backendMode,
+      {
+        text: result.text,
+        turnCompleted: result.turnCompleted,
+        turnIndex: result.turnIndex,
+      },
+      meta,
+    );
   } catch (error) {
     if (error instanceof CesRunSessionError) {
       return handleBackendError(opsTest, error, sessionId, backendMode);

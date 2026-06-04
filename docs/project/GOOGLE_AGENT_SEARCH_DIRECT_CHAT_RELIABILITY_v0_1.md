@@ -15,19 +15,30 @@ Related: [#198](https://github.com/THUNDERPLUNDER/vox-web/issues/198), [#215](ht
 
 ## Automated run (Thomas / ops)
 
+**Step 1 — preflight (1 call, fail-fast):** script exits before full series if ops headers, backend mode, or contract are wrong.
+
+**Step 2 — short series (count=5):** only after preflight OK.
+
+**Step 3 — full series (count=20):** only after count=5 passes ≥80%.
+
 ```bash
 # .env.local (never commit):
-# VIDDEL_OPS_TEST_TOKEN=<Preview value from Vercel>
+# VIDDEL_OPS_TEST_TOKEN=<Preview value from Vercel — must match exactly>
 # VERCEL_AUTOMATION_BYPASS_SECRET=<Vercel Protection Bypass for Automation>
+
+# Use exact Preview URL from browser/Vercel if needed:
+# --base=https://vox-web-git-main-raddum-5965s-projects.vercel.app
 
 npm run chat:reliability -- \
   --preview \
-  --count=20 \
-  --delay-ms=8000 \
+  --count=5 \
+  --delay-ms=15000 \
   --expect-backend=google_agent_search_direct \
   --env-file=.env.local \
-  --label=direct-preview-api-chat-v01
+  --label=direct-preview-api-chat-v05
 ```
+
+Then `count=20` with same flags after v05 passes.
 
 Output: `tmp/chat-reliability/run-*.json` (gitignored, metadata only).
 

@@ -10,6 +10,17 @@ export const OPS_META_HEADER_RETRY_USED = "x-viddel-ops-meta-retry-used";
 export const OPS_META_HEADER_ATTEMPT_COUNT = "x-viddel-ops-meta-attempt-count";
 export const OPS_META_HEADER_HAS_CITATIONS = "x-viddel-ops-meta-has-citations";
 
+/** Exposed to cross-origin reliability script (Node fetch) via Access-Control-Expose-Headers. */
+export const OPS_META_EXPOSE_HEADER_NAMES = [
+  OPS_META_HEADER_BACKEND,
+  OPS_META_HEADER_ERROR_CODE,
+  OPS_META_HEADER_UPSTREAM_HTTP,
+  OPS_META_HEADER_DURATION_BUCKET,
+  OPS_META_HEADER_RETRY_USED,
+  OPS_META_HEADER_ATTEMPT_COUNT,
+  OPS_META_HEADER_HAS_CITATIONS,
+].join(", ");
+
 export type OpsChatResponseMeta = {
   backend_mode: ViddelAiBackend;
   error_code?: string | null;
