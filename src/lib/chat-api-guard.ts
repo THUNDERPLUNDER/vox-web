@@ -2,6 +2,7 @@
 
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { getChatRateLimitConfig } from "./chat-guard-limits.ts";
 import { isOpsReliabilityRequest } from "./chat-ops-test.ts";
 
 export const CHAT_MAX_MESSAGE_LENGTH = 2000;
@@ -105,15 +106,16 @@ function getRateLimiters(): RateLimitState | null {
     return null;
   }
   const redis = Redis.fromEnv();
+  const { burstLimit, dailyLimit } = getChatRateLimitConfig();
   rateLimitState = {
     burst: new Ratelimit({
       redis,
-      limiter: Ratelimit.slidingWindow(10, "10 m"),
+      limiter: Ratelimit.slidingWindow(burstLimit, "10 m"),
       prefix: "viddel-chat-burst",
     }),
     daily: new Ratelimit({
       redis,
-      limiter: Ratelimit.slidingWindow(50, "24 h"),
+      limiter: Ratelimit.slidingWindow(dailyLimit, "24 h"),
       prefix: "viddel-chat-daily",
     }),
   };

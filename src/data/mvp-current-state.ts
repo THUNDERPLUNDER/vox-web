@@ -77,7 +77,7 @@ export const mvpCurrentState = {
   } satisfies CurrentSprint,
   closedSprints: [] satisfies ClosedSprint[],
   currentFocus:
-    "Monitoring levert (#188). Vi feilsøker chat-stabilitet — public guard står, ops-test gir ren CES-måling. Fallback ved behov.",
+    "Monitoring levert (#188). Reliability-test via Vercel guard-limits (100/500 midlertidig) — ikke lokal token. Fallback ved behov.",
   mvpSurfaces: [
     {
       id: "frontpage",
@@ -111,7 +111,7 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Applied",
-      note: "Live i production. Public guard beskytter brukere; intern ops-test måler CES-stabilitet separat (#188).",
+      note: "Live i production. Public guard aktiv — grenser justerbare i Vercel for pre-pilot CES-test (#188).",
       visFrontpage: true,
       kind: "public",
       frontpageDescription: "Headless AI-chat — live (intern test). Public guard aktiv.",

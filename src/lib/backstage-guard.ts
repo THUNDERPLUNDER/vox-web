@@ -13,6 +13,12 @@ import {
 } from "../data/backstage-v01.ts";
 import { getVisFrontpageHubs } from "../data/vis-frontpage-hubs-v01.ts";
 import { CHAT_MAX_MESSAGE_LENGTH } from "./chat-api-guard.ts";
+import {
+  CHAT_BURST_LIMIT_ENV,
+  CHAT_DAILY_LIMIT_ENV,
+  DEFAULT_CHAT_BURST_LIMIT,
+  DEFAULT_CHAT_DAILY_LIMIT,
+} from "./chat-guard-limits.ts";
 
 const REQUIRED_ENV_VARS = [
   "UPSTASH_REDIS_REST_URL",
@@ -126,24 +132,28 @@ export function validateBackstageGuard(): string[] {
 
   const burstRule = protectionRules.find((r) => r.title === "Kort sikt");
   const dailyRule = protectionRules.find((r) => r.title === "Døgn");
-  if (!burstRule?.value.includes("10")) {
-    errors.push("Backstage burst limit text must reference 10 per 10 minutes");
+  if (!burstRule?.value.includes(String(DEFAULT_CHAT_BURST_LIMIT))) {
+    errors.push(`Backstage burst limit text must reference default ${DEFAULT_CHAT_BURST_LIMIT} per 10 minutes`);
   }
-  if (!dailyRule?.value.includes("50")) {
-    errors.push("Backstage daily limit text must reference 50 per day");
+  if (!dailyRule?.value.includes(String(DEFAULT_CHAT_DAILY_LIMIT))) {
+    errors.push(`Backstage daily limit text must reference default ${DEFAULT_CHAT_DAILY_LIMIT} per day`);
   }
 
   const guardPath = join(srcRoot, "lib/chat-api-guard.ts");
+  const limitsPath = join(srcRoot, "lib/chat-guard-limits.ts");
   if (existsSync(guardPath)) {
     const guardSource = readFileSync(guardPath, "utf8");
-    if (!guardSource.includes('slidingWindow(10, "10 m")')) {
-      errors.push("chat-api-guard.ts burst limit changed — update Backstage protection rules");
-    }
-    if (!guardSource.includes('slidingWindow(50, "24 h")')) {
-      errors.push("chat-api-guard.ts daily limit changed — update Backstage protection rules");
+    if (!guardSource.includes("getChatRateLimitConfig")) {
+      errors.push("chat-api-guard.ts must use getChatRateLimitConfig for rate limits");
     }
     if (!guardSource.includes(`CHAT_MAX_MESSAGE_LENGTH = ${CHAT_MAX_MESSAGE_LENGTH}`)) {
       errors.push("CHAT_MAX_MESSAGE_LENGTH changed — update Backstage protection rules");
+    }
+  }
+  if (existsSync(limitsPath)) {
+    const limitsSource = readFileSync(limitsPath, "utf8");
+    if (!limitsSource.includes(CHAT_BURST_LIMIT_ENV) || !limitsSource.includes(CHAT_DAILY_LIMIT_ENV)) {
+      errors.push("chat-guard-limits.ts must define Vercel env var names for burst/daily limits");
     }
   }
 

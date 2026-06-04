@@ -10,9 +10,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const OPS_TEST_HEADER = "x-viddel-ops-test-token";
 const DEFAULT_BASE = "https://vox.raddum.no";
-/** Stay under production burst guard (10 / 10 min per IP) unless ops token is set. */
+/** Default spacing — production limits are server-side (VIDDEL_CHAT_* in Vercel). */
 const DEFAULT_COUNT = 8;
 const DEFAULT_DELAY_MS = 8_000;
+const DEFAULT_BURST_LIMIT = 10;
+const DEFAULT_DAILY_LIMIT = 50;
 
 /** Fixed prompts — used internally only; never written to output. */
 const SEED_PROMPTS = [
@@ -79,6 +81,35 @@ function parseArgs(argv) {
     else if (arg.startsWith("--env-file=")) args.envFile = arg.slice(11);
   }
   return args;
+}
+
+function parsePositiveInt(raw, fallback) {
+  const trimmed = String(raw ?? "").trim();
+  if (!trimmed) return fallback;
+  const n = Number.parseInt(trimmed, 10);
+  if (!Number.isFinite(n) || n < 1) return fallback;
+  return n;
+}
+
+/** Server limits live in Vercel — script only reports defaults + optional local hints. */
+function buildPublicLimitContext(fileEnv) {
+  const burstRaw = process.env.VIDDEL_CHAT_BURST_LIMIT ?? fileEnv.VIDDEL_CHAT_BURST_LIMIT ?? "";
+  const dailyRaw = process.env.VIDDEL_CHAT_DAILY_LIMIT ?? fileEnv.VIDDEL_CHAT_DAILY_LIMIT ?? "";
+  const burstLimit = parsePositiveInt(burstRaw, DEFAULT_BURST_LIMIT);
+  const dailyLimit = parsePositiveInt(dailyRaw, DEFAULT_DAILY_LIMIT);
+  return {
+    serverControlled: true,
+    envVars: ["VIDDEL_CHAT_BURST_LIMIT", "VIDDEL_CHAT_DAILY_LIMIT"],
+    defaults: { burst: DEFAULT_BURST_LIMIT, daily: DEFAULT_DAILY_LIMIT, burstWindow: "10 m", dailyWindow: "24 h" },
+    localHints: {
+      burstConfigured: Boolean(String(burstRaw).trim()),
+      dailyConfigured: Boolean(String(dailyRaw).trim()),
+      burstLimit,
+      dailyLimit,
+    },
+    prePilotSuggestion: "Set 100 / 500 in Vercel Production, redeploy, then run this script.",
+    note: "Production limits apply on server after redeploy — local env hints do not change production.",
+  };
 }
 
 function durationBucket(ms) {
@@ -241,7 +272,7 @@ async function callDirectCes(env, sessionId, message) {
   };
 }
 
-function summarize(results, opsConfig) {
+function summarize(results, opsConfig, publicLimitContext) {
   const total = results.length;
   const byCategory = {
     success: 0,
@@ -279,10 +310,11 @@ function summarize(results, opsConfig) {
     byCategory,
     durationBuckets: buckets,
     opsMode: opsConfig,
-    retryUsedNote: "Server-side retry_used — see [chat-ops-drift] in Vercel logs when ops token active",
+    publicLimitContext,
+    retryUsedNote: "Server-side retry_used — see [chat-drift] in Vercel Runtime Logs",
     guardNote: opsConfig.publicGuardBypassed
-      ? "Ops token active — public burst/daily IP limits bypassed; one /api/chat per row."
-      : "No ops token — subject to public guard (10/10 min, 50/day per IP).",
+      ? "Ops token bypassed public IP limits (optional path — not required for pre-pilot test)."
+      : `Public guard active — server limits from Vercel env (default ${DEFAULT_BURST_LIMIT}/10m, ${DEFAULT_DAILY_LIMIT}/day).`,
   };
 }
 
@@ -295,16 +327,20 @@ async function main() {
     publicGuardBypassed: Boolean(opsToken),
     header: OPS_TEST_HEADER,
   };
+  const publicLimitContext = buildPublicLimitContext(fileEnv);
 
   const sessionId = `viddel-rel-${Date.now().toString(36)}`;
   const plan = buildPlan(args.count);
   const results = [];
 
   console.log(
-    `chat-reliability: ${args.count} calls, ${args.delayMs}ms spacing, sessionPerRequest=${args.sessionPerRequest}, opsToken=${opsConfig.tokenConfiguredLocally ? "yes" : "no"}`,
+    `chat-reliability: ${args.count} calls, ${args.delayMs}ms spacing, sessionPerRequest=${args.sessionPerRequest}`,
   );
-  if (!opsConfig.tokenConfiguredLocally) {
-    console.log("WARN: VIDDEL_OPS_TEST_TOKEN not set — public IP rate limits apply.");
+  console.log(
+    `publicGuard: active (server limits — default ${DEFAULT_BURST_LIMIT}/10m ${DEFAULT_DAILY_LIMIT}/day; set VIDDEL_CHAT_* in Vercel + redeploy for pre-pilot)`,
+  );
+  if (opsConfig.tokenConfiguredLocally) {
+    console.log("opsToken: yes (optional bypass — not required for standard pre-pilot flow)");
   }
 
   for (const item of plan) {
@@ -353,7 +389,7 @@ async function main() {
     }
   }
 
-  const summary = summarize(results, opsConfig);
+  const summary = summarize(results, opsConfig, publicLimitContext);
   const cesEnv = readCesEnv();
   const report = {
     generatedAt: new Date().toISOString(),
@@ -363,6 +399,7 @@ async function main() {
       delayMs: args.delayMs,
       sessionPerRequest: args.sessionPerRequest,
       opsTest: opsConfig,
+      publicLimitContext,
     },
     sessionIdPrefix: sessionId.slice(0, 16),
     directEnvAvailable: cesEnv.missing.length === 0,
