@@ -98,16 +98,14 @@ https://eu-discoveryengine.googleapis.com/v1/projects/{PROJECT}/locations/eu/col
 
 ---
 
-## D. Probe-script
+## D. Probe (preview-first)
 
-`scripts/agent-search-direct-probe.mjs` — **ikke** koblet til `/api/chat`.
+**Anbefalt for Thomas:** Vercel Preview → `/vis/system/agent-search-direct-probe/` → «Kjør 5 direct API-kall».  
+Bruker `POST /api/agent-search-direct-probe` (ett kall per request, deaktivert når `VERCEL_ENV=production`).
 
-```bash
-# Krever samme server-env som CES (GOOGLE_SERVICE_ACCOUNT_JSON, CES_*)
-npm run agent-search:probe -- --count=5 --delay-ms=8000
-```
+Valgfritt CLI (utviklere): `npm run agent-search:probe -- --count=5 --delay-ms=8000`
 
-Logger kun safe metadata (status, error_code, duration_bucket, has_answer, has_citations, support_score).
+Logger kun safe metadata — ingen prompt/svar.
 
 ---
 
