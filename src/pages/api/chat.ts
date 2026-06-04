@@ -16,6 +16,7 @@ import {
 } from "../../lib/chat-usage-metrics";
 import { resolveCesEnv } from "../../lib/ces-env";
 import { CesRunSessionError, runCesSession } from "../../lib/ces-run-session";
+import { buildOpsChatMetaHeaders, type OpsChatResponseMeta } from "../../lib/chat-ops-meta";
 import { resolveViddelAiBackend, type ViddelAiBackend } from "../../lib/viddel-ai-backend";
 
 export const prerender = false;
@@ -34,11 +35,19 @@ type ChatSuccessMeta = {
   has_citations?: boolean;
 };
 
-function jsonResponse(body: Record<string, unknown>, status: number): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json; charset=utf-8" },
-  });
+function chatResponse(
+  body: Record<string, unknown>,
+  status: number,
+  opsTest: boolean,
+  opsMeta?: OpsChatResponseMeta,
+): Response {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json; charset=utf-8",
+  };
+  if (opsTest && opsMeta) {
+    Object.assign(headers, buildOpsChatMetaHeaders(opsMeta));
+  }
+  return new Response(JSON.stringify(body), { status, headers });
 }
 
 function trackDrift(
@@ -78,7 +87,7 @@ function respond(
   if (signal) {
     trackDrift(opsTest, signal, errorCode ? { error_code: errorCode, backend_mode: backendMode } : { backend_mode: backendMode });
   }
-  return jsonResponse(body, status);
+  return chatResponse(body, status, opsTest, backendMode ? { backend_mode: backendMode, error_code: errorCode ?? null } : undefined);
 }
 
 function configurationMissingResponse(opsTest: boolean, backendMode: ViddelAiBackend): Response {
@@ -93,6 +102,23 @@ function configurationMissingResponse(opsTest: boolean, backendMode: ViddelAiBac
     "configuration_missing",
     backendMode,
   );
+}
+
+function successResponse(
+  opsTest: boolean,
+  backendMode: ViddelAiBackend,
+  body: { text: string; turnCompleted: boolean; turnIndex: number },
+  meta: ChatSuccessMeta,
+): Response {
+  return chatResponse(body, 200, opsTest, {
+    backend_mode: backendMode,
+    error_code: null,
+    duration_bucket: meta.duration_bucket,
+    retry_used: meta.retry_used,
+    attempt_count: meta.attempt_count,
+    has_citations: meta.has_citations ?? null,
+    upstream_http_status: null,
+  });
 }
 
 function handleBackendError(
@@ -120,7 +146,7 @@ function handleBackendError(
       session_id_length: sessionId.length,
     });
   }
-  return jsonResponse(
+  return chatResponse(
     {
       error: error.code,
       message:
@@ -129,6 +155,15 @@ function handleBackendError(
           : CHAT_GUARD_MESSAGES.invalidRequest,
     },
     error.status,
+    opsTest,
+    {
+      backend_mode: backendMode,
+      error_code: error.code,
+      upstream_http_status: error.upstreamHttpStatus,
+      duration_bucket: error.durationBucket,
+      retry_used: error.retryUsed,
+      attempt_count: error.attemptCount,
+    },
   );
 }
 
@@ -246,14 +281,7 @@ export const POST: APIRoute = async ({ request }) => {
       };
       trackDrift(opsTest, "success", { ...meta, backend_mode: backendMode });
       logSuccess(opsTest, backendMode, meta);
-      return jsonResponse(
-        {
-          text: result.text,
-          turnCompleted: result.turnCompleted,
-          turnIndex: result.turnIndex,
-        },
-        200,
-      );
+      return successResponse(opsTest, backendMode, result, meta);
     } catch (error) {
       if (error instanceof CesRunSessionError) {
         return handleBackendError(opsTest, error, sessionId, backendMode);
@@ -284,14 +312,7 @@ export const POST: APIRoute = async ({ request }) => {
     };
     trackDrift(opsTest, "success", { ...meta, backend_mode: backendMode });
     logSuccess(opsTest, backendMode, meta);
-    return jsonResponse(
-      {
-        text: result.text,
-        turnCompleted: result.turnCompleted,
-        turnIndex: result.turnIndex,
-      },
-      200,
-    );
+    return successResponse(opsTest, backendMode, result, meta);
   } catch (error) {
     if (error instanceof CesRunSessionError) {
       return handleBackendError(opsTest, error, sessionId, backendMode);

@@ -10,9 +10,18 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const OPS_TEST_HEADER = "x-viddel-ops-test-token";
 const DEFAULT_BASE = "https://vox.raddum.no";
+const DEFAULT_PREVIEW_BASE =
+  "https://vox-web-git-main-raddum-5965s-projects.vercel.app";
 /** Default spacing — production limits are server-side (VIDDEL_CHAT_* in Vercel). */
 const DEFAULT_COUNT = 8;
 const DEFAULT_DELAY_MS = 8_000;
+const OPS_META_BACKEND = "x-viddel-ops-meta-backend-mode";
+const OPS_META_ERROR = "x-viddel-ops-meta-error-code";
+const OPS_META_UPSTREAM = "x-viddel-ops-meta-upstream-http-status";
+const OPS_META_DURATION = "x-viddel-ops-meta-duration-bucket";
+const OPS_META_RETRY = "x-viddel-ops-meta-retry-used";
+const OPS_META_ATTEMPTS = "x-viddel-ops-meta-attempt-count";
+const OPS_META_CITATIONS = "x-viddel-ops-meta-has-citations";
 const DEFAULT_BURST_LIMIT = 10;
 const DEFAULT_DAILY_LIMIT = 50;
 
@@ -70,15 +79,20 @@ function parseArgs(argv) {
     delayMs: DEFAULT_DELAY_MS,
     sessionPerRequest: true,
     envFile: "",
+    expectBackend: "",
+    label: "",
   };
   for (const arg of argv) {
     if (arg.startsWith("--base=")) args.base = arg.slice(7).replace(/\/$/, "");
+    else if (arg === "--preview") args.base = DEFAULT_PREVIEW_BASE;
     else if (arg.startsWith("--count=")) args.count = Number(arg.slice(8));
     else if (arg.startsWith("--out=")) args.out = arg.slice(6);
     else if (arg === "--direct") args.direct = true;
     else if (arg === "--shared-session") args.sessionPerRequest = false;
     else if (arg.startsWith("--delay-ms=")) args.delayMs = Number(arg.slice(11));
     else if (arg.startsWith("--env-file=")) args.envFile = arg.slice(11);
+    else if (arg.startsWith("--expect-backend=")) args.expectBackend = arg.slice(17).trim();
+    else if (arg.startsWith("--label=")) args.label = arg.slice(8).trim();
   }
   return args;
 }
@@ -124,7 +138,8 @@ function durationBucket(ms) {
 function errorCategory(errorCode, httpStatus) {
   if (errorCode === "rate_limited" || httpStatus === 429) return "rate_limit";
   if (errorCode === "timeout" || httpStatus === 504) return "timeout";
-  if (errorCode === "upstream" || errorCode === "empty_response") return "ces_upstream";
+  if (errorCode === "upstream" || errorCode === "empty_response") return "upstream";
+  if (httpStatus === 401 && !errorCode) return "deployment_protection";
   if (
     errorCode === "invalid_message" ||
     errorCode === "invalid_session" ||
@@ -151,7 +166,19 @@ function buildPlan(count) {
   return plan;
 }
 
-async function callProxy(base, sessionId, message, opsToken) {
+function checkResponseContract(payload) {
+  if (typeof payload.text !== "string" || !payload.text.trim()) return false;
+  if (typeof payload.turnCompleted !== "boolean") return false;
+  if (typeof payload.turnIndex !== "number" || !Number.isFinite(payload.turnIndex)) return false;
+  const extra = Object.keys(payload).filter((k) => !["text", "turnCompleted", "turnIndex"].includes(k));
+  return extra.length === 0;
+}
+
+function readOpsHeader(response, name) {
+  return response.headers.get(name)?.trim() ?? null;
+}
+
+async function callProxy(base, sessionId, message, opsToken, protectionBypass) {
   const started = performance.now();
   const headers = {
     "Content-Type": "application/json",
@@ -161,23 +188,49 @@ async function callProxy(base, sessionId, message, opsToken) {
   if (opsToken) {
     headers[OPS_TEST_HEADER] = opsToken;
   }
+  if (protectionBypass) {
+    headers["x-vercel-protection-bypass"] = protectionBypass;
+  }
   const response = await fetch(`${base}/api/chat`, {
     method: "POST",
     headers,
     body: JSON.stringify({ message, sessionId }),
   });
   const durationMs = Math.round(performance.now() - started);
-  const payload = await response.json().catch(() => ({}));
-  const errorCode = typeof payload.error === "string" ? payload.error : null;
+  const contentType = response.headers.get("content-type") ?? "";
+  const payload =
+    contentType.includes("application/json") ? await response.json().catch(() => ({})) : {};
+  const deploymentBlocked =
+    response.status === 401 && !contentType.includes("application/json");
+  const errorCode = deploymentBlocked
+    ? "deployment_protection"
+    : typeof payload.error === "string"
+      ? payload.error
+      : null;
   const hasText = typeof payload.text === "string" && payload.text.trim().length > 0;
-  const category = hasText ? "success" : errorCategory(errorCode, response.status);
+  const responseContractOk = hasText && checkResponseContract(payload);
+  const category = deploymentBlocked
+    ? "deployment_protection"
+    : hasText
+      ? "success"
+      : errorCategory(errorCode, response.status);
+  const serverDuration = readOpsHeader(response, OPS_META_DURATION);
+  const backendMode = readOpsHeader(response, OPS_META_BACKEND);
   return {
     httpStatus: response.status,
     errorCode,
     category,
     success: response.ok && hasText,
     durationMs,
-    durationBucket: durationBucket(durationMs),
+    durationBucket: serverDuration ?? durationBucket(durationMs),
+    backendMode,
+    upstreamHttpStatus: readOpsHeader(response, OPS_META_UPSTREAM),
+    retryUsed: readOpsHeader(response, OPS_META_RETRY) === "1",
+    attemptCount: Number.parseInt(readOpsHeader(response, OPS_META_ATTEMPTS) ?? "1", 10) || 1,
+    hasCitations: readOpsHeader(response, OPS_META_CITATIONS) === "1",
+    responseContractOk,
+    deploymentBlocked,
+    opsMetaErrorCode: readOpsHeader(response, OPS_META_ERROR),
   };
 }
 
@@ -272,20 +325,23 @@ async function callDirectCes(env, sessionId, message) {
   };
 }
 
-function summarize(results, opsConfig, publicLimitContext) {
+function summarize(results, opsConfig, publicLimitContext, expectBackend) {
   const total = results.length;
   const byCategory = {
     success: 0,
+    upstream: 0,
     ces_upstream: 0,
     rate_limit: 0,
     timeout: 0,
     app_error: 0,
+    deployment_protection: 0,
     other: 0,
   };
   let beforeRateLimitTotal = 0;
   let beforeRateLimitSuccess = 0;
   for (const row of results) {
-    byCategory[row.category] = (byCategory[row.category] ?? 0) + 1;
+    const key = row.category === "ces_upstream" ? "upstream" : row.category;
+    byCategory[key] = (byCategory[key] ?? 0) + 1;
   }
   for (const row of results) {
     if (row.category === "rate_limit") break;
@@ -297,11 +353,25 @@ function summarize(results, opsConfig, publicLimitContext) {
     buckets[r.durationBucket] = (buckets[r.durationBucket] ?? 0) + 1;
   }
   const success = byCategory.success;
+  const backendModeCounts = {};
+  let contractOk = 0;
+  let backendMismatch = 0;
+  for (const r of results) {
+    if (r.backendMode) {
+      backendModeCounts[r.backendMode] = (backendModeCounts[r.backendMode] ?? 0) + 1;
+    }
+    if (r.responseContractOk) contractOk += 1;
+    if (expectBackend && r.backendMode && r.backendMode !== expectBackend) backendMismatch += 1;
+  }
+  const passThreshold = 80;
+  const successRatePct = total ? Number(((success / total) * 100).toFixed(1)) : 0;
   return {
     total,
     success,
     error: total - success,
-    successRate: total ? Number(((success / total) * 100).toFixed(1)) : 0,
+    successRate: successRatePct,
+    passThreshold,
+    passed: successRatePct >= passThreshold && backendMismatch === 0,
     successBeforeRateLimit: beforeRateLimitSuccess,
     callsBeforeRateLimit: beforeRateLimitTotal,
     successRateBeforeRateLimit: beforeRateLimitTotal
@@ -309,9 +379,13 @@ function summarize(results, opsConfig, publicLimitContext) {
       : 0,
     byCategory,
     durationBuckets: buckets,
+    backendModeCounts,
+    responseContractOkCount: contractOk,
+    backendMismatchCount: backendMismatch,
+    expectBackend: expectBackend || null,
     opsMode: opsConfig,
     publicLimitContext,
-    retryUsedNote: "Server-side retry_used — see [chat-drift] in Vercel Runtime Logs",
+    retryUsedNote: "retry_used/attempt_count from ops meta headers when token configured",
     guardNote: opsConfig.publicGuardBypassed
       ? "Ops token bypassed public IP limits (optional path — not required for pre-pilot test)."
       : `Public guard active — server limits from Vercel env (default ${DEFAULT_BURST_LIMIT}/10m, ${DEFAULT_DAILY_LIMIT}/day).`,
@@ -322,9 +396,15 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   const fileEnv = args.envFile ? loadEnvFile(args.envFile) : {};
   const opsToken = (process.env.VIDDEL_OPS_TEST_TOKEN ?? fileEnv.VIDDEL_OPS_TEST_TOKEN ?? "").trim();
+  const protectionBypass = (
+    process.env.VERCEL_AUTOMATION_BYPASS_SECRET ??
+    fileEnv.VERCEL_AUTOMATION_BYPASS_SECRET ??
+    ""
+  ).trim();
   const opsConfig = {
     tokenConfiguredLocally: Boolean(opsToken),
     publicGuardBypassed: Boolean(opsToken),
+    protectionBypassConfigured: Boolean(protectionBypass),
     header: OPS_TEST_HEADER,
   };
   const publicLimitContext = buildPublicLimitContext(fileEnv);
@@ -334,8 +414,13 @@ async function main() {
   const results = [];
 
   console.log(
-    `chat-reliability: ${args.count} calls, ${args.delayMs}ms spacing, sessionPerRequest=${args.sessionPerRequest}`,
+    `chat-reliability: ${args.count} calls, ${args.delayMs}ms spacing, sessionPerRequest=${args.sessionPerRequest}, base=${args.base}`,
   );
+  if (args.label) console.log(`label: ${args.label}`);
+  if (args.expectBackend) console.log(`expectBackend: ${args.expectBackend}`);
+  if (opsConfig.protectionBypassConfigured) {
+    console.log("vercelProtectionBypass: configured (x-vercel-protection-bypass)");
+  }
   console.log(
     `publicGuard: active (server limits — default ${DEFAULT_BURST_LIMIT}/10m ${DEFAULT_DAILY_LIMIT}/day; set VIDDEL_CHAT_* in Vercel + redeploy for pre-pilot)`,
   );
@@ -347,18 +432,32 @@ async function main() {
     const requestSessionId = args.sessionPerRequest
       ? `viddel-rel-${Date.now().toString(36)}-${item.n}`
       : sessionId;
-    const proxy = await callProxy(args.base, requestSessionId, item.message, opsToken || undefined);
+    const proxy = await callProxy(
+      args.base,
+      requestSessionId,
+      item.message,
+      opsToken || undefined,
+      protectionBypass || undefined,
+    );
     const row = {
-      request: item.n,
+      call: item.n,
       inputType: item.inputType,
-      channel: "proxy",
+      channel: "api_chat",
       opsTest: opsConfig.tokenConfiguredLocally,
       httpStatus: proxy.httpStatus,
-      errorCode: proxy.errorCode,
+      result: proxy.success ? "success" : "error",
+      errorCode: proxy.errorCode ?? proxy.opsMetaErrorCode,
       category: proxy.category,
       finalSuccess: proxy.success,
       durationMs: proxy.durationMs,
       durationBucket: proxy.durationBucket,
+      backendMode: proxy.backendMode,
+      upstreamHttpStatus: proxy.upstreamHttpStatus,
+      retryUsed: proxy.retryUsed,
+      attemptCount: proxy.attemptCount,
+      hasCitations: proxy.hasCitations,
+      responseContractOk: proxy.responseContractOk,
+      deploymentBlocked: proxy.deploymentBlocked,
     };
 
     if (args.direct) {
@@ -382,22 +481,24 @@ async function main() {
 
     results.push(row);
     process.stdout.write(
-      `#${row.request} ${row.inputType} ${row.category} http=${row.httpStatus} code=${row.errorCode ?? "none"} ${row.durationBucket}\n`,
+      `#${row.call} ${row.result} http=${row.httpStatus} backend=${row.backendMode ?? "n/a"} code=${row.errorCode ?? "none"} ${row.durationBucket} contract=${row.responseContractOk ? "ok" : "fail"}\n`,
     );
     if (args.delayMs > 0 && item.n < plan.length) {
       await new Promise((r) => setTimeout(r, args.delayMs));
     }
   }
 
-  const summary = summarize(results, opsConfig, publicLimitContext);
+  const summary = summarize(results, opsConfig, publicLimitContext, args.expectBackend);
   const cesEnv = readCesEnv();
   const report = {
     generatedAt: new Date().toISOString(),
+    label: args.label || null,
     base: args.base,
     config: {
       count: args.count,
       delayMs: args.delayMs,
       sessionPerRequest: args.sessionPerRequest,
+      expectBackend: args.expectBackend || null,
       opsTest: opsConfig,
       publicLimitContext,
     },
