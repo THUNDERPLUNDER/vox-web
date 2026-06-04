@@ -31,9 +31,12 @@ export type AgentSearchProbeErrorCode =
   | "configuration_missing"
   | "google_400_bad_request"
   | "google_engine_not_found"
+  | "google_invalid_session_name"
   | "google_403"
   | "google_404"
   | "google_502";
+
+export type AgentSearchAnswerSessionMode = "omit" | "full";
 
 export function mapGoogleUpstreamErrorCode(
   httpStatus: number,
@@ -41,6 +44,7 @@ export function mapGoogleUpstreamErrorCode(
 ): AgentSearchProbeErrorCode {
   if (httpStatus === 400) {
     if (hint?.includes("Cannot fetch Engine")) return "google_engine_not_found";
+    if (hint?.includes("Invalid session name")) return "google_invalid_session_name";
     return "google_400_bad_request";
   }
   if (httpStatus === 403) return "google_403";
@@ -108,11 +112,21 @@ function buildAnswerUrl(host: string, config: AgentSearchEnvConfig): string {
   return `${host}/v1/${resource}:answer`;
 }
 
+/** Preview probe default: omit session. Override with AGENT_SEARCH_ANSWER_SESSION=full. */
+export function resolveAnswerSessionMode(): AgentSearchAnswerSessionMode {
+  const raw = readEnv("AGENT_SEARCH_ANSWER_SESSION").toLowerCase();
+  return raw === "full" ? "full" : "omit";
+}
+
+/** Full session resource for auto session (wildcard id `-`). */
+export function buildAnswerSessionResource(config: AgentSearchEnvConfig): string {
+  return `projects/${config.projectId}/locations/${config.location}/collections/${COLLECTION}/engines/${config.engineId}/sessions/-`;
+}
+
 /** Documented AnswerQueryRequest body — no unknown JSON fields. */
-export function buildAnswerRequestBody(): Record<string, unknown> {
-  return {
+export function buildAnswerRequestBody(config: AgentSearchEnvConfig): Record<string, unknown> {
+  const body: Record<string, unknown> = {
     query: { text: AGENT_SEARCH_PROBE_TEST_MESSAGE },
-    session: "-",
     groundingSpec: {
       includeGroundingSupports: true,
     },
@@ -122,6 +136,12 @@ export function buildAnswerRequestBody(): Record<string, unknown> {
       includeCitations: true,
     },
   };
+
+  if (resolveAnswerSessionMode() === "full") {
+    body.session = buildAnswerSessionResource(config);
+  }
+
+  return body;
 }
 
 /** Parse Google error JSON — status + short hint only, never full body or query text. */
@@ -229,7 +249,7 @@ export async function runAgentSearchDirectProbeOnce(
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json; charset=utf-8",
       },
-      body: JSON.stringify(buildAnswerRequestBody()),
+      body: JSON.stringify(buildAnswerRequestBody(config)),
     });
 
     const responseText = await response.text().catch(() => "");

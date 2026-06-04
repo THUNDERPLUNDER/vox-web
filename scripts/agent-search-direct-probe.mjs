@@ -84,6 +84,7 @@ function readProbeEnv(fileEnv) {
     "GOOGLE_SERVICE_ACCOUNT_JSON",
     "AGENT_SEARCH_ENGINE_ID",
     "AGENT_SEARCH_LOCATION",
+    "AGENT_SEARCH_ANSWER_SESSION",
   ]) {
     if (process.env[key]?.trim()) merged[key] = process.env[key].trim();
   }
@@ -96,7 +97,7 @@ function readProbeEnv(fileEnv) {
   if (!location) missing.push("CES_LOCATION or AGENT_SEARCH_LOCATION");
   if (!engineId) missing.push("AGENT_SEARCH_ENGINE_ID");
   if (!saJson) missing.push("GOOGLE_SERVICE_ACCOUNT_JSON");
-  return { projectId, location, engineId, saJson, missing };
+  return { projectId, location, engineId, saJson, missing, merged };
 }
 
 async function getGoogleAccessToken(serviceAccountJson) {
@@ -174,7 +175,31 @@ function hasAnswerText(payload) {
   return typeof text === "string" && text.trim().length > 0;
 }
 
-async function callAgentSearchAnswer({ host, projectId, location, engineId, token, message }) {
+function resolveAnswerSessionMode(env) {
+  const raw = String(env.AGENT_SEARCH_ANSWER_SESSION ?? "").trim().toLowerCase();
+  return raw === "full" ? "full" : "omit";
+}
+
+function buildAnswerSessionResource(projectId, location, engineId) {
+  return `projects/${projectId}/locations/${location}/collections/${COLLECTION}/engines/${engineId}/sessions/-`;
+}
+
+function buildAnswerRequestBody({ projectId, location, engineId, message, env }) {
+  const body = {
+    query: { text: message },
+    groundingSpec: { includeGroundingSupports: true },
+    answerGenerationSpec: {
+      ignoreAdversarialQuery: true,
+      ignoreNonAnswerSeekingQuery: false,
+    },
+  };
+  if (resolveAnswerSessionMode(env) === "full") {
+    body.session = buildAnswerSessionResource(projectId, location, engineId);
+  }
+  return body;
+}
+
+async function callAgentSearchAnswer({ host, projectId, location, engineId, token, message, env }) {
   const started = performance.now();
   const url = buildAnswerUrl(host, projectId, location, engineId);
   const response = await fetch(url, {
@@ -183,15 +208,7 @@ async function callAgentSearchAnswer({ host, projectId, location, engineId, toke
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json; charset=utf-8",
     },
-    body: JSON.stringify({
-      query: { text: message },
-      session: "-",
-      groundingSpec: { includeGroundingSupports: true },
-      answerGenerationSpec: {
-        ignoreAdversarialQuery: true,
-        ignoreNonAnswerSeekingQuery: false,
-      },
-    }),
+    body: JSON.stringify(buildAnswerRequestBody({ projectId, location, engineId, message, env })),
   });
   const durationMs = Math.round(performance.now() - started);
   let payload = {};
@@ -266,6 +283,7 @@ async function main() {
       engineId: env.engineId,
       token,
       message,
+      env: env.merged,
     });
     results.push({ n: i + 1, ...row });
     console.log(JSON.stringify({ event: "probe_call", n: i + 1, ...row }));

@@ -71,7 +71,9 @@ POST https://eu-discoveryengine.googleapis.com/v1/projects/hearing-aid-mvp/locat
 
 | Felt | Vår kode | Dokumentasjon | Status |
 |------|----------|---------------|--------|
-| `session: "-"` | Ja | Auto session wildcard | OK |
+| `session` utelatt (default probe) | Ja | Single-turn uten session | Preview etter engine-fix |
+| `session: …/sessions/-` (full) | Valgfri | `AGENT_SEARCH_ANSWER_SESSION=full` | Hvis omit feiler |
+| ~~`session: "-"`~~ | Nei | Google: `Invalid session name: -` | Fjernet |
 
 ### GroundingSpec — **FEIL FUNNET**
 
