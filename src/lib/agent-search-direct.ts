@@ -4,7 +4,7 @@ import { getGoogleAccessToken } from "./ces-auth";
 import { durationBucket, type DurationBucket } from "./ces-run-session";
 
 const COLLECTION = "default_collection";
-const ANSWER_SERVING = "default_serving_config";
+const DEFAULT_ANSWER_SERVING = "default_serving_config";
 const FETCH_TIMEOUT_MS = 25_000;
 
 /** Fixed test input — never logged or returned to clients. */
@@ -16,6 +16,7 @@ export type AgentSearchEnvConfig = {
   location: string;
   engineId: string;
   serviceAccountJson: string;
+  servingConfig: string;
 };
 
 export type AgentSearchEnvResult =
@@ -28,11 +29,13 @@ export type AgentSearchProbeErrorCode =
   | "auth"
   | "timeout"
   | "configuration_missing"
+  | "google_400_bad_request"
   | "google_403"
   | "google_404"
   | "google_502";
 
 export function mapGoogleUpstreamErrorCode(httpStatus: number): AgentSearchProbeErrorCode {
+  if (httpStatus === 400) return "google_400_bad_request";
   if (httpStatus === 403) return "google_403";
   if (httpStatus === 404) return "google_404";
   if (httpStatus === 502 || httpStatus === 503 || httpStatus === 504) return "google_502";
@@ -43,6 +46,8 @@ export type AgentSearchProbeMetadata = {
   status: "success" | "error";
   error_code: AgentSearchProbeErrorCode | null;
   upstream_http_status: number | null;
+  google_rpc_status: string | null;
+  google_error_hint: string | null;
   duration_bucket: DurationBucket;
   has_answer: boolean;
   has_citations: boolean;
@@ -73,6 +78,7 @@ export function resolveAgentSearchEnv(): AgentSearchEnvResult {
   const location = readEnv("AGENT_SEARCH_LOCATION") || readEnv("CES_LOCATION");
   const engineId = readEnv("AGENT_SEARCH_ENGINE_ID") || readEnv("CES_APP_ID");
   const serviceAccountJson = readEnv("GOOGLE_SERVICE_ACCOUNT_JSON");
+  const servingConfig = readEnv("AGENT_SEARCH_SERVING_CONFIG") || DEFAULT_ANSWER_SERVING;
 
   const missing: string[] = [];
   if (!projectId) missing.push("CES_PROJECT_ID");
@@ -86,13 +92,51 @@ export function resolveAgentSearchEnv(): AgentSearchEnvResult {
 
   return {
     ok: true,
-    config: { projectId, location, engineId, serviceAccountJson },
+    config: { projectId, location, engineId, serviceAccountJson, servingConfig },
   };
 }
 
 function buildAnswerUrl(host: string, config: AgentSearchEnvConfig): string {
-  const resource = `projects/${config.projectId}/locations/${config.location}/collections/${COLLECTION}/engines/${config.engineId}/servingConfigs/${ANSWER_SERVING}`;
+  const resource = `projects/${config.projectId}/locations/${config.location}/collections/${COLLECTION}/engines/${config.engineId}/servingConfigs/${config.servingConfig}`;
   return `${host}/v1/${resource}:answer`;
+}
+
+/** Documented AnswerQueryRequest body — no unknown JSON fields. */
+export function buildAnswerRequestBody(): Record<string, unknown> {
+  return {
+    query: { text: AGENT_SEARCH_PROBE_TEST_MESSAGE },
+    session: "-",
+    groundingSpec: {
+      includeGroundingSupports: true,
+    },
+    answerGenerationSpec: {
+      ignoreAdversarialQuery: true,
+      ignoreNonAnswerSeekingQuery: false,
+      includeCitations: true,
+    },
+  };
+}
+
+/** Parse Google error JSON — status + short hint only, never full body or query text. */
+export function extractSafeGoogleError(
+  responseText: string,
+): { rpc_status: string | null; hint: string | null } {
+  try {
+    const parsed = JSON.parse(responseText) as {
+      error?: { status?: string; message?: string };
+    };
+    const err = parsed.error;
+    if (!err) return { rpc_status: null, hint: null };
+    const rpc_status = typeof err.status === "string" ? err.status : null;
+    let hint: string | null = null;
+    if (typeof err.message === "string") {
+      hint = err.message.slice(0, 160);
+      if (hint.length < err.message.length) hint = `${hint}…`;
+    }
+    return { rpc_status, hint };
+  } catch {
+    return { rpc_status: null, hint: null };
+  }
 }
 
 function countCitations(payload: Record<string, unknown>): number {
@@ -125,12 +169,28 @@ function hasAnswerText(payload: Record<string, unknown>): boolean {
   return typeof text === "string" && text.trim().length > 0;
 }
 
+function baseMeta(
+  config: AgentSearchEnvConfig,
+  host: string,
+  started: number,
+): Omit<AgentSearchProbeMetadata, "status" | "error_code" | "upstream_http_status" | "google_rpc_status" | "google_error_hint" | "has_answer" | "has_citations" | "support_score" | "response_state"> {
+  return {
+    duration_bucket: durationBucket(Date.now() - started),
+    layer: "google_agent_search_direct",
+    method: "discoveryengine.servingConfigs.answer",
+    endpoint_host: host,
+    serving_config: config.servingConfig,
+    location: config.location,
+    project_id: config.projectId,
+    engine_id: config.engineId,
+  };
+}
+
 /** One direct :answer call — never logs message or answer body. */
 export async function runAgentSearchDirectProbeOnce(
   config: AgentSearchEnvConfig,
 ): Promise<AgentSearchProbeMetadata> {
   const host = discoveryHost(config.location);
-  const endpoint_host = host;
   const started = Date.now();
   let token: string;
 
@@ -141,18 +201,13 @@ export async function runAgentSearchDirectProbeOnce(
       status: "error",
       error_code: "auth",
       upstream_http_status: null,
-      duration_bucket: durationBucket(Date.now() - started),
+      google_rpc_status: null,
+      google_error_hint: null,
       has_answer: false,
       has_citations: false,
       support_score: null,
       response_state: null,
-      layer: "google_agent_search_direct",
-      method: "discoveryengine.servingConfigs.answer",
-      endpoint_host,
-      serving_config: ANSWER_SERVING,
-      location: config.location,
-      project_id: config.projectId,
-      engine_id: config.engineId,
+      ...baseMeta(config, host, started),
     };
   }
 
@@ -167,22 +222,16 @@ export async function runAgentSearchDirectProbeOnce(
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json; charset=utf-8",
       },
-      body: JSON.stringify({
-        query: { text: AGENT_SEARCH_PROBE_TEST_MESSAGE },
-        session: "-",
-        groundingSpec: { includeGrounding: true },
-        answerGenerationSpec: {
-          ignoreAdversarialQuery: true,
-          ignoreNonAnswerSeekingQuery: false,
-        },
-      }),
+      body: JSON.stringify(buildAnswerRequestBody()),
     });
 
+    const responseText = await response.text().catch(() => "");
     let payload: Record<string, unknown> = {};
-    if (response.ok) {
-      payload = ((await response.json().catch(() => ({}))) ?? {}) as Record<string, unknown>;
+    if (response.ok && responseText) {
+      payload = (JSON.parse(responseText) as Record<string, unknown>) ?? {};
     }
 
+    const safeErr = response.ok ? { rpc_status: null, hint: null } : extractSafeGoogleError(responseText);
     const ok = response.ok && hasAnswerText(payload);
     const durationMs = Date.now() - started;
 
@@ -194,18 +243,14 @@ export async function runAgentSearchDirectProbeOnce(
           ? "empty_response"
           : mapGoogleUpstreamErrorCode(response.status),
       upstream_http_status: response.status,
+      google_rpc_status: safeErr.rpc_status,
+      google_error_hint: safeErr.hint,
       duration_bucket: durationBucket(durationMs),
       has_answer: hasAnswerText(payload),
-      has_citations: countCitations(payload) > 0,
+      has_citations: countCitations(payload),
       support_score: extractSupportScore(payload),
       response_state: extractResponseState(payload),
-      layer: "google_agent_search_direct",
-      method: "discoveryengine.servingConfigs.answer",
-      endpoint_host,
-      serving_config: ANSWER_SERVING,
-      location: config.location,
-      project_id: config.projectId,
-      engine_id: config.engineId,
+      ...baseMeta(config, host, started),
     };
   } catch (err) {
     const durationMs = Date.now() - started;
@@ -214,18 +259,14 @@ export async function runAgentSearchDirectProbeOnce(
       status: "error",
       error_code: isAbort ? "timeout" : "upstream",
       upstream_http_status: null,
+      google_rpc_status: null,
+      google_error_hint: null,
       duration_bucket: durationBucket(durationMs),
       has_answer: false,
       has_citations: false,
       support_score: null,
       response_state: null,
-      layer: "google_agent_search_direct",
-      method: "discoveryengine.servingConfigs.answer",
-      endpoint_host,
-      serving_config: ANSWER_SERVING,
-      location: config.location,
-      project_id: config.projectId,
-      engine_id: config.engineId,
+      ...baseMeta(config, host, started),
     };
   } finally {
     clearTimeout(timeoutId);

@@ -308,7 +308,9 @@ function buildRouteNote(data: Record<string, unknown>): string {
   }
   if (data.google_call_attempted === true) {
     if (data.status === "success") return "Google :answer OK (GET ?run=1)";
-    return `Google upstream HTTP ${esc(data.upstream_http_status)} (${esc(data.error_code)})`;
+    const hint = data.google_error_hint ? ` — ${esc(data.google_error_hint)}` : "";
+    const rpc = data.google_rpc_status ? ` ${esc(data.google_rpc_status)}` : "";
+    return `Google HTTP ${esc(data.upstream_http_status)}${rpc} (${esc(data.error_code)})${hint}`;
   }
   return String(data.route_note ?? data.message ?? "—");
 }

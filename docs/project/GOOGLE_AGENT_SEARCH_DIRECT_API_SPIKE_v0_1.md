@@ -109,7 +109,15 @@ Logger kun safe metadata — ingen prompt/svar.
 
 ---
 
-## E. Beslutningspunkt
+## E. Contract audit (400 upstream)
+
+Se **[GOOGLE_AGENT_SEARCH_ANSWER_CONTRACT_AUDIT_v0_1.md](./GOOGLE_AGENT_SEARCH_ANSWER_CONTRACT_AUDIT_v0_1.md)**.
+
+Kort: Preview QA viste deterministisk Google **HTTP 400** — sannsynlig `groundingSpec.includeGrounding` (ugyldig felt; skal være `includeGroundingSupports`). Fix i `agent-search-direct.ts` + `google_400_bad_request`.
+
+---
+
+## F. Beslutningspunkt
 
 **Hvis direct API er stabilt (f.eks. ≥80% has_answer over probe-serie):**
 

@@ -186,7 +186,7 @@ async function callAgentSearchAnswer({ host, projectId, location, engineId, toke
     body: JSON.stringify({
       query: { text: message },
       session: "-",
-      groundingSpec: { includeGrounding: true },
+      groundingSpec: { includeGroundingSupports: true },
       answerGenerationSpec: {
         ignoreAdversarialQuery: true,
         ignoreNonAnswerSeekingQuery: false,
