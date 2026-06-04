@@ -27,7 +27,17 @@ export type AgentSearchProbeErrorCode =
   | "empty_response"
   | "auth"
   | "timeout"
-  | "configuration_missing";
+  | "configuration_missing"
+  | "google_403"
+  | "google_404"
+  | "google_502";
+
+export function mapGoogleUpstreamErrorCode(httpStatus: number): AgentSearchProbeErrorCode {
+  if (httpStatus === 403) return "google_403";
+  if (httpStatus === 404) return "google_404";
+  if (httpStatus === 502 || httpStatus === 503 || httpStatus === 504) return "google_502";
+  return "upstream";
+}
 
 export type AgentSearchProbeMetadata = {
   status: "success" | "error";
@@ -178,7 +188,11 @@ export async function runAgentSearchDirectProbeOnce(
 
     return {
       status: ok ? "success" : "error",
-      error_code: ok ? null : response.ok ? "empty_response" : "upstream",
+      error_code: ok
+        ? null
+        : response.ok
+          ? "empty_response"
+          : mapGoogleUpstreamErrorCode(response.status),
       upstream_http_status: response.status,
       duration_bucket: durationBucket(durationMs),
       has_answer: hasAnswerText(payload),

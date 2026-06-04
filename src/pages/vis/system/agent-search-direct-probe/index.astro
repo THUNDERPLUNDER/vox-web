@@ -1,6 +1,7 @@
 ---
 /* CONTRACT: Preview-only Agent Search direct API diagnostics — Thomas tests via Vercel Preview click, no terminal. */
 import VisInternalLayout from "../../../../layouts/VisInternalLayout.astro";
+import { agentSearchProbeApiPath } from "../../../../lib/agent-search-probe-path";
 import {
   isPreviewDiagnosticsEnabled,
   previewDiagnosticsDisabledReason,
@@ -9,7 +10,8 @@ import {
 
 const base = import.meta.env.BASE_URL;
 const enabled = isPreviewDiagnosticsEnabled();
-const apiPath = new URL("api/agent-search-direct-probe", Astro.url).pathname;
+/** Root-absolute — must not be resolved relative to /vis/system/... (that caused /vis/system/api/... 404). */
+const apiPath = agentSearchProbeApiPath(base);
 const probeConfigJson = JSON.stringify({ apiPath });
 const buildPreview = getPreviewDiagnosticsState();
 ---

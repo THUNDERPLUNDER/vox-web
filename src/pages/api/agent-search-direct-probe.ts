@@ -19,13 +19,22 @@ function json(body: Record<string, unknown>, status: number): Response {
 
 export const GET: APIRoute = async () => {
   if (!isPreviewDiagnosticsEnabled()) {
-    return json(probeDisabledBody(), 404);
+    return json(
+      {
+        ...probeDisabledBody(),
+        error_code: "disabled_in_production",
+        error_source: "app",
+        api_http_status: 404,
+      },
+      404,
+    );
   }
   return json(
     {
       ...probeEnabledBase(),
       ready: true,
       message: "POST for ett :answer-kall med safe metadata.",
+      api_http_status: 200,
     },
     200,
   );
@@ -45,6 +54,7 @@ export const POST: APIRoute = async () => {
         ...probeEnabledBase(),
         status: "error",
         error_code: "configuration_missing",
+        error_source: "config",
         missing_env: env.missing,
         upstream_http_status: null,
         duration_bucket: null,
@@ -53,6 +63,7 @@ export const POST: APIRoute = async () => {
         support_score: null,
         response_state: null,
         google_call_attempted: false,
+        api_http_status: 503,
       },
       503,
     );
@@ -65,6 +76,7 @@ export const POST: APIRoute = async () => {
     {
       ...probeEnabledBase(),
       ...meta,
+      error_source: meta.status === "success" ? null : "google",
       google_call_attempted: true,
       api_http_status: httpStatus,
     },

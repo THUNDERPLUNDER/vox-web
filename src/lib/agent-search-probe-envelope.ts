@@ -71,9 +71,13 @@ export function probeDisabledBody(): Record<string, unknown> {
   const envelope = buildProbeEnvelope();
   return {
     ...envelope,
+    route_reached: true,
+    api_route_reached: "yes",
     preview_enabled: false,
     enabled: false,
     error: "disabled",
+    error_code: "disabled_in_production",
+    error_source: "app",
     message: previewDiagnosticsDisabledReason(),
   };
 }
