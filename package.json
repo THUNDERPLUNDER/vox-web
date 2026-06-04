@@ -18,6 +18,7 @@
     "vis:github:runtime-status": "node scripts/generate-github-runtime-status.mjs",
     "vis:github:snapshot": "node scripts/vis-github-live-snapshot.mjs",
     "chat:reliability": "node scripts/chat-reliability-assessment.mjs",
+    "agent-search:probe": "node scripts/agent-search-direct-probe.mjs",
     "verify:ces-env": "node scripts/verify-ces-env-checklist.mjs"
   },
   "dependencies": {

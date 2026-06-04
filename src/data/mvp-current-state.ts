@@ -77,7 +77,7 @@ export const mvpCurrentState = {
   } satisfies CurrentSprint,
   closedSprints: [] satisfies ClosedSprint[],
   currentFocus:
-    "Monitoring levert (#188). Reliability-test via Vercel guard-limits (100/500 midlertidig) — ikke lokal token. Fallback ved behov.",
+    "#188: CES channel ~25% success. #198: Google Agent Search direct API spike (før ekstern fallback). Guard 100/500 til beslutning.",
   mvpSurfaces: [
     {
       id: "frontpage",
@@ -111,7 +111,7 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Applied",
-      note: "Live i production. Public guard aktiv — grenser justerbare i Vercel for pre-pilot CES-test (#188).",
+      note: "CES channel ustabil (25%). #198 tester Agent Search answer API direkte. Guard 100/500 midlertidig (#188).",
       visFrontpage: true,
       kind: "public",
       frontpageDescription: "Headless AI-chat — live (intern test). Public guard aktiv.",
