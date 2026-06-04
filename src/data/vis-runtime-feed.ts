@@ -41,36 +41,36 @@ export type VisRuntimeFeed = {
 
 /** Manually updated after important Return Tickets — not synced from GitHub. */
 export const visRuntimeFeed = {
-  updatedAt: "2026-05-29",
+  updatedAt: "2026-06-02",
   activeNow: [
     {
       id: "ai-usage-monitoring-v01",
       headline:
-        "Vi skiller brukerbeskyttelse fra intern stabilitetstest av AI-chatten.",
+        "Vi forenkler reliability-test ved å styre public guard-grenser fra Vercel.",
       workTitle: "AI usage monitoring v0.1 (#188)",
       area: "Data, monitoring og innsikt",
       why:
         "Vi må se om chatten virker, om den feiler, og hvilke innganger som brukes — uten å lagre spørsmål eller svar.",
       status:
-        "Monitoring er levert. Nå justerer vi guard-strategien slik at Cursor kan teste CES-stabilitet uten å bli stoppet av vanlig public rate limit.",
+        "Monitoring og guard v0.2 er levert. Nå kan Thomas midlertidig heve burst/daily limits i Vercel (100/500) og kjøre reliability-test uten lokal token.",
       possibleSolution:
-        "Public guard står fast. Ops-test får hemmelig server-token for måling.",
+        "VIDDEL_CHAT_BURST_LIMIT og VIDDEL_CHAT_DAILY_LIMIT i Vercel — public guard forblir aktiv.",
       nextDecision:
-        "Kjør ren ops-test. Hvis CES fortsatt er ustabil, start fallback-spike.",
+        "Thomas setter høyere limits, redeployer, Cursor kjører reliability-test. Vurder CES — deretter fallback-spike ved behov.",
       issue: "#188",
       issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/188",
       progressSteps: [
         { id: "monitoring", label: "Monitoring levert", state: "done" },
-        { id: "guard-v02", label: "Guard strategy v0.2", state: "current" },
+        { id: "guard-env", label: "Guard limits via Vercel", state: "current" },
         { id: "ces-test", label: "Ren CES-test", state: "upcoming" },
         { id: "fallback", label: "Fallback ved behov", state: "upcoming" },
       ],
     },
   ],
   recentlyCompletedSummary:
-    "VIS Tree Navigation v0.1 (#192), IA Inventory v0.3.1 (#191) og Backstage v0.1 i production.",
+    "Guard strategy v0.2 (#199) merged. INT-007 Anne-spor registrert i gitbuss (#200–#204).",
   lastReturnTicketSummary:
-    "VIS-språk oppdatert: vi feilsøker chat-stabilitet og skiller public guard fra intern ops-test (#199).",
+    "Guard limits via Vercel env v0.1 — reliability-test uten lokal ops-token.",
   links: {
     primary: [
       {

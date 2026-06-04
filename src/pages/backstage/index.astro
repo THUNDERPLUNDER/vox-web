@@ -10,6 +10,7 @@ import {
   envVars,
   productionChecklist,
   guardStrategyExplainer,
+  prePilotReliabilityExplainer,
   protectionRules,
   quickAnswers,
   sourceFiles,
@@ -31,9 +32,10 @@ const base = import.meta.env.BASE_URL;
 
 const envGroups = [
   { id: "upstash", label: "Upstash (teller + drift)" },
+  { id: "guard", label: "Public guard (rate limits)" },
   { id: "ces", label: "CES (AI-motor)" },
   { id: "auth", label: "Google auth" },
-  { id: "ops", label: "Ops reliability (intern test)" },
+  { id: "ops", label: "Ops reliability (valgfritt)" },
   { id: "posthog", label: "PostHog EU (produktinnsikt)" },
 ] as const;
 
@@ -151,10 +153,25 @@ const layerTone: Record<string, string> = {
           <p class="bs__quick-a">{guardStrategyExplainer.publicGuard.human}</p>
         </article>
         <article class="bs__quick-card">
-          <h3 class="bs__quick-q">{guardStrategyExplainer.opsTest.label}</h3>
-          <p class="bs__quick-a">{guardStrategyExplainer.opsTest.human}</p>
+          <h3 class="bs__quick-q">{guardStrategyExplainer.vercelLimits.label}</h3>
+          <p class="bs__quick-a">{guardStrategyExplainer.vercelLimits.human}</p>
         </article>
       </div>
+    </section>
+
+    <section class="bs__section" aria-labelledby="bs-pre-pilot-test">
+      <h2 id="bs-pre-pilot-test" class="bs__section-title">{prePilotReliabilityExplainer.title}</h2>
+      <ol class="bs-flow">
+        {prePilotReliabilityExplainer.steps.map((step, index) => (
+          <li class="bs-flow__step">
+            <span class="bs-flow__num">{index + 1}</span>
+            <div class="bs-flow__body">
+              <p class="bs-flow__human">{step}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <p class="bs__section-lead">{prePilotReliabilityExplainer.note}</p>
     </section>
 
     <section class="bs__explainers">

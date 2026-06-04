@@ -21,7 +21,7 @@ export const quickAnswers = [
   {
     question: "Hva beskytter oss?",
     answer:
-      "Public guard: grenser på lengde og antall spørsmål per IP, pluss sjekk av hvor forespørselen kommer fra. Separat ops-testmodus (hemmelig token) brukes kun internt for stabilitetstest — uten innholdslogging.",
+      "Public guard: lengde, origin og IP-rate-limit (default 10/10 min, 50/døgn). Grensene kan midlertidig heves i Vercel for pre-pilot — uten innholdslogging.",
   },
   {
     question: "Hva gjør vi når noe ikke virker?",
@@ -74,7 +74,7 @@ export const systemMapLayers: SystemMapLayer[] = [
     layer: "Beskyttelse",
     title: "Guard + Upstash",
     human:
-      "Public guard beskytter brukere og kost — rate limit og origin-sjekk. Ops-test (hemmelig server-token) omgår kun IP-grenser for intern stabilitetstest.",
+      "Public guard beskytter brukere og kost — rate limit og origin-sjekk. Grenser styres via VIDDEL_CHAT_* i Vercel (default 10/50).",
   },
   {
     id: "ai",
@@ -126,7 +126,7 @@ export const chatFlowSteps: ChatFlowStep[] = [
     title: "Upstash sjekker bruksmengde",
     human: "Teller hvor mange spørsmål som kommer fra samme IP.",
     why: "Dette beskytter kostnad og misbruk.",
-    tech: "10 / 10 min · 50 / døgn",
+    tech: "VIDDEL_CHAT_BURST_LIMIT / VIDDEL_CHAT_DAILY_LIMIT (default 10 / 10 min · 50 / døgn)",
   },
   {
     step: 5,
@@ -150,13 +150,15 @@ export const protectionRules = [
   },
   {
     title: "Kort sikt",
-    value: "10 spørsmål per 10 minutter",
-    human: "Beskyttelse mot rask spam fra samme IP.",
+    value: "10 per 10 min (default)",
+    human:
+      "Beskyttelse mot rask spam fra samme IP. Kan midlertidig heves i Vercel via VIDDEL_CHAT_BURST_LIMIT under pre-pilot eller reliability-test.",
   },
   {
     title: "Døgn",
-    value: "50 spørsmål per døgn",
-    human: "Tak på total bruk per IP per dag.",
+    value: "50 per døgn (default)",
+    human:
+      "Tak på total bruk per IP per dag. Kan midlertidig heves i Vercel via VIDDEL_CHAT_DAILY_LIMIT — sett tilbake etter test.",
   },
   {
     title: "Trygg stenging",
@@ -166,20 +168,33 @@ export const protectionRules = [
   },
 ] as const;
 
-/** Guard strategy v0.2 — public guard vs intern ops reliability testing. */
+/** Guard strategy — public guard med Vercel-styrte grenser (#180 + env v0.1). */
 export const guardStrategyExplainer = {
-  title: "Guard strategy v0.2",
-  lead: "To lag: public guard for ekte brukere, ops-test for intern stabilitet — uten å svekke offentlig sikkerhet.",
+  title: "Public guard og testgrenser",
+  lead: "Public guard beskytter chatten alltid. Under pre-pilot kan Thomas heve grensene i Vercel — uten lokal token eller kodeendring.",
   publicGuard: {
     label: "Public guard (#180)",
     human:
-      "Aktiv for alle uten gyldig ops-token. Origin-sjekk, maks meldingslengde, 10 / 10 min og 50 / døgn per IP. Fail closed hvis Upstash mangler i production.",
+      "Origin-sjekk, maks meldingslengde og IP-rate-limit via Upstash. Standard: 10 / 10 min og 50 / døgn. Fail closed hvis Upstash mangler i production.",
   },
-  opsTest: {
-    label: "Ops reliability testing",
+  vercelLimits: {
+    label: "Juster grenser i Vercel (v0.1)",
     human:
-      "Kun script/ops med header x-viddel-ops-test-token og VIDDEL_OPS_TEST_TOKEN i Vercel. Omgår burst/daily IP-rate-limit — beholder validering, timeout, safe errors og ingen prompt/svar-logging. Token eksponeres aldri i frontend.",
+      "VIDDEL_CHAT_BURST_LIMIT og VIDDEL_CHAT_DAILY_LIMIT — positive heltall. Ugyldig eller tom verdi → default 10 og 50. Redeploy etter endring.",
   },
+} as const;
+
+/** Anbefalt midlertidig testmodus før ekstern pilot — ikke permanent produksjonsnivå. */
+export const prePilotReliabilityExplainer = {
+  title: "Reliability-test uten lokal token",
+  steps: [
+    "Sett midlertidig i Vercel Production: VIDDEL_CHAT_BURST_LIMIT=100 og VIDDEL_CHAT_DAILY_LIMIT=500.",
+    "Redeploy Production.",
+    "Kjør npm run chat:reliability (spaced calls) — Cursor trenger ikke lokal token.",
+    "Vurder CES-stabilitet fra safe metadata (suksess, upstream, timeout, rate_limit).",
+    "Sett grensene tilbake til 10/50 eller fjern env-vars etter test.",
+  ],
+  note: "Guard forblir aktiv — vi justerer bare terskelen midlertidig.",
 } as const;
 
 export const upstashExplainer = {
@@ -480,19 +495,17 @@ export const changeRunbooks: ChangeRunbook[] = [
   },
   {
     id: "rate-limits",
-    title: "Endre rate limits",
-    whatChanges: "Hvor mange spørsmål som tillates — per 10 minutter og per døgn (per IP).",
-    where: "I chat guard-koden. Nåværende grenser: 10 per 10 min og 50 per døgn.",
-    whereToGo:
-      "GitHub/Cursor for kodeendring i guard. Etterpå Vercel → Deployments. Ikke Vercel env alene — grensene ligger i kode i dag.",
-    after: "Commit, deploy til Production, og test at chat fortsatt fungerer.",
-    test: "Ett vanlig spørsmål (skal fungere). 11 raske spørsmål (skal stoppe med tydelig melding). For lang melding (skal avvises).",
-    actionLinks: [
-      backstageLinks.guardFile,
-      backstageLinks.githubPulls,
-      backstageLinks.vercelDeployments,
-    ],
-    tech: "src/lib/chat-api-guard.ts",
+    title: "Endre rate limits (Vercel env)",
+    whatChanges: "Hvor mange spørsmål som tillates per IP — burst (10 min) og døgn. Default 10 og 50 hvis env mangler.",
+    where:
+      "Vercel → Environment Variables: VIDDEL_CHAT_BURST_LIMIT, VIDDEL_CHAT_DAILY_LIMIT. Kun positive heltall — ellers faller systemet tilbake til default.",
+    whereToGo: "Vercel → Settings → Environment Variables → Redeploy Production.",
+    after:
+      "Redeploy. For reliability-test: midlertidig 100/500, kjør script, sett tilbake etterpå. For permanent endring: avklar med @navigator først.",
+    test: "Ett vanlig spørsmål (skal fungere). reliability-script uten rate_limit-blokkering når grensene er hevet. For lang melding (skal avvises).",
+    actionLinks: [backstageLinks.vercelEnv, backstageLinks.vercelDeployments, backstageLinks.guardFile],
+    envVars: ["VIDDEL_CHAT_BURST_LIMIT", "VIDDEL_CHAT_DAILY_LIMIT"],
+    tech: "src/lib/chat-guard-limits.ts · src/lib/chat-api-guard.ts",
   },
   {
     id: "max-length",
@@ -719,13 +732,23 @@ export const monitoringEvents = [
 
 export type EnvVarEntry = {
   name: string;
-  group: "upstash" | "ces" | "auth" | "posthog" | "ops";
+  group: "upstash" | "guard" | "ces" | "auth" | "posthog" | "ops";
   controls: string;
 };
 
 export const envVars: EnvVarEntry[] = [
   { name: "UPSTASH_REDIS_REST_URL", group: "upstash", controls: "Teller-endpoint." },
   { name: "UPSTASH_REDIS_REST_TOKEN", group: "upstash", controls: "Teller-autentisering." },
+  {
+    name: "VIDDEL_CHAT_BURST_LIMIT",
+    group: "guard",
+    controls: "Spørsmål per IP per 10 min. Default 10. Pre-pilot test: midlertidig 100.",
+  },
+  {
+    name: "VIDDEL_CHAT_DAILY_LIMIT",
+    group: "guard",
+    controls: "Spørsmål per IP per døgn. Default 50. Pre-pilot test: midlertidig 500.",
+  },
   { name: "VIDDEL_OPS_TEST_TOKEN", group: "ops", controls: "Hemmelig ops reliability test — bypass public IP-rate-limit kun for script med riktig header. Aldri frontend." },
   { name: "CES_PROJECT_ID", group: "ces", controls: "CES prosjekt." },
   { name: "CES_LOCATION", group: "ces", controls: "CES region." },
@@ -746,6 +769,7 @@ export const envVarNotes = [
 export const sourceFiles = [
   "src/pages/api/chat.ts",
   "src/lib/chat-api-guard.ts",
+  "src/lib/chat-guard-limits.ts",
   "src/lib/chat-ops-test.ts",
   "src/lib/chat-usage-metrics.ts",
   "src/lib/viddel-analytics-events.ts",
