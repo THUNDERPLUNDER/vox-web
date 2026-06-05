@@ -18,7 +18,9 @@
     "vis:github:runtime-status": "node scripts/generate-github-runtime-status.mjs",
     "vis:github:snapshot": "node scripts/vis-github-live-snapshot.mjs",
     "chat:reliability": "node scripts/chat-reliability-assessment.mjs",
-    "verify:ces-env": "node scripts/verify-ces-env-checklist.mjs"
+    "verify:ces-env": "node scripts/verify-ces-env-checklist.mjs",
+    "source:inventory": "node --experimental-strip-types scripts/source-inventory-scaffold.mjs",
+    "source:manifest:check": "node --experimental-strip-types scripts/validate-datastore-manifest.mjs"
   },
   "dependencies": {
     "@astrojs/vercel": "^9.0.5",
