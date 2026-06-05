@@ -3,8 +3,8 @@
 export const backstageMeta = {
   title: "Backstage",
   lead: "Backstage er kontrollrommet for hvordan Viddel fungerer bak scenen. Her forklarer vi AI-flyten, beskyttelsen, feilstater og hva som må sjekkes før vi deler med flere.",
-  updatedAt: "2026-05-29",
-  issue: "#184",
+  updatedAt: "2026-06-05",
+  issue: "#184 · #222",
 } as const;
 
 export const statusPanel = [
@@ -16,7 +16,8 @@ export const statusPanel = [
 export const quickAnswers = [
   {
     question: "Hva skjer når noen spør Viddel?",
-    answer: "Spørsmålet går gjennom Viddel sitt eget grensesnitt, sjekkes, telles og sendes til AI-motoren — svaret kommer tilbake i samme chat.",
+    answer:
+      "Spørsmålet går gjennom Viddel sitt eget grensesnitt, sjekkes, telles og sendes til AI-motoren via /api/chat — svaret kommer tilbake i samme chat. Production bruker nå google_agent_search_direct (Google :answer).",
   },
   {
     question: "Hva beskytter oss?",
@@ -79,9 +80,9 @@ export const systemMapLayers: SystemMapLayer[] = [
   {
     id: "ai",
     layer: "AI-motor",
-    title: "CES",
-    human: "CES lager svaret. Viddel eier grensesnittet rundt.",
-    tech: "runSession",
+    title: "Google Agent Search :answer",
+    human: "Production bruker direct :answer. CES runSession er rollback-path.",
+    tech: "VIDDEL_AI_BACKEND · google_agent_search_direct",
   },
   {
     id: "response",
@@ -130,15 +131,16 @@ export const chatFlowSteps: ChatFlowStep[] = [
   },
   {
     step: 5,
-    title: "CES får spørsmålet",
-    human: "AI-motoren lager svaret.",
-    why: "Dette er selve AI-svaret.",
-    tech: "CES runSession",
+    title: "AI-motoren svarer",
+    human: "Backend velges av VIDDEL_AI_BACKEND. Production: Google Agent Search :answer med Viddel response contract v0.1.",
+    why: "Svaret kommer fra Google Discovery Engine — ikke fra widget i nettleseren.",
+    tech: "google_agent_search_direct · src/lib/agent-search-answer.ts",
   },
   {
     step: 6,
     title: "Viddel viser svaret",
-    human: "Svaret vises i chatten — uten CES-widget i nettleseren.",
+    human: "Svaret rendres som lesbar tekst (Markdown → DOM) i chatten — uten CES-widget i nettleseren.",
+    tech: "src/lib/render-assistant-markdown.ts · /no/chat/",
   },
 ];
 
@@ -204,7 +206,7 @@ export const upstashExplainer = {
 
 export const cesExplainer = {
   title: "Hva betyr CES?",
-  body: "CES er AI-motoren som lager svaret. Viddel eier grensesnittet rundt — chatten, feilmeldingene og hvordan det føles for brukeren.",
+  body: "CES er den opprinnelige AI-kanalen (runSession). Viddel eier grensesnittet rundt. Production bruker nå direct :answer — CES er kjent rollback-path ved å sette VIDDEL_AI_BACKEND=ces_channel.",
 } as const;
 
 export type BackstageLink = {
@@ -297,7 +299,182 @@ export const backstageLinks = {
     label: "Åpne Spør Viddel",
     href: "https://vox.raddum.no/no/chat/",
   },
+  viddelAiBackendFile: {
+    label: "Backend-velger (kode)",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/src/lib/viddel-ai-backend.ts",
+    external: true,
+  },
+  responseContractFile: {
+    label: "Response contract v0.1",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/src/lib/viddel-response-contract.ts",
+    external: true,
+  },
+  agentSearchAnswerFile: {
+    label: "Google :answer-klient",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/src/lib/agent-search-answer.ts",
+    external: true,
+  },
+  renderMarkdownFile: {
+    label: "Markdown-renderer",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/src/lib/render-assistant-markdown.ts",
+    external: true,
+  },
+  chatPageFile: {
+    label: "Chat-side (kode)",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/src/pages/no/chat.astro",
+    external: true,
+  },
+  githubIssue217: {
+    label: "Issue #217 (formatting)",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/issues/217",
+    external: true,
+  },
+  githubIssue222: {
+    label: "Issue #222 (denne doc)",
+    href: "https://github.com/THUNDERPLUNDER/vox-web/issues/222",
+    external: true,
+  },
 } as const satisfies Record<string, BackstageLink>;
+
+export type AiChatConfigBlock = {
+  id: string;
+  title: string;
+  human: string;
+  bullets?: readonly string[];
+  files?: readonly string[];
+  envVars?: readonly string[];
+  links?: readonly BackstageLink[];
+  caution?: string;
+};
+
+/** AI-chat konfigurasjon — lesbar VIS/Backstage-referanse (#217 · #222). */
+export const aiChatConfigExplainer = {
+  title: "AI-chat konfigurasjon",
+  lead: "Slik er Spør Viddel satt opp nå — backend, svarstil, Google-kall og frontend-rendering. Ingen secrets her; kun hvor ting lever og hva som kan endres trygt.",
+  productionModel: {
+    title: "Production-modell nå",
+    bullets: [
+      "/api/chat er server-proxy — nøkler og AI-kall skjer kun på serveren.",
+      "Aktiv backend velges med VIDDEL_AI_BACKEND i Vercel.",
+      "Production bruker google_agent_search_direct (Google Discovery Engine :answer).",
+      "Rollback-path er ces_channel (CES runSession) — se nederst.",
+    ],
+  },
+  blocks: [
+    {
+      id: "backend-select",
+      title: "Hvilken backend er aktiv?",
+      human:
+        "Sjekk VIDDEL_AI_BACKEND i Vercel Production (og Preview ved behov). Verdier: google_agent_search_direct eller ces_channel. Ugyldig/manglende → ces_channel (default i kode).",
+      envVars: ["VIDDEL_AI_BACKEND"],
+      files: ["src/lib/viddel-ai-backend.ts", "src/pages/api/chat.ts"],
+      links: [backstageLinks.viddelAiBackendFile, backstageLinks.apiRouteFile, backstageLinks.vercelEnv],
+    },
+    {
+      id: "direct-answer",
+      title: "Hva bruker direct :answer?",
+      human:
+        "Google Discovery Engine servingConfigs:answer — ikke CES widget og ikke CES_APP_ID som engine-id.",
+      bullets: [
+        "Engine-id: AGENT_SEARCH_ENGINE_ID (Discovery Engine engine — f.eks. h-rehjelpen-v1-2_…).",
+        "CES_APP_ID er app/kanal-id — må ikke brukes som engine-id.",
+        "Serving config: AGENT_SEARCH_SERVING_CONFIG (default default_serving_config).",
+        "Session: AGENT_SEARCH_ANSWER_SESSION=omit (anbefalt) eller full — ikke session: \"-\".",
+        "Auth: GOOGLE_SERVICE_ACCOUNT_JSON + IAM roles/discoveryengine.user.",
+      ],
+      envVars: [
+        "AGENT_SEARCH_ENGINE_ID",
+        "AGENT_SEARCH_SERVING_CONFIG",
+        "AGENT_SEARCH_ANSWER_SESSION",
+        "AGENT_SEARCH_LOCATION",
+        "CES_PROJECT_ID",
+        "CES_LOCATION",
+        "GOOGLE_SERVICE_ACCOUNT_JSON",
+      ],
+      files: ["src/lib/agent-search-answer.ts", "src/lib/ces-auth.ts"],
+      links: [backstageLinks.agentSearchAnswerFile, backstageLinks.googleCloud],
+    },
+    {
+      id: "response-contract",
+      title: "Hvor styres svarstil?",
+      human:
+        "Viddel response contract v0.1 ligger i repo — ikke skjult i GCP Console. Endres som versjonert produktendring, ikke ad hoc i console.",
+      bullets: [
+        "VIDDEL_RESPONSE_CONTRACT_VERSION = v0.1",
+        "VIDDEL_RESPONSE_PREAMBLE styrer lengde, tone, ordvalg, oppfølgingsspørsmål og audiograf-håndtering.",
+        "Reduserer manual-dump og lange kildeutdrag.",
+        "Preamble sendes som answerGenerationSpec.promptSpec.preamble i :answer-kallet.",
+      ],
+      files: ["src/lib/viddel-response-contract.ts"],
+      links: [backstageLinks.responseContractFile, backstageLinks.githubIssue217],
+      caution: "Oppdater contract version når preamble endres vesentlig — ikke bare små ord.",
+    },
+    {
+      id: "google-request",
+      title: "Google request-config",
+      human: "agent-search-answer.ts bygger :answer-body med guard-flagg, retry og includeCitations: true.",
+      bullets: [
+        "ignoreAdversarialQuery: true",
+        "ignoreNonAnswerSeekingQuery: false",
+        "includeCitations: true (uendret)",
+        "Ingen prompt/answer logging i runtime.",
+      ],
+      files: ["src/lib/agent-search-answer.ts"],
+      links: [backstageLinks.agentSearchAnswerFile],
+    },
+    {
+      id: "frontend-render",
+      title: "Hvor rendres Markdown?",
+      human:
+        "Frontend i Viddel — ikke CES/GCP. Assistent-svar bygges som DOM-noder (bold, lister, avsnitt). Brukermeldinger forblir ren tekst.",
+      bullets: [
+        "/no/chat — standalone chatflate",
+        "render-assistant-markdown.ts — safe renderer uten innerHTML på rå AI-tekst",
+        "viddel-standalone-chat.css — liste-/avsnitts-styling",
+      ],
+      files: [
+        "src/pages/no/chat.astro",
+        "src/lib/render-assistant-markdown.ts",
+        "src/styles/viddel-standalone-chat.css",
+      ],
+      links: [backstageLinks.chat, backstageLinks.renderMarkdownFile, backstageLinks.chatPageFile],
+    },
+    {
+      id: "operational-rules",
+      title: "Ikke endre dette casualt",
+      human: "Disse grepene krever eksplisitt beslutning og ofte redeploy.",
+      bullets: [
+        "Bytt ikke production-backend uten avklaring (VIDDEL_AI_BACKEND).",
+        "Ikke restrukturer datastore mens svarformat testes.",
+        "Ikke start PostHog som del av config-arbeid.",
+        "Ikke logg prompt eller svar i runtime.",
+        "Response contract = versjonert produktendring — dokumenter i issue/PR.",
+      ],
+    },
+    {
+      id: "rollback",
+      title: "Rollback til CES channel",
+      human: "Kjent rollback hvis direct :answer feiler eller må isoleres.",
+      bullets: [
+        "Sett VIDDEL_AI_BACKEND=ces_channel i Vercel Production — eller fjern variabelen (default ces_channel).",
+        "Behold CES_* env-vars for runSession-path.",
+        "Redeploy Production.",
+        "Test ett enkelt spørsmål i /no/chat.",
+      ],
+      envVars: ["VIDDEL_AI_BACKEND", "CES_APP_ID", "CES_DEPLOYMENT_ID"],
+      links: [backstageLinks.vercelEnv, backstageLinks.vercelDeployments, backstageLinks.chat],
+    },
+  ] satisfies readonly AiChatConfigBlock[],
+  adjustStyleGuide: {
+    title: "Når du justerer svarstil senere",
+    steps: [
+      "Rediger src/lib/viddel-response-contract.ts (preamble + ev. bump version).",
+      "Deploy — preamble sendes automatisk via agent-search-answer.ts.",
+      "Test visuelt i /no/chat (korthet, tone, lister, ingen rå **).",
+      "Oppdater Backstage hvis env eller filpunkter endres.",
+    ],
+  },
+} as const;
 
 export type ChangeRunbook = {
   id: string;
@@ -387,7 +564,8 @@ export const services: ServiceEntry[] = [
     layer: "AI-motor",
     role: [
       "AI-motoren som lager svarene",
-      "Viddel-agent og deployment",
+      "Production: Google Agent Search :answer (direct)",
+      "Rollback: CES runSession via ces_channel",
       "Kalles fra /api/chat via service account",
     ],
     whenToOpen: [
@@ -561,6 +739,52 @@ export const changeRunbooks: ChangeRunbook[] = [
     tech: "Service account JSON kun i Vercel — aldri i repo.",
   },
   {
+    id: "ai-backend",
+    title: "Bytte AI-backend (direct ↔ CES)",
+    whatChanges:
+      "Hvilken AI-path /api/chat bruker — google_agent_search_direct (:answer) eller ces_channel (runSession).",
+    where:
+      "Vercel → VIDDEL_AI_BACKEND. Direct krever AGENT_SEARCH_ENGINE_ID + GOOGLE_SERVICE_ACCOUNT_JSON. CES krever CES_* ids.",
+    whereToGo:
+      "Vercel → Environment Variables → Redeploy. Les AI-chat konfigurasjon i Backstage før endring.",
+    after:
+      "Redeploy Production. Test /no/chat. Ved rollback: VIDDEL_AI_BACKEND=ces_channel eller fjern variabel.",
+    test:
+      "Ett spørsmål i Spør Viddel. Sjekk at svar kommer og at Markdown rendres (direct path).",
+    actionLinks: [
+      backstageLinks.vercelEnv,
+      backstageLinks.vercelDeployments,
+      backstageLinks.viddelAiBackendFile,
+      backstageLinks.chat,
+    ],
+    envVars: [
+      "VIDDEL_AI_BACKEND",
+      "AGENT_SEARCH_ENGINE_ID",
+      "AGENT_SEARCH_SERVING_CONFIG",
+      "AGENT_SEARCH_ANSWER_SESSION",
+      "CES_APP_ID",
+      "CES_DEPLOYMENT_ID",
+    ],
+    tech: "src/lib/viddel-ai-backend.ts · src/lib/agent-search-answer.ts · src/lib/ces-run-session.ts",
+  },
+  {
+    id: "response-contract",
+    title: "Endre Viddel svarstil (response contract)",
+    whatChanges: "Preamble som styrer tone, lengde, ordvalg og struktur i AI-svar — versjonert i repo.",
+    where: "src/lib/viddel-response-contract.ts — sendes via promptSpec.preamble i :answer.",
+    whereToGo: "GitHub/Cursor → rediger contract → commit → deploy. Bump VIDDEL_RESPONSE_CONTRACT_VERSION ved større endring.",
+    after: "Deploy. Visuell QA i /no/chat — korthet, lister, ingen rå Markdown, audiograf kun når relevant.",
+    test: "Minst 3–5 typiske spørsmål i /no/chat. Ikke endre GCP console for dette.",
+    actionLinks: [
+      backstageLinks.responseContractFile,
+      backstageLinks.agentSearchAnswerFile,
+      backstageLinks.chat,
+      backstageLinks.githubIssue217,
+    ],
+    envVars: [],
+    tech: "src/lib/viddel-response-contract.ts · #217",
+  },
+  {
     id: "disable-ai",
     title: "Slå av AI midlertidig",
     whatChanges: "Stoppe AI-svar midlertidig — ved feil, kostnadsbekymring eller uventet adferd.",
@@ -732,7 +956,7 @@ export const monitoringEvents = [
 
 export type EnvVarEntry = {
   name: string;
-  group: "upstash" | "guard" | "ces" | "auth" | "posthog" | "ops";
+  group: "upstash" | "guard" | "ces" | "agent-search" | "auth" | "posthog" | "ops";
   controls: string;
 };
 
@@ -750,6 +974,31 @@ export const envVars: EnvVarEntry[] = [
     controls: "Spørsmål per IP per døgn. Default 50. Pre-pilot test: midlertidig 500.",
   },
   { name: "VIDDEL_OPS_TEST_TOKEN", group: "ops", controls: "Hemmelig ops reliability test — bypass public IP-rate-limit kun for script med riktig header. Aldri frontend." },
+  {
+    name: "VIDDEL_AI_BACKEND",
+    group: "agent-search",
+    controls: "Backend for /api/chat: google_agent_search_direct eller ces_channel. Default ces_channel.",
+  },
+  {
+    name: "AGENT_SEARCH_ENGINE_ID",
+    group: "agent-search",
+    controls: "Discovery Engine engine-id for :answer — ikke CES_APP_ID.",
+  },
+  {
+    name: "AGENT_SEARCH_SERVING_CONFIG",
+    group: "agent-search",
+    controls: "Serving config for :answer. Default default_serving_config.",
+  },
+  {
+    name: "AGENT_SEARCH_ANSWER_SESSION",
+    group: "agent-search",
+    controls: "omit (anbefalt) eller full — styrer om session sendes i :answer.",
+  },
+  {
+    name: "AGENT_SEARCH_LOCATION",
+    group: "agent-search",
+    controls: "Valgfri override for Discovery Engine region (ellers CES_LOCATION).",
+  },
   { name: "CES_PROJECT_ID", group: "ces", controls: "CES prosjekt." },
   { name: "CES_LOCATION", group: "ces", controls: "CES region." },
   { name: "CES_APP_ID", group: "ces", controls: "Viddel-app i CES." },
@@ -768,6 +1017,11 @@ export const envVarNotes = [
 
 export const sourceFiles = [
   "src/pages/api/chat.ts",
+  "src/lib/viddel-ai-backend.ts",
+  "src/lib/agent-search-answer.ts",
+  "src/lib/viddel-response-contract.ts",
+  "src/lib/render-assistant-markdown.ts",
+  "src/pages/no/chat.astro",
   "src/lib/chat-api-guard.ts",
   "src/lib/chat-guard-limits.ts",
   "src/lib/chat-ops-test.ts",
