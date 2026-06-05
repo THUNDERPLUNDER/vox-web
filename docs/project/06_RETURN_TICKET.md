@@ -6,53 +6,48 @@ Gi en kort, fast retur fra utførelse tilbake til strategi, arkiv og prosjektsta
 ## Når brukes den
 Bruk Return Ticket når:
 - Cursor har implementert noe
+- Codex har implementert noe
 - en GitHub-oppgave er flyttet vesentlig
 - et viktig design-, innholds- eller arbeidsgrep er landet
 - resultatet påvirker arbeidsarkitektur, roadmap, VIS eller prosjektstatus
 
-## Mal v1
+## Mal v1.1
 
-Oppgave
-- 
+```text
+Status:
+Hva ble gjort:
+Filer endret:
+Tester kjørt:
+Commit:
+Push-status:
+PR:
+Preview/deploy:
+Hva Thomas bør verifisere:
+Risiko / åpne punkter:
+VIS/current-state impact:
+Backstage impact:
+Navigation/page-contract impact:
+Follow-up issue if deferred:
+```
 
-Hva ble gjort
-- 
+## Operative presiseringer
 
-Hva ble faktisk landet
-- 
+`Commit` skal inneholde commit hash. `Push-status` skal si om branchen er pushet. `PR` skal lenke til PR, med mindre Thomas eksplisitt har bedt om noe annet.
 
-Avvik fra plan
-- 
+`Preview/deploy` skal inneholde exact Preview URL når relevant. Ikke skriv at noe finnes i production før exact production URL er deployet og verifisert.
 
-Designsystem impact
-- 
+`VIS/current-state impact` skal si om `src/data/mvp-current-state.ts`, VIS frontpage eller VIS Runtime Feed må oppdateres. Hvis ikke relevant: `VIS/current-state impact: none`.
 
-Current-state / VIS frontpage impact
-- (Hvis ikke relevant: «Current-state update: Ikke nødvendig — ingen endring i MVP-status, designmønstre eller applied surfaces.»)
+`Backstage impact` skal si om systemflyt, API, guard, env-vars, monitoring eller production-status påvirkes.
 
-Backstage impact
-- `Oppdatert: ...` / `Ikke relevant: ingen endring i systemflyt, API, guard, env-vars, monitoring eller production-status.` / `Må følges opp: ...`
+`Navigation/page-contract impact` skal si om routes, IA, sidekontrakter eller navigasjon påvirkes.
 
-VIS runtime update
-- Oppdatert: ja / nei
-- Hva skjer nå? (én menneskelig setning)
-- Hvorfor gjør vi det?
-- Område
-- Status / fremdrift
-- Neste beslutning
-- Sist ferdigstilt
-- Siste retur
-- Lenker (primary + secondary)
+Ved større eller VIS-relevante endringer kan Return Ticket også utvides med:
+- Designsystem impact
+- Applied surfaces impacted
+- VIS runtime update
 
 **Presisering:** Intern shorthand er ikke nok. Return Ticket skal gi nok språk til at VIS kan forstås dagen etter, også uten muntlig kontekst.
-
-Hvis ikke relevant: `VIS runtime update: Ikke nødvendig — ingen endring i hva Cursor/rigger jobber med akkurat nå.`
-
-Applied surfaces impacted
-- 
-
-Follow-up needed
-- 
 
 Hva må oppdateres
 - [ ] VIS (`src/data/mvp-current-state.ts` ved MVP-statusendring)
