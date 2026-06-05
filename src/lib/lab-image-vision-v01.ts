@@ -1,14 +1,11 @@
-/* CONTRACT: Dev-only POST — equipment photo → Vertex vision JSON. No storage; gated; not production upload. */
-import type { APIRoute } from "astro";
-import { isImageQaDevEnabled } from "../../../lib/image-qa-dev-gate.ts";
-import { buildImageQaWarnings } from "../../../lib/image-qa-warnings.ts";
+/* CONTRACT: Shared POST handler for /api/lab/image-vision — equipment photo → Vertex JSON. No storage. */
+import { buildImageQaWarnings } from "./image-qa-warnings.ts";
 import {
   analyzeEquipmentImage,
   resolveImageVisionProbeConfig,
   type ImageVisionScenario,
-} from "../../../lib/image-vision-bridge-v01.ts";
-
-export const prerender = false;
+} from "./image-vision-bridge-v01.ts";
+import { hasValidLabSession, isLabRouteAvailable } from "./lab-auth-v01.ts";
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/bmp"]);
@@ -33,9 +30,14 @@ function estimateBase64Bytes(base64: string): number {
   return Math.floor((base64.length * 3) / 4) - padding;
 }
 
-export const POST: APIRoute = async ({ request }) => {
-  if (!isImageQaDevEnabled()) {
-    return json({ error: "not_available", message: "Image QA is dev-only." }, 404);
+/** Lab-gated image vision POST — requires valid Lab session cookie. */
+export async function handleLabImageVisionPost(request: Request): Promise<Response> {
+  if (!isLabRouteAvailable()) {
+    return json({ error: "not_available", message: "Lab image QA is not available." }, 404);
+  }
+
+  if (!hasValidLabSession(request)) {
+    return json({ error: "unauthorized", message: "Lab login required." }, 401);
   }
 
   let body: RequestBody;
@@ -103,4 +105,4 @@ export const POST: APIRoute = async ({ request }) => {
     const message = error instanceof Error ? error.message : "vision_failed";
     return json({ error: "vision_failed", message }, 502);
   }
-};
+}

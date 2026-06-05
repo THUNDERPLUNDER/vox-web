@@ -1,12 +1,16 @@
 ---
-/* CONTRACT: Dev-only mobile camera QA for image→vision→RAG flow (#236). Not production; no image storage. */
+/* CONTRACT: Lab mobile camera QA — image→vision→RAG (#236/#237). Gated by Lab login; no image storage. */
 import "../../styles/global.css";
-import { isImageQaDevEnabled } from "../../lib/image-qa-dev-gate.ts";
+import { hasValidLabSession, isLabRouteAvailable } from "../../lib/lab-auth-v01.ts";
 
 export const prerender = false;
 
-if (!isImageQaDevEnabled()) {
+if (!isLabRouteAvailable()) {
   return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+if (!hasValidLabSession(Astro.request)) {
+  return Astro.redirect(`/lab/login?return=${encodeURIComponent("/lab/image-qa")}`);
 }
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
@@ -22,12 +26,21 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
   </head>
   <body class="min-h-dvh bg-[rgb(var(--surface-subtle))] text-[rgb(var(--text))] antialiased">
     <main class="mx-auto flex max-w-lg flex-col gap-4 px-4 py-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
-      <header class="space-y-1">
-        <p class="text-xs font-medium uppercase tracking-wide text-[rgb(var(--muted))]">Viddel Lab · dev-only</p>
-        <h1 class="font-display text-2xl font-semibold tracking-tight">Bilde-QA</h1>
-        <p class="text-sm leading-relaxed text-[rgb(var(--muted))]">
-          Ta bilde av høreapparatutstyr (lader, dome/filter, appskjerm, statuslys). Ingen lagring.
-        </p>
+      <header class="flex items-start justify-between gap-3">
+        <div class="space-y-1">
+          <p class="text-xs font-medium uppercase tracking-wide text-[rgb(var(--muted))]">Viddel Lab</p>
+          <h1 class="font-display text-2xl font-semibold tracking-tight">Bilde-QA</h1>
+          <p class="text-sm leading-relaxed text-[rgb(var(--muted))]">
+            Ta bilde av høreapparatutstyr (lader, dome/filter, appskjerm, statuslys). Ingen lagring.
+          </p>
+        </div>
+        <button
+          id="lab-logout"
+          type="button"
+          class="shrink-0 rounded-[var(--radius-sm)] border border-[rgb(var(--stroke)/0.25)] px-3 py-2 text-xs font-medium"
+        >
+          Logg ut
+        </button>
       </header>
 
       <div
@@ -135,6 +148,11 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
     </main>
 
     <script>
+      document.getElementById("lab-logout")?.addEventListener("click", async () => {
+        await fetch("/api/lab/logout", { method: "POST", credentials: "same-origin" });
+        window.location.href = "/lab/login";
+      });
+
       const fileInput = document.getElementById("image-qa-file");
       const previewWrap = document.getElementById("image-qa-preview-wrap");
       const preview = document.getElementById("image-qa-preview");
@@ -223,9 +241,10 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
         const callChat = document.getElementById("image-qa-call-chat")?.checked ?? false;
 
         try {
-          const visionRes = await fetch("/api/dev/image-vision", {
+          const visionRes = await fetch("/api/lab/image-vision", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
             body: JSON.stringify({
               imageBase64: selected.base64,
               mimeType: selected.mimeType,
@@ -234,6 +253,10 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
             }),
           });
           const visionPayload = await visionRes.json().catch(() => ({}));
+          if (visionRes.status === 401) {
+            window.location.href = "/lab/login?return=/lab/image-qa";
+            return;
+          }
           if (!visionRes.ok) {
             throw new Error(visionPayload.message || visionPayload.error || `Vision HTTP ${visionRes.status}`);
           }
@@ -264,6 +287,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
             const chatRes = await fetch("/api/chat", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
+              credentials: "same-origin",
               body: JSON.stringify({ message: vision.rag_query_text, sessionId }),
             });
             const chatPayload = await chatRes.json().catch(() => ({}));

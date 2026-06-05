@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs && node --experimental-strip-types scripts/verify-backstage-guard.mjs && node --experimental-strip-types scripts/verify-vis-runtime-feed.mjs && node --experimental-strip-types scripts/verify-image-qa-gate.mjs && astro build",
+    "build": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs && node --experimental-strip-types scripts/verify-backstage-guard.mjs && node --experimental-strip-types scripts/verify-vis-runtime-feed.mjs && node --experimental-strip-types scripts/verify-lab-gate.mjs && astro build",
     "verify:vis-sprint-guard": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs",
     "verify:backstage-guard": "node --experimental-strip-types scripts/verify-backstage-guard.mjs",
     "verify:vis-runtime-feed": "node --experimental-strip-types scripts/verify-vis-runtime-feed.mjs",

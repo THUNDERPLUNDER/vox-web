@@ -1,0 +1,86 @@
+---
+/* CONTRACT: Lab shared-password login (#237). Not production user auth. */
+import "../../styles/global.css";
+import { hasValidLabSession, isLabRouteAvailable } from "../../lib/lab-auth-v01.ts";
+
+export const prerender = false;
+
+if (!isLabRouteAvailable()) {
+  return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+const returnTo = Astro.url.searchParams.get("return")?.trim() || "/lab/image-qa";
+const safeReturn = returnTo.startsWith("/lab/") ? returnTo : "/lab/image-qa";
+
+if (hasValidLabSession(Astro.request)) {
+  return Astro.redirect(safeReturn);
+}
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
+---
+
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Viddel Lab · Login</title>
+  </head>
+  <body class="min-h-dvh bg-[rgb(var(--surface-subtle))] text-[rgb(var(--text))] antialiased">
+    <main class="mx-auto flex max-w-md flex-col gap-6 px-4 py-10">
+      <header class="space-y-1">
+        <p class="text-xs font-medium uppercase tracking-wide text-[rgb(var(--muted))]">Viddel Lab</p>
+        <h1 class="font-display text-2xl font-semibold tracking-tight">Intern login</h1>
+        <p class="text-sm text-[rgb(var(--muted))]">Delt passord for prototype-testing. Ikke production brukerlogin.</p>
+      </header>
+
+      <form id="lab-login-form" class="space-y-4 rounded-[var(--radius-md)] border border-[rgb(var(--stroke)/0.2)] bg-[rgb(var(--surface-elevated))] p-4">
+        <div>
+          <label for="lab-password" class="mb-1 block text-xs font-medium uppercase tracking-wide text-[rgb(var(--muted))]">
+            Passord
+          </label>
+          <input
+            id="lab-password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required
+            class="w-full rounded-[var(--radius-sm)] border border-[rgb(var(--stroke)/0.25)] bg-[rgb(var(--surface-subtle))] px-3 py-2.5 text-sm"
+          />
+        </div>
+        <p id="lab-login-error" class="hidden text-sm text-red-700" role="alert"></p>
+        <button
+          type="submit"
+          class="w-full rounded-[var(--radius-sm)] bg-[rgb(var(--accent))] px-4 py-3 text-sm font-semibold text-white"
+        >
+          Logg inn
+        </button>
+      </form>
+    </main>
+
+    <script define:vars={{ safeReturn }}>
+      const form = document.getElementById("lab-login-form");
+      const errorEl = document.getElementById("lab-login-error");
+
+      form?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        errorEl.classList.add("hidden");
+        const password = document.getElementById("lab-password")?.value ?? "";
+        const res = await fetch("/api/lab/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ password }),
+        });
+        if (res.ok) {
+          window.location.href = safeReturn;
+          return;
+        }
+        const body = await res.json().catch(() => ({}));
+        errorEl.textContent = body.message || "Feil passord.";
+        errorEl.classList.remove("hidden");
+      });
+    </script>
+  </body>
+</html>
