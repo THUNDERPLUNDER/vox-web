@@ -9,19 +9,33 @@ function readEnv(name: string): string {
   return (process.env[name] ?? import.meta.env[name] ?? "").trim();
 }
 
-/** Vercel Production — Lab prototype routes stay closed. */
-export function isLabBlockedInProduction(): boolean {
+function isVercelProduction(): boolean {
   return readEnv("VERCEL_ENV") === "production";
+}
+
+/** Explicit opt-in for Lab on Vercel Production (#237 option B). */
+export function isLabPublicEnabledInProduction(): boolean {
+  return readEnv("VIDDEL_LAB_PUBLIC_ENABLED").toLowerCase() === "true";
 }
 
 export function isLabAuthConfigured(): boolean {
   return Boolean(readEnv("VIDDEL_LAB_PASSWORD") && readEnv("VIDDEL_LAB_COOKIE_SECRET"));
 }
 
-/** Lab routes available when auth env is set and not on Vercel Production. */
+/**
+ * Lab routes available when password auth is configured.
+ * Production: also requires VIDDEL_LAB_PUBLIC_ENABLED=true.
+ * Preview/local: password + cookie secret only.
+ */
 export function isLabRouteAvailable(): boolean {
-  if (isLabBlockedInProduction()) return false;
-  return isLabAuthConfigured();
+  if (!isLabAuthConfigured()) return false;
+  if (isVercelProduction()) return isLabPublicEnabledInProduction();
+  return true;
+}
+
+/** @deprecated Use isLabRouteAvailable — kept for docs/tests clarity. */
+export function isLabBlockedInProduction(): boolean {
+  return isVercelProduction() && !isLabPublicEnabledInProduction();
 }
 
 function labCookieSecret(): string {

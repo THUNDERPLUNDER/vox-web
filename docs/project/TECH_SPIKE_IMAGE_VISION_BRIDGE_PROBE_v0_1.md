@@ -338,14 +338,15 @@ Scenario A: even enriched Phonak charger query did not outperform baseline in si
 | No public upload route | Yes |
 | No secrets/images in git | Yes — `tmp/probe/` gitignored |
 | `npm run build` | Run before merge |
-| Production `/lab/image-qa` | **404** (`VERCEL_ENV=production` always blocks Lab) |
-| Preview `/lab/image-qa` | Lab login when `VIDDEL_LAB_PASSWORD` + `VIDDEL_LAB_COOKIE_SECRET` set in Preview only |
+| Production `/lab/image-qa` uten flagg | **404** (default — `VIDDEL_LAB_PUBLIC_ENABLED` unset) |
+| Production `/lab/image-qa` med flagg + auth | Login → **200** (option B, #237) |
+| Preview `/lab/image-qa` | Lab login when `VIDDEL_LAB_PASSWORD` + `VIDDEL_LAB_COOKIE_SECRET` set |
 
 ---
 
-## Mobile QA via Vercel Preview (#236 / #237)
+## Mobile QA via Vercel Preview / Production Lab (#236 / #237)
 
-Intern mobilkamera-QA uten lokal Mac-kjøring: bruk **Vercel Preview** + **Lab login**.
+Intern mobilkamera-QA: **Vercel Preview** (default) eller **Production med eksplisitt flagg** (option B).
 
 **Canonical routes:** `/lab/image-qa`, `/api/lab/image-vision` (legacy `/dev/*` removed).
 
@@ -353,16 +354,17 @@ Intern mobilkamera-QA uten lokal Mac-kjøring: bruk **Vercel Preview** + **Lab l
 
 | Miljø | Lab env | `/lab/image-qa` | `/api/lab/image-vision` |
 |-------|---------|-----------------|-------------------------|
-| Vercel **Production** | any | **404** | **404** |
+| Vercel **Production** | unset / no flag | **404** | **404** |
+| Vercel **Production** | `VIDDEL_LAB_PUBLIC_ENABLED=true` + password + secret | Login → **200** | **401** uten cookie / **200** med cookie |
 | Vercel **Preview** | unset | **404** | **404** |
-| Vercel **Preview** | password + secret | Login → **200** | **401** without cookie / **200** with cookie |
-| Lokal dev | password + secret in `.env.local` | Same | Same |
+| Vercel **Preview** | password + secret | Login → **200** | **401** uten cookie / **200** med cookie |
+| Lokal dev | password + secret i `.env.local` | Same | Same |
 
-Production blokkeres via `VERCEL_ENV=production`. Image QA krever **Lab login** (HTTP-only cookie).
+Production er **404 by default**. Krever **`VIDDEL_LAB_PUBLIC_ENABLED=true`** + passord + cookie-secret for å åpne Lab. Image QA krever **Lab login** (HTTP-only HMAC cookie).
 
-### Vercel Preview Environment — required vars
+### Vercel Preview Environment — vars
 
-Sett under **Project → Settings → Environment Variables → Preview** (ikke Production):
+Sett under **Project → Settings → Environment Variables → Preview**:
 
 | Variable | Value / notes |
 |----------|----------------|
@@ -376,24 +378,57 @@ Sett under **Project → Settings → Environment Variables → Preview** (ikke 
 | `CES_DEPLOYMENT_ID` | CES deployment |
 | `IMAGE_VISION_PROBE_MODEL` | `gemini-2.5-flash` (optional — default in code) |
 
-**Do not set** `VIDDEL_LAB_PASSWORD` or `VIDDEL_LAB_COOKIE_SECRET` in **Production** Environment.
+Preview trenger **ikke** `VIDDEL_LAB_PUBLIC_ENABLED`.
 
-**For optional `/api/chat` chain:** add `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` to Preview if rate limits block chat.
+**For optional `/api/chat` chain:** add `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` if rate limits block chat.
+
+### Vercel Production Lab setup (option B — eksplisitt opt-in)
+
+Kun når Thomas bevisst vil teste Lab på `www.viddel.no`:
+
+Sett under **Environment Variables → Production**:
+
+| Variable | Value / notes |
+|----------|----------------|
+| `VIDDEL_LAB_PUBLIC_ENABLED` | **`true`** (påkrevd — uten denne: **404**) |
+| `VIDDEL_LAB_PASSWORD` | Delt intern passord |
+| `VIDDEL_LAB_COOKIE_SECRET` | Cookie-signering (annen verdi enn Preview anbefales) |
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | Same SA as CES |
+| `CES_PROJECT_ID` | `hearing-aid-mvp` |
+| `CES_LOCATION` | `eu` |
+| `CES_APP_ID` | CES channel app ID |
+| `CES_APP_VERSION_ID` | CES app version |
+| `CES_DEPLOYMENT_ID` | CES deployment |
+| `UPSTASH_REDIS_REST_URL` | For `/api/chat` chain on production |
+| `UPSTASH_REDIS_REST_TOKEN` | For `/api/chat` chain on production |
+
+**Fjern eller sett `VIDDEL_LAB_PUBLIC_ENABLED` tom** for å lukke Production Lab igjen (404) uten redeploy av kode.
 
 ### Test from mobile (Thomas)
 
+**Preview (anbefalt):**
+
 1. Push branch / open Preview deploy.
-2. Confirm Lab + CES env vars above are in **Preview** only.
+2. Confirm Lab + CES env vars in **Preview**.
 3. On phone: `https://<preview-host>/lab/image-qa`
-4. Enter Lab password → cookie set → Bilde-QA UI.
-5. Tap bildefelt → kamera → analyser utstyr-bilde.
-6. **Logg ut** clears cookie.
-7. Wait ~60 s between chat runs if CES 429.
+4. Enter Lab password → Bilde-QA UI.
 
-### Confirm production is closed
+**Production (option B):**
 
-`https://www.viddel.no/lab/image-qa` → **404**.  
-`POST https://www.viddel.no/api/lab/image-vision` → **404**.
+1. Set Production vars above including `VIDDEL_LAB_PUBLIC_ENABLED=true`.
+2. Redeploy production.
+3. On phone: `https://www.viddel.no/lab/image-qa`
+4. Enter Lab password → test utstyr-bilde flow.
+5. **Logg ut** when done.
+
+Wait ~60 s between chat runs if CES 429.
+
+### Confirm production default is closed
+
+Without `VIDDEL_LAB_PUBLIC_ENABLED=true`:
+
+- `https://www.viddel.no/lab/image-qa` → **404**
+- `POST https://www.viddel.no/api/lab/image-vision` → **404**
 
 ---
 

@@ -1,4 +1,4 @@
-/* CONTRACT: Build-time check — Lab routes gated by password auth; blocked on Vercel Production. */
+/* CONTRACT: Build-time check — Lab routes gated by password auth; Production needs VIDDEL_LAB_PUBLIC_ENABLED. */
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -9,14 +9,17 @@ if (!existsSync(authPath)) {
   errors.push("Missing src/lib/lab-auth-v01.ts");
 } else {
   const source = readFileSync(authPath, "utf8");
-  if (!source.includes('readEnv("VERCEL_ENV") === "production"')) {
-    errors.push("lab-auth must block when VERCEL_ENV is production");
+  if (!source.includes("VIDDEL_LAB_PUBLIC_ENABLED")) {
+    errors.push("lab-auth must gate Production with VIDDEL_LAB_PUBLIC_ENABLED");
   }
   if (!source.includes("VIDDEL_LAB_PASSWORD")) {
     errors.push("lab-auth must use VIDDEL_LAB_PASSWORD");
   }
   if (!source.includes("VIDDEL_LAB_COOKIE_SECRET")) {
     errors.push("lab-auth must use VIDDEL_LAB_COOKIE_SECRET");
+  }
+  if (!source.includes("isVercelProduction()")) {
+    errors.push("lab-auth must check VERCEL_ENV production for public gate");
   }
   if (!source.includes("HttpOnly")) {
     errors.push("lab-auth cookies must be HttpOnly");
