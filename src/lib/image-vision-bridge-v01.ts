@@ -25,11 +25,13 @@ export type ImageVisionProbeConfig = {
   serviceAccountJson: string;
 };
 
+export type ImageVisionScenario = "A" | "B" | "C" | "D" | "E";
+
 export type ImageVisionAnalyzeInput = {
   imageBase64: string;
   mimeType: string;
   userProblem?: string;
-  scenario?: "A" | "B" | "C";
+  scenario?: ImageVisionScenario;
 };
 
 const RESULT_KEYS: (keyof ImageVisionBridgeResult)[] = [
@@ -45,10 +47,12 @@ const RESULT_KEYS: (keyof ImageVisionBridgeResult)[] = [
   "rag_query_text",
 ];
 
-const SCENARIO_HINTS: Record<"A" | "B" | "C", string> = {
+const SCENARIO_HINTS: Record<ImageVisionScenario, string> = {
   A: "Scenario A: charging case / status light — user may not know what the LED means.",
   B: "Scenario B: dome/filter when sound is weak or missing — check wax filter / dome condition.",
   C: "Scenario C: phone/handsfree — hearing aid or app screen showing Bluetooth/connection state.",
+  D: "Scenario D: unclear image — user cannot identify equipment; refuse body/ear/skin and ask for clearer equipment-only photo.",
+  E: "Scenario E: device label / model identification on hearing aid equipment.",
 };
 
 export function emptyImageVisionBridgeResult(): ImageVisionBridgeResult {
