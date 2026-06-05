@@ -26,6 +26,7 @@ import {
   monitoringEvents,
   monitoringLogged,
   monitoringNotLogged,
+  aiChatConfigExplainer,
 } from "../../data/backstage-v01.ts";
 
 const base = import.meta.env.BASE_URL;
@@ -33,7 +34,8 @@ const base = import.meta.env.BASE_URL;
 const envGroups = [
   { id: "upstash", label: "Upstash (teller + drift)" },
   { id: "guard", label: "Public guard (rate limits)" },
-  { id: "ces", label: "CES (AI-motor)" },
+  { id: "agent-search", label: "AI backend (direct :answer)" },
+  { id: "ces", label: "CES (rollback / runSession)" },
   { id: "auth", label: "Google auth" },
   { id: "ops", label: "Ops reliability (valgfritt)" },
   { id: "posthog", label: "PostHog EU (produktinnsikt)" },
@@ -82,6 +84,81 @@ const layerTone: Record<string, string> = {
           </article>
         ))}
       </div>
+    </section>
+
+    <section class="bs__anchor" aria-labelledby="bs-ai-config">
+      <h2 id="bs-ai-config" class="bs__anchor-title">{aiChatConfigExplainer.title}</h2>
+      <p class="bs__anchor-lead">{aiChatConfigExplainer.lead}</p>
+
+      <article class="bs-ai-model">
+        <h3 class="bs-ai-model__title">{aiChatConfigExplainer.productionModel.title}</h3>
+        <ul class="bs-note-list">
+          {aiChatConfigExplainer.productionModel.bullets.map((line) => (
+            <li>{line}</li>
+          ))}
+        </ul>
+      </article>
+
+      <ul class="bs-ai-config">
+        {aiChatConfigExplainer.blocks.map((block) => (
+          <li class="bs-ai-config__card">
+            <h3 class="bs-ai-config__title">{block.title}</h3>
+            <p class="bs-ai-config__human">{block.human}</p>
+            {block.bullets?.length ? (
+              <ul class="bs-ai-config__list">
+                {block.bullets.map((line) => (
+                  <li>{line}</li>
+                ))}
+              </ul>
+            ) : null}
+            {block.files?.length ? (
+              <p class="bs-ai-config__files">
+                Filer:{" "}
+                {block.files.map((file) => (
+                  <code>{file}</code>
+                ))}
+              </p>
+            ) : null}
+            {block.envVars?.length ? (
+              <p class="bs-ai-config__env">
+                Env (uten verdier):{" "}
+                {block.envVars.map((name) => (
+                  <code>{name}</code>
+                ))}
+              </p>
+            ) : null}
+            {block.caution ? <p class="bs-ai-config__caution">{block.caution}</p> : null}
+            {block.links?.length ? (
+              <div class="bs-link-chips">
+                {block.links.map((link) => (
+                  <a
+                    href={link.href}
+                    class="bs-link-chip"
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noopener noreferrer" : undefined}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+
+      <article class="bs-ai-model bs-ai-model--steps">
+        <h3 class="bs-ai-model__title">{aiChatConfigExplainer.adjustStyleGuide.title}</h3>
+        <ol class="bs-flow">
+          {aiChatConfigExplainer.adjustStyleGuide.steps.map((step, index) => (
+            <li class="bs-flow__step">
+              <span class="bs-flow__num">{index + 1}</span>
+              <div class="bs-flow__body">
+                <p class="bs-flow__human">{step}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </article>
     </section>
 
     <section class="bs__anchor" aria-labelledby="bs-system-map">
@@ -644,6 +721,98 @@ const layerTone: Record<string, string> = {
       margin: 0.5rem 0 0;
       font-size: 0.92rem;
       color: rgb(107 114 128);
+    }
+
+    .bs-ai-model {
+      margin-top: 1.25rem;
+      padding: 1rem 1.1rem;
+      border-radius: 0.55rem;
+      background: rgb(239 246 255);
+      border: 1px solid rgb(219 234 254);
+    }
+
+    .bs-ai-model--steps {
+      margin-top: 1.25rem;
+      background: rgb(249 250 251);
+      border-color: rgb(243 244 246);
+    }
+
+    .bs-ai-model__title {
+      margin: 0;
+      font-size: 0.92rem;
+      font-weight: 650;
+      color: rgb(30 58 138);
+    }
+
+    .bs-ai-model--steps .bs-ai-model__title {
+      color: rgb(31 41 55);
+    }
+
+    .bs-ai-config {
+      margin: 1.25rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .bs-ai-config__card {
+      padding: 1.1rem 1.15rem;
+      border-radius: 0.55rem;
+      border: 1px solid rgb(229 231 235);
+      background: rgb(255 255 255);
+      box-shadow: 0 1px 3px rgb(0 0 0 / 0.04);
+    }
+
+    .bs-ai-config__title {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 650;
+      color: rgb(17 24 39);
+    }
+
+    .bs-ai-config__human {
+      margin: 0.45rem 0 0;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: rgb(55 65 81);
+    }
+
+    .bs-ai-config__list {
+      margin: 0.55rem 0 0;
+      padding-left: 1.1rem;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: rgb(75 85 99);
+    }
+
+    .bs-ai-config__list li + li {
+      margin-top: 0.25rem;
+    }
+
+    .bs-ai-config__files,
+    .bs-ai-config__env {
+      margin: 0.55rem 0 0;
+      font-size: 0.72rem;
+      line-height: 1.5;
+      color: rgb(107 114 128);
+    }
+
+    .bs-ai-config__files code,
+    .bs-ai-config__env code {
+      display: inline-block;
+      margin: 0.15rem 0.35rem 0 0;
+      font-family: ui-monospace, monospace;
+      font-size: 0.68rem;
+      color: rgb(55 65 81);
+    }
+
+    .bs-ai-config__caution {
+      margin: 0.55rem 0 0;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: rgb(146 64 14);
+      font-style: italic;
     }
 
     .bs-map {
