@@ -12,11 +12,169 @@ Related: [#217](https://github.com/THUNDERPLUNDER/vox-web/issues/217) response c
 
 Today's Viddel production chat path is **text-only** end-to-end: browser → `POST /api/chat` `{ message, sessionId }` → Google Agent Search `:answer` with `query.text`. There is **no image field** in our request contract, no multipart API route, and no server-side image handling.
 
-Google Discovery Engine **`AnswerQueryRequest.Query`** (used by `:answer`) exposes a content union of **`text` only** — not `imageQuery` / `imageBytes`. Image bytes appear on the separate **`SearchRequest`** API (`imageQuery.imageBytes` + `params.search_type=1`), which we do not call and which targets image/website search — not our grounded Q&A troubleshooting flow.
+Google Discovery Engine **`servingConfigs.answer`** (`AnswerQueryRequest`) accepts **`query.text` only** — not `imageQuery`. Image bytes are supported on a **different endpoint**: **`servingConfigs.search`** (`SearchRequest.imageQuery`). Google also exposes **Assistant** APIs (`sessions.addContextFile`, `assistants.assist` / `streamAssist` with `fileIds`) that can attach files to a session — but Viddel does **not** use these today.
 
-A **hybrid architecture** is the realistic path: a multimodal model interprets an equipment photo **first**, emits **structured JSON + short text**, and that enriched text is sent to existing Agent Search RAG. This keeps datastore/manual grounding on the current stack while adding vision only as a pre-step.
+**Precise conclusion:** **Dagens `:answer`-flow støtter ikke bildeinput direkte.** That does **not** mean “Google Agent Search has no image/file APIs” — other endpoints exist, but they are not our current production grounded Q&A path.
 
-**Next step:** a dev-only manual probe (script or sandbox page behind no production wiring) with synthetic/stock device photos — not user uploads in prod.
+A **hybrid architecture** remains the realistic path for INT-009 on today's stack: multimodal pre-step → structured text → existing `:answer` RAG.
+
+**Next step:** dev-only manual probe with synthetic/stock device photos — not user uploads in prod.
+
+---
+
+## Primary evidence from Google Cloud documentation
+
+This section is the **authoritative API evidence** for the spike. Repo code confirms what we actually call; Google REST/RPC reference defines what each endpoint accepts.
+
+### 1. Offisielle Google Cloud-sider sjekket
+
+| # | Dokument | URL | Hva vi hentet derfra |
+|---|----------|-----|----------------------|
+| 1 | **`servingConfigs.answer` (REST v1)** | https://cloud.google.com/generative-ai-app-builder/docs/reference/rest/v1/projects.locations.collections.engines.servingConfigs/answer | Full `AnswerQueryRequest` body fields; IAM `discoveryengine.servingConfigs.answer` |
+| 2 | **`servingConfigs.search` (REST v1)** | https://cloud.google.com/generative-ai-app-builder/docs/reference/rest/v1/projects.locations.collections.engines.servingConfigs/search | `SearchRequest` incl. `imageQuery`; IAM `discoveryengine.servingConfigs.search` |
+| 3 | **Image search guide** | https://cloud.google.com/generative-ai-app-builder/docs/image-search | `imageQuery.imageBytes` + `params.search_type=1`; website image search use case |
+| 4 | **Conversational search MCP reference** (`AnswerQueryRequest.Query`) | https://cloud.google.com/generative-ai-app-builder/docs/reference/mcp/conversational_search | `Query` content union = `text` only |
+| 5 | **Discovery Engine RPC overview** | https://cloud.google.com/generative-ai-app-builder/docs/reference/rpc | Service map: `ConversationalSearchService` vs `SearchService` vs `AssistantService` |
+| 6 | **RPC `google.cloud.discoveryengine.v1`** | https://cloud.google.com/generative-ai-app-builder/docs/reference/rpc/google.cloud.discoveryengine.v1 | `Query`, `ImageQuery`, `AddContextFileRequest`, `AssistRequest` message defs |
+| 7 | **Gemini Enterprise — upload file + streamAssist (Preview)** | https://cloud.google.com/gemini/enterprise/docs/get-answers-from-streamassist | `sessions/{session}:addContextFile` + `assistants/...:streamAssist` with `fileIds` |
+
+**Also checked (repo, secondary):** `GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md`, `src/lib/agent-search-answer.ts`.
+
+---
+
+### 2. Request-felter i `servingConfigs.answer` (`AnswerQueryRequest`)
+
+Official REST body for `POST …/servingConfigs/*:answer`:
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `query` | `Query` | **Required.** Current user query |
+| `session` | `string` | Optional; sessionless if omitted |
+| `safetySpec` | `SafetySpec` | Optional |
+| `relatedQuestionsSpec` | `RelatedQuestionsSpec` | Optional |
+| `groundingSpec` | `GroundingSpec` | Optional — Viddel sets `includeGroundingSupports: true` |
+| `answerGenerationSpec` | `AnswerGenerationSpec` | Optional — Viddel sets citations + `promptSpec.preamble` |
+| `searchSpec` | `SearchSpec` | Optional — nested search configuration for answer path |
+| `queryUnderstandingSpec` | `QueryUnderstandingSpec` | Optional |
+| `asynchronousMode` | `boolean` | Deprecated |
+| `userPseudoId` | `string` | Optional |
+| `userLabels` | `map` | Optional |
+| `endUserSpec` | `EndUserSpec` | Optional |
+
+**Not present at top level:** `imageQuery`, `imageBytes`, `fileIds`, `fileContents`, multipart upload.
+
+Nested **`Query`** (used by `:answer` and Assistant APIs):
+
+```json
+{
+  "queryId": "string",
+  "text": "string"
+}
+```
+
+Official docs: content union for `Query` is **`text` only** — no `imageQuery` branch.
+
+---
+
+### 3. Finnes `imageQuery` i `servingConfigs.answer`?
+
+**Nei.**
+
+- `AnswerQueryRequest` REST reference lists no `imageQuery` field.
+- Nested `Query` object accepts **`text` only** (MCP conversational search reference + RPC `google.cloud.discoveryengine.v1.Query`).
+
+Viddel code matches this: `query: { text: message }` in `buildAnswerRequestBody()`.
+
+---
+
+### 4. Hvor finnes `imageQuery`?
+
+**I `servingConfigs.search` (`SearchRequest`), ikke i `:answer`.**
+
+Official `SearchRequest` fields include:
+
+| Relevant field | Purpose |
+|----------------|---------|
+| `query` | Raw **text** search query |
+| `imageQuery` | Raw **image** query (`ImageQuery`) |
+| `params.searchType` | Doc: value `1` enables **image searching** (non-webpage mode) |
+| `session` | Optional — multi-turn search or coordination with `:answer` |
+| `contentSearchSpec`, `summarySpec`, … | Search/summary configuration |
+
+**`ImageQuery`** (RPC v1):
+
+- Union field `image` → `image_bytes` (base64)
+- Formats: **JPEG, PNG, BMP**
+
+Guide: https://cloud.google.com/generative-ai-app-builder/docs/image-search
+
+---
+
+### 5. Hvorfor dekker ikke `servingConfigs.search` vårt nåværende grounded Q&A-behov?
+
+Viddel production bruker **`servingConfigs.answer`** mot engine `h-rehjelpen-v1-2_…` med HearingNorwaystore — for **grounded conversational answers** med citations (`answerText`, `groundingMetadata`), Viddel response preamble (#217), og stabil `/api/chat`-kontrakt.
+
+`:search` — også med `imageQuery` — er et **annet produktlag**:
+
+| | **`servingConfigs.answer` (Viddel i dag)** | **`servingConfigs.search` (+ imageQuery)** |
+|---|---------------------------------------------|--------------------------------------------|
+| **Primary output** | Generated **answer** + grounding/citations | **Search results** (documents / website images) |
+| **Input** | `Query.text` | `query` (text) **or** `imageQuery.imageBytes` |
+| **Documented image use** | None on `:answer` | **Website image search** — find images on indexed websites matching text or image query |
+| **Our datastore** | HearingNorwaystore manuals/articles via answer grounding | Not wired; image search guide targets **website** apps with Enterprise image search |
+| **Our code path** | `runAgentSearchAnswer()` → `:answer` | **Not implemented** |
+| **INT-009 need** | “What does this LED mean — next troubleshooting step from manuals” | “Find similar images on the web” — wrong abstraction |
+
+Google docs describe optional **session coordination** (call `:search` first, then `:answer` with same session so answer uses search results). That is still **not** “pass user photo into `:answer`”; it adds a second API, different IAM (`discoveryengine.servingConfigs.search`), and is **Private GA / allowlist** for multi-turn search in some doc versions — not validated in Viddel.
+
+**Bottom line:** `:search` + `imageQuery` does **not** drop into our existing grounded Q&A flow without a new integration design and likely wrong semantics for equipment troubleshooting against manual corpora.
+
+---
+
+### 6. Andre relevante Google Agent Search / Assistant-veier (filer / kontekst)
+
+Google Discovery Engine exposes **AssistantService** methods separate from our `:answer` integration:
+
+| API | Endpoint pattern | File / image relevance | Viddel status |
+|-----|------------------|------------------------|---------------|
+| **`sessions.addContextFile`** | `POST …/sessions/{session}:addContextFile` | Upload **file contents inline** (`fileName`, `mimeType`, base64 `fileContents`); returns `file_id` | **Not used** |
+| **`assistants.assist`** | `POST …/assistants/{assistant}:assist` | Accepts `query` + optional `file_ids[]`; empty query allowed if files provided | **Not used** |
+| **`assistants.streamAssist`** | `POST …/assistants/{assistant}:streamAssist` | Same pattern; streaming; Gemini Enterprise guide shows file upload flow | **Not used** |
+| **`sessions.removeContextFile` / `selectContextFiles`** | Session file management | v1alpha extras | **Not used** |
+
+**Evidence (RPC v1 `AssistRequest`):**
+
+- `file_ids[]` — “IDs of the files to be used for answering the request” (from `AddContextFileResponse.file_id`)
+- `query` — optional; **empty query supported if `file_ids` are provided**
+
+**Evidence (RPC v1 `AddContextFileRequest`):**
+
+- `file_contents` (bytes) inline upload to session
+- IAM: `discoveryengine.sessions.addContextFile`
+
+**Gemini Enterprise guide (Preview):** upload file → `addContextFile` → `streamAssist` with `fileIds` + text query.
+
+**Implications for INT-009:**
+
+- These are **real Google file-context paths**, distinct from `:answer` `query.text`.
+- They would require **new backend** (Assistant API, session file storage on Google side, new IAM, new response parsing) — not a field addition to current `runAgentSearchAnswer()`.
+- Preview/Enterprise tier assumptions may differ from our Search engine + `:answer` setup.
+- **Privacy:** uploads go to Google session context — needs DPIA before product use; conflicts with “do not store images” unless carefully scoped.
+
+**CES widget `enable-file-upload`** (article shell) is a **third** path — widget-internal to Google CES, not Agent Search direct — and not present on `/no/chat`.
+
+---
+
+### 7. Presis konklusjon (API-nivå vs produkt-nivå)
+
+| Statement | Valid? |
+|-----------|--------|
+| **“Dagens `:answer`-flow støtter ikke bildeinput direkte.”** | **Ja** — documented `Query.text` only; Viddel sends text only |
+| **“Google Agent Search støtter ikke bilde.”** | **Nei (for bred)** — `SearchRequest.imageQuery` exists on `:search`; Assistant APIs accept session files |
+| **“Viddel kan legge til bilde i production chat uten ny integrasjon.”** | **Nei** |
+| **“Hybrid vision → text → `:answer` er fortsatt riktig første vei.”** | **Ja** — minste endring mot validated production path |
+
+**`answerGenerationSpec.multimodalSpec`** on `:answer` refers to **images returned in the answer** (output source), not user photo input — do not misread as upload support.
 
 ---
 
@@ -87,26 +245,31 @@ function buildAnswerRequestBody(config: AgentSearchEnvConfig, message: string): 
 
 ## Does current Agent Search direct support image input?
 
-### Answer: **No** (for our integrated `:answer` path)
+### Answer: **No — on our integrated `:answer` path only**
 
-| Evidence | Detail |
-|----------|--------|
-| **Repo code** | Only `query: { text: message }` is sent |
+See **Primary evidence from Google Cloud documentation** above for official field lists and URLs.
+
+| Evidence layer | Detail |
+|----------------|--------|
+| **Google REST `:answer`** | No `imageQuery`; `Query` = `text` only |
+| **Google REST `:search`** | `imageQuery.imageBytes` exists — **different endpoint** |
+| **Google Assistant RPC** | `addContextFile` + `assist`/`streamAssist` + `file_ids[]` — **different endpoint, not wired** |
+| **Repo code** | Only `query: { text: message }` sent to `:answer` |
 | **TypeScript contract** | `AgentSearchAnswerInput = { message: string }` |
-| **Google `AnswerQueryRequest.Query`** | Content union = **`text` only** (Conversational Search / `:answer` reference) |
-| **Known-good doc** | `GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md` documents `query.text` as the user message field |
-| **Operational validation** | Direct backend reliability tests used text prompts only |
+| **Known-good doc** | `GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md` — text `query.text` only |
+| **Operational validation** | Direct backend reliability tests — text prompts only |
 
-### Unclear / adjacent (not a shortcut for INT-009)
+### Adjacent Google capabilities (not our production path)
 
-| API surface | Image support | Relevance to Viddel |
-|-------------|---------------|-------------------|
-| `SearchRequest.imageQuery.imageBytes` | Yes (JPEG/PNG/BMP base64) | **Different API** (`:search`, not `:answer`); geared to image/website search; not wired; would not reuse our preamble/RAG answer path as-is |
-| `answerGenerationSpec.multimodalSpec` | Output-side | Docs describe **source of images returned in the answer**, not user image input |
-| CES widget `enable-file-upload` | Unknown / widget-internal | Not connected to Agent Search direct; not in prod standalone chat |
-| Multi-turn `/search` + `/answer` coordination | Private GA / allowlist | Would add complexity; still not “send photo in `:answer` body” in current contract |
+| API surface | Image / file support | Why not a shortcut for INT-009 on today's Viddel |
+|-------------|---------------------|--------------------------------------------------|
+| `servingConfigs.search` + `imageQuery` | Yes (JPEG/PNG/BMP) | Website/image **search results**, not our `:answer` + manual grounding flow |
+| `sessions.addContextFile` + `assistants.assist` | Yes (session files) | New Assistant integration; session file upload to Google; not validated in our engine setup |
+| `answerGenerationSpec.multimodalSpec` | Output-side | Images **in** the answer, not user photo **into** the query |
+| CES widget `enable-file-upload` | Widget-internal | Not Agent Search direct; not on `/no/chat` |
+| Multi-turn `:search` → `:answer` session | Documented coordination | Still no photo in `:answer` body; extra API + allowlist complexity |
 
-**Conclusion:** Do not assume Agent Search direct accepts photos in today's Viddel integration. Any image feature requires a **new step** (hybrid vision pre-processor or a separate Google API experiment).
+**Conclusion:** Do not assume our **current `:answer` integration** accepts photos. Image/file features require a **new step or new Google API surface** — hybrid vision→text→`:answer` remains the lowest-risk path on validated production code.
 
 ---
 
@@ -278,7 +441,19 @@ Use **synthetic or manufacturer stock photos** — never real user submissions i
 
 ---
 
-## References (in repo)
+## References (in repo + Google)
+
+**Google Cloud (primary):**
+
+- https://cloud.google.com/generative-ai-app-builder/docs/reference/rest/v1/projects.locations.collections.engines.servingConfigs/answer
+- https://cloud.google.com/generative-ai-app-builder/docs/reference/rest/v1/projects.locations.collections.engines.servingConfigs/search
+- https://cloud.google.com/generative-ai-app-builder/docs/image-search
+- https://cloud.google.com/generative-ai-app-builder/docs/reference/mcp/conversational_search
+- https://cloud.google.com/generative-ai-app-builder/docs/reference/rpc
+- https://cloud.google.com/generative-ai-app-builder/docs/reference/rpc/google.cloud.discoveryengine.v1
+- https://cloud.google.com/gemini/enterprise/docs/get-answers-from-streamassist
+
+**Repo:**
 
 - `src/lib/agent-search-answer.ts` — `:answer` body builder
 - `src/pages/api/chat.ts` — public chat API
@@ -286,7 +461,6 @@ Use **synthetic or manufacturer stock photos** — never real user submissions i
 - `src/lib/viddel-response-contract.ts` — answer preamble
 - `docs/project/GOOGLE_AGENT_SEARCH_DIRECT_KNOWN_GOOD_v0_1.md` — validated text `:answer` setup
 - `docs/project/VIDDEL_DATASTORE_SOURCE_ARCHITECTURE_v0_1.md` — verified insight pipeline
-- Google Agent Search — `AnswerQueryRequest.Query` (text-only content union); `SearchRequest.imageQuery` (separate search API)
 
 ---
 
