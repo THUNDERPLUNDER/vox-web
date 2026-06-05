@@ -109,7 +109,8 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
           id="image-qa-run"
           type="button"
           disabled
-          class="w-full rounded-[var(--radius-sm)] bg-[rgb(var(--accent))] px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-45"
+          aria-disabled="true"
+          class="w-full rounded-[var(--radius-sm)] px-4 py-3 text-sm font-semibold transition enabled:bg-[rgb(var(--accent))] enabled:text-white enabled:shadow-sm disabled:cursor-not-allowed disabled:border disabled:border-[rgb(var(--stroke)/0.3)] disabled:bg-[rgb(var(--surface-subtle))] disabled:text-[rgb(var(--muted))]"
         >
           Analyser bilde
         </button>
@@ -169,8 +170,11 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
       const chatMetaEl = document.getElementById("image-qa-chat-meta");
       const chatTextEl = document.getElementById("image-qa-chat-text");
 
-      /** @type {{ base64: string; mimeType: string; previewUrl: string } | null} */
-      let selected = null;
+      const MAX_BYTES = 5 * 1024 * 1024;
+      const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/bmp"]);
+
+      /** @type {{ file: File; previewUrl: string } | null} */
+      let selectedFile = null;
 
       function setStatus(text) {
         statusEl.textContent = text;
@@ -182,12 +186,65 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
         errorEl.classList.toggle("hidden", !text);
       }
 
+      function setRunButtonEnabled(enabled) {
+        runBtn.disabled = !enabled;
+        runBtn.setAttribute("aria-disabled", enabled ? "false" : "true");
+      }
+
+      function resolveMimeType(file) {
+        const raw = (file.type || "").trim().toLowerCase();
+        if (raw.startsWith("image/")) return raw;
+        const name = file.name.toLowerCase();
+        if (name.endsWith(".png")) return "image/png";
+        if (name.endsWith(".webp")) return "image/webp";
+        if (name.endsWith(".bmp")) return "image/bmp";
+        if (name.endsWith(".jpg") || name.endsWith(".jpeg")) return "image/jpeg";
+        // Mobilkamera gir ofte tom type — anta JPEG når fil kommer fra image/* picker.
+        return "image/jpeg";
+      }
+
+      function validateImageFile(file) {
+        if (!file || file.size <= 0) {
+          return { ok: false, message: "Ingen fil valgt." };
+        }
+        if (file.size > MAX_BYTES) {
+          return { ok: false, message: "Bildet er for stort (maks 5 MB)." };
+        }
+        const mimeType = resolveMimeType(file);
+        if (!ALLOWED_MIME.has(mimeType)) {
+          return { ok: false, message: "Velg et bilde (JPEG, PNG, WebP eller BMP)." };
+        }
+        return { ok: true, mimeType };
+      }
+
       function clearPreview() {
-        if (selected?.previewUrl) URL.revokeObjectURL(selected.previewUrl);
-        selected = null;
+        if (selectedFile?.previewUrl) URL.revokeObjectURL(selectedFile.previewUrl);
+        selectedFile = null;
         preview.removeAttribute("src");
         previewWrap.classList.add("hidden");
-        runBtn.disabled = true;
+        setRunButtonEnabled(false);
+      }
+
+      /** @returns {Promise<{ base64: string; mimeType: string }>} */
+      function fileToBase64Payload(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const dataUrl = typeof reader.result === "string" ? reader.result : "";
+            const comma = dataUrl.indexOf(",");
+            if (comma === -1) {
+              reject(new Error("Kunne ikke konvertere bildet til base64."));
+              return;
+            }
+            resolve({
+              base64: dataUrl.slice(comma + 1),
+              mimeType: resolveMimeType(file),
+            });
+          };
+          reader.onerror = () => reject(new Error("Kunne ikke lese bildet for opplasting."));
+          reader.onabort = () => reject(new Error("Lesing av bildet ble avbrutt."));
+          reader.readAsDataURL(file);
+        });
       }
 
       fileInput?.addEventListener("change", () => {
@@ -195,59 +252,59 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
         clearPreview();
         const file = fileInput.files?.[0];
         if (!file) return;
-        if (!file.type.startsWith("image/")) {
-          setError("Velg et bilde (JPEG, PNG, WebP).");
+
+        const validation = validateImageFile(file);
+        if (!validation.ok) {
+          setError(validation.message);
           fileInput.value = "";
           return;
         }
-        if (file.size > 5 * 1024 * 1024) {
-          setError("Bildet er for stort (maks 5 MB).");
-          fileInput.value = "";
-          return;
-        }
+
         const previewUrl = URL.createObjectURL(file);
         preview.src = previewUrl;
         previewWrap.classList.remove("hidden");
-        const reader = new FileReader();
-        reader.onload = () => {
-          const dataUrl = typeof reader.result === "string" ? reader.result : "";
-          const comma = dataUrl.indexOf(",");
-          if (comma === -1) {
-            setError("Kunne ikke lese bildet.");
-            return;
-          }
-          selected = {
-            base64: dataUrl.slice(comma + 1),
-            mimeType: file.type || "image/jpeg",
-            previewUrl,
-          };
-          runBtn.disabled = false;
-        };
-        reader.onerror = () => setError("Kunne ikke lese bildet.");
-        reader.readAsDataURL(file);
+        selectedFile = { file, previewUrl };
+        setRunButtonEnabled(true);
       });
 
       runBtn?.addEventListener("click", async () => {
-        if (!selected) return;
+        if (!selectedFile) return;
         setError("");
-        setStatus("Kjører vision…");
+        setStatus("Forbereder bilde…");
         resultsEl.classList.add("hidden");
         chatWrap.classList.add("hidden");
         warningsWrap.classList.add("hidden");
-        runBtn.disabled = true;
+        setRunButtonEnabled(false);
 
         const scenario = document.getElementById("image-qa-scenario")?.value ?? "A";
         const userProblem = document.getElementById("image-qa-problem")?.value?.trim() ?? "";
         const callChat = document.getElementById("image-qa-call-chat")?.checked ?? false;
 
         try {
+          let imageBase64;
+          let mimeType;
+          try {
+            const payload = await fileToBase64Payload(selectedFile.file);
+            imageBase64 = payload.base64;
+            mimeType = payload.mimeType;
+          } catch (conversionError) {
+            throw conversionError instanceof Error
+              ? conversionError
+              : new Error("Kunne ikke konvertere bildet.");
+          }
+
+          if (!imageBase64) {
+            throw new Error("Kunne ikke konvertere bildet til base64.");
+          }
+
+          setStatus("Kjører vision…");
           const visionRes = await fetch("/api/lab/image-vision", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "same-origin",
             body: JSON.stringify({
-              imageBase64: selected.base64,
-              mimeType: selected.mimeType,
+              imageBase64,
+              mimeType,
               userProblem,
               scenario,
             }),
@@ -303,7 +360,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
           setError(err instanceof Error ? err.message : "Ukjent feil");
           setStatus("");
         } finally {
-          runBtn.disabled = !selected;
+          setRunButtonEnabled(Boolean(selectedFile));
         }
       });
     </script>
