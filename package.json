@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs && node --experimental-strip-types scripts/verify-backstage-guard.mjs && node --experimental-strip-types scripts/verify-vis-runtime-feed.mjs && astro build",
+    "build": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs && node --experimental-strip-types scripts/verify-backstage-guard.mjs && node --experimental-strip-types scripts/verify-vis-runtime-feed.mjs && node --experimental-strip-types scripts/verify-lab-gate.mjs && astro build",
     "verify:vis-sprint-guard": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs",
     "verify:backstage-guard": "node --experimental-strip-types scripts/verify-backstage-guard.mjs",
     "verify:vis-runtime-feed": "node --experimental-strip-types scripts/verify-vis-runtime-feed.mjs",
@@ -20,7 +20,8 @@
     "chat:reliability": "node scripts/chat-reliability-assessment.mjs",
     "verify:ces-env": "node scripts/verify-ces-env-checklist.mjs",
     "source:inventory": "node --experimental-strip-types scripts/source-inventory-scaffold.mjs",
-    "source:manifest:check": "node --experimental-strip-types scripts/validate-datastore-manifest.mjs"
+    "source:manifest:check": "node --experimental-strip-types scripts/validate-datastore-manifest.mjs",
+    "image:vision-probe": "node --experimental-strip-types scripts/image-vision-bridge-probe.mjs"
   },
   "dependencies": {
     "@astrojs/vercel": "^9.0.5",
