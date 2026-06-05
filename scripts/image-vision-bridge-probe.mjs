@@ -56,7 +56,7 @@ Options:
   --dry-run              Validate env and args without calling Vertex
 
 Required env: CES_PROJECT_ID, GOOGLE_SERVICE_ACCOUNT_JSON, CES_LOCATION or IMAGE_VISION_PROBE_LOCATION
-Optional env: IMAGE_VISION_PROBE_MODEL (default gemini-2.0-flash-001)
+Optional env: IMAGE_VISION_PROBE_MODEL (default gemini-2.5-flash)
 `);
 }
 

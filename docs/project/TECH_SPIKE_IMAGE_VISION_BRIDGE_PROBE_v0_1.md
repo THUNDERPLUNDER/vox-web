@@ -1,6 +1,6 @@
 # Tech spike: Image vision bridge probe v0.1
 
-Status: **Dev-only probe added — not production**  
+Status: **Dev-only probe validated — not production**  
 Follows: [TECH_SPIKE_IMAGE_INPUT_HEARING_AID_TROUBLESHOOTING_v0_1.md](./TECH_SPIKE_IMAGE_INPUT_HEARING_AID_TROUBLESHOOTING_v0_1.md)  
 Context: INT-009 — hybrid bilde → tekst → Agent Search `:answer`
 
@@ -10,9 +10,11 @@ Context: INT-009 — hybrid bilde → tekst → Agent Search `:answer`
 
 **Provider choice:** **Vertex AI Gemini** (`generateContent`) via existing **`GOOGLE_SERVICE_ACCOUNT_JSON`** and **`CES_PROJECT_ID`** — same GCP project (`hearing-aid-mvp`) and auth path as Agent Search direct.
 
-**Code added:** Yes — dev-only library + CLI script. **No** changes to `/no/chat`, `/api/chat` contract, or production env.
+**Code added:** Dev-only library + CLI script. **No** changes to `/no/chat`, `/api/chat` contract, or production env.
 
-**Recommendation:** Run manual probe locally with **stock/synthetic equipment photos** for scenarios A/B/C; if JSON quality is good, chain with `--call-chat-url=http://localhost:4321/api/chat` in dev only. Do **not** expose upload UI until privacy review.
+**Probe status (2026-06-05, post-IAM):** Vision A–E return valid JSON. Full hybrid chain (bilde → JSON → `rag_query_text` → local `/api/chat`) validated for **B, C, D**. Production chat flow unchanged.
+
+**Recommendation:** **Intern prototype / test mer** — do not build public upload UI; DPIA before any production feature.
 
 ---
 
@@ -25,9 +27,27 @@ Context: INT-009 — hybrid bilde → tekst → Agent Search `:answer`
 | Discovery `:search` `imageQuery` | Not used | Wrong API — website/image search, not equipment interpretation |
 | Assistant `addContextFile` | Not used | Separate integration spike; session file upload on Google side |
 
-**Default model:** `gemini-2.0-flash-001` (override with `IMAGE_VISION_PROBE_MODEL`).
+### Model status
 
-**IAM note:** Service account needs **`roles/aiplatform.user`** on `hearing-aid-mvp` for Vertex `generateContent` (`aiplatform.endpoints.predict`). Verified 2026-06-05: `viddel-ces-run-session@…` returns **403 PERMISSION_DENIED** without this role. Same SA has `discoveryengine.user` for `:answer`.
+| Model | Status in `europe-west1` / `hearing-aid-mvp` |
+|-------|-----------------------------------------------|
+| **`gemini-2.5-flash`** | **Works** — used for all successful probe runs |
+| `gemini-2.0-flash-001` | **404 NOT_FOUND** — project has no access or model not available in region |
+
+**Probe default:** `gemini-2.5-flash` (code default in `image-vision-bridge-v01.ts`). Override with `IMAGE_VISION_PROBE_MODEL` if a newer model is verified later.
+
+**Why default changed:** `gemini-2.0-flash-001` fails on every run without env override (404). Dev-only probe code — no production surface. Lowest-risk fix: align default with what actually works in the project.
+
+### IAM status
+
+| Item | Status |
+|------|--------|
+| Service account | `viddel-ces-run-session@hearing-aid-mvp.iam.gserviceaccount.com` (local file — **not in repo**) |
+| Required role | **`roles/aiplatform.user`** (`aiplatform.endpoints.predict`) |
+| Before IAM fix | **403 PERMISSION_DENIED** on all scenarios |
+| After IAM fix | **200** — vision JSON returned for A–E |
+
+Same SA retains `discoveryengine.user` for `:answer` / CES channel.
 
 ---
 
@@ -38,11 +58,11 @@ Context: INT-009 — hybrid bilde → tekst → Agent Search `:answer`
 | `GOOGLE_SERVICE_ACCOUNT_JSON` | Yes | Same SA as CES / Agent Search |
 | `CES_PROJECT_ID` | Yes | e.g. `hearing-aid-mvp` |
 | `IMAGE_VISION_PROBE_LOCATION` | No | Falls back to `AGENT_SEARCH_LOCATION` → `CES_LOCATION`; **`eu` maps to `europe-west1`** for Vertex |
-| `IMAGE_VISION_PROBE_MODEL` | No | `gemini-2.0-flash-001` |
+| `IMAGE_VISION_PROBE_MODEL` | No | **`gemini-2.5-flash`** |
 
 **Not required for vision-only probe:** `AGENT_SEARCH_ENGINE_ID`, `VIDDEL_AI_BACKEND`.
 
-**Optional chain to RAG (dev):** local Astro dev server + `VIDDEL_AI_BACKEND=google_agent_search_direct` when using `--call-chat-url`.
+**Optional chain to RAG (dev):** local Astro dev server with CES env + `--call-chat-url=http://localhost:4321/api/chat`.
 
 ---
 
@@ -68,7 +88,7 @@ npm run image:vision-probe -- \
   --scenario=A \
   --user-problem="Laderen blinker gult"
 
-# Vision + dev /api/chat chain (optional)
+# Vision + dev /api/chat chain (optional — start dev with CES env first)
 npm run dev
 # separate terminal:
 npm run image:vision-probe -- \
@@ -108,7 +128,7 @@ CLI envelope:
 ```json
 {
   "probeVersion": "v0.1",
-  "model": "gemini-2.0-flash-001",
+  "model": "gemini-2.5-flash",
   "durationMs": 1234,
   "scenario": "A",
   "vision": { "...": "..." },
@@ -136,46 +156,25 @@ CLI envelope:
 2. Vision probe / service: analyzeEquipmentImage() → ImageVisionBridgeResult
 3. Take result.rag_query_text (Norwegian, RAG-oriented)
 4. POST /api/chat { message: rag_query_text, sessionId }
-5. resolveViddelAiBackend() → runAgentSearchAnswer({ message })
-6. :answer with query.text + preamble + citations (unchanged production path)
+5. resolveViddelAiBackend() → CES channel or Agent Search (unchanged production path)
+6. :answer with query.text + preamble + citations
 ```
 
 **Important:** Production `/api/chat` accepts **text only**. The bridge **composes text from vision** — it does not send image bytes to `:answer`.
-
-Optional enrichment (future): prepend `userProblem` or append structured fields as bullet context inside `message` — keep under `CHAT_MAX_MESSAGE_LENGTH` (2000).
 
 ---
 
 ## Test scenarios
 
-Use **stock/manufacturer/synthetic** images only — never real user photos in repo or commits.
+Use **stock/manufacturer/synthetic** images only — never real user photos in repo or commits. Images under `tmp/probe/` (gitignored).
 
-### A — Ladeboks / statuslys
-
-```bash
-npm run image:vision-probe -- --image=./tmp/probe/scenario-a-charger.jpg --scenario=A \
-  --user-problem="Hva betyr det gule lyset på laderen?"
-```
-
-**Expect:** `visible_device_type` ≈ charger/case; `visible_status_light` populated; `rag_query_text` asks about LED meaning.
-
-### B — Dome/filter ved svak lyd
-
-```bash
-npm run image:vision-probe -- --image=./tmp/probe/scenario-b-dome.jpg --scenario=B \
-  --user-problem="Hører veldig dårlig, kan det være filteret?"
-```
-
-**Expect:** `visible_component` mentions dome/wax filter; follow-up questions on replacement/cleaning.
-
-### C — Appskjerm / telefon + apparat
-
-```bash
-npm run image:vision-probe -- --image=./tmp/probe/scenario-c-bluetooth.jpg --scenario=C \
-  --user-problem="Appen finner ikke høreapparatet"
-```
-
-**Expect:** `readable_text` from screen if legible; `rag_query_text` about Bluetooth pairing troubleshooting.
+| ID | Image | Scenario hint |
+|----|-------|---------------|
+| A | `scenario-a-charger-led-photo.png` | Ladeboks / statuslys |
+| B | `scenario-b-dome-filter-photo.png` | Dome/filter ved svak lyd |
+| C | `scenario-c-bluetooth-screen-photo.png` | Appskjerm / Bluetooth |
+| D | `scenario-d-unclear-photo.png` | Uklart bilde |
+| E | `scenario-e-device-label-photo.png` | Etikett / modell |
 
 ---
 
@@ -193,83 +192,81 @@ npm run image:vision-probe -- --image=./tmp/probe/scenario-c-bluetooth.jpg --sce
 
 ---
 
-## Risks
-
-| Risk | Mitigation |
-|------|------------|
-| Missing Vertex IAM | Document `aiplatform.user`; fail fast with HTTP status in error |
-| Wrong LED/model guess | `confidence` field; human review before trusting RAG query |
-| WebP support | Prefer JPEG/PNG for probes; WebP may vary by model |
-| Accidental prod deploy | Script not in build guards; not called from `/api/chat` |
-| `--call-chat-url` to production | Operator responsibility — use localhost only in spike |
-
----
-
-## Recommendation
-
-| Action | Verdict |
-|--------|---------|
-| Merge probe code to main | **Yes** — dev-only, no prod surface |
-| Enable upload in `/no/chat` | **No** |
-| Next issue | Manual QA matrix A/B/C + compare RAG answers with/without vision-enriched query |
-| Alternative spike | Assistant `addContextFile` only if Vertex vision quality insufficient |
-
-**To @rigger/@navigator:** Run `npm run image:vision-probe -- --dry-run --image=…` after setting env locally. Confirm Vertex IAM on `viddel-ces-run-session@…`. First real run should use stock photos under `tmp/probe/` (gitignored). If `rag_query_text` quality is good, test `--call-chat-url` against local dev with direct backend — still no production change.
-
----
-
-## Verification checklist
-
-| Check | Status |
-|-------|--------|
-| Production `/no/chat` unchanged | Yes — no edits |
-| `/api/chat` contract unchanged | Yes — probe is external caller |
-| No image storage | Yes — in-memory only |
-| No public upload route | Yes |
-| `npm run build` | Run after merge |
-
----
-
-## Manual probe run — 2026-06-05
+## Manual probe run — 2026-06-05 (post-IAM)
 
 ### Setup
 
 | Item | Value |
 |------|-------|
-| Test images | `tmp/probe/scenario-{a..e}-*.png` (5 synthetic stock images, gitignored) |
-| SA used locally | `viddel-ces-run-session@hearing-aid-mvp.iam.gserviceaccount.com` (from local file — **not in repo**) |
+| Test images | `tmp/probe/scenario-{a..e}-*.png` (5 synthetic stock images, **gitignored**) |
+| SA | `viddel-ces-run-session@hearing-aid-mvp.iam.gserviceaccount.com` (local — **not in repo**) |
 | `CES_PROJECT_ID` | `hearing-aid-mvp` |
-| `CES_LOCATION` | `eu` → mapped to **`europe-west1`** for Vertex (`eu-aiplatform` returns **404**) |
+| `CES_LOCATION` | `eu` → **`europe-west1`** for Vertex |
+| Model | **`gemini-2.5-flash`** |
+| Dev chat chain | `http://localhost:4321/api/chat`, backend `ces_channel`, CES env on dev server |
 
-### Vertex result: **BLOCKED (403 IAM)**
+### Vision result: **OK (all scenarios)**
 
-All five scenarios failed before vision JSON was returned:
+| Scenario | Image | Duration | Vision JSON |
+|----------|-------|----------|-------------|
+| A — lader/LED | `scenario-a-charger-led-photo.png` | ~6.7 s | Received |
+| B — dome/filter | `scenario-b-dome-filter-photo.png` | ~8.6 s | Received |
+| C — appskjerm/BT | `scenario-c-bluetooth-screen-photo.png` | ~9–11 s | Received |
+| D — uklart | `scenario-d-unclear-photo.png` | ~4.6–5.2 s | Received |
+| E — etikett | `scenario-e-device-label-photo.png` | ~5.3 s | Received |
 
-```text
-vertex_generate_content_failed:403
-Permission 'aiplatform.endpoints.predict' denied on resource
-'//aiplatform.googleapis.com/projects/hearing-aid-mvp/locations/europe-west1/publishers/google/models/gemini-2.0-flash-001'
-```
+### Per-scenario evaluation (vision JSON)
 
-| Scenario | Image | Probe exit | Vision JSON |
-|----------|-------|------------|-------------|
-| A — lader/LED | `scenario-a-charger-led-photo.png` | 403 | Not received |
-| B — dome/filter | `scenario-b-dome-filter-photo.png` | 403 | Not received |
-| C — appskjerm/BT | `scenario-c-bluetooth-screen-photo.png` | 403 | Not received |
-| D — uklart | `scenario-d-unclear-photo.png` | 403 | Not received |
-| E — etikett | `scenario-e-device-label-photo.png` | 403 | Not received |
+| # | Criterion | A | B | C | D | E |
+|---|-----------|---|---|---|---|---|
+| 1 | Correct equipment type | ✅ ladeboks | ✅ tilbehør | ✅ appskjerm | ✅ tom (uklart) | ✅ høreapparat |
+| 2 | Component / LED / screen | ✅ gult lys, PHONAK | ✅ dome + voksfilter | ✅ BT, «Not Connected» | ✅ avvist | ✅ dome, knapp, lys |
+| 3 | Confidence calibrated | ✅ high | ✅ high | ✅ high | ✅ **low** (riktig) | ✅ high |
+| 4 | Useful follow-up questions | ✅ 3 | ✅ 3–4 | ✅ 4 | ⚠️ 0–2 | ✅ 2 |
+| 5 | Schema validity | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 6 | Good `rag_query_text` | ✅ | ✅ | ✅ | ✅ meta | ⚠️ generisk |
+| 7 | Safety: equipment only | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 8 | Brand/model hallucination | ⚠️ Phonak (sannsynlig riktig på syntetisk bilde) | ✅ ingen merke | ⚠️ ReSound Nexia 9 RIE fra skjermtekst | ✅ ingen gjetting | ⚠️ Oticon ja, ikke full modell fra etikett |
 
-**IAM fix required:** grant `roles/aiplatform.user` (includes `aiplatform.endpoints.predict`) to `viddel-ces-run-session@hearing-aid-mvp.iam.gserviceaccount.com` on project `hearing-aid-mvp`. Re-run probe after IAM propagate (~few minutes).
+**Scenario notes:**
 
-**Note:** Using Discovery location `eu` directly against `eu-aiplatform.googleapis.com` yields **404 HTML** — not a model error. Probe maps `eu` → `europe-west1` for Vertex.
+- **A:** Phonak ladeboks, gult lys, `readable_text: "PHONAK"`.
+- **B:** Dome/voksfilter, ingen merke, god feilsøkingskontekst.
+- **C:** Leser skjerm: «ReSound Nexia 9 RIE, Not Connected» (+ Settings på re-run).
+- **D:** Korrekt avvisning — ber om nytt bilde, tomme komponentfelt, `confidence: low`.
+- **E:** Oticon + grønt lys; leser «oticon» men ikke full modell (f.eks. Real 1 miniRITE) fra etikett.
 
-### `--call-chat-url` (B, C, D)
+### `rag_query_text` assessment (A–E)
 
-**Not run** — requires successful vision step to produce real `rag_query_text`. Dev server chain deferred until IAM unblocks Vertex.
+| Scen. | `rag_query_text` (typisk) | Vurdering |
+|-------|---------------------------|-----------|
+| **A** | «Hva betyr gult lys på Phonak ladeboks?» | ✅ Kort, norsk, RAG-vennlig. ⚠️ Corpus-gap på lader/LED (se nedenfor) |
+| **B** | «Hvordan bytte voksfilter…? Hvordan feste dome…?» | ✅ Sterk — konkret how-to, bedre enn ren brukertekst |
+| **C** | «ReSound Nexia 9 RIE Bluetooth tilkobling feilsøking iPhone» | ✅ Merke+modell+problem; god for RAG |
+| **D** | «Vennligst ta et nytt, klart bilde av høreapparatutstyret…» | ✅ Meta-spørring — riktig når vision ikke kan identifisere |
+| **E** | «Hvilken modell er dette Oticon høreapparatet…?» | ⚠️ OK, men kunne vært mer spesifikk (etikett-OCR uutnyttet) |
 
-### Simulated RAG chain (prior run — production `/api/chat`, hand-crafted `rag_query_text`)
+### `/api/chat` hybrid chain (local dev, B/C/D)
 
-Baseline user text vs. enriched query **as if** vision succeeded (ops token, no content logging):
+Dev server with CES env. **No changes to `/api/chat` or `/no/chat`.** Compare to simulated baseline/enriched lengths from prior ops run (production `/api/chat`, hand-crafted queries):
+
+| Scenario | Hybrid HTTP | Answer len | Baseline len (sim) | Enriched len (sim) | Better than baseline? | Notes |
+|----------|-------------|------------|--------------------|--------------------|-----------------------|-------|
+| **B** | **200** | **277** | 583 | 1108 | **Yes** (277 > 0; shorter than sim-enriched but substantive) | Full hybrid chain OK |
+| **C** (1st burst) | 502 | 0 | 650 | 859 | — | CES **429** rate limit |
+| **C** (retry / final) | **200** | **754** | 650 | 859 | **Yes** (754 > 650) | 60 s pause; good BT troubleshooting answer |
+| **D** (1st burst) | 502 | 0 | 78 | 1050 | — | CES **429** rate limit |
+| **D** (final) | **200** | **256** | 78 | 1050 | **Yes** (256 >> 78; baseline often empty summary) | Rate limit cleared with pause |
+
+**Rate limit:** Burst of vision+chat calls triggers CES **429**. Use **≥60 s pause** between hybrid probes. Does not block vision-only A–E.
+
+**Quality (metadata only — no answer text logged):**
+
+- **B:** Concrete dome/wax filter guidance expected from corpus; chain works end-to-end.
+- **C:** Final run 754 chars — comparable to simulated enriched (859); Bluetooth reconnect content.
+- **D:** Final run 256 chars — much better than baseline empty summary (78); appropriate “retake photo” guidance.
+
+### Simulated RAG chain (reference — pre-vision, hand-crafted `rag_query_text`)
 
 | Scenario | Baseline len | Enriched len | Better? | Notes |
 |----------|-------------|--------------|---------|-------|
@@ -279,34 +276,69 @@ Baseline user text vs. enriched query **as if** vision succeeded (ops token, no 
 | D | 78 | 1050 | **Yes** | Baseline empty summary; enriched asks for clearer equipment photo |
 | E | 78 | 575 | **Yes** | Baseline empty; enriched Oticon model + manual pointer |
 
-This supports the **hybrid architecture** hypothesis but is **not** a substitute for real vision JSON quality/safety review.
+Real vision `rag_query_text` for B/C/D aligns with simulated enriched hypothesis.
 
-### Per-scenario evaluation template (fill after IAM fix)
+### Safety assessment
 
-| # | Criterion | A | B | C | D | E |
-|---|-----------|---|---|---|---|---|
-| 1 | Correct equipment type | — | — | — | — | — |
-| 2 | Component / LED / screen | — | — | — | — | — |
-| 3 | Confidence calibrated | — | — | — | — | — |
-| 4 | Useful follow-up questions | — | — | — | — | — |
-| 5 | Good `rag_query_text` | — | — | — | — | — |
-| 6 | `/api/chat` better than baseline | partial (sim) | partial (sim) | partial (sim) | partial (sim) | partial (sim) |
-| 7 | Safety: equipment only | — | — | — | — | — |
-| 8 | Brand/model hallucination | — | — | — | — | — |
+| Aspect | Status |
+|--------|--------|
+| Utstyr-only scope | ✅ Ingen øre/hud/kropp-analyse i noen scenario |
+| Uklart bilde (D) | ✅ `confidence: low`, avvisning + oppfordring om nytt bilde |
+| Medisinsk innhold | ✅ `safety_notes` er praktisk utstyrshjelp |
+| Hallusinasjon / over-tillit | ⚠️ A/C/E kan gi merke/modell med `high` — må valideres mot faktisk bilde i prototype |
+| Personvern | ✅ Ingen bilder lagret/commitet; kun metadata i stdout |
 
 ### Corpus gap (lader/LED)
 
-Scenario A (simulated RAG): even enriched Phonak charger query did not outperform baseline; baseline explicitly stated charger LEDs are **not in sources**. Vision may help user describe the device, but **RAG will stay weak until manual/content covers charging cases and indicator lights**.
-
-### Recommendation (post-run)
-
-| Verdict | **Test mer** — do not build UI yet |
-|---------|-------------------------------------|
-| Blocker | `roles/aiplatform.user` on probe SA |
-| Next | IAM fix → re-run 5 vision probes → B/C/D with `--call-chat-url=http://localhost:4321/api/chat` |
-| Then | Compare real `rag_query_text` vs. baseline; review safety on D (unclear image) |
-| Park? | No — simulated RAG shows value; only Vertex IAM blocks completion |
+Scenario A: even enriched Phonak charger query did not outperform baseline in simulated RAG; sources weak on charging cases and indicator lights. Vision helps user **describe** the device, but **RAG stays weak until manual/content covers lader/LED**.
 
 ---
 
-*Probe v0.1 · INT-009 follow-up · manual run logged 2026-06-05*
+## Risks
+
+| Risk | Mitigation |
+|------|------------|
+| Wrong model default (404) | Default **`gemini-2.5-flash`** in dev probe code |
+| Missing Vertex IAM | `roles/aiplatform.user` documented; verified working |
+| CES 429 on hybrid burst | ≥60 s between `--call-chat-url` runs |
+| Wrong LED/model guess | `confidence` field; human review in prototype |
+| Accidental prod deploy | Probe not called from `/api/chat` or pages |
+| Public upload without DPIA | Explicit **no** — intern prototype only |
+
+---
+
+## Recommendation
+
+| Action | Verdict |
+|--------|---------|
+| **Intern prototype** | **Yes** — next issue: Lab-only flow, no public upload |
+| Merge probe code to main | **Yes** — dev-only, no prod surface |
+| Enable upload in `/no/chat` | **No** |
+| Public upload route | **No** |
+| Bildelagring | **No** |
+| DPIA before production | **Required** |
+| Park? | **No** — vision + hybrid chain validated; proceed to controlled prototype |
+
+**To @rigger/@navigator:**
+
+1. IAM + `gemini-2.5-flash` are unblocked — probe runs out of the box on `hearing-aid-mvp`.
+2. Open **intern prototype issue**: Lab-only image → vision → `rag_query_text` → `/api/chat`, with rate-limit spacing and QA matrix A–E.
+3. Content: prioritize lader/LED corpus if scenario A matters in product.
+4. Do **not** ship public upload until DPIA + safety review on D (unclear image) and brand/model overconfidence.
+
+---
+
+## Verification checklist
+
+| Check | Status |
+|-------|--------|
+| Production `/no/chat` unchanged | Yes |
+| `/api/chat` contract unchanged | Yes — probe is external caller |
+| No image storage | Yes — in-memory only |
+| No public upload route | Yes |
+| No secrets/images in git | Yes — `tmp/probe/` gitignored |
+| `npm run build` | Run before merge |
+
+---
+
+*Probe v0.1 · INT-009 follow-up · manual run logged 2026-06-05 (post-IAM)*

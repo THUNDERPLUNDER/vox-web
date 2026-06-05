@@ -77,7 +77,8 @@ export function resolveImageVisionProbeConfig(): { ok: true; config: ImageVision
   const location =
     readEnv("IMAGE_VISION_PROBE_LOCATION") || readEnv("AGENT_SEARCH_LOCATION") || readEnv("CES_LOCATION");
   const serviceAccountJson = readEnv("GOOGLE_SERVICE_ACCOUNT_JSON");
-  const model = readEnv("IMAGE_VISION_PROBE_MODEL") || "gemini-2.0-flash-001";
+  // gemini-2.0-flash-001 returns 404 in europe-west1 for hearing-aid-mvp (2026-06-05 probe).
+  const model = readEnv("IMAGE_VISION_PROBE_MODEL") || "gemini-2.5-flash";
   // Discovery/CES use location `eu`; Vertex multimodal uses e.g. europe-west1 (mapped in resolveVertexAiLocation).
 
   const missing: string[] = [];
