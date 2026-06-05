@@ -338,6 +338,61 @@ Scenario A: even enriched Phonak charger query did not outperform baseline in si
 | No public upload route | Yes |
 | No secrets/images in git | Yes — `tmp/probe/` gitignored |
 | `npm run build` | Run before merge |
+| Production `/dev/image-qa` without flag | **404** (`VERCEL_ENV=production` always blocks) |
+| Preview `/dev/image-qa` with flag | Enabled when `IMAGE_QA_DEV_ENABLED=true` in Preview env only |
+
+---
+
+## Mobile QA via Vercel Preview (#236)
+
+Intern mobilkamera-QA uten lokal Mac-kjøring: bruk **Vercel Preview** på en branch/PR med flagget satt.
+
+### Gate
+
+| Miljø | `IMAGE_QA_DEV_ENABLED` | `/dev/image-qa` | `/api/dev/image-vision` |
+|-------|------------------------|-----------------|-------------------------|
+| Vercel **Production** | unset eller `true` | **404** | **404** |
+| Vercel **Preview** | unset | **404** | **404** |
+| Vercel **Preview** | `true` | **200** | **200** |
+| Lokal `npm run dev` | `true` i `.env.local` | **200** | **200** |
+
+Production blokkeres alltid via `VERCEL_ENV=production`, uavhengig av flagg.
+
+### Vercel Preview Environment — required vars
+
+Sett disse under **Project → Settings → Environment Variables → Preview** (ikke Production):
+
+| Variable | Value / notes |
+|----------|----------------|
+| `IMAGE_QA_DEV_ENABLED` | `true` |
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | Same SA as CES (JSON string) |
+| `CES_PROJECT_ID` | e.g. `hearing-aid-mvp` |
+| `CES_LOCATION` | `eu` |
+| `CES_APP_ID` | CES channel app ID |
+| `CES_APP_VERSION_ID` | CES app version |
+| `CES_DEPLOYMENT_ID` | CES deployment |
+| `IMAGE_VISION_PROBE_MODEL` | `gemini-2.5-flash` (recommended; default in code) |
+
+**For optional `/api/chat` chain on Preview** (checkbox in UI): same CES vars above are enough for `ces_channel`. If rate limits block, add `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` to Preview (same as other preview chat testing).
+
+**Do not set** `IMAGE_QA_DEV_ENABLED` in **Production** Environment.
+
+### Test from mobile (Thomas)
+
+1. Push branch with image QA code (e.g. PR for #236).
+2. Confirm Preview env vars above are saved under **Preview** only.
+3. Open Vercel Preview URL on phone (same network not required — HTTPS preview URL works anywhere).
+4. Navigate to: `https://<preview-host>/dev/image-qa`
+5. Tap bildefelt → kamera/fotovelger (`capture="environment"`).
+6. Ta bilde av **utstyr only** (lader, dome, appskjerm — not ear/skin/face).
+7. Velg scenario A–E, optional brukerproblem, run **Analyser bilde**.
+8. Review: confidence, `rag_query_text`, warnings, optional `/api/chat` response.
+9. Wait ~60 s between runs if CES returns 429 on chat step.
+
+### Confirm production is closed
+
+On `https://www.viddel.no/dev/image-qa` (or production domain) → expect **404**.  
+`POST https://www.viddel.no/api/dev/image-vision` → **404** even if Production env were misconfigured — gate checks `VERCEL_ENV=production`.
 
 ---
 

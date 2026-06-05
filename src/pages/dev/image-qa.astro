@@ -26,10 +26,17 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
         <p class="text-xs font-medium uppercase tracking-wide text-[rgb(var(--muted))]">Viddel Lab · dev-only</p>
         <h1 class="font-display text-2xl font-semibold tracking-tight">Bilde-QA</h1>
         <p class="text-sm leading-relaxed text-[rgb(var(--muted))]">
-          Ta bilde av høreapparatutstyr (lader, dome/filter, appskjerm, statuslys). Ingen lagring. Kun utstyr — ikke
-          øre, hud eller kropp.
+          Ta bilde av høreapparatutstyr (lader, dome/filter, appskjerm, statuslys). Ingen lagring.
         </p>
       </header>
+
+      <div
+        class="rounded-[var(--radius-md)] border border-amber-400/70 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-950"
+        role="note"
+      >
+        <strong class="font-semibold">Kun test med høreapparatutstyr.</strong>
+        Ikke ta bilde av øre, hud, ansikt eller personer.
+      </div>
 
       <label
         for="image-qa-file"
