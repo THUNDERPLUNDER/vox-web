@@ -15,9 +15,9 @@ const ROOT = resolve(__dirname, "..");
 
 function parseArgs(argv) {
   const args = {
-    input: "data/source-inventory/drive-snapshot.sample.json",
-    out: "data/source-inventory/source-registry.generated.sample.json",
-    statusOut: "data/source-inventory/knowledge-status.sample.json",
+    input: "data/source-inventory/drive-snapshot.expanded.sample.json",
+    out: "data/source-inventory/source-registry.generated.expanded.sample.json",
+    statusOut: "data/source-inventory/knowledge-status.expanded.sample.json",
     summaryOut: "",
   };
   for (let i = 2; i < argv.length; i += 1) {
@@ -55,7 +55,7 @@ Classifier: ${CLASSIFIER_VERSION}
 | deprecated | ${status.deprecated} |
 | stale/outdated | ${status.staleOrOutdated} |
 
-> Sample snapshot only — not a complete Drive inventory.
+> Expanded sample snapshot only — broader than the first 10-source sample, but still not a live or complete Drive inventory.
 `;
 }
 

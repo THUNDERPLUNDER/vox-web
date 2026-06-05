@@ -27,8 +27,8 @@ const model = getVisKnowledgeStatusModel();
         Kunnskapsstatus v0.1
       </h1>
       <p class="mt-3 text-sm leading-relaxed text-gray-600">
-        Lesbar statusflate for verified insight / datastore-klar kunnskap. Basert på sample og generated
-        source inventory fra #228 — ikke full live Drive-inventory.
+        Lesbar statusflate for verified insight / datastore-klar kunnskap. Basert på expanded sample og generated
+        source inventory fra #232 — bredere enn første 10-kilders sample, men fortsatt ikke live Drive-inventory.
       </p>
       <p class="mt-2 text-xs text-gray-500">
         Generert {model.meta.updatedAt} · classifier {model.meta.classifierVersion} · snapshot{" "}
@@ -41,7 +41,7 @@ const model = getVisKnowledgeStatusModel();
         Kunnskapsstatus
       </h2>
       <p class="mt-1 text-xs text-gray-500">
-        Tall fra <code class="font-mono">knowledge-status.sample.json</code> ({model.registryEntryCount}{" "}
+        Tall fra <code class="font-mono">knowledge-status.expanded.sample.json</code> ({model.registryEntryCount}{" "}
         registry-rader).
       </p>
       <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -113,7 +113,7 @@ const model = getVisKnowledgeStatusModel();
         Hva trenger review?
       </h2>
       <p class="mt-1 text-xs text-gray-500">
-        Oppsummering fra registry sample — ikke full browser.
+        Oppsummering fra expanded registry sample — ikke full browser.
       </p>
       {
         model.reviewNeeds.length ? (
@@ -178,7 +178,7 @@ const model = getVisKnowledgeStatusModel();
         }
       </ul>
       <p class="mt-3 text-xs text-gray-500">
-        Regenerer sample: <code class="font-mono">npm run source:inventory</code> · Valider manifest:{" "}
+        Regenerer expanded sample: <code class="font-mono">npm run source:inventory</code> · Valider manifest:{" "}
         <code class="font-mono">npm run source:manifest:check</code>
       </p>
     </section>

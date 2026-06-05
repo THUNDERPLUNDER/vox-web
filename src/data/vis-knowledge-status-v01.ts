@@ -1,7 +1,7 @@
 /* CONTRACT: VIS read model for source inventory / knowledge status v0.1 (#230). */
 
-import knowledgeStatusSample from "../../data/source-inventory/knowledge-status.sample.json";
-import sourceRegistrySample from "../../data/source-inventory/source-registry.generated.sample.json";
+import knowledgeStatusSample from "../../data/source-inventory/knowledge-status.expanded.sample.json";
+import sourceRegistrySample from "../../data/source-inventory/source-registry.generated.expanded.sample.json";
 import manifestPlaceholder from "../../data/source-inventory/datastore-ready-manifest.sample.json";
 import manifestValid from "../../data/source-inventory/datastore-ready-manifest.valid.sample.json";
 import { validateDatastoreManifest } from "../lib/source-registry.ts";
@@ -10,10 +10,11 @@ import type { ReviewNeed, SourceRegistryEntry } from "./source-registry/source-t
 export const visKnowledgeStatusMeta = {
   version: "v0.1",
   pageRoute: "/vis/system/knowledge-status-v01",
-  dataSource: "data/source-inventory/*.sample.json",
+  dataSource: "data/source-inventory/*.expanded.sample.json",
   updatedAt: knowledgeStatusSample.generatedAt.slice(0, 10),
   classifierVersion: sourceRegistrySample.classifierVersion,
   snapshotSource: sourceRegistrySample.snapshotSource,
+  sampleLabel: "expanded sample",
 } as const;
 
 export const productionManifestRule =
@@ -59,11 +60,13 @@ const REVIEW_NEED_LABELS: Record<ReviewNeed, string> = {
   needs_freshness_check: "Trenger ferskhets-sjekk",
   needs_human_review: "Trenger menneskelig review",
   needs_canonical_rewrite: "Trenger canonical omskriving",
+  needs_transcript: "Trenger transkripsjon",
 };
 
 function countByReviewNeed(entries: SourceRegistryEntry[]): ReviewNeedSummary[] {
   const order: ReviewNeed[] = [
     "needs_human_review",
+    "needs_transcript",
     "needs_canonical_rewrite",
     "needs_freshness_check",
     "needs_source_check",
@@ -120,6 +123,12 @@ export function getVisKnowledgeStatusModel() {
       label: "Trenger review",
       value: knowledgeStatusSample.needsReview,
       hint: "Alle sample-kilder har minst ett review-flagg i v0.1.",
+    },
+    {
+      id: "directProductionImport",
+      label: "Direkte production-import",
+      value: knowledgeStatusSample.directProductionImport ?? 0,
+      hint: "Skal være 0. Production krever datastore_ready manifest.",
     },
     {
       id: "provisionalInsight",
@@ -182,11 +191,19 @@ export function getVisKnowledgeStatusModel() {
     },
     {
       label: "Generated registry sample",
-      path: "data/source-inventory/source-registry.generated.sample.json",
+      path: "data/source-inventory/source-registry.generated.expanded.sample.json",
     },
     {
       label: "Knowledge status sample",
-      path: "data/source-inventory/knowledge-status.sample.json",
+      path: "data/source-inventory/knowledge-status.expanded.sample.json",
+    },
+    {
+      label: "Expanded Drive snapshot sample",
+      path: "data/source-inventory/drive-snapshot.expanded.sample.json",
+    },
+    {
+      label: "Original 10-source snapshot sample",
+      path: "data/source-inventory/drive-snapshot.sample.json",
     },
     {
       label: "Manifest placeholder sample",

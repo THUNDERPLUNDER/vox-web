@@ -20,6 +20,10 @@ export const SOURCE_TYPES = [
   "public_policy",
   "editorial",
   "viddel_canonical",
+  "market_validation",
+  "strategic_research",
+  "inspiration_context",
+  "audio",
   "unknown",
 ] as const;
 
@@ -36,6 +40,7 @@ export const REVIEW_NEEDS = [
   "needs_freshness_check",
   "needs_human_review",
   "needs_canonical_rewrite",
+  "needs_transcript",
 ] as const;
 
 export type ReviewNeed = (typeof REVIEW_NEEDS)[number];
@@ -63,6 +68,7 @@ export type SourceRegistryEntry = {
   brand: Brand;
   verificationStatus: VerificationStatus;
   reviewNeed: ReviewNeed;
+  directProductionImport: boolean;
   confidence: "high" | "medium" | "low";
   createdTime: string;
   modifiedTime: string;
@@ -114,4 +120,5 @@ export type KnowledgeStatusSummary = {
   datastoreReady: number;
   deprecated: number;
   staleOrOutdated: number;
+  directProductionImport: number;
 };
