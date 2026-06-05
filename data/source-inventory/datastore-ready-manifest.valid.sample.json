@@ -1,0 +1,16 @@
+{
+  "version": "0.1",
+  "rule": "Production Agent Search may only ingest assets listed in an approved datastore-ready manifest. Raw Drive folders, manuals, transcripts and research notes must not be imported directly into production.",
+  "entries": [
+    {
+      "assetId": "asset-app-bluetooth-v01",
+      "title": "App og Bluetooth — første feilsøking",
+      "status": "datastore_ready",
+      "sourceRegistryIds": ["src-sample-doc-instruksjonsprinsipper"],
+      "approvedBy": "thomas",
+      "approvedAt": "2026-06-05T12:00:00.000Z",
+      "target": "production_agent_search",
+      "notes": "Valid sample entry for validator demo — not deployed to production."
+    }
+  ]
+}
