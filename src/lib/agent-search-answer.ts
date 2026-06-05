@@ -2,6 +2,10 @@
 
 import { getGoogleAccessToken } from "./ces-auth";
 import {
+  VIDDEL_RESPONSE_CONTRACT_VERSION,
+  VIDDEL_RESPONSE_PREAMBLE,
+} from "./viddel-response-contract";
+import {
   CES_FETCH_TIMEOUT_MS,
   CES_MAX_ATTEMPTS,
   CES_RETRY_DELAY_MS,
@@ -43,6 +47,7 @@ export type AgentSearchAnswerMeta = {
   durationMs: number;
   durationBucket: DurationBucket;
   hasCitations: boolean;
+  responseContractVersion: string;
 };
 
 type AgentSearchAnswerSessionMode = "omit" | "full";
@@ -105,6 +110,9 @@ function buildAnswerRequestBody(config: AgentSearchEnvConfig, message: string): 
       ignoreAdversarialQuery: true,
       ignoreNonAnswerSeekingQuery: false,
       includeCitations: true,
+      promptSpec: {
+        preamble: VIDDEL_RESPONSE_PREAMBLE,
+      },
     },
   };
 
@@ -260,6 +268,7 @@ export async function runAgentSearchAnswer(
           durationMs,
           durationBucket: durationBucket(durationMs),
           hasCitations: result.hasCitations,
+          responseContractVersion: VIDDEL_RESPONSE_CONTRACT_VERSION,
         },
       };
     } catch (error) {

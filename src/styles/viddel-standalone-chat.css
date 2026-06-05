@@ -84,6 +84,34 @@ body.vox-shell--standalone-chat #ces-widget {
   scroll-margin-bottom: min(1.55rem, var(--inline-chat-bottom-reserve, 72px));
 }
 
+.inline-chat-shell__message-text p {
+  margin: 0 0 0.75rem;
+}
+
+.inline-chat-shell__message-text p:last-child,
+.inline-chat-shell__message-text ul:last-child,
+.inline-chat-shell__message-text ol:last-child {
+  margin-bottom: 0;
+}
+
+.inline-chat-shell__message-text ul,
+.inline-chat-shell__message-text ol {
+  margin: 0 0 0.75rem 1.15rem;
+  padding: 0;
+}
+
+.inline-chat-shell__message-text ul {
+  list-style: disc;
+}
+
+.inline-chat-shell__message-text ol {
+  list-style: decimal;
+}
+
+.inline-chat-shell__message-text li + li {
+  margin-top: 0.25rem;
+}
+
 .inline-chat-shell[data-inline-chat-mode="progressive"] .inline-chat-shell__compose-stack {
   display: flex;
   flex-direction: column;

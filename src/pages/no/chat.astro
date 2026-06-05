@@ -36,8 +36,8 @@ const aiHeadingId = "viddel-standalone-chat-ai";
             beskriver hva du prøver å få til.
           </p>
           <p class="viddel-chat-standalone__safety">
-            Viddel kan gi praktiske forslag og hjelpe deg å finne neste steg. Ved medisinske spørsmål eller vedvarende
-            problemer bør du kontakte audiograf eller annet helsepersonell.
+            Viddel kan gi praktiske forslag og hjelpe deg å finne neste steg. Hvis saken bør tas videre, kan Viddel
+            hjelpe deg å lage en kort beskrivelse til audiograf.
           </p>
         </header>
 
@@ -135,7 +135,9 @@ const aiHeadingId = "viddel-standalone-chat-ai";
     }
   </style>
 
-  <script is:inline>
+  <script>
+    import { renderAssistantMarkdownInto } from "../../lib/render-assistant-markdown";
+
     (() => {
       const root = document.querySelector("[data-viddel-chat]");
       const shell = document.querySelector("[data-viddel-chat-shell]");
@@ -243,7 +245,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         eyebrow.textContent = "Viddel";
         const body = document.createElement("div");
         body.className = "inline-chat-shell__message-text";
-        body.textContent = text;
+        renderAssistantMarkdownInto(body, text);
         assistant.append(eyebrow, body);
         activeTurn.append(assistant);
         assistant.scrollIntoView({ behavior: "smooth", block: "nearest" });
