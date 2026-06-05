@@ -20,7 +20,8 @@
     "chat:reliability": "node scripts/chat-reliability-assessment.mjs",
     "verify:ces-env": "node scripts/verify-ces-env-checklist.mjs",
     "source:inventory": "node --experimental-strip-types scripts/source-inventory-scaffold.mjs",
-    "source:manifest:check": "node --experimental-strip-types scripts/validate-datastore-manifest.mjs"
+    "source:manifest:check": "node --experimental-strip-types scripts/validate-datastore-manifest.mjs",
+    "image:vision-probe": "node --experimental-strip-types scripts/image-vision-bridge-probe.mjs"
   },
   "dependencies": {
     "@astrojs/vercel": "^9.0.5",
