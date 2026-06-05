@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-06-05T15:42:42.844Z",
+  "totalSources": 81,
+  "rawOriginal": 10,
+  "machineClassified": 71,
+  "needsReview": 81,
+  "provisionalInsight": 0,
+  "reviewedInsight": 0,
+  "canonicalGuidance": 0,
+  "datastoreReady": 0,
+  "deprecated": 0,
+  "staleOrOutdated": 0,
+  "directProductionImport": 0
+}

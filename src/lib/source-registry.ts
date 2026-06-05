@@ -11,7 +11,7 @@ import type {
   VerificationStatus,
 } from "../data/source-registry/source-types.ts";
 
-export const CLASSIFIER_VERSION = "v0.1-heuristic";
+export const CLASSIFIER_VERSION = "v0.2-expanded-heuristic";
 
 const STALE_MS = 180 * 24 * 60 * 60 * 1000; // ~6 months
 
@@ -22,6 +22,7 @@ const REVIEW_NEED_RANK: Record<ReviewNeed, number> = {
   needs_freshness_check: 3,
   needs_human_review: 4,
   needs_canonical_rewrite: 5,
+  needs_transcript: 6,
 };
 
 function slugify(value: string): string {
@@ -46,14 +47,20 @@ function detectBrand(title: string, pathHint: string): Brand {
 function detectSourceType(title: string, pathHint: string, mimeType: string): SourceType {
   const hay = `${title} ${pathHint}`.toLowerCase();
 
+  if (mimeType.startsWith("audio/") || /\.(m4a|mp3|wav)$/i.test(title)) return "audio";
+  if (/inspirasjon helsevesen|dokumentar|psykisk sykdom/.test(hay)) return "inspiration_context";
+  if (/markedsvalidering|konkurrentanalyse|verdikjede|strategisk analyse|strategi-kartlegging|benchmarking|teknisk integrator/.test(hay)) {
+    return "market_validation";
+  }
+  if (/økosystem|ecosystem|aktør|partner|positioning|business model/.test(hay)) return "strategic_research";
   if (/transkrips|intervju|interview/.test(hay)) return "user_interview";
   if (/audiograf|stakeholder|ekspert|høreomsorg systemmanual/.test(hay)) return "stakeholder_expert";
-  if (/crpd|nav\b|støtteordning|policy|personvern/.test(hay)) return "public_policy";
+  if (/crpd|nav\b|støtteordning|policy|personvern|budsjett|menneskerettigheter/.test(hay)) return "public_policy";
   if (/instruksjonsprinsip|hallusinasjonskontroll|masterplan|optimal lyttekvalitet/.test(hay)) {
     return "viddel_canonical";
   }
-  if (/manual|systemmanual|handbok|guide|01_originals/.test(hay)) return "manufacturer_manual";
-  if (/app\b|bluetooth|sonic_knowledge/.test(hay)) return "app_guide";
+  if (/app\b|bluetooth|companion|roger|smart3d|tvadapter|tv adapter|tvconnector|tv connector|pairing/.test(hay)) return "app_guide";
+  if (/manual|systemmanual|handbok|guide|userguide|user guide|instructions-for-use|ifu|01_originals|02_sonic_knowledge/.test(hay)) return "manufacturer_manual";
   if (mimeType.includes("folder") && /originals|manuals/.test(hay)) return "manufacturer_manual";
   if (/editorial|artikkel/.test(hay)) return "editorial";
   return "unknown";
@@ -70,6 +77,12 @@ function pickReviewNeed(
   if (!entry.url?.trim()) needs.push("needs_metadata");
   if (sourceType === "unknown" || brand === "unknown") needs.push("needs_human_review");
   if (sourceType === "manufacturer_manual") needs.push("needs_canonical_rewrite");
+  if (sourceType === "app_guide") needs.push("needs_canonical_rewrite");
+  if (sourceType === "market_validation" || sourceType === "strategic_research") {
+    needs.push("needs_source_check");
+  }
+  if (sourceType === "inspiration_context") needs.push("needs_human_review");
+  if (sourceType === "audio") needs.push("needs_transcript");
   if (sourceType === "user_interview" || sourceType === "stakeholder_expert") {
     needs.push("needs_source_check");
   }
@@ -86,7 +99,23 @@ function pickReviewNeed(
 function confidenceFor(sourceType: SourceType, brand: Brand): "high" | "medium" | "low" {
   if (sourceType === "unknown" || brand === "unknown") return "low";
   if (sourceType === "manufacturer_manual") return "medium";
+  if (sourceType === "market_validation" || sourceType === "strategic_research") return "medium";
+  if (sourceType === "inspiration_context" || sourceType === "audio") return "medium";
   return "high";
+}
+
+function notesFor(sourceType: SourceType, classified: boolean): string {
+  if (!classified) return "Unclassified raw snapshot entry.";
+  if (sourceType === "market_validation" || sourceType === "strategic_research") {
+    return "Auto-classified by source-inventory-scaffold (heuristic v0.2). Strategy/market material only; not direct user-answer material unless rewritten as canonical Viddel guidance and manifest-approved.";
+  }
+  if (sourceType === "inspiration_context") {
+    return "Auto-classified by source-inventory-scaffold (heuristic v0.2). Context/inspiration material; not a default datastore candidate.";
+  }
+  if (sourceType === "audio") {
+    return "Auto-classified by source-inventory-scaffold (heuristic v0.2). Raw audio requires transcript and human review before downstream use.";
+  }
+  return "Auto-classified by source-inventory-scaffold (heuristic v0.2).";
 }
 
 /** Deterministic scaffold: Drive snapshot → registry entry. */
@@ -118,15 +147,51 @@ export function classifyDriveEntry(
     brand,
     verificationStatus,
     reviewNeed,
+    directProductionImport: false,
     confidence: confidenceFor(sourceType, brand),
     createdTime: entry.createdTime,
     modifiedTime: entry.modifiedTime,
     lastSeenAt: now,
     classifierVersion: options.classifierVersion ?? CLASSIFIER_VERSION,
-    notes: classified
-      ? "Auto-classified by source-inventory-scaffold (heuristic v0.1)."
-      : "Unclassified raw snapshot entry.",
+    notes: notesFor(sourceType, classified),
   };
+}
+
+function normalizedTitleKey(title: string): string {
+  return slugify(
+    title
+      .replace(/\.(pdf|gdoc|docx?|m4a|mp3|wav)$/i, "")
+      .replace(/\s+-\s+google docs$/i, "")
+      .replace(/_/g, " "),
+  );
+}
+
+function withDuplicateHints(entries: SourceRegistryEntry[]): SourceRegistryEntry[] {
+  const byTitle = new Map<string, SourceRegistryEntry[]>();
+
+  for (const entry of entries) {
+    const key = normalizedTitleKey(entry.title);
+    const group = byTitle.get(key) ?? [];
+    group.push(entry);
+    byTitle.set(key, group);
+  }
+
+  return entries.map((entry) => {
+    const group = byTitle.get(normalizedTitleKey(entry.title)) ?? [];
+    const hasDerivedPair = group.length > 1 && group.some((e) => e.mimeType !== entry.mimeType);
+    if (!hasDerivedPair) return entry;
+
+    const derivedNote =
+      "Possible duplicate/derived pair detected by normalized title and mixed MIME types; verify source-of-truth before canonical rewrite.";
+    return {
+      ...entry,
+      reviewNeed:
+        REVIEW_NEED_RANK[entry.reviewNeed] >= REVIEW_NEED_RANK.needs_source_check
+          ? entry.reviewNeed
+          : "needs_source_check",
+      notes: `${entry.notes} ${derivedNote}`,
+    };
+  });
 }
 
 export function scaffoldRegistryFromSnapshot(
@@ -134,8 +199,10 @@ export function scaffoldRegistryFromSnapshot(
   options: { snapshotSource?: string; now?: string } = {},
 ): { entries: SourceRegistryEntry[]; generatedAt: string } {
   const generatedAt = options.now ?? new Date().toISOString();
-  const entries = snapshot.map((row) =>
-    classifyDriveEntry(row, { now: generatedAt, classifierVersion: CLASSIFIER_VERSION }),
+  const entries = withDuplicateHints(
+    snapshot.map((row) =>
+      classifyDriveEntry(row, { now: generatedAt, classifierVersion: CLASSIFIER_VERSION }),
+    ),
   );
   return { entries, generatedAt };
 }
@@ -166,6 +233,7 @@ export function summarizeKnowledgeStatus(
     datastoreReady: countStatus("datastore_ready"),
     deprecated: countStatus("deprecated"),
     staleOrOutdated,
+    directProductionImport: entries.filter((e) => e.directProductionImport).length,
   };
 }
 

@@ -2,7 +2,7 @@
 
 Status: Operativ grunnmur / #228  
 Dato: 2026-06-05  
-Koblet til: [#228](https://github.com/THUNDERPLUNDER/vox-web/issues/228), [#226](https://github.com/THUNDERPLUNDER/vox-web/issues/226), [#227](https://github.com/THUNDERPLUNDER/vox-web/pull/227)  
+Koblet til: [#228](https://github.com/THUNDERPLUNDER/vox-web/issues/228), [#226](https://github.com/THUNDERPLUNDER/vox-web/issues/226), [#227](https://github.com/THUNDERPLUNDER/vox-web/pull/227), [#232](https://github.com/THUNDERPLUNDER/vox-web/issues/232)
 Scope: Inventory scaffold + manifest gate — **ingen** datastore-import  
 
 > **Note:** Architecture doc `VIDDEL_DATASTORE_SOURCE_ARCHITECTURE_v0_1.md` (#227) may land on `main` separately. This doc implements the operational v0.1 scaffold.
@@ -28,7 +28,7 @@ Enforcement v0.1: **manifest validator script** (repo gate before future import 
 | sourceType / brand heuristic | **Yes** | `src/lib/source-registry.ts` |
 | verificationStatus (`machine_classified`) | **Yes** | Same |
 | reviewNeed suggestion | **Yes** | Same |
-| Knowledge status counts | **Yes** | `knowledge-status.sample.json` |
+| Knowledge status counts | **Yes** | `knowledge-status.expanded.sample.json` |
 | Manifest validation | **Yes** | `npm run source:manifest:check` |
 | Live Drive API inventory | **No** | Snapshot JSON contract only |
 | Google Sheet registry | **No** | Follow-up |
@@ -50,13 +50,28 @@ NO-HITL gjelder repetitivt scaffold-arbeid — ikke ansvar eller synlighet.
 
 ## 4. Inventory snapshot input
 
-**Path:** `data/source-inventory/drive-snapshot.sample.json`
+**Default path:** `data/source-inventory/drive-snapshot.expanded.sample.json`
+
+Original 10-source sample retained:
+
+- `data/source-inventory/drive-snapshot.sample.json`
+- `data/source-inventory/source-registry.generated.sample.json`
+- `data/source-inventory/knowledge-status.sample.json`
 
 Export Drive metadata (manual or future script) to JSON array:
 
 - `driveId`, `title`, `mimeType`, `url`, `createdTime`, `modifiedTime`, `pathHint`
 
-Sample reflects safe-read from `INSIGHT_HEARING_AID` — **not** complete inventory.
+Expanded sample reflects safe-read from screenshots / Drive safe-read across:
+
+- `INSIGHT_HEARING_AID`
+- `HEARING_AID_MANUALS`
+- `HEARING_AID_MANUALS/01_ORIGINALS/{Oticon,Phonak,ReSound}`
+- `HEARING_AID_MANUALS/02_SONIC_KNOWLEDGE/{Oticon,Phonak,ReSound}`
+- `Markedsvalidering 2026`
+- `Inspirasjon helsevesen`
+
+It is broader than the original 10-source sample, but still **not** a complete live Drive inventory.
 
 ---
 
@@ -70,15 +85,15 @@ Or explicitly:
 
 ```bash
 node --experimental-strip-types scripts/source-inventory-scaffold.mjs \
-  --input=data/source-inventory/drive-snapshot.sample.json \
-  --out=data/source-inventory/source-registry.generated.sample.json \
-  --status-out=data/source-inventory/knowledge-status.sample.json
+  --input=data/source-inventory/drive-snapshot.expanded.sample.json \
+  --out=data/source-inventory/source-registry.generated.expanded.sample.json \
+  --status-out=data/source-inventory/knowledge-status.expanded.sample.json
 ```
 
 **Outputs:**
 
-- `source-registry.generated.sample.json` — registry scaffold
-- `knowledge-status.sample.json` — VIS-readable status counts
+- `source-registry.generated.expanded.sample.json` — registry scaffold
+- `knowledge-status.expanded.sample.json` — VIS-readable status counts
 
 ---
 
@@ -90,8 +105,8 @@ JSON file:
 {
   "version": "0.1",
   "generatedAt": "...",
-  "snapshotSource": "data/source-inventory/drive-snapshot.sample.json",
-  "classifierVersion": "v0.1-heuristic",
+  "snapshotSource": "data/source-inventory/drive-snapshot.expanded.sample.json",
+  "classifierVersion": "v0.2-expanded-heuristic",
   "entries": [ /* SourceRegistryEntry */ ]
 }
 ```
@@ -121,13 +136,25 @@ See also: `docs/project/VIDDEL_DATASTORE_READY_MANIFEST_v0_1.md`
 
 ## 8. VIS status model (future)
 
-`knowledge-status.sample.json` exposes:
+`knowledge-status.expanded.sample.json` exposes:
 
 - `totalSources`, `rawOriginal`, `machineClassified`, `needsReview`
 - `provisionalInsight`, `reviewedInsight`, `canonicalGuidance`, `datastoreReady`, `deprecated`
 - `staleOrOutdated`
+- `directProductionImport`
 
-**Follow-up:** VIS knowledge status panel v0.1 — read this JSON or regenerate on build.
+VIS knowledge status panel v0.1 reads the expanded sample. It must not be described as full Drive inventory.
+
+## 8.1 Classification additions in #232
+
+Classifier v0.2 adds explicit buckets for:
+
+- `market_validation` / `strategic_research` — strategy, market, value-chain, competitor and partner insight. Not direct user-answer material unless rewritten as canonical Viddel guidance and manifest-approved.
+- `inspiration_context` — contextual/inspiration material. Not a default datastore candidate.
+- `audio` — raw audio material. Requires `needs_transcript`.
+- duplicate/derived hints — simple normalized-title detection for PDF + Google Doc pairs. This is not a full dedupe system.
+
+All generated entries set `directProductionImport: false`.
 
 ---
 

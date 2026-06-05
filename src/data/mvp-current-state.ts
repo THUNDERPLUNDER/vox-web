@@ -206,6 +206,12 @@ export const mvpCurrentState = {
   recentChanges: [
     {
       date: "2026-06-05",
+      summary: "Expanded source inventory sample v0.1 — 81 Drive snapshot entries, market/audio/inspiration classification og VIS knowledge-status oppdatert (#232)",
+      issue: "#232",
+      commit: "—",
+    },
+    {
+      date: "2026-06-05",
       summary: "VIS knowledge status panel v0.1 — source trust og manifest-gate lesbart i VIS (#230)",
       issue: "#230",
       commit: "—",
