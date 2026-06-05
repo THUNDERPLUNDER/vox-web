@@ -90,7 +90,7 @@ Kort bør vise:
 
 ### 3. Board — Execution
 Formål:
-Operativ flyt for @rigger og Cursor.
+Operativ flyt for @rigger, Codex og Cursor.
 
 Oppsett:
 - layout: Board
@@ -128,10 +128,11 @@ Oppsett:
 - sikrer riktig statusflyt
 - sikrer at handoff og Return Ticket henger sammen med kortet
 
-### Cursor
-- utfører kun på grunnlag av konkret Task / issue
-- leverer commit, push, commit hash, push-status og verifikasjon
-- returnerer med Return Ticket
+### Codex / Cursor
+- utfører kun på grunnlag av konkret Task / issue eller tydelig prompt
+- leverer commit, push, commit hash, push-status, PR og verifikasjon
+- oppgir exact Preview/deploy URL når relevant
+- returnerer med Return Ticket på issue
 
 ### Thomas og Vibeke
 - følger primært Roadmap — Tracks og Board — Workstreams

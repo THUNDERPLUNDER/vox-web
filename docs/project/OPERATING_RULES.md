@@ -87,12 +87,18 @@ Validering: `npm run verify:vis-runtime-feed` (kjøres automatisk før `npm run 
 
 Alle relevante Return Tickets skal inneholde:
 
-1. **Designsystem impact** — mønstre brukt / nye / `/designsystem/` oppdatert?
-2. **Current-state / VIS frontpage impact** — skal `mvp-current-state.ts` oppdateres?
-3. **Backstage impact** — skal `/backstage/` oppdateres? (Se under.)
-4. **VIS runtime update** — skal `vis-runtime-feed.ts` oppdateres? (Se under.)
-5. **Applied surfaces impacted** — hvilke routes?
-6. **Follow-up needed** — åpne risiko eller neste steg?
+1. **Status** — ferdig / delvis / blokkert.
+2. **Hva ble gjort** — kort faktisk leveranse.
+3. **Filer endret** — relevante filer.
+4. **Tester kjørt** — inkludert `npm run build`, eller konkret hvorfor ikke.
+5. **Commit** — commit hash.
+6. **Push-status** — om branch er pushet.
+7. **PR** — PR-lenke, med mindre annet er eksplisitt avtalt.
+8. **Preview/deploy** — exact Preview/deploy URL når relevant.
+9. **VIS/current-state impact** — skal `mvp-current-state.ts`, VIS frontpage eller VIS Runtime Feed oppdateres?
+10. **Backstage impact** — skal `/backstage/` oppdateres? (Se under.)
+11. **Navigation/page-contract impact** — påvirkes routes, IA, page contract eller navigasjon?
+12. **Follow-up issue if deferred** — opprett/lenk issue hvis nødvendig oppdatering utsettes.
 
 **Backstage impact** — forventet innhold:
 
@@ -104,9 +110,9 @@ Hvis ikke relevant, skriv eksplisitt:
 
 > Backstage impact: Ikke relevant — ingen endring i systemflyt, API, guard, env-vars, monitoring eller production-status.
 
-Hvis current-state ikke endres:
+Hvis VIS/current-state ikke endres:
 
-> Current-state update: Ikke nødvendig — ingen endring i MVP-status, designmønstre eller applied surfaces.
+> VIS/current-state impact: none
 
 **VIS runtime update** — forventet format:
 
@@ -129,7 +135,8 @@ Intern shorthand er **ikke nok**. Return Ticket skal gi nok språk til at VIS ka
 4. Vurder Backstage (`/backstage/`) ved endringer i API, guard, env-vars eller production.
 5. Vurder VIS Runtime Feed (`vis-runtime-feed.ts`) ved viktig Return Ticket — skriv for Thomas/Vibeke.
 6. Hold endringer små; `npm run build` før ferdig.
-7. Return Ticket på relevant issue.
+7. Commit ferdig arbeid, push branch og opprett PR.
+8. Return Ticket på relevant issue.
 
 ## Filer
 
@@ -137,5 +144,6 @@ Intern shorthand er **ikke nok**. Return Ticket skal gi nok språk til at VIS ka
 - VIS Runtime Feed: `src/data/vis-runtime-feed.ts`, `src/lib/vis-runtime-feed-guard.ts`
 - Backstage: `src/data/backstage-v01.ts`, `src/lib/backstage-guard.ts`
 - Agent entry: `AGENTS.md`
+- Codex onboarding: `docs/project/CODEX_OPERATING_SETUP_v0_1.md`
 - Cursor: `.cursor/rules/viddel-operating-rules.mdc`
 - Return Ticket-mal: `docs/project/06_RETURN_TICKET.md`
