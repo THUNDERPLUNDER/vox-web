@@ -78,6 +78,7 @@ export function resolveImageVisionProbeConfig(): { ok: true; config: ImageVision
     readEnv("IMAGE_VISION_PROBE_LOCATION") || readEnv("AGENT_SEARCH_LOCATION") || readEnv("CES_LOCATION");
   const serviceAccountJson = readEnv("GOOGLE_SERVICE_ACCOUNT_JSON");
   const model = readEnv("IMAGE_VISION_PROBE_MODEL") || "gemini-2.0-flash-001";
+  // Discovery/CES use location `eu`; Vertex multimodal uses e.g. europe-west1 (mapped in resolveVertexAiLocation).
 
   const missing: string[] = [];
   if (!projectId) missing.push("CES_PROJECT_ID");
@@ -109,9 +110,17 @@ function buildVisionPrompt(input: ImageVisionAnalyzeInput): string {
   return lines.join("\n");
 }
 
+/** Vertex generateContent uses regional endpoints (e.g. europe-west1), not Discovery `eu`. */
+export function resolveVertexAiLocation(location: string): string {
+  const raw = location.trim().toLowerCase();
+  if (raw === "eu") return "europe-west1";
+  return location.trim();
+}
+
 function vertexGenerateContentUrl(config: ImageVisionProbeConfig): string {
-  const host = `https://${config.location}-aiplatform.googleapis.com`;
-  return `${host}/v1/projects/${config.projectId}/locations/${config.location}/publishers/google/models/${config.model}:generateContent`;
+  const vertexLocation = resolveVertexAiLocation(config.location);
+  const host = `https://${vertexLocation}-aiplatform.googleapis.com`;
+  return `${host}/v1/projects/${config.projectId}/locations/${vertexLocation}/publishers/google/models/${config.model}:generateContent`;
 }
 
 function asString(value: unknown): string {
