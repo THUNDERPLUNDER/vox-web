@@ -108,11 +108,11 @@ Logic: `src/lib/source-registry.ts`
 
 ```bash
 npm run source:manifest:check
-# expect failure on .sample.json
+# validates data/source-inventory/datastore-ready-manifest.valid.sample.json
 
 node --experimental-strip-types scripts/validate-datastore-manifest.mjs \
-  --manifest=data/source-inventory/datastore-ready-manifest.valid.sample.json
-# expect OK
+  --manifest=data/source-inventory/datastore-ready-manifest.sample.json
+# expect failure — placeholder manifest demo
 ```
 
 See also: `docs/project/VIDDEL_DATASTORE_READY_MANIFEST_v0_1.md`

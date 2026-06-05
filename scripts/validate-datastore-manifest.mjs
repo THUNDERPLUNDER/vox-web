@@ -10,7 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 
 function parseArgs(argv) {
-  let manifestPath = "data/source-inventory/datastore-ready-manifest.sample.json";
+  let manifestPath = "data/source-inventory/datastore-ready-manifest.valid.sample.json";
   for (let i = 2; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg.startsWith("--manifest=")) manifestPath = arg.slice("--manifest=".length);

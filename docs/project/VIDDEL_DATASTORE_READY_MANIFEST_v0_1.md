@@ -48,7 +48,14 @@ An entry is importable **only if**:
 5. `target` === `production_agent_search`
 6. Notes do not mark entry as placeholder / not approved
 
-Validator: `npm run source:manifest:check`
+Validator: `npm run source:manifest:check` (default: valid sample manifest)
+
+To test intentional failure on placeholder manifest:
+
+```bash
+node --experimental-strip-types scripts/validate-datastore-manifest.mjs \
+  --manifest=data/source-inventory/datastore-ready-manifest.sample.json
+```
 
 ---
 
