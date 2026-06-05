@@ -66,7 +66,7 @@ export type ClosedSprint = {
 };
 
 export const mvpCurrentState = {
-  updatedAt: "2026-05-29",
+  updatedAt: "2026-06-05",
   currentSprint: {
     id: "2026-w21",
     label: "2026-W21",
@@ -158,6 +158,13 @@ export const mvpCurrentState = {
       visFrontpage: false,
       frontpageDescription: "Operativ sprintflate for 2026-W21.",
     },
+    {
+      id: "knowledge-status",
+      label: "Knowledge status",
+      route: "/vis/system/knowledge-status-v01/",
+      role: "Source trust, review-behov og manifest-gate — sample inventory v0.1",
+      visFrontpage: false,
+    },
   ] satisfies CanonicalReference[],
   nextRisks: [
     {
@@ -197,6 +204,12 @@ export const mvpCurrentState = {
     },
   ] satisfies NextRisk[],
   recentChanges: [
+    {
+      date: "2026-06-05",
+      summary: "VIS knowledge status panel v0.1 — source trust og manifest-gate lesbart i VIS (#230)",
+      issue: "#230",
+      commit: "—",
+    },
     {
       date: "2026-05-30",
       summary: "Backstage guardrail — operating rules, Return Ticket-felt, build-time verify (#184)",

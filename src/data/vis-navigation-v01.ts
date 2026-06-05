@@ -203,6 +203,19 @@ export const visPageContracts: Record<string, VisPageContract> = {
     lastReviewed: "2026-06-01",
     ownerRole: "Thomas",
   },
+  "knowledge-status": {
+    id: "knowledge-status",
+    title: "Knowledge status",
+    type: "runtime-data",
+    status: "active",
+    purpose: "Lesbar oversikt over source trust, review-behov og manifest-gate — uten JSON/scripts.",
+    primaryTask: "forstå-system",
+    audience: ["Thomas", "Vibeke", "@navigator"],
+    canonicalSource: "data/source-inventory/knowledge-status.sample.json",
+    lastReviewed: "2026-06-05",
+    ownerRole: "Thomas",
+    nextAction: "Sjekk datastore-ready og review-flagg før manifest-godkjenning.",
+  },
   "raw-wireframes": {
     id: "raw-wireframes",
     title: "Raw wireframes",
@@ -320,6 +333,12 @@ export const visNavSections: VisNavSection[] = [
         href: "/vis/system/ia-inventory-v01",
         pageContractId: "ia-inventory",
       },
+      {
+        id: "knowledge-status",
+        label: "Knowledge status",
+        href: "/vis/system/knowledge-status-v01",
+        pageContractId: "knowledge-status",
+      },
     ],
   },
   {
@@ -368,7 +387,7 @@ export const visNavSections: VisNavSection[] = [
 
 export const visNavigationMeta = {
   version: "v0.1",
-  updatedAt: "2026-06-01",
+  updatedAt: "2026-06-05",
   dataSource: "src/data/vis-navigation-v01.ts",
 } as const;
 
