@@ -62,22 +62,23 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
             </header>
 
             <div class="inline-chat-shell__dialog-thread mt-3 hidden" data-viddel-lab-dialog>
-              <div class="inline-chat-shell__transcript-divider">
-                <span class="inline-chat-shell__transcript-divider-line" aria-hidden="true"></span>
-                <span class="inline-chat-shell__transcript-divider-label" id="viddel-lab-dialog-label">
-                  Dialog med Viddel
-                </span>
-              </div>
-              <div
-                class="inline-chat-shell__transcript"
-                data-viddel-lab-transcript
-                role="log"
-                aria-live="polite"
-                aria-relevant="additions text"
-              >
-              </div>
+              <div class="lab-image-qa__scroll-viewport" data-viddel-lab-scroll-viewport>
+                <div class="inline-chat-shell__transcript-divider">
+                  <span class="inline-chat-shell__transcript-divider-line" aria-hidden="true"></span>
+                  <span class="inline-chat-shell__transcript-divider-label" id="viddel-lab-dialog-label">
+                    Dialog med Viddel
+                  </span>
+                </div>
+                <div
+                  class="inline-chat-shell__transcript"
+                  data-viddel-lab-transcript
+                  role="log"
+                  aria-live="polite"
+                  aria-relevant="additions text"
+                >
+                </div>
 
-              <details class="lab-image-qa__debug hidden" data-viddel-lab-debug>
+                <details class="lab-image-qa__debug hidden" data-viddel-lab-debug>
                 <summary>Vision / QA-data</summary>
                 <div class="lab-image-qa__debug-body">
                   <div class="lab-image-qa__debug-block">
@@ -103,8 +104,9 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
                     <pre class="lab-image-qa__debug-pre" data-viddel-lab-debug-chat-text></pre>
                   </div>
                 </div>
-              </details>
-              <div class="lab-image-qa__scroll-spacer" data-viddel-lab-scroll-spacer aria-hidden="true"></div>
+                </details>
+                <div class="lab-image-qa__scroll-spacer" data-viddel-lab-scroll-spacer aria-hidden="true"></div>
+              </div>
             </div>
 
             <details class="lab-image-qa__settings mt-3" data-viddel-lab-settings>
@@ -138,46 +140,57 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
                   class="sr-only"
                   data-viddel-lab-file
                 />
-                <button
-                  type="button"
-                  class="lab-image-qa__attach"
-                  data-viddel-lab-attach
-                  aria-label="Legg ved bilde av utstyr"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M4 7a3 3 0 0 1 3-3h4.5a2.5 2.5 0 0 1 2.12 1.18L15 7h2a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7Z"
-                    ></path>
-                    <circle cx="12" cy="13" r="3.25"></circle>
-                  </svg>
-                </button>
-                <div class="inline-chat-shell__compose-input-wrap lab-image-qa__compose-input-wrap">
-                  <div class="lab-image-qa__attachment hidden" data-viddel-lab-attachment>
-                    <img class="lab-image-qa__thumb" data-viddel-lab-thumb alt="Valgt utstyr-bilde" />
-                    <button type="button" class="lab-image-qa__remove-attachment" data-viddel-lab-remove aria-label="Fjern bilde">
-                      ×
-                    </button>
+                <div class="lab-image-qa__attachment-strip hidden" data-viddel-lab-attachment-strip>
+                  <div class="lab-image-qa__attachment-list" data-viddel-lab-attachment-list>
+                    <div class="lab-image-qa__attachment" data-viddel-lab-attachment>
+                      <img class="lab-image-qa__thumb" data-viddel-lab-thumb alt="Valgt utstyr-bilde" />
+                      <button
+                        type="button"
+                        class="lab-image-qa__remove-attachment"
+                        data-viddel-lab-remove
+                        aria-label="Fjern bilde"
+                      >
+                        ×
+                      </button>
+                    </div>
                   </div>
-                  <label class="sr-only" for="viddel-lab-input">Beskriv situasjonen eller spørsmålet ditt</label>
-                  <textarea
-                    id="viddel-lab-input"
-                    data-viddel-lab-input
-                    class="inline-chat-shell__compose-input"
-                    rows="1"
-                    placeholder="Hva lurer du på?"
-                  ></textarea>
                 </div>
-                <button
-                  type="submit"
-                  class="inline-chat-shell__compose-send"
-                  data-viddel-lab-send
-                  aria-label="Send med bilde"
-                  disabled
-                >
-                  <span aria-hidden="true">↑</span>
-                </button>
+                <div class="lab-image-qa__compose-row">
+                  <button
+                    type="button"
+                    class="lab-image-qa__attach"
+                    data-viddel-lab-attach
+                    aria-label="Legg ved bilde av utstyr"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M4 7a3 3 0 0 1 3-3h4.5a2.5 2.5 0 0 1 2.12 1.18L15 7h2a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7Z"
+                      ></path>
+                      <circle cx="12" cy="13" r="3.25"></circle>
+                    </svg>
+                  </button>
+                  <div class="inline-chat-shell__compose-input-wrap lab-image-qa__compose-input-wrap">
+                    <label class="sr-only" for="viddel-lab-input">Beskriv situasjonen eller spørsmålet ditt</label>
+                    <textarea
+                      id="viddel-lab-input"
+                      data-viddel-lab-input
+                      class="inline-chat-shell__compose-input"
+                      rows="1"
+                      placeholder="Hva lurer du på?"
+                    ></textarea>
+                  </div>
+                  <button
+                    type="submit"
+                    class="inline-chat-shell__compose-send"
+                    data-viddel-lab-send
+                    aria-label="Send med bilde"
+                    disabled
+                  >
+                    <span aria-hidden="true">↑</span>
+                  </button>
+                </div>
               </form>
             </div>
           </section>
@@ -215,6 +228,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       const intro = document.querySelector("[data-viddel-lab-intro]");
       const header = shell?.querySelector("[data-inline-chat-header]");
       const dialog = document.querySelector("[data-viddel-lab-dialog]");
+      const scrollViewport = document.querySelector("[data-viddel-lab-scroll-viewport]");
       const transcript = document.querySelector("[data-viddel-lab-transcript]");
       const composeStack = document.querySelector("[data-viddel-lab-compose-stack]");
       const errorEl = document.querySelector("[data-viddel-lab-error]");
@@ -223,6 +237,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       const sendBtn = document.querySelector("[data-viddel-lab-send]");
       const fileInput = document.querySelector("[data-viddel-lab-file]");
       const attachBtn = document.querySelector("[data-viddel-lab-attach]");
+      const attachmentStrip = document.querySelector("[data-viddel-lab-attachment-strip]");
       const attachmentWrap = document.querySelector("[data-viddel-lab-attachment]");
       const thumbEl = document.querySelector("[data-viddel-lab-thumb]");
       const removeBtn = document.querySelector("[data-viddel-lab-remove]");
@@ -246,6 +261,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         !intro ||
         !header ||
         !dialog ||
+        !scrollViewport ||
         !transcript ||
         !composeStack ||
         !errorEl ||
@@ -254,6 +270,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         !sendBtn ||
         !fileInput ||
         !attachBtn ||
+        !attachmentStrip ||
         !attachmentWrap ||
         !thumbEl ||
         !removeBtn ||
@@ -289,7 +306,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
 
       const scrollDialogToEnd = () => {
         requestAnimationFrame(() => {
-          dialog.scrollTop = dialog.scrollHeight;
+          scrollViewport.scrollTop = scrollViewport.scrollHeight;
         });
       };
 
@@ -367,7 +384,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         selectedFile = null;
         fileInput.value = "";
         thumbEl.removeAttribute("src");
-        attachmentWrap.classList.add("hidden");
+        attachmentStrip.classList.add("hidden");
         refreshSendState();
         resizeInput();
         syncComposeReserve();
@@ -391,7 +408,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         clearError();
         const previewUrl = URL.createObjectURL(file);
         thumbEl.src = previewUrl;
-        attachmentWrap.classList.remove("hidden");
+        attachmentStrip.classList.remove("hidden");
         selectedFile = { file, previewUrl };
         refreshSendState();
         resizeInput();
@@ -710,9 +727,9 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       if ("ResizeObserver" in window) {
         const observer = new ResizeObserver(syncComposeReserve);
         observer.observe(composeStack);
-        observer.observe(attachmentWrap);
+        observer.observe(attachmentStrip);
         observer.observe(input);
-        observer.observe(dialog);
+        observer.observe(scrollViewport);
       }
 
       debugEl.addEventListener("toggle", () => {
