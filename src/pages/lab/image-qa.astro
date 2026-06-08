@@ -63,6 +63,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
 
             <div class="inline-chat-shell__dialog-thread mt-3 hidden" data-viddel-lab-dialog>
               <div class="lab-image-qa__scroll-viewport" data-viddel-lab-scroll-viewport>
+                <div class="lab-image-qa__scroll-top-spacer" aria-hidden="true"></div>
                 <div class="inline-chat-shell__transcript-divider">
                   <span class="inline-chat-shell__transcript-divider-line" aria-hidden="true"></span>
                   <span class="inline-chat-shell__transcript-divider-label" id="viddel-lab-dialog-label">
@@ -295,13 +296,11 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
 
       const syncComposeReserve = () => {
         const rect = composeStack.getBoundingClientRect();
-        const composeHeight = Math.ceil(rect.height);
-        const bottomInset = Math.max(0, Math.ceil(window.innerHeight - rect.bottom));
-        const readMargin = 24;
-        const reserve = composeHeight + bottomInset + readMargin;
-        const reservePx = `${reserve}px`;
-        shell.style.setProperty("--inline-chat-bottom-reserve", reservePx);
-        document.body.style.setProperty("--viddel-chat-compose-reserve", reservePx);
+        const blockedBottom = Math.max(0, Math.ceil(window.innerHeight - rect.top)) + 20;
+        const blockedPx = `${blockedBottom}px`;
+        root.style.setProperty("--lab-bottom-spacer", blockedPx);
+        shell.style.setProperty("--inline-chat-bottom-reserve", blockedPx);
+        document.body.style.setProperty("--viddel-chat-compose-reserve", blockedPx);
       };
 
       const scrollDialogToEnd = () => {
