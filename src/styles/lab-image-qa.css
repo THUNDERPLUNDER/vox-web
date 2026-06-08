@@ -1,13 +1,56 @@
 /* CONTRACT: Lab image-QA composer extensions — attachment + thumbnail in inline-chat-shell (#240). Lab-only; /no/chat unchanged. */
 
 [data-viddel-lab-image-qa] {
-  --lab-compose-scroll-tail: calc(max(0.75rem, env(safe-area-inset-bottom, 0px)) + 1.25rem);
+  --lab-compose-scroll-tail: calc(max(0.75rem, env(safe-area-inset-bottom, 0px)) + 1.75rem);
+}
+
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-qa] .r1-editorial-container {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-qa] .viddel-chat-standalone__editorial {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-qa] .inline-chat-shell {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-qa] .inline-chat-shell__dialog-thread:not(.hidden) {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-padding-bottom: calc(var(--inline-chat-bottom-reserve, 8rem) + var(--lab-compose-scroll-tail));
 }
 
 [data-viddel-lab-image-qa]
   .inline-chat-shell[data-inline-chat-conversation="active"]
   .inline-chat-shell__dialog-thread {
-  padding-bottom: calc(var(--inline-chat-bottom-reserve, 7.5rem) + var(--lab-compose-scroll-tail));
+  padding-bottom: 0;
+}
+
+.lab-image-qa__scroll-spacer {
+  flex-shrink: 0;
+  height: calc(var(--inline-chat-bottom-reserve, 8rem) + var(--lab-compose-scroll-tail));
+  pointer-events: none;
+  width: 100%;
 }
 
 [data-viddel-lab-image-qa]
@@ -94,16 +137,24 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
   width: 1.15rem;
 }
 
-.lab-image-qa__compose-input-wrap {
+[data-viddel-lab-image-qa] .lab-image-qa__compose-input-wrap {
+  align-items: flex-start;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  justify-content: flex-start;
   min-width: 0;
   overflow: hidden;
+  width: 100%;
 }
 
-.lab-image-qa__compose-input-wrap:has(.lab-image-qa__attachment:not(.hidden)) {
+[data-viddel-lab-image-qa] .lab-image-qa__compose-input-wrap:has(.lab-image-qa__attachment:not(.hidden)) {
   overflow: visible;
+}
+
+[data-viddel-lab-image-qa] .lab-image-qa__compose-input-wrap > .inline-chat-shell__compose-input {
+  align-self: stretch;
+  width: 100%;
 }
 
 [data-viddel-lab-image-qa] .inline-chat-shell[data-inline-chat-conversation="idle"] .lab-image-qa__compose {
@@ -136,8 +187,9 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
 
 .lab-image-qa__attachment {
   align-self: flex-start;
-  display: inline-block;
+  display: block;
   flex-shrink: 0;
+  margin: 0;
   max-width: 100%;
   position: relative;
   width: 3rem;
@@ -303,5 +355,29 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
     height: 2.68rem;
     min-height: 2.68rem;
     width: 2.68rem;
+  }
+
+  [data-viddel-lab-image-qa] .lab-image-qa__compose-input-wrap:has(.lab-image-qa__attachment:not(.hidden)) {
+    align-items: flex-end;
+    flex-direction: row;
+    gap: 0.45rem;
+  }
+
+  [data-viddel-lab-image-qa]
+    .lab-image-qa__compose-input-wrap:has(.lab-image-qa__attachment:not(.hidden))
+    > .inline-chat-shell__compose-input {
+    align-self: stretch;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  [data-viddel-lab-image-qa] .lab-image-qa__attachment {
+    width: 3.35rem;
+  }
+
+  [data-viddel-lab-image-qa] .lab-image-qa__thumb {
+    border-radius: 999px;
+    height: 2.15rem;
+    width: 3.35rem;
   }
 }
