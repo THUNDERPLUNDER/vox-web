@@ -20,6 +20,7 @@ export const SOURCE_TYPES = [
   "public_policy",
   "editorial",
   "viddel_canonical",
+  "user_guidance_candidate",
   "market_validation",
   "strategic_research",
   "inspiration_context",
@@ -48,12 +49,24 @@ export type ReviewNeed = (typeof REVIEW_NEEDS)[number];
 /** Drive metadata snapshot row — input to scaffold script. */
 export type DriveSnapshotEntry = {
   driveId: string;
-  title: string;
+  title?: string;
+  name?: string;
   mimeType: string;
   url: string;
   createdTime: string;
   modifiedTime: string;
-  pathHint: string;
+  pathHint?: string;
+  path?: string;
+  type?: "file" | "folder";
+  parentPath?: string | null;
+  fileCountDirect?: number | null;
+  folderCountDirect?: number | null;
+  recursiveFileCount?: number | null;
+  isEmptyFolder?: boolean | null;
+  sourcePool?: string;
+  suggestedUse?: string;
+  reviewNeed?: ReviewNeed | string;
+  notes?: string | null;
 };
 
 /** Registry row after scaffold / human promotion. */
@@ -64,6 +77,14 @@ export type SourceRegistryEntry = {
   mimeType: string;
   url: string;
   pathHint: string;
+  inventoryType?: "file" | "folder";
+  parentPath?: string | null;
+  fileCountDirect?: number | null;
+  folderCountDirect?: number | null;
+  recursiveFileCount?: number | null;
+  isEmptyFolder?: boolean | null;
+  sourcePool?: string;
+  suggestedUse?: string;
   sourceType: SourceType;
   brand: Brand;
   verificationStatus: VerificationStatus;
@@ -81,6 +102,13 @@ export type SourceRegistryFile = {
   version: "0.1";
   generatedAt: string;
   snapshotSource: string;
+  snapshotKind?: string;
+  snapshotSummary?: {
+    rows: number;
+    folders: number;
+    files: number;
+    emptyFolders: number;
+  };
   classifierVersion: string;
   entries: SourceRegistryEntry[];
 };
@@ -111,6 +139,9 @@ export type DatastoreReadyManifest = {
 export type KnowledgeStatusSummary = {
   generatedAt: string;
   totalSources: number;
+  files: number;
+  folders: number;
+  emptyFolders: number;
   rawOriginal: number;
   machineClassified: number;
   needsReview: number;

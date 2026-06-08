@@ -15,9 +15,9 @@ const ROOT = resolve(__dirname, "..");
 
 function parseArgs(argv) {
   const args = {
-    input: "data/source-inventory/drive-snapshot.expanded.sample.json",
-    out: "data/source-inventory/source-registry.generated.expanded.sample.json",
-    statusOut: "data/source-inventory/knowledge-status.expanded.sample.json",
+    input: "data/source-inventory/drive-inventory.full.v0.1.json",
+    out: "data/source-inventory/source-registry.generated.full.v0.1.json",
+    statusOut: "data/source-inventory/knowledge-status.full.v0.1.json",
     summaryOut: "",
   };
   for (let i = 2; i < argv.length; i += 1) {
@@ -45,6 +45,9 @@ Classifier: ${CLASSIFIER_VERSION}
 | Metric | Count |
 |--------|------:|
 | Total sources | ${status.totalSources} |
+| files | ${status.files} |
+| folders | ${status.folders} |
+| empty folders | ${status.emptyFolders} |
 | raw_original | ${status.rawOriginal} |
 | machine_classified | ${status.machineClassified} |
 | needs review | ${status.needsReview} |
@@ -55,7 +58,7 @@ Classifier: ${CLASSIFIER_VERSION}
 | deprecated | ${status.deprecated} |
 | stale/outdated | ${status.staleOrOutdated} |
 
-> Expanded sample snapshot only — broader than the first 10-source sample, but still not a live or complete Drive inventory.
+> Full Drive inventory snapshot baseline — generated from Sheet export, not a live Drive dashboard.
 `;
 }
 
@@ -64,13 +67,14 @@ const inputPath = resolve(ROOT, args.input);
 const outPath = resolve(ROOT, args.out);
 const statusPath = resolve(ROOT, args.statusOut);
 
-const snapshot = JSON.parse(readFileSync(inputPath, "utf8"));
-if (!Array.isArray(snapshot)) {
-  console.error("Input must be a JSON array of Drive snapshot entries.");
+const snapshotFile = JSON.parse(readFileSync(inputPath, "utf8"));
+const snapshotRows = Array.isArray(snapshotFile) ? snapshotFile : snapshotFile.rows;
+if (!Array.isArray(snapshotRows)) {
+  console.error("Input must be a JSON array or an object with a rows array.");
   process.exit(1);
 }
 
-const { entries, generatedAt } = scaffoldRegistryFromSnapshot(snapshot, {
+const { entries, generatedAt } = scaffoldRegistryFromSnapshot(snapshotFile, {
   snapshotSource: args.input,
 });
 
@@ -78,6 +82,8 @@ const registry = {
   version: "0.1",
   generatedAt,
   snapshotSource: args.input,
+  snapshotKind: Array.isArray(snapshotFile) ? "drive_snapshot" : snapshotFile.snapshotKind,
+  snapshotSummary: Array.isArray(snapshotFile) ? undefined : snapshotFile.summary,
   classifierVersion: CLASSIFIER_VERSION,
   entries,
 };

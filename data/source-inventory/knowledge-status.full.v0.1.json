@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-06-08T13:17:20.351Z",
+  "totalSources": 490,
+  "files": 414,
+  "folders": 76,
+  "emptyFolders": 17,
+  "rawOriginal": 0,
+  "machineClassified": 490,
+  "needsReview": 490,
+  "provisionalInsight": 0,
+  "reviewedInsight": 0,
+  "canonicalGuidance": 0,
+  "datastoreReady": 0,
+  "deprecated": 0,
+  "staleOrOutdated": 0,
+  "directProductionImport": 0
+}

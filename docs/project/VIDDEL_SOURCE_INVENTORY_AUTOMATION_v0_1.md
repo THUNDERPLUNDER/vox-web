@@ -2,7 +2,7 @@
 
 Status: Operativ grunnmur / #228  
 Dato: 2026-06-05  
-Koblet til: [#228](https://github.com/THUNDERPLUNDER/vox-web/issues/228), [#226](https://github.com/THUNDERPLUNDER/vox-web/issues/226), [#227](https://github.com/THUNDERPLUNDER/vox-web/pull/227), [#232](https://github.com/THUNDERPLUNDER/vox-web/issues/232)
+Koblet til: [#228](https://github.com/THUNDERPLUNDER/vox-web/issues/228), [#226](https://github.com/THUNDERPLUNDER/vox-web/issues/226), [#227](https://github.com/THUNDERPLUNDER/vox-web/pull/227), [#232](https://github.com/THUNDERPLUNDER/vox-web/issues/232), [#250](https://github.com/THUNDERPLUNDER/vox-web/issues/250)
 Scope: Inventory scaffold + manifest gate — **ingen** datastore-import  
 
 > **Note:** Architecture doc `VIDDEL_DATASTORE_SOURCE_ARCHITECTURE_v0_1.md` (#227) may land on `main` separately. This doc implements the operational v0.1 scaffold.
@@ -28,7 +28,7 @@ Enforcement v0.1: **manifest validator script** (repo gate before future import 
 | sourceType / brand heuristic | **Yes** | `src/lib/source-registry.ts` |
 | verificationStatus (`machine_classified`) | **Yes** | Same |
 | reviewNeed suggestion | **Yes** | Same |
-| Knowledge status counts | **Yes** | `knowledge-status.expanded.sample.json` |
+| Knowledge status counts | **Yes** | `knowledge-status.full.v0.1.json` |
 | Manifest validation | **Yes** | `npm run source:manifest:check` |
 | Live Drive API inventory | **No** | Snapshot JSON contract only |
 | Google Sheet registry | **No** | Follow-up |
@@ -50,7 +50,13 @@ NO-HITL gjelder repetitivt scaffold-arbeid — ikke ansvar eller synlighet.
 
 ## 4. Inventory snapshot input
 
-**Default path:** `data/source-inventory/drive-snapshot.expanded.sample.json`
+**Default path:** `data/source-inventory/drive-inventory.full.v0.1.json`
+
+Inventory levels retained in repo:
+
+- Narrow 10-source sample: early scaffold fixture only.
+- Expanded 81-entry sample: #232 fixture from screenshots / Drive safe-read.
+- Full Drive inventory snapshot: #250 baseline mirrored from Google Sheet `FULL_Inventory_v0.1`.
 
 Original 10-source sample retained:
 
@@ -58,7 +64,7 @@ Original 10-source sample retained:
 - `data/source-inventory/source-registry.generated.sample.json`
 - `data/source-inventory/knowledge-status.sample.json`
 
-Export Drive metadata (manual or future script) to JSON array:
+Export Drive metadata (manual or future script) to a JSON array, or to an object with a `rows` array:
 
 - `driveId`, `title`, `mimeType`, `url`, `createdTime`, `modifiedTime`, `pathHint`
 
@@ -73,6 +79,16 @@ Expanded sample reflects safe-read from screenshots / Drive safe-read across:
 
 It is broader than the original 10-source sample, but still **not** a complete live Drive inventory.
 
+Full snapshot is the current baseline for VIS/source-status work:
+
+- `data/source-inventory/drive-inventory.full.v0.1.json`
+- 490 rows total
+- 414 files
+- 76 folders
+- 17 empty folders
+
+The full snapshot was exported mechanically from the source Google Sheet tab `FULL_Inventory_v0.1`. It is not a live Drive API dashboard, does not move or import Drive files, and does not imply datastore readiness.
+
 ---
 
 ## 5. Scaffold command
@@ -85,15 +101,15 @@ Or explicitly:
 
 ```bash
 node --experimental-strip-types scripts/source-inventory-scaffold.mjs \
-  --input=data/source-inventory/drive-snapshot.expanded.sample.json \
-  --out=data/source-inventory/source-registry.generated.expanded.sample.json \
-  --status-out=data/source-inventory/knowledge-status.expanded.sample.json
+  --input=data/source-inventory/drive-inventory.full.v0.1.json \
+  --out=data/source-inventory/source-registry.generated.full.v0.1.json \
+  --status-out=data/source-inventory/knowledge-status.full.v0.1.json
 ```
 
 **Outputs:**
 
-- `source-registry.generated.expanded.sample.json` — registry scaffold
-- `knowledge-status.expanded.sample.json` — VIS-readable status counts
+- `source-registry.generated.full.v0.1.json` — registry scaffold
+- `knowledge-status.full.v0.1.json` — VIS-readable status counts
 
 ---
 
@@ -105,8 +121,8 @@ JSON file:
 {
   "version": "0.1",
   "generatedAt": "...",
-  "snapshotSource": "data/source-inventory/drive-snapshot.expanded.sample.json",
-  "classifierVersion": "v0.2-expanded-heuristic",
+  "snapshotSource": "data/source-inventory/drive-inventory.full.v0.1.json",
+  "classifierVersion": "v0.3-full-inventory-heuristic",
   "entries": [ /* SourceRegistryEntry */ ]
 }
 ```
@@ -134,16 +150,17 @@ See also: `docs/project/VIDDEL_DATASTORE_READY_MANIFEST_v0_1.md`
 
 ---
 
-## 8. VIS status model (future)
+## 8. VIS status model
 
-`knowledge-status.expanded.sample.json` exposes:
+`knowledge-status.full.v0.1.json` exposes:
 
 - `totalSources`, `rawOriginal`, `machineClassified`, `needsReview`
 - `provisionalInsight`, `reviewedInsight`, `canonicalGuidance`, `datastoreReady`, `deprecated`
 - `staleOrOutdated`
 - `directProductionImport`
+- `files`, `folders`, `emptyFolders`
 
-VIS knowledge status panel v0.1 reads the expanded sample. It must not be described as full Drive inventory.
+VIS knowledge status panel v0.1 reads the full snapshot baseline. It must not be described as live Drive inventory or production datastore state.
 
 ## 8.1 Classification additions in #232
 
@@ -156,6 +173,17 @@ Classifier v0.2 adds explicit buckets for:
 
 All generated entries set `directProductionImport: false`.
 
+## 8.2 Full inventory additions in #250
+
+Classifier v0.3 accepts the full Sheet export shape:
+
+- `rows` wrapper with spreadsheet metadata
+- `name` / `path` fields from `FULL_Inventory_v0.1`
+- file/folder metadata: `type`, `parentPath`, `fileCountDirect`, `folderCountDirect`, `recursiveFileCount`, `isEmptyFolder`
+- source-pool hints including `user_guidance_candidate`
+
+The previous 10-source and 81-entry files remain in repo as samples/archive fixtures, but they are no longer the current VIS/source-status baseline.
+
 ---
 
 ## 9. Why raw Drive does not go to production
@@ -166,7 +194,7 @@ Manuals and mixed folders cause manualdump, conflicting brand advice, and unclea
 
 ## 10. Live Drive inventory (deferred)
 
-No Drive API integration in v0.1. Next step: export script or scheduled snapshot → same JSON contract → `source:inventory`.
+No live Drive API integration in v0.1. Next step: export script or scheduled snapshot → same JSON contract → `source:inventory`.
 
 ---
 
