@@ -66,7 +66,7 @@ export type ClosedSprint = {
 };
 
 export const mvpCurrentState = {
-  updatedAt: "2026-06-05",
+  updatedAt: "2026-06-08",
   currentSprint: {
     id: "2026-w21",
     label: "2026-W21",
@@ -162,7 +162,7 @@ export const mvpCurrentState = {
       id: "knowledge-status",
       label: "Knowledge status",
       route: "/vis/system/knowledge-status-v01/",
-      role: "Source trust, review-behov og manifest-gate — sample inventory v0.1",
+      role: "Source trust, review-behov og manifest-gate — full Drive inventory snapshot v0.1",
       visFrontpage: false,
     },
   ] satisfies CanonicalReference[],
@@ -204,6 +204,12 @@ export const mvpCurrentState = {
     },
   ] satisfies NextRisk[],
   recentChanges: [
+    {
+      date: "2026-06-08",
+      summary: "Full Drive inventory snapshot v0.1 — 490 rader, 414 filer, 76 mapper og 17 tomme mapper speilet fra FULL_Inventory_v0.1; VIS knowledge-status oppdatert (#250)",
+      issue: "#250",
+      commit: "—",
+    },
     {
       date: "2026-06-05",
       summary: "Expanded source inventory sample v0.1 — 81 Drive snapshot entries, market/audio/inspiration classification og VIS knowledge-status oppdatert (#232)",

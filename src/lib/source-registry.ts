@@ -11,7 +11,7 @@ import type {
   VerificationStatus,
 } from "../data/source-registry/source-types.ts";
 
-export const CLASSIFIER_VERSION = "v0.2-expanded-heuristic";
+export const CLASSIFIER_VERSION = "v0.3-full-inventory-heuristic";
 
 const STALE_MS = 180 * 24 * 60 * 60 * 1000; // ~6 months
 
@@ -66,6 +66,43 @@ function detectSourceType(title: string, pathHint: string, mimeType: string): So
   return "unknown";
 }
 
+function detectSourceTypeFromPool(sourcePool?: string): SourceType | null {
+  if (!sourcePool || sourcePool === "unknown") return null;
+  if (sourcePool === "raw_audio") return "audio";
+  if (sourcePool === "user_guidance_candidate") return "user_guidance_candidate";
+  if (sourcePool === "manufacturer_manual") return "manufacturer_manual";
+  if (sourcePool === "public_policy") return "public_policy";
+  if (sourcePool === "stakeholder_expert") return "stakeholder_expert";
+  if (sourcePool === "market_validation") return "market_validation";
+  if (sourcePool === "strategic_research") return "strategic_research";
+  if (sourcePool === "inspiration_context") return "inspiration_context";
+  if (sourcePool === "viddel_canonical") return "viddel_canonical";
+  return null;
+}
+
+function entryTitle(entry: DriveSnapshotEntry): string {
+  return entry.title ?? entry.name ?? "";
+}
+
+function entryPathHint(entry: DriveSnapshotEntry): string {
+  return entry.pathHint ?? entry.path ?? "";
+}
+
+function coerceReviewNeed(value: DriveSnapshotEntry["reviewNeed"]): ReviewNeed | null {
+  if (
+    value === "none" ||
+    value === "needs_metadata" ||
+    value === "needs_source_check" ||
+    value === "needs_freshness_check" ||
+    value === "needs_human_review" ||
+    value === "needs_canonical_rewrite" ||
+    value === "needs_transcript"
+  ) {
+    return value;
+  }
+  return null;
+}
+
 function pickReviewNeed(
   entry: DriveSnapshotEntry,
   sourceType: SourceType,
@@ -75,9 +112,12 @@ function pickReviewNeed(
 
   if (!entry.driveId?.trim()) needs.push("needs_metadata");
   if (!entry.url?.trim()) needs.push("needs_metadata");
+  const sheetReviewNeed = coerceReviewNeed(entry.reviewNeed);
+  if (sheetReviewNeed) needs.push(sheetReviewNeed);
   if (sourceType === "unknown" || brand === "unknown") needs.push("needs_human_review");
   if (sourceType === "manufacturer_manual") needs.push("needs_canonical_rewrite");
   if (sourceType === "app_guide") needs.push("needs_canonical_rewrite");
+  if (sourceType === "user_guidance_candidate") needs.push("needs_human_review");
   if (sourceType === "market_validation" || sourceType === "strategic_research") {
     needs.push("needs_source_check");
   }
@@ -104,18 +144,19 @@ function confidenceFor(sourceType: SourceType, brand: Brand): "high" | "medium" 
   return "high";
 }
 
-function notesFor(sourceType: SourceType, classified: boolean): string {
+function notesFor(sourceType: SourceType, classified: boolean, entryNotes?: string | null): string {
+  const suffix = entryNotes?.trim() ? ` Sheet notes: ${entryNotes.trim()}` : "";
   if (!classified) return "Unclassified raw snapshot entry.";
   if (sourceType === "market_validation" || sourceType === "strategic_research") {
-    return "Auto-classified by source-inventory-scaffold (heuristic v0.2). Strategy/market material only; not direct user-answer material unless rewritten as canonical Viddel guidance and manifest-approved.";
+    return `Auto-classified by source-inventory-scaffold (${CLASSIFIER_VERSION}). Strategy/market material only; not direct user-answer material unless rewritten as canonical Viddel guidance and manifest-approved.${suffix}`;
   }
   if (sourceType === "inspiration_context") {
-    return "Auto-classified by source-inventory-scaffold (heuristic v0.2). Context/inspiration material; not a default datastore candidate.";
+    return `Auto-classified by source-inventory-scaffold (${CLASSIFIER_VERSION}). Context/inspiration material; not a default datastore candidate.${suffix}`;
   }
   if (sourceType === "audio") {
-    return "Auto-classified by source-inventory-scaffold (heuristic v0.2). Raw audio requires transcript and human review before downstream use.";
+    return `Auto-classified by source-inventory-scaffold (${CLASSIFIER_VERSION}). Raw audio requires transcript and human review before downstream use.${suffix}`;
   }
-  return "Auto-classified by source-inventory-scaffold (heuristic v0.2).";
+  return `Auto-classified by source-inventory-scaffold (${CLASSIFIER_VERSION}).${suffix}`;
 }
 
 /** Deterministic scaffold: Drive snapshot → registry entry. */
@@ -124,8 +165,11 @@ export function classifyDriveEntry(
   options: { now?: string; classifierVersion?: string } = {},
 ): SourceRegistryEntry {
   const now = options.now ?? new Date().toISOString();
-  const sourceType = detectSourceType(entry.title, entry.pathHint, entry.mimeType);
-  const brand = detectBrand(entry.title, entry.pathHint);
+  const title = entryTitle(entry);
+  const pathHint = entryPathHint(entry);
+  const sourceType =
+    detectSourceTypeFromPool(entry.sourcePool) ?? detectSourceType(title, pathHint, entry.mimeType);
+  const brand = detectBrand(title, pathHint);
   const reviewNeed = pickReviewNeed(entry, sourceType, brand);
   const classified = sourceType !== "unknown" || brand !== "unknown";
 
@@ -139,10 +183,18 @@ export function classifyDriveEntry(
   return {
     id,
     driveId: entry.driveId,
-    title: entry.title,
+    title,
     mimeType: entry.mimeType,
     url: entry.url,
-    pathHint: entry.pathHint,
+    pathHint,
+    inventoryType: entry.type,
+    parentPath: entry.parentPath,
+    fileCountDirect: entry.fileCountDirect,
+    folderCountDirect: entry.folderCountDirect,
+    recursiveFileCount: entry.recursiveFileCount,
+    isEmptyFolder: entry.isEmptyFolder,
+    sourcePool: entry.sourcePool,
+    suggestedUse: entry.suggestedUse,
     sourceType,
     brand,
     verificationStatus,
@@ -153,7 +205,7 @@ export function classifyDriveEntry(
     modifiedTime: entry.modifiedTime,
     lastSeenAt: now,
     classifierVersion: options.classifierVersion ?? CLASSIFIER_VERSION,
-    notes: notesFor(sourceType, classified),
+    notes: notesFor(sourceType, classified, entry.notes),
   };
 }
 
@@ -195,16 +247,21 @@ function withDuplicateHints(entries: SourceRegistryEntry[]): SourceRegistryEntry
 }
 
 export function scaffoldRegistryFromSnapshot(
-  snapshot: DriveSnapshotEntry[],
+  snapshot: DriveSnapshotEntry[] | { rows?: DriveSnapshotEntry[] },
   options: { snapshotSource?: string; now?: string } = {},
 ): { entries: SourceRegistryEntry[]; generatedAt: string } {
   const generatedAt = options.now ?? new Date().toISOString();
+  const snapshotRows = extractSnapshotRows(snapshot);
   const entries = withDuplicateHints(
-    snapshot.map((row) =>
+    snapshotRows.map((row) =>
       classifyDriveEntry(row, { now: generatedAt, classifierVersion: CLASSIFIER_VERSION }),
     ),
   );
   return { entries, generatedAt };
+}
+
+function extractSnapshotRows(snapshot: DriveSnapshotEntry[] | { rows?: DriveSnapshotEntry[] }): DriveSnapshotEntry[] {
+  return Array.isArray(snapshot) ? snapshot : snapshot.rows ?? [];
 }
 
 export function summarizeKnowledgeStatus(
@@ -224,6 +281,9 @@ export function summarizeKnowledgeStatus(
   return {
     generatedAt: now,
     totalSources: entries.length,
+    files: entries.filter((e) => e.inventoryType === "file").length,
+    folders: entries.filter((e) => e.inventoryType === "folder").length,
+    emptyFolders: entries.filter((e) => e.isEmptyFolder === true).length,
     rawOriginal: countStatus("raw_original"),
     machineClassified: countStatus("machine_classified"),
     needsReview,

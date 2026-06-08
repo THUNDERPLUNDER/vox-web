@@ -1,7 +1,7 @@
 /* CONTRACT: VIS read model for source inventory / knowledge status v0.1 (#230). */
 
-import knowledgeStatusSample from "../../data/source-inventory/knowledge-status.expanded.sample.json";
-import sourceRegistrySample from "../../data/source-inventory/source-registry.generated.expanded.sample.json";
+import knowledgeStatusSnapshot from "../../data/source-inventory/knowledge-status.full.v0.1.json";
+import sourceRegistrySnapshot from "../../data/source-inventory/source-registry.generated.full.v0.1.json";
 import manifestPlaceholder from "../../data/source-inventory/datastore-ready-manifest.sample.json";
 import manifestValid from "../../data/source-inventory/datastore-ready-manifest.valid.sample.json";
 import { validateDatastoreManifest } from "../lib/source-registry.ts";
@@ -10,11 +10,11 @@ import type { ReviewNeed, SourceRegistryEntry } from "./source-registry/source-t
 export const visKnowledgeStatusMeta = {
   version: "v0.1",
   pageRoute: "/vis/system/knowledge-status-v01",
-  dataSource: "data/source-inventory/*.expanded.sample.json",
-  updatedAt: knowledgeStatusSample.generatedAt.slice(0, 10),
-  classifierVersion: sourceRegistrySample.classifierVersion,
-  snapshotSource: sourceRegistrySample.snapshotSource,
-  sampleLabel: "expanded sample",
+  dataSource: "data/source-inventory/drive-inventory.full.v0.1.json",
+  updatedAt: knowledgeStatusSnapshot.generatedAt.slice(0, 10),
+  classifierVersion: sourceRegistrySnapshot.classifierVersion,
+  snapshotSource: sourceRegistrySnapshot.snapshotSource,
+  sampleLabel: "full Drive inventory snapshot",
 } as const;
 
 export const productionManifestRule =
@@ -107,55 +107,58 @@ function manifestSummary(
 }
 
 export function getVisKnowledgeStatusModel() {
-  const entries = sourceRegistrySample.entries as SourceRegistryEntry[];
+  const entries = sourceRegistrySnapshot.entries as SourceRegistryEntry[];
   const reviewNeeds = countByReviewNeed(entries);
 
   const statusCounts: StatusCount[] = [
-    { id: "totalSources", label: "Totalt kilder", value: knowledgeStatusSample.totalSources },
-    { id: "rawOriginal", label: "Raw originals", value: knowledgeStatusSample.rawOriginal },
+    { id: "totalSources", label: "Totalt inventory-rader", value: knowledgeStatusSnapshot.totalSources },
+    { id: "files", label: "Filer", value: knowledgeStatusSnapshot.files ?? 0 },
+    { id: "folders", label: "Mapper", value: knowledgeStatusSnapshot.folders ?? 0 },
+    { id: "emptyFolders", label: "Tomme mapper", value: knowledgeStatusSnapshot.emptyFolders ?? 0 },
+    { id: "rawOriginal", label: "Raw originals", value: knowledgeStatusSnapshot.rawOriginal },
     {
       id: "machineClassified",
       label: "Machine classified",
-      value: knowledgeStatusSample.machineClassified,
+      value: knowledgeStatusSnapshot.machineClassified,
     },
     {
       id: "needsReview",
       label: "Trenger review",
-      value: knowledgeStatusSample.needsReview,
-      hint: "Alle sample-kilder har minst ett review-flagg i v0.1.",
+      value: knowledgeStatusSnapshot.needsReview,
+      hint: "Full snapshot er maskinklassifisert og trenger human review før eventuell promotering.",
     },
     {
       id: "directProductionImport",
       label: "Direkte production-import",
-      value: knowledgeStatusSample.directProductionImport ?? 0,
+      value: knowledgeStatusSnapshot.directProductionImport ?? 0,
       hint: "Skal være 0. Production krever datastore_ready manifest.",
     },
     {
       id: "provisionalInsight",
       label: "Provisional insight",
-      value: knowledgeStatusSample.provisionalInsight,
+      value: knowledgeStatusSnapshot.provisionalInsight,
     },
     {
       id: "reviewedInsight",
       label: "Reviewed insight",
-      value: knowledgeStatusSample.reviewedInsight,
+      value: knowledgeStatusSnapshot.reviewedInsight,
     },
     {
       id: "canonicalGuidance",
       label: "Canonical guidance",
-      value: knowledgeStatusSample.canonicalGuidance,
+      value: knowledgeStatusSnapshot.canonicalGuidance,
     },
     {
       id: "datastoreReady",
       label: "Datastore-ready",
-      value: knowledgeStatusSample.datastoreReady,
+      value: knowledgeStatusSnapshot.datastoreReady,
       hint: "Eneste tillatte status for production-import via manifest.",
     },
-    { id: "deprecated", label: "Deprecated", value: knowledgeStatusSample.deprecated },
+    { id: "deprecated", label: "Deprecated", value: knowledgeStatusSnapshot.deprecated },
     {
       id: "staleOrOutdated",
       label: "Stale / outdated",
-      value: knowledgeStatusSample.staleOrOutdated,
+      value: knowledgeStatusSnapshot.staleOrOutdated,
     },
   ];
 
@@ -190,19 +193,23 @@ export function getVisKnowledgeStatusModel() {
       path: "docs/project/VIDDEL_DATASTORE_READY_MANIFEST_v0_1.md",
     },
     {
-      label: "Generated registry sample",
-      path: "data/source-inventory/source-registry.generated.expanded.sample.json",
+      label: "Generated full registry snapshot",
+      path: "data/source-inventory/source-registry.generated.full.v0.1.json",
     },
     {
-      label: "Knowledge status sample",
-      path: "data/source-inventory/knowledge-status.expanded.sample.json",
+      label: "Knowledge status full snapshot",
+      path: "data/source-inventory/knowledge-status.full.v0.1.json",
     },
     {
-      label: "Expanded Drive snapshot sample",
+      label: "Full Drive inventory snapshot",
+      path: "data/source-inventory/drive-inventory.full.v0.1.json",
+    },
+    {
+      label: "Expanded Drive snapshot sample (archive)",
       path: "data/source-inventory/drive-snapshot.expanded.sample.json",
     },
     {
-      label: "Original 10-source snapshot sample",
+      label: "Original 10-source snapshot sample (archive)",
       path: "data/source-inventory/drive-snapshot.sample.json",
     },
     {
