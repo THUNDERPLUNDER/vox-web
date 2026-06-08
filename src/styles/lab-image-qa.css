@@ -1,5 +1,37 @@
 /* CONTRACT: Lab image-QA composer extensions — attachment + thumbnail in inline-chat-shell (#240). Lab-only; /no/chat unchanged. */
 
+[data-viddel-lab-image-qa] {
+  --lab-compose-scroll-tail: calc(max(0.75rem, env(safe-area-inset-bottom, 0px)) + 1.25rem);
+}
+
+[data-viddel-lab-image-qa]
+  .inline-chat-shell[data-inline-chat-conversation="active"]
+  .inline-chat-shell__dialog-thread {
+  padding-bottom: calc(var(--inline-chat-bottom-reserve, 7.5rem) + var(--lab-compose-scroll-tail));
+}
+
+[data-viddel-lab-image-qa]
+  .inline-chat-shell[data-inline-chat-conversation="active"]
+  .inline-chat-shell__message-text,
+[data-viddel-lab-image-qa]
+  .inline-chat-shell[data-inline-chat-conversation="active"]
+  .lab-image-qa__debug,
+[data-viddel-lab-image-qa]
+  .inline-chat-shell[data-inline-chat-conversation="active"]
+  .lab-image-qa__debug-body {
+  scroll-margin-bottom: calc(var(--inline-chat-bottom-reserve, 7.5rem) + var(--lab-compose-scroll-tail));
+}
+
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-qa] .lab-image-qa__settings {
+  display: none;
+}
+
+@media (max-width: 639px) {
+  body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-lab-image-qa] .r1-editorial-container {
+    padding-bottom: calc(var(--viddel-chat-compose-reserve, 7.5rem) + var(--lab-compose-scroll-tail));
+  }
+}
+
 .lab-image-qa__intro-actions {
   display: flex;
   align-items: center;

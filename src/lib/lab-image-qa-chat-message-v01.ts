@@ -1,8 +1,11 @@
 /* CONTRACT: Lab-only — compose rich /api/chat message from vision JSON + user text (#242). Not used in /no/chat. */
 import type { ImageVisionBridgeResult } from "./image-vision-bridge-v01.ts";
 
-const CHAT_INSTRUCTION =
-  "Svar brukeren direkte. Skill mellom det som kan ses i bildet og det som ikke kan fastslås. Ikke påstå eksakt modell uten lesbar tekst.";
+const CHAT_INSTRUCTION = [
+  "Svar brukeren direkte. Skill mellom det som kan ses i bildet og det som ikke kan fastslås. Ikke påstå eksakt modell uten lesbar tekst.",
+  "Start svaret med hva bildet ser ut til å vise. Bruk formuleringen «Bildet ser ut til å vise …» når mulig. Deretter forklar hva som ikke kan fastslås.",
+  "Ikke start med generell dokumentasjon eller brukerguide dersom brukeren spør hva bildet viser.",
+].join(" ");
 
 function formatScalar(value: string): string {
   const trimmed = value.trim();
@@ -58,8 +61,8 @@ export function composeLabImageQaChatMessage(
     "",
     "OPPGAVE:",
     problem
-      ? `Svar brukeren på spørsmålet/problemet over, med utgangspunkt i observasjonene. Si tydelig hva som kan sees, hva som er usikkert, og be om nærbilde av tekst/merking eller bedre vinkel hvis modell ikke kan fastslås.`
-      : "Svar brukeren basert på observasjonene. Si tydelig hva som kan sees, hva som er usikkert, og be om nærbilde av tekst/merking eller bedre vinkel hvis modell ikke kan fastslås.",
+      ? `Svar brukeren på spørsmålet/problemet over. Start med «Bildet ser ut til å vise …» basert på observasjonene. Forklar deretter hva som ikke kan fastslås (f.eks. nøyaktig modell uten lesbar tekst). Avslutt med neste steg — gjerne nærbilde av tekst/merking på apparatet eller ladeetuiet.`
+      : "Svar brukeren basert på observasjonene. Start med «Bildet ser ut til å vise …». Forklar deretter hva som ikke kan fastslås, og be om nærbilde av tekst/merking eller bedre vinkel hvis nødvendig.",
   );
 
   return lines.join("\n");

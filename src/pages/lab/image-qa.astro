@@ -279,8 +279,8 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       let activeTurn = null;
 
       const syncComposeReserve = () => {
-        const h = composeStack.getBoundingClientRect().height;
-        const reserve = `${Math.ceil(h + 12)}px`;
+        const h = Math.ceil(composeStack.getBoundingClientRect().height);
+        const reserve = `${h}px`;
         shell.style.setProperty("--inline-chat-bottom-reserve", reserve);
         document.body.style.setProperty("--viddel-chat-compose-reserve", reserve);
       };
@@ -600,7 +600,19 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       if ("ResizeObserver" in window) {
         const observer = new ResizeObserver(syncComposeReserve);
         observer.observe(composeStack);
+        observer.observe(attachmentWrap);
+        observer.observe(input);
+        observer.observe(dialog);
       }
+
+      debugEl.addEventListener("toggle", () => {
+        syncComposeReserve();
+        if (debugEl.open) {
+          requestAnimationFrame(() => {
+            debugEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          });
+        }
+      });
 
       window.addEventListener("resize", syncComposeReserve, { passive: true });
       syncComposeReserve();
