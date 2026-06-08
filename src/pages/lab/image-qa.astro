@@ -61,10 +61,6 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
               <h2 id={aiHeadingId} class="inline-chat-shell__title">Bilde + spørsmål</h2>
             </header>
 
-            <p class="inline-chat-shell__status inline-chat-shell__status--dock hidden" data-viddel-lab-loading role="status">
-              Viddel analyserer …
-            </p>
-
             <div class="inline-chat-shell__dialog-thread mt-3 hidden" data-viddel-lab-dialog>
               <div class="inline-chat-shell__transcript-divider">
                 <span class="inline-chat-shell__transcript-divider-line" aria-hidden="true"></span>
@@ -169,7 +165,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
                     data-viddel-lab-input
                     class="inline-chat-shell__compose-input"
                     rows="1"
-                    placeholder="Beskriv situasjonen eller spørsmålet ditt …"
+                    placeholder="Hva lurer du på?"
                   ></textarea>
                 </div>
                 <button
@@ -220,7 +216,6 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       const dialog = document.querySelector("[data-viddel-lab-dialog]");
       const transcript = document.querySelector("[data-viddel-lab-transcript]");
       const composeStack = document.querySelector("[data-viddel-lab-compose-stack]");
-      const loadingEl = document.querySelector("[data-viddel-lab-loading]");
       const errorEl = document.querySelector("[data-viddel-lab-error]");
       const form = document.querySelector("[data-viddel-lab-form]");
       const input = document.querySelector("[data-viddel-lab-input]");
@@ -252,7 +247,6 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         !dialog ||
         !transcript ||
         !composeStack ||
-        !loadingEl ||
         !errorEl ||
         !form ||
         !input ||
@@ -277,6 +271,9 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       let isSending = false;
       let hasConversation = false;
       let activeTurn = null;
+      /** @type {HTMLElement | null} */
+      let pendingAssistantEl = null;
+      let chatSessionId = `image-qa-${Date.now().toString(36)}`;
 
       const syncComposeReserve = () => {
         const h = Math.ceil(composeStack.getBoundingClientRect().height);
@@ -285,8 +282,16 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         document.body.style.setProperty("--viddel-chat-compose-reserve", reserve);
       };
 
-      const setSendEnabled = (enabled) => {
-        sendBtn.disabled = !enabled;
+      const canSend = () => {
+        if (isSending) return false;
+        const hasText = Boolean(input.value.trim());
+        const hasImage = Boolean(selectedFile);
+        if (hasConversation) return hasText || hasImage;
+        return hasImage;
+      };
+
+      const refreshSendState = () => {
+        sendBtn.disabled = !canSend();
       };
 
       const showError = (message) => {
@@ -301,14 +306,13 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         syncComposeReserve();
       };
 
-      const setLoading = (active) => {
-        loadingEl.classList.toggle("hidden", !active);
-        syncComposeReserve();
-      };
-
       const resizeInput = () => {
+        const minHeight = 38;
         input.style.height = "auto";
-        input.style.height = `${input.scrollHeight}px`;
+        const nextHeight = Math.max(minHeight, input.scrollHeight);
+        const isExpanded = input.value.includes("\n") || nextHeight > minHeight + 2;
+        input.toggleAttribute("data-lab-input-expanded", isExpanded);
+        input.style.height = isExpanded ? `${nextHeight}px` : "";
         syncComposeReserve();
       };
 
@@ -347,13 +351,22 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         return { ok: true, mimeType };
       };
 
-      const clearAttachment = () => {
-        if (selectedFile?.previewUrl) URL.revokeObjectURL(selectedFile.previewUrl);
+      const clearAttachment = ({ revokePreview = true } = {}) => {
+        if (revokePreview && selectedFile?.previewUrl) URL.revokeObjectURL(selectedFile.previewUrl);
         selectedFile = null;
         fileInput.value = "";
         thumbEl.removeAttribute("src");
         attachmentWrap.classList.add("hidden");
-        setSendEnabled(false);
+        refreshSendState();
+        resizeInput();
+        syncComposeReserve();
+      };
+
+      const resetComposer = () => {
+        input.value = "";
+        clearAttachment({ revokePreview: false });
+        resizeInput();
+        refreshSendState();
         syncComposeReserve();
       };
 
@@ -369,7 +382,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         thumbEl.src = previewUrl;
         attachmentWrap.classList.remove("hidden");
         selectedFile = { file, previewUrl };
-        setSendEnabled(true);
+        refreshSendState();
         resizeInput();
         input.focus();
       };
@@ -395,27 +408,55 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       const appendUserMessage = (text, previewUrl) => {
         const turn = document.createElement("div");
         turn.className = "inline-chat-shell__turn";
-        const message = document.createElement("div");
-        message.className = "inline-chat-shell__message inline-chat-shell__message--user";
-        const body = document.createElement("p");
-        body.className = "inline-chat-shell__message-text";
-        body.textContent = text || "Bilde av utstyr";
-        message.append(body);
+        const userTurn = document.createElement("div");
+        userTurn.className = "lab-image-qa__user-turn";
         if (previewUrl) {
           const img = document.createElement("img");
           img.className = "lab-image-qa__message-thumb";
           img.src = previewUrl;
           img.alt = "Vedlagt utstyr-bilde";
-          message.append(img);
+          userTurn.append(img);
         }
-        turn.append(message);
+        const message = document.createElement("div");
+        message.className = "inline-chat-shell__message inline-chat-shell__message--user";
+        const body = document.createElement("p");
+        body.className = "inline-chat-shell__message-text";
+        body.textContent = text || (previewUrl ? "Bilde av utstyr" : "");
+        if (body.textContent) message.append(body);
+        if (message.childNodes.length > 0) userTurn.append(message);
+        turn.append(userTurn);
         transcript.append(turn);
         activeTurn = turn;
         turn.scrollIntoView({ behavior: "smooth", block: "nearest" });
       };
 
+      const showPendingAssistant = () => {
+        if (!activeTurn) return;
+        removePendingAssistant();
+        const assistant = document.createElement("div");
+        assistant.className =
+          "inline-chat-shell__message inline-chat-shell__message--assistant lab-image-qa__message--pending";
+        assistant.setAttribute("data-viddel-lab-pending", "");
+        const eyebrow = document.createElement("p");
+        eyebrow.className = "inline-chat-shell__message-eyebrow";
+        eyebrow.textContent = "Viddel";
+        const body = document.createElement("p");
+        body.className = "inline-chat-shell__message-text";
+        body.textContent = "Viddel analyserer …";
+        assistant.append(eyebrow, body);
+        activeTurn.append(assistant);
+        pendingAssistantEl = assistant;
+        assistant.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      };
+
+      const removePendingAssistant = () => {
+        pendingAssistantEl?.remove();
+        pendingAssistantEl = null;
+      };
+
       const appendAssistantMessage = (text) => {
         if (!activeTurn) return;
+        removePendingAssistant();
         const assistant = document.createElement("div");
         assistant.className = "inline-chat-shell__message inline-chat-shell__message--assistant";
         const eyebrow = document.createElement("p");
@@ -467,6 +508,66 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         debugEl.classList.remove("hidden");
       };
 
+      const beginSendUi = () => {
+        isSending = true;
+        refreshSendState();
+        input.disabled = true;
+        attachBtn.disabled = true;
+        removeBtn.disabled = true;
+      };
+
+      const endSendUi = () => {
+        isSending = false;
+        input.disabled = false;
+        attachBtn.disabled = false;
+        removeBtn.disabled = false;
+        refreshSendState();
+        syncComposeReserve();
+      };
+
+      const submitFollowUp = async () => {
+        const userProblem = input.value.trim();
+        if (!userProblem || isSending || !hasConversation) return;
+
+        clearError();
+        appendUserMessage(userProblem, null);
+        resetComposer();
+        showPendingAssistant();
+        beginSendUi();
+
+        try {
+          const chatRes = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({
+              message: userProblem,
+              sessionId: chatSessionId,
+            }),
+          });
+          const chatPayload = await chatRes.json().catch(() => ({}));
+
+          if (chatRes.status === 401) {
+            window.location.href = "/lab/login?return=/lab/image-qa";
+            return;
+          }
+          if (!chatRes.ok) {
+            throw new Error(chatPayload.message || chatPayload.error || `Chat HTTP ${chatRes.status}`);
+          }
+
+          const assistantText =
+            typeof chatPayload.text === "string" && chatPayload.text.trim()
+              ? chatPayload.text.trim()
+              : "Jeg fikk ikke et tydelig svar akkurat nå.";
+          appendAssistantMessage(assistantText);
+        } catch (err) {
+          removePendingAssistant();
+          showError(err instanceof Error ? err.message : "Ukjent feil");
+        } finally {
+          endSendUi();
+        }
+      };
+
       const submitWithAttachment = async () => {
         if (!selectedFile || isSending) return;
 
@@ -474,20 +575,17 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         const scenario = scenarioEl.value || "A";
         const callChat = callChatEl.checked;
         const previewForMessage = selectedFile.previewUrl;
+        const fileForUpload = selectedFile.file;
 
         clearError();
         activateConversation();
         appendUserMessage(userProblem, previewForMessage);
-
-        isSending = true;
-        setSendEnabled(false);
-        input.disabled = true;
-        attachBtn.disabled = true;
-        removeBtn.disabled = true;
-        setLoading(true);
+        resetComposer();
+        showPendingAssistant();
+        beginSendUi();
 
         try {
-          const { base64, mimeType } = await fileToBase64Payload(selectedFile.file);
+          const { base64, mimeType } = await fileToBase64Payload(fileForUpload);
 
           const visionRes = await fetch("/api/lab/image-vision", {
             method: "POST",
@@ -527,7 +625,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
               credentials: "same-origin",
               body: JSON.stringify({
                 message: composedChatMessage,
-                sessionId: `image-qa-${Date.now().toString(36)}`,
+                sessionId: chatSessionId,
               }),
             });
             chatPayload = await chatRes.json().catch(() => ({}));
@@ -541,20 +639,25 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
 
           appendAssistantMessage(assistantText);
           updateDebug(visionPayload, chatPayload, chatStatus, composedChatMessage);
-          clearAttachment();
-          input.value = "";
-          resizeInput();
         } catch (err) {
+          removePendingAssistant();
           showError(err instanceof Error ? err.message : "Ukjent feil");
         } finally {
-          isSending = false;
-          input.disabled = false;
-          attachBtn.disabled = false;
-          removeBtn.disabled = false;
-          setSendEnabled(Boolean(selectedFile));
-          setLoading(false);
-          syncComposeReserve();
+          endSendUi();
         }
+      };
+
+      const submitMessage = () => {
+        if (!canSend()) return;
+        if (selectedFile) {
+          submitWithAttachment();
+          return;
+        }
+        if (hasConversation && input.value.trim()) {
+          submitFollowUp();
+          return;
+        }
+        showError("Legg ved et bilde av utstyr før du sender.");
       };
 
       logoutBtn?.addEventListener("click", async () => {
@@ -577,25 +680,20 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
 
       form.addEventListener("submit", (event) => {
         event.preventDefault();
-        if (!selectedFile) {
-          showError("Legg ved et bilde av utstyr før du sender.");
-          return;
-        }
-        submitWithAttachment();
+        submitMessage();
       });
 
       input.addEventListener("keydown", (event) => {
         if (event.key === "Enter" && !event.shiftKey) {
           event.preventDefault();
-          if (!selectedFile) {
-            showError("Legg ved et bilde av utstyr før du sender.");
-            return;
-          }
-          submitWithAttachment();
+          submitMessage();
         }
       });
 
-      input.addEventListener("input", resizeInput);
+      input.addEventListener("input", () => {
+        resizeInput();
+        refreshSendState();
+      });
 
       if ("ResizeObserver" in window) {
         const observer = new ResizeObserver(syncComposeReserve);
@@ -616,6 +714,8 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
 
       window.addEventListener("resize", syncComposeReserve, { passive: true });
       syncComposeReserve();
+      refreshSendState();
+      resizeInput();
       input.focus();
     })();
   </script>
