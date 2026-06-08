@@ -92,6 +92,10 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
                     <span class="lab-image-qa__field-label">rag_query_text</span>
                     <pre class="lab-image-qa__debug-pre" data-viddel-lab-debug-rag>—</pre>
                   </div>
+                  <div class="lab-image-qa__debug-block hidden" data-viddel-lab-debug-chat-message-wrap>
+                    <span class="lab-image-qa__field-label">/api/chat-melding (komponert)</span>
+                    <pre class="lab-image-qa__debug-pre" data-viddel-lab-debug-chat-message>—</pre>
+                  </div>
                   <ul class="lab-image-qa__warnings hidden" data-viddel-lab-debug-warnings></ul>
                   <div class="lab-image-qa__debug-block">
                     <span class="lab-image-qa__field-label">Vision JSON</span>
@@ -121,7 +125,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
                 </div>
                 <label class="lab-image-qa__checkbox-row">
                   <input id="image-qa-call-chat" type="checkbox" data-viddel-lab-call-chat checked />
-                  <span>Kjør også <code>/api/chat</code> med <code>rag_query_text</code></span>
+                  <span>Kjør også <code>/api/chat</code> med vision-kontekst + brukerspørsmål</span>
                 </label>
               </div>
             </details>
@@ -205,6 +209,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
   </style>
 
   <script>
+    import { composeLabImageQaChatMessage } from "../../lib/lab-image-qa-chat-message-v01";
     import { renderAssistantMarkdownInto } from "../../lib/render-assistant-markdown";
 
     (() => {
@@ -232,6 +237,8 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       const debugRag = document.querySelector("[data-viddel-lab-debug-rag]");
       const debugWarnings = document.querySelector("[data-viddel-lab-debug-warnings]");
       const debugJson = document.querySelector("[data-viddel-lab-debug-json]");
+      const debugChatMessageWrap = document.querySelector("[data-viddel-lab-debug-chat-message-wrap]");
+      const debugChatMessage = document.querySelector("[data-viddel-lab-debug-chat-message]");
       const debugChatWrap = document.querySelector("[data-viddel-lab-debug-chat-wrap]");
       const debugChatMeta = document.querySelector("[data-viddel-lab-debug-chat-meta]");
       const debugChatText = document.querySelector("[data-viddel-lab-debug-chat-text]");
@@ -422,11 +429,19 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         assistant.scrollIntoView({ behavior: "smooth", block: "nearest" });
       };
 
-      const updateDebug = (visionPayload, chatPayload, chatStatus) => {
+      const updateDebug = (visionPayload, chatPayload, chatStatus, composedChatMessage) => {
         const vision = visionPayload?.vision ?? {};
         debugConfidence.textContent = vision.confidence ?? "—";
         debugRag.textContent = vision.rag_query_text ?? "—";
         debugJson.textContent = JSON.stringify(visionPayload, null, 2);
+
+        if (composedChatMessage) {
+          debugChatMessageWrap?.classList.remove("hidden");
+          if (debugChatMessage) debugChatMessage.textContent = composedChatMessage;
+        } else {
+          debugChatMessageWrap?.classList.add("hidden");
+          if (debugChatMessage) debugChatMessage.textContent = "—";
+        }
 
         const warnings = Array.isArray(visionPayload?.warnings) ? visionPayload.warnings : [];
         debugWarnings.replaceChildren(
@@ -502,13 +517,16 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
           let chatPayload = null;
           let chatStatus = null;
 
-          if (callChat && visionPayload.vision?.rag_query_text) {
+          let composedChatMessage = null;
+
+          if (callChat && visionPayload.vision) {
+            composedChatMessage = composeLabImageQaChatMessage(visionPayload.vision, userProblem);
             const chatRes = await fetch("/api/chat", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: "same-origin",
               body: JSON.stringify({
-                message: visionPayload.vision.rag_query_text,
+                message: composedChatMessage,
                 sessionId: `image-qa-${Date.now().toString(36)}`,
               }),
             });
@@ -522,7 +540,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
           }
 
           appendAssistantMessage(assistantText);
-          updateDebug(visionPayload, chatPayload, chatStatus);
+          updateDebug(visionPayload, chatPayload, chatStatus, composedChatMessage);
           clearAttachment();
           input.value = "";
           resizeInput();
