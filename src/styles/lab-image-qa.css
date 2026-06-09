@@ -56,6 +56,7 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
   -webkit-overflow-scrolling: touch;
   flex: 1 1 auto;
   min-height: 0;
+  overflow-anchor: none;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -82,6 +83,10 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
 }
 
 @media (max-width: 639px) {
+  [data-viddel-lab-image-qa] {
+    --lab-header-top-spacer: calc(var(--lab-header-scroll-pad) + 1.35rem);
+  }
+
   .lab-image-qa__scroll-viewport {
     -ms-overflow-style: none;
     padding-inline-end: 0.5rem;
@@ -282,6 +287,10 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
 
 [data-viddel-lab-image-qa] .lab-image-qa__scroll-viewport .inline-chat-shell__transcript {
   padding-inline-end: 0.15rem;
+}
+
+[data-viddel-lab-image-qa] .lab-image-qa__scroll-viewport[data-lab-initial-conversation="true"] .inline-chat-shell__turn:first-child {
+  scroll-margin-top: 0.35rem;
 }
 
 .lab-image-qa__user-turn {

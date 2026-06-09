@@ -289,6 +289,8 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       let selectedFile = null;
       let isSending = false;
       let hasConversation = false;
+      /** First send/pending/answer keeps top offset; bottom scroll after first assistant reply. */
+      let isInitialConversation = true;
       let activeTurn = null;
       /** @type {HTMLElement | null} */
       let pendingAssistantEl = null;
@@ -303,10 +305,38 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         document.body.style.setProperty("--viddel-chat-compose-reserve", blockedPx);
       };
 
+      const scrollDialogToStart = () => {
+        requestAnimationFrame(() => {
+          scrollViewport.scrollTop = 0;
+        });
+      };
+
       const scrollDialogToEnd = () => {
         requestAnimationFrame(() => {
-          scrollViewport.scrollTop = scrollViewport.scrollHeight;
+          scrollViewport.scrollTop = Math.max(0, scrollViewport.scrollHeight - scrollViewport.clientHeight);
         });
+      };
+
+      const scrollDialogInitial = () => {
+        requestAnimationFrame(() => {
+          scrollViewport.scrollTop = 0;
+          const anchor = activeTurn ?? pendingAssistantEl;
+          anchor?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+      };
+
+      const scrollAfterContent = () => {
+        if (isInitialConversation) {
+          scrollDialogInitial();
+          return;
+        }
+        scrollDialogToEnd();
+      };
+
+      const completeInitialConversation = () => {
+        if (!isInitialConversation) return;
+        isInitialConversation = false;
+        scrollViewport.removeAttribute("data-lab-initial-conversation");
       };
 
       const canSend = () => {
@@ -354,7 +384,9 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         shell.setAttribute("data-inline-chat-state", "active");
         shell.setAttribute("aria-labelledby", "viddel-lab-dialog-label");
         document.body.setAttribute("data-viddel-chat-active", "true");
+        scrollViewport.setAttribute("data-lab-initial-conversation", "true");
         syncComposeReserve();
+        scrollDialogToStart();
       };
 
       const resolveMimeType = (file) => {
@@ -454,7 +486,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         turn.append(userTurn);
         transcript.append(turn);
         activeTurn = turn;
-        scrollDialogToEnd();
+        scrollAfterContent();
       };
 
       const showPendingAssistant = () => {
@@ -473,7 +505,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         assistant.append(eyebrow, body);
         activeTurn.append(assistant);
         pendingAssistantEl = assistant;
-        scrollDialogToEnd();
+        scrollAfterContent();
       };
 
       const removePendingAssistant = () => {
@@ -494,6 +526,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         renderAssistantMarkdownInto(body, text);
         assistant.append(eyebrow, body);
         activeTurn.append(assistant);
+        completeInitialConversation();
         scrollDialogToEnd();
       };
 
@@ -533,7 +566,6 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         }
 
         debugEl.classList.remove("hidden");
-        scrollDialogToEnd();
       };
 
       const beginSendUi = () => {
