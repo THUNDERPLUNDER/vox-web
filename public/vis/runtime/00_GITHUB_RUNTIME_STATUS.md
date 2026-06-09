@@ -4,8 +4,8 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## Siste sync
 
-- **generated_at (UTC):** 2026-06-08T11:00:00.804Z
-- **generated_at (Europe/Oslo):** 8.6.2026, 13:00:00
+- **generated_at (UTC):** 2026-06-09T09:49:27.856Z
+- **generated_at (Europe/Oslo):** 9.6.2026, 11:49:27
 - **timezone:** Europe/Oslo
 - **repo:** THUNDERPLUNDER/vox-web
 - **data_warnings:** (ingen)
@@ -76,24 +76,32 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## SISTE 24T
 
-Vindu: commits/issues lukket/oppdatert etter **2026-06-07T11:00:00Z** (sirket ~24 timer).
+Vindu: commits/issues lukket/oppdatert etter **2026-06-08T09:49:27Z** (sirket ~24 timer).
 
 ### Lukkede issues
 
-_Ingen._
+- **#250** Mirror full Drive inventory into repo source snapshot v0.1
+  - **closed_at:** 2026-06-08T13:32:29Z
+  - **labels:** (ingen)
+  - **url:** https://github.com/THUNDERPLUNDER/vox-web/issues/250
 
 ### Kommentarer (Return Ticket-lignende)
 
-_Ingen treff i søkt utsnitt._
+- **#247** kommentar av **THUNDERPLUNDER** (2026-06-09T06:46:21Z): _## Return Ticket **Status:** Ferdig — pushet på `docs/int-009-image-input-spike-v01` **Hva ble gjort** - Innført `isInitialConversation`-state: første brukerturn, pending og ventetid ankrer med `scrollTop = 0` + `scrollI…_
 
 ### Commits
 
+- **15c9700** (2026-06-08T13:32:27Z) Merge pull request #252 from THUNDERPLUNDER/mirror-full-drive-inventory-250
+- **22755b1** (2026-06-08T13:31:38Z) Refine Lab image QA scroll viewport and attachment strip (#253)
+- **f295f41** (2026-06-08T13:21:50Z) fix(lab): scroll behind header and attachment strip layout (#247)
+- **6b617b7** (2026-06-08T13:18:52Z) Mirror full Drive inventory snapshot
+- **5416e81** (2026-06-08T13:06:50Z) Fix Lab image QA mobile scroll reserve and composer thumbnail (#251)
+- **37a489f** (2026-06-08T12:57:59Z) fix(lab): stabilize mobile transcript scroll and thumbnail (#247)
+- **250870c** (2026-06-08T11:00:06Z) chore(vis): refresh GitHub runtime status for navigator
 - **b0e4486** (2026-06-08T10:50:20Z) Polish Lab image QA composer and transcript behavior (#249)
 - **050523a** (2026-06-08T10:43:32Z) fix(lab): polish image QA composer and transcript (#247)
 - **4ce7e98** (2026-06-08T10:19:37Z) Fix Lab image QA mobile scroll and answer start (#248)
 - **d194d7a** (2026-06-08T10:03:42Z) fix(lab): mobile scroll padding and sharper image answer (#245, #242)
-- **da76c89** (2026-06-08T09:44:19Z) Improve Lab image QA answer fusion (#244)
-- **afeaa2d** (2026-06-08T09:32:53Z) fix(lab): send richer vision context to /api/chat (#242)
 
 ## BLOCKERS
 
