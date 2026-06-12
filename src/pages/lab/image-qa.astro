@@ -137,7 +137,6 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
                   id="image-qa-file"
                   type="file"
                   accept="image/*"
-                  capture="environment"
                   class="sr-only"
                   data-viddel-lab-file
                 />
@@ -157,21 +156,52 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
                   </div>
                 </div>
                 <div class="lab-image-qa__compose-row">
-                  <button
-                    type="button"
-                    class="lab-image-qa__attach"
-                    data-viddel-lab-attach
-                    aria-label="Legg ved bilde av utstyr"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M4 7a3 3 0 0 1 3-3h4.5a2.5 2.5 0 0 1 2.12 1.18L15 7h2a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7Z"
-                      ></path>
-                      <circle cx="12" cy="13" r="3.25"></circle>
-                    </svg>
-                  </button>
+                  <div class="lab-image-qa__attach-wrap" data-viddel-lab-attach-wrap>
+                    <button
+                      type="button"
+                      class="lab-image-qa__attach"
+                      data-viddel-lab-attach
+                      aria-label="Legg til bilde"
+                      aria-haspopup="menu"
+                      aria-expanded="false"
+                      aria-controls="viddel-lab-attach-menu"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" aria-hidden="true">
+                        <path stroke-linecap="round" d="M12 5v14M5 12h14"></path>
+                      </svg>
+                    </button>
+                    <div
+                      class="lab-image-qa__attach-menu-backdrop hidden"
+                      data-viddel-lab-attach-backdrop
+                      aria-hidden="true"
+                    >
+                    </div>
+                    <div
+                      id="viddel-lab-attach-menu"
+                      class="lab-image-qa__attach-menu hidden"
+                      data-viddel-lab-attach-menu
+                      role="menu"
+                      aria-label="Legg til bilde"
+                    >
+                      <button
+                        type="button"
+                        class="lab-image-qa__attach-menu-item lab-image-qa__attach-menu-item--camera"
+                        data-viddel-lab-attach-camera
+                        role="menuitem"
+                      >
+                        Ta bilde
+                      </button>
+                      <button
+                        type="button"
+                        class="lab-image-qa__attach-menu-item"
+                        data-viddel-lab-attach-pick
+                        role="menuitem"
+                      >
+                        <span class="lab-image-qa__attach-menu-label--mobile">Velg bilde</span>
+                        <span class="lab-image-qa__attach-menu-label--desktop">Last opp bilde</span>
+                      </button>
+                    </div>
+                  </div>
                   <div class="inline-chat-shell__compose-input-wrap lab-image-qa__compose-input-wrap">
                     <label class="sr-only" for="viddel-lab-input">Beskriv situasjonen eller spørsmålet ditt</label>
                     <textarea
@@ -237,7 +267,12 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       const input = document.querySelector("[data-viddel-lab-input]");
       const sendBtn = document.querySelector("[data-viddel-lab-send]");
       const fileInput = document.querySelector("[data-viddel-lab-file]");
+      const attachWrap = document.querySelector("[data-viddel-lab-attach-wrap]");
       const attachBtn = document.querySelector("[data-viddel-lab-attach]");
+      const attachMenu = document.querySelector("[data-viddel-lab-attach-menu]");
+      const attachBackdrop = document.querySelector("[data-viddel-lab-attach-backdrop]");
+      const attachCameraBtn = document.querySelector("[data-viddel-lab-attach-camera]");
+      const attachPickBtn = document.querySelector("[data-viddel-lab-attach-pick]");
       const attachmentStrip = document.querySelector("[data-viddel-lab-attachment-strip]");
       const attachmentWrap = document.querySelector("[data-viddel-lab-attachment]");
       const thumbEl = document.querySelector("[data-viddel-lab-thumb]");
@@ -270,7 +305,12 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         !input ||
         !sendBtn ||
         !fileInput ||
+        !attachWrap ||
         !attachBtn ||
+        !attachMenu ||
+        !attachBackdrop ||
+        !attachCameraBtn ||
+        !attachPickBtn ||
         !attachmentStrip ||
         !attachmentWrap ||
         !thumbEl ||
@@ -295,6 +335,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       /** @type {HTMLElement | null} */
       let pendingAssistantEl = null;
       let chatSessionId = `image-qa-${Date.now().toString(36)}`;
+      let attachMenuOpen = false;
 
       const syncComposeReserve = () => {
         const rect = composeStack.getBoundingClientRect();
@@ -725,7 +766,57 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         window.location.href = "/lab/login";
       });
 
-      attachBtn.addEventListener("click", () => fileInput.click());
+      const closeAttachMenu = () => {
+        if (!attachMenuOpen) return;
+        attachMenuOpen = false;
+        attachMenu.classList.add("hidden");
+        attachBackdrop.classList.add("hidden");
+        attachBtn.setAttribute("aria-expanded", "false");
+      };
+
+      const openAttachMenu = () => {
+        attachMenuOpen = true;
+        attachMenu.classList.remove("hidden");
+        attachBackdrop.classList.remove("hidden");
+        attachBtn.setAttribute("aria-expanded", "true");
+        syncComposeReserve();
+      };
+
+      const openFilePicker = (mode) => {
+        closeAttachMenu();
+        if (mode === "camera") {
+          fileInput.setAttribute("capture", "environment");
+        } else {
+          fileInput.removeAttribute("capture");
+        }
+        fileInput.value = "";
+        fileInput.click();
+      };
+
+      attachBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (attachMenuOpen) {
+          closeAttachMenu();
+          return;
+        }
+        openAttachMenu();
+      });
+
+      attachCameraBtn.addEventListener("click", () => openFilePicker("camera"));
+      attachPickBtn.addEventListener("click", () => openFilePicker("pick"));
+
+      attachBackdrop.addEventListener("click", closeAttachMenu);
+
+      document.addEventListener("click", (event) => {
+        if (!attachMenuOpen) return;
+        const target = event.target;
+        if (target instanceof Node && attachWrap.contains(target)) return;
+        closeAttachMenu();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeAttachMenu();
+      });
 
       fileInput.addEventListener("change", () => {
         const file = fileInput.files?.[0];
