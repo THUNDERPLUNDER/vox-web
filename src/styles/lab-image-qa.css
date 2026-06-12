@@ -206,11 +206,26 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
   width: 1.15rem;
 }
 
+.lab-image-qa__attach-layer {
+  inset: 0;
+  pointer-events: none;
+  position: fixed;
+  z-index: 35;
+}
+
+.lab-image-qa__attach-layer:not(.hidden) {
+  pointer-events: auto;
+}
+
+.lab-image-qa__attach-layer.hidden {
+  display: none;
+}
+
 .lab-image-qa__attach-menu-backdrop {
   background: rgb(15 23 42 / 0.22);
   inset: 0;
   position: fixed;
-  z-index: 24;
+  z-index: 1;
 }
 
 .lab-image-qa__attach-menu {
@@ -220,9 +235,12 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
   box-shadow: 0 10px 28px rgb(15 23 42 / 0.12);
   display: grid;
   gap: 0.2rem;
+  left: 0;
   min-width: 10.5rem;
   padding: 0.35rem;
-  z-index: 25;
+  position: fixed;
+  top: 0;
+  z-index: 2;
 }
 
 .lab-image-qa__attach-menu.hidden,
@@ -253,10 +271,12 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
 }
 
 @media (min-width: 640px) {
+  .lab-image-qa__attach-layer:not(.hidden) {
+    pointer-events: none;
+  }
+
   .lab-image-qa__attach-menu {
-    bottom: calc(100% + 0.45rem);
-    left: 0;
-    position: absolute;
+    pointer-events: auto;
   }
 
   .lab-image-qa__attach-menu-backdrop {
@@ -275,10 +295,7 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
 @media (max-width: 639px) {
   .lab-image-qa__attach-menu {
     border-radius: 1rem 1rem 0.85rem 0.85rem;
-    bottom: calc(100% + 0.35rem);
-    left: 0;
     min-width: min(14rem, calc(100vw - 1.5rem));
-    position: absolute;
   }
 
   .lab-image-qa__attach-menu-label--desktop {
