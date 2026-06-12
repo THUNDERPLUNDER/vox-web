@@ -339,7 +339,6 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       let chatSessionId = `image-qa-${Date.now().toString(36)}`;
       let attachMenuOpen = false;
       let attachOutsideCloseReady = false;
-      let attachToggleFromPointer = false;
 
       if (attachLayer.parentElement !== document.body) {
         document.body.appendChild(attachLayer);
@@ -776,18 +775,31 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
 
       const isMobileAttachMenu = () => window.matchMedia("(max-width: 639px)").matches;
 
-      const positionAttachMenu = () => {
-        attachMenu.style.transform = "";
+      const resetAttachMenuInlineStyles = () => {
+        attachMenu.style.left = "";
+        attachMenu.style.top = "";
         attachMenu.style.bottom = "";
+        attachMenu.style.right = "";
+        attachMenu.style.transform = "";
+        attachMenu.style.width = "";
+      };
+
+      const syncMobileAttachSheetPosition = () => {
+        const composeRect = composeStack.getBoundingClientRect();
+        const sheetBottom = Math.ceil(window.innerHeight - composeRect.top + 12);
+        document.documentElement.style.setProperty("--lab-attach-sheet-bottom", `${sheetBottom}px`);
+      };
+
+      const positionAttachMenu = () => {
+        resetAttachMenuInlineStyles();
+        attachMenu.classList.toggle("lab-image-qa__attach-menu--sheet", isMobileAttachMenu());
 
         if (isMobileAttachMenu()) {
-          attachMenu.style.left = "50%";
-          attachMenu.style.top = "auto";
-          attachMenu.style.bottom = "0";
-          attachMenu.style.transform = "translateX(-50%)";
+          syncMobileAttachSheetPosition();
           return;
         }
 
+        document.documentElement.style.removeProperty("--lab-attach-sheet-bottom");
         const rect = attachBtn.getBoundingClientRect();
         const menuWidth = attachMenu.offsetWidth || 168;
         const left = Math.min(Math.max(12, rect.left), window.innerWidth - menuWidth - 12);
@@ -802,13 +814,17 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         attachOutsideCloseReady = false;
         attachLayer.classList.add("hidden");
         attachMenu.classList.add("hidden");
+        attachMenu.classList.remove("lab-image-qa__attach-menu--sheet");
         attachBackdrop.classList.add("hidden");
         attachBtn.setAttribute("aria-expanded", "false");
+        resetAttachMenuInlineStyles();
+        document.documentElement.style.removeProperty("--lab-attach-sheet-bottom");
       };
 
       const openAttachMenu = () => {
         attachMenuOpen = true;
         attachOutsideCloseReady = false;
+        positionAttachMenu();
         attachLayer.classList.remove("hidden");
         attachMenu.classList.remove("hidden");
         attachBackdrop.classList.remove("hidden");
@@ -818,7 +834,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
           syncComposeReserve();
           window.setTimeout(() => {
             attachOutsideCloseReady = true;
-          }, 0);
+          }, 120);
         });
       };
 
@@ -843,29 +859,15 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         openAttachMenu();
       };
 
-      attachBtn.addEventListener("pointerup", (event) => {
-        if (event.pointerType === "mouse" && event.button !== 0) return;
-        if (event.pointerType !== "mouse") {
-          attachToggleFromPointer = true;
-          toggleAttachMenu(event);
-        }
-      });
-
-      attachBtn.addEventListener("click", (event) => {
-        if (attachToggleFromPointer) {
-          attachToggleFromPointer = false;
-          event.preventDefault();
-          event.stopPropagation();
-          return;
-        }
-        toggleAttachMenu(event);
-      });
+      attachBtn.addEventListener("click", toggleAttachMenu);
 
       attachCameraBtn.addEventListener("click", (event) => {
+        event.preventDefault();
         event.stopPropagation();
         openFilePicker("camera");
       });
       attachPickBtn.addEventListener("click", (event) => {
+        event.preventDefault();
         event.stopPropagation();
         openFilePicker("pick");
       });

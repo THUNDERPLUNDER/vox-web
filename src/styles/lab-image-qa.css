@@ -211,7 +211,7 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
   inset: 0;
   pointer-events: none;
   position: fixed;
-  z-index: 50;
+  z-index: 100;
 }
 
 .lab-image-qa__attach-layer:not(.hidden) {
@@ -220,12 +220,17 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
 
 .lab-image-qa__attach-layer.hidden {
   display: none;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .lab-image-qa__attach-menu-backdrop {
-  background: rgb(15 23 42 / 0.22);
+  background: rgb(15 23 42 / 0.28);
   inset: 0;
+  opacity: 1;
+  pointer-events: auto;
   position: fixed;
+  visibility: visible;
   z-index: 1;
 }
 
@@ -238,15 +243,20 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
   gap: 0.2rem;
   left: 0;
   min-width: 10.5rem;
+  opacity: 1;
   padding: 0.35rem;
+  pointer-events: auto;
   position: fixed;
   top: 0;
+  visibility: visible;
   z-index: 2;
 }
 
 .lab-image-qa__attach-menu.hidden,
 .lab-image-qa__attach-menu-backdrop.hidden {
   display: none;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .lab-image-qa__attach-menu-item {
@@ -294,16 +304,20 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
 }
 
 @media (max-width: 639px) {
-  .lab-image-qa__attach-menu {
-    border-radius: 1rem 1rem 0 0;
-    box-shadow: 0 -8px 28px rgb(15 23 42 / 0.14);
-    left: 50%;
-    max-width: min(100vw, 24rem);
-    min-width: min(100vw, 24rem);
-    padding: 0.45rem 0.45rem calc(0.55rem + env(safe-area-inset-bottom, 0px));
+  .lab-image-qa__attach-menu--sheet {
+    border-radius: 1rem;
+    bottom: var(--lab-attach-sheet-bottom, 8rem);
+    box-shadow: 0 14px 38px rgb(15 23 42 / 0.18);
+    left: 1rem;
+    margin: 0 auto;
+    max-width: none;
+    min-width: 0;
+    padding: 0.45rem;
+    right: 1rem;
     top: auto;
-    transform: translateX(-50%);
-    width: min(100vw, 24rem);
+    transform: none;
+    width: auto;
+    z-index: 2;
   }
 
   .lab-image-qa__attach-menu-label--desktop {
