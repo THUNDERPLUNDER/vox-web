@@ -66,7 +66,7 @@ export type ClosedSprint = {
 };
 
 export const mvpCurrentState = {
-  updatedAt: "2026-06-08",
+  updatedAt: "2026-06-09",
   currentSprint: {
     id: "2026-w21",
     label: "2026-W21",
@@ -204,6 +204,12 @@ export const mvpCurrentState = {
     },
   ] satisfies NextRisk[],
   recentChanges: [
+    {
+      date: "2026-06-09",
+      summary: "Needs-to-source coverage matrix v0.1 — P0/P1/P2 behov mappet mot full Drive inventory; 'Ingen lyd / svak lyd' anbefalt som første canonical guidance asset (#243)",
+      issue: "#243",
+      commit: "—",
+    },
     {
       date: "2026-06-08",
       summary: "Full Drive inventory snapshot v0.1 — 490 rader, 414 filer, 76 mapper og 17 tomme mapper speilet fra FULL_Inventory_v0.1; VIS knowledge-status oppdatert (#250)",
