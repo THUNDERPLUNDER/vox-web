@@ -338,6 +338,12 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       let pendingAssistantEl = null;
       let chatSessionId = `image-qa-${Date.now().toString(36)}`;
       let attachMenuOpen = false;
+      let attachOutsideCloseReady = false;
+      let attachToggleFromPointer = false;
+
+      if (attachLayer.parentElement !== document.body) {
+        document.body.appendChild(attachLayer);
+      }
 
       const syncComposeReserve = () => {
         const rect = composeStack.getBoundingClientRect();
@@ -768,7 +774,20 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         window.location.href = "/lab/login";
       });
 
+      const isMobileAttachMenu = () => window.matchMedia("(max-width: 639px)").matches;
+
       const positionAttachMenu = () => {
+        attachMenu.style.transform = "";
+        attachMenu.style.bottom = "";
+
+        if (isMobileAttachMenu()) {
+          attachMenu.style.left = "50%";
+          attachMenu.style.top = "auto";
+          attachMenu.style.bottom = "0";
+          attachMenu.style.transform = "translateX(-50%)";
+          return;
+        }
+
         const rect = attachBtn.getBoundingClientRect();
         const menuWidth = attachMenu.offsetWidth || 168;
         const left = Math.min(Math.max(12, rect.left), window.innerWidth - menuWidth - 12);
@@ -780,6 +799,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       const closeAttachMenu = () => {
         if (!attachMenuOpen) return;
         attachMenuOpen = false;
+        attachOutsideCloseReady = false;
         attachLayer.classList.add("hidden");
         attachMenu.classList.add("hidden");
         attachBackdrop.classList.add("hidden");
@@ -788,6 +808,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
 
       const openAttachMenu = () => {
         attachMenuOpen = true;
+        attachOutsideCloseReady = false;
         attachLayer.classList.remove("hidden");
         attachMenu.classList.remove("hidden");
         attachBackdrop.classList.remove("hidden");
@@ -795,6 +816,9 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         requestAnimationFrame(() => {
           positionAttachMenu();
           syncComposeReserve();
+          window.setTimeout(() => {
+            attachOutsideCloseReady = true;
+          }, 0);
         });
       };
 
@@ -809,7 +833,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
         fileInput.click();
       };
 
-      attachBtn.addEventListener("click", (event) => {
+      const toggleAttachMenu = (event) => {
         event.preventDefault();
         event.stopPropagation();
         if (attachMenuOpen) {
@@ -817,6 +841,24 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
           return;
         }
         openAttachMenu();
+      };
+
+      attachBtn.addEventListener("pointerup", (event) => {
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+        if (event.pointerType !== "mouse") {
+          attachToggleFromPointer = true;
+          toggleAttachMenu(event);
+        }
+      });
+
+      attachBtn.addEventListener("click", (event) => {
+        if (attachToggleFromPointer) {
+          attachToggleFromPointer = false;
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+        toggleAttachMenu(event);
       });
 
       attachCameraBtn.addEventListener("click", (event) => {
@@ -833,7 +875,7 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
       document.addEventListener(
         "pointerdown",
         (event) => {
-          if (!attachMenuOpen) return;
+          if (!attachMenuOpen || !attachOutsideCloseReady) return;
           const target = event.target;
           if (!(target instanceof Node)) return;
           if (attachBtn.contains(target)) return;
