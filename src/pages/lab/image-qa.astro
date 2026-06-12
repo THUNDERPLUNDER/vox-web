@@ -152,7 +152,24 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
                     data-viddel-lab-attach-camera
                     role="menuitem"
                   >
-                    Ta bilde
+                    <span class="lab-image-qa__attach-menu-item-content">
+                      <svg
+                        class="lab-image-qa__attach-menu-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.85"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M4 8h3l2-2h6l2 2h3v11H4V8z"
+                        ></path>
+                        <circle cx="12" cy="13" r="3.25"></circle>
+                      </svg>
+                      <span>Ta bilde</span>
+                    </span>
                   </button>
                   <button
                     type="button"
@@ -160,8 +177,24 @@ const aiHeadingId = "viddel-lab-image-qa-ai";
                     data-viddel-lab-attach-pick
                     role="menuitem"
                   >
-                    <span class="lab-image-qa__attach-menu-label--mobile">Velg bilde</span>
-                    <span class="lab-image-qa__attach-menu-label--desktop">Last opp bilde</span>
+                    <span class="lab-image-qa__attach-menu-item-content">
+                      <svg
+                        class="lab-image-qa__attach-menu-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.85"
+                        aria-hidden="true"
+                      >
+                        <rect x="4" y="5" width="16" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"
+                        ></rect>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.5 14.5 11 11.5l2.5 3 2-1.5L18 15"
+                        ></path>
+                        <circle cx="9" cy="9" r="1"></circle>
+                      </svg>
+                      <span class="lab-image-qa__attach-menu-label--mobile">Velg bilde</span>
+                      <span class="lab-image-qa__attach-menu-label--desktop">Last opp bilde</span>
+                    </span>
                   </button>
                 </div>
               </div>

@@ -272,6 +272,21 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-lab-image-
   width: 100%;
 }
 
+.lab-image-qa__attach-menu-item-content {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.55rem;
+  width: 100%;
+}
+
+.lab-image-qa__attach-menu-icon {
+  color: rgb(var(--reading-ink-secondary));
+  display: block;
+  flex-shrink: 0;
+  height: 1.15rem;
+  width: 1.15rem;
+}
+
 .lab-image-qa__attach-menu-item:hover {
   background: rgb(var(--surface-subtle) / 0.95);
 }
