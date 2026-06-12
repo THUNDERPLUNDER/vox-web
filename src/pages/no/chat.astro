@@ -3,6 +3,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import "../../styles/r1-dialog-article.css";
 import "../../styles/viddel-standalone-chat.css";
+import "../../styles/viddel-chat-attachment.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
@@ -38,6 +39,9 @@ const aiHeadingId = "viddel-standalone-chat-ai";
           <p class="viddel-chat-standalone__safety">
             Viddel kan gi praktiske forslag og hjelpe deg å finne neste steg. Hvis saken bør tas videre, kan Viddel
             hjelpe deg å lage en kort beskrivelse til audiograf.
+          </p>
+          <p class="viddel-chat-standalone__mvp-note">
+            Viddel er under utvikling. Svar kan være upresise og erstatter ikke audiograf eller annet fagpersonell.
           </p>
         </header>
 
@@ -94,20 +98,130 @@ const aiHeadingId = "viddel-standalone-chat-ai";
                 Viddel svarer …
               </p>
               <p class="viddel-chat-standalone__error hidden" data-viddel-chat-error role="alert"></p>
-              <form class="inline-chat-shell__compose" data-viddel-chat-form>
-                <label class="sr-only" for="viddel-chat-input">Skriv spørsmål til Viddel</label>
-                <div class="inline-chat-shell__compose-input-wrap">
-                  <textarea
-                    id="viddel-chat-input"
-                    data-viddel-chat-input
-                    class="inline-chat-shell__compose-input"
-                    rows="1"
-                    placeholder="Beskriv situasjonen eller spørsmålet ditt ..."
-                  ></textarea>
+              <div class="viddel-chat-attach__attach-layer hidden" data-viddel-chat-attach-layer>
+                <div
+                  class="viddel-chat-attach__attach-menu-backdrop hidden"
+                  data-viddel-chat-attach-backdrop
+                  aria-hidden="true"
+                >
                 </div>
-                <button type="submit" class="inline-chat-shell__compose-send" data-viddel-chat-send aria-label="Send spørsmål">
-                  <span aria-hidden="true">↑</span>
-                </button>
+                <div
+                  id="viddel-chat-attach-menu"
+                  class="viddel-chat-attach__attach-menu hidden"
+                  data-viddel-chat-attach-menu
+                  role="menu"
+                  aria-label="Legg til bilde"
+                >
+                  <button
+                    type="button"
+                    class="viddel-chat-attach__attach-menu-item viddel-chat-attach__attach-menu-item--camera"
+                    data-viddel-chat-attach-camera
+                    role="menuitem"
+                  >
+                    <span class="viddel-chat-attach__attach-menu-item-content">
+                      <svg
+                        class="viddel-chat-attach__attach-menu-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.85"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M4 8h3l2-2h6l2 2h3v11H4V8z"
+                        ></path>
+                        <circle cx="12" cy="13" r="3.25"></circle>
+                      </svg>
+                      <span>Ta bilde</span>
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    class="viddel-chat-attach__attach-menu-item"
+                    data-viddel-chat-attach-pick
+                    role="menuitem"
+                  >
+                    <span class="viddel-chat-attach__attach-menu-item-content">
+                      <svg
+                        class="viddel-chat-attach__attach-menu-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.85"
+                        aria-hidden="true"
+                      >
+                        <rect x="4" y="5" width="16" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"
+                        ></rect>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.5 14.5 11 11.5l2.5 3 2-1.5L18 15"
+                        ></path>
+                        <circle cx="9" cy="9" r="1"></circle>
+                      </svg>
+                      <span class="viddel-chat-attach__attach-menu-label--mobile">Velg bilde</span>
+                      <span class="viddel-chat-attach__attach-menu-label--desktop">Last opp bilde</span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+              <form class="inline-chat-shell__compose viddel-chat-attach__compose" data-viddel-chat-form>
+                <input
+                  id="viddel-chat-file"
+                  type="file"
+                  accept="image/*"
+                  class="sr-only"
+                  data-viddel-chat-file
+                />
+                <div class="viddel-chat-attach__attachment-strip hidden" data-viddel-chat-attachment-strip>
+                  <div class="viddel-chat-attach__attachment-list" data-viddel-chat-attachment-list>
+                    <div class="viddel-chat-attach__attachment" data-viddel-chat-attachment>
+                      <img class="viddel-chat-attach__thumb" data-viddel-chat-thumb alt="Valgt utstyr-bilde" />
+                      <button
+                        type="button"
+                        class="viddel-chat-attach__remove-attachment"
+                        data-viddel-chat-remove
+                        aria-label="Fjern bilde"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="viddel-chat-attach__compose-row">
+                  <div class="viddel-chat-attach__attach-wrap" data-viddel-chat-attach-wrap>
+                    <button
+                      type="button"
+                      class="viddel-chat-attach__attach"
+                      data-viddel-chat-attach
+                      aria-label="Legg til bilde"
+                      aria-haspopup="menu"
+                      aria-expanded="false"
+                      aria-controls="viddel-chat-attach-menu"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" aria-hidden="true">
+                        <path stroke-linecap="round" d="M12 5v14M5 12h14"></path>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="inline-chat-shell__compose-input-wrap viddel-chat-attach__compose-input-wrap">
+                    <label class="sr-only" for="viddel-chat-input">Skriv spørsmål til Viddel</label>
+                    <textarea
+                      id="viddel-chat-input"
+                      data-viddel-chat-input
+                      class="inline-chat-shell__compose-input"
+                      rows="1"
+                      placeholder="Beskriv situasjonen eller spørsmålet ditt ..."
+                    ></textarea>
+                  </div>
+                  <button
+                    type="submit"
+                    class="inline-chat-shell__compose-send"
+                    data-viddel-chat-send
+                    aria-label="Send spørsmål"
+                  >
+                    <span aria-hidden="true">↑</span>
+                  </button>
+                </div>
               </form>
             </div>
           </section>
@@ -136,6 +250,12 @@ const aiHeadingId = "viddel-standalone-chat-ai";
   </style>
 
   <script>
+    import { initChatAttachmentMenu } from "../../lib/chat-image-attachment-menu-v01";
+    import {
+      fileToImageBase64Payload,
+      validateChatImageFile,
+    } from "../../lib/chat-image-file-v01";
+    import { composeChatImageMessage } from "../../lib/chat-image-message-v01";
     import { renderAssistantMarkdownInto } from "../../lib/render-assistant-markdown";
 
     (() => {
@@ -152,6 +272,16 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       const form = document.querySelector("[data-viddel-chat-form]");
       const input = document.querySelector("[data-viddel-chat-input]");
       const sendBtn = document.querySelector("[data-viddel-chat-send]");
+      const fileInput = document.querySelector("[data-viddel-chat-file]");
+      const attachLayer = document.querySelector("[data-viddel-chat-attach-layer]");
+      const attachBtn = document.querySelector("[data-viddel-chat-attach]");
+      const attachMenu = document.querySelector("[data-viddel-chat-attach-menu]");
+      const attachBackdrop = document.querySelector("[data-viddel-chat-attach-backdrop]");
+      const attachCameraBtn = document.querySelector("[data-viddel-chat-attach-camera]");
+      const attachPickBtn = document.querySelector("[data-viddel-chat-attach-pick]");
+      const attachmentStrip = document.querySelector("[data-viddel-chat-attachment-strip]");
+      const thumbEl = document.querySelector("[data-viddel-chat-thumb]");
+      const removeBtn = document.querySelector("[data-viddel-chat-remove]");
       const exampleButtons = document.querySelectorAll("[data-viddel-chat-example]");
 
       if (
@@ -167,7 +297,17 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         !errorEl ||
         !form ||
         !input ||
-        !sendBtn
+        !sendBtn ||
+        !fileInput ||
+        !attachLayer ||
+        !attachBtn ||
+        !attachMenu ||
+        !attachBackdrop ||
+        !attachCameraBtn ||
+        !attachPickBtn ||
+        !attachmentStrip ||
+        !thumbEl ||
+        !removeBtn
       ) {
         return;
       }
@@ -186,6 +326,10 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       let hasConversation = false;
       let pendingSeed = seedFromUrl;
       let activeTurn = null;
+      /** @type {{ file: File; previewUrl: string } | null} */
+      let selectedFile = null;
+
+      const BODY_IMAGE_WARNING = /øre|hud|kropp|ansikt|person/i;
 
       const ensureSessionId = () => {
         try {
@@ -222,15 +366,79 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         syncComposeReserve();
       };
 
-      const appendUserMessage = (text) => {
+      const canSend = () => {
+        if (isSending) return false;
+        return Boolean(input.value.trim()) || Boolean(selectedFile);
+      };
+
+      const refreshSendState = () => {
+        sendBtn.disabled = !canSend();
+      };
+
+      const clearAttachment = ({ revokePreview = true } = {}) => {
+        if (revokePreview && selectedFile?.previewUrl) URL.revokeObjectURL(selectedFile.previewUrl);
+        selectedFile = null;
+        fileInput.value = "";
+        thumbEl.removeAttribute("src");
+        attachmentStrip.classList.add("hidden");
+        refreshSendState();
+        resizeInput();
+        syncComposeReserve();
+      };
+
+      const setAttachment = (file) => {
+        clearAttachment();
+        const validation = validateChatImageFile(file);
+        if (!validation.ok) {
+          showError(validation.message);
+          return;
+        }
+        clearError();
+        const previewUrl = URL.createObjectURL(file);
+        thumbEl.src = previewUrl;
+        attachmentStrip.classList.remove("hidden");
+        selectedFile = { file, previewUrl };
+        refreshSendState();
+        resizeInput();
+        input.focus();
+      };
+
+      const resetComposerAfterSend = () => {
+        input.value = "";
+        clearAttachment({ revokePreview: false });
+        resizeInput();
+        refreshSendState();
+      };
+
+      const appendUserMessage = (text, previewUrl) => {
         const turn = document.createElement("div");
         turn.className = "inline-chat-shell__turn";
-        turn.innerHTML = `
-          <div class="inline-chat-shell__message inline-chat-shell__message--user">
-            <p class="inline-chat-shell__message-text"></p>
-          </div>
-        `;
-        turn.querySelector(".inline-chat-shell__message-text").textContent = text;
+
+        if (previewUrl) {
+          const userTurn = document.createElement("div");
+          userTurn.className = "viddel-chat-attach__user-turn";
+          const img = document.createElement("img");
+          img.className = "viddel-chat-attach__message-thumb";
+          img.src = previewUrl;
+          img.alt = "Vedlagt utstyr-bilde";
+          userTurn.append(img);
+          const message = document.createElement("div");
+          message.className = "inline-chat-shell__message inline-chat-shell__message--user";
+          const body = document.createElement("p");
+          body.className = "inline-chat-shell__message-text";
+          body.textContent = text || "Bilde av utstyr";
+          message.append(body);
+          userTurn.append(message);
+          turn.append(userTurn);
+        } else {
+          turn.innerHTML = `
+            <div class="inline-chat-shell__message inline-chat-shell__message--user">
+              <p class="inline-chat-shell__message-text"></p>
+            </div>
+          `;
+          turn.querySelector(".inline-chat-shell__message-text").textContent = text;
+        }
+
         transcript.append(turn);
         activeTurn = turn;
         turn.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -267,8 +475,12 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       };
 
       const resizeInput = () => {
+        const minHeight = 38;
         input.style.height = "auto";
-        input.style.height = `${input.scrollHeight}px`;
+        const nextHeight = Math.max(minHeight, input.scrollHeight);
+        const isExpanded = input.value.includes("\n") || nextHeight > minHeight + 2;
+        input.toggleAttribute("data-chat-input-expanded", isExpanded);
+        input.style.height = isExpanded ? `${nextHeight}px` : "";
         syncComposeReserve();
       };
 
@@ -285,17 +497,125 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         return "Vi fikk ikke tak i svaret akkurat nå. Prøv igjen.";
       };
 
+      const visionFailureMessage = (payload) => {
+        if (typeof payload?.message === "string" && payload.message.trim()) return payload.message.trim();
+        return "Jeg klarte ikke å analysere bildet akkurat nå. Prøv et tydelig bilde av høreapparatutstyret, eller still spørsmålet som tekst.";
+      };
+
+      const hasUnsafeImageWarnings = (warnings) => {
+        if (!Array.isArray(warnings)) return false;
+        return warnings.some((warning) => typeof warning === "string" && BODY_IMAGE_WARNING.test(warning));
+      };
+
+      const sendMessageWithImage = async () => {
+        if (!selectedFile || isSending) return;
+
+        const userProblem = input.value.trim();
+        const previewForMessage = selectedFile.previewUrl;
+        const fileForUpload = selectedFile.file;
+
+        clearError();
+        activateConversation();
+        appendUserMessage(userProblem, previewForMessage);
+        resetComposerAfterSend();
+        isSending = true;
+        refreshSendState();
+        input.disabled = true;
+        attachBtn.disabled = true;
+        removeBtn.disabled = true;
+        setLoading(true);
+
+        try {
+          const { base64, mimeType } = await fileToImageBase64Payload(fileForUpload);
+
+          const visionRes = await fetch("/api/image-vision", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({
+              imageBase64: base64,
+              mimeType,
+              userProblem,
+            }),
+          });
+          const visionPayload = await visionRes.json().catch(() => ({}));
+
+          if (!visionRes.ok) {
+            showError(visionFailureMessage(visionPayload));
+            return;
+          }
+
+          if (hasUnsafeImageWarnings(visionPayload.warnings)) {
+            showError(
+              "Bildet ser ut til å vise person eller kropp. Ta et bilde av høreapparatutstyret alene, uten øre, hud eller ansikt.",
+            );
+            return;
+          }
+
+          if (!visionPayload.vision) {
+            showError(visionFailureMessage(visionPayload));
+            return;
+          }
+
+          const composedMessage = composeChatImageMessage(visionPayload.vision, userProblem);
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: composedMessage,
+              sessionId: ensureSessionId(),
+            }),
+          });
+          const payload = await response.json().catch(() => ({}));
+
+          if (!response.ok) {
+            showError(friendlyError(payload));
+            return;
+          }
+
+          const text = typeof payload.text === "string" ? payload.text.trim() : "";
+          if (!text) {
+            showError("Vi fikk ikke tak i svaret akkurat nå. Prøv igjen.");
+            return;
+          }
+
+          clearError();
+          if (typeof window.viddelTrack === "function") {
+            window.viddelTrack("chat_answer_success", { entry_surface: entrySurface });
+          }
+          appendAssistantMessage(text);
+        } catch (_) {
+          if (typeof window.viddelTrack === "function") {
+            window.viddelTrack("chat_answer_error", { entry_surface: entrySurface, error_code: "network_error" });
+          }
+          showError("Nettverksfeil. Sjekk tilkoblingen og prøv igjen.");
+        } finally {
+          isSending = false;
+          input.disabled = false;
+          attachBtn.disabled = false;
+          removeBtn.disabled = false;
+          refreshSendState();
+          setLoading(false);
+          input.focus();
+          syncComposeReserve();
+        }
+      };
+
       const sendMessage = async (rawMessage) => {
         const message = (rawMessage || "").trim();
+        if (selectedFile) {
+          await sendMessageWithImage();
+          return;
+        }
         if (!message || isSending) return;
 
         clearError();
         activateConversation();
-        appendUserMessage(message);
+        appendUserMessage(message, null);
         input.value = "";
         resizeInput();
         isSending = true;
-        sendBtn.disabled = true;
+        refreshSendState();
         input.disabled = true;
         setLoading(true);
 
@@ -360,8 +680,8 @@ const aiHeadingId = "viddel-standalone-chat-ai";
           showError("Nettverksfeil. Sjekk tilkoblingen og prøv igjen.");
         } finally {
           isSending = false;
-          sendBtn.disabled = false;
           input.disabled = false;
+          refreshSendState();
           setLoading(false);
           input.focus();
           syncComposeReserve();
@@ -370,6 +690,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
 
       form.addEventListener("submit", (event) => {
         event.preventDefault();
+        if (!canSend()) return;
         sendMessage(input.value);
       });
 
@@ -380,7 +701,34 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         }
       });
 
-      input.addEventListener("input", resizeInput);
+      input.addEventListener("input", () => {
+        resizeInput();
+        refreshSendState();
+      });
+
+      removeBtn.addEventListener("click", () => {
+        clearError();
+        clearAttachment();
+      });
+
+      initChatAttachmentMenu(
+        {
+          attachLayer,
+          attachBtn,
+          attachMenu,
+          attachBackdrop,
+          attachCameraBtn,
+          attachPickBtn,
+          fileInput,
+          composeStack,
+        },
+        {
+          onFileSelected: (file) => {
+            setAttachment(file);
+            syncComposeReserve();
+          },
+        },
+      );
 
       exampleButtons.forEach((button) => {
         button.addEventListener("click", () => {
@@ -407,6 +755,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         input.focus();
       }
 
+      refreshSendState();
       syncComposeReserve();
     })();
   </script>
