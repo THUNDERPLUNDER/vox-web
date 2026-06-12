@@ -1,0 +1,111 @@
+/* CONTRACT: /no/chat active scroll — single viewport, composer reserve (#247 lab parity). */
+
+[data-viddel-chat] {
+  --viddel-chat-compose-scroll-tail: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  --viddel-chat-header-scroll-pad: calc(4rem + env(safe-area-inset-top, 0px));
+  --viddel-chat-header-top-spacer: calc(var(--viddel-chat-header-scroll-pad) + 1rem);
+  --viddel-chat-bottom-spacer: 8rem;
+  --viddel-chat-scroll-gutter-end: 0.65rem;
+}
+
+@media (min-width: 640px) {
+  [data-viddel-chat] {
+    --viddel-chat-header-scroll-pad: calc(4.5rem + env(safe-area-inset-top, 0px));
+  }
+}
+
+body.vox-shell--standalone-chat[data-viddel-chat-active] .vox-shell-standalone-chat__stage:has([data-viddel-chat]) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  padding-top: 0;
+}
+
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat],
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] .r1-editorial-container,
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] .viddel-chat-standalone__editorial,
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] .r1-ai-bridge,
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] .inline-chat-shell {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] .inline-chat-shell__dialog-thread:not(.hidden) {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  margin-top: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding-bottom: 0;
+}
+
+[data-viddel-chat] .inline-chat-shell[data-inline-chat-conversation="active"] .inline-chat-shell__dialog-thread {
+  padding-bottom: 0;
+}
+
+.viddel-chat-scroll__viewport {
+  -webkit-overflow-scrolling: touch;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-anchor: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-inline-end: var(--viddel-chat-scroll-gutter-end);
+  padding-inline-start: 0.1rem;
+  scroll-padding-top: var(--viddel-chat-header-top-spacer);
+  scroll-padding-bottom: var(--viddel-chat-bottom-spacer);
+  scrollbar-gutter: stable;
+}
+
+.viddel-chat-scroll__top-spacer,
+.viddel-chat-scroll__bottom-spacer {
+  flex-shrink: 0;
+  pointer-events: none;
+  width: 100%;
+}
+
+.viddel-chat-scroll__top-spacer {
+  height: var(--viddel-chat-header-top-spacer);
+}
+
+.viddel-chat-scroll__bottom-spacer {
+  height: var(--viddel-chat-bottom-spacer);
+}
+
+@media (max-width: 639px) {
+  [data-viddel-chat] {
+    --viddel-chat-header-top-spacer: calc(var(--viddel-chat-header-scroll-pad) + 1.35rem);
+  }
+
+  .viddel-chat-scroll__viewport {
+    -ms-overflow-style: none;
+    padding-inline-end: 0.5rem;
+    scrollbar-width: none;
+  }
+
+  .viddel-chat-scroll__viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat] .r1-editorial-container {
+    padding-bottom: calc(var(--viddel-chat-compose-reserve, 7.5rem) + var(--viddel-chat-compose-scroll-tail));
+  }
+}
+
+[data-viddel-chat] .viddel-chat-scroll__viewport .inline-chat-shell__transcript {
+  padding-inline-end: 0.15rem;
+}
+
+[data-viddel-chat] .viddel-chat-scroll__viewport[data-viddel-chat-initial-conversation="true"] .inline-chat-shell__turn:first-child {
+  scroll-margin-top: 0.35rem;
+}
+
+.viddel-chat-scroll__message--pending .inline-chat-shell__message-text {
+  color: rgb(var(--reading-ink-secondary));
+  font-style: italic;
+}

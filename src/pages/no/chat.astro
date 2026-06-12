@@ -4,6 +4,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import "../../styles/r1-dialog-article.css";
 import "../../styles/viddel-standalone-chat.css";
 import "../../styles/viddel-chat-attachment.css";
+import "../../styles/viddel-chat-scroll.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
@@ -77,19 +78,23 @@ const aiHeadingId = "viddel-standalone-chat-ai";
             </div>
 
             <div class="inline-chat-shell__dialog-thread mt-3 hidden" data-viddel-chat-dialog>
-              <div class="inline-chat-shell__transcript-divider">
-                <span class="inline-chat-shell__transcript-divider-line" aria-hidden="true"></span>
-                <span class="inline-chat-shell__transcript-divider-label" id="viddel-chat-dialog-label">
-                  Dialog med Viddel
-                </span>
-              </div>
-              <div
-                class="inline-chat-shell__transcript"
-                data-viddel-chat-transcript
-                role="log"
-                aria-live="polite"
-                aria-relevant="additions text"
-              >
+              <div class="viddel-chat-scroll__viewport" data-viddel-chat-scroll-viewport>
+                <div class="viddel-chat-scroll__top-spacer" aria-hidden="true"></div>
+                <div class="inline-chat-shell__transcript-divider">
+                  <span class="inline-chat-shell__transcript-divider-line" aria-hidden="true"></span>
+                  <span class="inline-chat-shell__transcript-divider-label" id="viddel-chat-dialog-label">
+                    Dialog med Viddel
+                  </span>
+                </div>
+                <div
+                  class="inline-chat-shell__transcript"
+                  data-viddel-chat-transcript
+                  role="log"
+                  aria-live="polite"
+                  aria-relevant="additions text"
+                >
+                </div>
+                <div class="viddel-chat-scroll__bottom-spacer" data-viddel-chat-scroll-spacer aria-hidden="true"></div>
               </div>
             </div>
 
@@ -210,7 +215,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
                       data-viddel-chat-input
                       class="inline-chat-shell__compose-input"
                       rows="1"
-                      placeholder="Beskriv situasjonen eller spørsmålet ditt ..."
+                      placeholder="Hva lurer du på?"
                     ></textarea>
                   </div>
                   <button
@@ -265,6 +270,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       const header = shell?.querySelector("[data-inline-chat-header]");
       const seedSuggestions = shell?.querySelector("[data-inline-chat-seed-suggestions]");
       const dialog = document.querySelector("[data-viddel-chat-dialog]");
+      const scrollViewport = document.querySelector("[data-viddel-chat-scroll-viewport]");
       const transcript = document.querySelector("[data-viddel-chat-transcript]");
       const composeStack = document.querySelector("[data-viddel-chat-compose-stack]");
       const loadingEl = document.querySelector("[data-viddel-chat-loading]");
@@ -291,6 +297,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         !header ||
         !seedSuggestions ||
         !dialog ||
+        !scrollViewport ||
         !transcript ||
         !composeStack ||
         !loadingEl ||
@@ -326,6 +333,10 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       let hasConversation = false;
       let pendingSeed = seedFromUrl;
       let activeTurn = null;
+      /** @type {HTMLElement | null} */
+      let pendingAssistantEl = null;
+      /** First turn keeps top offset; scroll to end after first assistant reply. */
+      let isInitialConversation = true;
       /** @type {{ file: File; previewUrl: string } | null} */
       let selectedFile = null;
 
@@ -344,10 +355,46 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       };
 
       const syncComposeReserve = () => {
-        const h = composeStack.getBoundingClientRect().height;
-        const reserve = `${Math.ceil(h + 12)}px`;
-        shell.style.setProperty("--inline-chat-bottom-reserve", reserve);
-        document.body.style.setProperty("--viddel-chat-compose-reserve", reserve);
+        const rect = composeStack.getBoundingClientRect();
+        const blockedBottom = Math.max(0, Math.ceil(window.innerHeight - rect.top)) + 20;
+        const blockedPx = `${blockedBottom}px`;
+        root.style.setProperty("--viddel-chat-bottom-spacer", blockedPx);
+        shell.style.setProperty("--inline-chat-bottom-reserve", blockedPx);
+        document.body.style.setProperty("--viddel-chat-compose-reserve", blockedPx);
+      };
+
+      const scrollDialogToStart = () => {
+        requestAnimationFrame(() => {
+          scrollViewport.scrollTop = 0;
+        });
+      };
+
+      const scrollDialogToEnd = () => {
+        requestAnimationFrame(() => {
+          scrollViewport.scrollTop = Math.max(0, scrollViewport.scrollHeight - scrollViewport.clientHeight);
+        });
+      };
+
+      const scrollDialogInitial = () => {
+        requestAnimationFrame(() => {
+          scrollViewport.scrollTop = 0;
+          const anchor = activeTurn ?? pendingAssistantEl;
+          anchor?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+      };
+
+      const scrollAfterContent = () => {
+        if (isInitialConversation) {
+          scrollDialogInitial();
+          return;
+        }
+        scrollDialogToEnd();
+      };
+
+      const completeInitialConversation = () => {
+        if (!isInitialConversation) return;
+        isInitialConversation = false;
+        scrollViewport.removeAttribute("data-viddel-chat-initial-conversation");
       };
 
       const activateConversation = () => {
@@ -363,7 +410,9 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         shell.setAttribute("data-inline-chat-state", "active");
         shell.setAttribute("aria-labelledby", "viddel-chat-dialog-label");
         document.body.setAttribute("data-viddel-chat-active", "true");
+        scrollViewport.setAttribute("data-viddel-chat-initial-conversation", "true");
         syncComposeReserve();
+        scrollDialogToStart();
       };
 
       const canSend = () => {
@@ -441,11 +490,36 @@ const aiHeadingId = "viddel-standalone-chat-ai";
 
         transcript.append(turn);
         activeTurn = turn;
-        turn.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        scrollAfterContent();
+      };
+
+      const removePendingAssistant = () => {
+        pendingAssistantEl?.remove();
+        pendingAssistantEl = null;
+      };
+
+      const showPendingAssistant = (label = "Viddel svarer …") => {
+        if (!activeTurn) return;
+        removePendingAssistant();
+        const assistant = document.createElement("div");
+        assistant.className =
+          "inline-chat-shell__message inline-chat-shell__message--assistant viddel-chat-scroll__message--pending";
+        assistant.setAttribute("data-viddel-chat-pending", "");
+        const eyebrow = document.createElement("p");
+        eyebrow.className = "inline-chat-shell__message-eyebrow";
+        eyebrow.textContent = "Viddel";
+        const body = document.createElement("p");
+        body.className = "inline-chat-shell__message-text";
+        body.textContent = label;
+        assistant.append(eyebrow, body);
+        activeTurn.append(assistant);
+        pendingAssistantEl = assistant;
+        scrollAfterContent();
       };
 
       const appendAssistantMessage = (text) => {
         if (!activeTurn) return;
+        removePendingAssistant();
         const assistant = document.createElement("div");
         assistant.className = "inline-chat-shell__message inline-chat-shell__message--assistant";
         const eyebrow = document.createElement("p");
@@ -456,7 +530,8 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         renderAssistantMarkdownInto(body, text);
         assistant.append(eyebrow, body);
         activeTurn.append(assistant);
-        assistant.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        completeInitialConversation();
+        scrollDialogToEnd();
       };
 
       const showError = (message) => {
@@ -472,6 +547,11 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       const setLoading = (active) => {
         loadingEl.classList.toggle("hidden", !active);
         syncComposeReserve();
+      };
+
+      const beginTranscriptPending = (label) => {
+        showPendingAssistant(label);
+        setLoading(false);
       };
 
       const resizeInput = () => {
@@ -518,12 +598,12 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         activateConversation();
         appendUserMessage(userProblem, previewForMessage);
         resetComposerAfterSend();
+        beginTranscriptPending("Viddel analyserer …");
         isSending = true;
         refreshSendState();
         input.disabled = true;
         attachBtn.disabled = true;
         removeBtn.disabled = true;
-        setLoading(true);
 
         try {
           const { base64, mimeType } = await fileToImageBase64Payload(fileForUpload);
@@ -541,11 +621,13 @@ const aiHeadingId = "viddel-standalone-chat-ai";
           const visionPayload = await visionRes.json().catch(() => ({}));
 
           if (!visionRes.ok) {
+            removePendingAssistant();
             showError(visionFailureMessage(visionPayload));
             return;
           }
 
           if (hasUnsafeImageWarnings(visionPayload.warnings)) {
+            removePendingAssistant();
             showError(
               "Bildet ser ut til å vise person eller kropp. Ta et bilde av høreapparatutstyret alene, uten øre, hud eller ansikt.",
             );
@@ -553,6 +635,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
           }
 
           if (!visionPayload.vision) {
+            removePendingAssistant();
             showError(visionFailureMessage(visionPayload));
             return;
           }
@@ -569,12 +652,14 @@ const aiHeadingId = "viddel-standalone-chat-ai";
           const payload = await response.json().catch(() => ({}));
 
           if (!response.ok) {
+            removePendingAssistant();
             showError(friendlyError(payload));
             return;
           }
 
           const text = typeof payload.text === "string" ? payload.text.trim() : "";
           if (!text) {
+            removePendingAssistant();
             showError("Vi fikk ikke tak i svaret akkurat nå. Prøv igjen.");
             return;
           }
@@ -585,6 +670,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
           }
           appendAssistantMessage(text);
         } catch (_) {
+          removePendingAssistant();
           if (typeof window.viddelTrack === "function") {
             window.viddelTrack("chat_answer_error", { entry_surface: entrySurface, error_code: "network_error" });
           }
@@ -614,10 +700,10 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         appendUserMessage(message, null);
         input.value = "";
         resizeInput();
+        beginTranscriptPending();
         isSending = true;
         refreshSendState();
         input.disabled = true;
-        setLoading(true);
 
         const inputType = exampleButtons.length && Array.from(exampleButtons).some((btn) => btn.getAttribute("data-viddel-chat-example") === message)
           ? "seed"
@@ -655,12 +741,14 @@ const aiHeadingId = "viddel-standalone-chat-ai";
                 window.viddelTrack("chat_answer_error", { entry_surface: entrySurface, error_code: trackedCode });
               }
             }
+            removePendingAssistant();
             showError(friendlyError(payload));
             return;
           }
 
           const text = typeof payload.text === "string" ? payload.text.trim() : "";
           if (!text) {
+            removePendingAssistant();
             if (typeof window.viddelTrack === "function") {
               window.viddelTrack("chat_answer_error", { entry_surface: entrySurface, error_code: "empty_response" });
             }
@@ -674,6 +762,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
           }
           appendAssistantMessage(text);
         } catch (_) {
+          removePendingAssistant();
           if (typeof window.viddelTrack === "function") {
             window.viddelTrack("chat_answer_error", { entry_surface: entrySurface, error_code: "network_error" });
           }
@@ -739,6 +828,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       if ("ResizeObserver" in window) {
         const observer = new ResizeObserver(syncComposeReserve);
         observer.observe(composeStack);
+        observer.observe(scrollViewport);
       }
 
       window.addEventListener("resize", syncComposeReserve, { passive: true });
@@ -756,6 +846,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       }
 
       refreshSendState();
+      resizeInput();
       syncComposeReserve();
     })();
   </script>
