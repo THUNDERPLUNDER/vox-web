@@ -2,10 +2,10 @@
 
 [data-article-chat-transition-v01] {
   --article-chat-compose-surface: 255 255 255;
-  /* Frisk isblå + mint — tydeligere bunnsone. */
+  /* Frisk isblå + mint — tydelig bunnsone (sterk test). */
   --article-chat-halo-core: 158 214 248;
   --article-chat-halo-accent: 132 228 206;
-  --article-chat-compose-halo-height: 10rem;
+  --article-chat-compose-halo-height: clamp(16rem, 34vh, 24rem);
   --article-chat-compose-shadow: 48 82 120;
 }
 
@@ -29,21 +29,21 @@
 .article-chat-transition-v01__compose-halo {
   background:
     radial-gradient(
-      ellipse 72% 112% at 50% 100%,
-      rgb(var(--article-chat-halo-core) / 0.74) 0%,
-      rgb(var(--article-chat-halo-accent) / 0.48) 28%,
-      rgb(var(--article-chat-halo-core) / 0.26) 52%,
-      rgb(var(--article-chat-halo-accent) / 0.12) 68%,
-      transparent 86%
+      ellipse 92% 98% at 50% 70%,
+      rgb(var(--article-chat-halo-core) / 0.92) 0%,
+      rgb(var(--article-chat-halo-accent) / 0.66) 24%,
+      rgb(var(--article-chat-halo-core) / 0.4) 46%,
+      rgb(var(--article-chat-halo-accent) / 0.2) 64%,
+      transparent 90%
     ),
     linear-gradient(
       to top,
-      rgb(var(--article-chat-halo-core) / 0.24) 0%,
-      rgb(var(--article-chat-halo-accent) / 0.1) 40%,
-      transparent 90%
+      rgb(var(--article-chat-halo-core) / 0.38) 0%,
+      rgb(var(--article-chat-halo-accent) / 0.18) 38%,
+      transparent 88%
     );
   bottom: 0;
-  height: calc(var(--article-chat-compose-halo-height, 12rem) + env(safe-area-inset-bottom, 0px));
+  height: calc(var(--article-chat-compose-halo-height, clamp(16rem, 34vh, 24rem)) + env(safe-area-inset-bottom, 0px));
   left: 0;
   margin: 0;
   max-width: none;

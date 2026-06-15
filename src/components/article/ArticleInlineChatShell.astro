@@ -432,13 +432,7 @@ const inspectLabelClass =
       return composeStack.getBoundingClientRect().top;
     };
     const getTransitionVisibleBottom = () => getTransitionComposeTop() - transitionComposeGapPx();
-    const syncTransitionHaloHeight = (reservePx) => {
-      const isIdle = shell?.getAttribute("data-inline-chat-conversation") !== "active";
-      const floor = Math.ceil(reservePx + 3.5 * rootRemPx());
-      const halo = isIdle
-        ? Math.max(floor, Math.ceil(window.innerHeight * 0.42))
-        : Math.ceil(reservePx + 2.5 * rootRemPx());
-      document.documentElement.style.setProperty("--article-chat-compose-halo-height", `${halo}px`);
+    const syncTransitionHaloHeight = () => {
       mountTransitionComposeEnvironment();
     };
     const syncBottomReserve = () => {
@@ -457,7 +451,7 @@ const inspectLabelClass =
           const reserve = transitionComposeClearancePx();
           shell.style.setProperty("--inline-chat-bottom-reserve", `${reserve}px`);
           document.documentElement.style.setProperty("--article-chat-compose-reserve", `${reserve}px`);
-          syncTransitionHaloHeight(reserve);
+          syncTransitionHaloHeight();
           return;
         }
         shell.style.setProperty("--inline-chat-bottom-reserve", "0px");
@@ -472,7 +466,7 @@ const inspectLabelClass =
         const reserve = transitionComposeClearancePx();
         shell.style.setProperty("--inline-chat-bottom-reserve", `${reserve}px`);
         document.documentElement.style.setProperty("--article-chat-compose-reserve", "0px");
-        syncTransitionHaloHeight(reserve);
+        syncTransitionHaloHeight();
         return;
       }
       const tail = activeStackDocumentTailPx();
