@@ -373,7 +373,12 @@ const inspectLabelClass =
       return Number.isFinite(fs) && fs > 0 ? fs : 16;
     };
     const minBottomReservePx = () => Math.ceil(6.5 * rootRemPx());
-    const stickyComposerBottomInsetPx = () => Math.max(Math.ceil(0.75 * rootRemPx()), 12);
+    const stickyComposerBottomInsetPx = () => {
+      if (isTransitionV01) {
+        return Math.max(Math.ceil(1.125 * rootRemPx()), 18);
+      }
+      return Math.max(Math.ceil(0.75 * rootRemPx()), 12);
+    };
     /** Liten luft under fixed stack i dokument-padding (ikke stor Phase A-reserve). */
     const activeStackDocumentTailPx = () => 10;
     const measuredComposeHeightPx = () =>
@@ -391,8 +396,10 @@ const inspectLabelClass =
     };
     const syncTransitionHaloHeight = (reservePx) => {
       const isIdle = shell?.getAttribute("data-inline-chat-conversation") !== "active";
-      const floor = Math.ceil(reservePx + 2.25 * rootRemPx());
-      const halo = isIdle ? Math.max(floor, Math.ceil(window.innerHeight * 0.36)) : floor;
+      const floor = Math.ceil(reservePx + 3.5 * rootRemPx());
+      const halo = isIdle
+        ? Math.max(floor, Math.ceil(window.innerHeight * 0.46))
+        : Math.ceil(reservePx + 2.75 * rootRemPx());
       document.documentElement.style.setProperty("--article-chat-compose-halo-height", `${halo}px`);
     };
     const syncBottomReserve = () => {
