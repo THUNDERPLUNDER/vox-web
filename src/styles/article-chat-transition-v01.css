@@ -9,23 +9,25 @@
   --article-chat-compose-shadow: 48 82 120;
 }
 
+/* Portaled to document.body — unngår article-sheet clipping/containment. */
 .article-chat-transition-v01__compose-halo {
   background: radial-gradient(
-    ellipse 128% 112% at 50% 100%,
-    rgb(var(--article-chat-halo-core) / 0.68) 0%,
-    rgb(var(--article-chat-halo-accent) / 0.42) 32%,
-    rgb(var(--article-chat-halo-core) / 0.2) 56%,
-    rgb(var(--article-chat-halo-accent) / 0.08) 72%,
-    transparent 88%
+    ellipse 118% 118% at 50% 100%,
+    rgb(var(--article-chat-halo-core) / 0.72) 0%,
+    rgb(var(--article-chat-halo-accent) / 0.44) 30%,
+    rgb(var(--article-chat-halo-core) / 0.22) 54%,
+    rgb(var(--article-chat-halo-accent) / 0.09) 70%,
+    transparent 90%
   );
   bottom: 0;
   height: calc(var(--article-chat-compose-halo-height, 10rem) + env(safe-area-inset-bottom, 0px));
-  left: 50%;
+  left: var(--article-chat-compose-halo-left, 50%);
+  margin: 0;
   max-width: none;
   pointer-events: none;
   position: fixed;
   transform: translateX(-50%);
-  width: min(calc(46rem + 5rem), calc(100vw - 0.25rem));
+  width: var(--article-chat-compose-halo-width, min(100vw - 1rem, 54rem));
   z-index: 22;
 }
 

@@ -367,8 +367,26 @@ const inspectLabelClass =
       if (!isTransitionV01) return 20;
       if (shell?.getAttribute("data-inline-chat-conversation") !== "active") return 10;
       if (activeTurn?.state === "pending") return 32;
-      if (activeTurn?.state === "revealing") return 28;
       return 28;
+    };
+    const transitionHaloEl = () =>
+      isTransitionV01 ? document.querySelector("[data-article-chat-compose-halo]") : null;
+    const mountTransitionHaloToBody = () => {
+      const halo = transitionHaloEl();
+      if (!halo || halo.dataset.transitionHaloMounted === "true") return;
+      document.body.appendChild(halo);
+      halo.dataset.transitionHaloMounted = "true";
+    };
+    const syncTransitionHaloGeometry = () => {
+      if (!isTransitionV01 || !composeStack) return;
+      mountTransitionHaloToBody();
+      const rect = composeStack.getBoundingClientRect();
+      if (!rect.width) return;
+      const haloBleedPx = Math.max(96, Math.round(rect.width * 0.12));
+      const width = Math.ceil(Math.min(window.innerWidth - 16, rect.width + haloBleedPx));
+      const centerX = Math.round(rect.left + rect.width / 2);
+      document.documentElement.style.setProperty("--article-chat-compose-halo-width", `${width}px`);
+      document.documentElement.style.setProperty("--article-chat-compose-halo-left", `${centerX}px`);
     };
     const revealBreathingGapPx = () => {
       if (isTransitionV01) return transitionComposeGapPx();
@@ -414,12 +432,18 @@ const inspectLabelClass =
       const vv = window.visualViewport;
       return vv ? vv.offsetTop + vv.height : window.innerHeight;
     };
+    const getTransitionComposeTop = () => {
+      if (!composeStack) return getTransitionViewportBottom();
+      return composeStack.getBoundingClientRect().top;
+    };
+    const getTransitionVisibleBottom = () => getTransitionComposeTop() - transitionComposeGapPx();
     const syncTransitionHaloHeight = (reservePx) => {
       const isIdle = shell?.getAttribute("data-inline-chat-conversation") !== "active";
       const halo = isIdle
         ? Math.ceil(reservePx + 2.25 * rootRemPx())
         : Math.ceil(reservePx + 1.85 * rootRemPx());
       document.documentElement.style.setProperty("--article-chat-compose-halo-height", `${halo}px`);
+      syncTransitionHaloGeometry();
     };
     const syncBottomReserve = () => {
       if (!shell) return;
@@ -470,7 +494,7 @@ const inspectLabelClass =
     };
     const getVisibleRevealBottom = () => {
       if (isTransitionV01 && shell?.getAttribute("data-inline-chat-conversation") === "active") {
-        return getTransitionViewportBottom() - transitionComposeClearancePx();
+        return getTransitionVisibleBottom();
       }
       const chromeTop = getChromeTopForLayout();
       if (chromeTop != null) return chromeTop - revealBreathingGapPx();
@@ -481,7 +505,7 @@ const inspectLabelClass =
     const getVisibleContentBottom = () => {
       if (activeTurn?.state === "revealing") return getVisibleRevealBottom();
       if (isTransitionV01 && shell?.getAttribute("data-inline-chat-conversation") === "active") {
-        return getTransitionViewportBottom() - transitionComposeClearancePx();
+        return getTransitionVisibleBottom();
       }
       const chromeTop = getChromeTopForLayout();
       if (chromeTop != null) return chromeTop - (isTransitionV01 ? transitionComposeGapPx() : 10);
@@ -631,6 +655,7 @@ const inspectLabelClass =
       turn.assistantText.innerHTML = "";
       if (!blocks.length || prefersReducedMotion) {
         turn.assistantText.innerHTML = blocks.join("");
+        if (isTransitionV01) enforceTransitionAnswerClearance({ behavior: "auto" });
         onComplete?.();
         return;
       }
@@ -645,6 +670,7 @@ const inspectLabelClass =
       const revealNext = (index) => {
         if (activeTurn?.id !== turn.id || turn.attemptId !== attemptId || turn.state !== "revealing") return;
         tail.insertAdjacentHTML("beforebegin", blocks[index]);
+        if (isTransitionV01) enforceTransitionAnswerClearance({ behavior: "auto" });
         scrollRevealIntoView(turn);
         if (index >= blocks.length - 1) {
           turn.assistantText.removeAttribute("data-inline-chat-revealing");
@@ -696,13 +722,22 @@ const inspectLabelClass =
       const target = getTransitionScrollTarget();
       if (!target) return;
       syncBottomReserve();
+      syncTransitionHaloGeometry();
       snugTransitionAboveCompose(target, { behavior });
       requestAnimationFrame(() => {
         syncBottomReserve();
+        syncTransitionHaloGeometry();
         snugTransitionAboveCompose(getTransitionScrollTarget(), { behavior: "auto" });
         requestAnimationFrame(() => {
           snugTransitionAboveCompose(getTransitionScrollTarget(), { behavior: "auto" });
         });
+      });
+    };
+    const enforceTransitionAnswerClearance = ({ behavior = "auto" } = {}) => {
+      if (!isTransitionV01 || shell?.getAttribute("data-inline-chat-conversation") !== "active") return;
+      scrollTransitionChatToEnd({ behavior });
+      [60, 140, 280, 480].forEach((delay) => {
+        window.setTimeout(() => scrollTransitionChatToEnd({ behavior: "auto" }), delay);
       });
     };
     const scrollRevealIntoView = (turn) => {
@@ -977,6 +1012,10 @@ const inspectLabelClass =
       setState("answered");
       syncComposeState();
       setStatus("");
+      if (isTransitionV01) {
+        syncBottomReserve();
+        enforceTransitionAnswerClearance({ behavior: "auto" });
+      }
       revealFormattedText(turn, trimmed, () => {
         if (activeTurn?.id !== turn.id || turn.state !== "revealing") return;
         finishActiveTurn("answered");
@@ -985,8 +1024,7 @@ const inspectLabelClass =
         requestAnimationFrame(() => {
           syncBottomReserve();
           requestAnimationFrame(() => {
-            scrollToLatest({ force: true });
-            window.setTimeout(() => scrollTransitionChatToEnd({ behavior: "auto" }), 80);
+            enforceTransitionAnswerClearance({ behavior: "auto" });
           });
         });
       });
@@ -1258,6 +1296,7 @@ const inspectLabelClass =
     };
     const onComposeLayoutChange = () => {
       syncBottomReserve();
+      if (isTransitionV01) syncTransitionHaloGeometry();
       nudgeScrollIfNearBottom();
     };
     if (composeStack && "ResizeObserver" in window && progressive) {
@@ -1348,17 +1387,24 @@ const inspectLabelClass =
         if (bridgeReady || readinessTries > 40) clearInterval(timer);
       }, 250);
     }
-    window.requestAnimationFrame(() => {
-      if (isTransitionV01) resizeComposeInput();
+    const onTransitionLayoutChange = () => {
       syncBottomReserve();
+      if (isTransitionV01) syncTransitionHaloGeometry();
+    };
+    window.requestAnimationFrame(() => {
+      if (isTransitionV01) {
+        mountTransitionHaloToBody();
+        resizeComposeInput();
+      }
+      onTransitionLayoutChange();
     });
     if (isTransitionV01 && composeStack && "ResizeObserver" in window) {
-      const idleStackObserver = new ResizeObserver(() => syncBottomReserve());
-      idleStackObserver.observe(composeStack);
+      const transitionStackObserver = new ResizeObserver(onTransitionLayoutChange);
+      transitionStackObserver.observe(composeStack);
     }
-    window.addEventListener("resize", () => syncBottomReserve(), { passive: true });
+    window.addEventListener("resize", onTransitionLayoutChange, { passive: true });
     if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", () => syncBottomReserve(), { passive: true });
+      window.visualViewport.addEventListener("resize", onTransitionLayoutChange, { passive: true });
     }
   })();
 </script>
