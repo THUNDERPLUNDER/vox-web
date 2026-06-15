@@ -379,9 +379,34 @@ const inspectLabelClass =
       isTransitionV01 ? document.querySelector("[data-article-chat-compose-environment]") : null;
     const mountTransitionComposeEnvironment = () => {
       const environment = transitionComposeEnvironmentEl();
-      if (!environment || environment.dataset.transitionEnvironmentMounted === "true") return;
-      document.body.appendChild(environment);
+      if (!environment) return;
+      if (environment.parentElement !== document.body) {
+        document.body.appendChild(environment);
+      }
       environment.dataset.transitionEnvironmentMounted = "true";
+    };
+    const measuredComposerBottomInsetPx = () => {
+      if (!composeStack) return stickyComposerBottomInsetPx();
+      const vv = window.visualViewport;
+      const viewportBottom = vv ? vv.offsetTop + vv.height : window.innerHeight;
+      const rect = composeStack.getBoundingClientRect();
+      return Math.ceil(Math.max(stickyComposerBottomInsetPx(), viewportBottom - rect.bottom));
+    };
+    /** Aktiv scroll-tail: faktisk blokkert viewport-høyde + gap (composer + inset + luft). */
+    const transitionActiveScrollTailPx = () => {
+      const gap = transitionComposeGapPx();
+      if (composeStack) {
+        const rect = composeStack.getBoundingClientRect();
+        const tail = Math.ceil(rect.height + measuredComposerBottomInsetPx() + gap);
+        if (tail > 0) return tail;
+      }
+      return transitionComposeClearancePx();
+    };
+    const syncTransitionActiveScrollTail = () => {
+      if (!isTransitionV01 || shell?.getAttribute("data-inline-chat-conversation") !== "active") return;
+      const tailPx = transitionActiveScrollTailPx();
+      shell.style.setProperty("--article-chat-active-tail", `${tailPx}px`);
+      document.documentElement.style.setProperty("--article-chat-active-tail", `${tailPx}px`);
     };
     const revealBreathingGapPx = () => {
       if (isTransitionV01) return transitionComposeGapPx();
@@ -466,6 +491,7 @@ const inspectLabelClass =
         const reserve = transitionComposeClearancePx();
         shell.style.setProperty("--inline-chat-bottom-reserve", `${reserve}px`);
         document.documentElement.style.setProperty("--article-chat-compose-reserve", "0px");
+        syncTransitionActiveScrollTail();
         syncTransitionHaloHeight();
         return;
       }
@@ -709,12 +735,18 @@ const inspectLabelClass =
     };
     const scrollTransitionChatToEnd = ({ behavior = "auto" } = {}) => {
       if (!isTransitionV01) return;
+      syncBottomReserve();
+      if (bottomSpacer?.isConnected) {
+        bottomSpacer.scrollIntoView({ block: "end", behavior });
+      }
       const target = getTransitionScrollTarget();
       if (!target) return;
-      syncBottomReserve();
       snugTransitionAboveCompose(target, { behavior });
       requestAnimationFrame(() => {
         syncBottomReserve();
+        if (bottomSpacer?.isConnected) {
+          bottomSpacer.scrollIntoView({ block: "end", behavior: "auto" });
+        }
         snugTransitionAboveCompose(getTransitionScrollTarget(), { behavior: "auto" });
         requestAnimationFrame(() => {
           snugTransitionAboveCompose(getTransitionScrollTarget(), { behavior: "auto" });
