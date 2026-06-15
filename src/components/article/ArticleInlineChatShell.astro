@@ -130,7 +130,13 @@ const inspectLabelClass =
         </div>
         {
           layout === "transition-v01" ? (
-            <div class="article-chat-transition-v01__compose-halo" data-article-chat-compose-halo aria-hidden="true" />
+            <div
+              class="article-chat-transition-v01__compose-environment"
+              data-article-chat-compose-environment
+              aria-hidden="true"
+            >
+              <div class="article-chat-transition-v01__compose-halo" data-article-chat-compose-halo aria-hidden="true" />
+            </div>
           ) : null
         }
         <div
@@ -369,24 +375,13 @@ const inspectLabelClass =
       if (activeTurn?.state === "pending") return 32;
       return 28;
     };
-    const transitionHaloEl = () =>
-      isTransitionV01 ? document.querySelector("[data-article-chat-compose-halo]") : null;
-    const mountTransitionHaloToBody = () => {
-      const halo = transitionHaloEl();
-      if (!halo || halo.dataset.transitionHaloMounted === "true") return;
-      document.body.appendChild(halo);
-      halo.dataset.transitionHaloMounted = "true";
-    };
-    const syncTransitionHaloGeometry = () => {
-      if (!isTransitionV01 || !composeStack) return;
-      mountTransitionHaloToBody();
-      const rect = composeStack.getBoundingClientRect();
-      if (!rect.width) return;
-      const haloBleedPx = Math.max(96, Math.round(rect.width * 0.12));
-      const width = Math.ceil(Math.min(window.innerWidth - 16, rect.width + haloBleedPx));
-      const centerX = Math.round(rect.left + rect.width / 2);
-      document.documentElement.style.setProperty("--article-chat-compose-halo-width", `${width}px`);
-      document.documentElement.style.setProperty("--article-chat-compose-halo-left", `${centerX}px`);
+    const transitionComposeEnvironmentEl = () =>
+      isTransitionV01 ? document.querySelector("[data-article-chat-compose-environment]") : null;
+    const mountTransitionComposeEnvironment = () => {
+      const environment = transitionComposeEnvironmentEl();
+      if (!environment || environment.dataset.transitionEnvironmentMounted === "true") return;
+      document.body.appendChild(environment);
+      environment.dataset.transitionEnvironmentMounted = "true";
     };
     const revealBreathingGapPx = () => {
       if (isTransitionV01) return transitionComposeGapPx();
@@ -439,11 +434,12 @@ const inspectLabelClass =
     const getTransitionVisibleBottom = () => getTransitionComposeTop() - transitionComposeGapPx();
     const syncTransitionHaloHeight = (reservePx) => {
       const isIdle = shell?.getAttribute("data-inline-chat-conversation") !== "active";
+      const floor = Math.ceil(reservePx + 3.5 * rootRemPx());
       const halo = isIdle
-        ? Math.ceil(reservePx + 2.25 * rootRemPx())
-        : Math.ceil(reservePx + 1.85 * rootRemPx());
+        ? Math.max(floor, Math.ceil(window.innerHeight * 0.42))
+        : Math.ceil(reservePx + 2.5 * rootRemPx());
       document.documentElement.style.setProperty("--article-chat-compose-halo-height", `${halo}px`);
-      syncTransitionHaloGeometry();
+      mountTransitionComposeEnvironment();
     };
     const syncBottomReserve = () => {
       if (!shell) return;
@@ -722,11 +718,9 @@ const inspectLabelClass =
       const target = getTransitionScrollTarget();
       if (!target) return;
       syncBottomReserve();
-      syncTransitionHaloGeometry();
       snugTransitionAboveCompose(target, { behavior });
       requestAnimationFrame(() => {
         syncBottomReserve();
-        syncTransitionHaloGeometry();
         snugTransitionAboveCompose(getTransitionScrollTarget(), { behavior: "auto" });
         requestAnimationFrame(() => {
           snugTransitionAboveCompose(getTransitionScrollTarget(), { behavior: "auto" });
@@ -1296,7 +1290,6 @@ const inspectLabelClass =
     };
     const onComposeLayoutChange = () => {
       syncBottomReserve();
-      if (isTransitionV01) syncTransitionHaloGeometry();
       nudgeScrollIfNearBottom();
     };
     if (composeStack && "ResizeObserver" in window && progressive) {
@@ -1389,11 +1382,10 @@ const inspectLabelClass =
     }
     const onTransitionLayoutChange = () => {
       syncBottomReserve();
-      if (isTransitionV01) syncTransitionHaloGeometry();
     };
     window.requestAnimationFrame(() => {
       if (isTransitionV01) {
-        mountTransitionHaloToBody();
+        mountTransitionComposeEnvironment();
         resizeComposeInput();
       }
       onTransitionLayoutChange();

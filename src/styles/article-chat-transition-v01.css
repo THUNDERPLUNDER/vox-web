@@ -9,26 +9,48 @@
   --article-chat-compose-shadow: 48 82 120;
 }
 
-/* Portaled to document.body — unngår article-sheet clipping/containment. */
-.article-chat-transition-v01__compose-halo {
-  background: radial-gradient(
-    ellipse 118% 118% at 50% 100%,
-    rgb(var(--article-chat-halo-core) / 0.72) 0%,
-    rgb(var(--article-chat-halo-accent) / 0.44) 30%,
-    rgb(var(--article-chat-halo-core) / 0.22) 54%,
-    rgb(var(--article-chat-halo-accent) / 0.09) 70%,
-    transparent 90%
-  );
+/*
+ * Full-bleed composer environment — portaled to document.body.
+ * Uavhengig av article shell (46rem); halo dekker hele viewport-bredden.
+ */
+.article-chat-transition-v01__compose-environment {
   bottom: 0;
-  height: calc(var(--article-chat-compose-halo-height, 10rem) + env(safe-area-inset-bottom, 0px));
-  left: var(--article-chat-compose-halo-left, 50%);
+  left: 0;
+  margin: 0;
+  max-width: none;
+  overflow: visible;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  width: 100vw;
+  z-index: 22;
+}
+
+.article-chat-transition-v01__compose-halo {
+  background:
+    radial-gradient(
+      ellipse 72% 112% at 50% 100%,
+      rgb(var(--article-chat-halo-core) / 0.74) 0%,
+      rgb(var(--article-chat-halo-accent) / 0.48) 28%,
+      rgb(var(--article-chat-halo-core) / 0.26) 52%,
+      rgb(var(--article-chat-halo-accent) / 0.12) 68%,
+      transparent 86%
+    ),
+    linear-gradient(
+      to top,
+      rgb(var(--article-chat-halo-core) / 0.24) 0%,
+      rgb(var(--article-chat-halo-accent) / 0.1) 40%,
+      transparent 90%
+    );
+  bottom: 0;
+  height: calc(var(--article-chat-compose-halo-height, 12rem) + env(safe-area-inset-bottom, 0px));
+  left: 0;
   margin: 0;
   max-width: none;
   pointer-events: none;
-  position: fixed;
-  transform: translateX(-50%);
-  width: var(--article-chat-compose-halo-width, min(100vw - 1rem, 54rem));
-  z-index: 22;
+  position: absolute;
+  right: 0;
+  width: 100%;
 }
 
 [data-article-chat-transition-v01] .vox-reading-article-body {
