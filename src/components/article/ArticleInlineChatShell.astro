@@ -109,7 +109,7 @@ const inspectLabelClass =
             <span class="inline-chat-shell__transcript-divider-line" aria-hidden="true" />
             <span
               class="inline-chat-shell__transcript-divider-label"
-              id={`${headingId}-dialog-landmark`}>Dialog med Hørehjelpen</span>
+              id={`${headingId}-dialog-landmark`}>Dialog med Viddel</span>
           </div>
           <div class="inline-chat-shell__transcript" data-component="Transcript" data-inline-chat-transcript>
             <span class={inspectLabelClass} data-component-label>Transcript</span>
@@ -325,6 +325,9 @@ const inspectLabelClass =
       seedSuggestions?.setAttribute("aria-hidden", "true");
       sourceLine?.classList.add("hidden");
       sourceLine?.setAttribute("aria-hidden", "true");
+      if (isTransitionV01) {
+        document.documentElement.style.setProperty("--article-chat-compose-reserve", "0px");
+      }
       syncBottomReserve();
     };
     const syncComposeState = () => {
@@ -383,6 +386,13 @@ const inspectLabelClass =
       const h = measuredProgressiveStackHeightPx();
       if (!h) {
         shell.style.setProperty("--inline-chat-bottom-reserve", "12px");
+        return;
+      }
+      if (isTransitionV01 && composeStack) {
+        const rect = composeStack.getBoundingClientRect();
+        const blockedBottom = Math.max(0, Math.ceil(window.innerHeight - rect.top)) + 20;
+        shell.style.setProperty("--inline-chat-bottom-reserve", `${blockedBottom}px`);
+        document.documentElement.style.setProperty("--article-chat-compose-reserve", "0px");
         return;
       }
       const tail = activeStackDocumentTailPx();
@@ -645,7 +655,7 @@ const inspectLabelClass =
       if (assistant.querySelector(".inline-chat-shell__message-eyebrow")) return;
       const p = document.createElement("p");
       p.className = "inline-chat-shell__message-eyebrow";
-      p.textContent = "Hørehjelpen";
+      p.textContent = progressive ? "Viddel" : "Hørehjelpen";
       assistant.insertBefore(p, turn.assistantText);
     };
     const createTurn = (query, { source = "seed" } = {}) => {

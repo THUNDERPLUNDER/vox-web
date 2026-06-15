@@ -4,6 +4,31 @@
   padding-bottom: calc(var(--article-chat-compose-reserve, 7.5rem) + env(safe-area-inset-bottom, 0px) + 1rem);
 }
 
+[data-article-chat-transition-v01]:has(
+  [data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="active"]
+) .vox-reading-article-body {
+  padding-bottom: 0;
+}
+
+[data-article-chat-transition-v01]
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="active"]
+  .inline-chat-shell__dialog-thread {
+  padding-bottom: calc(var(--inline-chat-bottom-reserve, 0px) + 0.12rem);
+}
+
+[data-article-chat-transition-v01]
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="active"]
+  .inline-chat-shell__bottom-anchor {
+  height: 0.35rem;
+  scroll-margin-bottom: min(1rem, var(--inline-chat-bottom-reserve, 72px));
+}
+
+[data-article-chat-transition-v01]
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="active"]
+  .inline-chat-shell__message-text {
+  scroll-margin-bottom: min(1rem, var(--inline-chat-bottom-reserve, 72px));
+}
+
 .article-chat-transition-v01__bridge {
   margin-top: 1.75rem;
 }
