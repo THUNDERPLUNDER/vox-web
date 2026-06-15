@@ -10,23 +10,36 @@
   padding-bottom: 0;
 }
 
+/* Aktiv: clearance i bunn-spacer (som /no/chat), ikke viewport-padding på dialog-thread. */
 [data-article-chat-transition-v01]
   .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="active"]
   .inline-chat-shell__dialog-thread {
-  padding-bottom: calc(var(--inline-chat-bottom-reserve, 0px) + 0.12rem);
+  padding-bottom: 0;
+}
+
+[data-article-chat-transition-v01]
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="active"]
+  .inline-chat-shell__bottom-spacer {
+  height: 0;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
+  width: 100%;
 }
 
 [data-article-chat-transition-v01]
   .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="active"]
   .inline-chat-shell__bottom-anchor {
-  height: 0.35rem;
-  scroll-margin-bottom: min(1rem, var(--inline-chat-bottom-reserve, 72px));
+  height: 0;
+  margin: 0;
+  scroll-margin-bottom: 0;
 }
 
 [data-article-chat-transition-v01]
   .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="active"]
   .inline-chat-shell__message-text {
-  scroll-margin-bottom: min(1rem, var(--inline-chat-bottom-reserve, 72px));
+  scroll-margin-bottom: calc(var(--inline-chat-bottom-reserve, 72px) + 0.25rem);
 }
 
 .article-chat-transition-v01__bridge {

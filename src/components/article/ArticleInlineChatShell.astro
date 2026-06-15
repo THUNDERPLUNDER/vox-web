@@ -117,6 +117,15 @@ const inspectLabelClass =
           <button type="button" class="inline-chat-shell__latest hidden" data-inline-chat-latest>
             Til siste svar
           </button>
+          {
+            layout === "transition-v01" ? (
+              <div
+                class="inline-chat-shell__bottom-spacer article-chat-transition-v01__bottom-spacer"
+                data-inline-chat-bottom-spacer
+                aria-hidden="true"
+              />
+            ) : null
+          }
           <div class="inline-chat-shell__bottom-anchor" data-inline-chat-bottom aria-hidden="true" />
         </div>
         <div class="inline-chat-shell__compose-stack mt-3" data-inline-chat-compose-stack>
@@ -231,6 +240,7 @@ const inspectLabelClass =
     const statusText = shell?.querySelector("[data-inline-chat-status]");
     const latestButton = shell?.querySelector("[data-inline-chat-latest]");
     const bottomAnchor = shell?.querySelector("[data-inline-chat-bottom]");
+    const bottomSpacer = shell?.querySelector("[data-inline-chat-bottom-spacer]");
     const composeStack = progressive ? shell?.querySelector("[data-inline-chat-compose-stack]") : null;
     const composeForm = shell?.querySelector("[data-inline-chat-compose]");
     const composeInput = shell?.querySelector("[data-inline-chat-compose-input]");
@@ -340,8 +350,11 @@ const inspectLabelClass =
       else composeInput.removeAttribute("aria-busy");
       syncComposeFetchOverlay();
     };
-    const revealBreathingGapPx = () =>
-      window.matchMedia?.("(max-width: 768px)")?.matches ? 108 : 72;
+    const transitionComposeGapPx = () => 20;
+    const revealBreathingGapPx = () => {
+      if (isTransitionV01) return transitionComposeGapPx();
+      return window.matchMedia?.("(max-width: 768px)")?.matches ? 108 : 72;
+    };
     /** JS → --inline-chat-bottom-reserve. Inline: dialog-thread + sticky compose. Progressive aktiv: én måling av compose-stack (status + compose). */
     const rootRemPx = () => {
       const fs = parseFloat(getComputedStyle(document.documentElement).fontSize);
@@ -358,6 +371,12 @@ const inspectLabelClass =
       return composeStack.getBoundingClientRect().height;
     };
     const measuredIdleStickyStackPx = () => (composeStack ? composeStack.getBoundingClientRect().height : 0);
+    /** transition-v01 aktiv: compose-høyde + safe-area-inset + liten luft (ikke viewport-blokk). */
+    const transitionActiveReservePx = () => {
+      const h = measuredProgressiveStackHeightPx();
+      if (!h) return 12;
+      return Math.ceil(h + stickyComposerBottomInsetPx() + transitionComposeGapPx());
+    };
     const syncBottomReserve = () => {
       if (!shell) return;
       if (!progressive) {
@@ -388,10 +407,9 @@ const inspectLabelClass =
         shell.style.setProperty("--inline-chat-bottom-reserve", "12px");
         return;
       }
-      if (isTransitionV01 && composeStack) {
-        const rect = composeStack.getBoundingClientRect();
-        const blockedBottom = Math.max(0, Math.ceil(window.innerHeight - rect.top)) + 20;
-        shell.style.setProperty("--inline-chat-bottom-reserve", `${blockedBottom}px`);
+      if (isTransitionV01) {
+        const reserve = transitionActiveReservePx();
+        shell.style.setProperty("--inline-chat-bottom-reserve", `${reserve}px`);
         document.documentElement.style.setProperty("--article-chat-compose-reserve", "0px");
         return;
       }
@@ -418,7 +436,7 @@ const inspectLabelClass =
     const getVisibleContentBottom = () => {
       if (activeTurn?.state === "revealing") return getVisibleRevealBottom();
       const chromeTop = getChromeTopForLayout();
-      if (chromeTop != null) return chromeTop - 10;
+      if (chromeTop != null) return chromeTop - (isTransitionV01 ? transitionComposeGapPx() : 10);
       if (composeVisible && composeForm) {
         return composeForm.getBoundingClientRect().top - 10;
       }
@@ -593,6 +611,23 @@ const inspectLabelClass =
       window.scrollBy({ top: Math.ceil(delta), behavior });
       hideLatestButton();
     };
+    /** transition-v01: juster scroll begge veier slik siste svar ligger ~20px over compose. */
+    const snugTransitionAboveCompose = (target, { behavior = "auto" } = {}) => {
+      if (!target) return;
+      const visibleBottom = getVisibleContentBottom();
+      const rect = target.getBoundingClientRect();
+      const delta = rect.bottom - visibleBottom;
+      if (Math.abs(delta) <= 4) return;
+      window.scrollBy({ top: Math.ceil(delta), behavior });
+      hideLatestButton();
+    };
+    const scrollTransitionChatToEnd = ({ behavior = "auto" } = {}) => {
+      if (!isTransitionV01) return;
+      const target = activeTurn?.assistantText || getDefaultScrollTarget();
+      if (!target) return;
+      snugTransitionAboveCompose(target, { behavior });
+      requestAnimationFrame(() => snugTransitionAboveCompose(target, { behavior: "auto" }));
+    };
     const scrollRevealIntoView = (turn) => {
       if (!turn?.revealShouldFollow || !turn.revealTail) {
         showLatestButton();
@@ -602,7 +637,8 @@ const inspectLabelClass =
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             if (activeTurn?.id !== turn.id || turn.state !== "revealing" || !turn.revealTail) return;
-            keepAboveCompose(getLatestRevealBlock(turn));
+            if (isTransitionV01) scrollTransitionChatToEnd({ behavior: "auto" });
+            else keepAboveCompose(getLatestRevealBlock(turn));
           });
         });
       });
@@ -624,8 +660,14 @@ const inspectLabelClass =
         return;
       }
       const behavior = force || userNearBottom || shouldFollowReveal ? "smooth" : "auto";
+      const transitionActive =
+        isTransitionV01 && shell.getAttribute("data-inline-chat-conversation") === "active";
       requestAnimationFrame(() => {
         window.setTimeout(() => {
+          if (transitionActive) {
+            scrollTransitionChatToEnd({ behavior: activeTurn?.state === "revealing" ? "auto" : behavior });
+            return;
+          }
           if (activeTurn?.state === "revealing") {
             keepAboveCompose(
               getLatestRevealBlock(activeTurn) || activeTurn.revealTail || activeTurn.assistantText,
@@ -749,7 +791,9 @@ const inspectLabelClass =
       const retryButton = turn.assistantText.querySelector("[data-inline-chat-retry]");
       retryButton?.addEventListener("click", () => retryTurn(turn), { once: true });
       setStatus("");
-      scrollToLatest();
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => scrollToLatest({ force: true }));
+      });
     };
     const startResponseTimer = (turn) => {
       clearResponseTimer();
@@ -861,7 +905,9 @@ const inspectLabelClass =
         finishActiveTurn("answered");
         revealCompose();
         setStatus("");
-        scrollToLatest();
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => scrollToLatest({ force: true }));
+        });
       });
     };
 
@@ -1115,6 +1161,10 @@ const inspectLabelClass =
     const nudgeScrollIfNearBottom = () => {
       if (!userNearBottom) return;
       window.requestAnimationFrame(() => {
+        if (isTransitionV01 && shell.getAttribute("data-inline-chat-conversation") === "active") {
+          scrollTransitionChatToEnd({ behavior: "auto" });
+          return;
+        }
         const t = getDefaultScrollTarget();
         if (t) keepAboveCompose(t, { behavior: "auto" });
         window.requestAnimationFrame(() => {
@@ -1156,7 +1206,8 @@ const inspectLabelClass =
       if (activeTurn?.state === "revealing") activeTurn.revealShouldFollow = true;
       scrollToLatest({ force: true });
     });
-    if ("IntersectionObserver" in window && bottomAnchor) {
+    if ("IntersectionObserver" in window && (bottomSpacer || bottomAnchor)) {
+      const bottomWatchEl = isTransitionV01 && bottomSpacer ? bottomSpacer : bottomAnchor;
       const bottomObserver = new IntersectionObserver(
         ([entry]) => {
           userNearBottom = Boolean(entry?.isIntersecting);
@@ -1164,11 +1215,15 @@ const inspectLabelClass =
         },
         {
           root: null,
-          rootMargin: progressive ? "0px 0px 96px 0px" : "0px 0px 240px 0px",
+          rootMargin: progressive
+            ? isTransitionV01
+              ? "0px 0px 120px 0px"
+              : "0px 0px 96px 0px"
+            : "0px 0px 240px 0px",
           threshold: 0,
         }
       );
-      bottomObserver.observe(bottomAnchor);
+      bottomObserver.observe(bottomWatchEl);
     }
     const stopRevealFollow = () => {
       if (activeTurn?.state === "revealing") activeTurn.revealShouldFollow = false;
