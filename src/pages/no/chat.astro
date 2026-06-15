@@ -215,6 +215,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
                       data-viddel-chat-input
                       class="inline-chat-shell__compose-input"
                       rows="1"
+                      enterkeyhint="send"
                       placeholder="Hva lurer du på?"
                     ></textarea>
                   </div>
@@ -223,6 +224,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
                     class="inline-chat-shell__compose-send"
                     data-viddel-chat-send
                     aria-label="Send spørsmål"
+                    disabled
                   >
                     <span aria-hidden="true">↑</span>
                   </button>
@@ -265,30 +267,30 @@ const aiHeadingId = "viddel-standalone-chat-ai";
 
     (() => {
       const root = document.querySelector("[data-viddel-chat]");
-      const shell = document.querySelector("[data-viddel-chat-shell]");
-      const intro = document.querySelector("[data-viddel-chat-intro]");
+      const shell = root?.querySelector("[data-viddel-chat-shell]");
+      const intro = root?.querySelector("[data-viddel-chat-intro]");
       const header = shell?.querySelector("[data-inline-chat-header]");
       const seedSuggestions = shell?.querySelector("[data-inline-chat-seed-suggestions]");
-      const dialog = document.querySelector("[data-viddel-chat-dialog]");
-      const scrollViewport = document.querySelector("[data-viddel-chat-scroll-viewport]");
-      const transcript = document.querySelector("[data-viddel-chat-transcript]");
-      const composeStack = document.querySelector("[data-viddel-chat-compose-stack]");
-      const loadingEl = document.querySelector("[data-viddel-chat-loading]");
-      const errorEl = document.querySelector("[data-viddel-chat-error]");
-      const form = document.querySelector("[data-viddel-chat-form]");
-      const input = document.querySelector("[data-viddel-chat-input]");
-      const sendBtn = document.querySelector("[data-viddel-chat-send]");
-      const fileInput = document.querySelector("[data-viddel-chat-file]");
-      const attachLayer = document.querySelector("[data-viddel-chat-attach-layer]");
-      const attachBtn = document.querySelector("[data-viddel-chat-attach]");
-      const attachMenu = document.querySelector("[data-viddel-chat-attach-menu]");
-      const attachBackdrop = document.querySelector("[data-viddel-chat-attach-backdrop]");
-      const attachCameraBtn = document.querySelector("[data-viddel-chat-attach-camera]");
-      const attachPickBtn = document.querySelector("[data-viddel-chat-attach-pick]");
-      const attachmentStrip = document.querySelector("[data-viddel-chat-attachment-strip]");
-      const thumbEl = document.querySelector("[data-viddel-chat-thumb]");
-      const removeBtn = document.querySelector("[data-viddel-chat-remove]");
-      const exampleButtons = document.querySelectorAll("[data-viddel-chat-example]");
+      const dialog = root?.querySelector("[data-viddel-chat-dialog]");
+      const scrollViewport = root?.querySelector("[data-viddel-chat-scroll-viewport]");
+      const transcript = root?.querySelector("[data-viddel-chat-transcript]");
+      const composeStack = root?.querySelector("[data-viddel-chat-compose-stack]");
+      const loadingEl = root?.querySelector("[data-viddel-chat-loading]");
+      const errorEl = root?.querySelector("[data-viddel-chat-error]");
+      const form = root?.querySelector("[data-viddel-chat-form]");
+      const input = root?.querySelector("[data-viddel-chat-input]");
+      const sendBtn = root?.querySelector("[data-viddel-chat-send]");
+      const fileInput = root?.querySelector("[data-viddel-chat-file]");
+      const attachLayer = root?.querySelector("[data-viddel-chat-attach-layer]");
+      const attachBtn = root?.querySelector("[data-viddel-chat-attach]");
+      const attachMenu = root?.querySelector("[data-viddel-chat-attach-menu]");
+      const attachBackdrop = root?.querySelector("[data-viddel-chat-attach-backdrop]");
+      const attachCameraBtn = root?.querySelector("[data-viddel-chat-attach-camera]");
+      const attachPickBtn = root?.querySelector("[data-viddel-chat-attach-pick]");
+      const attachmentStrip = root?.querySelector("[data-viddel-chat-attachment-strip]");
+      const thumbEl = root?.querySelector("[data-viddel-chat-thumb]");
+      const removeBtn = root?.querySelector("[data-viddel-chat-remove]");
+      const exampleButtons = root?.querySelectorAll("[data-viddel-chat-example]");
 
       if (
         !root ||
@@ -417,11 +419,19 @@ const aiHeadingId = "viddel-standalone-chat-ai";
 
       const canSend = () => {
         if (isSending) return false;
-        return Boolean(input.value.trim()) || Boolean(selectedFile);
+        const hasText = Boolean(input.value.trim());
+        const hasImage = Boolean(selectedFile);
+        return hasText || hasImage;
+      };
+
+      const updateSendState = () => {
+        const enabled = canSend();
+        sendBtn.disabled = !enabled;
+        sendBtn.setAttribute("aria-disabled", String(!enabled));
       };
 
       const refreshSendState = () => {
-        sendBtn.disabled = !canSend();
+        requestAnimationFrame(updateSendState);
       };
 
       const clearAttachment = ({ revokePreview = true } = {}) => {
@@ -562,6 +572,16 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         input.toggleAttribute("data-chat-input-expanded", isExpanded);
         input.style.height = isExpanded ? `${nextHeight}px` : "";
         syncComposeReserve();
+        updateSendState();
+      };
+
+      const handleComposerInput = () => {
+        resizeInput();
+      };
+
+      const submitIfReady = () => {
+        if (!canSend()) return;
+        sendMessage(input.value);
       };
 
       const friendlyError = (payload) => {
@@ -779,21 +799,19 @@ const aiHeadingId = "viddel-standalone-chat-ai";
 
       form.addEventListener("submit", (event) => {
         event.preventDefault();
-        if (!canSend()) return;
-        sendMessage(input.value);
+        submitIfReady();
       });
 
       input.addEventListener("keydown", (event) => {
         if (event.key === "Enter" && !event.shiftKey) {
           event.preventDefault();
-          sendMessage(input.value);
+          submitIfReady();
         }
       });
 
-      input.addEventListener("input", () => {
-        resizeInput();
-        refreshSendState();
-      });
+      for (const eventName of ["input", "change", "keyup", "compositionend", "paste", "cut"]) {
+        input.addEventListener(eventName, handleComposerInput);
+      }
 
       removeBtn.addEventListener("click", () => {
         clearError();
@@ -826,15 +844,30 @@ const aiHeadingId = "viddel-standalone-chat-ai";
       });
 
       if ("ResizeObserver" in window) {
-        const observer = new ResizeObserver(syncComposeReserve);
+        const observer = new ResizeObserver(() => {
+          syncComposeReserve();
+          updateSendState();
+        });
         observer.observe(composeStack);
         observer.observe(scrollViewport);
+        observer.observe(input);
       }
 
-      window.addEventListener("resize", syncComposeReserve, { passive: true });
+      window.addEventListener("resize", () => {
+        syncComposeReserve();
+        updateSendState();
+      }, { passive: true });
+
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", () => {
+          syncComposeReserve();
+          updateSendState();
+        }, { passive: true });
+      }
 
       if (pendingSeed) {
         input.value = pendingSeed;
+        handleComposerInput();
         window.setTimeout(() => {
           if (pendingSeed) {
             sendMessage(pendingSeed);
@@ -845,8 +878,7 @@ const aiHeadingId = "viddel-standalone-chat-ai";
         input.focus();
       }
 
-      refreshSendState();
-      resizeInput();
+      updateSendState();
       syncComposeReserve();
     })();
   </script>
