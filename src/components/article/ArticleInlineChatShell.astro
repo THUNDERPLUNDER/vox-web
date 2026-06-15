@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Inline article chat shell. #77 progressive: composer-from-start + active fixed chrome. */
+/* CONTRACT: Inline article chat shell. #77 progressive: composer-from-start + active fixed chrome. #257 transition-v01. */
 export interface PromptItem {
   question: string;
 }
@@ -12,6 +12,10 @@ export interface Props {
   items: PromptItem[];
   sourceLabel?: string;
   mode?: "inline" | "progressive";
+  /** #257: kort artikkel → chat med sticky composer og to seeds. */
+  layout?: "default" | "transition-v01";
+  articleTitle?: string;
+  composePlaceholder?: string;
 }
 
 const {
@@ -21,9 +25,14 @@ const {
   items,
   sourceLabel = "artikkel",
   mode = "inline",
+  layout = "default",
+  articleTitle,
+  composePlaceholder = layout === "transition-v01" ? "Hva lurer du på?" : "Spør videre om dette",
 } = Astro.props;
 
 const conversationAttr = mode === "progressive" ? "idle" : "off";
+const shellItems = layout === "transition-v01" ? items.slice(0, 2) : items;
+const resolvedArticleTitle = articleTitle || title;
 
 const inspectLabelClass =
   "article-component-label mb-2 inline-flex rounded border border-yellow-700/70 bg-yellow-100/95 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-950";
@@ -36,10 +45,16 @@ const inspectLabelClass =
   data-inline-chat-mode={mode}
   data-inline-chat-conversation={conversationAttr}
   data-inline-chat-state={mode === "progressive" ? "idle" : "active"}
+  data-inline-chat-layout={layout}
+  data-article-title={resolvedArticleTitle}
 >
   <span class={inspectLabelClass} data-component-label>ArticleInlineChatShell</span>
-  <header class="inline-chat-shell__header" data-inline-chat-header>
-    <h2 id={headingId} class="inline-chat-shell__title">{title}</h2>
+  <header
+    class:list={["inline-chat-shell__header", layout === "transition-v01" && "hidden"]}
+    data-inline-chat-header
+    aria-hidden={layout === "transition-v01" ? "true" : undefined}
+  >
+    <h2 id={headingId} class:list={[layout === "transition-v01" && "sr-only", "inline-chat-shell__title"]}>{title}</h2>
     {intro ? <p class="inline-chat-shell__intro">{intro}</p> : null}
   </header>
 
@@ -53,7 +68,7 @@ const inspectLabelClass =
       role="list"
     >
       {
-        items.map((item) => (
+        shellItems.map((item) => (
           <li class={mode === "progressive" ? "inline-chat-shell__seed-item" : undefined}>
             <button
               type="button"
@@ -74,7 +89,14 @@ const inspectLabelClass =
     </ul>
   </div>
 
-  <p class="inline-chat-shell__source text-[11px] text-[rgb(var(--muted))]" data-inline-chat-source>
+  <p
+    class:list={[
+      "inline-chat-shell__source text-[11px] text-[rgb(var(--muted))]",
+      layout === "transition-v01" && "hidden",
+    ]}
+    data-inline-chat-source
+    aria-hidden={layout === "transition-v01" ? "true" : undefined}
+  >
     Kontekst: {sourceLabel}. Velg et startspørsmål{mode === "progressive" ? " for å åpne samtalen." : " eller skriv fritt i feltet under."}
   </p>
 
@@ -106,10 +128,11 @@ const inspectLabelClass =
               <textarea
                 id="article-inline-chat-compose"
                 class="inline-chat-shell__compose-input"
-                data-inline-chat-compose-input
-                placeholder="Spør videre om dette"
-                rows="1"
-              ></textarea>
+                    data-inline-chat-compose-input
+                    placeholder={composePlaceholder}
+                    rows="1"
+                    enterkeyhint="send"
+                  ></textarea>
               <div class="inline-chat-shell__compose-fetch-overlay" data-inline-chat-compose-fetch-overlay aria-hidden="true">
                 <span class="inline-chat-shell__compose-fetch-dots">
                   <span></span><span></span><span></span>
@@ -117,7 +140,13 @@ const inspectLabelClass =
                 <span class="inline-chat-shell__compose-fetch-hint" data-inline-chat-compose-fetch-hint hidden></span>
               </div>
             </div>
-            <button type="submit" class="inline-chat-shell__compose-send" data-inline-chat-compose-send aria-label="Send spørsmål">
+            <button
+              type="submit"
+              class="inline-chat-shell__compose-send"
+              data-inline-chat-compose-send
+              aria-label="Send spørsmål"
+              disabled
+            >
               <span aria-hidden="true">↑</span>
             </button>
           </form>
@@ -140,10 +169,11 @@ const inspectLabelClass =
             <textarea
               id="article-inline-chat-compose"
               class="inline-chat-shell__compose-input"
-              data-inline-chat-compose-input
-              placeholder="Spør videre om dette"
-              rows="1"
-            ></textarea>
+                    data-inline-chat-compose-input
+                    placeholder={composePlaceholder}
+                    rows="1"
+                    enterkeyhint="send"
+                  ></textarea>
             <div class="inline-chat-shell__compose-fetch-overlay" data-inline-chat-compose-fetch-overlay aria-hidden="true">
               <span class="inline-chat-shell__compose-fetch-dots">
                 <span></span><span></span><span></span>
@@ -187,10 +217,11 @@ const inspectLabelClass =
   </div>
 </section>
 
-<script is:inline define:vars={{ mode }}>
+<script is:inline define:vars={{ mode, layout }}>
   (() => {
     const shell = document.querySelector('[data-component="ArticleInlineChatShell"][data-inline-chat-mode]');
     if (!shell) return;
+    const isTransitionV01 = layout === "transition-v01";
     const widget = shell.querySelector("#article-inline-chat-widget");
     const progressive = mode === "progressive";
     const selectedBox = shell?.querySelector("[data-inline-chat-selected]");
@@ -205,7 +236,7 @@ const inspectLabelClass =
     const composeInput = shell?.querySelector("[data-inline-chat-compose-input]");
     const composeSend = shell?.querySelector("[data-inline-chat-compose-send]");
     const composeFetchHint = composeForm?.querySelector("[data-inline-chat-compose-fetch-hint]");
-    const defaultComposePlaceholder = "Spør videre om dette";
+    const defaultComposePlaceholder = isTransitionV01 ? "Hva lurer du på?" : "Spør videre om dette";
     const seedButtons = Array.from(shell?.querySelectorAll("[data-inline-chat-seed]") || []);
     const SESSION_KEY = "viddel-article-chat-session";
     const SESSION_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}$/;
@@ -323,6 +354,7 @@ const inspectLabelClass =
       if (!progressive || !composeStack || shell?.getAttribute("data-inline-chat-conversation") !== "active") return 0;
       return composeStack.getBoundingClientRect().height;
     };
+    const measuredIdleStickyStackPx = () => (composeStack ? composeStack.getBoundingClientRect().height : 0);
     const syncBottomReserve = () => {
       if (!shell) return;
       if (!progressive) {
@@ -335,6 +367,16 @@ const inspectLabelClass =
         return;
       }
       if (shell.getAttribute("data-inline-chat-conversation") !== "active") {
+        if (isTransitionV01) {
+          const h = measuredIdleStickyStackPx();
+          const reserve = Math.max(
+            minBottomReservePx(),
+            Math.ceil(h + stickyComposerBottomInsetPx() + activeStackDocumentTailPx()),
+          );
+          shell.style.setProperty("--inline-chat-bottom-reserve", `${reserve}px`);
+          document.documentElement.style.setProperty("--article-chat-compose-reserve", `${reserve}px`);
+          return;
+        }
         shell.style.setProperty("--inline-chat-bottom-reserve", "0px");
         return;
       }
@@ -826,6 +868,13 @@ const inspectLabelClass =
       setStatus("Noe nølte. Vent litt, eller prøv igjen.");
     };
 
+    const wrapArticleContext = (message) => {
+      const seed = String(message || "").trim();
+      if (!seed || !isTransitionV01) return seed;
+      const articleLabel = shell?.dataset.articleTitle || "artikkelen";
+      return `Jeg leser artikkelen «${articleLabel}». ${seed}`;
+    };
+
     const requestChatAnswer = async (prompt, turn = activeTurn) => {
       const seed = (prompt || "").trim();
       if (!seed || !turn) return;
@@ -836,7 +885,7 @@ const inspectLabelClass =
           headers: { "Content-Type": "application/json" },
           credentials: "same-origin",
           body: JSON.stringify({
-            message: seed,
+            message: wrapArticleContext(seed),
             sessionId: ensureSessionId(),
           }),
         });
@@ -1152,6 +1201,14 @@ const inspectLabelClass =
       }, 250);
     }
     window.requestAnimationFrame(() => syncBottomReserve());
+    if (isTransitionV01 && composeStack && "ResizeObserver" in window) {
+      const idleStackObserver = new ResizeObserver(() => syncBottomReserve());
+      idleStackObserver.observe(composeStack);
+    }
+    window.addEventListener("resize", () => syncBottomReserve(), { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", () => syncBottomReserve(), { passive: true });
+    }
   })();
 </script>
 

@@ -1,0 +1,93 @@
+---
+/* CONTRACT: #257 test article — kort selvhjelp + article-to-chat transition (én artikkel). */
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ArticleInlineChatShell from "../../../components/article/ArticleInlineChatShell.astro";
+import "../../../styles/article-system.css";
+import "../../../styles/r1-dialog-article.css";
+import "../../../styles/article-chat-transition-v01.css";
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
+
+const slug = "ingen-lyd-svak-lyd";
+const articleTitle = "Ingen lyd eller svak lyd fra høreapparatet";
+const aiHeadingId = "article-ingen-lyd-svak-lyd-ai";
+
+const transitionSeeds = [
+  { question: "Jeg har prøvd dette, men lyden er fortsatt svak" },
+  { question: "Hjelp meg å finne neste ting jeg bør sjekke" },
+];
+
+const bylineAvatarSrc = "/images/klarlyd/r1-byline-profile.png";
+---
+
+<BaseLayout title={`Viddel - ${articleTitle}`} currentPath={`/no/artikkel/${slug}`} shellVariant="article">
+  <meta slot="head" name="robots" content="noindex,follow" />
+
+  <main
+    class="bg-[rgb(var(--article-page-canvas))] py-2 sm:py-3"
+    data-article-system
+    data-r1-editorial
+    data-article-chat-transition-v01
+  >
+    <div class="r1-editorial-container px-4 sm:px-6">
+      <article class="vox-reading-sheet mx-auto max-w-[min(100%,46rem)] px-0.5">
+        <header class="r1-storyblok-article-header">
+          <div class="r1-storyblok-kicker-row">
+            <p>Feilsøking</p>
+          </div>
+          <h1>{articleTitle}</h1>
+          <p class="r1-storyblok-lead">
+            Når lyden mangler eller føles svak, er det ofte en enkel årsak. Start med to raske sjekker — så kan du
+            fortelle Viddel hva du ser og hører, og få hjelp videre for din situasjon.
+          </p>
+          <section class="r1-storyblok-trustblock" aria-label="Artikkelmetadata">
+            <img src={bylineAvatarSrc} alt="" class="r1-storyblok-avatar" loading="lazy" />
+            <div class="r1-storyblok-trustcopy">
+              <p>
+                Av <strong>Nora Lysvik</strong>, faglig rådgiver
+              </p>
+              <p>
+                For <strong>Viddel-redaksjonen</strong>, redaksjonelt kvalitetssjekket med faglig orientering
+              </p>
+            </div>
+          </section>
+        </header>
+
+        <div class="vox-reading-article-body r1-storyblok-article-body">
+          <div class="article-chat-transition-v01__steps">
+            <section>
+              <h2 class="article-chat-transition-v01__step-title">1. Sjekk at apparatet er på og har strøm</h2>
+              <p class="article-chat-transition-v01__step-body">
+                Slå apparatet av og på. Hvis du bruker batteri, bytt til et ferskt. Ved oppladbart apparat: legg det i
+                laderen til indikatoren viser at det lader, og test igjen etter noen minutter.
+              </p>
+            </section>
+
+            <section>
+              <h2 class="article-chat-transition-v01__step-title">2. Sjekk filter og lydutgang</h2>
+              <p class="article-chat-transition-v01__step-body">
+                Se om filter, dome eller propp sitter riktig og ikke er tett. Et blokkert filter er en vanlig årsak til
+                svak eller manglende lyd. Bytt filter hvis du har riktig type og har lært hvordan.
+              </p>
+            </section>
+          </div>
+
+          <section class="r1-ai-bridge article-chat-transition-v01__bridge px-0.5 py-1">
+            <p class="article-chat-transition-v01__lead">
+              Fortell Viddel hva du allerede har prøvd, så hjelper vi deg finne neste steg for din situasjon.
+            </p>
+            <ArticleInlineChatShell
+              title={articleTitle}
+              headingId={aiHeadingId}
+              items={transitionSeeds}
+              sourceLabel={slug}
+              articleTitle={articleTitle}
+              mode="progressive"
+              layout="transition-v01"
+            />
+          </section>
+        </div>
+      </article>
+    </div>
+  </main>
+</BaseLayout>

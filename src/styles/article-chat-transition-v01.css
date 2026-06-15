@@ -1,0 +1,98 @@
+/* CONTRACT: #257 article → chat transition test — sticky composer reserve + bridge layout. */
+
+[data-article-chat-transition-v01] .vox-reading-article-body {
+  padding-bottom: calc(var(--article-chat-compose-reserve, 7.5rem) + env(safe-area-inset-bottom, 0px) + 1rem);
+}
+
+.article-chat-transition-v01__bridge {
+  margin-top: 1.75rem;
+}
+
+.article-chat-transition-v01__lead {
+  color: rgb(var(--reading-ink));
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0 0 0.85rem;
+  max-width: 36rem;
+}
+
+.article-chat-transition-v01__steps {
+  display: grid;
+  gap: 1.35rem;
+}
+
+.article-chat-transition-v01__step-title {
+  color: rgb(var(--reading-ink));
+  font-family: var(--font-display, inherit);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin: 0 0 0.45rem;
+}
+
+.article-chat-transition-v01__step-body {
+  color: rgb(var(--reading-ink-secondary));
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* Sticky composer on article — match /no/chat fixed stack (no CES offset). */
+[data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose-stack {
+  background: rgb(var(--surface) / 0.98);
+  border: 1px solid rgb(var(--border) / 0.44);
+  border-radius: 1.12rem;
+  bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 14px 38px -10px rgb(15 23 42 / 0.16), 0 4px 14px -6px rgb(15 23 42 / 0.08);
+  box-sizing: border-box;
+  gap: 0;
+  left: 50%;
+  margin: 0;
+  max-width: min(46rem, 100cqw);
+  padding: 0.42rem 0.58rem 0.55rem;
+  position: fixed;
+  transform: translateX(-50%);
+  width: min(46rem, 100cqw);
+  z-index: 24;
+}
+
+[data-r1-editorial]
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose-stack
+  .inline-chat-shell__compose {
+  background: transparent;
+  border: 0;
+  border-radius: 0.85rem;
+  box-shadow: none;
+  margin-top: 0;
+  max-width: none;
+  padding: 0.35rem 0.28rem 0.28rem;
+  position: static;
+  width: 100%;
+}
+
+[data-r1-editorial]
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose-stack
+  .inline-chat-shell__status--dock {
+  margin: 0;
+  padding: 0.12rem 0.35rem 0.28rem;
+}
+
+[data-r1-editorial]
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
+  .inline-chat-shell__seed-item {
+  justify-content: flex-start;
+}
+
+[data-r1-editorial]
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
+  .inline-chat-shell__seed-row {
+  max-width: 100%;
+  width: 100%;
+}
