@@ -2,25 +2,42 @@
 
 [data-article-chat-transition-v01] {
   --article-chat-compose-surface: 255 255 255;
-  --article-chat-halo-fill: 228 216 202;
+  /* Lys isblå + svak mint — klar Viddel-bunnsone (ikke beige/gråbrun). */
+  --article-chat-halo-core: 196 230 246;
+  --article-chat-halo-accent: 186 236 228;
   --article-chat-compose-halo-height: 8rem;
 }
 
 .article-chat-transition-v01__compose-halo {
   background: radial-gradient(
-    ellipse 96% 92% at 50% 100%,
-    rgb(var(--article-chat-halo-fill) / 0.82) 0%,
-    rgb(var(--article-chat-halo-fill) / 0.48) 40%,
-    rgb(var(--article-chat-halo-fill) / 0.18) 66%,
-    transparent 88%
+    ellipse 125% 96% at 50% 100%,
+    rgb(var(--article-chat-halo-core) / 0.46) 0%,
+    rgb(var(--article-chat-halo-accent) / 0.26) 36%,
+    rgb(var(--article-chat-halo-core) / 0.1) 58%,
+    transparent 76%
   );
   bottom: 0;
   height: calc(var(--article-chat-compose-halo-height, 8rem) + env(safe-area-inset-bottom, 0px));
   left: 50%;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgb(0 0 0 / 1) 10%,
+    rgb(0 0 0 / 1) 90%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+  max-width: min(46rem, 100cqw);
   pointer-events: none;
   position: fixed;
   transform: translateX(-50%);
-  width: min(54rem, 100vw);
+  width: min(46rem, calc(100vw - 2rem));
   z-index: 22;
 }
 
