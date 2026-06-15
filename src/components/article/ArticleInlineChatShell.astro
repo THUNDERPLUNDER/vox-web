@@ -190,8 +190,8 @@ const inspectLabelClass =
 <script is:inline define:vars={{ mode }}>
   (() => {
     const shell = document.querySelector('[data-component="ArticleInlineChatShell"][data-inline-chat-mode]');
-    const widget = shell?.querySelector("#article-inline-chat-widget");
-    if (!widget) return;
+    if (!shell) return;
+    const widget = shell.querySelector("#article-inline-chat-widget");
     const progressive = mode === "progressive";
     const selectedBox = shell?.querySelector("[data-inline-chat-selected]");
     const seedSuggestions = shell?.querySelector("[data-inline-chat-seed-suggestions]");
@@ -207,6 +207,8 @@ const inspectLabelClass =
     const composeFetchHint = composeForm?.querySelector("[data-inline-chat-compose-fetch-hint]");
     const defaultComposePlaceholder = "Spør videre om dette";
     const seedButtons = Array.from(shell?.querySelectorAll("[data-inline-chat-seed]") || []);
+    const SESSION_KEY = "viddel-article-chat-session";
+    const SESSION_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}$/;
     let bridgeReady = false;
     let responseTimer = null;
     let retryTimer = null;
@@ -225,6 +227,18 @@ const inspectLabelClass =
     const slowStatusDelayMs = 17000;
     const controlsDelayMs = 17000;
     const retryDelayMs = 6000;
+
+    const ensureSessionId = () => {
+      try {
+        const existing = sessionStorage.getItem(SESSION_KEY);
+        if (existing && SESSION_PATTERN.test(existing)) return existing;
+      } catch (_) {}
+      const created = `viddel-${crypto.randomUUID().replace(/-/g, "").slice(0, 24)}`;
+      try {
+        sessionStorage.setItem(SESSION_KEY, created);
+      } catch (_) {}
+      return created;
+    };
 
     const setState = (next) => {
       if (!shell) return;
@@ -723,7 +737,7 @@ const inspectLabelClass =
         turn.autoRetryUsed = true;
         clearCountdownTimer();
         setComposeWaitHint("");
-        pushToWidget(turn.query, turn);
+        sendTurnQuery(turn.query, turn);
       }, autoRetryDelayMs);
     };
 
@@ -769,14 +783,20 @@ const inspectLabelClass =
     };
 
     const handleBotReply = (event) => {
-      if (!progressive || !activeTurn) return;
+      if (progressive || !activeTurn) return;
       if (activeTurn.state !== "pending") return;
       if (activeTurn.responseReceived) return;
       const responseQuery = getResponseQuery(event?.detail);
       if (responseQuery && normalizeQuery(responseQuery) !== normalizeQuery(activeTurn.query)) return;
       const text = asText(event?.detail);
       if (!text) return;
-      const turn = activeTurn;
+      deliverBotReply(activeTurn, text);
+    };
+
+    const deliverBotReply = (turn, text) => {
+      if (!turn || turn.state !== "pending" || turn.responseReceived) return;
+      const trimmed = String(text || "").trim();
+      if (!trimmed) return;
       turn.responseReceived = true;
       turn.state = "revealing";
       clearTurnTimers();
@@ -784,13 +804,58 @@ const inspectLabelClass =
       setState("answered");
       syncComposeState();
       setStatus("");
-      revealFormattedText(turn, text, () => {
+      revealFormattedText(turn, trimmed, () => {
         if (activeTurn?.id !== turn.id || turn.state !== "revealing") return;
         finishActiveTurn("answered");
         revealCompose();
         setStatus("");
         scrollToLatest();
       });
+    };
+
+    const handleApiError = (turn, payload, status) => {
+      if (!turn || !isCurrentAttempt(turn)) return;
+      const errorCode = String(payload?.error || "");
+      if (status === 429 || errorCode === "rate_limited") {
+        renderTurnActions(turn);
+        setStatus("Vent litt. Vi prøver igjen …");
+        scheduleTransientRetry(turn);
+        return;
+      }
+      renderTurnActions(turn);
+      setStatus("Noe nølte. Vent litt, eller prøv igjen.");
+    };
+
+    const requestChatAnswer = async (prompt, turn = activeTurn) => {
+      const seed = (prompt || "").trim();
+      if (!seed || !turn) return;
+      const attemptId = turn.attemptId;
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({
+            message: seed,
+            sessionId: ensureSessionId(),
+          }),
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!isCurrentAttempt(turn, attemptId)) return;
+        if (!response.ok) {
+          handleApiError(turn, payload, response.status);
+          return;
+        }
+        const text = typeof payload.text === "string" ? payload.text.trim() : "";
+        if (!text) {
+          handleApiError(turn, payload, response.status);
+          return;
+        }
+        deliverBotReply(turn, text);
+      } catch (_) {
+        if (!isCurrentAttempt(turn, attemptId)) return;
+        handleApiError(turn, {}, 0);
+      }
     };
 
     const pushToWidget = (prompt, turn = activeTurn) => {
@@ -802,6 +867,14 @@ const inspectLabelClass =
         renderFallback(turn);
       });
       return true;
+    };
+
+    const sendTurnQuery = (prompt, turn = activeTurn) => {
+      if (progressive) {
+        void requestChatAnswer(prompt, turn);
+        return true;
+      }
+      return pushToWidget(prompt, turn);
     };
 
     const isCurrentAttempt = (turn, attemptId = turn?.attemptId) =>
@@ -820,12 +893,12 @@ const inspectLabelClass =
       retryTimer = setTimeout(() => {
         retryTimer = null;
         if (!isCurrentAttempt(turn, attemptId)) return;
-        pushToWidget(turn.query, turn);
+        sendTurnQuery(turn.query, turn);
       }, retryDelayMs);
     };
 
     const handleBridgeError = (event) => {
-      if (!progressive || !activeTurn || activeTurn.state !== "pending" || activeTurn.responseReceived) return;
+      if (progressive || !activeTurn || activeTurn.state !== "pending" || activeTurn.responseReceived) return;
       const detail = event?.detail || {};
       const status = String(detail.status ?? detail?.error?.status ?? "");
       const message = String(detail.message || detail?.error?.message || "");
@@ -878,6 +951,15 @@ const inspectLabelClass =
       syncComposeState();
       setState("started");
       scrollToLatest({ force: true });
+      if (progressive) {
+        scheduleSilentAutoRetry(turn);
+        scheduleManualControls(turn);
+        startSlowTimer(turn);
+        startResponseTimer(turn);
+        setState("active");
+        sendTurnQuery(query, turn);
+        return;
+      }
       if (pushToWidget(query, turn)) {
         scheduleSilentAutoRetry(turn);
         scheduleManualControls(turn);
@@ -920,7 +1002,7 @@ const inspectLabelClass =
       syncComposeState();
       setState("active");
       scrollToLatest({ force: true });
-      if (pushToWidget(turn.query, turn)) {
+      if (sendTurnQuery(turn.query, turn)) {
         window.setTimeout(() => {
           turn.manualRetryInFlight = false;
         }, 1400);
@@ -948,13 +1030,6 @@ const inspectLabelClass =
       setStatus("Avbrutt. Svar som kommer senere, vises ikke her.");
       scrollToLatest();
     };
-
-    let readinessTries = 0;
-    const timer = setInterval(() => {
-      readinessTries += 1;
-      bridgeReady = typeof widget.sendQuery === "function";
-      if (bridgeReady || readinessTries > 40) clearInterval(timer);
-    }, 250);
 
     seedButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -1046,12 +1121,17 @@ const inspectLabelClass =
       stopRevealFollow();
     });
 
-    widget.addEventListener("chat-messenger-response-received", handleBotReply);
-    widget.addEventListener("chat-messenger-error-v2", handleBridgeError);
-    window.addEventListener("chat-messenger-response-received", handleBotReply);
-    window.addEventListener("chat-messenger-error-v2", handleBridgeError);
+    if (widget) {
+      widget.addEventListener("chat-messenger-response-received", handleBotReply);
+      widget.addEventListener("chat-messenger-error-v2", handleBridgeError);
+    }
+    if (!progressive) {
+      window.addEventListener("chat-messenger-response-received", handleBotReply);
+      window.addEventListener("chat-messenger-error-v2", handleBridgeError);
+    }
 
     window.addEventListener("vox-ces-register", (event) => {
+      if (!widget) return;
       const detail = event?.detail || {};
       if (detail.widgetId !== "article-inline-chat-widget") return;
       if (detail.success) {
@@ -1060,9 +1140,17 @@ const inspectLabelClass =
       }
       if (progressive) setStatus("Hørehjelpen er ikke klar ennå.");
     });
-    window.addEventListener("chat-messenger-loaded", observeReady, { once: true });
-    window.addEventListener("ces-messenger-connected", observeReady, { once: true });
-    observeReady();
+    if (widget) {
+      window.addEventListener("chat-messenger-loaded", observeReady, { once: true });
+      window.addEventListener("ces-messenger-connected", observeReady, { once: true });
+      observeReady();
+      let readinessTries = 0;
+      const timer = setInterval(() => {
+        readinessTries += 1;
+        bridgeReady = typeof widget.sendQuery === "function";
+        if (bridgeReady || readinessTries > 40) clearInterval(timer);
+      }, 250);
+    }
     window.requestAnimationFrame(() => syncBottomReserve());
   })();
 </script>
