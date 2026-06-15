@@ -1,13 +1,45 @@
 /* CONTRACT: #257 article → chat transition test — sticky composer reserve + bridge layout. */
 
+[data-article-chat-transition-v01] {
+  --article-chat-compose-surface: 255 255 255;
+  --article-chat-halo-fill: 228 216 202;
+  --article-chat-compose-halo-height: 8rem;
+}
+
+.article-chat-transition-v01__compose-halo {
+  background: radial-gradient(
+    ellipse 96% 92% at 50% 100%,
+    rgb(var(--article-chat-halo-fill) / 0.82) 0%,
+    rgb(var(--article-chat-halo-fill) / 0.48) 40%,
+    rgb(var(--article-chat-halo-fill) / 0.18) 66%,
+    transparent 88%
+  );
+  bottom: 0;
+  height: calc(var(--article-chat-compose-halo-height, 8rem) + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  pointer-events: none;
+  position: fixed;
+  transform: translateX(-50%);
+  width: min(54rem, 100vw);
+  z-index: 22;
+}
+
 [data-article-chat-transition-v01] .vox-reading-article-body {
-  padding-bottom: calc(var(--article-chat-compose-reserve, 7.5rem) + env(safe-area-inset-bottom, 0px) + 1rem);
+  padding-bottom: calc(var(--article-chat-compose-reserve, 4.5rem) + env(safe-area-inset-bottom, 0px));
 }
 
 [data-article-chat-transition-v01]:has(
   [data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="active"]
 ) .vox-reading-article-body {
   padding-bottom: 0;
+}
+
+/* Idle: seeds + composer som én overgang. */
+[data-article-chat-transition-v01]
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="idle"]
+  .inline-chat-shell__seed-suggestions {
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.1rem;
 }
 
 /* Aktiv: clearance i bunn-spacer (som /no/chat), ikke viewport-padding på dialog-thread. */
@@ -43,7 +75,12 @@
 }
 
 .article-chat-transition-v01__bridge {
+  margin-bottom: 0;
   margin-top: 1.75rem;
+}
+
+[data-article-chat-transition-v01] .r1-ai-bridge.article-chat-transition-v01__bridge {
+  margin-bottom: 0;
 }
 
 .article-chat-transition-v01__lead {
@@ -77,22 +114,22 @@
   margin: 0;
 }
 
-/* Sticky composer on article — match /no/chat fixed stack (no CES offset). */
+/* Sticky composer — hvit compose-surface over bunnsone (halo på main). */
 [data-r1-editorial]
   .r1-ai-bridge
   .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
   .inline-chat-shell__compose-stack {
-  background: rgb(var(--surface) / 0.98);
-  border: 1px solid rgb(var(--border) / 0.44);
-  border-radius: 1.12rem;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
   bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
-  box-shadow: 0 14px 38px -10px rgb(15 23 42 / 0.16), 0 4px 14px -6px rgb(15 23 42 / 0.08);
+  box-shadow: none;
   box-sizing: border-box;
   gap: 0;
   left: 50%;
   margin: 0;
   max-width: min(46rem, 100cqw);
-  padding: 0.42rem 0.58rem 0.55rem;
+  padding: 0;
   position: fixed;
   transform: translateX(-50%);
   width: min(46rem, 100cqw);
@@ -103,13 +140,16 @@
   .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
   .inline-chat-shell__compose-stack
   .inline-chat-shell__compose {
-  background: transparent;
-  border: 0;
-  border-radius: 0.85rem;
-  box-shadow: none;
+  background: rgb(var(--article-chat-compose-surface));
+  border: 1px solid rgb(var(--border) / 0.58);
+  border-radius: 1rem;
+  box-shadow:
+    0 12px 36px -10px rgb(15 23 42 / 0.18),
+    0 4px 14px -6px rgb(15 23 42 / 0.1),
+    0 0 0 1px rgb(15 23 42 / 0.035);
   margin-top: 0;
   max-width: none;
-  padding: 0.35rem 0.28rem 0.28rem;
+  padding: 0.42rem 0.5rem 0.46rem;
   position: static;
   width: 100%;
 }
@@ -118,8 +158,8 @@
   .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
   .inline-chat-shell__compose-stack
   .inline-chat-shell__status--dock {
-  margin: 0;
-  padding: 0.12rem 0.35rem 0.28rem;
+  margin: 0 0 0.28rem;
+  padding: 0 0.2rem;
 }
 
 [data-r1-editorial]

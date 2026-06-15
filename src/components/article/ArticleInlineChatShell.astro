@@ -128,7 +128,19 @@ const inspectLabelClass =
           }
           <div class="inline-chat-shell__bottom-anchor" data-inline-chat-bottom aria-hidden="true" />
         </div>
-        <div class="inline-chat-shell__compose-stack mt-3" data-inline-chat-compose-stack>
+        {
+          layout === "transition-v01" ? (
+            <div class="article-chat-transition-v01__compose-halo" data-article-chat-compose-halo aria-hidden="true" />
+          ) : null
+        }
+        <div
+          class:list={[
+            "inline-chat-shell__compose-stack",
+            layout === "transition-v01" && "article-chat-transition-v01__compose-stack",
+            layout !== "transition-v01" && "mt-3",
+          ]}
+          data-inline-chat-compose-stack
+        >
           <p class="inline-chat-shell__status inline-chat-shell__status--dock" data-inline-chat-status aria-live="polite"></p>
           <form class="inline-chat-shell__compose" data-component="Compose" data-inline-chat-compose>
             <span class={inspectLabelClass} data-component-label>Compose</span>
@@ -371,11 +383,17 @@ const inspectLabelClass =
       return composeStack.getBoundingClientRect().height;
     };
     const measuredIdleStickyStackPx = () => (composeStack ? composeStack.getBoundingClientRect().height : 0);
-    /** transition-v01 aktiv: compose-høyde + safe-area-inset + liten luft (ikke viewport-blokk). */
-    const transitionActiveReservePx = () => {
-      const h = measuredProgressiveStackHeightPx();
+    /** transition-v01: compose-høyde + safe-area + liten luft (idle og aktiv). */
+    const transitionComposeClearancePx = () => {
+      const h = composeStack ? composeStack.getBoundingClientRect().height : 0;
       if (!h) return 12;
       return Math.ceil(h + stickyComposerBottomInsetPx() + transitionComposeGapPx());
+    };
+    const syncTransitionHaloHeight = (reservePx) => {
+      const isIdle = shell?.getAttribute("data-inline-chat-conversation") !== "active";
+      const floor = Math.ceil(reservePx + 2.25 * rootRemPx());
+      const halo = isIdle ? Math.max(floor, Math.ceil(window.innerHeight * 0.36)) : floor;
+      document.documentElement.style.setProperty("--article-chat-compose-halo-height", `${halo}px`);
     };
     const syncBottomReserve = () => {
       if (!shell) return;
@@ -390,13 +408,10 @@ const inspectLabelClass =
       }
       if (shell.getAttribute("data-inline-chat-conversation") !== "active") {
         if (isTransitionV01) {
-          const h = measuredIdleStickyStackPx();
-          const reserve = Math.max(
-            minBottomReservePx(),
-            Math.ceil(h + stickyComposerBottomInsetPx() + activeStackDocumentTailPx()),
-          );
+          const reserve = transitionComposeClearancePx();
           shell.style.setProperty("--inline-chat-bottom-reserve", `${reserve}px`);
           document.documentElement.style.setProperty("--article-chat-compose-reserve", `${reserve}px`);
+          syncTransitionHaloHeight(reserve);
           return;
         }
         shell.style.setProperty("--inline-chat-bottom-reserve", "0px");
@@ -408,9 +423,10 @@ const inspectLabelClass =
         return;
       }
       if (isTransitionV01) {
-        const reserve = transitionActiveReservePx();
+        const reserve = transitionComposeClearancePx();
         shell.style.setProperty("--inline-chat-bottom-reserve", `${reserve}px`);
         document.documentElement.style.setProperty("--article-chat-compose-reserve", "0px");
+        syncTransitionHaloHeight(reserve);
         return;
       }
       const tail = activeStackDocumentTailPx();
