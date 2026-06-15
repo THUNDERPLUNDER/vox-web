@@ -361,8 +361,15 @@ const inspectLabelClass =
       if (pending) composeInput.setAttribute("aria-busy", "true");
       else composeInput.removeAttribute("aria-busy");
       syncComposeFetchOverlay();
+      if (isTransitionV01) syncBottomReserve();
     };
-    const transitionComposeGapPx = () => 20;
+    const transitionComposeGapPx = () => {
+      if (!isTransitionV01) return 20;
+      if (shell?.getAttribute("data-inline-chat-conversation") !== "active") return 10;
+      if (activeTurn?.state === "pending") return 32;
+      if (activeTurn?.state === "revealing") return 28;
+      return 28;
+    };
     const revealBreathingGapPx = () => {
       if (isTransitionV01) return transitionComposeGapPx();
       return window.matchMedia?.("(max-width: 768px)")?.matches ? 108 : 72;
@@ -387,19 +394,31 @@ const inspectLabelClass =
       if (!progressive || !composeStack || shell?.getAttribute("data-inline-chat-conversation") !== "active") return 0;
       return composeStack.getBoundingClientRect().height;
     };
-    const measuredIdleStickyStackPx = () => (composeStack ? composeStack.getBoundingClientRect().height : 0);
-    /** transition-v01: compose-høyde + safe-area + liten luft (idle og aktiv). */
+    const measuredIdleStickyStackPx = () => {
+      if (!composeStack) return 0;
+      if (!isTransitionV01) return composeStack.getBoundingClientRect().height;
+      const formH = composeForm ? composeForm.getBoundingClientRect().height : 0;
+      const statusEl = composeStack.querySelector(".inline-chat-shell__status--dock");
+      const statusText = statusEl?.textContent?.trim() || "";
+      const statusH = statusText && statusEl ? statusEl.getBoundingClientRect().height : 0;
+      return Math.ceil(formH + statusH + (statusH ? 6 : 0));
+    };
+    /** transition-v01: compose-høyde + safe-area + state-gap (idle og aktiv). */
     const transitionComposeClearancePx = () => {
-      const h = composeStack ? composeStack.getBoundingClientRect().height : 0;
+      const isActive = shell?.getAttribute("data-inline-chat-conversation") === "active";
+      const h = isActive ? measuredProgressiveStackHeightPx() : measuredIdleStickyStackPx();
       if (!h) return 12;
       return Math.ceil(h + stickyComposerBottomInsetPx() + transitionComposeGapPx());
     };
+    const getTransitionViewportBottom = () => {
+      const vv = window.visualViewport;
+      return vv ? vv.offsetTop + vv.height : window.innerHeight;
+    };
     const syncTransitionHaloHeight = (reservePx) => {
       const isIdle = shell?.getAttribute("data-inline-chat-conversation") !== "active";
-      const floor = Math.ceil(reservePx + 3.5 * rootRemPx());
       const halo = isIdle
-        ? Math.max(floor, Math.ceil(window.innerHeight * 0.46))
-        : Math.ceil(reservePx + 2.75 * rootRemPx());
+        ? Math.ceil(reservePx + 2.25 * rootRemPx())
+        : Math.ceil(reservePx + 1.85 * rootRemPx());
       document.documentElement.style.setProperty("--article-chat-compose-halo-height", `${halo}px`);
     };
     const syncBottomReserve = () => {
@@ -450,6 +469,9 @@ const inspectLabelClass =
       return null;
     };
     const getVisibleRevealBottom = () => {
+      if (isTransitionV01 && shell?.getAttribute("data-inline-chat-conversation") === "active") {
+        return getTransitionViewportBottom() - transitionComposeClearancePx();
+      }
       const chromeTop = getChromeTopForLayout();
       if (chromeTop != null) return chromeTop - revealBreathingGapPx();
       if (!composeVisible || !composeForm) return window.innerHeight - revealBreathingGapPx();
@@ -458,6 +480,9 @@ const inspectLabelClass =
     /** Synlig «bunnlinje» for innhold: over compose-stack (progressive aktiv) / inline compose / vindu. */
     const getVisibleContentBottom = () => {
       if (activeTurn?.state === "revealing") return getVisibleRevealBottom();
+      if (isTransitionV01 && shell?.getAttribute("data-inline-chat-conversation") === "active") {
+        return getTransitionViewportBottom() - transitionComposeClearancePx();
+      }
       const chromeTop = getChromeTopForLayout();
       if (chromeTop != null) return chromeTop - (isTransitionV01 ? transitionComposeGapPx() : 10);
       if (composeVisible && composeForm) {
@@ -480,8 +505,23 @@ const inspectLabelClass =
     };
     const resizeComposeInput = () => {
       if (!composeInput) return;
+      const minHeightPx = isTransitionV01 ? 44 : 38;
       composeInput.style.height = "auto";
-      composeInput.style.height = `${composeInput.scrollHeight}px`;
+      const scrollHeight = composeInput.scrollHeight;
+      const nextHeight = Math.max(minHeightPx, scrollHeight);
+      const maxHeightPx = Math.min(
+        Math.round(9 * rootRemPx()),
+        Math.round(window.innerHeight * 0.32)
+      );
+      const clampedHeight = Math.min(nextHeight, maxHeightPx);
+      const isExpanded =
+        composeInput.value.includes("\n") || nextHeight > minHeightPx + 2 || clampedHeight > minHeightPx + 2;
+      if (isTransitionV01) {
+        composeInput.toggleAttribute("data-transition-compose-expanded", isExpanded);
+        composeForm?.toggleAttribute("data-transition-compose-expanded", isExpanded);
+      }
+      composeInput.style.height = `${clampedHeight}px`;
+      composeInput.style.overflowY = nextHeight > maxHeightPx ? "auto" : "hidden";
       syncBottomReserve();
     };
     const clearResponseTimer = () => {
@@ -634,22 +674,36 @@ const inspectLabelClass =
       window.scrollBy({ top: Math.ceil(delta), behavior });
       hideLatestButton();
     };
-    /** transition-v01: juster scroll begge veier slik siste svar ligger ~20px over compose. */
+    const getTransitionScrollTarget = () => {
+      const assistant = activeTurn?.assistantText;
+      if (!assistant) return getDefaultScrollTarget();
+      const blocks = assistant.querySelectorAll("p, ul, ol, li");
+      if (blocks.length) return blocks[blocks.length - 1];
+      return assistant;
+    };
+    /** transition-v01: juster scroll begge veier slik siste svar ligger med state-gap over compose. */
     const snugTransitionAboveCompose = (target, { behavior = "auto" } = {}) => {
       if (!target) return;
       const visibleBottom = getVisibleContentBottom();
       const rect = target.getBoundingClientRect();
       const delta = rect.bottom - visibleBottom;
-      if (Math.abs(delta) <= 4) return;
+      if (Math.abs(delta) <= 3) return;
       window.scrollBy({ top: Math.ceil(delta), behavior });
       hideLatestButton();
     };
     const scrollTransitionChatToEnd = ({ behavior = "auto" } = {}) => {
       if (!isTransitionV01) return;
-      const target = activeTurn?.assistantText || getDefaultScrollTarget();
+      const target = getTransitionScrollTarget();
       if (!target) return;
+      syncBottomReserve();
       snugTransitionAboveCompose(target, { behavior });
-      requestAnimationFrame(() => snugTransitionAboveCompose(target, { behavior: "auto" }));
+      requestAnimationFrame(() => {
+        syncBottomReserve();
+        snugTransitionAboveCompose(getTransitionScrollTarget(), { behavior: "auto" });
+        requestAnimationFrame(() => {
+          snugTransitionAboveCompose(getTransitionScrollTarget(), { behavior: "auto" });
+        });
+      });
     };
     const scrollRevealIntoView = (turn) => {
       if (!turn?.revealShouldFollow || !turn.revealTail) {
@@ -929,7 +983,11 @@ const inspectLabelClass =
         revealCompose();
         setStatus("");
         requestAnimationFrame(() => {
-          requestAnimationFrame(() => scrollToLatest({ force: true }));
+          syncBottomReserve();
+          requestAnimationFrame(() => {
+            scrollToLatest({ force: true });
+            window.setTimeout(() => scrollTransitionChatToEnd({ behavior: "auto" }), 80);
+          });
         });
       });
     };
@@ -1078,7 +1136,9 @@ const inspectLabelClass =
       setSeedsBusy(true);
       syncComposeState();
       setState("started");
+      syncBottomReserve();
       scrollToLatest({ force: true });
+      window.requestAnimationFrame(() => scrollTransitionChatToEnd({ behavior: "auto" }));
       if (progressive) {
         scheduleSilentAutoRetry(turn);
         scheduleManualControls(turn);
@@ -1288,7 +1348,10 @@ const inspectLabelClass =
         if (bridgeReady || readinessTries > 40) clearInterval(timer);
       }, 250);
     }
-    window.requestAnimationFrame(() => syncBottomReserve());
+    window.requestAnimationFrame(() => {
+      if (isTransitionV01) resizeComposeInput();
+      syncBottomReserve();
+    });
     if (isTransitionV01 && composeStack && "ResizeObserver" in window) {
       const idleStackObserver = new ResizeObserver(() => syncBottomReserve());
       idleStackObserver.observe(composeStack);

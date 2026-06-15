@@ -11,40 +11,32 @@
 
 .article-chat-transition-v01__compose-halo {
   background: radial-gradient(
-    ellipse 145% 104% at 50% 100%,
+    ellipse 128% 112% at 50% 100%,
     rgb(var(--article-chat-halo-core) / 0.68) 0%,
     rgb(var(--article-chat-halo-accent) / 0.42) 32%,
     rgb(var(--article-chat-halo-core) / 0.2) 56%,
     rgb(var(--article-chat-halo-accent) / 0.08) 72%,
-    transparent 86%
+    transparent 88%
   );
   bottom: 0;
   height: calc(var(--article-chat-compose-halo-height, 10rem) + env(safe-area-inset-bottom, 0px));
   left: 50%;
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    rgb(0 0 0 / 1) 8%,
-    rgb(0 0 0 / 1) 92%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 8%,
-    black 92%,
-    transparent 100%
-  );
-  max-width: min(46rem, 100cqw);
+  max-width: none;
   pointer-events: none;
   position: fixed;
   transform: translateX(-50%);
-  width: min(46rem, calc(100vw - 1.5rem));
+  width: min(calc(46rem + 5rem), calc(100vw - 0.25rem));
   z-index: 22;
 }
 
 [data-article-chat-transition-v01] .vox-reading-article-body {
-  padding-bottom: calc(var(--article-chat-compose-reserve, 4.5rem) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(var(--article-chat-compose-reserve, 3.25rem) + env(safe-area-inset-bottom, 0px));
+}
+
+[data-article-chat-transition-v01]:has(
+  [data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="active"]
+) {
+  scroll-padding-bottom: calc(var(--inline-chat-bottom-reserve, 5.5rem) + env(safe-area-inset-bottom, 0px));
 }
 
 [data-article-chat-transition-v01]:has(
@@ -57,8 +49,16 @@
 [data-article-chat-transition-v01]
   .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="idle"]
   .inline-chat-shell__seed-suggestions {
-  margin-bottom: 0.25rem;
-  padding-bottom: 0.1rem;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+[data-article-chat-transition-v01]
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="idle"]
+  .inline-chat-shell__status--dock:empty {
+  display: none;
+  margin: 0;
+  padding: 0;
 }
 
 /* Aktiv: clearance i bunn-spacer (som /no/chat), ikke viewport-padding på dialog-thread. */
@@ -89,8 +89,11 @@
 
 [data-article-chat-transition-v01]
   .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="active"]
-  .inline-chat-shell__message-text {
-  scroll-margin-bottom: calc(var(--inline-chat-bottom-reserve, 72px) + 0.25rem);
+  .inline-chat-shell__message-text,
+[data-article-chat-transition-v01]
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-conversation="active"]
+  .inline-chat-shell__message--assistant {
+  scroll-margin-bottom: calc(var(--inline-chat-bottom-reserve, 72px) + 0.35rem);
 }
 
 .article-chat-transition-v01__bridge {
@@ -172,7 +175,18 @@
   min-height: 3.4rem;
   padding: 0.5rem 0.58rem 0.5rem 1.1rem;
   position: static;
+  transition: border-radius 160ms ease;
   width: 100%;
+}
+
+[data-r1-editorial]
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose-stack
+  .inline-chat-shell__compose[data-transition-compose-expanded] {
+  align-items: flex-end;
+  border-radius: 1.65rem;
+  padding-bottom: 0.45rem;
+  padding-top: 0.45rem;
 }
 
 [data-r1-editorial]
@@ -213,12 +227,22 @@
   .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
   .inline-chat-shell__compose-stack
   .inline-chat-shell__compose-send {
+  align-self: center;
   box-shadow: 0 4px 16px rgb(var(--article-chat-compose-shadow) / 0.24);
   flex-shrink: 0;
   font-size: 1.05rem;
   height: 2.85rem;
   min-height: 2.85rem;
   width: 2.85rem;
+}
+
+[data-r1-editorial]
+  .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose-stack
+  .inline-chat-shell__compose[data-transition-compose-expanded]
+  .inline-chat-shell__compose-send {
+  align-self: flex-end;
+  margin-bottom: 0.08rem;
 }
 
 [data-r1-editorial]
