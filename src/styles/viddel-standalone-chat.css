@@ -94,6 +94,32 @@ body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat
   gap: 0.55rem;
 }
 
+/* Open start (no seeds) — hint + composer only */
+.viddel-chat-start--open .viddel-chat-start__intro {
+  margin-bottom: 1.2rem;
+}
+
+.viddel-chat-start--open .viddel-chat-start__hint {
+  color: rgb(var(--text) / 0.9);
+  font-size: clamp(0.98rem, 2.1vw, 1.08rem);
+  font-weight: 450;
+  line-height: 1.5;
+  margin-inline: auto;
+  max-width: 32rem;
+  text-align: center;
+}
+
+.viddel-chat-start--open .viddel-chat-start__surface {
+  gap: 0;
+}
+
+body.vox-shell--standalone-chat:not([data-viddel-chat-active])
+  [data-viddel-chat]
+  .viddel-chat-start--open
+  .inline-chat-shell__compose {
+  margin-top: 0;
+}
+
 body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__seed-item {
   justify-content: flex-start;
 }
@@ -422,6 +448,22 @@ body.vox-shell--standalone-chat
     .viddel-chat-start__hint {
     font-size: 0.84rem;
     text-align: left;
+  }
+
+  body.vox-shell--standalone-chat
+    .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="idle"]
+    .viddel-chat-start--open
+    .viddel-chat-start__hint {
+    font-size: 0.94rem;
+    line-height: 1.48;
+    text-align: left;
+  }
+
+  body.vox-shell--standalone-chat
+    .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="idle"]
+    .viddel-chat-start--open
+    .viddel-chat-start__intro {
+    margin-bottom: 0.65rem;
   }
 
   body.vox-shell--standalone-chat

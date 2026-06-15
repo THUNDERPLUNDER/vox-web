@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: Standalone Viddel AI chat — open start surface, headless via /api/chat. #125M-C R1 */
+/* CONTRACT: Standalone Viddel AI chat — B-variant with seed suggestions (internal QA). Headless via /api/chat. */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import "../../styles/r1-dialog-article.css";
 import "../../styles/viddel-standalone-chat.css";
@@ -13,11 +13,13 @@ const exampleQuestions = [
   "Høreapparatet har ikke lyd",
   "Lyden blir slitsom i støy",
 ];
+
+const aiHeadingId = "viddel-standalone-chat-ai";
 ---
 
 <BaseLayout
-  title="Viddel - Spør Viddel"
-  currentPath="/no/chat"
+  title="Viddel - Spør Viddel (B-variant)"
+  currentPath="/no/chat-b"
   headerBrand="viddel"
   shellVariant="standalone-chat"
   showHeaderDevtoolsToggle={false}
@@ -36,15 +38,37 @@ const exampleQuestions = [
             data-inline-chat-conversation="idle"
             data-inline-chat-state="idle"
           >
-            <div class="viddel-chat-start viddel-chat-start--open" data-viddel-chat-start>
+            <header class="inline-chat-shell__header hidden" data-inline-chat-header aria-hidden="true">
+              <h2 id={aiHeadingId} class="inline-chat-shell__title">Spør om dette:</h2>
+            </header>
+
+            <div class="viddel-chat-start" data-viddel-chat-start>
               <header class="viddel-chat-start__intro" data-viddel-chat-intro>
                 <h1 id="viddel-chat-title" class="sr-only">Spør Viddel</h1>
                 <p class="viddel-chat-start__hint">
-                  Spør Viddel om lyd, hørsel, hjelpemidler, eller annet som handler om å høre bedre i hverdagen
+                  Spør om høreapparat, app, lyd eller situasjoner i hverdagen.
                 </p>
               </header>
 
-              <div class="viddel-chat-start__surface viddel-chat-start__surface--open" data-viddel-chat-start-surface>
+              <div class="viddel-chat-start__surface" data-viddel-chat-start-surface>
+                <div class="inline-chat-shell__seed-suggestions" data-inline-chat-seed-suggestions>
+                  <ul class="inline-chat-shell__seed-list inline-chat-shell__seed-list--rows" role="list">
+                    {
+                      exampleQuestions.map((question) => (
+                        <li class="inline-chat-shell__seed-item">
+                          <button
+                            type="button"
+                            class="inline-chat-shell__seed-btn inline-chat-shell__seed-row"
+                            data-viddel-chat-example={question}
+                          >
+                            <span class="inline-chat-shell__seed-question">{question}</span>
+                          </button>
+                        </li>
+                      ))
+                    }
+                  </ul>
+                </div>
+
                 <div class="inline-chat-shell__compose-stack" data-viddel-chat-compose-stack>
                   <p class="inline-chat-shell__status inline-chat-shell__status--dock hidden" data-viddel-chat-loading role="status">
                     Viddel svarer …
@@ -239,6 +263,8 @@ const exampleQuestions = [
       const root = document.querySelector("[data-viddel-chat]");
       const shell = root?.querySelector("[data-viddel-chat-shell]");
       const intro = root?.querySelector("[data-viddel-chat-intro]");
+      const header = shell?.querySelector("[data-inline-chat-header]");
+      const seedSuggestions = shell?.querySelector("[data-inline-chat-seed-suggestions]");
       const dialog = root?.querySelector("[data-viddel-chat-dialog]");
       const scrollViewport = root?.querySelector("[data-viddel-chat-scroll-viewport]");
       const transcript = root?.querySelector("[data-viddel-chat-transcript]");
@@ -265,6 +291,8 @@ const exampleQuestions = [
         !root ||
         !shell ||
         !intro ||
+        !header ||
+        !seedSuggestions ||
         !dialog ||
         !scrollViewport ||
         !transcript ||
@@ -371,6 +399,10 @@ const exampleQuestions = [
         if (hasConversation) return;
         hasConversation = true;
         intro.classList.add("hidden");
+        header.classList.add("hidden");
+        header.setAttribute("aria-hidden", "true");
+        seedSuggestions.classList.add("hidden");
+        seedSuggestions.setAttribute("aria-hidden", "true");
         dialog.classList.remove("hidden");
         shell.setAttribute("data-inline-chat-conversation", "active");
         shell.setAttribute("data-inline-chat-state", "active");
