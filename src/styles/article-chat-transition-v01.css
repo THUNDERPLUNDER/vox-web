@@ -6,7 +6,7 @@
   --article-chat-halo-core: 158 214 248;
   --article-chat-halo-accent: 132 228 206;
   --article-chat-compose-halo-height: clamp(8rem, 16vh, 13rem);
-  --article-chat-compose-halo-width: min(56rem, calc(100vw - 4rem));
+  --article-chat-compose-halo-width: min(60rem, calc(100vw - 3.5rem));
   --article-chat-compose-shadow: 48 82 120;
 }
 
@@ -19,7 +19,7 @@
   --article-chat-halo-core: 158 214 248;
   --article-chat-halo-accent: 132 228 206;
   --article-chat-compose-halo-height: clamp(8rem, 16vh, 13rem);
-  --article-chat-compose-halo-width: min(56rem, calc(100vw - 4rem));
+  --article-chat-compose-halo-width: min(60rem, calc(100vw - 3.5rem));
   bottom: 0;
   left: 0;
   margin: 0;
@@ -35,7 +35,7 @@
 .article-chat-transition-v01__compose-halo {
   background:
     radial-gradient(
-      ellipse 78% 82% at 50% 88%,
+      ellipse 84% 82% at 50% 88%,
       rgb(158 214 248 / 0.7) 0%,
       rgb(132 228 206 / 0.48) 22%,
       rgb(158 214 248 / 0.22) 42%,
@@ -52,13 +52,13 @@
   height: calc(var(--article-chat-compose-halo-height, clamp(8rem, 16vh, 13rem)) + env(safe-area-inset-bottom, 0px));
   left: 50%;
   margin: 0;
-  mask-image: linear-gradient(90deg, transparent 0%, black 18%, black 82%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
   max-width: none;
   pointer-events: none;
   position: absolute;
   transform: translateX(-50%);
-  width: var(--article-chat-compose-halo-width, min(56rem, calc(100vw - 4rem)));
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 18%, black 82%, transparent 100%);
+  width: var(--article-chat-compose-halo-width, min(60rem, calc(100vw - 3.5rem)));
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
 }
 
 [data-article-chat-transition-v01] .vox-reading-article-body {
