@@ -190,11 +190,17 @@
 }
 
 @media (max-width: 640px) {
+  html:has(body.vox-shell--article [data-article-chat-transition-v01]) {
+    background: rgb(var(--reading-paper));
+  }
+
   body.vox-shell--article:has([data-article-chat-transition-v01]) {
     --bg: var(--reading-paper);
     --orb-a: 0;
     --orb-b: 0;
     --orb-c: 0;
+    --surface: var(--reading-paper);
+    --surface-elevated: var(--reading-paper);
     background: rgb(var(--reading-paper));
   }
 
@@ -244,6 +250,33 @@
 
   .article-chat-transition-v01__compose-environment {
     --article-chat-compose-halo-width: min(24rem, calc(100vw - 1rem));
+  }
+
+  .article-chat-transition-v01__compose-halo {
+    background:
+      radial-gradient(
+        ellipse 88% 78% at 50% 70%,
+        rgb(158 214 248 / 0.82) 0%,
+        rgb(132 228 206 / 0.58) 22%,
+        rgb(158 214 248 / 0.3) 44%,
+        rgb(132 228 206 / 0.12) 62%,
+        transparent 82%
+      ),
+      linear-gradient(
+        to top,
+        rgb(158 214 248 / 0.18) 0%,
+        rgb(132 228 206 / 0.08) 30%,
+        transparent 72%
+      );
+  }
+
+  [data-r1-editorial]
+    .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
+    .inline-chat-shell__compose-stack
+    .inline-chat-shell__compose {
+    box-shadow:
+      0 24px 62px -16px rgb(var(--article-chat-compose-shadow) / 0.36),
+      0 10px 28px -12px rgb(var(--article-chat-compose-shadow) / 0.22) !important;
   }
 }
 
