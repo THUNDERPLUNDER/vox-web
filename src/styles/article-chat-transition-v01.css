@@ -189,6 +189,38 @@
   z-index: 32;
 }
 
+@media (max-width: 640px) {
+  [data-article-chat-transition-v01] {
+    background: rgb(var(--reading-paper));
+  }
+
+  body.vox-shell--article:has([data-article-chat-transition-v01]) > .mx-auto.max-w-6xl {
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  [data-article-chat-transition-v01] > .r1-editorial-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  [data-article-chat-transition-v01] .vox-reading-sheet {
+    border-left: 0;
+    border-radius: 0;
+    border-right: 0;
+    max-width: none;
+    width: 100%;
+  }
+
+  [data-r1-editorial]
+    .r1-ai-bridge
+    .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
+    .inline-chat-shell__compose-stack {
+    bottom: max(1rem, calc(env(safe-area-inset-bottom, 0px) + 0.75rem));
+  }
+}
+
 [data-r1-editorial]
   .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
   .inline-chat-shell__compose-stack

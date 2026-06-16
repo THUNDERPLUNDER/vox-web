@@ -420,6 +420,9 @@ const inspectLabelClass =
     const minBottomReservePx = () => Math.ceil(6.5 * rootRemPx());
     const stickyComposerBottomInsetPx = () => {
       if (isTransitionV01) {
+        if (window.matchMedia?.("(max-width: 640px)")?.matches) {
+          return Math.max(Math.ceil(1 * rootRemPx()), 16);
+        }
         return Math.max(Math.ceil(2.75 * rootRemPx()), 44);
       }
       return Math.max(Math.ceil(0.75 * rootRemPx()), 12);
