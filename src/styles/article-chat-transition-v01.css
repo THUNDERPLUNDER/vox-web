@@ -190,6 +190,18 @@
 }
 
 @media (max-width: 640px) {
+  body.vox-shell--article:has([data-article-chat-transition-v01]) {
+    --bg: var(--reading-paper);
+    --orb-a: 0;
+    --orb-b: 0;
+    --orb-c: 0;
+    background: rgb(var(--reading-paper));
+  }
+
+  body.vox-shell--article:has([data-article-chat-transition-v01]) .vox-sonic-blob--article {
+    opacity: 0;
+  }
+
   [data-article-chat-transition-v01] {
     background: rgb(var(--reading-paper));
   }
@@ -218,6 +230,20 @@
     .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
     .inline-chat-shell__compose-stack {
     bottom: max(1rem, calc(env(safe-area-inset-bottom, 0px) + 0.75rem));
+    max-width: none !important;
+    width: calc(100vw - 2rem) !important;
+  }
+
+  [data-r1-editorial]
+    .r1-ai-bridge
+    .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
+    .inline-chat-shell__compose-stack
+    .inline-chat-shell__compose {
+    width: 100%;
+  }
+
+  .article-chat-transition-v01__compose-environment {
+    --article-chat-compose-halo-width: min(24rem, calc(100vw - 1rem));
   }
 }
 
