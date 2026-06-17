@@ -50,8 +50,18 @@ body.vox-shell--standalone-chat [data-viddel-chat] {
   --viddel-chat-compose-shadow: 48 82 120;
   --viddel-chat-halo-core: 158 214 248;
   --viddel-chat-halo-accent: 132 228 206;
-  --viddel-chat-compose-halo-height: clamp(7rem, 14vh, 11rem);
-  --viddel-chat-compose-halo-width: min(52rem, calc(100vw - 2rem));
+  --viddel-chat-compose-halo-height: clamp(8rem, 18vh, 14rem);
+  --viddel-chat-compose-halo-width: min(58rem, calc(100vw - 1rem));
+}
+
+body.vox-shell--standalone-chat {
+  --orb-a: 0;
+  --orb-b: 0;
+  --orb-c: 0;
+}
+
+body.vox-shell--standalone-chat .vox-sonic-blob {
+  opacity: 0.12;
 }
 
 /* --- Standalone idle start surface (seeds + composer) --- */
@@ -59,7 +69,7 @@ body.vox-shell--standalone-chat [data-viddel-chat] {
 body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat] .viddel-chat-standalone__editorial {
   display: flex;
   flex-direction: column;
-  min-height: min(100%, calc(100dvh - 4.5rem));
+  min-height: min(100%, calc(100dvh - 6rem));
 }
 
 body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat] .r1-ai-bridge {
@@ -68,8 +78,8 @@ body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat
   flex-direction: column;
   justify-content: center;
   margin-bottom: 0;
-  padding-bottom: clamp(1.5rem, 8vh, 4rem);
-  padding-top: clamp(1.25rem, 6vh, 3rem);
+  padding-bottom: clamp(1rem, 6vh, 3.5rem);
+  padding-top: clamp(3rem, 14vh, 8rem);
 }
 
 body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat] .inline-chat-shell {
@@ -82,6 +92,12 @@ body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat
   margin-inline: auto;
   max-width: min(100%, var(--r1-ai-dialog-measure, min(100%, 46rem)));
   width: 100%;
+}
+
+@media (min-width: 640px) {
+  body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat] .viddel-chat-start {
+    transform: translateY(clamp(4rem, 10vh, 6rem));
+  }
 }
 
 .viddel-chat-start__intro {
@@ -229,24 +245,24 @@ body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__seed-row 
 body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__compose-stack::before {
   background:
     radial-gradient(
-      ellipse 80% 78% at 46% 72%,
-      rgb(var(--viddel-chat-halo-core) / 0.46) 0%,
-      rgb(var(--viddel-chat-halo-core) / 0.24) 38%,
+      ellipse 82% 76% at 45% 70%,
+      rgb(var(--viddel-chat-halo-core) / 0.5) 0%,
+      rgb(var(--viddel-chat-halo-core) / 0.26) 38%,
       transparent 78%
     ),
     radial-gradient(
-      ellipse 72% 74% at 60% 78%,
-      rgb(var(--viddel-chat-halo-accent) / 0.32) 0%,
-      rgb(var(--viddel-chat-halo-accent) / 0.16) 38%,
+      ellipse 76% 72% at 62% 78%,
+      rgb(var(--viddel-chat-halo-accent) / 0.36) 0%,
+      rgb(var(--viddel-chat-halo-accent) / 0.18) 40%,
       transparent 80%
     ),
     linear-gradient(
       to top,
-      rgb(var(--viddel-chat-halo-core) / 0.08) 0%,
-      rgb(var(--viddel-chat-halo-accent) / 0.035) 34%,
-      transparent 72%
+      rgb(var(--viddel-chat-halo-core) / 0.06) 0%,
+      rgb(var(--viddel-chat-halo-accent) / 0.025) 30%,
+      transparent 68%
     );
-  bottom: -1.65rem;
+  bottom: -0.35rem;
   content: "";
   height: var(--viddel-chat-compose-halo-height);
   left: 50%;
@@ -454,6 +470,17 @@ body.vox-shell--standalone-chat
   [data-r1-editorial]
   .r1-ai-bridge
   .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose:not(:has(.viddel-chat-attach__attachment-strip:not(.hidden))):not(
+    :has(.inline-chat-shell__compose-input[data-chat-input-expanded])
+  ) {
+  border-radius: 999px;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
   .inline-chat-shell__compose:focus-within {
   box-shadow:
     0 24px 56px -14px rgb(var(--viddel-chat-compose-shadow) / 0.34),
@@ -473,6 +500,29 @@ body.vox-shell--standalone-chat
   .inline-chat-shell[data-inline-chat-mode="progressive"]
   .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
   border-radius: 1.55rem;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  [data-inline-chat-mode="progressive"]
+  .inline-chat-shell__message--user {
+  background: rgb(var(--viddel-chat-compose-surface) / 0.96);
+  border: 1px solid rgb(var(--border) / 0.32);
+  box-shadow:
+    0 14px 34px -20px rgb(var(--viddel-chat-compose-shadow) / 0.36),
+    0 1px 0 rgb(255 255 255 / 0.82) inset;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  [data-inline-chat-mode="progressive"]
+  .inline-chat-shell__message--user
+  .inline-chat-shell__message-text {
+  color: rgb(var(--reading-ink));
 }
 
 .inline-chat-shell__turn {
@@ -628,7 +678,7 @@ body.vox-shell--standalone-chat
   }
 
   body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__compose-stack::before {
-    bottom: -1.15rem;
+    bottom: 0;
     background:
       radial-gradient(
         ellipse 76% 72% at 44% 74%,
@@ -677,6 +727,28 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] .inline-chat-shell__dia
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+}
+
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] {
+  --viddel-chat-compose-halo-height: clamp(5.5rem, 11vh, 8rem);
+  --viddel-chat-compose-halo-width: min(42rem, calc(100vw - 2rem));
+}
+
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] .inline-chat-shell__compose-stack::before {
+  background:
+    radial-gradient(
+      ellipse 78% 70% at 48% 72%,
+      rgb(var(--viddel-chat-halo-core) / 0.28) 0%,
+      rgb(var(--viddel-chat-halo-core) / 0.14) 40%,
+      transparent 78%
+    ),
+    radial-gradient(
+      ellipse 72% 66% at 60% 78%,
+      rgb(var(--viddel-chat-halo-accent) / 0.2) 0%,
+      rgb(var(--viddel-chat-halo-accent) / 0.1) 40%,
+      transparent 82%
+    );
+  bottom: 0;
 }
 
 @media (min-width: 640px) {
