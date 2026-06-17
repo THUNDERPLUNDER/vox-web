@@ -50,7 +50,7 @@ body.vox-shell--standalone-chat [data-viddel-chat] {
   --viddel-chat-compose-shadow: 48 82 120;
   --viddel-chat-halo-core: 158 214 248;
   --viddel-chat-halo-accent: 132 228 206;
-  --viddel-chat-compose-halo-height: clamp(8rem, 14vh, 11.5rem);
+  --viddel-chat-compose-halo-height: clamp(10rem, 17vh, 14rem);
   --viddel-chat-compose-halo-width: min(58rem, calc(100vw - 1rem));
   --viddel-chat-user-bubble-surface: 238 243 248;
 }
@@ -274,7 +274,7 @@ body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__compose-s
       rgb(var(--viddel-chat-halo-accent) / 0.045) 66%,
       transparent 94%
     );
-  bottom: -3rem;
+  bottom: -5rem;
   content: "";
   height: var(--viddel-chat-compose-halo-height);
   left: 50%;
@@ -351,8 +351,9 @@ body.vox-shell--standalone-chat
   border-radius: 999px;
   bottom: auto;
   box-shadow:
-    0 22px 52px -14px rgb(var(--viddel-chat-compose-shadow) / 0.3),
-    0 8px 24px -10px rgb(var(--viddel-chat-compose-shadow) / 0.18);
+    0 28px 72px -16px rgb(var(--viddel-chat-compose-shadow) / 0.42),
+    0 12px 34px -12px rgb(var(--viddel-chat-compose-shadow) / 0.26),
+    0 1px 0 rgb(255 255 255 / 0.92) inset;
   margin-top: 0;
   max-width: none;
   min-height: 3.4rem;
@@ -483,10 +484,23 @@ body.vox-shell--standalone-chat
   box-shadow:
     0 22px 52px -14px rgb(var(--viddel-chat-compose-shadow) / 0.28),
     0 8px 24px -10px rgb(var(--viddel-chat-compose-shadow) / 0.16);
-  clip-path: inset(0 round 999px);
   min-height: 3.4rem;
   overflow: hidden;
   padding: 0.5rem 0.58rem;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"]
+  .inline-chat-shell__compose-stack
+  .inline-chat-shell__compose {
+  background: rgb(var(--viddel-chat-compose-surface));
+  box-shadow:
+    0 28px 72px -16px rgb(var(--viddel-chat-compose-shadow) / 0.42),
+    0 12px 34px -12px rgb(var(--viddel-chat-compose-shadow) / 0.26),
+    0 1px 0 rgb(255 255 255 / 0.92) inset;
 }
 
 body.vox-shell--standalone-chat
@@ -574,7 +588,6 @@ body.vox-shell--standalone-chat
   .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
   align-items: flex-end;
   border-radius: 1.65rem;
-  clip-path: inset(0 round 1.65rem);
   padding-bottom: 0.45rem;
   padding-top: 0.45rem;
 }
@@ -635,9 +648,10 @@ body.vox-shell--standalone-chat
   [data-inline-chat-mode="progressive"]
   .inline-chat-shell__message--user {
   background: rgb(var(--viddel-chat-user-bubble-surface));
-  border: 1px solid rgb(148 163 184 / 0.32);
+  border: 0;
+  border-radius: 999px;
   box-shadow:
-    0 14px 30px -22px rgb(var(--viddel-chat-compose-shadow) / 0.28),
+    0 14px 30px -24px rgb(var(--viddel-chat-compose-shadow) / 0.24),
     0 1px 0 rgb(255 255 255 / 0.9) inset;
 }
 
@@ -794,7 +808,6 @@ body.vox-shell--standalone-chat
     margin-top: 0;
     max-width: none;
     min-height: 3.4rem;
-    clip-path: inset(0 round 999px);
     overflow: hidden;
     padding: 0.5rem 0.58rem;
     position: static;
@@ -802,12 +815,12 @@ body.vox-shell--standalone-chat
   }
 
   body.vox-shell--standalone-chat [data-viddel-chat] {
-    --viddel-chat-compose-halo-height: clamp(7rem, 13vh, 9rem);
+    --viddel-chat-compose-halo-height: clamp(8rem, 15vh, 11rem);
     --viddel-chat-compose-halo-width: min(34rem, calc(100vw + 3rem));
   }
 
   body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__compose-stack::before {
-    bottom: -2.25rem;
+    bottom: -4rem;
     background:
       radial-gradient(
         ellipse 82% 72% at 44% 58%,
