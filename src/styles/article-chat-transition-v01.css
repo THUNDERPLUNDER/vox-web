@@ -2,10 +2,11 @@
 
 [data-article-chat-transition-v01] {
   --article-chat-compose-surface: 255 255 255;
-  /* Frisk isblå + mint — tydelig bunnsone (sterk test). */
+  /* Frisk isblå + mint — roligere bunnhalo rundt composer. */
   --article-chat-halo-core: 158 214 248;
   --article-chat-halo-accent: 132 228 206;
-  --article-chat-compose-halo-height: clamp(16rem, 34vh, 24rem);
+  --article-chat-compose-halo-height: clamp(8rem, 16vh, 13rem);
+  --article-chat-compose-halo-width: min(60rem, calc(100vw - 3.5rem));
   --article-chat-compose-shadow: 48 82 120;
 }
 
@@ -17,7 +18,8 @@
 .article-chat-transition-v01__compose-environment {
   --article-chat-halo-core: 158 214 248;
   --article-chat-halo-accent: 132 228 206;
-  --article-chat-compose-halo-height: clamp(16rem, 34vh, 24rem);
+  --article-chat-compose-halo-height: clamp(8rem, 16vh, 13rem);
+  --article-chat-compose-halo-width: min(60rem, calc(100vw - 3.5rem));
   bottom: 0;
   left: 0;
   margin: 0;
@@ -33,28 +35,30 @@
 .article-chat-transition-v01__compose-halo {
   background:
     radial-gradient(
-      ellipse 92% 98% at 50% 70%,
-      rgb(158 214 248 / 0.9) 0%,
-      rgb(132 228 206 / 0.62) 24%,
-      rgb(158 214 248 / 0.36) 46%,
-      rgb(132 228 206 / 0.16) 64%,
-      transparent 90%
+      ellipse 84% 82% at 50% 79%,
+      rgb(158 214 248 / 0.7) 0%,
+      rgb(132 228 206 / 0.48) 22%,
+      rgb(158 214 248 / 0.22) 42%,
+      rgb(132 228 206 / 0.08) 58%,
+      transparent 78%
     ),
     linear-gradient(
       to top,
-      rgb(158 214 248 / 0.34) 0%,
-      rgb(132 228 206 / 0.16) 38%,
-      transparent 88%
+      rgb(158 214 248 / 0.14) 0%,
+      rgb(132 228 206 / 0.06) 30%,
+      transparent 72%
     );
   bottom: 0;
-  height: calc(var(--article-chat-compose-halo-height, clamp(16rem, 34vh, 24rem)) + env(safe-area-inset-bottom, 0px));
-  left: 0;
+  height: calc(var(--article-chat-compose-halo-height, clamp(8rem, 16vh, 13rem)) + env(safe-area-inset-bottom, 0px));
+  left: 50%;
   margin: 0;
+  mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
   max-width: none;
   pointer-events: none;
   position: absolute;
-  right: 0;
-  width: 100%;
+  transform: translateX(-50%);
+  width: var(--article-chat-compose-halo-width, min(60rem, calc(100vw - 3.5rem)));
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
 }
 
 [data-article-chat-transition-v01] .vox-reading-article-body {
@@ -171,7 +175,7 @@
   background: transparent;
   border: 0;
   border-radius: 0;
-  bottom: max(1.125rem, env(safe-area-inset-bottom, 0px));
+  bottom: max(2.75rem, calc(env(safe-area-inset-bottom, 0px) + 1rem));
   box-shadow: none;
   box-sizing: border-box;
   gap: 0;
@@ -183,6 +187,127 @@
   transform: translateX(-50%);
   width: min(46rem, calc(100vw - 1.5rem));
   z-index: 32;
+}
+
+@media (max-width: 640px) {
+  html:has(body.vox-shell--article [data-article-chat-transition-v01]) {
+    background: rgb(var(--reading-paper));
+  }
+
+  body.vox-shell--article:has([data-article-chat-transition-v01]) {
+    --bg: var(--reading-paper);
+    --orb-a: 0;
+    --orb-b: 0;
+    --orb-c: 0;
+    --surface: var(--reading-paper);
+    --surface-elevated: var(--reading-paper);
+    background: rgb(var(--reading-paper));
+  }
+
+  body.vox-shell--article:has([data-article-chat-transition-v01]) .vox-sonic-blob--article {
+    opacity: 0;
+  }
+
+  [data-article-chat-transition-v01] {
+    background: rgb(var(--reading-paper));
+  }
+
+  body.vox-shell--article:has([data-article-chat-transition-v01]) > .mx-auto.max-w-6xl {
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  [data-article-chat-transition-v01] > .r1-editorial-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  [data-article-chat-transition-v01] .vox-reading-sheet {
+    border-left: 0;
+    border-radius: 0;
+    border-right: 0;
+    max-width: none;
+    width: 100%;
+  }
+
+  [data-r1-editorial]
+    .r1-ai-bridge
+    .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
+    .inline-chat-shell__compose-stack {
+    bottom: max(1rem, calc(env(safe-area-inset-bottom, 0px) + 0.75rem));
+    max-width: none !important;
+    width: calc(100vw - 2rem) !important;
+  }
+
+  [data-r1-editorial]
+    .r1-ai-bridge
+    .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
+    .inline-chat-shell__compose-stack
+    .inline-chat-shell__compose {
+    width: 100%;
+  }
+
+  .article-chat-transition-v01__compose-environment {
+    --article-chat-compose-halo-width: min(36rem, calc(100vw + 6rem));
+  }
+
+  .article-chat-transition-v01__compose-halo {
+    background:
+      radial-gradient(
+        ellipse 72% 70% at 42% 74%,
+        rgb(158 214 248 / 0.59) 0%,
+        rgb(158 214 248 / 0.34) 36%,
+        transparent 78%
+      ),
+      radial-gradient(
+        ellipse 68% 68% at 62% 80%,
+        rgb(132 228 206 / 0.45) 0%,
+        rgb(132 228 206 / 0.22) 38%,
+        transparent 80%
+      ),
+      radial-gradient(
+        ellipse 110% 68% at 50% 91%,
+        rgb(158 214 248 / 0.11) 0%,
+        rgb(132 228 206 / 0.08) 42%,
+        transparent 82%
+      );
+    mask-image: linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%);
+  }
+
+  [data-r1-editorial]
+    .inline-chat-shell[data-inline-chat-layout="transition-v01"][data-inline-chat-mode="progressive"]
+    .inline-chat-shell__compose-stack
+    .inline-chat-shell__compose {
+    box-shadow:
+      0 26px 70px -16px rgb(var(--article-chat-compose-shadow) / 0.46),
+      0 12px 34px -12px rgb(var(--article-chat-compose-shadow) / 0.3) !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  .article-chat-transition-v01__compose-environment {
+    --article-chat-compose-halo-height: clamp(7rem, 14vh, 11.5rem);
+  }
+
+  .article-chat-transition-v01__compose-halo {
+    background:
+      radial-gradient(
+        ellipse 84% 78% at 50% 69%,
+        rgb(158 214 248 / 0.66) 0%,
+        rgb(132 228 206 / 0.42) 22%,
+        rgb(158 214 248 / 0.18) 42%,
+        rgb(132 228 206 / 0.06) 56%,
+        transparent 76%
+      ),
+      linear-gradient(
+        to top,
+        rgb(158 214 248 / 0.08) 0%,
+        rgb(132 228 206 / 0.035) 28%,
+        transparent 68%
+      );
+  }
 }
 
 [data-r1-editorial]
