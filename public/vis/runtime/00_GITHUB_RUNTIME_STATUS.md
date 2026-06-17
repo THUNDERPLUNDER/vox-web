@@ -4,8 +4,8 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## Siste sync
 
-- **generated_at (UTC):** 2026-06-16T11:13:59.679Z
-- **generated_at (Europe/Oslo):** 16.6.2026, 13:13:59
+- **generated_at (UTC):** 2026-06-17T11:00:06.442Z
+- **generated_at (Europe/Oslo):** 17.6.2026, 13:00:06
 - **timezone:** Europe/Oslo
 - **repo:** THUNDERPLUNDER/vox-web
 - **data_warnings:** (ingen)
@@ -76,11 +76,14 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## SISTE 24T
 
-Vindu: commits/issues lukket/oppdatert etter **2026-06-15T11:13:59Z** (sirket ~24 timer).
+Vindu: commits/issues lukket/oppdatert etter **2026-06-16T11:00:06Z** (sirket ~24 timer).
 
 ### Lukkede issues
 
-_Ingen._
+- **#257** Article-to-chat transition v0.1 — short self-help article + sticky composer
+  - **closed_at:** 2026-06-17T08:21:36Z
+  - **labels:** (ingen)
+  - **url:** https://github.com/THUNDERPLUNDER/vox-web/issues/257
 
 ### Kommentarer (Return Ticket-lignende)
 
@@ -88,15 +91,18 @@ _Ingen treff i søkt utsnitt._
 
 ### Commits
 
-- **991355a** (2026-06-15T13:53:36Z) fix(article): repair portaled halo tokens and active scroll tail (#257)
-- **c71a5db** (2026-06-15T13:41:27Z) fix(article): strengthen transition halo height and gradient (#257)
-- **5757355** (2026-06-15T13:31:48Z) fix(article): full-bleed transition halo environment layer (#257)
-- **6323e8a** (2026-06-15T13:09:35Z) fix(article): portal transition halo and anchor answer above compose (#257)
-- **b9a7d5f** (2026-06-15T12:47:30Z) fix(article): tighten transition halo geometry and chat spacing (#257)
-- **b3e9b62** (2026-06-15T12:19:05Z) chore(vis): refresh GitHub runtime status for navigator
-- **1717c02** (2026-06-15T11:53:29Z) fix(article): bolder pill composer and stronger transition halo (#257)
-- **5f3e2a0** (2026-06-15T11:34:02Z) fix(article): freshen transition compose halo color and soft edges (#257)
-- **87a4eb8** (2026-06-15T11:24:46Z) fix(article): idle transition composer zone and tighter reserve (#257)
+- **43c21ab** (2026-06-17T08:21:34Z) Merge pull request #258 from THUNDERPLUNDER/calibrate-article-halo-257
+- **1078ddf** (2026-06-17T08:04:25Z) fix(article): raise desktop transition halo (#257)
+- **2053502** (2026-06-17T07:36:54Z) fix(article): nudge transition halo position (#257)
+- **baea77a** (2026-06-17T07:08:47Z) fix(article): tune transition halo balance (#257)
+- **01be59a** (2026-06-17T06:46:01Z) fix(article): shape transition mobile halo (#257)
+- **ca5a1e2** (2026-06-16T13:54:33Z) fix(article): boost transition mobile halo contrast (#257)
+- **2134b81** (2026-06-16T13:32:21Z) fix(article): improve transition mobile contrast (#257)
+- **2761aec** (2026-06-16T13:10:45Z) fix(article): stabilize transition mobile layout (#257)
+- **b383c3e** (2026-06-16T12:41:32Z) fix(article): tune transition mobile composer layout (#257)
+- **7774343** (2026-06-16T11:41:48Z) fix(article): lift transition composer offset (#257)
+- **0b23815** (2026-06-16T11:26:22Z) fix(article): widen transition halo slightly (#257)
+- **1b94b7b** (2026-06-16T11:14:03Z) chore(vis): refresh GitHub runtime status for navigator
 
 ## BLOCKERS
 
