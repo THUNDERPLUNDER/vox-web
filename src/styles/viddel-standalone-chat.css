@@ -50,8 +50,9 @@ body.vox-shell--standalone-chat [data-viddel-chat] {
   --viddel-chat-compose-shadow: 48 82 120;
   --viddel-chat-halo-core: 158 214 248;
   --viddel-chat-halo-accent: 132 228 206;
-  --viddel-chat-compose-halo-height: clamp(7rem, 13vh, 10.5rem);
+  --viddel-chat-compose-halo-height: clamp(8rem, 14vh, 11.5rem);
   --viddel-chat-compose-halo-width: min(58rem, calc(100vw - 1rem));
+  --viddel-chat-user-bubble-surface: 245 248 251;
 }
 
 body.vox-shell--standalone-chat {
@@ -262,20 +263,22 @@ body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__compose-s
     radial-gradient(
       ellipse 82% 72% at 45% 55%,
       rgb(var(--viddel-chat-halo-core) / 0.4) 0%,
-      rgb(var(--viddel-chat-halo-core) / 0.2) 38%,
-      transparent 80%
+      rgb(var(--viddel-chat-halo-core) / 0.19) 34%,
+      rgb(var(--viddel-chat-halo-core) / 0.055) 64%,
+      transparent 92%
     ),
     radial-gradient(
       ellipse 76% 70% at 62% 62%,
       rgb(var(--viddel-chat-halo-accent) / 0.3) 0%,
-      rgb(var(--viddel-chat-halo-accent) / 0.14) 40%,
-      transparent 80%
+      rgb(var(--viddel-chat-halo-accent) / 0.13) 36%,
+      rgb(var(--viddel-chat-halo-accent) / 0.045) 66%,
+      transparent 94%
     ),
     linear-gradient(
       to top,
       rgb(var(--viddel-chat-halo-core) / 0.035) 0%,
-      rgb(var(--viddel-chat-halo-accent) / 0.015) 28%,
-      transparent 66%
+      rgb(var(--viddel-chat-halo-accent) / 0.012) 26%,
+      transparent 82%
     );
   bottom: -3rem;
   content: "";
@@ -468,7 +471,7 @@ body.vox-shell--standalone-chat
 
 [data-viddel-chat] .viddel-chat-attach__compose:has(.viddel-chat-attach__attachment-strip:not(.hidden)),
 [data-viddel-chat] .viddel-chat-attach__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
-  border-radius: 1.55rem;
+  border-radius: 1.65rem;
 }
 
 body.vox-shell--standalone-chat
@@ -555,7 +558,7 @@ body.vox-shell--standalone-chat
   .r1-ai-bridge
   .inline-chat-shell[data-inline-chat-mode="progressive"]
   .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
-  border-radius: 1.55rem;
+  border-radius: 1.65rem;
 }
 
 body.vox-shell--standalone-chat
@@ -631,11 +634,11 @@ body.vox-shell--standalone-chat
   .r1-ai-bridge
   [data-inline-chat-mode="progressive"]
   .inline-chat-shell__message--user {
-  background: rgb(var(--viddel-chat-compose-surface) / 0.96);
-  border: 1px solid rgb(var(--border) / 0.32);
+  background: rgb(var(--viddel-chat-user-bubble-surface) / 0.98);
+  border: 1px solid rgb(203 213 225 / 0.52);
   box-shadow:
-    0 14px 34px -20px rgb(var(--viddel-chat-compose-shadow) / 0.36),
-    0 1px 0 rgb(255 255 255 / 0.82) inset;
+    0 12px 28px -22px rgb(var(--viddel-chat-compose-shadow) / 0.22),
+    0 1px 0 rgb(255 255 255 / 0.9) inset;
 }
 
 body.vox-shell--standalone-chat
@@ -797,7 +800,7 @@ body.vox-shell--standalone-chat
   }
 
   body.vox-shell--standalone-chat [data-viddel-chat] {
-    --viddel-chat-compose-halo-height: clamp(6rem, 12vh, 8rem);
+    --viddel-chat-compose-halo-height: clamp(7rem, 13vh, 9rem);
     --viddel-chat-compose-halo-width: min(34rem, calc(100vw + 3rem));
   }
 
@@ -807,14 +810,16 @@ body.vox-shell--standalone-chat
       radial-gradient(
         ellipse 76% 68% at 44% 55%,
         rgb(var(--viddel-chat-halo-core) / 0.42) 0%,
-        rgb(var(--viddel-chat-halo-core) / 0.22) 38%,
-        transparent 80%
+        rgb(var(--viddel-chat-halo-core) / 0.2) 34%,
+        rgb(var(--viddel-chat-halo-core) / 0.055) 64%,
+        transparent 92%
       ),
       radial-gradient(
         ellipse 70% 68% at 62% 62%,
         rgb(var(--viddel-chat-halo-accent) / 0.3) 0%,
-        rgb(var(--viddel-chat-halo-accent) / 0.15) 40%,
-        transparent 82%
+        rgb(var(--viddel-chat-halo-accent) / 0.13) 36%,
+        rgb(var(--viddel-chat-halo-accent) / 0.045) 66%,
+        transparent 94%
       );
     mask-image: linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%);
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%);
@@ -860,7 +865,7 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] .inline-chat-shell__dia
 }
 
 body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] {
-  --viddel-chat-compose-halo-height: clamp(5.5rem, 11vh, 8rem);
+  --viddel-chat-compose-halo-height: clamp(6.25rem, 12vh, 9rem);
   --viddel-chat-compose-halo-width: min(42rem, calc(100vw - 2rem));
 }
 
@@ -869,14 +874,16 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] .inl
     radial-gradient(
       ellipse 78% 70% at 48% 72%,
       rgb(var(--viddel-chat-halo-core) / 0.28) 0%,
-      rgb(var(--viddel-chat-halo-core) / 0.14) 40%,
-      transparent 78%
+      rgb(var(--viddel-chat-halo-core) / 0.12) 36%,
+      rgb(var(--viddel-chat-halo-core) / 0.035) 66%,
+      transparent 92%
     ),
     radial-gradient(
       ellipse 72% 66% at 60% 78%,
       rgb(var(--viddel-chat-halo-accent) / 0.2) 0%,
-      rgb(var(--viddel-chat-halo-accent) / 0.1) 40%,
-      transparent 82%
+      rgb(var(--viddel-chat-halo-accent) / 0.085) 36%,
+      rgb(var(--viddel-chat-halo-accent) / 0.028) 68%,
+      transparent 94%
     );
   bottom: 0;
 }
