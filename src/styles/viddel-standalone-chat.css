@@ -52,7 +52,7 @@ body.vox-shell--standalone-chat [data-viddel-chat] {
   --viddel-chat-halo-accent: 132 228 206;
   --viddel-chat-compose-halo-height: clamp(8rem, 14vh, 11.5rem);
   --viddel-chat-compose-halo-width: min(58rem, calc(100vw - 1rem));
-  --viddel-chat-user-bubble-surface: 245 248 251;
+  --viddel-chat-user-bubble-surface: 238 243 248;
 }
 
 body.vox-shell--standalone-chat {
@@ -261,30 +261,25 @@ body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__seed-row 
 body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__compose-stack::before {
   background:
     radial-gradient(
-      ellipse 82% 72% at 45% 55%,
+      ellipse 86% 76% at 45% 58%,
       rgb(var(--viddel-chat-halo-core) / 0.4) 0%,
       rgb(var(--viddel-chat-halo-core) / 0.19) 34%,
       rgb(var(--viddel-chat-halo-core) / 0.055) 64%,
       transparent 92%
     ),
     radial-gradient(
-      ellipse 76% 70% at 62% 62%,
+      ellipse 80% 74% at 62% 64%,
       rgb(var(--viddel-chat-halo-accent) / 0.3) 0%,
       rgb(var(--viddel-chat-halo-accent) / 0.13) 36%,
       rgb(var(--viddel-chat-halo-accent) / 0.045) 66%,
       transparent 94%
-    ),
-    linear-gradient(
-      to top,
-      rgb(var(--viddel-chat-halo-core) / 0.035) 0%,
-      rgb(var(--viddel-chat-halo-accent) / 0.012) 26%,
-      transparent 82%
     );
   bottom: -3rem;
   content: "";
   height: var(--viddel-chat-compose-halo-height);
   left: 50%;
   mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
+  opacity: 0.96;
   pointer-events: none;
   position: absolute;
   transform: translateX(-50%);
@@ -361,6 +356,7 @@ body.vox-shell--standalone-chat
   margin-top: 0;
   max-width: none;
   min-height: 3.4rem;
+  overflow: hidden;
   padding: 0.5rem 0.58rem;
   position: static;
   transition: border-radius 160ms ease;
@@ -394,6 +390,7 @@ body.vox-shell--standalone-chat
   margin-top: 1rem;
   max-width: 36rem;
   min-height: 3.4rem;
+  overflow: hidden;
   padding: 0.5rem 0.58rem;
   position: sticky;
   transition: border-radius 160ms ease;
@@ -486,7 +483,9 @@ body.vox-shell--standalone-chat
   box-shadow:
     0 22px 52px -14px rgb(var(--viddel-chat-compose-shadow) / 0.28),
     0 8px 24px -10px rgb(var(--viddel-chat-compose-shadow) / 0.16);
+  clip-path: inset(0 round 999px);
   min-height: 3.4rem;
+  overflow: hidden;
   padding: 0.5rem 0.58rem;
 }
 
@@ -575,6 +574,7 @@ body.vox-shell--standalone-chat
   .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
   align-items: flex-end;
   border-radius: 1.65rem;
+  clip-path: inset(0 round 1.65rem);
   padding-bottom: 0.45rem;
   padding-top: 0.45rem;
 }
@@ -634,10 +634,10 @@ body.vox-shell--standalone-chat
   .r1-ai-bridge
   [data-inline-chat-mode="progressive"]
   .inline-chat-shell__message--user {
-  background: rgb(var(--viddel-chat-user-bubble-surface) / 0.98);
-  border: 1px solid rgb(203 213 225 / 0.52);
+  background: rgb(var(--viddel-chat-user-bubble-surface));
+  border: 1px solid rgb(148 163 184 / 0.32);
   box-shadow:
-    0 12px 28px -22px rgb(var(--viddel-chat-compose-shadow) / 0.22),
+    0 14px 30px -22px rgb(var(--viddel-chat-compose-shadow) / 0.28),
     0 1px 0 rgb(255 255 255 / 0.9) inset;
 }
 
@@ -794,6 +794,8 @@ body.vox-shell--standalone-chat
     margin-top: 0;
     max-width: none;
     min-height: 3.4rem;
+    clip-path: inset(0 round 999px);
+    overflow: hidden;
     padding: 0.5rem 0.58rem;
     position: static;
     width: 100%;
@@ -808,14 +810,14 @@ body.vox-shell--standalone-chat
     bottom: -2.25rem;
     background:
       radial-gradient(
-        ellipse 76% 68% at 44% 55%,
+        ellipse 82% 72% at 44% 58%,
         rgb(var(--viddel-chat-halo-core) / 0.42) 0%,
         rgb(var(--viddel-chat-halo-core) / 0.2) 34%,
         rgb(var(--viddel-chat-halo-core) / 0.055) 64%,
         transparent 92%
       ),
       radial-gradient(
-        ellipse 70% 68% at 62% 62%,
+        ellipse 76% 72% at 62% 64%,
         rgb(var(--viddel-chat-halo-accent) / 0.3) 0%,
         rgb(var(--viddel-chat-halo-accent) / 0.13) 36%,
         rgb(var(--viddel-chat-halo-accent) / 0.045) 66%,
@@ -872,14 +874,14 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] {
 body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] .inline-chat-shell__compose-stack::before {
   background:
     radial-gradient(
-      ellipse 78% 70% at 48% 72%,
+      ellipse 82% 74% at 48% 70%,
       rgb(var(--viddel-chat-halo-core) / 0.28) 0%,
       rgb(var(--viddel-chat-halo-core) / 0.12) 36%,
       rgb(var(--viddel-chat-halo-core) / 0.035) 66%,
       transparent 92%
     ),
     radial-gradient(
-      ellipse 72% 66% at 60% 78%,
+      ellipse 76% 72% at 60% 74%,
       rgb(var(--viddel-chat-halo-accent) / 0.2) 0%,
       rgb(var(--viddel-chat-halo-accent) / 0.085) 36%,
       rgb(var(--viddel-chat-halo-accent) / 0.028) 68%,
