@@ -35,7 +35,7 @@
 .article-chat-transition-v01__compose-halo {
   background:
     radial-gradient(
-      ellipse 84% 82% at 50% 88%,
+      ellipse 84% 82% at 50% 79%,
       rgb(158 214 248 / 0.7) 0%,
       rgb(132 228 206 / 0.48) 22%,
       rgb(158 214 248 / 0.22) 42%,
@@ -294,7 +294,7 @@
   .article-chat-transition-v01__compose-halo {
     background:
       radial-gradient(
-        ellipse 84% 78% at 50% 75%,
+        ellipse 84% 78% at 50% 69%,
         rgb(158 214 248 / 0.66) 0%,
         rgb(132 228 206 / 0.42) 22%,
         rgb(158 214 248 / 0.18) 42%,
