@@ -255,19 +255,19 @@
   .article-chat-transition-v01__compose-halo {
     background:
       radial-gradient(
-        ellipse 72% 74% at 42% 70%,
+        ellipse 72% 70% at 42% 74%,
         rgb(158 214 248 / 0.59) 0%,
         rgb(158 214 248 / 0.34) 36%,
         transparent 78%
       ),
       radial-gradient(
-        ellipse 68% 72% at 62% 76%,
+        ellipse 68% 68% at 62% 80%,
         rgb(132 228 206 / 0.45) 0%,
         rgb(132 228 206 / 0.22) 38%,
         transparent 80%
       ),
       radial-gradient(
-        ellipse 110% 72% at 50% 88%,
+        ellipse 110% 68% at 50% 91%,
         rgb(158 214 248 / 0.11) 0%,
         rgb(132 228 206 / 0.08) 42%,
         transparent 82%
@@ -294,7 +294,7 @@
   .article-chat-transition-v01__compose-halo {
     background:
       radial-gradient(
-        ellipse 84% 78% at 50% 78%,
+        ellipse 84% 78% at 50% 75%,
         rgb(158 214 248 / 0.66) 0%,
         rgb(132 228 206 / 0.42) 22%,
         rgb(158 214 248 / 0.18) 42%,
