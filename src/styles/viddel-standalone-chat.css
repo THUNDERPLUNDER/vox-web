@@ -50,7 +50,8 @@ body.vox-shell--standalone-chat [data-viddel-chat] {
   --viddel-chat-compose-shadow: 48 82 120;
   --viddel-chat-halo-core: 158 214 248;
   --viddel-chat-halo-accent: 132 228 206;
-  --viddel-chat-compose-halo-height: clamp(10rem, 17vh, 14rem);
+  --viddel-chat-compose-halo-height: clamp(8rem, 14vh, 11.5rem);
+  --viddel-chat-compose-halo-overscan: 4rem;
   --viddel-chat-compose-halo-width: min(58rem, calc(100vw - 1rem));
   --viddel-chat-user-bubble-surface: 238 243 248;
 }
@@ -274,9 +275,12 @@ body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__compose-s
       rgb(var(--viddel-chat-halo-accent) / 0.045) 66%,
       transparent 94%
     );
-  bottom: -5rem;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: 100% var(--viddel-chat-compose-halo-height);
+  bottom: calc(-3rem - var(--viddel-chat-compose-halo-overscan, 0rem));
   content: "";
-  height: var(--viddel-chat-compose-halo-height);
+  height: calc(var(--viddel-chat-compose-halo-height) + var(--viddel-chat-compose-halo-overscan, 0rem));
   left: 50%;
   mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
   opacity: 0.96;
@@ -815,12 +819,13 @@ body.vox-shell--standalone-chat
   }
 
   body.vox-shell--standalone-chat [data-viddel-chat] {
-    --viddel-chat-compose-halo-height: clamp(8rem, 15vh, 11rem);
+    --viddel-chat-compose-halo-height: clamp(7rem, 13vh, 9rem);
+    --viddel-chat-compose-halo-overscan: 3rem;
     --viddel-chat-compose-halo-width: min(34rem, calc(100vw + 3rem));
   }
 
   body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__compose-stack::before {
-    bottom: -4rem;
+    bottom: calc(-2.25rem - var(--viddel-chat-compose-halo-overscan, 0rem));
     background:
       radial-gradient(
         ellipse 82% 72% at 44% 58%,
@@ -881,6 +886,7 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] .inline-chat-shell__dia
 
 body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] {
   --viddel-chat-compose-halo-height: clamp(6.25rem, 12vh, 9rem);
+  --viddel-chat-compose-halo-overscan: 0rem;
   --viddel-chat-compose-halo-width: min(42rem, calc(100vw - 2rem));
 }
 
