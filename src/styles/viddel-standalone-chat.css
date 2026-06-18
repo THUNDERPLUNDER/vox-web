@@ -292,17 +292,38 @@ body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__compose-s
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
 }
 
-body.vox-shell--standalone-chat:not([data-viddel-chat-active])
-  [data-viddel-chat]
-  .inline-chat-shell__compose-stack::before {
-  mask-composite: intersect;
-  mask-image:
-    linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%),
-    linear-gradient(180deg, black 0%, black 58%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  -webkit-mask-image:
-    linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%),
-    linear-gradient(180deg, black 0%, black 58%, transparent 100%);
+@media (min-width: 640px) {
+  body.vox-shell--standalone-chat:not([data-viddel-chat-active])
+    [data-viddel-chat]
+    .inline-chat-shell__compose-stack::before {
+    background:
+      radial-gradient(
+        ellipse 86% 76% at 45% 18%,
+        rgb(var(--viddel-chat-halo-core) / 0.4) 0%,
+        rgb(var(--viddel-chat-halo-core) / 0.19) 34%,
+        rgb(var(--viddel-chat-halo-core) / 0.055) 64%,
+        transparent 92%
+      ),
+      radial-gradient(
+        ellipse 80% 74% at 62% 21%,
+        rgb(var(--viddel-chat-halo-accent) / 0.3) 0%,
+        rgb(var(--viddel-chat-halo-accent) / 0.13) 36%,
+        rgb(var(--viddel-chat-halo-accent) / 0.045) 66%,
+        transparent 94%
+      );
+    background-size: 100% 100%;
+    bottom: auto;
+    height: clamp(24rem, 48vh, 34rem);
+    mask-composite: intersect;
+    mask-image:
+      linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, black 6%, black 44%, transparent 80%);
+    top: -1.25rem;
+    -webkit-mask-composite: source-in;
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, black 6%, black 44%, transparent 80%);
+  }
 }
 
 .inline-chat-shell[data-inline-chat-mode="progressive"]:not([data-inline-chat-conversation="active"]) .inline-chat-shell__compose {
