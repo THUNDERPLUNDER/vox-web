@@ -507,7 +507,7 @@ body.vox-shell--standalone-chat
 
 [data-viddel-chat] .viddel-chat-attach__compose:has(.viddel-chat-attach__attachment-strip:not(.hidden)),
 [data-viddel-chat] .viddel-chat-attach__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
-  border-radius: 1.65rem;
+  border-radius: 1.65rem !important;
 }
 
 body.vox-shell--standalone-chat
@@ -609,7 +609,7 @@ body.vox-shell--standalone-chat
   .r1-ai-bridge
   .inline-chat-shell[data-inline-chat-mode="progressive"]
   .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
-  border-radius: 1.65rem;
+  border-radius: 1.65rem !important;
 }
 
 body.vox-shell--standalone-chat
@@ -625,7 +625,7 @@ body.vox-shell--standalone-chat
   .inline-chat-shell[data-inline-chat-mode="progressive"]
   .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
   align-items: flex-end;
-  border-radius: 1.65rem;
+  border-radius: 1.65rem !important;
   padding-bottom: 0.45rem;
   padding-top: 0.45rem;
 }
@@ -850,6 +850,29 @@ body.vox-shell--standalone-chat
     padding: 0.5rem 0.58rem;
     position: static;
     width: 100%;
+  }
+
+  body.vox-shell--standalone-chat
+    .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="idle"]
+    .viddel-chat-start__surface
+    .inline-chat-shell__compose-stack
+    .inline-chat-shell__compose:has(.viddel-chat-attach__attachment-strip:not(.hidden)),
+  body.vox-shell--standalone-chat
+    .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="idle"]
+    .viddel-chat-start__surface
+    .inline-chat-shell__compose-stack
+    .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
+    border-radius: 1.65rem !important;
+  }
+
+  body.vox-shell--standalone-chat
+    .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="idle"]
+    .viddel-chat-start__surface
+    .inline-chat-shell__compose-stack
+    .inline-chat-shell__compose
+    .inline-chat-shell__compose-input[data-chat-input-expanded] {
+    max-height: min(9rem, 32vh);
+    overflow-y: auto;
   }
 
   body.vox-shell--standalone-chat [data-viddel-chat] {
