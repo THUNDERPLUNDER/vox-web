@@ -292,6 +292,19 @@ body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__compose-s
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
 }
 
+body.vox-shell--standalone-chat:not([data-viddel-chat-active])
+  [data-viddel-chat]
+  .inline-chat-shell__compose-stack::before {
+  mask-composite: intersect;
+  mask-image:
+    linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%),
+    linear-gradient(180deg, black 0%, black 58%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%),
+    linear-gradient(180deg, black 0%, black 58%, transparent 100%);
+}
+
 .inline-chat-shell[data-inline-chat-mode="progressive"]:not([data-inline-chat-conversation="active"]) .inline-chat-shell__compose {
   bottom: auto;
   box-sizing: border-box;
