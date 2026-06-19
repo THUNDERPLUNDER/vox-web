@@ -1,5 +1,11 @@
 ---
 /* CONTRACT: Static Composer Pattern v0.1 preview. Non-interactive; does not import or run chat logic. */
+export interface Props {
+  layout?: "catalog" | "page";
+}
+
+const { layout = "catalog" } = Astro.props as Props;
+
 const states = [
   {
     id: "standalone-idle",
@@ -66,7 +72,10 @@ const states = [
 ] as const;
 ---
 
-<div class="ds-composer-preview" aria-label="Composer Pattern v0.1 static states">
+<div
+  class:list={["ds-composer-preview", layout === "page" && "ds-composer-preview--page"]}
+  aria-label="Composer Pattern v0.1 static states"
+>
   {states.map((state) => (
     <article class:list={["ds-composer-preview__state", `ds-composer-preview__state--${state.frame}`]}>
       <header class="ds-composer-preview__head">

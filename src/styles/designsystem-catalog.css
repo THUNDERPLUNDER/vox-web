@@ -389,25 +389,6 @@
 }
 
 /* Composer Pattern Preview v0.1 — static docs surface, not runtime composer. */
-.ds-catalog__composer-intro {
-  display: grid;
-  gap: 0.65rem;
-  margin-bottom: 1.5rem;
-  max-width: 48rem;
-}
-
-.ds-catalog__composer-intro p {
-  color: var(--ds-muted);
-  font-size: 0.9375rem;
-  line-height: 1.55;
-  margin: 0;
-}
-
-.ds-catalog__composer-intro strong {
-  color: var(--ds-ink);
-  font-weight: 650;
-}
-
 .ds-composer-preview {
   display: grid;
   gap: 2rem;
@@ -797,6 +778,47 @@
   line-height: 1.45;
 }
 
+.ds-catalog__feature-link {
+  background: #fff;
+  border-radius: 0.85rem;
+  box-shadow:
+    inset 0 0 0 1px rgb(15 23 42 / 0.07),
+    0 12px 32px rgb(15 23 42 / 0.05);
+  color: inherit;
+  display: grid;
+  gap: 0.35rem;
+  max-width: 42rem;
+  padding: 1.15rem 1.25rem;
+  text-decoration: none;
+}
+
+.ds-catalog__feature-link:hover {
+  box-shadow:
+    inset 0 0 0 1px rgb(14 165 233 / 0.28),
+    0 16px 38px rgb(15 23 42 / 0.08);
+}
+
+.ds-catalog__feature-link-kicker {
+  color: var(--ds-muted-light);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ds-catalog__feature-link-title {
+  color: var(--ds-ink);
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.ds-catalog__feature-link-body {
+  color: var(--ds-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
 /* Technical reference — low weight */
 .ds-catalog__tech {
   margin-top: var(--ds-gap-section);
@@ -842,4 +864,119 @@
 
 code {
   font-size: 0.85em;
+}
+
+/* Dedicated Composer Pattern page */
+.ds-composer-page {
+  --ds-max: 76rem;
+}
+
+.ds-composer-page__hero {
+  max-width: 48rem;
+}
+
+.ds-composer-page__principle {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2rem;
+  max-width: 64rem;
+}
+
+@media (min-width: 820px) {
+  .ds-composer-page__principle {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2rem;
+  }
+}
+
+.ds-composer-page__principle h2 {
+  color: var(--ds-muted-light);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.4rem;
+  text-transform: uppercase;
+}
+
+.ds-composer-page__principle p,
+.ds-composer-page__principle li,
+.ds-composer-page__token-block p {
+  color: var(--ds-muted);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.ds-composer-page__principle p {
+  margin: 0;
+}
+
+.ds-composer-page__principle ul {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.ds-composer-page__principle strong {
+  color: var(--ds-ink);
+  font-weight: 650;
+}
+
+.ds-composer-page__token-block {
+  display: grid;
+  gap: 1rem;
+  max-width: 52rem;
+}
+
+.ds-composer-page__token-block p {
+  margin: 0;
+}
+
+.ds-composer-page__token-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ds-composer-page__token-list li {
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(15 23 42 / 0.08);
+  color: var(--ds-ink);
+  font-size: 0.8rem;
+  font-weight: 550;
+  padding: 0.42rem 0.72rem;
+}
+
+.ds-composer-preview--page {
+  gap: 2.75rem;
+}
+
+@media (min-width: 920px) {
+  .ds-composer-preview--page {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ds-composer-preview--page .ds-composer-preview__state {
+  gap: 1.15rem;
+}
+
+.ds-composer-preview--page .ds-composer-preview__stage {
+  min-height: clamp(24rem, 52vw, 34rem);
+  padding: clamp(1.2rem, 3vw, 2.25rem);
+}
+
+@media (min-width: 900px) {
+  .ds-composer-preview--page .ds-composer-preview__stage {
+    max-width: 64rem;
+  }
+
+  .ds-composer-preview--page .ds-composer-preview__notes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 64rem;
+  }
 }

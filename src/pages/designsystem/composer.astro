@@ -1,0 +1,94 @@
+---
+/* CONTRACT: Static Composer Pattern v0.1 review page. Documentation preview only; no runtime chat logic. */
+import ComposerPatternPreview from "../../components/designsystem/ComposerPatternPreview.astro";
+import VisInternalLayout from "../../layouts/VisInternalLayout.astro";
+import "../../styles/global.css";
+import "../../styles/r1-dialog-article.css";
+import "../../styles/viddel-standalone-chat.css";
+import "../../styles/viddel-chat-attachment.css";
+import "../../styles/designsystem-catalog.css";
+
+const base = import.meta.env.BASE_URL;
+
+const standardizationCandidates = [
+  "radius",
+  "expanded radius",
+  "min-height / composer height",
+  "button size",
+  "input line-height",
+  "shadow",
+  "width",
+];
+---
+
+<VisInternalLayout title="Composer Pattern v0.1 — Viddel" showPageIntro={false}>
+  <main class="ds-catalog ds-composer-page" data-design-system-catalog>
+    <nav class="ds-catalog__breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={`${base}designsystem`}>Designsystem</a>
+      <span aria-hidden="true">/</span>
+      <span>Composer</span>
+    </nav>
+
+    <header class="ds-catalog__hero ds-composer-page__hero">
+      <p class="ds-catalog__rule-label">Pattern preview</p>
+      <h1>Composer Pattern v0.1</h1>
+      <p class="ds-catalog__hero-lead">
+        Fire statiske canvases for å sammenligne Viddel Composer på tvers av standalone chat og artikkelkontekst.
+      </p>
+      <p class="ds-catalog__hero-note">
+        Dette er dokumentasjon og designsystem-preview. Siden kjører ikke chatlogikk og endrer ikke runtime for
+        <code>/no/chat</code> eller artikkel-chat.
+      </p>
+    </header>
+
+    <section class="ds-composer-page__principle" aria-labelledby="composer-principle-title">
+      <div>
+        <h2 id="composer-principle-title">Prinsipp</h2>
+        <p>
+          Composer-kroppen bør standardiseres mest mulig. Halo, dramaturgi og plassering kan variere etter kontekst,
+          men bare når variasjonen følger av brukerens situasjon, funksjonell rolle eller nødvendig interaksjonslogikk.
+          Variantstyring skal ikke brukes som rent visuelt avvik.
+        </p>
+      </div>
+      <div>
+        <h2>Hva previewen markerer</h2>
+        <ul role="list">
+          <li><strong>shared composer body</strong>: form, radius, høyde, input, knapper og shadow.</li>
+          <li><strong>variant halo / dramaturgy</strong>: entry, contextual og active uttrykk.</li>
+          <li><strong>local functional difference</strong>: add-button, bildeinput og article answer-clearance.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ds-catalog__section" aria-labelledby="composer-states-title">
+      <h2 id="composer-states-title" class="ds-catalog__section-title">Fire statiske states</h2>
+      <ComposerPatternPreview layout="page" />
+    </section>
+
+    <section class="ds-catalog__section ds-catalog__section--secondary" aria-labelledby="composer-token-title">
+      <h2 id="composer-token-title" class="ds-catalog__section-title ds-catalog__section-title--sub">
+        Kandidater for senere standardisering
+      </h2>
+      <div class="ds-composer-page__token-block">
+        <ul class="ds-composer-page__token-list" role="list">
+          {standardizationCandidates.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+        <p>
+          Halo skal ikke trekkes ut som felles token ennå. Den bør forbli variantstyrt til vi har testet flere
+          kontekster og vet hvilke deler som faktisk er felles.
+        </p>
+      </div>
+    </section>
+
+    <footer class="ds-catalog__tech">
+      <p>
+        Pattern doc:
+        <code>docs/design/VIDDEL_COMPOSER_PATTERN_v0_1.md</code>
+      </p>
+    </footer>
+  </main>
+</VisInternalLayout>

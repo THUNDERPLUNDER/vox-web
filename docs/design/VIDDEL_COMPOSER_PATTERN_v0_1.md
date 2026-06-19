@@ -3,7 +3,7 @@
 Status: Draft / operational pattern note  
 Scope: Documentation and inventory only. No runtime or visual changes.
 
-Preview: `/designsystem/#composer-pattern-preview`
+Preview: `/designsystem/composer`
 
 ## Formål
 
@@ -152,7 +152,7 @@ Token-familien bør skille mellom:
 
 ### Neste smale tekniske steg
 
-Bruk Composer Pattern previewen i `/designsystem/#composer-pattern-preview` som reviewgrunnlag for fire statiske states:
+Bruk Composer Pattern previewen i `/designsystem/composer` som reviewgrunnlag for fire statiske states:
 
 1. Standalone idle
 2. Standalone active
