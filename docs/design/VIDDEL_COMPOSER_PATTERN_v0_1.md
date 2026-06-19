@@ -3,7 +3,7 @@
 Status: Draft / operational pattern note  
 Scope: Documentation and inventory only. No runtime or visual changes.
 
-Preview: `/designsystem/composer`
+Pattern page: `/designsystem/composer`
 
 ## Formål
 
@@ -21,7 +21,7 @@ Målet med v0.1 er å gjøre dagens praksis tydelig nok til at videre arbeid kan
 | Generic article inline composer | Storyblok/artikkel-flater via `ArticleInlineChatShell` | `src/components/article/ArticleInlineChatShell.astro`, `src/styles/r1-dialog-article.css`, enkelte artikkelruter som importerer komponenten | Lavmælt artikkel-AI bridge inne i editorial flow. | Progressive eller inline dialog via skjult CES bridge; fritekst og seed-spørsmål. | Applied pattern, eldre enn transition-v01. |
 | Attachment composer layer | Standalone `/no/chat` | `src/styles/viddel-chat-attachment.css`, `src/lib/chat-image-attachment-menu-v01.ts`, markup i `/no/chat.astro` | Venstre add-button, bilde-thumbnail og mobil sheet/desktop menu. | Kamera/filvalg, attachment strip, remove, bildepayload til chat. | Production, standalone-only. |
 | Lab image QA composer | `/lab/image-qa` | `src/pages/lab/image-qa.astro`, `src/styles/lab-image-qa.css` | Intern QA-variant som låner compose-klasser. | Tester bilde-/vision-flyt i lab. | Lab-only; skal ikke styre product pattern direkte. |
-| Designsystem previews | `/designsystem/` og VIS previews | `src/components/designsystem/PatternPreview.astro`, `src/styles/designsystem-catalog.css`, `src/data/design-system-source-of-truth-v01.ts` | Statisk mønsterpreview av AI Composer / transcript / shell. | Dokumentasjon og review, ikke runtime dialog. | Applied reference, bør oppdateres når pattern v0.1 blir canonical. |
+| Designsystem references | `/designsystem/`, `/designsystem/composer` og VIS previews | `src/components/designsystem/PatternPreview.astro`, `src/styles/designsystem-catalog.css`, `src/data/design-system-source-of-truth-v01.ts` | Tekstlig pattern-dokumentasjon og generelle mønsterreferanser. | Dokumentasjon og review, ikke runtime dialog eller canonical visual rendering. | Applied reference, bør oppdateres når pattern v0.1 blir canonical. |
 | Legacy/variant chat shell | `/no/chat-b` | `src/pages/no/chat-b.astro`, samme standalone CSS-filer | Variant/eksperimentell chatflate. | Parallell standalone-implementasjon med attachment og chatlogikk. | Variant; bør ikke bli ny source of truth uten beslutning. |
 
 ## Felles anatomi
@@ -152,12 +152,11 @@ Token-familien bør skille mellom:
 
 ### Neste smale tekniske steg
 
-Bruk Composer Pattern previewen i `/designsystem/composer` som reviewgrunnlag for fire statiske states:
+Bruk Composer Pattern-siden i `/designsystem/composer` som tekstlig arbeidsnotat, ikke som canonical visual rendering.
+Visuell QA skal fortsatt gjøres på runtime-sidene:
 
-1. Standalone idle
-2. Standalone active
-3. Article transition idle
-4. Article transition active
+1. Standalone idle og active: `/no/chat`
+2. Article transition idle og active: `/no/artikkel/ingen-lyd-svak-lyd/`
 
 Neste tekniske steg bør være å trekke ut bare de trygge body-tokenene: radius, expanded radius, button size, input line-height og shadow. Halo bør fortsatt være variantstyrt.
 
