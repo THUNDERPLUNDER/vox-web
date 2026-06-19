@@ -7,7 +7,7 @@ Scope: Documentation and inventory only. No runtime or visual changes.
 
 Viddel Composer er input-mønsteret som lar brukeren starte eller fortsette dialog med Viddel. Mønsteret finnes allerede i flere flater, men er ennå ikke trukket ut som en felles komponent eller token-familie.
 
-Målet med v0.1 er å gjøre dagens praksis tydelig nok til at videre arbeid kan være smått, trygt og reviewbart. Composer-kroppen bør over tid standardiseres mer enn i dag. Halo, dramaturgi og plassering kan fortsatt variere etter kontekst.
+Målet med v0.1 er å gjøre dagens praksis tydelig nok til at videre arbeid kan være smått, trygt og reviewbart. Composer-kroppen bør over tid standardiseres mer enn i dag. Halo, dramaturgi og plassering kan fortsatt variere etter kontekst, men bare når variasjonen følger av brukerens situasjon, funksjonell rolle eller nødvendig interaksjonslogikk. Variantstyring skal ikke brukes som rent visuelt avvik uten begrunnelse.
 
 ## Nåværende instanser
 
@@ -84,7 +84,7 @@ Her bør composer-kroppen ligne standalone nok til at brukeren kjenner mønstere
 
 ### Active/sticky
 
-Etter første spørsmål bør composer være mer funksjonell og mindre hero. Halo kan dempes, og composer skal primært støtte videre arbeid, multiline og scroll. Active state bør aldri dominere transcript eller svarinnhold.
+Etter første spørsmål bør composer være mer funksjonell og mindre hero fordi dialogen allerede er i gang. Halo kan dempes, og composer skal primært støtte videre arbeid, multiline og scroll. Active state bør aldri dominere transcript eller svarinnhold.
 
 ### Mobile
 
