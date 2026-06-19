@@ -1,0 +1,180 @@
+---
+/* CONTRACT: Composer Pattern v0.1 documentation page. Runtime routes remain source of visual truth. */
+import VisInternalLayout from "../../layouts/VisInternalLayout.astro";
+import "../../styles/global.css";
+import "../../styles/designsystem-catalog.css";
+
+const base = import.meta.env.BASE_URL;
+
+const currentInstances = [
+  {
+    name: "Standalone idle",
+    route: "/no/chat",
+    role: "Primær startflate for Viddel AI før første spørsmål.",
+    difference: "Har add-button og bilde-/uploadflyt. Halo kan være mer åpen fordi brukeren starter uten artikkelkontekst.",
+  },
+  {
+    name: "Standalone active",
+    route: "/no/chat",
+    role: "Sticky kontrollflate når dialogen er i gang.",
+    difference: "Samme add-button/bildeflyt, men halo og dramaturgi bør være mer nøktern fordi transcript er hovedinnhold.",
+  },
+  {
+    name: "Article idle",
+    route: "/no/artikkel/ingen-lyd-svak-lyd/",
+    role: "Kontekstuell overgang fra artikkel til spørsmål før seed eller fritekst.",
+    difference: "Tekst-only composer uten add-button. Halo og plassering må støtte leseflaten, ikke skape ny hero.",
+  },
+  {
+    name: "Article active",
+    route: "/no/artikkel/ingen-lyd-svak-lyd/",
+    role: "Sticky article composer etter seed/spørsmål.",
+    difference: "Må respektere answer-clearance og article shell. Composer body bør ligne standalone active der det er mulig.",
+  },
+];
+
+const standardizationCandidates = [
+  "radius",
+  "expanded radius",
+  "min-height / composer height",
+  "button size",
+  "input line-height",
+  "shadow",
+  "width",
+];
+
+const openQuestions = [
+  "Hvor lik skal standalone active og article active composer body være før body-tokens trekkes ut?",
+  "Hvilke deler av multiline behavior kan deles uten å skade add-button eller article answer-clearance?",
+  "Hvor går grensen mellom kontekstuell halo og dekorativ variantstyring?",
+  "Bør halo forbli lokalt eid til flere kontekster enn standalone og article er testet?",
+];
+---
+
+<VisInternalLayout title="Composer Pattern v0.1 — Viddel" showPageIntro={false}>
+  <main class="ds-catalog ds-composer-page" data-design-system-catalog>
+    <nav class="ds-catalog__breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis`}>VIS</a>
+      <span aria-hidden="true">/</span>
+      <a href={`${base}designsystem`}>Designsystem</a>
+      <span aria-hidden="true">/</span>
+      <span>Composer</span>
+    </nav>
+
+    <header class="ds-catalog__hero ds-composer-page__hero">
+      <p class="ds-catalog__rule-label">Working pattern</p>
+      <h1>Composer Pattern v0.1</h1>
+      <p class="ds-catalog__hero-lead">
+        Tekstlig mønsterside for Viddel Composer. Runtime-sidene er fortsatt fasit for visuell QA.
+      </p>
+      <p class="ds-catalog__hero-note">
+        Status: v0.1 working pattern. Ingen chatlogikk, ingen token-ekstraksjon og ingen runtime-rendering skjer her.
+      </p>
+    </header>
+
+    <section class="ds-composer-page__principle" aria-labelledby="composer-principle-title">
+      <div>
+        <h2 id="composer-principle-title">Prinsipp</h2>
+        <p>
+          Composer-kroppen bør standardiseres mest mulig. Halo, dramaturgi og plassering kan variere etter kontekst,
+          men bare når variasjonen følger av brukerens situasjon, funksjonell rolle eller nødvendig interaksjonslogikk.
+          Variantstyring skal ikke brukes som rent visuelt avvik.
+        </p>
+      </div>
+      <div>
+        <h2>Hva siden markerer</h2>
+        <ul role="list">
+          <li><strong>shared composer body</strong>: form, radius, høyde, input, knapper og shadow.</li>
+          <li><strong>variant halo / dramaturgy</strong>: entry, contextual og active uttrykk.</li>
+          <li><strong>local functional difference</strong>: add-button, bildeinput og article answer-clearance.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ds-catalog__section" aria-labelledby="composer-instances-title">
+      <h2 id="composer-instances-title" class="ds-catalog__section-title">Nåværende instanser</h2>
+      <div class="ds-composer-page__instance-list">
+        {currentInstances.map((instance) => (
+          <article class="ds-composer-page__instance">
+            <div>
+              <h3>{instance.name}</h3>
+              <a href={`${base}${instance.route.replace(/^\//, "")}`}>{instance.route}</a>
+            </div>
+            <p>{instance.role}</p>
+            <p>{instance.difference}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="ds-catalog__section ds-catalog__section--secondary" aria-labelledby="composer-runtime-title">
+      <h2 id="composer-runtime-title" class="ds-catalog__section-title ds-catalog__section-title--sub">
+        Live runtime-lenker
+      </h2>
+      <div class="ds-composer-page__runtime-links" aria-label="Runtime routes for visual QA">
+        <a class="ds-catalog__feature-link" href={`${base}no/chat`}>
+          <span class="ds-catalog__feature-link-kicker">Runtime QA</span>
+          <span class="ds-catalog__feature-link-title">/no/chat</span>
+          <span class="ds-catalog__feature-link-body">
+            Standalone idle, standalone active, add-button, bilde-/uploadflyt, multiline og sticky composer skal vurderes her.
+          </span>
+        </a>
+        <a class="ds-catalog__feature-link" href={`${base}no/artikkel/ingen-lyd-svak-lyd/`}>
+          <span class="ds-catalog__feature-link-kicker">Runtime QA</span>
+          <span class="ds-catalog__feature-link-title">/no/artikkel/ingen-lyd-svak-lyd/</span>
+          <span class="ds-catalog__feature-link-body">
+            Article idle, seed-flow, article active, answer-clearance og contextual halo skal vurderes her.
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <section class="ds-catalog__section ds-catalog__section--secondary" aria-labelledby="composer-token-title">
+      <h2 id="composer-token-title" class="ds-catalog__section-title ds-catalog__section-title--sub">
+        Kandidater for senere standardisering
+      </h2>
+      <div class="ds-composer-page__token-block">
+        <ul class="ds-composer-page__token-list" role="list">
+          {standardizationCandidates.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+        <p>
+          Halo skal ikke trekkes ut som felles token ennå. Den bør forbli variantstyrt til vi har testet flere
+          kontekster og vet hvilke deler som faktisk er felles.
+        </p>
+      </div>
+    </section>
+
+    <section class="ds-catalog__section ds-catalog__section--secondary" aria-labelledby="composer-qa-title">
+      <h2 id="composer-qa-title" class="ds-catalog__section-title ds-catalog__section-title--sub">
+        Visual QA-regel
+      </h2>
+      <div class="ds-composer-page__note-block">
+        <p>
+          Denne siden er ikke canonical visual rendering. Composer er fortsatt bundet til runtime-kontekst:
+          sticky/fixed-posisjon, pseudo-element halo, article shell, standalone shell, active/idle state og JS-resize.
+          Visuell QA skal derfor gjøres på runtime-sidene inntil en egen component playground finnes.
+        </p>
+      </div>
+    </section>
+
+    <section class="ds-catalog__section ds-catalog__section--secondary" aria-labelledby="composer-open-title">
+      <h2 id="composer-open-title" class="ds-catalog__section-title ds-catalog__section-title--sub">
+        Åpne spørsmål før token-ekstraksjon
+      </h2>
+      <ul class="ds-composer-page__question-list" role="list">
+        {openQuestions.map((question) => (
+          <li>{question}</li>
+        ))}
+      </ul>
+    </section>
+
+    <footer class="ds-catalog__tech">
+      <p>
+        Pattern doc:
+        <code>docs/design/VIDDEL_COMPOSER_PATTERN_v0_1.md</code>
+      </p>
+    </footer>
+  </main>
+</VisInternalLayout>
