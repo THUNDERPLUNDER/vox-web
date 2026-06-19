@@ -1,0 +1,180 @@
+---
+/* CONTRACT: Static Composer Pattern v0.1 preview. Non-interactive; does not import or run chat logic. */
+const states = [
+  {
+    id: "standalone-idle",
+    title: "Standalone idle",
+    route: "/no/chat før første spørsmål",
+    frame: "entry",
+    conversation: "idle",
+    placeholder: "Hva lurer du på?",
+    halo: "Variant halo / dramaturgy: åpen entry-halo fordi brukeren starter uten artikkelkontekst.",
+    role: "Shared composer body: hvit pill, tekstfelt, add-button og send-knapp.",
+    local: "Local functional difference: bildeinput/add-button finnes i standalone.",
+    transcript: null,
+    seeds: [],
+    addButton: true,
+  },
+  {
+    id: "standalone-active",
+    title: "Standalone active",
+    route: "/no/chat etter første spørsmål",
+    frame: "active",
+    conversation: "active",
+    placeholder: "Spør videre",
+    halo: "Variant halo / dramaturgy: dempet fordi dialogen allerede er i gang.",
+    role: "Shared composer body: samme pill/kapsel-logikk og knappestørrelser som idle.",
+    local: "Local functional difference: add-button og attachment-flow beholdes.",
+    transcript: {
+      user: "Appen finner ikke høreapparatet",
+      assistant: "Start med å sjekke at Bluetooth er på, og hold høreapparatet nær mobilen.",
+    },
+    seeds: [],
+    addButton: true,
+  },
+  {
+    id: "article-idle",
+    title: "Article idle",
+    route: "/no/artikkel/ingen-lyd-svak-lyd før seed/spørsmål",
+    frame: "article",
+    conversation: "idle",
+    placeholder: "Hva lurer du på?",
+    halo: "Variant halo / dramaturgy: kontekstuell bunnhalo fordi composeren viderefører artikkelen.",
+    role: "Shared composer body: samme hvite pill og send-knapp som Viddel-familie.",
+    local: "Local functional difference: tekst-only composer; ingen add-button i article transition.",
+    transcript: null,
+    seeds: ["Hva gjør jeg hvis høreapparatet fortsatt er stille?", "Kan filteret stoppe lyden helt?"],
+    addButton: false,
+  },
+  {
+    id: "article-active",
+    title: "Article active",
+    route: "/no/artikkel/ingen-lyd-svak-lyd etter seed/spørsmål",
+    frame: "article-active",
+    conversation: "active",
+    placeholder: "Spør videre om dette",
+    halo: "Variant halo / dramaturgy: sticky og roligere slik at svarteksten prioriteres.",
+    role: "Shared composer body: bør ligne standalone active i form, høyde og kontrollflate.",
+    local: "Local functional difference: article answer-clearance og tekst-only flow.",
+    transcript: {
+      user: "Hva gjør jeg hvis høreapparatet fortsatt er stille?",
+      assistant: "Da bør du sjekke filter, lydutgang og batteri før du vurderer service.",
+    },
+    seeds: [],
+    addButton: false,
+  },
+] as const;
+---
+
+<div class="ds-composer-preview" aria-label="Composer Pattern v0.1 static states">
+  {states.map((state) => (
+    <article class:list={["ds-composer-preview__state", `ds-composer-preview__state--${state.frame}`]}>
+      <header class="ds-composer-preview__head">
+        <div>
+          <h3>{state.title}</h3>
+          <p>{state.route}</p>
+        </div>
+        <span class="ds-status ds-status--candidate">static</span>
+      </header>
+
+      <div
+        class:list={[
+          "ds-composer-preview__stage",
+          state.frame === "article" && "ds-composer-preview__stage--reading",
+          state.frame === "article-active" && "ds-composer-preview__stage--reading",
+        ]}
+        data-r1-editorial
+        data-viddel-chat={state.id.startsWith("standalone") ? true : undefined}
+      >
+        <div class:list={["ds-composer-preview__halo", `ds-composer-preview__halo--${state.frame}`]} aria-hidden="true" />
+
+        {state.frame === "article" && (
+          <div class="ds-composer-preview__article-copy">
+            <p>Hvis høreapparatet er stille, start med de enkle kontrollene før du endrer innstillinger.</p>
+          </div>
+        )}
+
+        {state.seeds.length > 0 && (
+          <ul class="inline-chat-shell__seed-list inline-chat-shell__seed-list--rows ds-composer-preview__seeds" role="list">
+            {state.seeds.map((seed) => (
+              <li class="inline-chat-shell__seed-item">
+                <span class="inline-chat-shell__seed-btn inline-chat-shell__seed-row ds-preview__static-seed">
+                  <span class="inline-chat-shell__seed-question">{seed}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {state.transcript && (
+          <div class="inline-chat-shell__transcript ds-composer-preview__transcript">
+            <article class="inline-chat-shell__message inline-chat-shell__message--user">
+              <p class="inline-chat-shell__message-text">{state.transcript.user}</p>
+            </article>
+            <article class="inline-chat-shell__message inline-chat-shell__message--assistant">
+              <p class="inline-chat-shell__message-eyebrow">Viddel</p>
+              <p class="inline-chat-shell__message-text">{state.transcript.assistant}</p>
+            </article>
+          </div>
+        )}
+
+        <section
+          class="inline-chat-shell ds-composer-preview__shell"
+          data-inline-chat-mode="progressive"
+          data-inline-chat-conversation={state.conversation}
+          aria-hidden="true"
+        >
+          <div class="inline-chat-shell__compose-stack ds-composer-preview__compose-stack">
+            <form
+              class:list={[
+                "inline-chat-shell__compose",
+                state.addButton && "viddel-chat-attach__compose",
+                "ds-composer-preview__compose",
+              ]}
+              tabindex="-1"
+            >
+              <div class="viddel-chat-attach__compose-row ds-composer-preview__compose-row">
+                {state.addButton && (
+                  <div class="viddel-chat-attach__attach-wrap">
+                    <button type="button" class="viddel-chat-attach__attach" tabindex="-1" aria-label="Legg til bilde">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" aria-hidden="true">
+                        <path stroke-linecap="round" d="M12 5v14M5 12h14"></path>
+                      </svg>
+                    </button>
+                  </div>
+                )}
+                <div class="inline-chat-shell__compose-input-wrap viddel-chat-attach__compose-input-wrap">
+                  <textarea
+                    class="inline-chat-shell__compose-input"
+                    rows="1"
+                    readonly
+                    tabindex="-1"
+                    placeholder={state.placeholder}
+                  />
+                </div>
+                <button type="button" class="inline-chat-shell__compose-send" tabindex="-1" aria-hidden="true">
+                  <span aria-hidden="true">↑</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+
+      <dl class="ds-composer-preview__notes">
+        <div>
+          <dt>shared composer body</dt>
+          <dd>{state.role}</dd>
+        </div>
+        <div>
+          <dt>variant halo / dramaturgy</dt>
+          <dd>{state.halo}</dd>
+        </div>
+        <div>
+          <dt>local functional difference</dt>
+          <dd>{state.local}</dd>
+        </div>
+      </dl>
+    </article>
+  ))}
+</div>

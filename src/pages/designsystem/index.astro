@@ -1,10 +1,12 @@
 ---
 /* CONTRACT: Canonical MVP design system v0.1 — visual HITL catalog for patterns, primitives, applied surfaces. */
 import VisInternalLayout from "../../layouts/VisInternalLayout.astro";
+import ComposerPatternPreview from "../../components/designsystem/ComposerPatternPreview.astro";
 import PatternPreview from "../../components/designsystem/PatternPreview.astro";
 import "../../styles/global.css";
 import "../../styles/r1-dialog-article.css";
 import "../../styles/viddel-standalone-chat.css";
+import "../../styles/viddel-chat-attachment.css";
 import "../../styles/designsystem-catalog.css";
 import {
   designSystemMeta,
@@ -146,6 +148,32 @@ const primitiveSwatchClass: Record<string, string> = {
           </article>
         ))}
       </div>
+    </section>
+
+    <section
+      class="ds-catalog__section ds-catalog__section--details ds-catalog__section--composer-preview"
+      id="composer-pattern-preview"
+      aria-labelledby="composer-pattern-preview-title"
+    >
+      <h2 id="composer-pattern-preview-title" class="ds-catalog__section-title ds-catalog__section-title--sub">
+        Composer Pattern Preview v0.1
+      </h2>
+      <div class="ds-catalog__composer-intro">
+        <p>
+          Fire statiske states viser Viddel Composer på tvers av standalone og artikkel. Målet er å se hva som bør
+          standardiseres i composer-kroppen før vi trekker ut tokens eller komponenter.
+        </p>
+        <p>
+          Halo, dramaturgi og plassering kan variere etter kontekst, men bare når variasjonen følger av brukerens
+          situasjon, funksjonell rolle eller nødvendig interaksjonslogikk. Previewen markerer derfor
+          <strong>shared composer body</strong>, <strong>variant halo / dramaturgy</strong> og
+          <strong>local functional difference</strong> eksplisitt.
+        </p>
+        <p>
+          Dette er statisk dokumentasjon. Den endrer ikke runtime for <code>/no/chat</code> eller artikkel-chat.
+        </p>
+      </div>
+      <ComposerPatternPreview />
     </section>
 
     <section class="ds-catalog__section ds-catalog__section--secondary" aria-labelledby="primitives-heading">

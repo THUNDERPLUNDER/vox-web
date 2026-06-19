@@ -3,6 +3,8 @@
 Status: Draft / operational pattern note  
 Scope: Documentation and inventory only. No runtime or visual changes.
 
+Preview: `/designsystem/#composer-pattern-preview`
+
 ## Formål
 
 Viddel Composer er input-mønsteret som lar brukeren starte eller fortsette dialog med Viddel. Mønsteret finnes allerede i flere flater, men er ennå ikke trukket ut som en felles komponent eller token-familie.
@@ -150,14 +152,14 @@ Token-familien bør skille mellom:
 
 ### Neste smale tekniske steg
 
-Lag en Composer Pattern inventory-test eller VIS/designsystem preview som viser fire statiske states side om side:
+Bruk Composer Pattern previewen i `/designsystem/#composer-pattern-preview` som reviewgrunnlag for fire statiske states:
 
 1. Standalone idle
 2. Standalone active
 3. Article transition idle
 4. Article transition active
 
-Først når denne previewen finnes, trekk ut bare de trygge body-tokenene: radius, expanded radius, button size, input line-height og shadow. Halo bør fortsatt være variantstyrt.
+Neste tekniske steg bør være å trekke ut bare de trygge body-tokenene: radius, expanded radius, button size, input line-height og shadow. Halo bør fortsatt være variantstyrt.
 
 ## QA-sjekkliste
 

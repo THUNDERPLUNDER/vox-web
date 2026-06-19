@@ -388,6 +388,252 @@
   margin: 0;
 }
 
+/* Composer Pattern Preview v0.1 — static docs surface, not runtime composer. */
+.ds-catalog__composer-intro {
+  display: grid;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+  max-width: 48rem;
+}
+
+.ds-catalog__composer-intro p {
+  color: var(--ds-muted);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.ds-catalog__composer-intro strong {
+  color: var(--ds-ink);
+  font-weight: 650;
+}
+
+.ds-composer-preview {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 920px) {
+  .ds-composer-preview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.ds-composer-preview__state {
+  display: grid;
+  gap: 1rem;
+}
+
+.ds-composer-preview__head {
+  align-items: start;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.ds-composer-preview__head h3 {
+  color: var(--ds-ink);
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.ds-composer-preview__head p {
+  color: var(--ds-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  margin: 0.2rem 0 0;
+}
+
+.ds-composer-preview__stage {
+  background: #fff;
+  border-radius: 0.85rem;
+  box-shadow: inset 0 0 0 1px rgb(15 23 42 / 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 18rem;
+  overflow: hidden;
+  padding: 1.25rem;
+  position: relative;
+}
+
+.ds-composer-preview__stage--reading {
+  background: linear-gradient(90deg, #eef1f4 0, #fff 1.25rem, #fff calc(100% - 1.25rem), #eef1f4 100%);
+}
+
+.ds-composer-preview__halo {
+  bottom: 0.25rem;
+  left: 50%;
+  pointer-events: none;
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+.ds-composer-preview__halo--entry {
+  background:
+    radial-gradient(ellipse 72% 58% at 50% 62%, rgb(158 214 248 / 0.46), rgb(132 228 206 / 0.28) 42%, transparent 76%),
+    radial-gradient(ellipse 48% 42% at 22% 64%, rgb(125 211 252 / 0.24), transparent 72%);
+  height: 11rem;
+  width: min(34rem, calc(100% + 5rem));
+}
+
+.ds-composer-preview__halo--active {
+  background: radial-gradient(ellipse 70% 50% at 50% 72%, rgb(158 214 248 / 0.18), rgb(132 228 206 / 0.1) 46%, transparent 78%);
+  height: 8rem;
+  width: min(30rem, calc(100% + 3rem));
+}
+
+.ds-composer-preview__halo--article {
+  background:
+    radial-gradient(ellipse 82% 62% at 50% 70%, rgb(158 214 248 / 0.32), rgb(132 228 206 / 0.22) 38%, transparent 78%),
+    linear-gradient(to top, rgb(158 214 248 / 0.08), transparent 68%);
+  height: 8rem;
+  width: min(28rem, calc(100% - 1rem));
+}
+
+.ds-composer-preview__halo--article-active {
+  background: radial-gradient(ellipse 76% 52% at 50% 70%, rgb(158 214 248 / 0.18), rgb(132 228 206 / 0.1) 42%, transparent 78%);
+  height: 7.5rem;
+  width: min(28rem, calc(100% - 1rem));
+}
+
+.ds-composer-preview__article-copy,
+.ds-composer-preview__seeds,
+.ds-composer-preview__transcript,
+.ds-composer-preview__shell {
+  position: relative;
+  z-index: 1;
+}
+
+.ds-composer-preview__article-copy {
+  margin-bottom: auto;
+  max-width: 28rem;
+}
+
+.ds-composer-preview__article-copy p {
+  color: rgb(var(--reading-ink-secondary));
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.ds-composer-preview__seeds {
+  margin: auto 0 0.9rem;
+}
+
+.ds-composer-preview__transcript {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.ds-composer-preview__transcript .inline-chat-shell__message {
+  margin: 0;
+}
+
+.ds-composer-preview .inline-chat-shell__message--user {
+  justify-self: end;
+  max-width: 78%;
+}
+
+.ds-composer-preview .inline-chat-shell__message--assistant {
+  max-width: 90%;
+}
+
+.ds-composer-preview .inline-chat-shell__message-text {
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.ds-composer-preview__shell,
+.ds-composer-preview__compose-stack,
+.ds-composer-preview__compose {
+  max-width: 100%;
+  width: 100%;
+}
+
+.ds-composer-preview__compose-stack {
+  margin: 0;
+  position: relative !important;
+  z-index: 2;
+}
+
+.ds-composer-preview__compose-stack::before {
+  display: none !important;
+}
+
+.ds-composer-preview__compose {
+  border: 0;
+  border-radius: 999px;
+  box-shadow:
+    0 18px 42px -18px rgb(48 82 120 / 0.35),
+    0 6px 18px -10px rgb(48 82 120 / 0.28);
+  margin: 0 !important;
+  min-height: 4rem;
+  padding: 0.58rem 0.62rem;
+  position: relative !important;
+}
+
+.ds-composer-preview__compose-row {
+  align-items: center;
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: 100%;
+}
+
+.ds-composer-preview__compose .viddel-chat-attach__compose-row {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.ds-composer-preview__compose .inline-chat-shell__compose-input {
+  min-height: 2.4rem;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.ds-composer-preview__notes {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+}
+
+.ds-composer-preview__notes div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.ds-composer-preview__notes dt {
+  color: var(--ds-muted-light);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ds-composer-preview__notes dd {
+  color: var(--ds-muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+@media (max-width: 540px) {
+  .ds-composer-preview__stage {
+    min-height: 16rem;
+    padding: 1rem;
+  }
+
+  .ds-composer-preview .inline-chat-shell__message--user,
+  .ds-composer-preview .inline-chat-shell__message--assistant {
+    max-width: 100%;
+  }
+}
+
 /* Primitives — flat list */
 .ds-catalog__primitive-list {
   margin: 0;
