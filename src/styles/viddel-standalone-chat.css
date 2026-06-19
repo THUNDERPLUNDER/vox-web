@@ -45,12 +45,48 @@ body.vox-shell--standalone-chat #ces-widget {
   color: rgb(var(--text));
 }
 
+body.vox-shell--standalone-chat [data-viddel-chat] {
+  --viddel-chat-compose-surface: 255 255 255;
+  --viddel-chat-compose-shadow: 48 82 120;
+  --viddel-chat-halo-core: 158 214 248;
+  --viddel-chat-halo-accent: 132 228 206;
+  --viddel-chat-compose-halo-height: clamp(8rem, 14vh, 11.5rem);
+  --viddel-chat-compose-halo-overscan: 4rem;
+  --viddel-chat-compose-halo-width: min(58rem, calc(100vw - 1rem));
+  --viddel-chat-user-bubble-surface: 238 243 248;
+}
+
+body.vox-shell--standalone-chat {
+  --bg: var(--reading-paper);
+  --orb-a: 0;
+  --orb-b: 0;
+  --orb-c: 0;
+  --surface: var(--reading-paper);
+  --surface-elevated: var(--reading-paper);
+  background: rgb(var(--reading-paper));
+}
+
+html:has(body.vox-shell--standalone-chat) {
+  background: rgb(var(--reading-paper));
+}
+
+body.vox-shell--standalone-chat .vox-sonic-blob {
+  opacity: 0;
+}
+
+body.vox-shell--standalone-chat .vox-shell-standalone-chat__stage,
+body.vox-shell--standalone-chat .viddel-chat-standalone,
+body.vox-shell--standalone-chat .r1-editorial-container,
+body.vox-shell--standalone-chat .viddel-chat-standalone__editorial {
+  background: rgb(var(--reading-paper));
+}
+
 /* --- Standalone idle start surface (seeds + composer) --- */
 
 body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat] .viddel-chat-standalone__editorial {
   display: flex;
   flex-direction: column;
-  min-height: min(100%, calc(100dvh - 4.5rem));
+  min-height: min(100%, calc(100dvh - 6rem));
 }
 
 body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat] .r1-ai-bridge {
@@ -59,8 +95,8 @@ body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat
   flex-direction: column;
   justify-content: center;
   margin-bottom: 0;
-  padding-bottom: clamp(1.5rem, 8vh, 4rem);
-  padding-top: clamp(1.25rem, 6vh, 3rem);
+  padding-bottom: clamp(1rem, 6vh, 3.5rem);
+  padding-top: clamp(3rem, 14vh, 8rem);
 }
 
 body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat] .inline-chat-shell {
@@ -73,6 +109,12 @@ body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat
   margin-inline: auto;
   max-width: min(100%, var(--r1-ai-dialog-measure, min(100%, 46rem)));
   width: 100%;
+}
+
+@media (min-width: 640px) {
+  body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat] .viddel-chat-start {
+    transform: translateY(clamp(4rem, 10vh, 6rem));
+  }
 }
 
 .viddel-chat-start__intro {
@@ -209,10 +251,79 @@ body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__seed-row 
   flex-direction: column;
   gap: 0.35rem;
   box-sizing: border-box;
+  isolation: isolate;
   margin-left: auto;
   margin-right: auto;
   max-width: min(100%, var(--r1-ai-dialog-measure, min(100%, 46rem)));
+  position: relative;
   width: 100%;
+}
+
+body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__compose-stack::before {
+  background:
+    radial-gradient(
+      ellipse 86% 76% at 45% 58%,
+      rgb(var(--viddel-chat-halo-core) / 0.4) 0%,
+      rgb(var(--viddel-chat-halo-core) / 0.19) 34%,
+      rgb(var(--viddel-chat-halo-core) / 0.055) 64%,
+      transparent 92%
+    ),
+    radial-gradient(
+      ellipse 80% 74% at 62% 64%,
+      rgb(var(--viddel-chat-halo-accent) / 0.3) 0%,
+      rgb(var(--viddel-chat-halo-accent) / 0.13) 36%,
+      rgb(var(--viddel-chat-halo-accent) / 0.045) 66%,
+      transparent 94%
+    );
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: 100% var(--viddel-chat-compose-halo-height);
+  bottom: calc(-3rem - var(--viddel-chat-compose-halo-overscan, 0rem));
+  content: "";
+  height: calc(var(--viddel-chat-compose-halo-height) + var(--viddel-chat-compose-halo-overscan, 0rem));
+  left: 50%;
+  mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
+  opacity: 0.96;
+  pointer-events: none;
+  position: absolute;
+  transform: translateX(-50%);
+  width: var(--viddel-chat-compose-halo-width);
+  z-index: -1;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
+}
+
+@media (min-width: 640px) {
+  body.vox-shell--standalone-chat:not([data-viddel-chat-active])
+    [data-viddel-chat]
+    .inline-chat-shell__compose-stack::before {
+    background:
+      radial-gradient(
+        ellipse 86% 76% at 45% 18%,
+        rgb(var(--viddel-chat-halo-core) / 0.4) 0%,
+        rgb(var(--viddel-chat-halo-core) / 0.19) 34%,
+        rgb(var(--viddel-chat-halo-core) / 0.055) 64%,
+        transparent 92%
+      ),
+      radial-gradient(
+        ellipse 80% 74% at 62% 21%,
+        rgb(var(--viddel-chat-halo-accent) / 0.3) 0%,
+        rgb(var(--viddel-chat-halo-accent) / 0.13) 36%,
+        rgb(var(--viddel-chat-halo-accent) / 0.045) 66%,
+        transparent 94%
+      );
+    background-size: 100% 100%;
+    bottom: auto;
+    height: clamp(24rem, 48vh, 34rem);
+    mask-composite: intersect;
+    mask-image:
+      linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, black 6%, black 44%, transparent 80%);
+    top: -1.25rem;
+    -webkit-mask-composite: source-in;
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, black 6%, black 44%, transparent 80%);
+  }
 }
 
 .inline-chat-shell[data-inline-chat-mode="progressive"]:not([data-inline-chat-conversation="active"]) .inline-chat-shell__compose {
@@ -243,17 +354,17 @@ body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__seed-row 
 }
 
 .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"] .inline-chat-shell__compose-stack {
-  background: rgb(var(--surface) / 0.98);
-  border: 1px solid rgb(var(--border) / 0.44);
-  border-radius: 1.12rem;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
   bottom: calc(max(0.75rem, env(safe-area-inset-bottom, 0px)) + 40px);
-  box-shadow: 0 14px 38px -10px rgb(15 23 42 / 0.16), 0 4px 14px -6px rgb(15 23 42 / 0.08);
+  box-shadow: none;
   box-sizing: border-box;
   gap: 0;
   left: 50%;
   margin: 0;
   max-width: min(var(--r1-ai-dialog-measure, min(100%, 46rem)), calc(100vw - 1.5rem));
-  padding: 0.42rem 0.58rem 0.55rem;
+  padding: 0 0.15rem;
   position: fixed;
   transform: translateX(-50%);
   width: min(var(--r1-ai-dialog-measure, min(100%, 46rem)), calc(100vw - 1.5rem));
@@ -264,7 +375,7 @@ body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__seed-row 
 body.vox-shell--standalone-chat
   .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"]
   .inline-chat-shell__compose-stack {
-  bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  bottom: max(2.75rem, calc(env(safe-area-inset-bottom, 0px) + 1rem));
 }
 
 .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"] .inline-chat-shell__compose-stack .inline-chat-shell__status--dock {
@@ -273,42 +384,55 @@ body.vox-shell--standalone-chat
 }
 
 .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"] .inline-chat-shell__compose-stack .inline-chat-shell__compose {
-  background: transparent;
+  background: rgb(var(--viddel-chat-compose-surface));
   border: 0;
-  border-radius: 0.85rem;
+  border-radius: 999px;
   bottom: auto;
-  box-shadow: none;
+  box-shadow:
+    0 28px 72px -16px rgb(var(--viddel-chat-compose-shadow) / 0.42),
+    0 12px 34px -12px rgb(var(--viddel-chat-compose-shadow) / 0.26),
+    0 1px 0 rgb(255 255 255 / 0.92) inset;
   margin-top: 0;
   max-width: none;
-  padding: 0.35rem 0.28rem 0.28rem;
+  min-height: 3.4rem;
+  overflow: hidden;
+  padding: 0.5rem 0.58rem;
   position: static;
+  transition: border-radius 160ms ease;
   transform: none;
   width: 100%;
   z-index: auto;
 }
 
 .inline-chat-shell[data-inline-chat-mode="progressive"] .inline-chat-shell__compose-send {
-  box-shadow: 0 2px 10px rgb(15 23 42 / 0.2);
-  font-size: 1.02rem;
+  align-self: center;
+  box-shadow: 0 4px 16px rgb(var(--viddel-chat-compose-shadow) / 0.24);
+  flex-shrink: 0;
+  font-size: 1.05rem;
   font-weight: 700;
-  height: 2.68rem;
-  min-height: 2.68rem;
-  width: 2.68rem;
+  height: 2.85rem;
+  min-height: 2.85rem;
+  width: 2.85rem;
 }
 
 .inline-chat-shell__compose {
-  align-items: flex-end;
-  background: rgb(var(--surface) / 0.97);
-  border: 1px solid rgb(var(--border) / 0.5);
-  border-radius: 1.15rem;
-  box-shadow: 0 16px 42px rgb(15 23 42 / 0.12);
+  align-items: center;
+  background: rgb(var(--viddel-chat-compose-surface));
+  border: 0;
+  border-radius: 999px;
+  box-shadow:
+    0 22px 52px -14px rgb(var(--viddel-chat-compose-shadow) / 0.28),
+    0 8px 24px -10px rgb(var(--viddel-chat-compose-shadow) / 0.16);
   display: grid;
-  gap: 0.55rem;
+  gap: 0.5rem;
   grid-template-columns: minmax(0, 1fr) auto;
   margin-top: 1rem;
   max-width: 36rem;
-  padding: 0.58rem;
+  min-height: 3.4rem;
+  overflow: hidden;
+  padding: 0.5rem 0.58rem;
   position: sticky;
+  transition: border-radius 160ms ease;
   bottom: max(0.75rem, env(safe-area-inset-bottom));
   z-index: 4;
 }
@@ -318,13 +442,13 @@ body.vox-shell--standalone-chat
   border: 0;
   color: rgb(var(--reading-ink));
   font: inherit;
-  font-size: 0.95rem;
-  line-height: 1.45;
+  font-size: 1.02rem;
+  line-height: 1.4;
   max-height: min(9rem, 32vh);
-  min-height: 2.35rem;
+  min-height: 2.75rem;
   outline: 0;
   overflow-y: auto;
-  padding: 0.42rem 0.34rem;
+  padding: 0.58rem 0.15rem 0.58rem 0;
   resize: none;
   width: 100%;
 }
@@ -376,8 +500,228 @@ body.vox-shell--standalone-chat
 }
 
 .inline-chat-shell__compose:focus-within {
-  border-color: rgb(var(--reading-accent-iris) / 0.46);
-  box-shadow: 0 18px 46px rgb(15 23 42 / 0.14);
+  box-shadow:
+    0 24px 56px -14px rgb(var(--viddel-chat-compose-shadow) / 0.34),
+    0 10px 28px -10px rgb(var(--viddel-chat-compose-shadow) / 0.2);
+}
+
+[data-viddel-chat] .viddel-chat-attach__compose:has(.viddel-chat-attach__attachment-strip:not(.hidden)),
+[data-viddel-chat] .viddel-chat-attach__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
+  border-radius: 1.65rem !important;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose {
+  background: rgb(var(--viddel-chat-compose-surface));
+  border: 0;
+  border-radius: 999px;
+  box-shadow:
+    0 22px 52px -14px rgb(var(--viddel-chat-compose-shadow) / 0.28),
+    0 8px 24px -10px rgb(var(--viddel-chat-compose-shadow) / 0.16);
+  min-height: 3.4rem;
+  overflow: hidden;
+  padding: 0.5rem 0.58rem;
+}
+
+body.vox-shell--standalone-chat:not([data-viddel-chat-active])
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose {
+  min-height: 4.25rem;
+  padding: 0.68rem 0.72rem;
+}
+
+body.vox-shell--standalone-chat:not([data-viddel-chat-active])
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose-input {
+  min-height: 2.85rem;
+  padding-bottom: 0.62rem;
+  padding-top: 0.62rem;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"]
+  .inline-chat-shell__compose-stack
+  .inline-chat-shell__compose {
+  background: rgb(var(--viddel-chat-compose-surface));
+  box-shadow:
+    0 28px 72px -16px rgb(var(--viddel-chat-compose-shadow) / 0.42),
+    0 12px 34px -12px rgb(var(--viddel-chat-compose-shadow) / 0.26),
+    0 1px 0 rgb(255 255 255 / 0.92) inset;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .viddel-chat-attach__compose-row {
+  align-items: center;
+  gap: 0.5rem;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .viddel-chat-attach__attach {
+  align-self: center;
+  background: rgb(var(--surface-subtle) / 0.9);
+  height: 2.85rem;
+  min-height: 2.85rem;
+  width: 2.85rem;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .viddel-chat-attach__attach
+  svg {
+  height: 1.2rem;
+  width: 1.2rem;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose:not(:has(.viddel-chat-attach__attachment-strip:not(.hidden))):not(
+    :has(.inline-chat-shell__compose-input[data-chat-input-expanded])
+  ) {
+  border-radius: 999px;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose:focus-within {
+  box-shadow:
+    0 24px 56px -14px rgb(var(--viddel-chat-compose-shadow) / 0.34),
+    0 10px 28px -10px rgb(var(--viddel-chat-compose-shadow) / 0.2);
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose:has(.viddel-chat-attach__attachment-strip:not(.hidden)),
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
+  border-radius: 1.65rem !important;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose:has(.viddel-chat-attach__attachment-strip:not(.hidden)),
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
+  align-items: flex-end;
+  border-radius: 1.65rem !important;
+  padding-bottom: 0.45rem;
+  padding-top: 0.45rem;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose:has(.viddel-chat-attach__attachment-strip:not(.hidden))
+  .viddel-chat-attach__compose-row,
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded])
+  .viddel-chat-attach__compose-row {
+  align-items: flex-end;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose:has(.viddel-chat-attach__attachment-strip:not(.hidden))
+  .viddel-chat-attach__attach,
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded])
+  .viddel-chat-attach__attach,
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose:has(.viddel-chat-attach__attachment-strip:not(.hidden))
+  .inline-chat-shell__compose-send,
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded])
+  .inline-chat-shell__compose-send {
+  align-self: flex-end;
+  margin-bottom: 0.08rem;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  [data-inline-chat-mode="progressive"]
+  .inline-chat-shell__message--user {
+  background: rgb(var(--viddel-chat-user-bubble-surface));
+  border: 0;
+  border-radius: 999px;
+  box-shadow:
+    0 14px 30px -24px rgb(var(--viddel-chat-compose-shadow) / 0.24),
+    0 1px 0 rgb(255 255 255 / 0.9) inset;
+}
+
+body.vox-shell--standalone-chat
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  [data-inline-chat-mode="progressive"]
+  .inline-chat-shell__message--user
+  .inline-chat-shell__message-text {
+  color: rgb(var(--reading-ink));
 }
 
 .inline-chat-shell__turn {
@@ -429,10 +773,10 @@ body.vox-shell--standalone-chat
     box-sizing: border-box;
     left: 50%;
     margin: 0;
-    max-width: min(var(--r1-ai-dialog-measure, min(100%, 46rem)), calc(100vw - 1.5rem));
+    max-width: none;
     position: fixed;
     transform: translateX(-50%);
-    width: min(var(--r1-ai-dialog-measure, min(100%, 46rem)), calc(100vw - 1.5rem));
+    width: calc(100vw - 2rem);
     z-index: 24;
   }
 
@@ -469,15 +813,15 @@ body.vox-shell--standalone-chat
   body.vox-shell--standalone-chat
     .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="idle"]
     .viddel-chat-start__surface {
-    background: rgb(var(--surface) / 0.98);
-    border: 1px solid rgb(var(--border) / 0.44);
-    border-radius: 1.12rem;
-    box-shadow: 0 14px 38px -10px rgb(15 23 42 / 0.16), 0 4px 14px -6px rgb(15 23 42 / 0.08);
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
     box-sizing: border-box;
     gap: 0.42rem;
     margin: 0;
     max-width: none;
-    padding: 0.5rem 0.58rem 0.55rem;
+    padding: 0;
     position: static;
     transform: none;
     width: 100%;
@@ -514,16 +858,77 @@ body.vox-shell--standalone-chat
     .viddel-chat-start__surface
     .inline-chat-shell__compose-stack
     .inline-chat-shell__compose {
-    background: transparent;
+    background: rgb(var(--viddel-chat-compose-surface));
     border: 0;
-    border-radius: 0.85rem;
-    box-shadow: none;
+    border-radius: 999px;
+    box-shadow:
+      0 26px 70px -16px rgb(var(--viddel-chat-compose-shadow) / 0.38),
+      0 12px 34px -12px rgb(var(--viddel-chat-compose-shadow) / 0.24);
     margin-top: 0;
     max-width: none;
-    padding: 0.35rem 0.28rem 0.28rem;
+    min-height: 3.4rem;
+    overflow: hidden;
+    padding: 0.5rem 0.58rem;
     position: static;
     width: 100%;
   }
+
+  body.vox-shell--standalone-chat
+    .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="idle"]
+    .viddel-chat-start__surface
+    .inline-chat-shell__compose-stack
+    .inline-chat-shell__compose:has(.viddel-chat-attach__attachment-strip:not(.hidden)),
+  body.vox-shell--standalone-chat
+    .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="idle"]
+    .viddel-chat-start__surface
+    .inline-chat-shell__compose-stack
+    .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
+    border-radius: 1.65rem !important;
+  }
+
+  body.vox-shell--standalone-chat
+    .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="idle"]
+    .viddel-chat-start__surface
+    .inline-chat-shell__compose-stack
+    .inline-chat-shell__compose
+    .inline-chat-shell__compose-input[data-chat-input-expanded] {
+    max-height: min(9rem, 32vh);
+    overflow-y: auto;
+  }
+
+  body.vox-shell--standalone-chat [data-viddel-chat] {
+    --viddel-chat-compose-halo-height: clamp(7rem, 13vh, 9rem);
+    --viddel-chat-compose-halo-overscan: 3rem;
+    --viddel-chat-compose-halo-width: min(34rem, calc(100vw + 3rem));
+  }
+
+  body.vox-shell--standalone-chat [data-viddel-chat] .inline-chat-shell__compose-stack::before {
+    bottom: calc(-2.25rem - var(--viddel-chat-compose-halo-overscan, 0rem));
+    background:
+      radial-gradient(
+        ellipse 82% 72% at 44% 58%,
+        rgb(var(--viddel-chat-halo-core) / 0.42) 0%,
+        rgb(var(--viddel-chat-halo-core) / 0.2) 34%,
+        rgb(var(--viddel-chat-halo-core) / 0.055) 64%,
+        transparent 92%
+      ),
+      radial-gradient(
+        ellipse 76% 72% at 62% 64%,
+        rgb(var(--viddel-chat-halo-accent) / 0.3) 0%,
+        rgb(var(--viddel-chat-halo-accent) / 0.13) 36%,
+        rgb(var(--viddel-chat-halo-accent) / 0.045) 66%,
+        transparent 94%
+      );
+    mask-image: linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%);
+  }
+
+  body.vox-shell--standalone-chat
+    .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"]
+    .inline-chat-shell__compose-stack {
+    bottom: max(1rem, calc(env(safe-area-inset-bottom, 0px) + 0.75rem));
+  }
+
 }
 
 /* --- Standalone active: internal transcript scroll (ChatGPT primary) --- */
@@ -557,8 +962,49 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] .inline-chat-shell__dia
   -webkit-overflow-scrolling: touch;
 }
 
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] {
+  --viddel-chat-compose-halo-height: clamp(6.25rem, 12vh, 9rem);
+  --viddel-chat-compose-halo-overscan: 0rem;
+  --viddel-chat-compose-halo-width: min(42rem, calc(100vw - 2rem));
+}
+
+body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] .inline-chat-shell__compose-stack::before {
+  background:
+    radial-gradient(
+      ellipse 82% 74% at 48% 70%,
+      rgb(var(--viddel-chat-halo-core) / 0.28) 0%,
+      rgb(var(--viddel-chat-halo-core) / 0.12) 36%,
+      rgb(var(--viddel-chat-halo-core) / 0.035) 66%,
+      transparent 92%
+    ),
+    radial-gradient(
+      ellipse 76% 72% at 60% 74%,
+      rgb(var(--viddel-chat-halo-accent) / 0.2) 0%,
+      rgb(var(--viddel-chat-halo-accent) / 0.085) 36%,
+      rgb(var(--viddel-chat-halo-accent) / 0.028) 68%,
+      transparent 94%
+    );
+  bottom: 0;
+}
+
 @media (min-width: 640px) {
   body.vox-shell--standalone-chat .vox-shell-standalone-chat__stage {
     max-width: min(100%, 46rem);
+  }
+}
+
+@media (max-width: 639px) {
+  body.vox-shell--standalone-chat
+    [data-viddel-chat]
+    .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="idle"]
+    .viddel-chat-start,
+  body.vox-shell--standalone-chat
+    [data-viddel-chat]
+    .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="active"]
+    .inline-chat-shell__compose-stack {
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: calc(100vw - 2rem) !important;
   }
 }

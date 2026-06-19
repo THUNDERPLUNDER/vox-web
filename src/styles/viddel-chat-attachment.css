@@ -25,7 +25,7 @@
 }
 
 .viddel-chat-attach__compose-row {
-  align-items: flex-end;
+  align-items: center;
   display: grid;
   gap: 0.55rem;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -225,6 +225,14 @@
   .inline-chat-shell__compose-input {
   max-height: 2.35rem;
   overflow: hidden;
+}
+
+[data-viddel-chat]
+  .inline-chat-shell[data-inline-chat-conversation="idle"]
+  .viddel-chat-attach__compose
+  .inline-chat-shell__compose-input[data-chat-input-expanded] {
+  max-height: min(9rem, 32vh);
+  overflow-y: auto;
 }
 
 [data-viddel-chat]
