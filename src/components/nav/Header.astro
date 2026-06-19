@@ -97,18 +97,20 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
         ) : null
       }
     </nav>
-    <a
-      href={chatHref}
-      data-viddel-track="ai_entry_clicked"
-      data-viddel-entry-surface="header_nav"
-      class={`hidden items-center justify-center rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4] lg:inline-flex ${
-        chatActive
-          ? "border-[rgb(var(--text))/0.34] bg-[rgb(var(--reading-ink))] text-[rgb(var(--reading-paper))]"
-          : "border-[rgb(var(--border))/0.7] bg-[rgb(var(--surface))/0.42] text-[rgb(var(--text))] hover:border-[rgb(var(--text))/0.34] hover:bg-[rgb(var(--surface-subtle))/0.62]"
-      }`}
-    >
-      {NO_NAV_CHAT_LABEL}
-    </a>
+    {
+      chatActive ? (
+        <div class="pointer-events-none hidden w-[8.75rem] lg:block" aria-hidden="true"></div>
+      ) : (
+        <a
+          href={chatHref}
+          data-viddel-track="ai_entry_clicked"
+          data-viddel-entry-surface="header_nav"
+          class="hidden items-center justify-center rounded-full border border-[rgb(var(--border))/0.7] bg-[rgb(var(--surface))/0.42] px-5 py-2.5 text-sm font-semibold text-[rgb(var(--text))] transition-colors hover:border-[rgb(var(--text))/0.34] hover:bg-[rgb(var(--surface-subtle))/0.62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--focus-ring))/0.4] lg:inline-flex"
+        >
+          {NO_NAV_CHAT_LABEL}
+        </a>
+      )
+    }
     <MobileMenuTrigger />
   </div>
 </header>

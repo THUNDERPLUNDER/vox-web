@@ -56,16 +56,16 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
         })
       }
     </nav>
-    <a
-      href={NO_NAV_CHAT_HREF}
-      class={`mt-4 flex w-full items-center justify-center rounded-full border px-5 py-3 text-sm font-semibold transition-colors ${
-        chatActive
-          ? "border-[rgb(var(--text))/0.34] bg-[rgb(var(--reading-ink))] text-[rgb(var(--reading-paper))]"
-          : "border-[rgb(var(--border))/0.7] bg-[rgb(var(--surface-subtle))] text-[rgb(var(--text))]"
-      }`}
-    >
-      {NO_NAV_CHAT_LABEL}
-    </a>
+    {
+      !chatActive ? (
+        <a
+          href={NO_NAV_CHAT_HREF}
+          class="mt-4 flex w-full items-center justify-center rounded-full border border-[rgb(var(--border))/0.7] bg-[rgb(var(--surface-subtle))] px-5 py-3 text-sm font-semibold text-[rgb(var(--text))] transition-colors"
+        >
+          {NO_NAV_CHAT_LABEL}
+        </a>
+      ) : null
+    }
     {
       showDevtoolsToggle ? (
         <div class="mt-4 border-t border-[rgb(var(--border))/0.35] pt-4">
