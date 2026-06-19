@@ -527,6 +527,27 @@ body.vox-shell--standalone-chat
   padding: 0.5rem 0.58rem;
 }
 
+body.vox-shell--standalone-chat:not([data-viddel-chat-active])
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose {
+  min-height: 4.25rem;
+  padding: 0.68rem 0.72rem;
+}
+
+body.vox-shell--standalone-chat:not([data-viddel-chat-active])
+  [data-viddel-chat]
+  [data-r1-editorial]
+  .r1-ai-bridge
+  .inline-chat-shell[data-inline-chat-mode="progressive"]
+  .inline-chat-shell__compose-input {
+  min-height: 2.85rem;
+  padding-bottom: 0.62rem;
+  padding-top: 0.62rem;
+}
+
 body.vox-shell--standalone-chat
   [data-viddel-chat]
   [data-r1-editorial]
