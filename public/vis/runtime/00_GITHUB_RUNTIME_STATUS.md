@@ -4,8 +4,8 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## Siste sync
 
-- **generated_at (UTC):** 2026-06-16T11:13:59.679Z
-- **generated_at (Europe/Oslo):** 16.6.2026, 13:13:59
+- **generated_at (UTC):** 2026-06-18T10:23:16.844Z
+- **generated_at (Europe/Oslo):** 18.6.2026, 12:23:16
 - **timezone:** Europe/Oslo
 - **repo:** THUNDERPLUNDER/vox-web
 - **data_warnings:** (ingen)
@@ -76,7 +76,7 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## SISTE 24T
 
-Vindu: commits/issues lukket/oppdatert etter **2026-06-15T11:13:59Z** (sirket ~24 timer).
+Vindu: commits/issues lukket/oppdatert etter **2026-06-17T10:23:16Z** (sirket ~24 timer).
 
 ### Lukkede issues
 
@@ -84,19 +84,11 @@ _Ingen._
 
 ### Kommentarer (Return Ticket-lignende)
 
-_Ingen treff i søkt utsnitt._
+- **#261** kommentar av **THUNDERPLUNDER** (2026-06-18T09:22:59Z): _## Codex prompt — build HTML slides in VIS Bruk denne som operativ prompt til Codex for rask bygging av HTML-slide deck. ```text Oppgave: Bygg et raskt HTML-slide deck for FjordTours cafésamtale i Viddel/Vox repoet. Repo…_
 
 ### Commits
 
-- **991355a** (2026-06-15T13:53:36Z) fix(article): repair portaled halo tokens and active scroll tail (#257)
-- **c71a5db** (2026-06-15T13:41:27Z) fix(article): strengthen transition halo height and gradient (#257)
-- **5757355** (2026-06-15T13:31:48Z) fix(article): full-bleed transition halo environment layer (#257)
-- **6323e8a** (2026-06-15T13:09:35Z) fix(article): portal transition halo and anchor answer above compose (#257)
-- **b9a7d5f** (2026-06-15T12:47:30Z) fix(article): tighten transition halo geometry and chat spacing (#257)
-- **b3e9b62** (2026-06-15T12:19:05Z) chore(vis): refresh GitHub runtime status for navigator
-- **1717c02** (2026-06-15T11:53:29Z) fix(article): bolder pill composer and stronger transition halo (#257)
-- **5f3e2a0** (2026-06-15T11:34:02Z) fix(article): freshen transition compose halo color and soft edges (#257)
-- **87a4eb8** (2026-06-15T11:24:46Z) fix(article): idle transition composer zone and tighter reserve (#257)
+- **6c020e7** (2026-06-17T11:00:10Z) chore(vis): refresh GitHub runtime status for navigator
 
 ## BLOCKERS
 
