@@ -4,8 +4,8 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## Siste sync
 
-- **generated_at (UTC):** 2026-06-19T10:39:50.337Z
-- **generated_at (Europe/Oslo):** 19.6.2026, 12:39:50
+- **generated_at (UTC):** 2026-06-22T12:07:56.929Z
+- **generated_at (Europe/Oslo):** 22.6.2026, 14:07:56
 - **timezone:** Europe/Oslo
 - **repo:** THUNDERPLUNDER/vox-web
 - **data_warnings:** (ingen)
@@ -76,14 +76,11 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## SISTE 24T
 
-Vindu: commits/issues lukket/oppdatert etter **2026-06-18T10:39:50Z** (sirket ~24 timer).
+Vindu: commits/issues lukket/oppdatert etter **2026-06-21T12:07:56Z** (sirket ~24 timer).
 
 ### Lukkede issues
 
-- **#259** Test Viddel Composer style on standalone chat
-  - **closed_at:** 2026-06-19T08:39:29Z
-  - **labels:** (ingen)
-  - **url:** https://github.com/THUNDERPLUNDER/vox-web/issues/259
+_Ingen._
 
 ### Kommentarer (Return Ticket-lignende)
 
@@ -91,17 +88,7 @@ _Ingen treff i søkt utsnitt._
 
 ### Commits
 
-- **91c5e5b** (2026-06-19T09:27:56Z) Merge pull request #268 from THUNDERPLUNDER/composer-pattern-v0-1
-- **a565e79** (2026-06-19T09:27:02Z) docs(design): clarify composer variant rationale
-- **5159483** (2026-06-19T08:58:04Z) docs(design): document Viddel composer pattern v0.1
-- **b5156b0** (2026-06-19T08:36:04Z) Merge pull request #260 from THUNDERPLUNDER/test-standalone-composer-259
-- **afb375c** (2026-06-19T08:34:47Z) Merge remote-tracking branch 'origin/main' into test-standalone-composer-259
-- **2ba1a42** (2026-06-19T08:24:47Z) fix(nav): hide chat self-link on standalone chat (#259)
-- **5af18b4** (2026-06-19T08:08:14Z) fix(chat): add standalone idle composer weight (#259)
-- **491b0bf** (2026-06-18T13:07:27Z) fix(chat): stabilize standalone composer expansion (#259)
-- **19b3afb** (2026-06-18T12:41:37Z) fix(chat): extend standalone idle halo fade room (#259)
-- **dd42a75** (2026-06-18T12:32:50Z) fix(chat): fade standalone idle halo edge (#259)
-- **b65af94** (2026-06-18T12:13:43Z) fix(chat): restore standalone idle halo strength (#259)
+_Ingen eller ikke tilgjengelig._
 
 ## BLOCKERS
 
