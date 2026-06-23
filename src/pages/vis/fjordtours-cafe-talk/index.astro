@@ -1,0 +1,722 @@
+---
+/* CONTRACT: Internal VIS slide deck for FjordTours cafe talk; local data, no presentation engine. */
+import "../../../styles/global.css";
+
+type SlideCard = {
+  title: string;
+  body: string;
+  eyebrow?: string;
+};
+
+type Slide = {
+  id: string;
+  kicker: string;
+  title: string;
+  lead?: string;
+  footer?: string;
+  cards?: SlideCard[];
+  flow?: string[];
+  bullets?: string[];
+  note?: string;
+  kind?: "title" | "standard" | "appendix";
+};
+
+const slides: Slide[] = [
+  {
+    id: "tittel",
+    kicker: "FjordTours cafésamtale",
+    title: "Viddel: fra idé til AI-støttet produktarbeid",
+    lead: "En erfaringsdeling om AI, produktarbeid, design og bygging med lite team",
+    footer: "FjordTours cafésamtale · Bergen · 2026",
+    kind: "title",
+  },
+  {
+    id: "hvorfor-viddel-finnes",
+    kicker: "01",
+    title: "Hvorfor Viddel finnes",
+    lead:
+      "Å få høreapparat er bare begynnelsen. Den virkelige forbedringen skjer når brukeren får det til å fungere i hverdagen.",
+    cards: [
+      {
+        title: "Gapet",
+        body: "Utlevert teknologi er ikke det samme som brukt mestring.",
+      },
+      {
+        title: "Hverdagsfriksjon",
+        body: "Støy, mobil, app, bil, møter, sosiale situasjoner, energi og tilvenning.",
+      },
+      {
+        title: "Viddels rolle",
+        body: "Innhold + AI + riktig neste steg, slik at brukeren blir raskere selvhjulpen.",
+      },
+    ],
+    flow: ["Utlevert teknologi", "Hverdagsfriksjon", "Viddel", "Mestring, høreglede og innsikt tilbake"],
+  },
+  {
+    id: "annerledes",
+    kicker: "02",
+    title: "Hva gjør Viddel annerledes?",
+    lead:
+      "Brukeren skal slippe å lese seg frem og selv forstå hva som er relevant. De stiller et spørsmål og får et konkret svar på akkurat det de lurer på - akkurat nå.",
+    cards: [
+      {
+        title: "Innhold",
+        body: "Situasjonsbestemt hjelp for hverdagsproblemer, teknikk og tilvenning.",
+      },
+      {
+        title: "Dialog",
+        body: "AI-assistent trent på validert kunnskap og Viddels innholdsmodell.",
+      },
+      {
+        title: "Profil og historikk",
+        eyebrow: "Mulig neste lag",
+        body: "Et fremtidig lag der Viddel kan huske apparat, fase, tidligere spørsmål og hva som virket.",
+      },
+      {
+        title: "Innsikt",
+        body: "Aggregert innsikt kan vise hvilke problemer som går igjen etter at høreapparatet er tatt i bruk.",
+      },
+    ],
+  },
+  {
+    id: "starte",
+    kicker: "03",
+    title: "Hvorfor jeg kunne starte dette",
+    lead: "Jeg kunne ikke bygge Viddel alene, men jeg visste hvordan arbeidet måtte deles opp.",
+    cards: [
+      {
+        title: "Telenor",
+        body: "Merkevare, digital identitet, utviklersamarbeid, komponenttenkning og designsystem.",
+      },
+      {
+        title: "DIPS / Puls",
+        body: "Designsystem i helseteknologi, tverrfaglig produktarbeid, kvalitet, tilgjengelighet og konsekvens.",
+      },
+      {
+        title: "Det jeg kunne bidra med",
+        body: "Se mønstre, lage språk, strukturere innhold og flyt, vurdere UX og gjøre arbeidet byggbart.",
+      },
+      {
+        title: "Det jeg måtte få hjelp til",
+        body: "Kode, audiologi, juss, drift og skalering.",
+      },
+    ],
+  },
+  {
+    id: "ai-roller",
+    kicker: "04",
+    title: "To mennesker, mange AI-roller",
+    lead: "Viddel bygges av Thomas og Vibeke, med AI som utvidet arbeidsapparat rundt oss.",
+    cards: [
+      {
+        title: "Thomas",
+        body: "Retning, produkt, design/system, innhold, prioritering og byggbarhet.",
+      },
+      {
+        title: "Vibeke",
+        body: "Business, marked, nettverk, presentasjon, kommersiell vurdering.",
+      },
+      {
+        title: "AI-rollene",
+        body: "@navigator, @rigger, @knaus, Stitch/@mira og Cursor/Codex.",
+      },
+      {
+        title: "Arbeidsflater",
+        body: "GitHub Projects, repo, Google Docs/Drive, VIS og Vercel preview.",
+      },
+    ],
+    note: "AI gir kapasitet. Mennesker eier retning, vurdering og ansvar.",
+  },
+  {
+    id: "laert",
+    kicker: "05",
+    title: "Hva jeg har lært om å jobbe med AI",
+    lead: "AI gir fart, men holder ikke automatisk retning. Det må bygges arbeidsform rundt den.",
+    cards: [
+      {
+        title: "Prompt-backup",
+        body: "Prompt-backup er egenomsorg. App og web-ui er sårbare.",
+      },
+      {
+        title: "Guardrails",
+        body: "Agenter trenger mål, regler og stoppunkter for å unngå evige sidespor.",
+      },
+      {
+        title: "GitHub avlaster hodet",
+        body: "Issues gjør idéer, oppgaver, status og verifikasjon synlig.",
+      },
+      {
+        title: "Rytme",
+        body: "Ukentlig prioritering, handoff og Return Ticket holder arbeidet på spor.",
+      },
+    ],
+  },
+  {
+    id: "appendix-a",
+    kicker: "Appendix A",
+    title: "Praktiske AI-lærdommer",
+    bullets: [
+      "Prompt-backup er egenomsorg.",
+      "Ikke stress-husk når noe forsvinner.",
+      "Agenter trenger guardrails.",
+      "GitHub avlaster hodet.",
+      "Ukentlig rytme hindrer sidespor.",
+      "AI gir forslag. Menneskene må fortsatt velge retning.",
+    ],
+    kind: "appendix",
+  },
+  {
+    id: "appendix-b",
+    kicker: "Appendix B",
+    title: "Design med AI",
+    lead: "AI er lett å starte med, men krevende å styre visuelt over tid.",
+    bullets: [
+      "Jeg begynte å bruke AI før jul i 22 som veldig mange andre, og har gått veien med egen eksperimentering og læring siden.",
+      "Da jeg startet å leke meg med denne forretningsideen vinter 26, lot jeg nysgjerrigheten og lettvintheten lede an.",
+      "Det nærliggende da var å prompte som en litt sloppy Art Director: \"Du er (ekspertrolle), lag (beskrivelse)\".",
+      "Resultatene var noen veldig imponerende designprototyper i ferdig html.",
+      "Det AI er god på: Forstå ganske godt hvor du vil, og levere på det med en gang.",
+      "Ikke god på: følge 1 stil fra prompt til prompt. Den sklir litt hele tiden.",
+      "Composer-haloen satt på første forsøk, men justeringen tok to dager.",
+      "Et delsvar er designsystem.",
+    ],
+    kind: "appendix",
+  },
+  {
+    id: "appendix-c",
+    kicker: "Appendix C",
+    title: "Designsystem med AI",
+    lead: "AI kan forstå designsystem raskt, men må hele tiden minnes på hva som skal gjenbrukes.",
+    bullets: [
+      "Jeg startet med Tailwind og semantiske tokens.",
+      "AI er veldig god initielt på å forstå designsystem sett fra AI sitt perspektiv, og antagelig som koder. Ikke som designer.",
+      "Jeg er vant til designsystem som single source of truth: prinsipper, Figma-bibliotek, kodebibliotek, tokens, primitives, komponenter og patterns.",
+      "AI jobber mer organisk og litt til og fra.",
+      "Agenten må stadig minnes på hvilke komponenter og patterns som skal gjenbrukes.",
+      "Jeg vurderer å teste Figma Make igjen for raske helhetlige UI-prototyper.",
+    ],
+    kind: "appendix",
+  },
+];
+---
+
+<!doctype html>
+<html lang="no" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Viddel: FjordTours cafésamtale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+    />
+  </head>
+  <body class="fjordtalk-page">
+    <main class="fjordtalk-deck" aria-label="FjordTours cafesamtale slides">
+      {
+        slides.map((slide, index) => (
+          <section class="fjordtalk-frame" id={slide.id} data-slide-section>
+            <article class:list={["fjordtalk-slide", `fjordtalk-slide--${slide.kind ?? "standard"}`]}>
+              <div class="fjordtalk-slide__mark" aria-hidden="true">
+                <span></span>
+                <span></span>
+              </div>
+
+              <header class="fjordtalk-slide__header">
+                <p class="fjordtalk-kicker">{slide.kicker}</p>
+                <h1>{slide.title}</h1>
+                {slide.lead ? <p class="fjordtalk-lead">{slide.lead}</p> : null}
+              </header>
+
+              {slide.cards ? (
+                <div class:list={["fjordtalk-card-grid", slide.cards.length === 3 && "fjordtalk-card-grid--three"]}>
+                  {slide.cards.map((card, cardIndex) => (
+                    <article class="fjordtalk-card">
+                      <p class="fjordtalk-card__index">{String(cardIndex + 1).padStart(2, "0")}</p>
+                      {card.eyebrow ? <p class="fjordtalk-card__eyebrow">{card.eyebrow}</p> : null}
+                      <h2>{card.title}</h2>
+                      <p>{card.body}</p>
+                    </article>
+                  ))}
+                </div>
+              ) : null}
+
+              {slide.flow ? (
+                <ol class="fjordtalk-flow" aria-label="Gap-modell">
+                  {slide.flow.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ol>
+              ) : null}
+
+              {slide.bullets ? (
+                <ul class="fjordtalk-bullets" role="list">
+                  {slide.bullets.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              ) : null}
+
+              {slide.note ? <p class="fjordtalk-note">{slide.note}</p> : null}
+
+              <footer class="fjordtalk-footer">
+                <span>{slide.footer ?? "Viddel / Vox · intern VIS"}</span>
+                <span>{index + 1} / {slides.length}</span>
+              </footer>
+            </article>
+          </section>
+        ))
+      }
+    </main>
+
+    <nav class="fjordtalk-rail" aria-label="Slideoversikt">
+      {
+        slides.map((slide, index) => (
+          <a href={`#${slide.id}`} aria-label={`Gå til slide ${index + 1}: ${slide.title}`}>
+            {index + 1}
+          </a>
+        ))
+      }
+    </nav>
+
+    <script>
+      const sections = Array.from(document.querySelectorAll("[data-slide-section]"));
+      const nearestSlideIndex = () => {
+        const viewportMiddle = window.scrollY + window.innerHeight / 2;
+        return sections.reduce((closest, section, index) => {
+          const distance = Math.abs(section.offsetTop + section.offsetHeight / 2 - viewportMiddle);
+          return distance < closest.distance ? { index, distance } : closest;
+        }, { index: 0, distance: Number.POSITIVE_INFINITY }).index;
+      };
+
+      const goToSlide = (index) => {
+        const target = sections[Math.max(0, Math.min(sections.length - 1, index))];
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+
+      window.addEventListener("keydown", (event) => {
+        if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
+        const keyMap = {
+          ArrowRight: 1,
+          ArrowDown: 1,
+          PageDown: 1,
+          ArrowLeft: -1,
+          ArrowUp: -1,
+          PageUp: -1,
+        };
+        const delta = keyMap[event.key];
+        if (!delta) return;
+        event.preventDefault();
+        goToSlide(nearestSlideIndex() + delta);
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .fjordtalk-page {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background:
+      radial-gradient(circle at 18% 8%, rgb(var(--accent-gradient-start) / 0.14), transparent 28rem),
+      radial-gradient(circle at 88% 22%, rgb(var(--primary) / 0.08), transparent 24rem),
+      rgb(var(--bg));
+    color: rgb(var(--reading-ink));
+    font-family: var(--font-sans);
+  }
+
+  .fjordtalk-deck {
+    width: 100%;
+  }
+
+  .fjordtalk-frame {
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+    scroll-snap-align: start;
+  }
+
+  .fjordtalk-slide {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 1.2rem;
+    width: min(92vw, calc((100svh - 4rem) * 16 / 9));
+    max-height: calc(100svh - 4rem);
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    padding: 3.1rem 3.25rem 2.1rem;
+    border: 1px solid rgb(var(--border) / 0.28);
+    border-radius: 18px;
+    background:
+      linear-gradient(135deg, rgb(var(--reading-paper)) 0%, rgb(var(--reading-paper)) 58%, rgb(var(--surface-subtle) / 0.58) 100%),
+      rgb(var(--reading-paper));
+    box-shadow: 0 28px 70px -42px rgba(2, 6, 23, 0.28);
+  }
+
+  .fjordtalk-slide::after {
+    content: "";
+    position: absolute;
+    right: 2rem;
+    top: 2rem;
+    width: 11rem;
+    height: 11rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgb(var(--primary) / 0.1), transparent 68%);
+    pointer-events: none;
+  }
+
+  .fjordtalk-slide--title {
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: end;
+    padding: 4rem 4.2rem 2.4rem;
+  }
+
+  .fjordtalk-slide--appendix {
+    gap: 1rem;
+  }
+
+  .fjordtalk-slide__mark {
+    position: absolute;
+    right: 3.1rem;
+    bottom: 2.3rem;
+    display: grid;
+    grid-template-columns: repeat(2, 2.25rem);
+    gap: 0.42rem;
+    opacity: 0.78;
+  }
+
+  .fjordtalk-slide__mark span {
+    height: 4.7rem;
+    border: 2px solid rgb(var(--primary) / 0.52);
+    border-left-width: 9px;
+    border-radius: 999px 999px 999px 999px;
+    background: linear-gradient(180deg, rgb(var(--primary) / 0.1), rgb(var(--accent-gradient-start) / 0.03));
+  }
+
+  .fjordtalk-slide__header {
+    position: relative;
+    z-index: 1;
+    max-width: 54rem;
+  }
+
+  .fjordtalk-slide--title .fjordtalk-slide__header {
+    max-width: 48rem;
+  }
+
+  .fjordtalk-kicker,
+  .fjordtalk-card__index,
+  .fjordtalk-card__eyebrow {
+    margin: 0;
+    color: rgb(var(--primary));
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .fjordtalk-slide h1 {
+    margin: 0.42rem 0 0;
+    max-width: 52rem;
+    color: rgb(var(--reading-ink));
+    font-family: var(--font-display);
+    font-size: 3.35rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
+  }
+
+  .fjordtalk-slide--title h1 {
+    max-width: 50rem;
+    font-size: 4.55rem;
+    line-height: 0.98;
+  }
+
+  .fjordtalk-lead {
+    margin: 1rem 0 0;
+    max-width: 49rem;
+    color: rgb(var(--reading-ink-secondary));
+    font-size: 1.28rem;
+    font-weight: 500;
+    line-height: 1.46;
+  }
+
+  .fjordtalk-slide--title .fjordtalk-lead {
+    max-width: 43rem;
+    font-size: 1.45rem;
+  }
+
+  .fjordtalk-card-grid {
+    position: relative;
+    z-index: 1;
+    align-self: stretch;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.95rem;
+    min-height: 0;
+  }
+
+  .fjordtalk-card-grid--three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .fjordtalk-card {
+    min-width: 0;
+    padding: 1rem 1rem 1.05rem;
+    border: 1px solid rgb(var(--border) / 0.24);
+    border-radius: var(--radius-md);
+    background: rgb(var(--surface-elevated) / 0.76);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .fjordtalk-card h2 {
+    margin: 0.44rem 0 0;
+    color: rgb(var(--reading-ink));
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.18;
+  }
+
+  .fjordtalk-card p:last-child {
+    margin: 0.58rem 0 0;
+    color: rgb(var(--reading-ink-secondary));
+    font-size: 0.98rem;
+    line-height: 1.45;
+  }
+
+  .fjordtalk-card__eyebrow {
+    display: inline-flex;
+    margin-top: 0.32rem;
+    padding: 0.16rem 0.42rem;
+    border-radius: 999px;
+    background: rgb(var(--primary) / 0.08);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+  }
+
+  .fjordtalk-flow {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .fjordtalk-flow li {
+    position: relative;
+    display: grid;
+    min-height: 4.2rem;
+    place-items: center;
+    padding: 0.75rem 0.72rem;
+    border: 1px solid rgb(var(--primary) / 0.2);
+    border-radius: var(--radius-md);
+    background: rgb(var(--primary) / 0.055);
+    color: rgb(var(--reading-ink));
+    font-size: 0.86rem;
+    font-weight: 700;
+    line-height: 1.22;
+    text-align: center;
+  }
+
+  .fjordtalk-flow li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -0.52rem;
+    z-index: 2;
+    width: 0.42rem;
+    height: 0.42rem;
+    border-top: 2px solid rgb(var(--primary) / 0.72);
+    border-right: 2px solid rgb(var(--primary) / 0.72);
+    transform: translateY(-50%) rotate(45deg);
+    background: transparent;
+  }
+
+  .fjordtalk-bullets {
+    position: relative;
+    z-index: 1;
+    align-self: stretch;
+    display: grid;
+    gap: 0.58rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .fjordtalk-bullets li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+    padding: 0.68rem 0.82rem;
+    border: 1px solid rgb(var(--border) / 0.22);
+    border-radius: var(--radius-md);
+    background: rgb(var(--surface-elevated) / 0.7);
+    color: rgb(var(--reading-ink-secondary));
+    font-size: 0.94rem;
+    line-height: 1.42;
+  }
+
+  .fjordtalk-bullets li::before {
+    content: "";
+    width: 0.56rem;
+    height: 0.56rem;
+    margin-top: 0.34rem;
+    border-radius: 999px;
+    background: rgb(var(--primary));
+    box-shadow: 0 0 0 0.24rem rgb(var(--primary) / 0.1);
+  }
+
+  .fjordtalk-note {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    padding: 0.72rem 0.95rem;
+    border-left: 4px solid rgb(var(--primary));
+    border-radius: var(--radius-md);
+    background: rgb(var(--primary) / 0.07);
+    color: rgb(var(--reading-ink));
+    font-size: 1.02rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .fjordtalk-footer {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: rgb(var(--reading-ink-secondary));
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .fjordtalk-rail {
+    position: fixed;
+    top: 50%;
+    right: 0.9rem;
+    z-index: 10;
+    display: grid;
+    gap: 0.35rem;
+    transform: translateY(-50%);
+  }
+
+  .fjordtalk-rail a {
+    display: grid;
+    width: 1.85rem;
+    height: 1.85rem;
+    place-items: center;
+    border: 1px solid rgb(var(--border) / 0.48);
+    border-radius: 999px;
+    background: rgb(var(--reading-paper) / 0.88);
+    color: rgb(var(--reading-ink-secondary));
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .fjordtalk-rail a:hover,
+  .fjordtalk-rail a:focus-visible {
+    border-color: rgb(var(--primary) / 0.55);
+    color: rgb(var(--primary));
+    outline: none;
+  }
+
+  @media (max-width: 980px), (max-height: 720px) {
+    .fjordtalk-frame {
+      padding: 1rem;
+    }
+
+    .fjordtalk-slide {
+      width: min(96vw, calc((100svh - 2rem) * 16 / 9));
+      max-height: calc(100svh - 2rem);
+      padding: 2rem 2.15rem 1.5rem;
+      gap: 0.85rem;
+    }
+
+    .fjordtalk-slide--title {
+      padding: 2.7rem 2.8rem 1.8rem;
+    }
+
+    .fjordtalk-slide h1 {
+      font-size: 2.35rem;
+    }
+
+    .fjordtalk-slide--title h1 {
+      font-size: 3.2rem;
+    }
+
+    .fjordtalk-lead {
+      margin-top: 0.72rem;
+      font-size: 1.02rem;
+      line-height: 1.38;
+    }
+
+    .fjordtalk-card h2 {
+      font-size: 0.95rem;
+    }
+
+    .fjordtalk-card p:last-child,
+    .fjordtalk-bullets li {
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+
+    .fjordtalk-card {
+      padding: 0.76rem;
+    }
+
+    .fjordtalk-slide__mark {
+      transform: scale(0.72);
+      transform-origin: bottom right;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .fjordtalk-frame {
+      min-height: auto;
+      padding: 1rem;
+    }
+
+    .fjordtalk-slide {
+      width: 100%;
+      max-height: none;
+      aspect-ratio: auto;
+      min-height: calc(100svh - 2rem);
+    }
+
+    .fjordtalk-card-grid,
+    .fjordtalk-card-grid--three,
+    .fjordtalk-flow {
+      grid-template-columns: 1fr;
+    }
+
+    .fjordtalk-flow li:not(:last-child)::after {
+      display: none;
+    }
+
+    .fjordtalk-rail {
+      display: none;
+    }
+  }
+</style>
