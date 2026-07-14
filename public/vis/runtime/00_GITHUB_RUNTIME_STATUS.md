@@ -4,8 +4,8 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## Siste sync
 
-- **generated_at (UTC):** 2026-07-13T09:30:10.132Z
-- **generated_at (Europe/Oslo):** 13.7.2026, 11:30:10
+- **generated_at (UTC):** 2026-07-14T08:08:12.312Z
+- **generated_at (Europe/Oslo):** 14.7.2026, 10:08:12
 - **timezone:** Europe/Oslo
 - **repo:** THUNDERPLUNDER/vox-web
 - **data_warnings:** (ingen)
@@ -76,7 +76,7 @@ _Automatisk generert for @navigator / Daily Sync. Ikke rediger manuelt — overs
 
 ## SISTE 24T
 
-Vindu: commits/issues lukket/oppdatert etter **2026-07-12T09:30:10Z** (sirket ~24 timer).
+Vindu: commits/issues lukket/oppdatert etter **2026-07-13T08:08:12Z** (sirket ~24 timer).
 
 ### Lukkede issues
 
@@ -88,7 +88,7 @@ _Ingen treff i søkt utsnitt._
 
 ### Commits
 
-_Ingen eller ikke tilgjengelig._
+- **ab041c5** (2026-07-13T09:30:12Z) chore(vis): refresh GitHub runtime status for navigator
 
 ## BLOCKERS
 
