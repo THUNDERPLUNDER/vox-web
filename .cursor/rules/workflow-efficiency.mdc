@@ -1,0 +1,55 @@
+---
+description: Evidence-first workflow for non-trivial repository tasks
+alwaysApply: false
+---
+
+# Workflow efficiency
+
+Use this rule for non-trivial implementation, review, release and documentation tasks.
+
+## Before editing
+
+1. Read the issue or work order and latest comments.
+2. Read `AGENTS.md` and relevant domain rules.
+3. Choose one primary mode: review, implementation, design, content, release or docs.
+4. Identify acceptance criteria, non-goals and required evidence.
+
+## Gather facts first
+
+Use repository and browser tools for fixed facts before interpretation:
+
+- changed files and diff
+- relevant source files and contracts
+- build or check output
+- issue and PR metadata
+- exact runtime or computed-style evidence when source inspection is insufficient
+
+Do not repeatedly rediscover the same context with broad searches.
+
+## Work discipline
+
+- Keep one clear task per branch and PR.
+- Prefer scripts, repository search and browser inspection for deterministic retrieval.
+- Read only the files needed for the current decision.
+- Reuse existing contracts before creating new structure.
+- Do not widen implementation into strategy, redesign or architecture without authorization.
+- After two ineffective attempts on the same problem, report the evidence and create or link a follow-up.
+- Do not create permanent generated context files unless they have lasting project value.
+
+## Related rules
+
+- UI/CSS: also apply `.cursor/rules/design-system-foundation.mdc`.
+- API/system/production: apply `.cursor/rules/viddel-operating-rules.mdc`.
+- Human visual or product decision: stop before implementation and state the exact decision or evidence required.
+
+## Completion
+
+Follow the Return Ticket contract. Also include:
+
+- primary mode
+- deterministic context used
+- what tools verified rather than inferred
+- what fixed retrieval avoided
+- remaining assumptions
+
+Full reference: `docs/ai/agentic-workflow-efficiency-v0.1.md`.
