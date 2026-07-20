@@ -1,11 +1,8 @@
-# CONTRACT: Periodisk oppdatering av GitHub runtime-status for @navigator (#107). Commiter markdown til repo; push trigger vanlig Pages-deploy.
+# CONTRACT: Manuell oppdatering av GitHub runtime-status for @navigator (#107). Commiter markdown til repo; push trigger vanlig Pages-deploy.
 name: GitHub runtime status (navigator)
 
 on:
   workflow_dispatch:
-  schedule:
-    # Hverdager ~07:00 Europe/Oslo (vinter: 06 UTC ≈ +1; justér ved behov)
-    - cron: "0 6 * * 1-5"
 
 permissions:
   contents: write
