@@ -1,0 +1,66 @@
+---
+description: Guardrail for Viddel UI and design-system work
+alwaysApply: false
+---
+
+# Viddel design-system foundation
+
+Use this rule for UI, CSS, component, pattern and design-system tasks.
+
+## Read first
+
+1. Read `docs/design/VIDDEL_DESIGN_SYSTEM_FOUNDATION_v0_1.md`.
+2. Read the relevant pattern document under `docs/design/`.
+3. Inspect the actual runtime component and CSS before editing.
+4. For Composer work, read #271, #270 and the latest evidence in #275.
+
+## Source hierarchy
+
+When sources disagree, prefer:
+
+1. verified runtime and computed styles
+2. `src/styles/tokens.css`
+3. approved pattern documentation
+4. `/designsystem/` as a derived review surface
+5. historical VIS/issues as evidence only
+
+## Change discipline
+
+- Reuse current values before proposing new ones.
+- Separate component body values from halo, placement, safe-area and scrolling.
+- Do not create page-specific near-duplicates when an accepted token or pattern exists.
+- Do not choose between competing CSS values from source inspection alone; verify computed styles.
+- Stop after one or two ineffective visual attempts. Inspect rendered DOM and computed styles before patching again.
+- Keep each PR narrow enough to verify by route and interaction state.
+- Do not bundle redesign, token cleanup and component extraction in one task.
+- VIS is a display/collaboration surface, not the backlog or token source.
+
+## Composer pilot guardrail
+
+Until #275 is complete:
+
+- do not normalize send/add button size
+- do not change halo gradients or layers
+- do not change sticky/fixed placement
+- do not change safe-area or scroll clearance
+- do not extract a shared Composer component
+
+After #275, token migration must preserve computed values and verify:
+
+- `/no/chat` desktop/mobile, idle/active/multiline/image
+- `/no/artikkel/ingen-lyd-svak-lyd/` desktop/mobile, idle/active/multiline
+
+## Completion contract
+
+Every meaningful UI task must finish with:
+
+- Design System impact
+- patterns/tokens used or introduced
+- runtime routes and states verified
+- VIS/current-state impact
+- Backstage impact
+- changed files
+- build/test status
+- commit and commit hash
+- push status
+- remaining assumptions or follow-up issue
