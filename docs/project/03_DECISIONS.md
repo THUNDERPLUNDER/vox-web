@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-07-29 - Innlogget samtaleområde layout-CBA v0.1
+- Beslutning: Innlogget samtaleområde bruker full samtaleoversikt som start og adaptiv delt flate på desktop etter at en samtale åpnes. Mobil viser én state om gangen. Dagens `/no/chat` er grunnlag for ny og aktiv samtale, mens samtaleoversikt, samtaleelement, samtalekontekst og tomtilstand er nye, små komponentbehov.
+- Begrunnelse: Oppgavebasert, heuristisk gjennomgang støtter synlig historikk ved start og vedvarende samtalevalg på desktop, samtidig som komponentgrensen gjør startpunkt og plassering reversible.
+- Konsekvens: `docs/project/VIDDEL_CONVERSATION_AREA_LAYOUT_CBA_v0_1.md` styrer videre copy, visuell design og senere implementeringsbrief for denne flaten. Ingen UI-kode, tokennormalisering, autentisering eller lagring følger av beslutningen alene.
+
 ## 2026-05-29 - Standalone AI custom chat R1 (#125M-C)
 - Beslutning: `/no/chat/` erstattes med Viddel-eid headless AI-flate (`POST /api/chat` → CES `runSession`). Ingen widget, bridge eller Debug.
 - Begrunnelse: #125M-B PoC QA-verifisert; produksjonsflaten skal føles som native samtaleflate, ikke embedded widget.
