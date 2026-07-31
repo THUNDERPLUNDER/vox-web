@@ -1,6 +1,6 @@
 # Viddel Conversation Area Layout — Current Best Answer v0.1
 
-Status: Godkjent strukturgrunnlag før copy, visuell design og UI-implementering
+Status: Erstattet av `VIDDEL_CONVERSATION_AREA_LAYOUT_CBA_v0_2.md`
 Eier: Thomas
 Forelder: `docs/project/VIDDEL_CONCEPT_PROTOTYPE_CBA_v0_2.md`
 Relatert GitHub-sak: #283
