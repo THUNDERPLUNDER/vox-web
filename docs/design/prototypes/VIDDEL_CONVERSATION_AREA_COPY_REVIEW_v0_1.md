@@ -1,6 +1,6 @@
 # Viddel Conversation Area — copy-review v0.1
 
-Status: Reviewartefakt for godkjent UX-copy-CBA
+Status: Godkjent copy-review og versjonert beslutningsgrunnlag
 Eier: Thomas
 Relatert copy-CBA: `docs/project/VIDDEL_CONVERSATION_AREA_UX_COPY_CBA_v0_1.md`
 Strukturgrunnlag: `docs/project/VIDDEL_CONVERSATION_AREA_LAYOUT_CBA_v0_2.md`
@@ -15,11 +15,14 @@ orientering før copy-porten lukkes.
 
 ## Innhold
 
-- `viddel-conversation-area-copy-review-v0_1.html` — klikkbar copy-review
+- `public/vis/raw/viddel-conversation-area-copy-review-v0_1.html` — klikkbar copy-review i VIS
 - `VIDDEL_CONVERSATION_AREA_COPY_REVIEW_v0_1.md` — rolle og sannhetsgrense
 
 Den frosne strukturreferansen
-`viddel-conversation-area-cba-v0_1.html` er ikke endret.
+`public/vis/raw/viddel-conversation-area-cba-v0_1.html` er ikke endret.
+
+Copy-reviewen finnes i VIS under «Mønsterverifiseringer», ved siden av den
+strukturelle CBA-en.
 
 ## Kontroller
 

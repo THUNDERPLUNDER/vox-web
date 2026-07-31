@@ -1,10 +1,10 @@
 # Viddel Conversation Area UX Copy — Current Best Answer v0.1
 
-Status: Godkjent UX-copy-CBA før visuell retning og UI-implementering
+Status: Godkjent og visuelt kontrollert UX-copy-CBA; neste port er visuell retning
 Eier: Thomas
 Forelder: `docs/project/VIDDEL_CONVERSATION_AREA_LAYOUT_CBA_v0_2.md`
 Relatert GitHub-sak: #283
-Copy-review: `docs/design/prototypes/viddel-conversation-area-copy-review-v0_1.html`
+Copy-review: `public/vis/raw/viddel-conversation-area-copy-review-v0_1.html`
 Sist oppdatert: 2026-07-31
 
 ## 1. Dokumentets rolle
@@ -240,7 +240,9 @@ Den separate copy-reviewvarianten kontrollerer:
 
 Reviewartefakten er beslutningsstøtte, ikke produksjonsmarkup.
 
-## 12. Neste port
+Thomas har kontrollert copyen i den klikkbare flaten. Samlet skannbarhet,
+tekstlengde og begrepsbruk står seg som CBA v0.1.
 
-Når copy-reviewen er kontrollert uten plass- eller orienteringsproblemer, kan
-UX-copy-porten lukkes. Neste port er visuell retning og designsystem/tokens.
+## 12. Portstatus og neste port
+
+UX-copy-porten er lukket. Neste port er visuell retning og designsystem/tokens.
