@@ -26,8 +26,8 @@ export const designSystemMeta = {
   version: "v0.1",
   title: "Design System Source of Truth",
   canonicalPath: "/designsystem/",
-  updated: "2026-05-30",
-  issue: "#157",
+  updated: "2026-07-31",
+  issue: "#157 · #283",
   relatedDecisions: [
     "docs/project/decisions/DECISION_125M_C_STANDALONE_AI_CUSTOM_R1.md",
     "docs/project/decisions/DECISION_125M_CES_HEADLESS_INTEGRATION_CBA.md",
@@ -230,6 +230,38 @@ export const patterns: PatternRecord[] = [
     commitRef: "e896d377",
   },
   {
+    id: "conversation-area",
+    name: "Conversation Area",
+    status: "Candidate",
+    summary: "Åpen samtaleoversikt som går over i adaptiv delt flate på desktop.",
+    rule: "Samme ConversationItem skal bære full, kompakt og mobil presentasjon.",
+    purpose: "Finne igjen, åpne og starte samtaler uten dashboard- eller kortstøy.",
+    usedOn: ["/no/samtaler/ (isolert konseptprototype)"],
+    sourceFiles: [
+      "src/pages/no/samtaler.astro",
+      "src/components/conversation/ConversationOverview.astro",
+      "src/components/conversation/ConversationItem.astro",
+      "src/styles/viddel-conversation-area.css",
+    ],
+    do: [
+      "Bruk åpen liste, kronologisk gruppering og semantisk valgt state",
+      "Behold samme samtaleidentitet i full og kompakt presentasjon",
+      "Bruk eksisterende semantiske tokens i lys og mørk modus",
+    ],
+    dont: [
+      "Ikke kort rundt hvert samtaleelement",
+      "Ikke bygg auth, lagring eller samtaleadministrasjon inn i mønsteret",
+      "Ikke opprett globale state-tokens før gjenbruk er bekreftet",
+    ],
+    qaQuestions: [
+      "Er valgt samtale tydelig uten å konkurrere med tastaturfokus?",
+      "Bevares kronologi og listeposisjon på desktop og mobil?",
+      "Står 320 px, lange titler og lang artikkelopprinnelse seg?",
+    ],
+    issueRef: "#283",
+    commitRef: "—",
+  },
+  {
     id: "article-to-ai-transition",
     name: "Article-to-AI Transition",
     status: "Applied",
@@ -305,6 +337,12 @@ export const patterns: PatternRecord[] = [
 ];
 
 export const appliedSurfaces = [
+  {
+    route: "/no/samtaler/",
+    status: "Candidate" as PatternStatus,
+    patterns: ["Conversation Area", "Transcript", "AI Composer", "Loading / Error States"],
+    note: "Isolert Snitt A med syntetiske data. Visuell QA før dialogkobling.",
+  },
   {
     route: "/no/chat/",
     status: "Applied" as PatternStatus,

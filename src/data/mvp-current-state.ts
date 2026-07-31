@@ -66,7 +66,7 @@ export type ClosedSprint = {
 };
 
 export const mvpCurrentState = {
-  updatedAt: "2026-06-09",
+  updatedAt: "2026-07-31",
   currentSprint: {
     id: "2026-w21",
     label: "2026-W21",
@@ -115,6 +115,15 @@ export const mvpCurrentState = {
       visFrontpage: true,
       kind: "public",
       frontpageDescription: "Headless AI-chat — live (intern test). Public guard aktiv.",
+    },
+    {
+      id: "conversation-area-prototype",
+      label: "Innlogget samtaleområde",
+      route: "/no/samtaler/",
+      status: "Candidate",
+      note: "Isolert konseptprototype med syntetisk historikk og lokal UI-state. Ingen auth eller lagring.",
+      visFrontpage: false,
+      kind: "reference",
     },
     {
       id: "designsystem",

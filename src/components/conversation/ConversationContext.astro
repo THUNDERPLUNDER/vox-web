@@ -1,0 +1,102 @@
+---
+import type { ConversationPrototype } from "../../data/conversation-prototype-v01";
+
+type Props = {
+  conversations: ConversationPrototype[];
+  selectedId?: string;
+};
+
+const { conversations, selectedId } = Astro.props as Props;
+---
+
+<section class="conversation-context" aria-label="Aktiv samtale" data-conversation-context>
+  {
+    conversations.map((conversation) => (
+      <article
+        class="conversation-context__panel"
+        data-conversation-panel={conversation.id}
+        hidden={conversation.id !== selectedId}
+      >
+        <header class="conversation-context__header">
+          <button
+            type="button"
+            class="conversation-context__back"
+            data-back-to-conversations
+            aria-label="Tilbake til samtaler"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="m15 18-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Samtaler</span>
+          </button>
+          <div class="conversation-context__heading">
+            <h1>{conversation.title}</h1>
+            {conversation.articleOrigin ? <p>Fra artikkelen «{conversation.articleOrigin}»</p> : null}
+          </div>
+          <button type="button" class="conversation-action conversation-action--quiet" data-new-conversation>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+            </svg>
+            <span>Ny samtale</span>
+          </button>
+        </header>
+
+        <div class="conversation-context__body">
+          <div class="conversation-context__transcript" role="log" aria-live="polite" aria-relevant="additions text">
+            {conversation.messages.map((message) => (
+              <div class:list={["conversation-message", `conversation-message--${message.role}`]}>
+                {message.role === "assistant" ? <p class="conversation-message__speaker">Viddel</p> : null}
+                <p>{message.text}</p>
+              </div>
+            ))}
+          </div>
+          <p class="conversation-context__status" data-prototype-pending role="status">Viddel svarer …</p>
+          <div class="conversation-context__error" data-prototype-error role="alert">
+            <p>Svaret kunne ikke leveres.</p>
+            <button type="button" data-clear-demo-state>Prøv igjen</button>
+          </div>
+        </div>
+
+        <form class="conversation-composer" data-prototype-composer>
+          <label class="sr-only" for={`conversation-input-${conversation.id}`}>Skriv spørsmål til Viddel</label>
+          <textarea
+            id={`conversation-input-${conversation.id}`}
+            rows="1"
+            placeholder="Hva lurer du på?"
+            data-prototype-input
+          />
+          <button type="submit" aria-label="Send spørsmål" disabled data-prototype-send>
+            <span aria-hidden="true">↑</span>
+          </button>
+        </form>
+      </article>
+    ))
+  }
+
+  <article class="conversation-context__panel" data-conversation-panel="new" hidden>
+    <header class="conversation-context__header">
+      <button
+        type="button"
+        class="conversation-context__back"
+        data-back-to-conversations
+        aria-label="Tilbake til samtaler"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="m15 18-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span>Samtaler</span>
+      </button>
+      <div class="conversation-context__heading">
+        <h1>Ny samtale</h1>
+      </div>
+    </header>
+    <div class="conversation-context__body conversation-context__body--new"></div>
+    <form class="conversation-composer" data-prototype-composer>
+      <label class="sr-only" for="conversation-input-new">Skriv spørsmål til Viddel</label>
+      <textarea id="conversation-input-new" rows="1" placeholder="Hva lurer du på?" data-prototype-input />
+      <button type="submit" aria-label="Send spørsmål" disabled data-prototype-send>
+        <span aria-hidden="true">↑</span>
+      </button>
+    </form>
+  </article>
+</section>
