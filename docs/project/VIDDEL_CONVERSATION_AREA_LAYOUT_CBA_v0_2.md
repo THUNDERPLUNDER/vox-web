@@ -5,7 +5,7 @@ Eier: Thomas
 Forelder: `docs/project/VIDDEL_CONCEPT_PROTOTYPE_CBA_v0_2.md`
 Erstatter: `docs/project/VIDDEL_CONVERSATION_AREA_LAYOUT_CBA_v0_1.md`
 Relatert GitHub-sak: #283
-Interaktivt beslutningsgrunnlag: `docs/design/prototypes/viddel-conversation-area-cba-v0_1.html`
+Interaktivt beslutningsgrunnlag: `public/vis/raw/viddel-conversation-area-cba-v0_1.html`
 Sist oppdatert: 2026-07-31
 
 ## 1. Dokumentets rolle
@@ -243,7 +243,7 @@ Følgende ble sammenlignet og justert:
 
 Interaktivt, versjonert beslutningsgrunnlag:
 
-- `docs/design/prototypes/viddel-conversation-area-cba-v0_1.html`
+- `public/vis/raw/viddel-conversation-area-cba-v0_1.html`
 
 HTML-filen er en repo-native wireframe og reviewartefakt. Dette dokumentet er
 autoritativt når artefakten og teksten avviker.
