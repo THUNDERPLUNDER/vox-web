@@ -1,0 +1,2130 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="Interaktiv visuell kontroll av Viddels innloggede samtaleområde, koblet til eksisterende semantiske tokens.">
+<meta name="vis:type" content="wireframe">
+<meta name="vis:section" content="Mønsterverifiseringer">
+<meta name="vis:updated" content="2026-07-31">
+<meta name="vis:delta" content="Lett visuell retning: åpne flater, rolig valgt state og eksisterende semantiske tokens uten nye tokenverdier.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Viddel – Innlogget samtaleområde, visuell kontroll v0.1</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(250 249 246), rgb(2 6 23))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;max-width:736px;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="Conversation Area Visual Review" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;no&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Conversation Area Visual Review&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(--background) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  /* Standalone preview mirrors existing semantic tokens from src/styles/tokens.css. */
+  --background: light-dark(rgb(250 249 246), rgb(2 6 23)); /* --bg */
+  --foreground: light-dark(rgb(28 32 38), rgb(230 236 245)); /* --text */
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: rgb(14 165 233); /* --accent-primary */
+  --primary-foreground: light-dark(rgb(248 250 252), rgb(8 12 22)); /* --primary-contrast */
+  --secondary: light-dark(rgb(255 252 248), rgb(12 18 34)); /* --surface */
+  --secondary-foreground: var(--foreground);
+  --muted: light-dark(rgb(246 243 237), rgb(8 14 28)); /* --surface-subtle */
+  --muted-foreground: light-dark(
+    rgb(105 112 126),
+    rgb(148 162 186)
+  ); /* --text-secondary */
+  --accent: light-dark(rgb(246 243 237), rgb(20 30 50)); /* --surface-subtle / --surface-elevated */
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(228 224 216), rgb(56 72 100)); /* --border */
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: rgb(244 114 182); /* --focus-ring */
+  --font-size-base: 14px;
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 12.5px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--viz-font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed=&quot;true&quot;],
+    [aria-selected=&quot;true&quot;],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;conversation-layout-verification&quot;&gt;
+  &lt;style&gt;
+    #conversation-layout-verification {
+      color: var(--foreground);
+      width: 100%;
+    }
+
+    #conversation-layout-verification * {
+      box-sizing: border-box;
+    }
+
+    #conversation-layout-verification .prototype-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    #conversation-layout-verification .control-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #conversation-layout-verification .prototype {
+      position: relative;
+      overflow: hidden;
+      min-height: 560px;
+      border: 1px solid color-mix(in srgb, var(--border) 44%, transparent);
+      border-radius: 12px;
+      background: var(--background);
+    }
+
+    #conversation-layout-verification .product-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #conversation-layout-verification .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    #conversation-layout-verification .desktop-stage {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 0fr;
+      min-height: 508px;
+      transition: grid-template-columns 260ms ease;
+    }
+
+    #conversation-layout-verification .prototype.is-active .desktop-stage {
+      grid-template-columns: minmax(240px, 34%) minmax(0, 66%);
+    }
+
+    #conversation-layout-verification .overview-pane {
+      min-width: 0;
+      padding: 24px;
+      transition: padding 260ms ease;
+    }
+
+    #conversation-layout-verification .prototype.is-active .overview-pane {
+      padding: 18px;
+      border-right: 1px solid color-mix(in srgb, var(--border) 38%, transparent);
+      background: color-mix(in srgb, var(--accent) 72%, transparent);
+    }
+
+    #conversation-layout-verification .overview-inner {
+      width: min(100%, 720px);
+      margin: 0 auto;
+      transition: width 260ms ease, margin 260ms ease;
+    }
+
+    #conversation-layout-verification .prototype.is-active .overview-inner {
+      width: 100%;
+      margin: 0;
+    }
+
+    #conversation-layout-verification .overview-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    #conversation-layout-verification .overview-heading h2,
+    #conversation-layout-verification .chat-heading h2 {
+      margin: 0;
+    }
+
+    #conversation-layout-verification .overview-heading p,
+    #conversation-layout-verification .chat-heading p {
+      margin: 4px 0 0;
+    }
+
+    #conversation-layout-verification .prototype.is-active .overview-subtitle {
+      display: none;
+    }
+
+    #conversation-layout-verification .prototype.is-active .overview-heading {
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    #conversation-layout-verification .conversation-list {
+      display: grid;
+      gap: 0;
+    }
+
+    #conversation-layout-verification .day-cluster {
+      display: grid;
+      min-width: 0;
+      justify-items: stretch;
+      gap: 14px;
+    }
+
+    #conversation-layout-verification .day-cluster + .day-cluster {
+      margin-top: 30px;
+    }
+
+    #conversation-layout-verification .conversation-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      width: 100%;
+      inline-size: 100%;
+      justify-content: stretch;
+      justify-self: stretch;
+      margin-inline: 0;
+      padding: 10px 12px;
+      text-align: left;
+      white-space: normal;
+    }
+
+    #conversation-layout-verification .conversation-item[aria-pressed=&quot;true&quot;] {
+      border-color: transparent;
+      color: var(--foreground);
+      background: color-mix(in srgb, var(--primary) 11%, var(--accent));
+      box-shadow: inset 3px 0 0 color-mix(in srgb, var(--primary) 72%, transparent);
+    }
+
+    #conversation-layout-verification .conversation-item[aria-pressed=&quot;true&quot;] .text-muted,
+    #conversation-layout-verification .conversation-item[aria-pressed=&quot;true&quot;] .conversation-date-block {
+      color: var(--muted-foreground);
+    }
+
+    #conversation-layout-verification .conversation-date-block,
+    #conversation-layout-verification .conversation-content,
+    #conversation-layout-verification .conversation-heading-row {
+      min-width: 0;
+    }
+
+    #conversation-layout-verification .conversation-date-block {
+      color: var(--muted-foreground);
+    }
+
+    #conversation-layout-verification .conversation-item.is-repeat-date .conversation-day {
+      display: none;
+    }
+
+    #conversation-layout-verification .conversation-content {
+      display: grid;
+      gap: 3px;
+    }
+
+    #conversation-layout-verification .conversation-heading-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    #conversation-layout-verification .conversation-title {
+      display: -webkit-box;
+      min-width: 0;
+      overflow: hidden;
+      font-weight: 500;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    #conversation-layout-verification .empty-history {
+      display: none;
+      min-height: 360px;
+      place-content: center;
+      justify-items: center;
+      gap: 16px;
+      padding: 32px 20px;
+      text-align: center;
+    }
+
+    #conversation-layout-verification .empty-history h3 {
+      margin: 0;
+    }
+
+    #conversation-layout-verification .prototype.is-empty-history .conversation-list {
+      display: none;
+    }
+
+    #conversation-layout-verification .prototype.is-empty-history .empty-history {
+      display: grid;
+    }
+
+    #conversation-layout-verification .prototype.is-empty-history .overview-heading .new-conversation {
+      display: none;
+    }
+
+    #conversation-layout-verification .conversation-preview {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #conversation-layout-verification .conversation-origin {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: fit-content;
+    }
+
+    #conversation-layout-verification .date-group {
+      display: none;
+      margin: 8px 0 0;
+      color: var(--muted-foreground);
+      font-weight: 500;
+    }
+
+    #conversation-layout-verification .date-group:first-child {
+      margin-top: 0;
+    }
+
+    #conversation-layout-verification .prototype.is-active .conversation-preview {
+      display: none;
+    }
+
+    #conversation-layout-verification .prototype.density-title-only .conversation-preview {
+      display: none;
+    }
+
+    #conversation-layout-verification .variant-a .conversation-item {
+      gap: 3px;
+    }
+
+    #conversation-layout-verification .variant-a .conversation-date-block {
+      display: flex;
+      gap: 6px;
+    }
+
+    #conversation-layout-verification .variant-a .conversation-day::after {
+      content: &quot; ·&quot;;
+    }
+
+    #conversation-layout-verification .variant-a .conversation-time-inline {
+      display: none;
+    }
+
+    #conversation-layout-verification .variant-b .conversation-item {
+      grid-template-columns: 78px minmax(0, 1fr);
+      align-items: start;
+      gap: 16px;
+    }
+
+    #conversation-layout-verification .variant-b .conversation-date-block {
+      display: grid;
+      gap: 2px;
+    }
+
+    #conversation-layout-verification .variant-b .conversation-time-inline {
+      display: none;
+    }
+
+    #conversation-layout-verification .variant-c .date-group {
+      display: block;
+    }
+
+    #conversation-layout-verification .variant-c .conversation-date-block {
+      display: none;
+    }
+
+    #conversation-layout-verification .variant-c .conversation-item {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    #conversation-layout-verification .prototype.is-active .conversation-list {
+      gap: 0;
+    }
+
+    #conversation-layout-verification .prototype.is-active .day-cluster {
+      gap: 10px;
+    }
+
+    #conversation-layout-verification .prototype.is-active .day-cluster + .day-cluster {
+      margin-top: 22px;
+    }
+
+    #conversation-layout-verification .prototype.is-active .conversation-content {
+      gap: 3px;
+    }
+
+    #conversation-layout-verification .prototype.is-active.variant-b .conversation-item {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 3px;
+      padding: 9px 10px;
+    }
+
+    #conversation-layout-verification .prototype.is-active.variant-b .conversation-date-block {
+      display: flex;
+      gap: 6px;
+    }
+
+    #conversation-layout-verification .prototype.is-active.variant-b .conversation-day::after {
+      content: &quot; ·&quot;;
+    }
+
+    #conversation-layout-verification .prototype.is-active.variant-c .date-group {
+      margin-top: 5px;
+    }
+
+    #conversation-layout-verification .prototype.is-active .conversation-origin {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #conversation-layout-verification .dialog-pane {
+      min-width: 0;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateX(16px);
+      pointer-events: none;
+      background: var(--secondary);
+      transition: opacity 180ms ease 80ms, transform 220ms ease 60ms;
+    }
+
+    #conversation-layout-verification .prototype.is-active .dialog-pane {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    #conversation-layout-verification .dialog-inner {
+      display: flex;
+      flex-direction: column;
+      min-width: 420px;
+      min-height: 508px;
+    }
+
+    #conversation-layout-verification .chat-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px 24px;
+      border-bottom: 1px solid color-mix(in srgb, var(--border) 38%, transparent);
+    }
+
+    #conversation-layout-verification .transcript {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 14px;
+      padding: 24px;
+    }
+
+    #conversation-layout-verification .message {
+      max-width: 78%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--foreground);
+    }
+
+    #conversation-layout-verification .message.user {
+      align-self: flex-end;
+      background: var(--muted);
+      color: var(--foreground);
+    }
+
+    #conversation-layout-verification .empty-start {
+      display: none;
+      flex: 1;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+      color: var(--muted-foreground);
+    }
+
+    #conversation-layout-verification .prototype.is-new .transcript {
+      display: none;
+    }
+
+    #conversation-layout-verification .prototype.is-new .empty-start {
+      display: grid;
+    }
+
+    #conversation-layout-verification .composer {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 16px 24px 20px;
+      border-top: 1px solid color-mix(in srgb, var(--border) 38%, transparent);
+    }
+
+    #conversation-layout-verification .composer .form-control {
+      flex: 1;
+      min-height: 42px;
+      resize: none;
+    }
+
+    #conversation-layout-verification .mobile-stage {
+      display: none;
+      width: min(100%, 390px);
+      min-height: 610px;
+      margin: 0 auto;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+
+    #conversation-layout-verification .prototype.is-mobile {
+      min-height: 662px;
+    }
+
+    #conversation-layout-verification .prototype.is-mobile .product-bar,
+    #conversation-layout-verification .prototype.is-mobile .desktop-stage {
+      display: none;
+    }
+
+    #conversation-layout-verification .prototype.is-mobile .mobile-stage {
+      display: block;
+    }
+
+    #conversation-layout-verification .mobile-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #conversation-layout-verification .mobile-screen {
+      display: none;
+      padding: 16px;
+    }
+
+    #conversation-layout-verification .mobile-screen.is-visible {
+      display: block;
+    }
+
+    #conversation-layout-verification .mobile-overview-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    #conversation-layout-verification .mobile-overview-head h2 {
+      margin: 0;
+    }
+
+    #conversation-layout-verification .mobile-dialog {
+      padding: 0;
+    }
+
+    #conversation-layout-verification .mobile-dialog .chat-heading {
+      padding: 16px;
+    }
+
+    #conversation-layout-verification .mobile-dialog .transcript {
+      min-height: 390px;
+      padding: 18px 16px;
+    }
+
+    #conversation-layout-verification .mobile-dialog .composer {
+      padding: 14px 16px;
+    }
+
+    #conversation-layout-verification .mode-note {
+      min-height: 20px;
+      margin-top: 10px;
+      color: var(--muted-foreground);
+    }
+
+    @media (max-width: 560px) {
+      #conversation-layout-verification .prototype-controls {
+        align-items: stretch;
+      }
+
+      #conversation-layout-verification .prototype-controls,
+      #conversation-layout-verification .control-group {
+        width: 100%;
+      }
+
+      #conversation-layout-verification .control-group .btn {
+        flex: 1;
+      }
+
+      #conversation-layout-verification .prototype:not(.is-mobile) .desktop-stage {
+        grid-template-columns: 1fr;
+      }
+
+      #conversation-layout-verification .prototype:not(.is-mobile).is-active .overview-pane {
+        display: none;
+      }
+
+      #conversation-layout-verification .prototype:not(.is-mobile).is-active .dialog-pane {
+        display: block;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #conversation-layout-verification .desktop-stage,
+      #conversation-layout-verification .overview-pane,
+      #conversation-layout-verification .overview-inner,
+      #conversation-layout-verification .dialog-pane {
+        transition: none;
+      }
+    }
+  &lt;/style&gt;
+
+  &lt;div class=&quot;prototype-controls&quot; aria-label=&quot;Visningskontroller&quot;&gt;
+    &lt;div class=&quot;control-group&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; id=&quot;desktop-mode&quot; aria-pressed=&quot;true&quot;&gt;
+        &lt;i data-lucide=&quot;monitor&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+        Desktop
+      &lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;mobile-mode&quot; aria-pressed=&quot;false&quot;&gt;
+        &lt;i data-lucide=&quot;smartphone&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+        Mobil
+      &lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;control-group&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;overview-state&quot; aria-pressed=&quot;true&quot;&gt;Oversikt&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;active-state&quot; aria-pressed=&quot;false&quot;&gt;Aktiv samtale&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;empty-state&quot; aria-pressed=&quot;false&quot;&gt;Tom historikk&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;section class=&quot;prototype variant-b&quot; id=&quot;prototype&quot; aria-label=&quot;Klikkbar skisse av Viddels samtaleområde&quot;&gt;
+    &lt;header class=&quot;product-bar&quot;&gt;
+      &lt;div class=&quot;brand&quot;&gt;
+        &lt;i data-lucide=&quot;audio-lines&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+        Viddel
+      &lt;/div&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost&quot;&gt;Profil&lt;/button&gt;
+    &lt;/header&gt;
+
+    &lt;div class=&quot;desktop-stage&quot;&gt;
+      &lt;section class=&quot;overview-pane&quot; aria-label=&quot;Samtaleoversikt&quot;&gt;
+        &lt;div class=&quot;overview-inner&quot;&gt;
+          &lt;div class=&quot;overview-heading&quot;&gt;
+            &lt;div&gt;
+              &lt;h2 id=&quot;desktop-overview-title&quot;&gt;Samtalene dine&lt;/h2&gt;
+            &lt;/div&gt;
+            &lt;button type=&quot;button&quot; class=&quot;btn btn-primary new-conversation&quot;&gt;
+              &lt;i data-lucide=&quot;plus&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+              &lt;span class=&quot;new-conversation-label&quot;&gt;Ny samtale&lt;/span&gt;
+            &lt;/button&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;empty-history&quot;&gt;
+            &lt;h3&gt;Start en samtale med Viddel&lt;/h3&gt;
+            &lt;button type=&quot;button&quot; class=&quot;btn btn-primary new-conversation&quot;&gt;Start samtale&lt;/button&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;conversation-list desktop-list&quot; aria-label=&quot;Tidligere samtaler&quot;&gt;
+            &lt;div class=&quot;day-cluster&quot; aria-label=&quot;I dag&quot;&gt;
+              &lt;div class=&quot;date-group&quot;&gt;I dag&lt;/div&gt;
+            &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item&quot; data-conversation=&quot;hearing&quot; aria-pressed=&quot;true&quot;&gt;
+              &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+                &lt;span class=&quot;conversation-day&quot;&gt;I dag&lt;/span&gt;
+                &lt;span&gt;10:42&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-content&quot;&gt;
+                &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                  &lt;span class=&quot;conversation-title&quot;&gt;Hva skjer på hørselstesten?&lt;/span&gt;
+                  &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;10:42&lt;/span&gt;
+                &lt;/span&gt;
+                &lt;span class=&quot;conversation-preview text-muted&quot;&gt;Jeg er usikker på hva som skjer under undersøkelsen.&lt;/span&gt;
+              &lt;/span&gt;
+            &lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item is-repeat-date&quot; data-conversation=&quot;family&quot; aria-pressed=&quot;false&quot; aria-label=&quot;I dag klokken 09:55. Hvordan snakke med familien om at jeg strever med å høre&quot;&gt;
+              &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+                &lt;span class=&quot;conversation-day&quot;&gt;I dag&lt;/span&gt;
+                &lt;span&gt;09:55&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-content&quot;&gt;
+                &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                  &lt;span class=&quot;conversation-title&quot;&gt;Hvordan snakke med familien om at jeg strever med å høre&lt;/span&gt;
+                  &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;09:55&lt;/span&gt;
+                &lt;/span&gt;
+                &lt;span class=&quot;conversation-preview text-muted&quot;&gt;Jeg vil forklare det uten at samtalen blir for alvorlig.&lt;/span&gt;
+              &lt;/span&gt;
+            &lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item is-repeat-date&quot; data-conversation=&quot;sound&quot; aria-pressed=&quot;false&quot; aria-label=&quot;I dag klokken 08:15. Lyden blir skarp av bestikk og tallerkener. Fra artikkelen Lydømfintlighet&quot;&gt;
+              &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+                &lt;span class=&quot;conversation-day&quot;&gt;I dag&lt;/span&gt;
+                &lt;span&gt;08:15&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-content&quot;&gt;
+                &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                  &lt;span class=&quot;conversation-title&quot;&gt;Lyden blir skarp av bestikk og tallerkener&lt;/span&gt;
+                  &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;08:15&lt;/span&gt;
+                &lt;/span&gt;
+                &lt;span class=&quot;conversation-preview text-muted&quot;&gt;Hvorfor blir bestikk og tallerkener så høye?&lt;/span&gt;
+                &lt;span class=&quot;conversation-origin text-muted text-small&quot;&gt;
+                  &lt;i data-lucide=&quot;file-text&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+                  Fra artikkelen «Lydømfintlighet»
+                &lt;/span&gt;
+              &lt;/span&gt;
+            &lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item is-repeat-date&quot; data-conversation=&quot;appointment&quot; aria-pressed=&quot;false&quot; aria-label=&quot;I dag klokken 07:30. Hva bør jeg ta opp med audiografen? Fra artikkelen Før timen&quot;&gt;
+              &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+                &lt;span class=&quot;conversation-day&quot;&gt;I dag&lt;/span&gt;
+                &lt;span&gt;07:30&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-content&quot;&gt;
+                &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                  &lt;span class=&quot;conversation-title&quot;&gt;Hva bør jeg ta opp med audiografen?&lt;/span&gt;
+                  &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;07:30&lt;/span&gt;
+                &lt;/span&gt;
+                &lt;span class=&quot;conversation-preview text-muted&quot;&gt;Jeg vil ikke glemme noe viktig på timen.&lt;/span&gt;
+                &lt;span class=&quot;conversation-origin text-muted text-small&quot;&gt;
+                  &lt;i data-lucide=&quot;file-text&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+                  Fra artikkelen «Før timen»
+                &lt;/span&gt;
+              &lt;/span&gt;
+            &lt;/button&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;day-cluster&quot; aria-label=&quot;Mandag&quot;&gt;
+              &lt;div class=&quot;date-group&quot;&gt;Mandag&lt;/div&gt;
+            &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item&quot; data-conversation=&quot;tinnitus&quot; aria-pressed=&quot;false&quot;&gt;
+              &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+                &lt;span class=&quot;conversation-day&quot;&gt;Mandag&lt;/span&gt;
+                &lt;span&gt;16:20&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-content&quot;&gt;
+                &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                  &lt;span class=&quot;conversation-title&quot;&gt;Jeg hører en lyd som andre ikke hører&lt;/span&gt;
+                  &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;16:20&lt;/span&gt;
+                &lt;/span&gt;
+                &lt;span class=&quot;conversation-preview text-muted&quot;&gt;Det er en høy tone som særlig merkes om kvelden.&lt;/span&gt;
+                &lt;span class=&quot;conversation-origin text-muted text-small&quot;&gt;
+                  &lt;i data-lucide=&quot;file-text&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+                  Fra artikkelen «Hva er tinnitus?»
+                &lt;/span&gt;
+              &lt;/span&gt;
+            &lt;/button&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;day-cluster&quot; aria-label=&quot;24. juli&quot;&gt;
+              &lt;div class=&quot;date-group&quot;&gt;24. juli&lt;/div&gt;
+            &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item&quot; data-conversation=&quot;work&quot; aria-pressed=&quot;false&quot;&gt;
+              &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+                &lt;span class=&quot;conversation-day&quot;&gt;24. juli&lt;/span&gt;
+                &lt;span&gt;09:05&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-content&quot;&gt;
+                &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                  &lt;span class=&quot;conversation-title&quot;&gt;Hvordan sier jeg fra på jobb?&lt;/span&gt;
+                  &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;09:05&lt;/span&gt;
+                &lt;/span&gt;
+                &lt;span class=&quot;conversation-preview text-muted&quot;&gt;Møter er vanskelige når flere snakker samtidig.&lt;/span&gt;
+              &lt;/span&gt;
+            &lt;/button&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;day-cluster&quot; aria-label=&quot;18. juli&quot;&gt;
+              &lt;div class=&quot;date-group&quot;&gt;18. juli&lt;/div&gt;
+            &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item&quot; data-conversation=&quot;device&quot; aria-pressed=&quot;false&quot;&gt;
+              &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+                &lt;span class=&quot;conversation-day&quot;&gt;18. juli&lt;/span&gt;
+                &lt;span&gt;13:30&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-content&quot;&gt;
+                &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                  &lt;span class=&quot;conversation-title&quot;&gt;De nye apparatene høres rare ut&lt;/span&gt;
+                  &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;13:30&lt;/span&gt;
+                &lt;/span&gt;
+                &lt;span class=&quot;conversation-preview text-muted&quot;&gt;Musikk låter mye flatere enn før.&lt;/span&gt;
+                &lt;span class=&quot;conversation-origin text-muted text-small&quot;&gt;
+                  &lt;i data-lucide=&quot;file-text&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+                  Fra artikkelen «Den første tiden»
+                &lt;/span&gt;
+              &lt;/span&gt;
+            &lt;/button&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;dialog-pane&quot; aria-label=&quot;Aktiv samtale&quot;&gt;
+        &lt;div class=&quot;dialog-inner&quot;&gt;
+          &lt;header class=&quot;chat-heading&quot;&gt;
+            &lt;div&gt;
+              &lt;h2 id=&quot;desktop-chat-title&quot;&gt;Hva skjer på hørselstesten?&lt;/h2&gt;
+              &lt;p class=&quot;text-muted&quot; id=&quot;desktop-chat-context&quot; hidden&gt;&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost new-conversation&quot;&gt;
+              &lt;i data-lucide=&quot;plus&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+              Ny samtale
+            &lt;/button&gt;
+          &lt;/header&gt;
+          &lt;div class=&quot;transcript&quot; aria-live=&quot;polite&quot;&gt;
+            &lt;div class=&quot;message&quot;&gt;Hva lurer du på før hørselstesten?&lt;/div&gt;
+            &lt;div class=&quot;message user&quot;&gt;Jeg er usikker på hva som skjer under undersøkelsen.&lt;/div&gt;
+            &lt;div class=&quot;message&quot;&gt;Du får vanligvis først noen spørsmål om hørselen din. Deretter måles hvordan du hører ulike toner og tale.&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;empty-start&quot; aria-hidden=&quot;true&quot;&gt;&lt;/div&gt;
+          &lt;div class=&quot;composer&quot;&gt;
+            &lt;label class=&quot;sr-only&quot; for=&quot;desktop-composer&quot;&gt;Skriv spørsmål til Viddel&lt;/label&gt;
+            &lt;textarea class=&quot;form-control&quot; id=&quot;desktop-composer&quot; rows=&quot;1&quot; placeholder=&quot;Hva lurer du på?&quot;&gt;&lt;/textarea&gt;
+            &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; aria-label=&quot;Send spørsmål&quot;&gt;
+              &lt;i data-lucide=&quot;send&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+            &lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;mobile-stage&quot;&gt;
+      &lt;header class=&quot;mobile-bar&quot;&gt;
+        &lt;div class=&quot;brand&quot;&gt;
+          &lt;i data-lucide=&quot;audio-lines&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+          Viddel
+        &lt;/div&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost&quot;&gt;Profil&lt;/button&gt;
+      &lt;/header&gt;
+
+      &lt;section class=&quot;mobile-screen mobile-overview is-visible&quot; aria-label=&quot;Mobil samtaleoversikt&quot;&gt;
+        &lt;div class=&quot;mobile-overview-head&quot;&gt;
+          &lt;h2&gt;Samtalene dine&lt;/h2&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn btn-primary new-conversation&quot; aria-label=&quot;Ny samtale&quot;&gt;
+            &lt;i data-lucide=&quot;plus&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+          &lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;empty-history&quot;&gt;
+          &lt;h3&gt;Start en samtale med Viddel&lt;/h3&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn btn-primary new-conversation&quot;&gt;Start samtale&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;conversation-list mobile-list&quot;&gt;
+          &lt;div class=&quot;day-cluster&quot; aria-label=&quot;I dag&quot;&gt;
+            &lt;div class=&quot;date-group&quot;&gt;I dag&lt;/div&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item&quot; data-conversation=&quot;hearing&quot; aria-pressed=&quot;true&quot;&gt;
+            &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+              &lt;span class=&quot;conversation-day&quot;&gt;I dag&lt;/span&gt;
+              &lt;span&gt;10:42&lt;/span&gt;
+            &lt;/span&gt;
+            &lt;span class=&quot;conversation-content&quot;&gt;
+              &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                &lt;span class=&quot;conversation-title&quot;&gt;Hva skjer på hørselstesten?&lt;/span&gt;
+                &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;10:42&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-preview text-muted&quot;&gt;Hva kan jeg forvente under selve undersøkelsen?&lt;/span&gt;
+            &lt;/span&gt;
+          &lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item is-repeat-date&quot; data-conversation=&quot;family&quot; aria-pressed=&quot;false&quot; aria-label=&quot;I dag klokken 09:55. Hvordan snakke med familien om at jeg strever med å høre&quot;&gt;
+            &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+              &lt;span class=&quot;conversation-day&quot;&gt;I dag&lt;/span&gt;
+              &lt;span&gt;09:55&lt;/span&gt;
+            &lt;/span&gt;
+            &lt;span class=&quot;conversation-content&quot;&gt;
+              &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                &lt;span class=&quot;conversation-title&quot;&gt;Hvordan snakke med familien om at jeg strever med å høre&lt;/span&gt;
+                &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;09:55&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-preview text-muted&quot;&gt;Jeg vil forklare det uten at samtalen blir for alvorlig.&lt;/span&gt;
+            &lt;/span&gt;
+          &lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item is-repeat-date&quot; data-conversation=&quot;sound&quot; aria-pressed=&quot;false&quot; aria-label=&quot;I dag klokken 08:15. Lyden blir skarp av bestikk og tallerkener. Fra artikkelen Lydømfintlighet&quot;&gt;
+            &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+              &lt;span class=&quot;conversation-day&quot;&gt;I dag&lt;/span&gt;
+              &lt;span&gt;08:15&lt;/span&gt;
+            &lt;/span&gt;
+            &lt;span class=&quot;conversation-content&quot;&gt;
+              &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                &lt;span class=&quot;conversation-title&quot;&gt;Lyden blir skarp av bestikk og tallerkener&lt;/span&gt;
+                &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;08:15&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-preview text-muted&quot;&gt;Hvorfor oppleves bestikk og tallerkener så høyt?&lt;/span&gt;
+              &lt;span class=&quot;conversation-origin text-muted text-small&quot;&gt;
+                &lt;i data-lucide=&quot;file-text&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+                Fra artikkelen «Lydømfintlighet»
+              &lt;/span&gt;
+            &lt;/span&gt;
+          &lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item is-repeat-date&quot; data-conversation=&quot;appointment&quot; aria-pressed=&quot;false&quot; aria-label=&quot;I dag klokken 07:30. Hva bør jeg ta opp med audiografen? Fra artikkelen Før timen&quot;&gt;
+            &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+              &lt;span class=&quot;conversation-day&quot;&gt;I dag&lt;/span&gt;
+              &lt;span&gt;07:30&lt;/span&gt;
+            &lt;/span&gt;
+            &lt;span class=&quot;conversation-content&quot;&gt;
+              &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                &lt;span class=&quot;conversation-title&quot;&gt;Hva bør jeg ta opp med audiografen?&lt;/span&gt;
+                &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;07:30&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-preview text-muted&quot;&gt;Hvilke spørsmål bør jeg ta med til timen?&lt;/span&gt;
+              &lt;span class=&quot;conversation-origin text-muted text-small&quot;&gt;
+                &lt;i data-lucide=&quot;file-text&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+                Fra artikkelen «Før timen»
+              &lt;/span&gt;
+            &lt;/span&gt;
+          &lt;/button&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;day-cluster&quot; aria-label=&quot;Mandag&quot;&gt;
+            &lt;div class=&quot;date-group&quot;&gt;Mandag&lt;/div&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item&quot; data-conversation=&quot;tinnitus&quot; aria-pressed=&quot;false&quot;&gt;
+            &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+              &lt;span class=&quot;conversation-day&quot;&gt;Mandag&lt;/span&gt;
+              &lt;span&gt;16:20&lt;/span&gt;
+            &lt;/span&gt;
+            &lt;span class=&quot;conversation-content&quot;&gt;
+              &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                &lt;span class=&quot;conversation-title&quot;&gt;Jeg hører en lyd som andre ikke hører&lt;/span&gt;
+                &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;16:20&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-preview text-muted&quot;&gt;Vi snakket om hva tinnitus kan være og hva som kan hjelpe.&lt;/span&gt;
+              &lt;span class=&quot;conversation-origin text-muted text-small&quot;&gt;
+                &lt;i data-lucide=&quot;file-text&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+                Fra artikkelen «Hva er tinnitus?»
+              &lt;/span&gt;
+            &lt;/span&gt;
+          &lt;/button&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;day-cluster&quot; aria-label=&quot;24. juli&quot;&gt;
+            &lt;div class=&quot;date-group&quot;&gt;24. juli&lt;/div&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item&quot; data-conversation=&quot;work&quot; aria-pressed=&quot;false&quot;&gt;
+            &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+              &lt;span class=&quot;conversation-day&quot;&gt;24. juli&lt;/span&gt;
+              &lt;span&gt;09:05&lt;/span&gt;
+            &lt;/span&gt;
+            &lt;span class=&quot;conversation-content&quot;&gt;
+              &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                &lt;span class=&quot;conversation-title&quot;&gt;Hvordan sier jeg fra på jobb?&lt;/span&gt;
+                &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;09:05&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-preview text-muted&quot;&gt;Hvordan kan jeg forklare behovene mine til arbeidsgiver?&lt;/span&gt;
+            &lt;/span&gt;
+          &lt;/button&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;day-cluster&quot; aria-label=&quot;18. juli&quot;&gt;
+            &lt;div class=&quot;date-group&quot;&gt;18. juli&lt;/div&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost btn-block conversation-item&quot; data-conversation=&quot;device&quot; aria-pressed=&quot;false&quot;&gt;
+            &lt;span class=&quot;conversation-date-block text-small&quot;&gt;
+              &lt;span class=&quot;conversation-day&quot;&gt;18. juli&lt;/span&gt;
+              &lt;span&gt;13:30&lt;/span&gt;
+            &lt;/span&gt;
+            &lt;span class=&quot;conversation-content&quot;&gt;
+              &lt;span class=&quot;conversation-heading-row&quot;&gt;
+                &lt;span class=&quot;conversation-title&quot;&gt;De nye apparatene høres rare ut&lt;/span&gt;
+                &lt;span class=&quot;conversation-time-inline text-muted text-small&quot;&gt;13:30&lt;/span&gt;
+              &lt;/span&gt;
+              &lt;span class=&quot;conversation-preview text-muted&quot;&gt;De første ukene kan lydene oppleves annerledes enn forventet.&lt;/span&gt;
+              &lt;span class=&quot;conversation-origin text-muted text-small&quot;&gt;
+                &lt;i data-lucide=&quot;file-text&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+                Fra artikkelen «Den første tiden»
+              &lt;/span&gt;
+            &lt;/span&gt;
+          &lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;mobile-screen mobile-dialog&quot; aria-label=&quot;Mobil aktiv samtale&quot;&gt;
+        &lt;header class=&quot;chat-heading&quot;&gt;
+          &lt;div&gt;
+            &lt;button type=&quot;button&quot; class=&quot;btn btn-ghost mobile-back&quot; aria-label=&quot;Tilbake til samtaler&quot;&gt;
+              &lt;i data-lucide=&quot;arrow-left&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+              Samtaler
+            &lt;/button&gt;
+            &lt;h2 id=&quot;mobile-chat-title&quot;&gt;Hva skjer på hørselstesten?&lt;/h2&gt;
+            &lt;p class=&quot;text-muted&quot; id=&quot;mobile-chat-context&quot; hidden&gt;&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/header&gt;
+        &lt;div class=&quot;transcript&quot; aria-live=&quot;polite&quot;&gt;
+          &lt;div class=&quot;message&quot;&gt;Hva lurer du på før hørselstesten?&lt;/div&gt;
+          &lt;div class=&quot;message user&quot;&gt;Jeg er usikker på hva som skjer under undersøkelsen.&lt;/div&gt;
+          &lt;div class=&quot;message&quot;&gt;Du får vanligvis først noen spørsmål om hørselen din. Deretter måles hvordan du hører ulike toner og tale.&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;empty-start&quot; aria-hidden=&quot;true&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;composer&quot;&gt;
+          &lt;label class=&quot;sr-only&quot; for=&quot;mobile-composer&quot;&gt;Skriv spørsmål til Viddel&lt;/label&gt;
+          &lt;textarea class=&quot;form-control&quot; id=&quot;mobile-composer&quot; rows=&quot;1&quot; placeholder=&quot;Hva lurer du på?&quot;&gt;&lt;/textarea&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; aria-label=&quot;Send spørsmål&quot;&gt;
+            &lt;i data-lucide=&quot;send&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;p class=&quot;mode-note text-small&quot; id=&quot;mode-note&quot; aria-live=&quot;polite&quot;&gt;Full oversikt · samtaleelement i oversiktsmodus&lt;/p&gt;
+
+  &lt;script&gt;
+    (() =&gt; {
+      const root = document.getElementById(&#x27;conversation-layout-verification&#x27;);
+      const prototype = root.querySelector(&#x27;#prototype&#x27;);
+      const desktopButton = root.querySelector(&#x27;#desktop-mode&#x27;);
+      const mobileButton = root.querySelector(&#x27;#mobile-mode&#x27;);
+      const overviewButton = root.querySelector(&#x27;#overview-state&#x27;);
+      const activeButton = root.querySelector(&#x27;#active-state&#x27;);
+      const emptyButton = root.querySelector(&#x27;#empty-state&#x27;);
+      const modeNote = root.querySelector(&#x27;#mode-note&#x27;);
+      const mobileOverview = root.querySelector(&#x27;.mobile-overview&#x27;);
+      const mobileDialog = root.querySelector(&#x27;.mobile-dialog&#x27;);
+
+      const conversations = {
+        hearing: {
+          title: &#x27;Hva skjer på hørselstesten?&#x27;,
+          origin: &#x27;&#x27;
+        },
+        family: {
+          title: &#x27;Hvordan snakke med familien om at jeg strever med å høre&#x27;,
+          origin: &#x27;&#x27;
+        },
+        sound: {
+          title: &#x27;Lyden blir skarp av bestikk og tallerkener&#x27;,
+          origin: &#x27;Fra artikkelen «Lydømfintlighet»&#x27;
+        },
+        appointment: {
+          title: &#x27;Hva bør jeg ta opp med audiografen?&#x27;,
+          origin: &#x27;Fra artikkelen «Før timen»&#x27;
+        },
+        tinnitus: {
+          title: &#x27;Jeg hører en lyd som andre ikke hører&#x27;,
+          origin: &#x27;Fra artikkelen «Hva er tinnitus?»&#x27;
+        },
+        work: {
+          title: &#x27;Hvordan sier jeg fra på jobb?&#x27;,
+          origin: &#x27;&#x27;
+        },
+        device: {
+          title: &#x27;De nye apparatene høres rare ut&#x27;,
+          origin: &#x27;Fra artikkelen «Den første tiden»&#x27;
+        }
+      };
+
+      let viewport = &#x27;desktop&#x27;;
+      let state = &#x27;overview&#x27;;
+      let selected = &#x27;hearing&#x27;;
+      let isNew = false;
+
+      function render() {
+        const isMobile = viewport === &#x27;mobile&#x27;;
+        const isActive = state === &#x27;active&#x27;;
+        const isEmptyHistory = state === &#x27;empty&#x27;;
+        const usesVariantB = !isMobile;
+        prototype.classList.toggle(&#x27;is-mobile&#x27;, isMobile);
+        prototype.classList.toggle(&#x27;is-active&#x27;, isActive);
+        prototype.classList.toggle(&#x27;is-new&#x27;, isNew &amp;&amp; isActive);
+        prototype.classList.toggle(&#x27;is-empty-history&#x27;, isEmptyHistory);
+        prototype.classList.toggle(&#x27;density-title-only&#x27;, isMobile || isActive);
+        prototype.classList.toggle(&#x27;variant-a&#x27;, !usesVariantB);
+        prototype.classList.toggle(&#x27;variant-b&#x27;, usesVariantB);
+        prototype.classList.remove(&#x27;variant-c&#x27;);
+
+        desktopButton.setAttribute(&#x27;aria-pressed&#x27;, String(!isMobile));
+        desktopButton.classList.toggle(&#x27;btn-primary&#x27;, !isMobile);
+        mobileButton.setAttribute(&#x27;aria-pressed&#x27;, String(isMobile));
+        mobileButton.classList.toggle(&#x27;btn-primary&#x27;, isMobile);
+        overviewButton.setAttribute(&#x27;aria-pressed&#x27;, String(state === &#x27;overview&#x27;));
+        overviewButton.classList.toggle(&#x27;btn-primary&#x27;, state === &#x27;overview&#x27;);
+        activeButton.setAttribute(&#x27;aria-pressed&#x27;, String(isActive));
+        activeButton.classList.toggle(&#x27;btn-primary&#x27;, isActive);
+        emptyButton.setAttribute(&#x27;aria-pressed&#x27;, String(isEmptyHistory));
+        emptyButton.classList.toggle(&#x27;btn-primary&#x27;, isEmptyHistory);
+
+        root.querySelectorAll(&#x27;.conversation-item&#x27;).forEach((item) =&gt; {
+          item.setAttribute(&#x27;aria-pressed&#x27;, String(!isNew &amp;&amp; item.dataset.conversation === selected));
+        });
+
+        const current = conversations[selected];
+        const title = isNew ? &#x27;Ny samtale&#x27; : current.title;
+        const context = isNew ? &#x27;&#x27; : current.origin;
+        root.querySelector(&#x27;#desktop-overview-title&#x27;).textContent = isActive ? &#x27;Samtaler&#x27; : &#x27;Samtalene dine&#x27;;
+        root.querySelector(&#x27;#desktop-chat-title&#x27;).textContent = title;
+        root.querySelector(&#x27;#desktop-chat-context&#x27;).textContent = context;
+        root.querySelector(&#x27;#desktop-chat-context&#x27;).hidden = !context;
+        root.querySelector(&#x27;#mobile-chat-title&#x27;).textContent = title;
+        root.querySelector(&#x27;#mobile-chat-context&#x27;).textContent = context;
+        root.querySelector(&#x27;#mobile-chat-context&#x27;).hidden = !context;
+
+        mobileOverview.classList.toggle(&#x27;is-visible&#x27;, isMobile &amp;&amp; !isActive);
+        mobileDialog.classList.toggle(&#x27;is-visible&#x27;, isMobile &amp;&amp; isActive);
+
+        const stateLabel = isEmptyHistory
+          ? (isMobile ? &#x27;Mobil · tom historikk&#x27; : &#x27;Full tomtilstand&#x27;)
+          : isMobile
+          ? (isActive ? &#x27;Mobil · aktiv samtale&#x27; : &#x27;Mobil · oversikt&#x27;)
+          : (isActive ? &#x27;Adaptiv delt flate · kompakt modus&#x27; : &#x27;Full oversikt&#x27;);
+        const patternLabel = isEmptyHistory
+          ? &#x27;ingen samtaler&#x27;
+          : !isMobile &amp;&amp; !isActive
+          ? &#x27;datokolonne&#x27;
+          : &#x27;dato først · gjentatt dato utelatt&#x27;;
+        const densityLabel = isEmptyHistory
+          ? &#x27;tydelig vei til første samtale&#x27;
+          : !isMobile &amp;&amp; !isActive ? &#x27;tittel + én linje&#x27; : &#x27;tittel alene&#x27;;
+        modeNote.textContent = `${stateLabel} · ${patternLabel} · ${densityLabel}`;
+      }
+
+      desktopButton.addEventListener(&#x27;click&#x27;, () =&gt; {
+        viewport = &#x27;desktop&#x27;;
+        render();
+      });
+
+      mobileButton.addEventListener(&#x27;click&#x27;, () =&gt; {
+        viewport = &#x27;mobile&#x27;;
+        render();
+      });
+
+      overviewButton.addEventListener(&#x27;click&#x27;, () =&gt; {
+        state = &#x27;overview&#x27;;
+        isNew = false;
+        render();
+      });
+
+      activeButton.addEventListener(&#x27;click&#x27;, () =&gt; {
+        state = &#x27;active&#x27;;
+        isNew = false;
+        render();
+      });
+
+      emptyButton.addEventListener(&#x27;click&#x27;, () =&gt; {
+        state = &#x27;empty&#x27;;
+        isNew = false;
+        render();
+      });
+
+      root.querySelectorAll(&#x27;.conversation-item&#x27;).forEach((item) =&gt; {
+        item.addEventListener(&#x27;click&#x27;, () =&gt; {
+          selected = item.dataset.conversation;
+          state = &#x27;active&#x27;;
+          isNew = false;
+          render();
+        });
+      });
+
+      root.querySelector(&#x27;.mobile-back&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; {
+        state = &#x27;overview&#x27;;
+        render();
+        const selectedItem = root.querySelector(`.mobile-list [data-conversation=&quot;${selected}&quot;]`);
+        if (selectedItem) selectedItem.focus({ preventScroll: true });
+      });
+
+      root.querySelectorAll(&#x27;.new-conversation&#x27;).forEach((button) =&gt; {
+        button.addEventListener(&#x27;click&#x27;, () =&gt; {
+          state = &#x27;active&#x27;;
+          isNew = true;
+          render();
+        });
+      });
+
+      render();
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>
