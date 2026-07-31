@@ -248,7 +248,7 @@ export const patterns: PatternRecord[] = [
     do: [
       "Bruk åpen liste, kronologisk gruppering og semantisk valgt state",
       "Behold samme samtaleidentitet i full og kompakt presentasjon",
-      "La Composer følge produksjonskontrakten uten å trekke inn rutens faste posisjonering",
+      "Behold Composer-adapteren lokal; produksjons-Composer er canonical til en eksplisitt harmoniseringsbeslutning",
       "Bruk eksisterende semantiske tokens i lys og mørk modus",
     ],
     dont: [

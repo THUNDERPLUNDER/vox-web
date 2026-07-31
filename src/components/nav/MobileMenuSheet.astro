@@ -7,9 +7,10 @@ type Props = {
   currentPath?: string;
   brand?: "default" | "klarlyd" | "viddel";
   showDevtoolsToggle?: boolean;
+  showChatEntry?: boolean;
 };
 
-const { currentPath = "", brand = "default", showDevtoolsToggle = false } = Astro.props as Props;
+const { currentPath = "", brand = "default", showDevtoolsToggle = false, showChatEntry = true } = Astro.props as Props;
 const menuTitle =
   brand === "klarlyd" ? "KLARLYD meny" : brand === "viddel" ? "Viddel meny" : "VOX meny";
 const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
@@ -57,7 +58,7 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
       }
     </nav>
     {
-      !chatActive ? (
+      showChatEntry && !chatActive ? (
         <a
           href={NO_NAV_CHAT_HREF}
           class="mt-4 flex w-full items-center justify-center rounded-full border border-[rgb(var(--border))/0.7] bg-[rgb(var(--surface-subtle))] px-5 py-3 text-sm font-semibold text-[rgb(var(--text))] transition-colors"

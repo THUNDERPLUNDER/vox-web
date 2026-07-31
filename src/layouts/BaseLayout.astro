@@ -13,6 +13,7 @@ const {
   shellVariant = "default",
   headerBrand = "viddel",
   showHeaderDevtoolsToggle = true,
+  showHeaderChatEntry = true,
 } = Astro.props as {
   title?: string;
   currentPath?: string;
@@ -20,6 +21,8 @@ const {
   headerBrand?: "default" | "klarlyd" | "viddel";
   /** Midlertidig intern devtools (#81) — kun der det eksplisitt slås på (f.eks. r1-spoke-v03). */
   showHeaderDevtoolsToggle?: boolean;
+  /** Global samtaleinngang skjules når den lokale flaten allerede eier samtalehandlingen. */
+  showHeaderChatEntry?: boolean;
 };
 const isSandboxWhite = shellVariant === "sandbox-white";
 const isStandaloneChat = shellVariant === "standalone-chat";
@@ -153,12 +156,22 @@ const disablesCes = isStandaloneChat || isConversationArea;
         style="box-shadow: var(--shadow-header);"
       >
         <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <Header currentPath={currentPath} brand={headerBrand} showDevtoolsToggle={showHeaderDevtoolsToggle} />
+          <Header
+            currentPath={currentPath}
+            brand={headerBrand}
+            showDevtoolsToggle={showHeaderDevtoolsToggle}
+            showChatEntry={showHeaderChatEntry}
+          />
         </div>
       </div>
     </header>
 
-    <MobileMenuSheet currentPath={currentPath} brand={headerBrand} showDevtoolsToggle={showHeaderDevtoolsToggle} />
+    <MobileMenuSheet
+      currentPath={currentPath}
+      brand={headerBrand}
+      showDevtoolsToggle={showHeaderDevtoolsToggle}
+      showChatEntry={showHeaderChatEntry}
+    />
 
     <div
       class:list={[
