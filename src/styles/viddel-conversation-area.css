@@ -117,15 +117,6 @@ body.vox-shell--conversation-area {
 .conversation-area:is([data-view="active"], [data-view="new"])
   .conversation-overview__header
   .conversation-action {
-  min-width: 2.65rem;
-  padding-inline: 0.7rem;
-  color: rgb(var(--text));
-  background: transparent;
-}
-
-.conversation-area:is([data-view="active"], [data-view="new"])
-  .conversation-overview__header
-  .conversation-action span {
   display: none;
 }
 
@@ -408,12 +399,12 @@ body.vox-shell--conversation-area {
   font-weight: 600;
 }
 
-.conversation-context__status,
-.conversation-context__error {
+.conversation-composer [data-prototype-pending],
+.conversation-composer [data-prototype-error] {
   display: none;
-  margin: auto 0 0;
-  padding-top: 1.25rem;
+  margin: 0 0 0.55rem;
   color: rgb(var(--text-secondary));
+  font-size: 0.86rem;
 }
 
 .conversation-area[data-demo-state="pending"] [data-prototype-pending] {
@@ -424,12 +415,12 @@ body.vox-shell--conversation-area {
   display: block;
 }
 
-.conversation-context__error p {
+.conversation-composer__error p {
   margin: 0 0 0.5rem;
   color: rgb(var(--text));
 }
 
-.conversation-context__error button {
+.conversation-composer__error button {
   border: 0;
   padding: 0;
   color: rgb(var(--accent-primary));
@@ -440,51 +431,118 @@ body.vox-shell--conversation-area {
 }
 
 .conversation-composer {
-  display: flex;
-  align-items: flex-end;
-  gap: 0.55rem;
   margin: 0 1.5rem 1.35rem;
-  border-radius: var(--radius-md);
-  padding: 0.45rem;
-  background: rgb(var(--surface-subtle));
-  box-shadow: inset 0 0 0 1px rgb(var(--border) / 0.28), var(--shadow-sm);
+  color: rgb(var(--text));
 }
 
-.conversation-composer:focus-within {
-  box-shadow: inset 0 0 0 1px rgb(var(--focus-ring) / 0.55), var(--shadow-sm);
+.conversation-composer .inline-chat-shell__compose-stack {
+  width: min(100%, 46rem);
+  margin-inline: auto;
 }
 
-.conversation-composer textarea {
-  min-height: 2.8rem;
-  flex: 1;
+.conversation-composer .inline-chat-shell__compose {
+  display: flex;
+  min-height: 3.4rem;
+  flex-direction: column;
+  gap: 0.4rem;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.5rem 0.58rem;
+  background: rgb(var(--surface));
+  box-shadow: var(--shadow-md);
+  transition: border-radius 160ms ease, box-shadow 160ms ease;
+}
+
+.conversation-composer .inline-chat-shell__compose:focus-within {
+  box-shadow: 0 0 0 2px rgb(var(--focus-ring) / 0.38), var(--shadow-md);
+}
+
+.conversation-composer
+  .inline-chat-shell__compose:has(.viddel-chat-attach__attachment-strip:not(.hidden)),
+.conversation-composer .inline-chat-shell__compose:has(.inline-chat-shell__compose-input[data-chat-input-expanded]) {
+  border-radius: 1.65rem;
+}
+
+.conversation-composer .viddel-chat-attach__compose-row {
+  align-items: center;
+}
+
+.conversation-composer .inline-chat-shell__compose-input-wrap {
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.conversation-composer .inline-chat-shell__compose-input {
+  width: 100%;
+  min-height: 2.75rem;
+  max-height: min(9rem, 32vh);
   resize: none;
   border: 0;
-  padding: 0.75rem;
+  padding: 0.58rem 0.15rem 0.58rem 0;
   color: rgb(var(--text));
   background: transparent;
   font: inherit;
+  font-size: 1.02rem;
+  line-height: 1.4;
   outline: 0;
 }
 
-.conversation-composer textarea::placeholder {
-  color: rgb(var(--text-secondary));
+.conversation-composer .inline-chat-shell__compose-input::placeholder {
+  color: rgb(var(--text-secondary) / 0.72);
 }
 
-.conversation-composer button {
-  width: 2.65rem;
-  height: 2.65rem;
+.conversation-composer .inline-chat-shell__compose-send {
+  display: inline-flex;
+  width: 2.85rem;
+  min-width: 2.85rem;
+  height: 2.85rem;
+  min-height: 2.85rem;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
   border: 0;
-  border-radius: var(--radius-md);
-  color: rgb(var(--primary-contrast));
-  background: rgb(var(--accent-primary));
+  border-radius: 999px;
+  padding: 0;
+  color: rgb(var(--surface));
+  background: rgb(var(--text));
   font: inherit;
+  font-size: 1.05rem;
   font-weight: 700;
   cursor: pointer;
 }
 
-.conversation-composer button:disabled {
-  cursor: default;
-  opacity: 0.4;
+.conversation-composer .inline-chat-shell__compose-send:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+.conversation-composer .inline-chat-shell__compose-send:focus-visible,
+.conversation-composer .viddel-chat-attach__attach:focus-visible {
+  outline: 2px solid rgb(var(--focus-ring) / 0.52);
+  outline-offset: 2px;
+}
+
+.conversation-composer .viddel-chat-attach__attach {
+  color: rgb(var(--text-secondary));
+}
+
+body.vox-shell--conversation-area .viddel-chat-attach__attach-menu {
+  color: rgb(var(--text));
+  background: rgb(var(--surface));
+  box-shadow: var(--shadow-md);
+}
+
+body.vox-shell--conversation-area .viddel-chat-attach__attach-menu-item {
+  color: rgb(var(--text));
+}
+
+body.vox-shell--conversation-area .viddel-chat-attach__attach-menu-icon {
+  color: rgb(var(--text-secondary));
+}
+
+body.vox-shell--conversation-area .viddel-chat-attach__attach-menu-item:focus-visible {
+  outline-color: rgb(var(--focus-ring) / 0.52);
 }
 
 .conversation-area__demo {
@@ -594,17 +652,25 @@ body.vox-shell--conversation-area {
   }
 
   .conversation-context__header {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 0.75rem;
     padding: 1rem;
   }
 
   .conversation-context__back {
     display: inline-flex;
+    grid-column: 1 / -1;
+  }
+
+  .conversation-context__heading {
+    grid-column: 1;
   }
 
   .conversation-context__header .conversation-action {
-    display: none;
+    display: inline-flex;
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
   }
 
   .conversation-context__body {

@@ -10,9 +10,10 @@ type Props = {
   brand?: "default" | "klarlyd" | "viddel";
   /** Midlertidig intern devtools (#81) — vis diskret toggle etter «Om». */
   showDevtoolsToggle?: boolean;
+  showChatEntry?: boolean;
 };
 
-const { currentPath = "", brand = "default", showDevtoolsToggle = false } = Astro.props as Props;
+const { currentPath = "", brand = "default", showDevtoolsToggle = false, showChatEntry = true } = Astro.props as Props;
 const base = import.meta.env.BASE_URL;
 const homeHref = `${base}no`;
 const chatHref = `${base}${NO_NAV_CHAT_HREF.replace(/^\//, "")}`;
@@ -98,7 +99,7 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
       }
     </nav>
     {
-      chatActive ? (
+      !showChatEntry || chatActive ? (
         <div class="pointer-events-none hidden w-[8.75rem] lg:block" aria-hidden="true"></div>
       ) : (
         <a
