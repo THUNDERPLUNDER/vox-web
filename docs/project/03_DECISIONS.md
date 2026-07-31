@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-07-31 - «Min status til audiograf» strukturell CBA v0.1
+- Beslutning: «Min status til audiograf» er en sekundær handling fra full samtaleoversikt. Arbeidet skjer i én progressiv flate med periode, redigerbart utkast og forhåndsvisning. Viddel foreslår punkter som brukeren selv kan fjerne og endre, med synlig kilde i gjennomgangen. Forhåndsvisningen er et utkast og innebærer ikke lagring, sending eller audiograftilgang.
+- Begrunnelse: Strukturen demonstrerer produktverdien samtidig som brukeren beholder kontroll, og unngår at flaten blir et dashboard eller en tung veiviser. Dette er en produkthypotese, ikke et dokumentert brukerfunn.
+- Konsekvens: `docs/project/VIDDEL_STATUS_TO_AUDIOLOGIST_LAYOUT_CBA_v0_1.md` og den repo-native VIS-referansen styrer neste UX-copy-port. Eksport, deling, dataarkitektur, visuelle tokens og produktkode er fortsatt åpne og følger ikke av beslutningen.
+
 ## 2026-07-31 - Innlogget samtaleområde visuell retning v0.1
 - Beslutning: Samtaleområdet bruker en varm, åpen grunnflate uten kort rundt hvert samtaleelement. Valgt samtale får svak tonal markering og en diskret aktiv markør. Metadata er sekundær, og aktiv dialog viderefører uttrykket fra `/no/chat` uten ny halo eller dekorativ tokenfamilie.
 - Begrunnelse: Retningen gir orientering og nødvendig fargebruk uten å gjøre flaten til et dashboard eller åpne en bred designsystemrunde.
