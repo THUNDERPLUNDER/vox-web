@@ -1,0 +1,53 @@
+---
+import type { ConversationListItem } from "../../data/conversation-prototype-v01";
+
+type Props = {
+  conversation: ConversationListItem;
+  selected?: boolean;
+};
+
+const { conversation, selected = false } = Astro.props as Props;
+const titleLabel = /[.!?]$/.test(conversation.title) ? conversation.title : `${conversation.title}.`;
+const originLabel = conversation.articleOrigin
+  ? ` Fra artikkelen «${conversation.articleOrigin}».`
+  : "";
+const accessibleLabel = `${conversation.dayLabel} klokken ${conversation.timeLabel}. ${titleLabel}${originLabel}`;
+---
+
+<button
+  type="button"
+  class="conversation-item"
+  data-conversation-id={conversation.id}
+  aria-pressed={selected ? "true" : "false"}
+  aria-label={accessibleLabel}
+>
+  <span class="conversation-item__date-column" aria-hidden="true">
+    <span class:list={["conversation-item__day", !conversation.showDay && "conversation-item__day--hidden"]}>
+      {conversation.dayLabel}
+    </span>
+    <span class="conversation-item__time">{conversation.timeLabel}</span>
+  </span>
+
+  <span class="conversation-item__content">
+    <span class="conversation-item__date-inline" aria-hidden="true">
+      {conversation.showDay ? <span>{conversation.dayLabel}</span> : null}
+      <span>{conversation.timeLabel}</span>
+    </span>
+    <span class="conversation-item__heading-row">
+      <span class="conversation-item__title">{conversation.title}</span>
+      <span class="conversation-item__time-inline" aria-hidden="true">{conversation.timeLabel}</span>
+    </span>
+    {conversation.excerpt ? <span class="conversation-item__excerpt">{conversation.excerpt}</span> : null}
+    {
+      conversation.articleOrigin ? (
+        <span class="conversation-item__origin" title={`Fra artikkelen «${conversation.articleOrigin}»`}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+            <path d="M6 3h8l4 4v14H6z" stroke-linejoin="round" />
+            <path d="M14 3v5h5M9 12h6M9 16h6" stroke-linecap="round" />
+          </svg>
+          <span>Fra artikkelen «{conversation.articleOrigin}»</span>
+        </span>
+      ) : null
+    }
+  </span>
+</button>

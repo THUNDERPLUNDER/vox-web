@@ -23,6 +23,8 @@ const {
 };
 const isSandboxWhite = shellVariant === "sandbox-white";
 const isStandaloneChat = shellVariant === "standalone-chat";
+const isConversationArea = shellVariant === "conversation-area";
+const disablesCes = isStandaloneChat || isConversationArea;
 ---
 
 <!doctype html>
@@ -60,7 +62,7 @@ const isStandaloneChat = shellVariant === "standalone-chat";
     <InspectDrawerArmScript />
     <slot name="head" />
     {
-      !isStandaloneChat ? (
+      !disablesCes ? (
         <>
           <script defer src="https://www.gstatic.com/ces-console/fast/chat-messenger/prod/v1.15/chat-messenger.js" />
           <link
@@ -104,6 +106,7 @@ const isStandaloneChat = shellVariant === "standalone-chat";
       shellVariant === "article" && "vox-shell--article",
       isSandboxWhite && "vox-shell--sandbox-white",
       isStandaloneChat && "vox-shell--standalone-chat",
+      isConversationArea && "vox-shell--conversation-area",
     ]}
   >
     <div class="fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
@@ -168,7 +171,7 @@ const isStandaloneChat = shellVariant === "standalone-chat";
     </div>
 
     {
-      !isStandaloneChat ? (
+      !disablesCes ? (
     <script is:inline>
       const deploymentName =
         "projects/1088102295663/locations/eu/apps/1741e68d-0528-4625-8b83-99a0dbb5298f/deployments/dc1619d0-44a1-401b-92a6-1357c29274ea";

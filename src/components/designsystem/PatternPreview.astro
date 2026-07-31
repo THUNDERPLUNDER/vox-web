@@ -128,6 +128,40 @@ const showSeeds = size === "sm" ? seeds.slice(0, 2) : seeds;
   }
 
   {
+    id === "conversation-area" && (
+      <div class="ds-preview__frame" aria-hidden="true">
+        <div class="conversation-overview__list">
+          <div class="conversation-day-group">
+            <button type="button" class="conversation-item" aria-pressed="true" tabindex="-1">
+              <span class="conversation-item__date-column">
+                <span class="conversation-item__day">I dag</span>
+                <span class="conversation-item__time">10:42</span>
+              </span>
+              <span class="conversation-item__content">
+                <span class="conversation-item__heading-row">
+                  <span class="conversation-item__title">Hva skjer på hørselstesten?</span>
+                </span>
+                <span class="conversation-item__excerpt">Jeg er usikker på hva som skjer under undersøkelsen.</span>
+              </span>
+            </button>
+            <button type="button" class="conversation-item" aria-pressed="false" tabindex="-1">
+              <span class="conversation-item__date-column">
+                <span class="conversation-item__day conversation-item__day--hidden">I dag</span>
+                <span class="conversation-item__time">09:55</span>
+              </span>
+              <span class="conversation-item__content">
+                <span class="conversation-item__heading-row">
+                  <span class="conversation-item__title">Hvordan snakke med familien om at jeg strever med å høre</span>
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  {
     id === "article-to-ai-transition" && (
       <div class="ds-preview__frame ds-preview__frame--article" data-r1-editorial>
         <div class="r1-editorial-container">

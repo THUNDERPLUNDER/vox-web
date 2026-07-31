@@ -1,0 +1,40 @@
+---
+import type { ConversationDayGroup } from "../../data/conversation-prototype-v01";
+import ConversationEmptyState from "./ConversationEmptyState.astro";
+import ConversationItem from "./ConversationItem.astro";
+
+type Props = {
+  groups: ConversationDayGroup[];
+  selectedId?: string;
+};
+
+const { groups, selectedId } = Astro.props as Props;
+---
+
+<section class="conversation-overview" aria-labelledby="conversation-overview-title" data-conversation-overview>
+  <div class="conversation-overview__inner">
+    <header class="conversation-overview__header">
+      <h1 id="conversation-overview-title" data-overview-title>Samtalene dine</h1>
+      <button type="button" class="conversation-action conversation-action--primary" data-new-conversation>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+        </svg>
+        <span>Ny samtale</span>
+      </button>
+    </header>
+
+    <div class="conversation-overview__list" data-conversation-list>
+      {
+        groups.map((group) => (
+          <div class="conversation-day-group" data-day-key={group.dayKey}>
+            {group.items.map((conversation) => (
+              <ConversationItem conversation={conversation} selected={conversation.id === selectedId} />
+            ))}
+          </div>
+        ))
+      }
+    </div>
+
+    <ConversationEmptyState />
+  </div>
+</section>

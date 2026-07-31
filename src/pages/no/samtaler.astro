@@ -1,0 +1,165 @@
+---
+/* CONTRACT: Isolated concept prototype for signed-in conversation history. Synthetic state only. #283 */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ConversationContext from "../../components/conversation/ConversationContext.astro";
+import ConversationOverview from "../../components/conversation/ConversationOverview.astro";
+import {
+  conversationPrototypeData,
+  groupPrototypeConversations,
+} from "../../data/conversation-prototype-v01";
+import "../../styles/viddel-conversation-area.css";
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
+
+const groups = groupPrototypeConversations(conversationPrototypeData);
+---
+
+<BaseLayout
+  title="Viddel - Samtalene dine"
+  currentPath="/no/samtaler"
+  shellVariant="conversation-area"
+  headerBrand="viddel"
+  showHeaderDevtoolsToggle={false}
+>
+  <meta slot="head" name="robots" content="noindex,nofollow" />
+
+  <main
+    class="conversation-area"
+    data-conversation-area
+    data-view="overview"
+    data-history="populated"
+    data-demo-state="default"
+  >
+    <div class="conversation-area__surface">
+      <ConversationOverview groups={groups} />
+      <ConversationContext conversations={conversationPrototypeData} />
+    </div>
+
+    <details class="conversation-area__demo">
+      <summary>Prototypestates</summary>
+      <div class="conversation-area__demo-controls" aria-label="Prototypestates">
+        <button type="button" data-demo-view="overview">Oversikt</button>
+        <button type="button" data-demo-history="empty">Tom historikk</button>
+        <button type="button" data-demo-state="pending">Viddel svarer</button>
+        <button type="button" data-demo-state="error">Feil</button>
+        <button type="button" data-demo-reset>Nullstill</button>
+      </div>
+    </details>
+  </main>
+
+  <script>
+    (() => {
+      const root = document.querySelector<HTMLElement>("[data-conversation-area]");
+      if (!root) return;
+
+      const items = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-conversation-id]"));
+      const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-conversation-panel]"));
+      const list = root.querySelector<HTMLElement>("[data-conversation-list]");
+      const overviewTitle = root.querySelector<HTMLElement>("[data-overview-title]");
+      let selectedId = "";
+      let listScrollTop = 0;
+      let pageScrollTop = 0;
+
+      const showPanel = (id: string) => {
+        panels.forEach((panel) => {
+          panel.hidden = panel.dataset.conversationPanel !== id;
+        });
+      };
+
+      const selectConversation = (id: string) => {
+        selectedId = id;
+        listScrollTop = list?.scrollTop ?? 0;
+        pageScrollTop = window.scrollY;
+        items.forEach((item) => item.setAttribute("aria-pressed", String(item.dataset.conversationId === id)));
+        showPanel(id);
+        root.dataset.view = "active";
+        root.dataset.demoState = "default";
+        if (overviewTitle) overviewTitle.textContent = "Samtaler";
+      };
+
+      const startNewConversation = () => {
+        items.forEach((item) => item.setAttribute("aria-pressed", "false"));
+        showPanel("new");
+        root.dataset.view = "new";
+        root.dataset.demoState = "default";
+        if (overviewTitle) overviewTitle.textContent = "Samtaler";
+      };
+
+      const returnToOverview = () => {
+        root.dataset.view = "overview";
+        root.dataset.demoState = "default";
+        if (overviewTitle) overviewTitle.textContent = "Samtalene dine";
+        if (list) list.scrollTop = listScrollTop;
+        window.requestAnimationFrame(() => window.scrollTo({ top: pageScrollTop, behavior: "auto" }));
+        if (selectedId) {
+          items.forEach((item) => item.setAttribute("aria-pressed", String(item.dataset.conversationId === selectedId)));
+        }
+      };
+
+      items.forEach((item) => {
+        item.addEventListener("click", () => {
+          const id = item.dataset.conversationId;
+          if (id) selectConversation(id);
+        });
+      });
+
+      root.querySelectorAll<HTMLButtonElement>("[data-new-conversation]").forEach((button) => {
+        button.addEventListener("click", startNewConversation);
+      });
+
+      root.querySelectorAll<HTMLButtonElement>("[data-back-to-conversations]").forEach((button) => {
+        button.addEventListener("click", returnToOverview);
+      });
+
+      root.querySelectorAll<HTMLFormElement>("[data-prototype-composer]").forEach((form) => {
+        const input = form.querySelector<HTMLTextAreaElement>("[data-prototype-input]");
+        const send = form.querySelector<HTMLButtonElement>("[data-prototype-send]");
+        input?.addEventListener("input", () => {
+          if (send) send.disabled = !input.value.trim();
+        });
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          if (!input?.value.trim()) return;
+          root.dataset.demoState = "pending";
+          input.value = "";
+          if (send) send.disabled = true;
+        });
+      });
+
+      root.querySelectorAll<HTMLButtonElement>("[data-clear-demo-state]").forEach((button) => {
+        button.addEventListener("click", () => {
+          root.dataset.demoState = "default";
+        });
+      });
+
+      root.querySelector<HTMLButtonElement>("[data-demo-view='overview']")?.addEventListener("click", () => {
+        root.dataset.history = "populated";
+        returnToOverview();
+      });
+
+      root.querySelector<HTMLButtonElement>("[data-demo-history='empty']")?.addEventListener("click", () => {
+        root.dataset.history = "empty";
+        root.dataset.view = "overview";
+        root.dataset.demoState = "default";
+        if (overviewTitle) overviewTitle.textContent = "Samtalene dine";
+      });
+
+      root.querySelectorAll<HTMLButtonElement>("[data-demo-state]").forEach((button) => {
+        button.addEventListener("click", () => {
+          root.dataset.history = "populated";
+          if (root.dataset.view === "overview") {
+            selectConversation(selectedId || items[0]?.dataset.conversationId || "");
+          }
+          root.dataset.demoState = button.dataset.demoState || "default";
+        });
+      });
+
+      root.querySelector<HTMLButtonElement>("[data-demo-reset]")?.addEventListener("click", () => {
+        selectedId = "";
+        items.forEach((item) => item.setAttribute("aria-pressed", "false"));
+        root.dataset.history = "populated";
+        returnToOverview();
+      });
+    })();
+  </script>
+</BaseLayout>
