@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-07-31 - Innlogget samtaleområde UX-copy-CBA v0.1
+- Beslutning: Samtaleområdet bruker «Samtalene dine», «Ny samtale» og «Samtaler» som hovedbegreper. Forklarende tekst i oversikten utelates. Tom historikk leder med «Start en samtale med Viddel». Samtaletitler tar utgangspunkt i brukerens eget språk og kan bruke to linjer. Relative datoer kombineres med eksakte datoer ved eldre historikk.
+- Begrunnelse: Kort, direkte copy gir mindre avstand enn forklarende og symmetrisk UI-språk. Naturlige spørsmål, førsteperson og fragmenter gir bedre gjenkjennelse enn ensartede emneknagger.
+- Konsekvens: `docs/project/VIDDEL_CONVERSATION_AREA_UX_COPY_CBA_v0_1.md` styrer videre copy-review, visuell design og senere implementeringsbrief. Prinsippene for tittelgenerering skal revideres når faktisk bruk gir et bedre erfaringsgrunnlag.
+
 ## 2026-07-31 - Innlogget samtaleområde strukturell CBA v0.2
 - Beslutning: Den adaptive delte desktopflaten er konkret verifisert som strukturell prototype-CBA. Full desktopoversikt bruker datokolonne, tittel og én utdragslinje. Kompakt desktop og mobil bruker dato først og tittel alene. Dato gjentas ikke for senere samtaler samme dag, mens klokkeslett beholdes. Samtaler og dager får tydelig rytmisk gruppering.
 - Begrunnelse: Interaktiv mønsterverifisering av full, kompakt og mobil presentasjon viste at samme `ConversationItem` og informasjonsmodell kan bevare kronologi, samtaleidentitet og valgt state på tvers av state-overgangen. Den adaptive løsningen ble justert og godkjent av Thomas før copy og styling.
