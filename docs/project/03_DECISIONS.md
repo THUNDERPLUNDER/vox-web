@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-07-31 - Innlogget samtaleområde visuell retning v0.1
+- Beslutning: Samtaleområdet bruker en varm, åpen grunnflate uten kort rundt hvert samtaleelement. Valgt samtale får svak tonal markering og en diskret aktiv markør. Metadata er sekundær, og aktiv dialog viderefører uttrykket fra `/no/chat` uten ny halo eller dekorativ tokenfamilie.
+- Begrunnelse: Retningen gir orientering og nødvendig fargebruk uten å gjøre flaten til et dashboard eller åpne en bred designsystemrunde.
+- Konsekvens: Eksisterende semantiske tokens brukes uten nye globale tokenverdier. Implementering deles i et isolert områdemønster først og dialogkobling etter egen kontroll.
+
 ## 2026-07-31 - Innlogget samtaleområde UX-copy-CBA v0.1
 - Beslutning: Samtaleområdet bruker «Samtalene dine», «Ny samtale» og «Samtaler» som hovedbegreper. Forklarende tekst i oversikten utelates. Tom historikk leder med «Start en samtale med Viddel». Samtaletitler tar utgangspunkt i brukerens eget språk og kan bruke to linjer. Relative datoer kombineres med eksakte datoer ved eldre historikk.
 - Begrunnelse: Kort, direkte copy gir mindre avstand enn forklarende og symmetrisk UI-språk. Naturlige spørsmål, førsteperson og fragmenter gir bedre gjenkjennelse enn ensartede emneknagger.

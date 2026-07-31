@@ -1,6 +1,6 @@
 # Viddel Conversation Area — visuell kontroll v0.1
 
-Status: Lett beslutningsgrunnlag for visuell port
+Status: Godkjent visuell retning; kontrollgrunnlag for implementeringsport
 Eier: Thomas
 Strukturgrunnlag: `docs/project/VIDDEL_CONVERSATION_AREA_LAYOUT_CBA_v0_2.md`
 Copygrunnlag: `docs/project/VIDDEL_CONVERSATION_AREA_UX_COPY_CBA_v0_1.md`
