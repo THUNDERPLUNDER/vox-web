@@ -21,7 +21,7 @@ arbeidsfasen:
 
 ## Innhold
 
-- `viddel-conversation-area-cba-v0_1.html` — selvstendig, klikkbar wireframe
+- `public/vis/raw/viddel-conversation-area-cba-v0_1.html` — selvstendig, klikkbar wireframe
 - `VIDDEL_CONVERSATION_AREA_CBA_v0_1.md` — rolle, sannhetsgrense og bruk
 
 v0.1 prioriterer den interaktive referansen. Eventuelle stillbilder skal senere
@@ -30,7 +30,8 @@ avvikende designkilde.
 
 ## Bruk
 
-Åpne HTML-filen lokalt i en nettleser.
+Åpne wireframen fra VIS-menyen under «Mønsterverifiseringer», eller åpne
+HTML-filen lokalt i en nettleser.
 
 Kontrollene øverst lar reviewer bytte mellom:
 
