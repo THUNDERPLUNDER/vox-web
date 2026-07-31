@@ -7,6 +7,7 @@ import {
   conversationPrototypeData,
   groupPrototypeConversations,
 } from "../../data/conversation-prototype-v01";
+import "../../styles/viddel-chat-attachment.css";
 import "../../styles/viddel-conversation-area.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
@@ -48,6 +49,9 @@ const groups = groupPrototypeConversations(conversationPrototypeData);
   </main>
 
   <script>
+    import { initChatAttachmentMenu } from "../../lib/chat-image-attachment-menu-v01";
+    import { validateChatImageFile } from "../../lib/chat-image-file-v01";
+
     (() => {
       const root = document.querySelector<HTMLElement>("[data-conversation-area]");
       if (!root) return;
@@ -112,17 +116,90 @@ const groups = groupPrototypeConversations(conversationPrototypeData);
       });
 
       root.querySelectorAll<HTMLFormElement>("[data-prototype-composer]").forEach((form) => {
+        const composer = form.closest<HTMLElement>("[data-conversation-composer]");
+        const composeStack = composer?.querySelector<HTMLElement>("[data-conversation-compose-stack]");
         const input = form.querySelector<HTMLTextAreaElement>("[data-prototype-input]");
         const send = form.querySelector<HTMLButtonElement>("[data-prototype-send]");
+        const fileInput = form.querySelector<HTMLInputElement>("[data-conversation-file]");
+        const attachmentStrip = form.querySelector<HTMLElement>("[data-conversation-attachment-strip]");
+        const thumb = form.querySelector<HTMLImageElement>("[data-conversation-thumb]");
+        const remove = form.querySelector<HTMLButtonElement>("[data-conversation-remove]");
+        const attachLayer = composer?.querySelector<HTMLElement>("[data-conversation-attach-layer]");
+        const attachBtn = composer?.querySelector<HTMLButtonElement>("[data-conversation-attach]");
+        const attachMenu = composer?.querySelector<HTMLElement>("[data-conversation-attach-menu]");
+        const attachBackdrop = composer?.querySelector<HTMLElement>("[data-conversation-attach-backdrop]");
+        const attachCameraBtn = composer?.querySelector<HTMLButtonElement>("[data-conversation-attach-camera]");
+        const attachPickBtn = composer?.querySelector<HTMLButtonElement>("[data-conversation-attach-pick]");
+        const error = composer?.querySelector<HTMLElement>("[data-conversation-composer-error]");
+        let selectedFile: File | null = null;
+        let objectUrl = "";
+
+        const syncSend = () => {
+          if (send) send.disabled = !input?.value.trim() && !selectedFile;
+        };
+
+        const clearAttachment = () => {
+          selectedFile = null;
+          if (objectUrl) URL.revokeObjectURL(objectUrl);
+          objectUrl = "";
+          if (thumb) thumb.removeAttribute("src");
+          attachmentStrip?.classList.add("hidden");
+          if (fileInput) fileInput.value = "";
+          syncSend();
+        };
+
+        if (
+          composeStack &&
+          fileInput &&
+          attachLayer &&
+          attachBtn &&
+          attachMenu &&
+          attachBackdrop &&
+          attachCameraBtn &&
+          attachPickBtn
+        ) {
+          initChatAttachmentMenu(
+            {
+              attachLayer,
+              attachBtn,
+              attachMenu,
+              attachBackdrop,
+              attachCameraBtn,
+              attachPickBtn,
+              fileInput,
+              composeStack,
+            },
+            {
+              onFileSelected: (file) => {
+                const validation = validateChatImageFile(file);
+                if (!validation.ok) {
+                  if (error) error.textContent = validation.message;
+                  root.dataset.demoState = "error";
+                  clearAttachment();
+                  return;
+                }
+                root.dataset.demoState = "default";
+                selectedFile = file;
+                if (objectUrl) URL.revokeObjectURL(objectUrl);
+                objectUrl = URL.createObjectURL(file);
+                if (thumb) thumb.src = objectUrl;
+                attachmentStrip?.classList.remove("hidden");
+                syncSend();
+              },
+            },
+          );
+        }
+
         input?.addEventListener("input", () => {
-          if (send) send.disabled = !input.value.trim();
+          syncSend();
         });
+        remove?.addEventListener("click", clearAttachment);
         form.addEventListener("submit", (event) => {
           event.preventDefault();
-          if (!input?.value.trim()) return;
+          if (!input?.value.trim() && !selectedFile) return;
           root.dataset.demoState = "pending";
-          input.value = "";
-          if (send) send.disabled = true;
+          if (input) input.value = "";
+          clearAttachment();
         });
       });
 

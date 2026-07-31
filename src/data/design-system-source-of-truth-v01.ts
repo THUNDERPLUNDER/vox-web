@@ -241,11 +241,14 @@ export const patterns: PatternRecord[] = [
       "src/pages/no/samtaler.astro",
       "src/components/conversation/ConversationOverview.astro",
       "src/components/conversation/ConversationItem.astro",
+      "src/components/conversation/ConversationContext.astro",
+      "src/components/conversation/ConversationComposer.astro",
       "src/styles/viddel-conversation-area.css",
     ],
     do: [
       "Bruk åpen liste, kronologisk gruppering og semantisk valgt state",
       "Behold samme samtaleidentitet i full og kompakt presentasjon",
+      "La Composer følge produksjonskontrakten uten å trekke inn rutens faste posisjonering",
       "Bruk eksisterende semantiske tokens i lys og mørk modus",
     ],
     dont: [

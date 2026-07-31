@@ -1,5 +1,6 @@
 ---
 import type { ConversationPrototype } from "../../data/conversation-prototype-v01";
+import ConversationComposer from "./ConversationComposer.astro";
 
 type Props = {
   conversations: ConversationPrototype[];
@@ -50,25 +51,8 @@ const { conversations, selectedId } = Astro.props as Props;
               </div>
             ))}
           </div>
-          <p class="conversation-context__status" data-prototype-pending role="status">Viddel svarer …</p>
-          <div class="conversation-context__error" data-prototype-error role="alert">
-            <p>Svaret kunne ikke leveres.</p>
-            <button type="button" data-clear-demo-state>Prøv igjen</button>
-          </div>
         </div>
-
-        <form class="conversation-composer" data-prototype-composer>
-          <label class="sr-only" for={`conversation-input-${conversation.id}`}>Skriv spørsmål til Viddel</label>
-          <textarea
-            id={`conversation-input-${conversation.id}`}
-            rows="1"
-            placeholder="Hva lurer du på?"
-            data-prototype-input
-          />
-          <button type="submit" aria-label="Send spørsmål" disabled data-prototype-send>
-            <span aria-hidden="true">↑</span>
-          </button>
-        </form>
+        <ConversationComposer id={conversation.id} />
       </article>
     ))
   }
@@ -91,12 +75,6 @@ const { conversations, selectedId } = Astro.props as Props;
       </div>
     </header>
     <div class="conversation-context__body conversation-context__body--new"></div>
-    <form class="conversation-composer" data-prototype-composer>
-      <label class="sr-only" for="conversation-input-new">Skriv spørsmål til Viddel</label>
-      <textarea id="conversation-input-new" rows="1" placeholder="Hva lurer du på?" data-prototype-input />
-      <button type="submit" aria-label="Send spørsmål" disabled data-prototype-send>
-        <span aria-hidden="true">↑</span>
-      </button>
-    </form>
+    <ConversationComposer id="new" />
   </article>
 </section>
