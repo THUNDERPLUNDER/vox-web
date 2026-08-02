@@ -15,12 +15,31 @@ const { groups, selectedId } = Astro.props as Props;
   <div class="conversation-overview__inner">
     <header class="conversation-overview__header">
       <h1 id="conversation-overview-title" data-overview-title>Samtalene dine</h1>
-      <button type="button" class="conversation-action conversation-action--primary" data-new-conversation>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M12 5v14M5 12h14" stroke-linecap="round" />
-        </svg>
-        <span>Ny samtale</span>
-      </button>
+      <div class="conversation-overview__actions">
+        <button
+          type="button"
+          class="conversation-action conversation-action--quiet"
+          data-status-entry
+          aria-label="Lag status til audiograf"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M7 3h8l4 4v14H7z" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M15 3v5h5M10 12h6M10 16h6" stroke-linecap="round" />
+          </svg>
+          <span>Lag status til audiograf</span>
+        </button>
+        <button
+          type="button"
+          class="conversation-action conversation-action--primary"
+          data-new-conversation
+          aria-label="Ny samtale"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+          </svg>
+          <span>Ny samtale</span>
+        </button>
+      </div>
     </header>
 
     <div class="conversation-overview__list" data-conversation-list>

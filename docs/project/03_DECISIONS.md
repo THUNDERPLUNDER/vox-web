@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-08-02 - «Min status til audiograf» visuell retning v0.1
+- Beslutning: Flaten bruker en varm, rolig hovedkolonne med svak separasjon mellom side, arbeidsflate og redigeringsfelt. Aktivt steg og primær handling bruker eksisterende aksentrolle, mens fokus har eget signal. Ingen nye globale tokenverdier innføres.
+- Begrunnelse: Eksisterende semantiske roller dekker hierarki, valgt state, fokus, tekst og avgrensning i både lys og mørk modus. En ny tokenfamilie ville vært prematur.
+- Konsekvens: `docs/design/prototypes/VIDDEL_STATUS_TO_AUDIOLOGIST_VISUAL_REVIEW_v0_1.md` og den integrerte konseptflaten på `/no/samtaler` styrer eventuell implementeringsbrief sammen med struktur- og copy-CBA. Produksjonschat, data, lagring og deling er fortsatt uendret.
+
 ## 2026-08-02 - «Min status til audiograf» UX-copy-CBA v0.1
 - Beslutning: Inngangen heter «Lag status til audiograf», mens flaten heter «Min status til audiograf». Periodesteget forklarer kort at Viddel foreslår punkter og at brukeren velger hva som blir med. Utkastet bruker direkte handlingstekst, synlig kildespor og statusen «Utkast · ikke sendt».
 - Begrunnelse: Copyen skiller tydelig mellom Viddels forslag og brukerens eierskap uten å overforklare. «Eller» brukes bare når faktiske alternativer eller sannhetsgrenser må skilles.

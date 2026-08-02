@@ -3,6 +3,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ConversationContext from "../../components/conversation/ConversationContext.astro";
 import ConversationOverview from "../../components/conversation/ConversationOverview.astro";
+import StatusToAudiologist from "../../components/conversation/StatusToAudiologist.astro";
 import {
   conversationPrototypeData,
   groupPrototypeConversations,
@@ -35,6 +36,7 @@ const groups = groupPrototypeConversations(conversationPrototypeData);
     <div class="conversation-area__surface">
       <ConversationOverview groups={groups} />
       <ConversationContext conversations={conversationPrototypeData} />
+      <StatusToAudiologist />
     </div>
 
     <details class="conversation-area__demo">
@@ -61,6 +63,8 @@ const groups = groupPrototypeConversations(conversationPrototypeData);
       const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-conversation-panel]"));
       const list = root.querySelector<HTMLElement>("[data-conversation-list]");
       const overviewTitle = root.querySelector<HTMLElement>("[data-overview-title]");
+      const statusWorkspace = root.querySelector<HTMLElement>("[data-status-workspace]");
+      const statusEntry = root.querySelector<HTMLButtonElement>("[data-status-entry]");
       let selectedId = "";
       let listScrollTop = 0;
       let pageScrollTop = 0;
@@ -101,6 +105,19 @@ const groups = groupPrototypeConversations(conversationPrototypeData);
         }
       };
 
+      const showStatusWorkspace = () => {
+        listScrollTop = list?.scrollTop ?? 0;
+        pageScrollTop = window.scrollY;
+        root.dataset.view = "status";
+        root.dataset.demoState = "default";
+        statusWorkspace?.querySelector<HTMLElement>("[data-status-step-button='1']")?.focus();
+      };
+
+      const returnFromStatus = () => {
+        returnToOverview();
+        window.requestAnimationFrame(() => statusEntry?.focus());
+      };
+
       items.forEach((item) => {
         item.addEventListener("click", () => {
           const id = item.dataset.conversationId;
@@ -115,6 +132,91 @@ const groups = groupPrototypeConversations(conversationPrototypeData);
       root.querySelectorAll<HTMLButtonElement>("[data-back-to-conversations]").forEach((button) => {
         button.addEventListener("click", returnToOverview);
       });
+
+      statusEntry?.addEventListener("click", showStatusWorkspace);
+      root.querySelector<HTMLButtonElement>("[data-status-back]")?.addEventListener("click", returnFromStatus);
+
+      if (statusWorkspace) {
+        const statusPanels = Array.from(statusWorkspace.querySelectorAll<HTMLElement>("[data-status-panel]"));
+        const statusStepButtons = Array.from(
+          statusWorkspace.querySelectorAll<HTMLButtonElement>("[data-status-step-button]"),
+        );
+        const customPeriod = statusWorkspace.querySelector<HTMLElement>("[data-status-custom-period]");
+        const preview = statusWorkspace.querySelector<HTMLElement>("[data-status-preview]");
+
+        const periodText = () => {
+          const selected = statusWorkspace.querySelector<HTMLInputElement>('input[name="status-period"]:checked');
+          if (!selected || selected.value !== "Egendefinert periode") return selected?.value || "Siste 30 dager";
+          const from = statusWorkspace.querySelector<HTMLInputElement>("[data-status-from]");
+          const to = statusWorkspace.querySelector<HTMLInputElement>("[data-status-to]");
+          return `${from?.value || "Fra dato"}–${to?.value || "til dato"}`;
+        };
+
+        const syncPeriod = () => {
+          const selected = statusWorkspace.querySelector<HTMLInputElement>('input[name="status-period"]:checked');
+          if (customPeriod) customPeriod.hidden = selected?.value !== "Egendefinert periode";
+          const label = periodText();
+          statusWorkspace.querySelectorAll<HTMLElement>("[data-status-period-label]").forEach((node) => {
+            node.textContent = label;
+          });
+          const previewPeriod = statusWorkspace.querySelector<HTMLElement>("[data-status-preview-period]");
+          if (previewPeriod) previewPeriod.textContent = label;
+        };
+
+        const renderPreview = () => {
+          if (!preview) return;
+          preview.replaceChildren();
+          let selectedCount = 0;
+
+          statusWorkspace.querySelectorAll<HTMLElement>("[data-status-group]").forEach((group) => {
+            const texts = Array.from(group.querySelectorAll<HTMLElement>("[data-status-point]")).flatMap((point) => {
+              const include = point.querySelector<HTMLInputElement>("[data-status-include]");
+              const text = point.querySelector<HTMLTextAreaElement>("[data-status-text]");
+              return include?.checked && text?.value.trim() ? [text.value.trim()] : [];
+            });
+            if (!texts.length) return;
+
+            selectedCount += texts.length;
+            const heading = document.createElement("h3");
+            heading.textContent = group.dataset.statusGroup || "Status";
+            const listElement = document.createElement("ul");
+            texts.forEach((text) => {
+              const item = document.createElement("li");
+              item.textContent = text;
+              listElement.appendChild(item);
+            });
+            preview.append(heading, listElement);
+          });
+
+          if (!selectedCount) {
+            const empty = document.createElement("p");
+            empty.textContent = "Ingen punkter er valgt ennå.";
+            preview.appendChild(empty);
+          }
+        };
+
+        const showStatusStep = (step: string) => {
+          statusPanels.forEach((panel) => {
+            panel.hidden = panel.dataset.statusPanel !== step;
+          });
+          statusStepButtons.forEach((button) => {
+            button.setAttribute("aria-pressed", String(button.dataset.statusStepButton === step));
+          });
+          syncPeriod();
+          if (step === "3") renderPreview();
+        };
+
+        statusWorkspace
+          .querySelectorAll<HTMLInputElement>('input[name="status-period"], [data-status-from], [data-status-to]')
+          .forEach((control) => control.addEventListener("change", syncPeriod));
+        statusWorkspace.querySelectorAll<HTMLButtonElement>("[data-status-next]").forEach((button) => {
+          button.addEventListener("click", () => showStatusStep(button.dataset.statusNext || "1"));
+        });
+        statusStepButtons.forEach((button) => {
+          button.addEventListener("click", () => showStatusStep(button.dataset.statusStepButton || "1"));
+        });
+        syncPeriod();
+      }
 
       root.querySelectorAll<HTMLFormElement>("[data-prototype-composer]").forEach((form) => {
         const composer = form.closest<HTMLElement>("[data-conversation-composer]");
