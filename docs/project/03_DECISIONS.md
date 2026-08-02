@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-08-02 - «Min status til audiograf» funksjonell sannhetsgrense v0.1
+- Beslutning: Neste tekniske bevis er ikke-persistent og bruker bare syntetiske data. Hvert statuspunkt skal kunne spores til samtale og dato. Lagring, eksport og deling venter på egne beslutninger etter arkitekturport #105.
+- Begrunnelse: Dette lar oss bevise funksjonskjeden og brukerkontrollen uten å snike inn en uavklart lagrings- eller personvernarkitektur.
+- Konsekvens: `docs/project/VIDDEL_STATUS_TO_AUDIOLOGIST_FUNCTIONAL_BOUNDARY_CBA_v0_1.md` styrer neste tekniske snitt. Kunnskapsdatastore og brukerdata holdes atskilt. Knappestil, radiuser, farger og øvrige visuelle detaljer er fortsatt åpne og behandles i en senere visuell/designsystem-port.
+
 ## 2026-08-02 - «Min status til audiograf» visuell retning v0.1
 - Beslutning: Flaten bruker en varm, rolig hovedkolonne med svak separasjon mellom side, arbeidsflate og redigeringsfelt. Aktivt steg og primær handling bruker eksisterende aksentrolle, mens fokus har eget signal. Ingen nye globale tokenverdier innføres.
 - Begrunnelse: Eksisterende semantiske roller dekker hierarki, valgt state, fokus, tekst og avgrensning i både lys og mørk modus. En ny tokenfamilie ville vært prematur.
