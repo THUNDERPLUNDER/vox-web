@@ -4,17 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta name="description" content="Godkjent strukturell CBA for et brukerkontrollert statusutkast til audiograf.">
+<meta name="description" content="Godkjent struktur, copy og visuell retning for et brukerkontrollert statusutkast til audiograf.">
 <meta name="vis:type" content="wireframe">
 <meta name="vis:section" content="Mønsterverifiseringer">
 <meta name="vis:updated" content="2026-08-02">
-<meta name="vis:delta" content="Godkjent copy i tre progressive states: periode, redigerbart utkast og forhåndsvisning uten lagring eller sending.">
+<meta name="vis:delta" content="Samlet CBA med eksisterende semantiske tokens, uten nye globale tokenverdier.">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
-<title>Min status til audiograf — struktur og copy CBA v0.1</title>
-<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;max-width:736px;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+<title>Min status til audiograf — samlet CBA v0.1</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(250 249 246), rgb(2 6 23))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;max-width:736px;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
 </head>
 <body>
-<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="Min status til audiograf — struktur og copy CBA v0.1" srcdoc="&lt;!doctype html&gt;
+<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="Min status til audiograf — samlet CBA v0.1" srcdoc="&lt;!doctype html&gt;
 &lt;html lang=&quot;no&quot;&gt;
 &lt;head&gt;
 &lt;meta charset=&quot;utf-8&quot;&gt;
@@ -26,31 +26,25 @@
   color-scheme: light dark;
   background-color: var(--background) !important;
 
-  /* Agent-facing contract; keep in sync with SKILL.md. */
-  --background: light-dark(rgb(255 255 255), rgb(24 24 24));
-  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
-  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  /* Standalone preview mirrors semantic roles from src/styles/tokens.css. */
+  --background: light-dark(rgb(250 249 246), rgb(2 6 23)); /* --bg */
+  --foreground: light-dark(rgb(28 32 38), rgb(230 236 245)); /* --text */
+  --card: light-dark(rgb(255 252 248), rgb(12 18 34)); /* --surface */
   --card-foreground: var(--foreground);
   --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
   --popover-foreground: var(--foreground);
-  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
-  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
-  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --primary: rgb(14 165 233); /* --accent-primary */
+  --primary-foreground: light-dark(rgb(248 250 252), rgb(8 12 22)); /* --primary-contrast */
+  --secondary: light-dark(rgb(255 252 248), rgb(12 18 34)); /* --surface */
   --secondary-foreground: var(--foreground);
-  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
-  --muted-foreground: light-dark(
-    rgb(26 28 31 / 49.4%),
-    rgb(255 255 255 / 49.8%)
-  );
-  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --muted: light-dark(rgb(246 243 237), rgb(8 14 28)); /* --surface-subtle */
+  --muted-foreground: light-dark(rgb(105 112 126), rgb(148 162 186)); /* --text-secondary */
+  --accent: light-dark(rgb(246 243 237), rgb(20 30 50)); /* --surface-subtle / --surface-elevated */
   --accent-foreground: var(--primary);
   --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
-  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
-  --input: light-dark(
-    rgb(26 28 31 / 11.8%),
-    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
-  );
-  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --border: light-dark(rgb(228 224 216), rgb(56 72 100)); /* --border */
+  --input: var(--border);
+  --ring: rgb(244 114 182); /* --focus-ring */
   --font-size-base: 14px;
   --viz-series-1: var(--primary);
   --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
@@ -813,6 +807,22 @@ svg {
 .text-warning,
 .text-destructive {
   color: var(--destructive);
+}
+
+/* Local state recipes; no new global tokens. */
+.card {
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+.btn-primary,
+.btn-primary:not(:disabled):hover {
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+textarea.form-control {
+  background: var(--background);
 }
 
 html&gt;body{padding:0}&lt;/style&gt;
