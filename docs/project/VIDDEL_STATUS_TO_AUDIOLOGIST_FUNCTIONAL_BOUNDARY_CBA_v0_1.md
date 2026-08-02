@@ -1,6 +1,6 @@
 # Min status til audiograf — funksjonell sannhetsgrense v0.1
 
-Status: Forslag til CBA — til beslutning
+Status: Godkjent CBA
 
 Eier: Thomas
 
@@ -123,3 +123,10 @@ Godkjenn disse tre grensene samlet:
 2. Sporbarhet fra statuspunkt til samtale og dato er et funksjonskrav.
 3. Lagring, eksport og deling venter på egne beslutninger etter arkitekturport
    #105.
+
+## 10. Godkjenning
+
+Thomas godkjente 2026-08-02 de tre funksjonelle grensene i §9.
+
+Knappestil, radiuser, farger og øvrig visuell detaljering er ikke låst av denne
+CBA-en. Det behandles i en senere visuell/designsystem-port.
