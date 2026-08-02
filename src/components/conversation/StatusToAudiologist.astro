@@ -1,51 +1,13 @@
 ---
-const groups = [
-  {
-    title: "Dette har vært vanskelig",
-    points: [
-      {
-        id: "sharp-sounds",
-        text: "Bestikk og tallerkener oppleves skarpe og ubehagelige.",
-        source: "Fra «Lyden blir skarp av bestikk og tallerkener» · 31. juli",
-      },
-      {
-        id: "meetings",
-        text: "Møter blir krevende når flere snakker samtidig.",
-        source: "Fra «Hvordan sier jeg fra på jobb?» · 24. juli",
-      },
-      {
-        id: "music",
-        text: "Musikk låter flatere med de nye høreapparatene.",
-        source: "Fra «De nye apparatene høres rare ut» · 18. juli",
-      },
-    ],
-  },
-  {
-    title: "Dette har jeg prøvd",
-    points: [
-      {
-        id: "meeting-position",
-        text: "Jeg har forsøkt å sitte nærmere dem som snakker i møter.",
-        source: "Fra «Hvordan sier jeg fra på jobb?» · 24. juli",
-      },
-    ],
-  },
-  {
-    title: "Dette vil jeg ta opp",
-    points: [
-      {
-        id: "settings",
-        text: "Om innstillingene kan justeres for musikk og skarpe hverdagslyder.",
-        source: "Fra to samtaler · 18. og 31. juli",
-      },
-      {
-        id: "next-appointment",
-        text: "Hva jeg bør følge med på før neste time.",
-        source: "Fra «Hva bør jeg ta opp med audiografen?» · 31. juli",
-      },
-    ],
-  },
-];
+import { conversationPrototypeData } from "../../data/conversation-prototype-v01";
+import {
+  formatStatusPointSource,
+  getStatusPeriodRange,
+  getStatusPointSources,
+  statusDraftGroups,
+} from "../../data/status-audiologist-prototype-v01";
+
+const initialRange = getStatusPeriodRange("30-days");
 ---
 
 <section class="status-workspace" data-status-workspace aria-labelledby="status-workspace-title">
@@ -85,15 +47,15 @@ const groups = [
         <legend>Periode</legend>
         <div class="status-period-options">
           <label>
-            <input type="radio" name="status-period" value="Siste 30 dager" checked />
+            <input type="radio" name="status-period" value="30-days" checked />
             <span>Siste 30 dager</span>
           </label>
           <label>
-            <input type="radio" name="status-period" value="Siste 3 måneder" />
+            <input type="radio" name="status-period" value="90-days" />
             <span>Siste 3 måneder</span>
           </label>
           <label>
-            <input type="radio" name="status-period" value="Egendefinert periode" />
+            <input type="radio" name="status-period" value="custom" />
             <span>Velg datoer</span>
           </label>
         </div>
@@ -112,17 +74,24 @@ const groups = [
     <section class="status-panel" data-status-panel="2" aria-labelledby="status-draft-title" hidden>
       <div class="status-panel__intro">
         <h2 id="status-draft-title">Se gjennom utkastet</h2>
-        <p><span data-status-period-label>Siste 30 dager</span> · 6 foreslåtte punkter</p>
+        <p><span data-status-period-label>Siste 30 dager</span> · <span data-status-point-count>6</span> foreslåtte punkter</p>
         <p>Alt er valgt nå. Fjern det som ikke passer, og skriv om resten.</p>
       </div>
 
       {
-        groups.map((group) => (
+        statusDraftGroups.map((group) => (
           <fieldset class="status-section" data-status-group={group.title}>
             <legend>{group.title}</legend>
             <div class="status-points">
-              {group.points.map((point) => (
-                <div class="status-point" data-status-point>
+              {group.points.map((point) => {
+                const sources = getStatusPointSources(point, initialRange, conversationPrototypeData);
+                return (
+                <div
+                  class="status-point"
+                  data-status-point
+                  data-status-point-id={point.id}
+                  data-status-source-ids={point.sourceConversationIds.join(",")}
+                >
                   <label class="status-point__include">
                     <input type="checkbox" checked data-status-include />
                     <span>Ta med</span>
@@ -131,9 +100,10 @@ const groups = [
                     Rediger statuspunkt
                   </label>
                   <textarea id={`status-${point.id}`} rows="2" data-status-text>{point.text}</textarea>
-                  <p>{point.source}</p>
+                  <p data-status-source>{formatStatusPointSource(sources)}</p>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </fieldset>
         ))

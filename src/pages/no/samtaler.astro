@@ -54,6 +54,14 @@ const groups = groupPrototypeConversations(conversationPrototypeData);
   <script>
     import { initChatAttachmentMenu } from "../../lib/chat-image-attachment-menu-v01";
     import { validateChatImageFile } from "../../lib/chat-image-file-v01";
+    import { conversationPrototypeData } from "../../data/conversation-prototype-v01";
+    import {
+      formatStatusPointSource,
+      getStatusPeriodRange,
+      getStatusPointSources,
+      type StatusDraftPoint,
+      type StatusPeriodMode,
+    } from "../../data/status-audiologist-prototype-v01";
 
     (() => {
       const root = document.querySelector<HTMLElement>("[data-conversation-area]");
@@ -144,23 +152,52 @@ const groups = groupPrototypeConversations(conversationPrototypeData);
         const customPeriod = statusWorkspace.querySelector<HTMLElement>("[data-status-custom-period]");
         const preview = statusWorkspace.querySelector<HTMLElement>("[data-status-preview]");
 
-        const periodText = () => {
+        const selectedPeriodMode = () => {
           const selected = statusWorkspace.querySelector<HTMLInputElement>('input[name="status-period"]:checked');
-          if (!selected || selected.value !== "Egendefinert periode") return selected?.value || "Siste 30 dager";
+          return (selected?.value || "30-days") as StatusPeriodMode;
+        };
+
+        const periodText = () => {
+          const mode = selectedPeriodMode();
+          if (mode !== "custom") return mode === "90-days" ? "Siste 3 måneder" : "Siste 30 dager";
           const from = statusWorkspace.querySelector<HTMLInputElement>("[data-status-from]");
           const to = statusWorkspace.querySelector<HTMLInputElement>("[data-status-to]");
           return `${from?.value || "Fra dato"}–${to?.value || "til dato"}`;
         };
 
         const syncPeriod = () => {
-          const selected = statusWorkspace.querySelector<HTMLInputElement>('input[name="status-period"]:checked');
-          if (customPeriod) customPeriod.hidden = selected?.value !== "Egendefinert periode";
+          const mode = selectedPeriodMode();
+          if (customPeriod) customPeriod.hidden = mode !== "custom";
+          const from = statusWorkspace.querySelector<HTMLInputElement>("[data-status-from]")?.value;
+          const to = statusWorkspace.querySelector<HTMLInputElement>("[data-status-to]")?.value;
+          const range = getStatusPeriodRange(mode, from, to);
           const label = periodText();
           statusWorkspace.querySelectorAll<HTMLElement>("[data-status-period-label]").forEach((node) => {
             node.textContent = label;
           });
           const previewPeriod = statusWorkspace.querySelector<HTMLElement>("[data-status-preview-period]");
           if (previewPeriod) previewPeriod.textContent = label;
+
+          let pointCount = 0;
+          statusWorkspace.querySelectorAll<HTMLElement>("[data-status-point]").forEach((point) => {
+            const sourceConversationIds = (point.dataset.statusSourceIds || "").split(",").filter(Boolean);
+            const pointContract: StatusDraftPoint = {
+              id: point.dataset.statusPointId || "",
+              text: "",
+              sourceConversationIds,
+            };
+            const sources = getStatusPointSources(pointContract, range, conversationPrototypeData);
+            point.hidden = !sources.length;
+            if (sources.length) pointCount += 1;
+            const source = point.querySelector<HTMLElement>("[data-status-source]");
+            if (source && sources.length) source.textContent = formatStatusPointSource(sources);
+          });
+          statusWorkspace.querySelectorAll<HTMLElement>("[data-status-group]").forEach((group) => {
+            group.hidden = !group.querySelector<HTMLElement>("[data-status-point]:not([hidden])");
+          });
+          statusWorkspace.querySelectorAll<HTMLElement>("[data-status-point-count]").forEach((node) => {
+            node.textContent = String(pointCount);
+          });
         };
 
         const renderPreview = () => {
@@ -170,6 +207,7 @@ const groups = groupPrototypeConversations(conversationPrototypeData);
 
           statusWorkspace.querySelectorAll<HTMLElement>("[data-status-group]").forEach((group) => {
             const texts = Array.from(group.querySelectorAll<HTMLElement>("[data-status-point]")).flatMap((point) => {
+              if (point.hidden) return [];
               const include = point.querySelector<HTMLInputElement>("[data-status-include]");
               const text = point.querySelector<HTMLTextAreaElement>("[data-status-text]");
               return include?.checked && text?.value.trim() ? [text.value.trim()] : [];
