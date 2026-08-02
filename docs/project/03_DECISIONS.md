@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-08-02 - «Min status til audiograf» UX-copy-CBA v0.1
+- Beslutning: Inngangen heter «Lag status til audiograf», mens flaten heter «Min status til audiograf». Periodesteget forklarer kort at Viddel foreslår punkter og at brukeren velger hva som blir med. Utkastet bruker direkte handlingstekst, synlig kildespor og statusen «Utkast · ikke sendt».
+- Begrunnelse: Copyen skiller tydelig mellom Viddels forslag og brukerens eierskap uten å overforklare. «Eller» brukes bare når faktiske alternativer eller sannhetsgrenser må skilles.
+- Konsekvens: `docs/project/VIDDEL_STATUS_TO_AUDIOLOGIST_UX_COPY_CBA_v0_1.md` styrer videre visuell kontroll. Strukturen, produktlogikken, lagring og deling er uendret.
+
 ## 2026-07-31 - «Min status til audiograf» strukturell CBA v0.1
 - Beslutning: «Min status til audiograf» er en sekundær handling fra full samtaleoversikt. Arbeidet skjer i én progressiv flate med periode, redigerbart utkast og forhåndsvisning. Viddel foreslår punkter som brukeren selv kan fjerne og endre, med synlig kilde i gjennomgangen. Forhåndsvisningen er et utkast og innebærer ikke lagring, sending eller audiograftilgang.
 - Begrunnelse: Strukturen demonstrerer produktverdien samtidig som brukeren beholder kontroll, og unngår at flaten blir et dashboard eller en tung veiviser. Dette er en produkthypotese, ikke et dokumentert brukerfunn.
