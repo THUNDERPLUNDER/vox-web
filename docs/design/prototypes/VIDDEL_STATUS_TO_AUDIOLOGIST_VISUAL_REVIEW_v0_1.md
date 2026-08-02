@@ -13,7 +13,11 @@ Denne kontrollen legger eksisterende Viddel-roller på godkjent struktur og
 copy. Den verifiserer hierarki og interaksjonsstates uten å starte en ny
 design- eller tokenrunde.
 
-Artefakt:
+Primær kontrollflate:
+
+- `/no/samtaler` — «Lag status til audiograf» fra full samtaleoversikt
+
+Separat beslutningsgrunnlag:
 
 - `public/vis/raw/viddel-status-to-audiologist-cba-v0_1.html`
 
@@ -26,6 +30,7 @@ Artefakt:
 - kildetekst og konseptgrense er sekundære
 - primær handling har tydelig, men avgrenset vekt
 - ingen halo, dekorativ gradient eller ny kortfamilie
+- samme produktskall, hovedflate og responsive ramme som samtaleområdet
 
 ## Kobling til eksisterende semantiske tokens
 
@@ -60,8 +65,11 @@ tokenfamilie. En senere produktimplementering kan bruke lokale state-oppskrifter
 av eksisterende tokens og løfte et nytt tokenbehov først dersom mønsteret blir
 gjentatt flere steder.
 
+Den integrerte konseptflaten er kontrollert på desktop, 390 px og 320 px.
+Periode, utkast og forhåndsvisning fungerer uten horisontal scrolling, og
+nettleserkontrollen viser ingen konsollfeil.
+
 ## Sannhetsgrense
 
 Artefakten er en visuell mønsterkontroll, ikke produksjonskode. Kontrollen
 beslutter ikke dataflyt, lagring, deling, eksport eller audiograftilgang.
-

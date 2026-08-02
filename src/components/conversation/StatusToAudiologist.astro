@@ -1,0 +1,166 @@
+---
+const groups = [
+  {
+    title: "Dette har vært vanskelig",
+    points: [
+      {
+        id: "sharp-sounds",
+        text: "Bestikk og tallerkener oppleves skarpe og ubehagelige.",
+        source: "Fra «Lyden blir skarp av bestikk og tallerkener» · 31. juli",
+      },
+      {
+        id: "meetings",
+        text: "Møter blir krevende når flere snakker samtidig.",
+        source: "Fra «Hvordan sier jeg fra på jobb?» · 24. juli",
+      },
+      {
+        id: "music",
+        text: "Musikk låter flatere med de nye høreapparatene.",
+        source: "Fra «De nye apparatene høres rare ut» · 18. juli",
+      },
+    ],
+  },
+  {
+    title: "Dette har jeg prøvd",
+    points: [
+      {
+        id: "meeting-position",
+        text: "Jeg har forsøkt å sitte nærmere dem som snakker i møter.",
+        source: "Fra «Hvordan sier jeg fra på jobb?» · 24. juli",
+      },
+    ],
+  },
+  {
+    title: "Dette vil jeg ta opp",
+    points: [
+      {
+        id: "settings",
+        text: "Om innstillingene kan justeres for musikk og skarpe hverdagslyder.",
+        source: "Fra to samtaler · 18. og 31. juli",
+      },
+      {
+        id: "next-appointment",
+        text: "Hva jeg bør følge med på før neste time.",
+        source: "Fra «Hva bør jeg ta opp med audiografen?» · 31. juli",
+      },
+    ],
+  },
+];
+---
+
+<section class="status-workspace" data-status-workspace aria-labelledby="status-workspace-title">
+  <header class="status-workspace__header">
+    <button type="button" class="status-workspace__back" data-status-back>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="m15 18-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <span>Samtaler</span>
+    </button>
+    <div>
+      <h1 id="status-workspace-title">Min status til audiograf</h1>
+      <p>Syntetisk eksempel · ingenting lagres eller sendes</p>
+    </div>
+  </header>
+
+  <div class="status-workspace__inner">
+    <div class="status-steps" aria-label="Steg i arbeidsflyten">
+      <button type="button" data-status-step-button="1" aria-pressed="true">
+        <span>1</span> Periode
+      </button>
+      <button type="button" data-status-step-button="2" aria-pressed="false">
+        <span>2</span> Utkast
+      </button>
+      <button type="button" data-status-step-button="3" aria-pressed="false">
+        <span>3</span> Forhåndsvis
+      </button>
+    </div>
+
+    <section class="status-panel" data-status-panel="1" aria-labelledby="status-period-title">
+      <div class="status-panel__intro">
+        <h2 id="status-period-title">Velg periode</h2>
+        <p>Vi foreslår punkter fra samtalene dine. Du velger hva som blir med.</p>
+      </div>
+
+      <fieldset class="status-section">
+        <legend>Periode</legend>
+        <div class="status-period-options">
+          <label>
+            <input type="radio" name="status-period" value="Siste 30 dager" checked />
+            <span>Siste 30 dager</span>
+          </label>
+          <label>
+            <input type="radio" name="status-period" value="Siste 3 måneder" />
+            <span>Siste 3 måneder</span>
+          </label>
+          <label>
+            <input type="radio" name="status-period" value="Egendefinert periode" />
+            <span>Velg datoer</span>
+          </label>
+        </div>
+
+        <div class="status-custom-period" data-status-custom-period hidden>
+          <label>Fra <input type="date" value="2026-07-01" data-status-from /></label>
+          <label>Til <input type="date" value="2026-07-31" data-status-to /></label>
+        </div>
+      </fieldset>
+
+      <div class="status-panel__actions status-panel__actions--end">
+        <button type="button" class="status-button status-button--primary" data-status-next="2">Lag utkast</button>
+      </div>
+    </section>
+
+    <section class="status-panel" data-status-panel="2" aria-labelledby="status-draft-title" hidden>
+      <div class="status-panel__intro">
+        <h2 id="status-draft-title">Se gjennom utkastet</h2>
+        <p><span data-status-period-label>Siste 30 dager</span> · 6 foreslåtte punkter</p>
+        <p>Alt er valgt nå. Fjern det som ikke passer, og skriv om resten.</p>
+      </div>
+
+      {
+        groups.map((group) => (
+          <fieldset class="status-section" data-status-group={group.title}>
+            <legend>{group.title}</legend>
+            <div class="status-points">
+              {group.points.map((point) => (
+                <div class="status-point" data-status-point>
+                  <label class="status-point__include">
+                    <input type="checkbox" checked data-status-include />
+                    <span>Ta med</span>
+                  </label>
+                  <label class="sr-only" for={`status-${point.id}`}>
+                    Rediger statuspunkt
+                  </label>
+                  <textarea id={`status-${point.id}`} rows="2" data-status-text>{point.text}</textarea>
+                  <p>{point.source}</p>
+                </div>
+              ))}
+            </div>
+          </fieldset>
+        ))
+      }
+
+      <div class="status-panel__actions">
+        <button type="button" class="status-button status-button--quiet" data-status-next="1">Tilbake</button>
+        <button type="button" class="status-button status-button--primary" data-status-next="3">Forhåndsvis</button>
+      </div>
+    </section>
+
+    <section class="status-panel" data-status-panel="3" aria-labelledby="status-preview-title" hidden>
+      <div class="status-preview-heading">
+        <div>
+          <h2 id="status-preview-title">Min status til audiograf</h2>
+          <p data-status-preview-period>Siste 30 dager</p>
+        </div>
+        <span>Utkast · ikke sendt</span>
+      </div>
+
+      <article class="status-preview" data-status-preview aria-live="polite"></article>
+
+      <div class="status-panel__actions">
+        <button type="button" class="status-button status-button--quiet" data-status-next="2">
+          Tilbake til utkastet
+        </button>
+      </div>
+    </section>
+  </div>
+</section>

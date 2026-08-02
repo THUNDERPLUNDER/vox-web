@@ -52,6 +52,13 @@ body.vox-shell--conversation-area {
   margin-bottom: 1rem;
 }
 
+.conversation-overview__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
 .conversation-overview__header h1,
 .conversation-context__heading h1,
 .conversation-empty-state h2 {
@@ -108,6 +115,7 @@ body.vox-shell--conversation-area {
 .conversation-action:focus-visible,
 .conversation-item:focus-visible,
 .conversation-context__back:focus-visible,
+.status-workspace :is(button, input, textarea):focus-visible,
 .conversation-composer :is(textarea, button):focus-visible,
 .conversation-area__demo button:focus-visible {
   outline: 2px solid rgb(var(--focus-ring));
@@ -280,6 +288,345 @@ body.vox-shell--conversation-area {
 .conversation-area[data-history="empty"] .conversation-overview__list,
 .conversation-area[data-history="empty"] .conversation-overview__header .conversation-action {
   display: none;
+}
+
+.conversation-area[data-view="status"] .conversation-area__surface {
+  display: block;
+}
+
+.conversation-area[data-view="status"] :is(.conversation-overview, .conversation-context) {
+  display: none;
+}
+
+.status-workspace {
+  display: none;
+  min-height: min(70dvh, 760px);
+  color: rgb(var(--text));
+  background: rgb(var(--surface) / 0.9);
+}
+
+.conversation-area[data-view="status"] .status-workspace {
+  display: block;
+}
+
+.status-workspace__header {
+  display: grid;
+  gap: 0.8rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  box-shadow: inset 0 -1px 0 rgb(var(--border) / 0.34);
+}
+
+.status-workspace__header h1,
+.status-panel h2,
+.status-preview h3 {
+  margin: 0;
+  color: rgb(var(--text));
+}
+
+.status-workspace__header h1 {
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  line-height: 1.2;
+}
+
+.status-workspace__header p,
+.status-panel__intro p,
+.status-preview-heading p,
+.status-point p {
+  color: rgb(var(--text-secondary));
+}
+
+.status-workspace__header p {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+}
+
+.status-workspace__back {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.25rem;
+  border: 0;
+  padding: 0;
+  color: rgb(var(--text-secondary));
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.status-workspace__back:hover {
+  color: rgb(var(--text));
+}
+
+.status-workspace__back svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.status-workspace__inner {
+  width: min(100%, 48rem);
+  margin-inline: auto;
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.status-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.status-steps button {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 2.7rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 0.55rem 0.7rem;
+  color: rgb(var(--text-secondary));
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.status-steps button:hover {
+  background: rgb(var(--surface-subtle) / 0.76);
+}
+
+.status-steps button[aria-pressed="true"] {
+  border-color: rgb(var(--accent-primary) / 0.26);
+  color: rgb(var(--text));
+  background: color-mix(in srgb, rgb(var(--surface-subtle)) 88%, rgb(var(--accent-primary)) 12%);
+  box-shadow: inset 0 -3px 0 rgb(var(--accent-primary) / 0.78);
+}
+
+.status-steps button span {
+  color: rgb(var(--accent-primary));
+}
+
+.status-panel[hidden] {
+  display: none;
+}
+
+.status-panel__intro {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 1.25rem;
+}
+
+.status-panel__intro h2,
+.status-preview-heading h2 {
+  font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+  line-height: 1.25;
+}
+
+.status-panel__intro p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.status-section {
+  min-width: 0;
+  margin: 0;
+  border: 1px solid rgb(var(--border) / 0.58);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  background: rgb(var(--surface));
+}
+
+.status-section + .status-section {
+  margin-top: 1rem;
+}
+
+.status-section legend {
+  padding-inline: 0.25rem;
+  color: rgb(var(--text));
+  font-weight: 600;
+}
+
+.status-period-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.status-period-options label,
+.status-point__include {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: rgb(var(--text));
+  cursor: pointer;
+}
+
+.status-period-options label {
+  min-height: 3rem;
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.65rem;
+  background: rgb(var(--surface-subtle) / 0.62);
+}
+
+.status-period-options input,
+.status-point__include input {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  accent-color: rgb(var(--accent-primary));
+}
+
+.status-custom-period {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.status-custom-period[hidden] {
+  display: none;
+}
+
+.status-custom-period label {
+  display: grid;
+  gap: 0.35rem;
+  color: rgb(var(--text-secondary));
+  font-size: 0.82rem;
+}
+
+.status-custom-period input,
+.status-point textarea {
+  border: 1px solid rgb(var(--border));
+  border-radius: var(--radius-sm);
+  color: rgb(var(--text));
+  background: rgb(var(--bg));
+  font: inherit;
+}
+
+.status-custom-period input {
+  min-height: 2.65rem;
+  padding: 0.45rem 0.6rem;
+}
+
+.status-points {
+  display: grid;
+}
+
+.status-point {
+  display: grid;
+  min-width: 0;
+  gap: 0.65rem;
+}
+
+.status-point + .status-point {
+  margin-top: 1rem;
+  border-top: 1px solid rgb(var(--border) / 0.48);
+  padding-top: 1rem;
+}
+
+.status-point__include {
+  width: fit-content;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.status-point textarea {
+  width: 100%;
+  min-height: 4.5rem;
+  resize: vertical;
+  padding: 0.7rem 0.8rem;
+  line-height: 1.5;
+}
+
+.status-point p {
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+.status-panel__actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.status-panel__actions--end {
+  justify-content: flex-end;
+}
+
+.status-button {
+  min-height: 2.65rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.9rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.status-button--primary {
+  color: rgb(var(--primary-contrast));
+  background: rgb(var(--accent-primary));
+}
+
+.status-button--primary:hover {
+  background: color-mix(in srgb, rgb(var(--accent-primary)) 88%, rgb(var(--text)) 12%);
+}
+
+.status-button--quiet {
+  color: rgb(var(--text));
+  background: transparent;
+}
+
+.status-button--quiet:hover {
+  background: rgb(var(--surface-subtle));
+}
+
+.status-preview-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.status-preview-heading p {
+  margin: 0.35rem 0 0;
+}
+
+.status-preview-heading > span {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 0.3rem 0.55rem;
+  color: rgb(var(--accent-primary));
+  background: color-mix(in srgb, rgb(var(--surface-subtle)) 88%, rgb(var(--accent-primary)) 12%);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.status-preview {
+  border: 1px solid rgb(var(--border) / 0.58);
+  border-radius: var(--radius-md);
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: rgb(var(--surface));
+}
+
+.status-preview h3 {
+  font-size: 1rem;
+}
+
+.status-preview h3:not(:first-child) {
+  margin-top: 1.35rem;
+}
+
+.status-preview ul {
+  margin: 0.55rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.status-preview li + li {
+  margin-top: 0.45rem;
 }
 
 .conversation-area[data-history="empty"] .conversation-empty-state {
@@ -593,6 +940,10 @@ body.vox-shell--conversation-area .viddel-chat-attach__attach-menu-item:focus-vi
     border-radius: var(--radius-md);
   }
 
+  .conversation-area[data-view="status"] .conversation-area__surface {
+    min-height: calc(100dvh - 9.5rem);
+  }
+
   .conversation-overview,
   .conversation-area:is([data-view="active"], [data-view="new"]) .conversation-overview {
     padding: 1rem;
@@ -680,6 +1031,23 @@ body.vox-shell--conversation-area .viddel-chat-attach__attach-menu-item:focus-vi
   .conversation-composer {
     margin: 0 1rem 1rem;
   }
+
+  .conversation-overview__actions {
+    flex-wrap: nowrap;
+  }
+
+  .status-workspace {
+    min-height: calc(100dvh - 9.5rem);
+  }
+
+  .status-workspace__header,
+  .status-workspace__inner {
+    padding: 1rem;
+  }
+
+  .status-period-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 360px) {
@@ -690,8 +1058,16 @@ body.vox-shell--conversation-area .viddel-chat-attach__attach-menu-item:focus-vi
 
   .conversation-overview,
   .conversation-context__header,
-  .conversation-context__body {
+  .conversation-context__body,
+  .status-workspace__header,
+  .status-workspace__inner {
     padding-inline: 0.8rem;
+  }
+
+  .status-steps button {
+    gap: 0.25rem;
+    padding-inline: 0.35rem;
+    font-size: 0.8rem;
   }
 
   .conversation-composer {
