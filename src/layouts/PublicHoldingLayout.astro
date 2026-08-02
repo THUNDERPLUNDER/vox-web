@@ -1,0 +1,44 @@
+---
+/* CONTRACT: Minimal public company shell for viddel.no. Reuses production tokens without product navigation, CES or internal tools. */
+import "../styles/global.css";
+
+const {
+  title = "Viddel",
+  description = "Viddel utvikler en produsentuavhengig digital tjeneste for høreapparatbrukere.",
+  canonical = "https://www.viddel.no/",
+} = Astro.props as {
+  title?: string;
+  description?: string;
+  canonical?: string;
+};
+---
+
+<!doctype html>
+<html lang="no" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="nb_NO" />
+    <meta property="og:site_name" content="Viddel" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+

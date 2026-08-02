@@ -66,7 +66,7 @@ export type ClosedSprint = {
 };
 
 export const mvpCurrentState = {
-  updatedAt: "2026-07-31",
+  updatedAt: "2026-08-02",
   currentSprint: {
     id: "2026-w21",
     label: "2026-W21",
@@ -80,8 +80,18 @@ export const mvpCurrentState = {
     "Monitoring levert (#188). Reliability-test via Vercel guard-limits (100/500 midlertidig) — ikke lokal token. Fallback ved behov.",
   mvpSurfaces: [
     {
+      id: "public-root",
+      label: "Viddel.no",
+      route: "/",
+      status: "Applied",
+      note: "Kort offentlig presentasjon av Viddel. Produkt-MVP-en ligger fortsatt separat under /no/.",
+      visFrontpage: true,
+      kind: "public",
+      frontpageDescription: "Offentlig presentasjon og kontaktpunkt for Viddel AS.",
+    },
+    {
       id: "frontpage",
-      label: "Forside",
+      label: "Produktforside",
       route: "/no/",
       status: "Applied",
       visFrontpage: true,
@@ -214,6 +224,11 @@ export const mvpCurrentState = {
   ] satisfies NextRisk[],
   recentChanges: [
     {
+      date: "2026-08-02",
+      summary: "Ny offentlig rotforside på / med kort Viddel-presentasjon og kontaktadresse; produkt-MVP-en beholdes under /no/.",
+      commit: "—",
+    },
+    {
       date: "2026-06-09",
       summary: "Needs-to-source coverage matrix v0.1 — P0/P1/P2 behov mappet mot full Drive inventory; 'Ingen lyd / svak lyd' anbefalt som første canonical guidance asset (#243)",
       issue: "#243",
@@ -277,7 +292,7 @@ export type VisFrontpageEntry = {
 export function getVisFrontpageEntries(baseUrl: string): VisFrontpageEntry[] {
   const base = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
 
-  const surfaceOrder = ["chat", "designsystem", "frontpage", "hjelp", "bedre-lyd"];
+  const surfaceOrder = ["public-root", "chat", "designsystem", "frontpage", "hjelp", "bedre-lyd"];
   const surfaces = surfaceOrder
     .map((id) => mvpCurrentState.mvpSurfaces.find((s) => s.id === id))
     .filter((s): s is MvpSurface => !!s && s.visFrontpage);
