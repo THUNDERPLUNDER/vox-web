@@ -23,7 +23,7 @@ Repoet `vox-web`, Vercel-prosjektnavnet og tekniske `.vox-*`-, `data-vox-*`-, ev
 | Selskap | Viddel AS |
 | Canonical domene | `https://www.viddel.no/` |
 | Apex | `https://viddel.no/` peker til `https://www.viddel.no/` |
-| Legacy domene | `https://vox.raddum.no/*` redirecter permanent til samme sti på `https://www.viddel.no/*` |
+| Legacy domene | Skal redirecte permanent til samme sti på `https://www.viddel.no/*`; domeneregelen er ikke aktivert ennå |
 | Produkt-MVP | `https://www.viddel.no/no/` |
 | Aktiv copy | Viddel; ikke VOX |
 | Nye operative lenker | `www.viddel.no` |
@@ -82,7 +82,9 @@ Legacy-domenet skal ikke servere parallelle sider.
 | Andre stier | Samme sti beholdes |
 | Query-parametre | Beholdes |
 
-Redirecten defineres i `vercel.json` med vilkår på HTTP Host-headeren, slik at samme applikasjon fortsatt kan svare normalt på `www.viddel.no` og Vercel Preview-domener.
+Redirecten skal konfigureres som en domene-redirect i Vercel: **Project → Settings → Domains → Edit `vox.raddum.no` → Redirect to `www.viddel.no`**. Vercel håndterer da hele legacy-domenet på domenelaget, mens `www.viddel.no` forblir prosjektets canonical domene.
+
+Forsøk med host-betinget redirect i `vercel.json` ble publisert og kontrollert 2026-08-03, men `vox.raddum.no` svarte fortsatt med HTTP 200. Regelen er derfor fjernet fra kodebasen. Redirect-kontrakten er besluttet, men skal ikke merkes som operativ før produksjonskontrollen under er grønn.
 
 ---
 

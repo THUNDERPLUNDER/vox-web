@@ -68,9 +68,9 @@ export const visRuntimeFeed = {
     },
   ],
   recentlyCompletedSummary:
-    "Viddel er nå canonical navn og www.viddel.no er produksjonsdomene. Det tidligere VOX-domenet er flyttet til permanent redirect.",
+    "Viddel er nå canonical navn og www.viddel.no er produksjonsdomene. Permanent redirect for det tidligere VOX-domenet er besluttet, men avventer domenekonfigurasjon i Vercel.",
   lastReturnTicketSummary:
-    "Viddel canonical cleanup v0.1 — aktive navn og lenker ryddet; tekniske legacy-identifikatorer beholdt.",
+    "Viddel canonical cleanup v0.1 — aktive navn og lenker ryddet; tekniske legacy-identifikatorer beholdt; legacy-domeneredirect står igjen i Vercel.",
   links: {
     primary: [
       {
