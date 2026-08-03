@@ -82,7 +82,7 @@ Legacy-domenet skal ikke servere parallelle sider.
 | Andre stier | Samme sti beholdes |
 | Query-parametre | Beholdes |
 
-Redirecten defineres i `vercel.json` med host-vilkår, slik at samme applikasjon fortsatt kan svare normalt på `www.viddel.no` og Vercel Preview-domener.
+Redirecten defineres i `vercel.json` med vilkår på HTTP Host-headeren, slik at samme applikasjon fortsatt kan svare normalt på `www.viddel.no` og Vercel Preview-domener.
 
 ---
 
