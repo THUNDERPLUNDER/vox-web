@@ -4,8 +4,9 @@
 Dette dokumentet samler sentrale lenker til prosjektets operative flater.
 
 ## Nettside
-- Produksjon: https://vox.raddum.no
-- Norsk forside: https://vox.raddum.no/no
+- Offentlig Viddel-side: https://www.viddel.no/
+- Produkt-MVP: https://www.viddel.no/no/
+- Tidligere produksjonsdomene / teknisk alias: https://vox.raddum.no
 
 ## Kode
 - GitHub repo: https://github.com/THUNDERPLUNDER/vox-web
@@ -25,6 +26,7 @@ Dette dokumentet samler sentrale lenker til prosjektets operative flater.
 - Privacy-first måling & State v0.1 (**#99**): `docs/project/20_VIDDEL_PRIVACY_FIRST_METRICS_AND_STATE_v0_1.md`
 - Viddel Article Brief v0.1: `docs/project/21_VIDDEL_ARTICLE_BRIEF_v0_1.md`
 - Viddel Spoke Inventory v0.1: `docs/project/22_VIDDEL_SPOKE_INVENTORY_v0_1.md`
+- Public root and contact CBA v0.1: `docs/project/decisions/DECISION_PUBLIC_ROOT_CONTACT_CBA.md`
 
 ## Drift
 - Vercel-prosjekt: [legg inn lenke senere]

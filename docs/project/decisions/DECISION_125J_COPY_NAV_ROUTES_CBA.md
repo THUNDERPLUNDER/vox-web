@@ -65,7 +65,7 @@ Gamle ruter redirectes permanent:
 
 | Tema | Beskrivelse |
 |------|-------------|
-| **viddel.no domain readiness** | Domeneflytt og canonical når eksplisitt mandat |
+| **viddel.no domain readiness** | **Gjennomført 2026-08-03 for rotforsiden.** Se `DECISION_PUBLIC_ROOT_CONTACT_CBA.md`. Produkt-IA under `/no/` er uendret. |
 | **Ikon-/illustrasjonspass** | Hjelpekategorier og editorial flater |
 | **Composer-paritet** | Hub vs. artikkel-composer |
 | **Footer / editorial-shell** | Visuell sammenheng på tvers av flater |

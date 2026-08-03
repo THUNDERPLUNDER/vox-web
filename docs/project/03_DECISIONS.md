@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-08-03 - Offentlig rotforside og felles kontaktpunkt
+- Beslutning: `viddel.no/` er en kort offentlig selskapsflate med H1 «Hjelp med lyd i hverdagen» og kontaktpunktet `kontakt@viddel.no`; produkt-MVP-en beholdes separat under `/no/` uten lenke fra roten.
+- Begrunnelse: Eksterne besøkende, inkludert en mulig saksbehandler hos Innovasjon Norge, skal møte en presis presentasjon som samsvarer med prosjektets faktiske modenhet.
+- Konsekvens: Redirecten fra `/` til `/no/` er fjernet. Kontaktadressen drives som Google Workspace-gruppe med SPF, DKIM og DMARC aktivert. Se `docs/project/decisions/DECISION_PUBLIC_ROOT_CONTACT_CBA.md`.
+
 ## 2026-08-02 - «Min status til audiograf» funksjonell sannhetsgrense v0.1
 - Beslutning: Neste tekniske bevis er ikke-persistent og bruker bare syntetiske data. Hvert statuspunkt skal kunne spores til samtale og dato. Lagring, eksport og deling venter på egne beslutninger etter arkitekturport #105.
 - Begrunnelse: Dette lar oss bevise funksjonskjeden og brukerkontrollen uten å snike inn en uavklart lagrings- eller personvernarkitektur.
