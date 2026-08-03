@@ -84,7 +84,7 @@ export const mvpCurrentState = {
       label: "Viddel.no",
       route: "/",
       status: "Applied",
-      note: "Canonical offentlig Viddel-side med verifisert kontaktpunkt. Legacy-domenet vox.raddum.no redirecter til www.viddel.no. Produkt-MVP-en ligger fortsatt separat under /no/.",
+      note: "Canonical offentlig Viddel-side med verifisert kontaktpunkt. Legacy-domenet vox.raddum.no skal settes som domene-redirect til www.viddel.no i Vercel; dette er ikke aktivert ennå. Produkt-MVP-en ligger fortsatt separat under /no/.",
       visFrontpage: true,
       kind: "public",
       frontpageDescription: "Offentlig presentasjon og kontaktpunkt for Viddel AS.",
@@ -225,7 +225,7 @@ export const mvpCurrentState = {
   recentChanges: [
     {
       date: "2026-08-03",
-      summary: "Viddel låst som canonical navn og www.viddel.no som produksjonsdomene; VOX-domenet flyttes til permanent legacy redirect.",
+      summary: "Viddel låst som canonical navn og www.viddel.no som produksjonsdomene; permanent legacy redirect for VOX-domenet er besluttet og avventer domenekonfigurasjon i Vercel.",
       commit: "—",
     },
     {
