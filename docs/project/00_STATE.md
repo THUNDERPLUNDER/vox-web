@@ -31,7 +31,7 @@
 - **Mobilmeny:** `MobileMenuTrigger` + `MobileMenuSheet` (drawer montert utenfor `backdrop-blur`-wrapper).
 - **Typografi:** **Epilogue + Inter** via Google Fonts i `BaseLayout` og `--font-display` / `--font-sans` i `global.css`.
 - **Ordbok (Storyblok):** `src/pages/no/ordbok` og `src/pages/no/ordbok/[term].astro` henter publisert innhold fra Storyblok under `no/ordbok/` i statisk build.
-- **Custom chat shell (feasibility, intern):** Rute **`/no/sandbox/chat-shell`** — aktiv **feasibility-spike** for en eventuell VOX-eid samtaleflate. **Step 1** på kodenivå er **visuell tilpasning / shell-prototype** med mockede meldinger og **uten** backend, agentkall, auth eller CES-bridge; **ikke produksjonskoblet**. Siste commit som rørte selve siden: **`b2d91050e8b737cbb663f4fd8894a84d68315be7`** (`src/pages/no/sandbox/chat-shell.astro`). Full definisjon: `docs/project/05_CHAT_SHELL_FEASIBILITY.md`.
+- **Custom chat shell (feasibility, intern):** Rute **`/no/sandbox/chat-shell`** — aktiv **feasibility-spike** for en eventuell Viddel-eid samtaleflate. Første kodepass er en visuell shell-prototype med mockede meldinger og **uten** backend, agentkall, auth eller CES-bridge; **ikke produksjonskoblet**. Siste commit som rørte selve siden: **`b2d91050e8b737cbb663f4fd8894a84d68315be7`** (`src/pages/no/sandbox/chat-shell.astro`). Full definisjon: `docs/project/05_CHAT_SHELL_FEASIBILITY.md`.
 - **VIS (backstage):** Eget **landet** verktøy for HTML-wireframes under **`/vis`** (internt, `noindex`). **Ikke** hovedsporet for MVP-produkt eller chat-shell; holdes adskilt i arbeid og dokumentasjon.
 - **Øvrig:** AI-agent i Google CES; manualer i Cloud stores; Stitch som visuell referanse.
 
@@ -66,4 +66,4 @@
 
 ## Sist oppdatert
 - Dato: 2026-08-03
-- Oppdatert av: Offentlig rotforside og felles kontaktpunkt dokumentert i `DECISION_PUBLIC_ROOT_CONTACT_CBA.md`; øvrig MVP-baseline uendret.
+- Oppdatert av: Offentlig rot, kontaktpunkt og canonical Viddel-navn dokumentert i `DECISION_PUBLIC_ROOT_CONTACT_CBA.md` og `DECISION_VIDDEL_CANONICAL_NAMING_CBA.md`; teknisk legacy-namespace er uendret.

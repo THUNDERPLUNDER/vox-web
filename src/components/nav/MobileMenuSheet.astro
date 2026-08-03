@@ -12,7 +12,7 @@ type Props = {
 
 const { currentPath = "", brand = "default", showDevtoolsToggle = false, showChatEntry = true } = Astro.props as Props;
 const menuTitle =
-  brand === "klarlyd" ? "KLARLYD meny" : brand === "viddel" ? "Viddel meny" : "VOX meny";
+  brand === "klarlyd" ? "KLARLYD meny" : "Viddel meny";
 const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
 ---
 

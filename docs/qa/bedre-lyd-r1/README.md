@@ -4,6 +4,8 @@
 **Branch:** `feature/bedre-lyd-editorial-r1`  
 **PR:** #173 (ikke merget — ikke synlig på production)
 
+> **Legacy snapshot:** QA-notatet beholder daværende Preview- og produksjonsadresser som testbevis. Gjeldende produksjonsadresse er `www.viddel.no`.
+
 ## Vercel Preview (krever SSO)
 
 **URL:** https://vox-web-git-feature-bedre-lyd-edit-b6305b-raddum-5965s-projects.vercel.app/no/bedre-lyd/

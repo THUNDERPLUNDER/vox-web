@@ -1,7 +1,7 @@
 # AGENTS.md
 
 ## Project
-This repository is the KlarLyd / VOX web MVP.
+This repository is the Viddel web MVP. The repository name `vox-web` and the `.vox-*` namespace are retained as legacy technical identifiers until a separately scoped migration.
 KlarLyd is an AI-assisted service for hearing-aid users, built around helpful content, hub-and-spoke IA, and a CES/RAG-based assistant.
 The product should feel warm, premium, technically strong, and useful in everyday life. Avoid clinical or hospital-like expression unless explicitly requested.
 

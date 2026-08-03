@@ -4,6 +4,8 @@
 **Dato:** 2026-05-21  
 **Status:** Safe-read / kartlegging — ingen flytting, sletting eller domeneendring i denne runden
 
+> **Legacy snapshot:** Tilgangskartet beskriver daværende VOX-domene og planlagt domeneflytt. Gjeldende navn er Viddel, `www.viddel.no` er canonical, og `vox.raddum.no` er legacy redirect. Historiske URL-er beholdes som beslutningsgrunnlag.
+
 ---
 
 ## Formål

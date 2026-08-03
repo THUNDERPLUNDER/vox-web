@@ -1,7 +1,7 @@
 # Decision: Public AI guard v0.1 (#180)
 
 **Status:** Implemented — QA before CES production env activation  
-**Date:** 2026-05-30  
+**Date:** 2026-05-30 (canonical domain updated 2026-08-03)
 **Issue:** #180
 
 ## Context
@@ -17,7 +17,7 @@ Server-side guards on `POST /api/chat`:
 | Max message length | 2000 characters (before CES) |
 | Burst rate limit | 10 requests / 10 minutes / IP |
 | Daily rate limit | 50 requests / 24 hours / IP |
-| Origin check | Allowlist: vox.raddum.no, viddel.no, localhost, `*.vercel.app` |
+| Origin check | Allowlist: `viddel.no`, `www.viddel.no`, localhost, `*.vercel.app` |
 
 **Storage:** Upstash Redis via `@upstash/ratelimit` (`UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`).
 

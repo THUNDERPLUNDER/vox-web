@@ -7,6 +7,8 @@ Route: `/no/sandbox/ces-headless-spike/`
 Preview (verified): https://vox-web-git-spike-125m-b-ces-headless-poc-raddum-5965s-projects.vercel.app/no/sandbox/ces-headless-spike/  
 Related: [DECISION_125M_CES_HEADLESS_INTEGRATION_CBA.md](./DECISION_125M_CES_HEADLESS_INTEGRATION_CBA.md), [#157](https://github.com/THUNDERPLUNDER/vox-web/issues/157)
 
+> **Legacy snapshot:** VOX-navn, Preview-URL og `vox.raddum.no` beholdes her som testhistorikk. Gjeldende navn er Viddel, med `www.viddel.no` som canonical domene.
+
 **Branch:** `spike/125m-b-ces-headless-poc` — QA verified; **do not merge to prod as public feature**; `/no/chat/` unchanged
 
 ---

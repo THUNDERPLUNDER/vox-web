@@ -1,7 +1,7 @@
 # 05_CHAT_SHELL_FEASIBILITY
 
 ## Formål
-Feasibility-note for en mulig **VOX-eid** frontend chat shell (egen ramme rundt samtale og composer), uten å forutsette backend- eller agent-omstilling i samme sleng.
+Feasibility-note for en mulig **Viddel-eid** frontend chat shell (egen ramme rundt samtale og composer), uten å forutsette backend- eller agent-omstilling i samme sleng.
 
 ## Step 1 — status
 - **Step 1 er levert på kode-nivå** for prototypen: intern sandbox-side finnes og er siste gang justert i commit **`b2d91050e8b737cbb663f4fd8894a84d68315be7`** (fil: `src/pages/no/sandbox/chat-shell.astro`).
@@ -9,7 +9,7 @@ Feasibility-note for en mulig **VOX-eid** frontend chat shell (egen ramme rundt 
 
 ## Levert i Step 1
 - **Route:** `/no/sandbox/chat-shell` (intern bruk, `noindex`).
-- **Visuell tilpasning** til VOX tokens / `data-theme`, samt layout for meldingsområde og **sticky bottom composer** (markup + styling).
+- **Visuell tilpasning** til Viddels eksisterende tokens / `data-theme`, samt layout for meldingsområde og **sticky bottom composer** (markup + styling).
 - **Mockede meldinger** i UI for å vurdere hierarki, kontrast og rytme — **ingen** ekte dataflyt.
 - **Ingen** agentkall, **ingen** auth, **ingen** CES-bridge i denne leveransen.
 
@@ -24,11 +24,11 @@ Feasibility-note for en mulig **VOX-eid** frontend chat shell (egen ramme rundt 
 - Avklare **API-kontrakt** mot agent (meldingstyper, status, feil, ev. streaming).
 - **Manuell / instrumentert** verifikasjon av scroll, sticky composer og mobil tastatur i lang samtale.
 - **a11y- og ytelsesgjennomgang** når shell skal ut av ren prototype.
-- Eksplisitt beslutning om **grense** mellom VOX shell (frontend) og agent/backend (ansvar, drift).
+- Eksplisitt beslutning om **grense** mellom Viddel-shell (frontend) og agent/backend (ansvar, drift).
 
 ## Hva vi ønsker å eie i custom shell (målbilde)
 - Full visuell kontroll på chat-ramme, meldingsområde, composer/input/send.
-- Konsistent light/dark-adferd via eksisterende VOX tokens og `data-theme`.
+- Konsistent light/dark-adferd via eksisterende Viddel-tokens og `data-theme`.
 - Forutsigbar UX for spacing, radius, lagdeling og sticky bottom composer.
 
 ## Hva som fortsatt kan eies av Google-agent/backend

@@ -285,19 +285,19 @@ export const backstageLinks = {
   },
   vis: {
     label: "Åpne VIS",
-    href: "https://vox.raddum.no/vis/",
+    href: "https://www.viddel.no/vis/",
   },
   backstage: {
     label: "Åpne Backstage",
-    href: "https://vox.raddum.no/backstage/",
+    href: "https://www.viddel.no/backstage/",
   },
   designsystem: {
     label: "Åpne Designsystem",
-    href: "https://vox.raddum.no/designsystem/",
+    href: "https://www.viddel.no/designsystem/",
   },
   chat: {
     label: "Åpne Spør Viddel",
-    href: "https://vox.raddum.no/no/chat/",
+    href: "https://www.viddel.no/no/chat/",
   },
   viddelAiBackendFile: {
     label: "Backend-velger (kode)",
