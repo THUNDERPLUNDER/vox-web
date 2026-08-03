@@ -151,7 +151,7 @@ export const reviewRegistry: ReviewRegistryItem[] = [
     status: "closed",
     stakeholderSafe: true,
     description:
-      "CBA v0.3: Hjelp /no/hjelp/, Bedre lyd /no/bedre-lyd/, Spør Viddel → /no/chat/. Gamle ruter redirectes. Domeneflytt viddel.no ikke gjort.",
+      "CBA v0.3: Hjelp /no/hjelp/, Bedre lyd /no/bedre-lyd/, Spør Viddel → /no/chat/. Gamle ruter redirectes. Viddel.no er nå canonical; tidligere VOX-domene er legacy redirect.",
   },
   {
     id: "forside-routing",

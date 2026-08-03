@@ -56,7 +56,7 @@ const REQUIRED_LINK_PATTERNS = [
   "console.upstash.com",
   "console.cloud.google.com",
   "github.com",
-  "vox.raddum.no",
+  "www.viddel.no",
 ] as const;
 
 const srcRoot = join(dirname(fileURLToPath(import.meta.url)), "..");

@@ -1,6 +1,17 @@
 {
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "vox.raddum.no"
+        }
+      ],
+      "destination": "https://www.viddel.no/:path*",
+      "permanent": true
+    },
+    {
       "source": "/no/hub",
       "destination": "/no/hjelp",
       "permanent": true

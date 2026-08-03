@@ -17,7 +17,6 @@ export const CHAT_GUARD_MESSAGES = {
 const ALLOWED_ORIGIN_SUFFIXES = [".vercel.app"] as const;
 
 const ALLOWED_ORIGIN_EXACT = new Set([
-  "https://vox.raddum.no",
   "https://viddel.no",
   "https://www.viddel.no",
 ]);

@@ -68,9 +68,9 @@ export const visRuntimeFeed = {
     },
   ],
   recentlyCompletedSummary:
-    "Offentlig rotforside er publisert på viddel.no. Felles kontaktadresse er verifisert med gruppelevering, SPF og DKIM.",
+    "Viddel er nå canonical navn og www.viddel.no er produksjonsdomene. Det tidligere VOX-domenet er flyttet til permanent redirect.",
   lastReturnTicketSummary:
-    "Viddel.no public root og kontaktpunkt ferdigstilt i production (PR #302).",
+    "Viddel canonical cleanup v0.1 — aktive navn og lenker ryddet; tekniske legacy-identifikatorer beholdt.",
   links: {
     primary: [
       {

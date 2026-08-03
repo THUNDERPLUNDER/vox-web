@@ -5,6 +5,8 @@ Date: 2026-06-01
 Related: [#188](https://github.com/THUNDERPLUNDER/vox-web/issues/188), [#195](https://github.com/THUNDERPLUNDER/vox-web/pull/195)  
 Script: `scripts/chat-reliability-assessment.mjs`
 
+> **Legacy snapshot:** Testen ble kjørt mot daværende produksjonsadresse `vox.raddum.no`. Gjeldende produksjonsadresse er `www.viddel.no`; scriptets standardbase er oppdatert.
+
 ---
 
 ## Executive summary

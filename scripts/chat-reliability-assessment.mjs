@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const OPS_TEST_HEADER = "x-viddel-ops-test-token";
-const DEFAULT_BASE = "https://vox.raddum.no";
+const DEFAULT_BASE = "https://www.viddel.no";
 const DEFAULT_PREVIEW_BASE =
   "https://vox-web-git-main-raddum-5965s-projects.vercel.app";
 /** Default spacing — production limits are server-side (VIDDEL_CHAT_* in Vercel). */

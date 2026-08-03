@@ -1,5 +1,7 @@
 # Viddel — privacy-first effektmåling, state og datagrunnlag (v0.1)
 
+> **Legacy snapshot note (2026-08-03):** Safe-read-delen beholder VOX og `vox.raddum.no` der det beskriver daværende kode og drift. Gjeldende navn er Viddel, med `www.viddel.no` som canonical domene.
+
 ## Formål
 
 Dette dokumentet lander arbeidsgrunnlaget fra **GitHub #99** i repoet: en **privacy-first** modell for måling, state og datagrunnlag i Viddel MVP, uten å åpne for database, Mine sider, datalake eller transkript-lagring i denne runden.
@@ -210,7 +212,7 @@ Disse punktene skal innhentes skriftlig (support ticket / Customer Engineer / ju
 ### 6.5 Deploy / drift (OBS)
 
 - `docs/project/00_STATE.md` og `02_LINKS.md` omtaler **Vercel** som deploy-mønster.
-- `.github/workflows/deploy.yml` er konfigurert for **GitHub Pages** via `withastro/action`. **Faktisk produksjons-host** mot `vox.raddum.no` bør være én sannhet i drift — påvirker hvor CDN/logs/Analytics knyttes.
+- På tidspunktet for safe-read var `.github/workflows/deploy.yml` konfigurert for **GitHub Pages** via `withastro/action`, mens faktisk produksjons-host var `vox.raddum.no`. Gjeldende produksjonssannhet er nå `www.viddel.no`; legacy-domenet redirecter dit.
 
 ---
 

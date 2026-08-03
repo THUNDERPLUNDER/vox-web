@@ -6,7 +6,7 @@ import { isNavActive } from "../../lib/nav-active";
 
 type Props = {
   currentPath?: string;
-  /** default = VOX · Hørehjelpen; viddel = MVP product wordmark; klarlyd = legacy/test */
+  /** default/viddel = Viddel; klarlyd = legacy/test */
   brand?: "default" | "klarlyd" | "viddel";
   /** Midlertidig intern devtools (#81) — vis diskret toggle etter «Om». */
   showDevtoolsToggle?: boolean;
@@ -25,7 +25,7 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
     <a
       href={homeHref}
       class="inline-flex items-center rounded-[var(--radius-sm)] px-2 py-1.5 text-sm font-semibold tracking-tight text-[rgb(var(--text))] sm:text-base"
-      aria-label={brand === "viddel" ? "Viddel" : undefined}
+      aria-label={brand === "klarlyd" ? "KlarLyd" : "Viddel"}
     >
       {
         brand === "klarlyd" ? (
@@ -35,16 +35,10 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
               LYD
             </span>
           </span>
-        ) : brand === "viddel" ? (
+        ) : (
           <span class="font-display text-[1.18rem] font-[650] tracking-[-0.03em] text-[rgb(var(--text))] antialiased sm:text-[1.45rem]">
             Viddel
           </span>
-        ) : (
-          <>
-            <span class="font-semibold">VOX</span>
-            <span class="mx-2 text-[rgb(var(--muted))]">·</span>
-            <span class="text-[rgb(var(--muted))]">Hørehjelpen</span>
-          </>
         )
       }
     </a>

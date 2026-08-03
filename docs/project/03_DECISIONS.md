@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-08-03 - Viddel er canonical navn og domene
+- Beslutning: Viddel er eneste aktive merkevarenavn, og `https://www.viddel.no/` er canonical produksjonsdomene. `vox.raddum.no` beholdes kun som sti-bevarende permanent redirect.
+- Begrunnelse: VOX var et tidlig arbeidsnavn. Parallelle navn og produksjonsadresser skaper uklar operativ sannhet og duplicate content.
+- Konsekvens: Aktive lenker, synlige navn, Backstage og driftsverktøy bruker Viddel. Historiske snapshots merkes, men omskrives ikke. Repoet `vox-web` og `.vox-*` beholdes som legacy tekniske identifikatorer. Se `docs/project/decisions/DECISION_VIDDEL_CANONICAL_NAMING_CBA.md`.
+
 ## 2026-08-03 - Offentlig rotforside og felles kontaktpunkt
 - Beslutning: `viddel.no/` er en kort offentlig selskapsflate med H1 «Hjelp med lyd i hverdagen» og kontaktpunktet `kontakt@viddel.no`; produkt-MVP-en beholdes separat under `/no/` uten lenke fra roten.
 - Begrunnelse: Eksterne besøkende, inkludert en mulig saksbehandler hos Innovasjon Norge, skal møte en presis presentasjon som samsvarer med prosjektets faktiske modenhet.
@@ -94,7 +99,7 @@ Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår 
 - Konsekvens: Nye informasjonssider bør i utgangspunktet gjenbruke disse mønstrene; avvik dokumenteres bevisst.
 
 ## 2026-04-02 - Landing `/no`: desktop- og mobil-komposisjon (MVP)
-- Beslutning: **Desktop:** to kolonner — **innholdsstolpe venstre** (hero + etterfølgende blokker i samme kolonne), **CES-chat høyre** med **sticky** plassering og avtalt høyde. **Mobil:** **innhold og hero først** i scroll; **chat som egen blokk senere** i stacken, med begrenset høyde og tydelig ramme rundt widget-host for å unngå overlap med VOX-innhold (bl.a. pga. CES’ bruk av fast composer).
+- Beslutning: **Desktop:** to kolonner — **innholdsstolpe venstre** (hero + etterfølgende blokker i samme kolonne), **CES-chat høyre** med **sticky** plassering og avtalt høyde. **Mobil:** **innhold og hero først** i scroll; **chat som egen blokk senere** i stacken, med begrenset høyde og tydelig ramme rundt widget-host for å unngå overlap med Viddel-innhold (bl.a. pga. CES’ bruk av fast composer).
 - Begrunnelse: Gir lesbar helhet på desktop uten «hull» under hero ved siden av chat, og trygg vertikal flyt på mobil uten at tekst oppleves under chat-UI.
 - Konsekvens: Dette er **bevisste produkt- og layoutvalg** for MVP, ikke tilfeldige workarounds. Endringer i rekkefølge eller chat-høyde skal vurderes opp mot samme prinsipper og oppdateres i `DESIGN.md`.
 
@@ -140,6 +145,6 @@ Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår 
 
 ## 2026-04-27 - Article AI Bridge: embedded artikkeldialog
 - Beslutning: For `#62` / Article AI Bridge skal AI-dialog i spoke-artikler være en embedded fortsettelse av artikkelen, ikke en fullskjerm chat-widget. Direkte AI-modus kan fortsatt bruke full chat-/CES-opplevelse.
-- Begrunnelse: I artikkelmodus skal leseren oppleve at valgt startspørsmål blir første melding i en lokal artikkeldialog. VOX skal eie presentasjonslaget for valgt startspørsmål, brukerboble/startmelding, status som “Hørehjelpen svarer ...” og dialogens plassering under spørsmålet.
+- Begrunnelse: I artikkelmodus skal leseren oppleve at valgt startspørsmål blir første melding i en lokal artikkeldialog. Viddel skal eie presentasjonslaget for valgt startspørsmål, brukerboble/startmelding, status som “Hørehjelpen svarer ...” og dialogens plassering under spørsmålet.
 - Konsekvens: CES behandles foreløpig som teknisk motor/bridge, ikke som primær visuell artikkelkomponent. Startspørsmål-mønsteret kalles **Prompt Row** / **Startspørsmål-rad**, og beslutningen styrer videre v0.3+ arbeid på Article AI Bridge.
-- Åpent punkt: Avklare hvordan faktisk CES-respons kan hentes og vises stabilt i VOX-eid artikkeldialog.
+- Åpent punkt: Avklare hvordan faktisk CES-respons kan hentes og vises stabilt i Viddel-eid artikkeldialog.
