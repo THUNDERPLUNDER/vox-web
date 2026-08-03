@@ -66,7 +66,7 @@ export type ClosedSprint = {
 };
 
 export const mvpCurrentState = {
-  updatedAt: "2026-08-02",
+  updatedAt: "2026-08-03",
   currentSprint: {
     id: "2026-w21",
     label: "2026-W21",
@@ -84,7 +84,7 @@ export const mvpCurrentState = {
       label: "Viddel.no",
       route: "/",
       status: "Applied",
-      note: "Kort offentlig presentasjon av Viddel. Produkt-MVP-en ligger fortsatt separat under /no/.",
+      note: "Kort offentlig presentasjon av Viddel med verifisert kontaktpunkt. Produkt-MVP-en ligger fortsatt separat under /no/.",
       visFrontpage: true,
       kind: "public",
       frontpageDescription: "Offentlig presentasjon og kontaktpunkt for Viddel AS.",
@@ -224,9 +224,9 @@ export const mvpCurrentState = {
   ] satisfies NextRisk[],
   recentChanges: [
     {
-      date: "2026-08-02",
-      summary: "Ny offentlig rotforside på / med kort Viddel-presentasjon og kontaktadresse; produkt-MVP-en beholdes under /no/.",
-      commit: "—",
+      date: "2026-08-03",
+      summary: "Offentlig rotforside publisert på viddel.no; kontakt@viddel.no verifisert med gruppelevering, SPF og DKIM.",
+      commit: "0f09562a",
     },
     {
       date: "2026-06-09",

@@ -41,7 +41,7 @@ export type VisRuntimeFeed = {
 
 /** Manually updated after important Return Tickets — not synced from GitHub. */
 export const visRuntimeFeed = {
-  updatedAt: "2026-06-02",
+  updatedAt: "2026-08-03",
   activeNow: [
     {
       id: "ai-usage-monitoring-v01",
@@ -68,9 +68,9 @@ export const visRuntimeFeed = {
     },
   ],
   recentlyCompletedSummary:
-    "Guard strategy v0.2 (#199) merged. INT-007 Anne-spor registrert i gitbuss (#200–#204).",
+    "Offentlig rotforside er publisert på viddel.no. Felles kontaktadresse er verifisert med gruppelevering, SPF og DKIM.",
   lastReturnTicketSummary:
-    "Guard limits via Vercel env v0.1 — reliability-test uten lokal ops-token.",
+    "Viddel.no public root og kontaktpunkt ferdigstilt i production (PR #302).",
   links: {
     primary: [
       {
@@ -85,6 +85,16 @@ export const visRuntimeFeed = {
       },
     ],
     secondary: [
+      {
+        label: "Viddel.no",
+        href: "/",
+        kind: "page",
+      },
+      {
+        label: "PR #302",
+        href: "https://github.com/THUNDERPLUNDER/vox-web/pull/302",
+        kind: "issue",
+      },
       {
         label: "Backstage monitoring",
         href: "/backstage/",

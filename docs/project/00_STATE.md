@@ -20,6 +20,8 @@
 
 ## Status (repo, faktisk landet)
 - **Frontend:** Astro **5** med statisk output der det passer.
+- **Offentlig rot:** `https://www.viddel.no/` er en avgrenset selskapsflate med H1 «Hjelp med lyd i hverdagen» og `kontakt@viddel.no`. Produkt-MVP-en ligger fortsatt separat under `/no/` (PR #302, merge `0f09562a`).
+- **Kontakt:** `kontakt@viddel.no` er en operativ Google Workspace-gruppe. SPF og DKIM er verifisert; DMARC står på `p=reject`. Se `DECISION_PUBLIC_ROOT_CONTACT_CBA.md`.
 - **Styling:** **Tailwind CSS v4** via `@tailwindcss/vite` (**ingen** `tailwind.config.*`). Hybridmodell som over; se `01_STACK.md` og `DESIGN.md`.
 - **Designvariabler:** `src/styles/tokens.css` inkl. **Sonic Resonance**-primitives og semantisk mapping.
 - **Content surfaces:** `.vox-surface-calm`, `.vox-surface-lifted`, `.vox-surface-tech`, `.vox-section-title`, `.vox-lead` i `global.css`; `Section` med `tone="band"` (tonal band).
@@ -63,5 +65,5 @@
 - Publiseringsflyt CMS (MVP): Storyblok publish -> webhook -> Vercel deploy hook -> ny production build (`docs/project/04_PUBLISHING.md`) — testet og verifisert i praksis.
 
 ## Sist oppdatert
-- Dato: 2026-05-06
-- Oppdatert av: Referanse til privacy-first metrics / State v0.1 dokument (**#99**) i `20_VIDDEL_PRIVACY_FIRST_METRICS_AND_STATE_v0_1.md`; øvrig baseline uendret
+- Dato: 2026-08-03
+- Oppdatert av: Offentlig rotforside og felles kontaktpunkt dokumentert i `DECISION_PUBLIC_ROOT_CONTACT_CBA.md`; øvrig MVP-baseline uendret.
