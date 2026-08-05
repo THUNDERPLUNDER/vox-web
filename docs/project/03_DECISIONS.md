@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-08-05 - «Innsikt for Hørselsforbundet» strukturell CBA v0.1
+- Beslutning: Flaten brukes først som et syntetisk, lineært samtalegrunnlag med rangert temaliste, uløste signaler, åpne valideringsspørsmål og periodebytte. For lite eksempelgrunnlag stopper rangeringen.
+- Begrunnelse: Konseptet kan valideres uten å framstille syntetiske data som faktiske funn eller åpne en uavklart analyse-, samtykke- eller tilgangsarkitektur.
+- Konsekvens: `docs/project/VIDDEL_HORSELSFORBUNDET_INSIGHT_STRUCTURE_CBA_v0_1.md` og VIS-referansen styrer samtalene. Funn føres tilbake til #305 før copy, visuell design eller produktintegrasjon vurderes.
+
 ## 2026-08-03 - Viddel er canonical navn og domene
 - Beslutning: Viddel er eneste aktive merkevarenavn, og `https://www.viddel.no/` er canonical produksjonsdomene. `vox.raddum.no` beholdes kun som sti-bevarende permanent redirect.
 - Begrunnelse: VOX var et tidlig arbeidsnavn. Parallelle navn og produksjonsadresser skaper uklar operativ sannhet og duplicate content.

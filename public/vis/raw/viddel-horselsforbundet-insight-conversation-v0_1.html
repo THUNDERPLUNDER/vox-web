@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="Godkjent syntetisk starteksempel og samtaleguide for innsikt med Hørselsforbundet.">
+<meta name="vis:type" content="wireframe">
+<meta name="vis:section" content="Mønsterverifiseringer">
+<meta name="vis:updated" content="2026-08-05">
+<meta name="vis:delta" content="Godkjent strukturell CBA som samtalegrunnlag; ikke produktintegrasjon eller faktisk innsikt.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Innsikt for Hørselsforbundet — samtalegrunnlag v0.1</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(rgb(250 249 246), rgb(2 6 23));
+    --surface: light-dark(rgb(255 252 248), rgb(12 18 34));
+    --surface-subtle: light-dark(rgb(246 243 237), rgb(8 14 28));
+    --text: light-dark(rgb(28 32 38), rgb(230 236 245));
+    --text-secondary: light-dark(rgb(105 112 126), rgb(148 162 186));
+    --border: light-dark(rgb(228 224 216), rgb(56 72 100));
+    --accent: rgb(14 165 233);
+    --focus: rgb(244 114 182);
+    --primary-contrast: light-dark(rgb(248 250 252), rgb(8 12 22));
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); }
+  button { font: inherit; }
+  h1, h2, h3, p { margin: 0; }
+  h1, h2, h3, strong { font-weight: 600; }
+
+  .prototype {
+    margin: 0 auto;
+    max-width: 1120px;
+    padding: 28px 24px 52px;
+  }
+
+  .prototype-context {
+    align-items: start;
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .prototype-context p {
+    color: var(--text-secondary);
+    margin-top: 5px;
+  }
+
+  .prototype-badge {
+    background: var(--surface-subtle);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-secondary);
+    padding: 7px 11px;
+    white-space: nowrap;
+  }
+
+  .product-window {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    overflow: hidden;
+  }
+
+  .product-chrome {
+    align-items: center;
+    background: var(--surface-subtle);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    padding: 17px 24px;
+  }
+
+  .product-chrome span:last-child { color: var(--text-secondary); }
+
+  .insight-brief {
+    margin: 0 auto;
+    max-width: 920px;
+    padding: 42px 32px 36px;
+  }
+
+  .brief-heading {
+    align-items: start;
+    display: grid;
+    gap: 28px;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .eyebrow, .step {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .brief-heading h1 { font-size: clamp(28px, 4vw, 42px); margin-top: 5px; }
+  .lead { color: var(--text-secondary); font-size: 18px; line-height: 1.5; margin-top: 12px; max-width: 680px; }
+
+  .truth-boundary {
+    background: var(--surface-subtle);
+    border-left: 3px solid var(--accent);
+    min-width: 190px;
+    padding: 11px 14px;
+  }
+
+  .truth-boundary span, .truth-boundary small { display: block; }
+  .truth-boundary small { color: var(--text-secondary); margin-top: 2px; }
+
+  .period {
+    align-items: end;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 22px;
+    justify-content: space-between;
+    margin-top: 38px;
+    padding-bottom: 22px;
+  }
+
+  .period h2 { font-size: 18px; }
+  .period p { color: var(--text-secondary); margin-top: 4px; }
+  .period-controls { display: flex; flex-wrap: wrap; gap: 7px; }
+  .period-controls button {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text);
+    cursor: pointer;
+    padding: 8px 12px;
+  }
+  .period-controls button[aria-pressed="true"] {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--primary-contrast);
+  }
+  .period-controls button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .insight-section { padding: 34px 0; }
+  .insight-section + .insight-section { border-top: 1px solid var(--border); }
+  .section-heading {
+    align-items: end;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+  .section-heading h2 { font-size: 24px; margin-top: 5px; }
+  .section-heading > p { color: var(--text-secondary); }
+
+  .theme-list { display: grid; gap: 18px; }
+  .theme-row {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(180px, 1.2fr) minmax(160px, 2fr) auto;
+  }
+  .theme-track { align-self: center; background: var(--surface-subtle); height: 10px; overflow: hidden; }
+  .theme-fill { background: var(--accent); height: 100%; transition: width 180ms ease; }
+  .theme-count { color: var(--text-secondary); text-align: right; }
+
+  .signal { display: grid; gap: 12px; grid-template-columns: minmax(180px, .8fr) minmax(0, 1.8fr) auto; padding: 16px 0; }
+  .signal + .signal { border-top: 1px solid var(--border); }
+  .signal p { color: var(--text-secondary); line-height: 1.5; }
+  .signal span { white-space: nowrap; }
+
+  .question-list { display: grid; gap: 15px; list-style: none; margin: 0; padding: 0; }
+  .question-list li { align-items: start; display: grid; gap: 12px; grid-template-columns: 30px minmax(0, 1fr); }
+  .question-list span {
+    align-items: center;
+    background: var(--surface-subtle);
+    border-radius: 50%;
+    display: flex;
+    height: 28px;
+    justify-content: center;
+    width: 28px;
+  }
+
+  .insufficient { border-bottom: 1px solid var(--border); padding: 58px 0; text-align: center; }
+  .insufficient h2 { font-size: 24px; margin: 8px 0 10px; }
+  .insufficient p:last-child { color: var(--text-secondary); }
+
+  .method {
+    border-top: 1px solid var(--border);
+    display: grid;
+    gap: 24px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    padding-top: 26px;
+  }
+  .method h2 { font-size: 18px; margin-bottom: 7px; }
+  .method p { color: var(--text-secondary); line-height: 1.5; }
+
+  .conversation-guide {
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+    padding-top: 26px;
+  }
+  .conversation-guide h2 { font-size: 22px; }
+  .conversation-guide > p { color: var(--text-secondary); margin-top: 7px; }
+  .conversation-guide ol { display: grid; gap: 10px; margin: 20px 0 0; padding-left: 22px; }
+  .conversation-guide li { line-height: 1.45; padding-left: 5px; }
+
+  @media (max-width: 700px) {
+    .prototype { padding: 18px 12px 36px; }
+    .prototype-context { flex-direction: column; gap: 10px; }
+    .product-window { border-radius: 16px; }
+    .insight-brief { padding: 30px 20px; }
+    .brief-heading { grid-template-columns: 1fr; }
+    .truth-boundary { width: 100%; }
+    .period { align-items: start; flex-direction: column; }
+    .section-heading { align-items: start; flex-direction: column; gap: 7px; }
+    .theme-row { grid-template-columns: minmax(0, 1fr) auto; }
+    .theme-track { grid-column: 1 / -1; grid-row: 2; }
+    .signal { grid-template-columns: 1fr auto; }
+    .signal p { grid-column: 1 / -1; grid-row: 2; }
+    .method { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) { .theme-fill { transition: none; } }
+</style>
+</head>
+<body>
+  <main class="prototype">
+    <header class="prototype-context">
+      <div>
+        <h1>Innsikt for Hørselsforbundet</h1>
+        <p>Godkjent starteksempel for samtale · strukturell CBA v0.1</p>
+      </div>
+      <span class="prototype-badge">Ikke produktintegrasjon</span>
+    </header>
+
+    <section class="product-window" aria-label="Syntetisk innsiktsbrief">
+      <header class="product-chrome">
+        <strong>Viddel</strong>
+        <span>Konseptvisning</span>
+      </header>
+
+      <div class="insight-brief">
+        <div class="brief-heading">
+          <div>
+            <p class="eyebrow">For Hørselsforbundet</p>
+            <h1>Innsikt fra hverdagen</h1>
+            <p class="lead">Et mulig bilde av hva mennesker trenger hjelp med, og hvor de fortsatt står fast.</p>
+          </div>
+          <div class="truth-boundary" role="note">
+            <span>Syntetisk eksempel</span>
+            <small>Ikke faktiske brukerfunn</small>
+          </div>
+        </div>
+
+        <section class="period" aria-labelledby="period-title">
+          <div>
+            <h2 id="period-title">Eksempelperiode</h2>
+            <p id="period-summary">Siste 30 dager · 48 illustrerende samtaler</p>
+          </div>
+          <div class="period-controls" aria-label="Velg eksempelperiode">
+            <button type="button" data-period="month" aria-pressed="true">30 dager</button>
+            <button type="button" data-period="quarter" aria-pressed="false">3 måneder</button>
+            <button type="button" data-period="small" aria-pressed="false">Lite grunnlag</button>
+          </div>
+        </section>
+
+        <div id="insight-content" aria-live="polite">
+          <section class="insight-section" aria-labelledby="themes-title">
+            <div class="section-heading">
+              <div><p class="step">01</p><h2 id="themes-title">Dette ber folk om hjelp med</h2></div>
+              <p>Illustrativ rangering</p>
+            </div>
+            <div id="theme-list" class="theme-list"></div>
+          </section>
+
+          <section class="insight-section" aria-labelledby="signals-title">
+            <div class="section-heading">
+              <div><p class="step">02</p><h2 id="signals-title">Her står folk fortsatt fast</h2></div>
+              <p>Aggregerte eksempelsignaler</p>
+            </div>
+            <div id="signal-list"></div>
+          </section>
+
+          <section class="insight-section" aria-labelledby="questions-title">
+            <div class="section-heading">
+              <div><p class="step">03</p><h2 id="questions-title">Dette kan være verdt å undersøke</h2></div>
+              <p>Hypoteser, ikke konklusjoner</p>
+            </div>
+            <ol id="question-list" class="question-list"></ol>
+          </section>
+        </div>
+
+        <section id="insufficient" class="insufficient" hidden aria-live="polite">
+          <p class="step">For lite grunnlag</p>
+          <h2>Vi viser ikke en rangering ennå</h2>
+          <p>Eksempelperioden inneholder for få samtaler til å gi et meningsfullt aggregert bilde.</p>
+        </section>
+
+        <footer class="method">
+          <div>
+            <h2>Om eksempeldataene</h2>
+            <p>Alle tall og signaler er syntetiske. Ingen reelle samtaler eller personopplysninger brukes.</p>
+          </div>
+          <p>Flaten demonstrerer mulig form. Samtykke, aggregering, anonymisering og nytte må avklares før reell bruk.</p>
+        </footer>
+      </div>
+    </section>
+
+    <aside class="conversation-guide" aria-labelledby="guide-title">
+      <h2 id="guide-title">Samtaleguide</h2>
+      <p>Bruk spørsmålene etter at mottakeren har sett og prøvd periodevalgene.</p>
+      <ol>
+        <li>Hva kunne Hørselsforbundet brukt dette til?</li>
+        <li>Hvilken del gir mest verdi?</li>
+        <li>Hvilken handling eller beslutning kan følge?</li>
+        <li>Hva må være kjent for at innsikten skal oppleves troverdig?</li>
+        <li>Hva bør aldri vises eller samles inn?</li>
+      </ol>
+    </aside>
+  </main>
+
+<script>
+  (() => {
+    const periods = {
+      month: {
+        summary: "Siste 30 dager · 48 illustrerende samtaler",
+        themes: [["Ingen eller svak lyd",19],["App, mobil og lydruting",13],["Støy og samtaler",10],["Før audiografen",6]],
+        signals: [
+          ["Appen er koblet","Brukeren får fortsatt ikke lyd og vet ikke om problemet ligger i app, mobil eller apparat.",8],
+          ["Samtaler i støy","Apparatet virker, men flere samtidige stemmer gjør det vanskelig å delta.",6],
+          ["Hva er prøvd?","Brukeren mangler en enkel oversikt før neste møte med audiograf.",4]
+        ]
+      },
+      quarter: {
+        summary: "Siste 3 måneder · 132 illustrerende samtaler",
+        themes: [["App, mobil og lydruting",38],["Ingen eller svak lyd",35],["Støy og samtaler",31],["Tilvenning og lydkvalitet",18],["Før audiografen",10]],
+        signals: [
+          ["Lydruting skifter","Brukeren mister oversikt over hvor lyden går mellom mobil, bil og høreapparat.",17],
+          ["Hører, men forstår ikke","Teknisk funksjon løser ikke lytteanstrengelse i sosiale situasjoner.",13],
+          ["Trygg gjenstart","Brukeren vil ta apparatet i bruk igjen, men vet ikke hvilket steg som er riktig først.",9]
+        ]
+      },
+      small: { summary: "Valgt periode · 6 illustrerende samtaler", themes: [], signals: [] }
+    };
+    const questions = [
+      "Mangler mennesker forståelig hjelp mellom konsultasjoner?",
+      "Er noen hverdagsproblemer dårlig dekket av dagens informasjon?",
+      "Kan bedre forberedelse gjøre møtet med fagperson mer presist?"
+    ];
+    const summary = document.getElementById("period-summary");
+    const content = document.getElementById("insight-content");
+    const insufficient = document.getElementById("insufficient");
+    const themeList = document.getElementById("theme-list");
+    const signalList = document.getElementById("signal-list");
+    const questionList = document.getElementById("question-list");
+
+    function render(key) {
+      const period = periods[key];
+      summary.textContent = period.summary;
+      const hasEnough = period.themes.length > 0;
+      content.hidden = !hasEnough;
+      insufficient.hidden = hasEnough;
+      if (!hasEnough) return;
+      const max = Math.max(...period.themes.map((theme) => theme[1]));
+      themeList.innerHTML = period.themes.map(([label,count]) => `<div class="theme-row"><strong>${label}</strong><div class="theme-track" aria-hidden="true"><div class="theme-fill" style="width:${Math.round(count/max*100)}%"></div></div><span class="theme-count">${count} samtaler</span></div>`).join("");
+      signalList.innerHTML = period.signals.map(([title,text,count]) => `<article class="signal"><h3>${title}</h3><p>${text}</p><span>${count} samtaler</span></article>`).join("");
+      questionList.innerHTML = questions.map((question,index) => `<li><span aria-hidden="true">${index+1}</span><p>${question}</p></li>`).join("");
+    }
+
+    document.querySelectorAll("[data-period]").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-period]").forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === button)));
+        render(button.dataset.period);
+      });
+    });
+    render("month");
+  })();
+</script>
+</body>
+</html>
