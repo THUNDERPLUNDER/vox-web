@@ -66,7 +66,7 @@ export type ClosedSprint = {
 };
 
 export const mvpCurrentState = {
-  updatedAt: "2026-08-03",
+  updatedAt: "2026-08-20",
   currentSprint: {
     id: "2026-w21",
     label: "2026-W21",
@@ -77,7 +77,7 @@ export const mvpCurrentState = {
   } satisfies CurrentSprint,
   closedSprints: [] satisfies ClosedSprint[],
   currentFocus:
-    "Monitoring levert (#188). Reliability-test via Vercel guard-limits (100/500 midlertidig) — ikke lokal token. Fallback ved behov.",
+    "Spør Viddel er midlertidig utilgjengelig etter feil i Upstash-telleren. Guard v0.2 med eier-PIN, offentlig av/på-bryter og Vercel Firewall er implementert lokalt; Vercel-konfigurasjon og Preview-QA gjenstår.",
   mvpSurfaces: [
     {
       id: "public-root",
@@ -120,11 +120,11 @@ export const mvpCurrentState = {
       id: "chat",
       label: "Spør Viddel",
       route: "/no/chat/",
-      status: "Applied",
-      note: "Live i production. Public guard aktiv — grenser justerbare i Vercel for pre-pilot CES-test (#188).",
+      status: "Needs QA",
+      note: "Production-feil diagnostisert 19. august: Upstash-guard stoppet /api/chat før AI-kallet. Guard v0.2 har midlertidig eierkontroll og må verifiseres med Vercel Flags og Vercel Firewall før merge.",
       visFrontpage: true,
       kind: "public",
-      frontpageDescription: "Headless AI-chat — live (intern test). Public guard aktiv.",
+      frontpageDescription: "Headless AI-chat — feil diagnostisert, enklere guard under QA.",
     },
     {
       id: "conversation-area-prototype",
@@ -194,7 +194,7 @@ export const mvpCurrentState = {
     {
       id: "ai-usage-monitoring",
       label: "AI usage monitoring v0.1",
-      detail: "Hybrid v0.1 implementert — Upstash drift + PostHog EU. Intern test og verifisering før ekstern deling.",
+      detail: "Strukturerte Vercel-logger + PostHog EU. Redis-telleren fjernes; Vercel-flagget og Firewall må verifiseres før merge.",
     },
     {
       id: "backstage-v01",
@@ -202,9 +202,9 @@ export const mvpCurrentState = {
       detail: "Intern systemreferanse på /backstage/ — AI-flow, guards, env-vars og production checklist (#184).",
     },
     {
-      id: "test-access-gate-parked",
-      label: "Access / Mine sider — parkert",
-      detail: "#181 parkert. Testkode-kode revertet. Fremtidig ekstern pilot via innlogget «Mine sider» i globalmeny, ikke kodefelt i chat.",
+      id: "temporary-owner-access",
+      label: "Midlertidig eierkontroll — Needs QA",
+      detail: "Skjult firesifret eier-PIN og offentlig av/på-flagg er kun en lett MVP-kontroll. Ordentlig brukerinnlogging er fortsatt parkert til eget arbeidsspor.",
     },
     {
       id: "transcript-qa",
@@ -223,6 +223,18 @@ export const mvpCurrentState = {
     },
   ] satisfies NextRisk[],
   recentChanges: [
+    {
+      date: "2026-08-20",
+      summary: "Midlertidig eierkontroll implementert lokalt: firesifret PIN, sikker eiercookie og global offentlig AI-bryter i Vercel Flags.",
+      issue: "#180",
+      commit: "—",
+    },
+    {
+      date: "2026-08-19",
+      summary: "Production 503 diagnostisert som Upstash rate-limit storage-feil før AI-kallet; guard v0.2 flytter trafikkgrensen til Vercel Firewall.",
+      issue: "#180",
+      commit: "—",
+    },
     {
       date: "2026-08-03",
       summary: "Viddel låst som canonical navn og www.viddel.no som produksjonsdomene; permanent legacy redirect for VOX-domenet er besluttet og avventer domenekonfigurasjon i Vercel.",

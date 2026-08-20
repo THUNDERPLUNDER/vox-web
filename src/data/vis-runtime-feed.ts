@@ -41,47 +41,47 @@ export type VisRuntimeFeed = {
 
 /** Manually updated after important Return Tickets — not synced from GitHub. */
 export const visRuntimeFeed = {
-  updatedAt: "2026-08-03",
+  updatedAt: "2026-08-20",
   activeNow: [
     {
-      id: "ai-usage-monitoring-v01",
-      headline:
-        "Vi forenkler reliability-test ved å styre public guard-grenser fra Vercel.",
-      workTitle: "AI usage monitoring v0.1 (#188)",
-      area: "Data, monitoring og innsikt",
+      id: "public-ai-guard-v02",
+      headline: "Vi gjenoppretter chatten med en enkel eierkode og et lett kostnadsvern for andre.",
+      workTitle: "Public AI guard v0.2 (#180)",
+      area: "Drift og AI",
       why:
-        "Vi må se om chatten virker, om den feiler, og hvilke innganger som brukes — uten å lagre spørsmål eller svar.",
+        "Upstash-telleren feilet før AI-kallet og gjorde Spør Viddel utilgjengelig. Frem til innlogging trenger den offentlige MVP-en bare et lett vern mot åpenbart misbruk.",
       status:
-        "Monitoring og guard v0.2 er levert. Nå kan Thomas midlertidig heve burst/daily limits i Vercel (100/500) og kjøre reliability-test uten lokal token.",
+        "Feilen er diagnostisert. Eier-PIN, sikker eierøkt og offentlig av/på-flagg er implementert lokalt; Preview-test og Firewall-oppsett gjenstår.",
       possibleSolution:
-        "VIDDEL_CHAT_BURST_LIMIT og VIDDEL_CHAT_DAILY_LIMIT i Vercel — public guard forblir aktiv.",
+        "Vercel Flags holder én av/på-verdi. Vercel Firewall begrenser PIN-forsøk, tekstspørsmål og bildeanalyse uten ny teller-infrastruktur.",
       nextDecision:
-        "Thomas setter høyere limits, redeployer, Cursor kjører reliability-test. Vurder CES — deretter fallback-spike ved behov.",
-      issue: "#188",
-      issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/188",
+        "Koble koden til det opprettede flagget, kontroller eierflyten i Preview, og aktiver deretter de gjennomgåtte Firewall-reglene.",
+      issue: "#180",
+      issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/180",
       progressSteps: [
-        { id: "monitoring", label: "Monitoring levert", state: "done" },
-        { id: "guard-env", label: "Guard limits via Vercel", state: "current" },
-        { id: "ces-test", label: "Ren CES-test", state: "upcoming" },
-        { id: "fallback", label: "Fallback ved behov", state: "upcoming" },
+        { id: "diagnosis", label: "Feilkilde funnet", state: "done" },
+        { id: "code", label: "Guard v0.2 i kode", state: "done" },
+        { id: "config", label: "Vercel-flagg opprettet", state: "done" },
+        { id: "firewall", label: "Firewall-regler", state: "upcoming" },
+        { id: "production", label: "Production-verifisering", state: "upcoming" },
       ],
     },
   ],
   recentlyCompletedSummary:
     "Viddel er nå canonical navn og www.viddel.no er produksjonsdomene. Permanent redirect for det tidligere VOX-domenet er besluttet, men avventer domenekonfigurasjon i Vercel.",
   lastReturnTicketSummary:
-    "Viddel canonical cleanup v0.1 — aktive navn og lenker ryddet; tekniske legacy-identifikatorer beholdt; legacy-domeneredirect står igjen i Vercel.",
+    "Production 503 er sporet til Upstash rate-limit storage-feil før AI-kallet. Guard v0.2 fjerner denne feilkilden og flytter trafikkgrensen til Vercel Firewall.",
   links: {
     primary: [
       {
-        label: "Issue #188",
-        href: "https://github.com/THUNDERPLUNDER/vox-web/issues/188",
+        label: "Issue #180",
+        href: "https://github.com/THUNDERPLUNDER/vox-web/issues/180",
         kind: "issue",
       },
       {
-        label: "PR #199",
-        href: "https://github.com/THUNDERPLUNDER/vox-web/pull/199",
-        kind: "issue",
+        label: "Vercel Firewall",
+        href: "https://vercel.com/raddum-5965s-projects/vox-web/firewall",
+        kind: "external",
       },
     ],
     secondary: [

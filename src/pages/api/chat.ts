@@ -5,11 +5,9 @@ import {
   CHAT_GUARD_MESSAGES,
   CHAT_MAX_MESSAGE_LENGTH,
   checkChatOrigin,
-  checkChatRateLimit,
 } from "../../lib/chat-api-guard";
 import { isOpsReliabilityRequest } from "../../lib/chat-ops-test";
 import {
-  mapApiErrorToDriftSignal,
   recordChatDriftSignal,
   recordChatOpsDriftSignal,
   type ChatDriftSignal,
@@ -22,6 +20,7 @@ import {
   type OpsChatResponseMeta,
 } from "../../lib/chat-ops-meta";
 import { resolveViddelAiBackend, type ViddelAiBackend } from "../../lib/viddel-ai-backend";
+import { canUsePublicAi } from "../../lib/public-ai-access-v01.ts";
 
 export const prerender = false;
 
@@ -255,15 +254,13 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  const rateLimit = await checkChatRateLimit(request);
-  if (!rateLimit.ok) {
-    const signal = mapApiErrorToDriftSignal(rateLimit.error);
+  if (!(await canUsePublicAi(request))) {
     return respond(
       opsTest,
-      { error: rateLimit.error, message: rateLimit.message },
-      rateLimit.status,
-      signal,
-      rateLimit.error,
+      { error: "public_ai_disabled", message: "Viddel er ikke tilgjengelig akkurat nå." },
+      503,
+      "error",
+      "public_ai_disabled",
       backendMode,
     );
   }

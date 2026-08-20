@@ -3,6 +3,11 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-08-20 - Public AI guard v0.2: lett eierkontroll og Vercel Firewall
+- Beslutning: IP-basert rate limiting flyttes til Vercel Firewall for `/api/chat` og `/api/image-vision`. En skjult, midlertidig eierkontroll bruker firesifret PIN til å sette en separat sterk eiercookie. Offentlig AI-tilgang styres av Boolean-flagget `public-ai-enabled` i Vercel, mens eier kommer gjennom ubegrenset.
+- Begrunnelse: En feil i den eksterne Upstash-telleren ga `guard_unavailable` og gjorde hele chatten utilgjengelig før AI-kallet. Plattformbegrensning gir færre bevegelige deler.
+- Konsekvens: Upstash-avhengigheter og guard-env-vars fjernes. Vi gjenskaper ikke døgnkvoten eller bygger ny limiter-infrastruktur. Vercel Flags brukes kun til én global bryter, og appen lagrer ingen bred management-token. PIN-forsøk og offentlig trafikk begrenses i Firewall; en mer varig tilgangsmodell kommer med innlogging. Se `docs/project/decisions/DECISION_180_PUBLIC_AI_GUARD_V01.md`.
+
 ## 2026-08-03 - Viddel er canonical navn og domene
 - Beslutning: Viddel er eneste aktive merkevarenavn, og `https://www.viddel.no/` er canonical produksjonsdomene. `vox.raddum.no` beholdes kun som sti-bevarende permanent redirect.
 - Begrunnelse: VOX var et tidlig arbeidsnavn. Parallelle navn og produksjonsadresser skaper uklar operativ sannhet og duplicate content.

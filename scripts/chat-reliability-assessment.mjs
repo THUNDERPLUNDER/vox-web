@@ -12,7 +12,7 @@ const OPS_TEST_HEADER = "x-viddel-ops-test-token";
 const DEFAULT_BASE = "https://www.viddel.no";
 const DEFAULT_PREVIEW_BASE =
   "https://vox-web-git-main-raddum-5965s-projects.vercel.app";
-/** Default spacing — production limits are server-side (VIDDEL_CHAT_* in Vercel). */
+/** Default series stays small enough for the normal Vercel Firewall rule. */
 const DEFAULT_COUNT = 8;
 const DEFAULT_DELAY_MS = 8_000;
 const OPS_META_BACKEND = "x-viddel-ops-meta-backend-mode";
@@ -22,8 +22,6 @@ const OPS_META_DURATION = "x-viddel-ops-meta-duration-bucket";
 const OPS_META_RETRY = "x-viddel-ops-meta-retry-used";
 const OPS_META_ATTEMPTS = "x-viddel-ops-meta-attempt-count";
 const OPS_META_CITATIONS = "x-viddel-ops-meta-has-citations";
-const DEFAULT_BURST_LIMIT = 10;
-const DEFAULT_DAILY_LIMIT = 50;
 
 /** Fixed prompts — used internally only; never written to output. */
 const SEED_PROMPTS = [
@@ -97,32 +95,13 @@ function parseArgs(argv) {
   return args;
 }
 
-function parsePositiveInt(raw, fallback) {
-  const trimmed = String(raw ?? "").trim();
-  if (!trimmed) return fallback;
-  const n = Number.parseInt(trimmed, 10);
-  if (!Number.isFinite(n) || n < 1) return fallback;
-  return n;
-}
-
-/** Server limits live in Vercel — script only reports defaults + optional local hints. */
-function buildPublicLimitContext(fileEnv) {
-  const burstRaw = process.env.VIDDEL_CHAT_BURST_LIMIT ?? fileEnv.VIDDEL_CHAT_BURST_LIMIT ?? "";
-  const dailyRaw = process.env.VIDDEL_CHAT_DAILY_LIMIT ?? fileEnv.VIDDEL_CHAT_DAILY_LIMIT ?? "";
-  const burstLimit = parsePositiveInt(burstRaw, DEFAULT_BURST_LIMIT);
-  const dailyLimit = parsePositiveInt(dailyRaw, DEFAULT_DAILY_LIMIT);
+/** Firewall thresholds live in the Vercel dashboard and cannot be bypassed by this script. */
+function buildPublicLimitContext() {
   return {
-    serverControlled: true,
-    envVars: ["VIDDEL_CHAT_BURST_LIMIT", "VIDDEL_CHAT_DAILY_LIMIT"],
-    defaults: { burst: DEFAULT_BURST_LIMIT, daily: DEFAULT_DAILY_LIMIT, burstWindow: "10 m", dailyWindow: "24 h" },
-    localHints: {
-      burstConfigured: Boolean(String(burstRaw).trim()),
-      dailyConfigured: Boolean(String(dailyRaw).trim()),
-      burstLimit,
-      dailyLimit,
-    },
-    prePilotSuggestion: "Set 100 / 500 in Vercel Production, redeploy, then run this script.",
-    note: "Production limits apply on server after redeploy — local env hints do not change production.",
+    provider: "vercel_firewall",
+    configuredIn: "Vercel dashboard → Firewall → Custom Rules",
+    routes: ["/api/chat", "/api/image-vision"],
+    note: "This script cannot read or bypass dashboard Firewall thresholds. Keep the series within the active rule or use Preview.",
   };
 }
 
@@ -147,7 +126,6 @@ function errorCategory(errorCode, httpStatus) {
     errorCode === "forbidden_origin" ||
     errorCode === "message_too_long" ||
     errorCode === "configuration_missing" ||
-    errorCode === "guard_unavailable" ||
     errorCode === "auth" ||
     errorCode === "internal_error"
   ) {
@@ -507,9 +485,7 @@ function summarize(results, opsConfig, publicLimitContext, expectBackend) {
     opsMode: opsConfig,
     publicLimitContext,
     retryUsedNote: "retry_used/attempt_count from ops meta headers when token configured",
-    guardNote: opsConfig.publicGuardBypassed
-      ? "Ops token bypassed public IP limits (optional path — not required for pre-pilot test)."
-      : `Public guard active — server limits from Vercel env (default ${DEFAULT_BURST_LIMIT}/10m, ${DEFAULT_DAILY_LIMIT}/day).`,
+    guardNote: "Vercel Firewall remains active. The ops token exposes safe metadata only and never bypasses rate limits.",
   };
 }
 
@@ -524,11 +500,11 @@ async function main() {
   ).trim();
   const opsConfig = {
     tokenConfiguredLocally: Boolean(opsToken),
-    publicGuardBypassed: Boolean(opsToken),
+    publicGuardBypassed: false,
     protectionBypassConfigured: Boolean(protectionBypass),
     header: OPS_TEST_HEADER,
   };
-  const publicLimitContext = buildPublicLimitContext(fileEnv);
+  const publicLimitContext = buildPublicLimitContext();
 
   const sessionId = `viddel-rel-${Date.now().toString(36)}`;
   const plan = buildPlan(args.count);
@@ -542,9 +518,7 @@ async function main() {
   if (opsConfig.protectionBypassConfigured) {
     console.log("vercelProtectionBypass: configured (x-vercel-protection-bypass)");
   }
-  console.log(
-    `publicGuard: active (server limits — default ${DEFAULT_BURST_LIMIT}/10m ${DEFAULT_DAILY_LIMIT}/day; set VIDDEL_CHAT_* in Vercel + redeploy for pre-pilot)`,
-  );
+  console.log("publicGuard: Vercel Firewall active; this script cannot bypass its threshold");
   if (opsConfig.tokenConfiguredLocally) {
     console.log("opsToken: yes (required for --expect-backend preflight)");
   } else if (args.expectBackend) {

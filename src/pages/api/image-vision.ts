@@ -1,7 +1,8 @@
-/* CONTRACT: Product POST — equipment photo → Vertex vision JSON. No storage. Same guards as /api/chat. */
+/* CONTRACT: Product POST — equipment photo → Vertex vision JSON. No storage. Origin guard in app; rate limit in Vercel Firewall. */
 import type { APIRoute } from "astro";
-import { checkChatOrigin, checkChatRateLimit } from "../../lib/chat-api-guard";
+import { checkChatOrigin } from "../../lib/chat-api-guard";
 import { handleImageVisionPostCore } from "../../lib/image-vision-post-core-v01.ts";
+import { canUsePublicAi } from "../../lib/public-ai-access-v01.ts";
 
 export const prerender = false;
 
@@ -14,10 +15,9 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const rate = await checkChatRateLimit(request);
-  if (!rate.ok) {
-    return new Response(JSON.stringify({ error: rate.error, message: rate.message }), {
-      status: rate.status,
+  if (!(await canUsePublicAi(request))) {
+    return new Response(JSON.stringify({ error: "public_ai_disabled", message: "Viddel er ikke tilgjengelig akkurat nå." }), {
+      status: 503,
       headers: { "Content-Type": "application/json; charset=utf-8" },
     });
   }

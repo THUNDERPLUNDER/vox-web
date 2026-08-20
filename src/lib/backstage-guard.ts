@@ -13,47 +13,39 @@ import {
 } from "../data/backstage-v01.ts";
 import { getVisFrontpageHubs } from "../data/vis-frontpage-hubs-v01.ts";
 import { CHAT_MAX_MESSAGE_LENGTH } from "./chat-api-guard.ts";
-import {
-  CHAT_BURST_LIMIT_ENV,
-  CHAT_DAILY_LIMIT_ENV,
-  DEFAULT_CHAT_BURST_LIMIT,
-  DEFAULT_CHAT_DAILY_LIMIT,
-} from "./chat-guard-limits.ts";
 
 const REQUIRED_ENV_VARS = [
-  "UPSTASH_REDIS_REST_URL",
-  "UPSTASH_REDIS_REST_TOKEN",
   "CES_PROJECT_ID",
   "CES_LOCATION",
   "CES_APP_ID",
   "CES_APP_VERSION_ID",
   "CES_DEPLOYMENT_ID",
   "GOOGLE_SERVICE_ACCOUNT_JSON",
+  "VIDDEL_OWNER_PIN",
+  "VIDDEL_OWNER_SESSION_TOKEN",
 ] as const;
 
 const REQUIRED_ERROR_CODES = [
   "message_too_long",
   "rate_limited",
-  "guard_unavailable",
   "configuration_missing",
+  "public_ai_disabled",
 ] as const;
 
 const REQUIRED_RUNBOOK_IDS = [
   "ops-reliability",
-  "rate-limits",
+  "vercel-firewall",
   "max-length",
-  "upstash",
   "ces",
   "disable-ai",
   "access",
   "status",
 ] as const;
 
-const REQUIRED_SERVICE_IDS = ["vercel", "upstash", "google-ces", "github", "vis"] as const;
+const REQUIRED_SERVICE_IDS = ["vercel", "google-ces", "github", "vis"] as const;
 
 const REQUIRED_LINK_PATTERNS = [
   "vercel.com",
-  "console.upstash.com",
   "console.cloud.google.com",
   "github.com",
   "www.viddel.no",
@@ -130,32 +122,20 @@ export function validateBackstageGuard(): string[] {
     );
   }
 
-  const burstRule = protectionRules.find((r) => r.title === "Kort sikt");
-  const dailyRule = protectionRules.find((r) => r.title === "Døgn");
-  if (!burstRule?.value.includes(String(DEFAULT_CHAT_BURST_LIMIT))) {
-    errors.push(`Backstage burst limit text must reference default ${DEFAULT_CHAT_BURST_LIMIT} per 10 minutes`);
-  }
-  if (!dailyRule?.value.includes(String(DEFAULT_CHAT_DAILY_LIMIT))) {
-    errors.push(`Backstage daily limit text must reference default ${DEFAULT_CHAT_DAILY_LIMIT} per day`);
+  const firewallRule = protectionRules.find((r) => r.title === "Trafikkgrense");
+  if (!firewallRule?.value.includes("Vercel Firewall")) {
+    errors.push("Backstage traffic limit must reference Vercel Firewall");
   }
 
   const guardPath = join(srcRoot, "lib/chat-api-guard.ts");
-  const limitsPath = join(srcRoot, "lib/chat-guard-limits.ts");
   if (existsSync(guardPath)) {
     const guardSource = readFileSync(guardPath, "utf8");
-    if (!guardSource.includes("getChatRateLimitConfig")) {
-      errors.push("chat-api-guard.ts must use getChatRateLimitConfig for rate limits");
+    if (guardSource.toLowerCase().includes("upstash")) {
+      errors.push("chat-api-guard.ts must not depend on Upstash; rate limiting belongs in Vercel Firewall");
     }
     if (!guardSource.includes(`CHAT_MAX_MESSAGE_LENGTH = ${CHAT_MAX_MESSAGE_LENGTH}`)) {
       errors.push("CHAT_MAX_MESSAGE_LENGTH changed — update Backstage protection rules");
     }
   }
-  if (existsSync(limitsPath)) {
-    const limitsSource = readFileSync(limitsPath, "utf8");
-    if (!limitsSource.includes(CHAT_BURST_LIMIT_ENV) || !limitsSource.includes(CHAT_DAILY_LIMIT_ENV)) {
-      errors.push("chat-guard-limits.ts must define Vercel env var names for burst/daily limits");
-    }
-  }
-
   return errors;
 }
