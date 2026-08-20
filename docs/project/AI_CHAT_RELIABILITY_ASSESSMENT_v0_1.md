@@ -152,7 +152,7 @@ Sammenlign `row.direct.cesHttpStatus` vs `row.httpStatus`. Hvis 502 kun via prox
 
 ### Problem
 
-Thomas skal ikke manuelt grave i Vercel Runtime Logs og Upstash Console som hovedflyt.
+Thomas skal ikke manuelt grave i Vercel Runtime Logs og Firewall som hovedflyt.
 
 ### Anbefalt måte
 
@@ -160,7 +160,7 @@ Thomas skal ikke manuelt grave i Vercel Runtime Logs og Upstash Console som hove
 |-----|---------|
 | **Repo-script** | `npm run chat:reliability` → wrapper rundt `scripts/chat-reliability-assessment.mjs` — metadata JSON + stdout summary |
 | **Backstage runbook** | Seksjon «Chat driftcheck» med 3 trinn: kjør script → les success rate → eskalér hvis `<80%` |
-| **Intern diagnostics-route** (senere) | `GET /api/ops/chat-drift` bak backstage-guard — returnerer Upstash tellere + siste time (ingen innhold) |
+| **Intern diagnostics-route** (senere) | `GET /api/ops/chat-drift` bak backstage-guard — returnerer aggregert driftsstatus + siste time (ingen innhold) |
 | **Return Ticket-format** | Tydelige badges: `verified-by-code` / `verified-by-browser` / `requires-console` |
 
 ### Return Ticket-verifikasjonsnivåer (forslag)

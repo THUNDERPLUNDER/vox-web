@@ -3,30 +3,30 @@
 export const backstageMeta = {
   title: "Backstage",
   lead: "Backstage er kontrollrommet for hvordan Viddel fungerer bak scenen. Her forklarer vi AI-flyten, beskyttelsen, feilstater og hva som må sjekkes før vi deler med flere.",
-  updatedAt: "2026-06-05",
-  issue: "#184 · #222",
+  updatedAt: "2026-08-20",
+  issue: "#180 · #184 · #222",
 } as const;
 
 export const statusPanel = [
-  { label: "Spør Viddel", value: "Live i production", tone: "live" as const },
-  { label: "Guard", value: "Aktiv", tone: "ok" as const },
-  { label: "Monitoring", value: "Hybrid v0.1 — intern test", tone: "ok" as const },
+  { label: "Spør Viddel", value: "Midlertidig utilgjengelig — guard v0.2 under QA", tone: "wait" as const },
+  { label: "Guard", value: "Eierbryter + Vercel Firewall", tone: "ok" as const },
+  { label: "Monitoring", value: "Vercel logs + PostHog EU", tone: "ok" as const },
 ] as const;
 
 export const quickAnswers = [
   {
     question: "Hva skjer når noen spør Viddel?",
     answer:
-      "Spørsmålet går gjennom Viddel sitt eget grensesnitt, sjekkes, telles og sendes til AI-motoren via /api/chat — svaret kommer tilbake i samme chat. Production bruker nå google_agent_search_direct (Google :answer).",
+      "Spørsmålet går gjennom Viddel sitt eget grensesnitt. Appen sjekker om eier eller offentlig tilgang er aktiv, Firewall begrenser offentlig bruk, og spørsmålet sendes så til AI-motoren.",
   },
   {
     question: "Hva beskytter oss?",
     answer:
-      "Public guard: lengde, origin og IP-rate-limit (default 10/10 min, 50/døgn). Grensene kan midlertidig heves i Vercel for pre-pilot — uten innholdslogging.",
+      "Eier låser opp med en firesifret kode som gir en separat sterk cookie. Vercel Flags holder én offentlig av/på-verdi. Vercel Firewall begrenser offentlig trafikk per IP, mens appen sjekker origin og meldingslengde.",
   },
   {
     question: "Hva gjør vi når noe ikke virker?",
-    answer: "Start med hva brukeren ser, sjekk env-vars i Vercel, Upstash og CES — se feilsøkingsseksjonen under.",
+    answer: "Start med hva brukeren ser, sjekk Runtime Logs, Vercel Firewall og Google/CES — se feilsøkingsseksjonen under.",
   },
   {
     question: "Hvor orienterer vi oss i VIS?",
@@ -36,7 +36,7 @@ export const quickAnswers = [
   {
     question: "Hva måles når noen bruker AI-chatten?",
     answer:
-      "Vi teller forespørsler og utfall (suksess, feil, rate limit) uten å lagre spørsmål eller svar. PostHog EU får få produkt-events — hvilken side, inngang og feilkode — aldri innhold.",
+      "Vercel viser forespørsler, HTTP 429 og strukturerte app-utfall uten at vi lagrer spørsmål eller svar. PostHog EU får få produkt-events — hvilken side, inngang og feilkode — aldri innhold.",
   },
 ] as const;
 
@@ -73,9 +73,9 @@ export const systemMapLayers: SystemMapLayer[] = [
   {
     id: "guard",
     layer: "Beskyttelse",
-    title: "Guard + Upstash",
+    title: "Eierkontroll + Vercel Firewall",
     human:
-      "Public guard beskytter brukere og kost — rate limit og origin-sjekk. Grenser styres via VIDDEL_CHAT_* i Vercel (default 10/50).",
+      "Eier bruker AI uten offentlig kvote. Offentlig tilgang styres i Vercel Flags, og Vercel Firewall begrenser andre per IP. Appen sjekker origin og maks meldingslengde.",
   },
   {
     id: "ai",
@@ -124,10 +124,10 @@ export const chatFlowSteps: ChatFlowStep[] = [
   },
   {
     step: 4,
-    title: "Upstash sjekker bruksmengde",
-    human: "Teller hvor mange spørsmål som kommer fra samme IP.",
+    title: "Tilgangen kontrolleres",
+    human: "Eier kommer gjennom med sikker cookie. For andre må offentlig tilgang være på, og Firewall begrenser mengden per IP.",
     why: "Dette beskytter kostnad og misbruk.",
-    tech: "VIDDEL_CHAT_BURST_LIMIT / VIDDEL_CHAT_DAILY_LIMIT (default 10 / 10 min · 50 / døgn)",
+    tech: "owner cookie · Vercel Flag public-ai-enabled · Vercel Firewall HTTP 429",
   },
   {
     step: 5,
@@ -146,43 +146,35 @@ export const chatFlowSteps: ChatFlowStep[] = [
 
 export const protectionRules = [
   {
+    title: "Offentlig bryter",
+    value: "Vercel Flags",
+    human: "Én global verdi kan slås av/på i Vercel. Eier fungerer også når offentlig tilgang er av.",
+  },
+  {
     title: "Maks lengde",
     value: "2000 tegn",
     human: "Lengre spørsmål avvises med en tydelig melding til brukeren.",
   },
   {
-    title: "Kort sikt",
-    value: "10 per 10 min (default)",
-    human:
-      "Beskyttelse mot rask spam fra samme IP. Kan midlertidig heves i Vercel via VIDDEL_CHAT_BURST_LIMIT under pre-pilot eller reliability-test.",
-  },
-  {
-    title: "Døgn",
-    value: "50 per døgn (default)",
-    human:
-      "Tak på total bruk per IP per dag. Kan midlertidig heves i Vercel via VIDDEL_CHAT_DAILY_LIMIT — sett tilbake etter test.",
-  },
-  {
-    title: "Trygg stenging",
-    value: "Viddel stenger trygt",
-    human: "Hvis tellelaget mangler i production, svarer Viddel ikke — den står ikke åpen uten beskyttelse.",
-    tech: "guard_unavailable",
+    title: "Trafikkgrense",
+    value: "Vercel Firewall",
+    human: "IP-basert begrensning skjer på plattformen og svarer med HTTP 429 uten å gjøre chatten avhengig av en ekstern teller.",
   },
 ] as const;
 
-/** Guard strategy — public guard med Vercel-styrte grenser (#180 + env v0.1). */
+/** Guard strategy — temporary owner control + Vercel Firewall (#180 v0.2). */
 export const guardStrategyExplainer = {
-  title: "Public guard og testgrenser",
-  lead: "Public guard beskytter chatten alltid. Under pre-pilot kan Thomas heve grensene i Vercel — uten lokal token eller kodeendring.",
+  title: "Public guard v0.2",
+  lead: "Frem til innlogging gir en enkel eierkode, ett Vercel-flagg og Vercel Firewall et lett kostnadsvern. Appen beholder enkle, stabile innholdssjekker.",
   publicGuard: {
     label: "Public guard (#180)",
     human:
-      "Origin-sjekk, maks meldingslengde og IP-rate-limit via Upstash. Standard: 10 / 10 min og 50 / døgn. Fail closed hvis Upstash mangler i production.",
+      "Appen sjekker eiercookie, offentlig av/på-status, origin og maks meldingslengde. Vercel Flags brukes bare til én bryter — ikke som teller.",
   },
   vercelLimits: {
-    label: "Juster grenser i Vercel (v0.1)",
+    label: "Juster grenser i Vercel Firewall",
     human:
-      "VIDDEL_CHAT_BURST_LIMIT og VIDDEL_CHAT_DAILY_LIMIT — positive heltall. Ugyldig eller tom verdi → default 10 og 50. Redeploy etter endring.",
+      "Terskler endres i Vercel Dashboard → Firewall → Custom Rules. Endringen krever ikke kode eller redeploy.",
   },
 } as const;
 
@@ -190,18 +182,18 @@ export const guardStrategyExplainer = {
 export const prePilotReliabilityExplainer = {
   title: "Reliability-test uten lokal token",
   steps: [
-    "Sett midlertidig i Vercel Production: VIDDEL_CHAT_BURST_LIMIT=100 og VIDDEL_CHAT_DAILY_LIMIT=500.",
-    "Redeploy Production.",
-    "Kjør npm run chat:reliability (spaced calls) — Cursor trenger ikke lokal token.",
+    "Kontroller at Firewall-reglene er aktive for /api/chat og /api/image-vision.",
+    "Kjør 8 spredte kall med npm run chat:reliability.",
+    "Bruk Preview eller juster regelen midlertidig hvis en større test er nødvendig.",
     "Vurder CES-stabilitet fra safe metadata (suksess, upstream, timeout, rate_limit).",
-    "Sett grensene tilbake til 10/50 eller fjern env-vars etter test.",
+    "Sett en midlertidig justert regel tilbake etter testen.",
   ],
   note: "Guard forblir aktiv — vi justerer bare terskelen midlertidig.",
 } as const;
 
-export const upstashExplainer = {
-  title: "Hva betyr Upstash?",
-  body: "Upstash er bare telleren. Den husker ikke samtalen. Den teller hvor mange spørsmål som kommer fra samme IP — slik at vi kan stoppe misbruk uten å lagre det brukeren skriver.",
+export const firewallExplainer = {
+  title: "Hvor ble Upstash av?",
+  body: "Upstash ble fjernet fra chat-kjeden 19. august etter en tellerfeil som stengte hele tjenesten. Vercel Firewall håndterer nå trafikkgrensen før API-et kjører.",
 } as const;
 
 export const cesExplainer = {
@@ -238,9 +230,9 @@ export const backstageLinks = {
     href: "https://vercel.com/raddum-5965s-projects/vox-web/logs",
     external: true,
   },
-  upstashConsole: {
-    label: "Åpne Upstash Console",
-    href: "https://console.upstash.com/",
+  vercelFirewall: {
+    label: "Åpne Vercel Firewall",
+    href: "https://vercel.com/raddum-5965s-projects/vox-web/firewall",
     external: true,
   },
   googleCloud: {
@@ -502,8 +494,8 @@ export type ServiceEntry = {
 /** Overordnet flyt — hvilke tjenester som henger sammen. */
 export const serviceMapFlow = [
   { label: "Brukerflate", hint: "Spør Viddel" },
-  { label: "Vercel", hint: "Nettsted + API" },
-  { label: "Upstash · CES", hint: "Teller + AI" },
+  { label: "Vercel", hint: "Firewall + nettsted + API" },
+  { label: "Google", hint: "AI" },
   { label: "GitHub · VIS", hint: "Styring + status" },
 ] as const;
 
@@ -516,12 +508,13 @@ export const services: ServiceEntry[] = [
     role: [
       "Kjører Viddel-siden og /api/chat i production",
       "Har environment variables",
-      "Har deployments og runtime logs",
+      "Har Firewall, deployments og runtime logs",
     ],
     whenToOpen: [
       "Sette eller endre env-vars",
       "Redeploye etter endring",
       "Se runtime logs",
+      "Endre trafikkgrensen",
       "Når production ikke virker",
     ],
     places: [
@@ -529,34 +522,15 @@ export const services: ServiceEntry[] = [
       "Settings → Environment Variables",
       "Deployments",
       "Runtime Logs",
+      "Firewall → Custom Rules",
     ],
     actionLinks: [
       backstageLinks.vercelProject,
       backstageLinks.vercelEnv,
       backstageLinks.vercelDeployments,
       backstageLinks.vercelLogs,
+      backstageLinks.vercelFirewall,
     ],
-  },
-  {
-    id: "upstash",
-    name: "Upstash",
-    layer: "Teller bruk",
-    role: [
-      "Teller bruk for rate limit",
-      "Holder styr på spørsmål per IP",
-      "Lagrer ikke samtalehistorikk",
-    ],
-    whenToOpen: [
-      "Sjekke rate limit / bruk",
-      "Bytte eller rotere Redis-token",
-      "Når rate limit oppfører seg rart",
-    ],
-    places: [
-      "Redis: viddel-chat-rate-limit",
-      "REST URL / REST TOKEN",
-      "Usage / Monitor",
-    ],
-    actionLinks: [backstageLinks.upstashConsole],
   },
   {
     id: "google-ces",
@@ -637,8 +611,8 @@ export const firstCheckRules = [
   },
   {
     symptom: "Rate limit slår inn",
-    check: "Upstash + Vercel logs",
-    links: [backstageLinks.upstashConsole, backstageLinks.vercelLogs],
+    check: "Vercel Firewall + Runtime Logs",
+    links: [backstageLinks.vercelFirewall, backstageLinks.vercelLogs],
   },
   {
     symptom: "AI feiler",
@@ -658,60 +632,40 @@ export const changeRunbooks: ChangeRunbook[] = [
     id: "ops-reliability",
     title: "Ops reliability test-token",
     whatChanges:
-      "Aktivere eller rotere hemmelig token for intern stabilitetstest — omgår kun public IP-rate-limit, ikke andre guard-regler.",
+      "Aktivere eller rotere hemmelig token for intern stabilitetstest. Tokenet viser trygg responsmetadata, men omgår ikke Vercel Firewall.",
     where:
       "Vercel → Environment Variables: VIDDEL_OPS_TEST_TOKEN (Production, server-only). Script: scripts/chat-reliability-assessment.mjs.",
     whereToGo:
       "Vercel → Settings → Environment Variables. Generer sterk tilfeldig token lokalt — aldri i repo eller frontend. Redeploy Production.",
     after:
-      "Redeploy. Kjør npm run chat:reliability med token i lokalt env — bekreft publicGuardBypassed: yes og at CES-signal kommer uten 429 fra IP-grense.",
+      "Redeploy. Kjør npm run chat:reliability med token i lokalt env og kontroller safe metadata. Hold serien innenfor aktiv Firewall-regel.",
     test:
-      "Uten header: vanlig public guard. Feil token: ingen bypass. Riktig token fra script: reliability-serie uten rate_limit fra IP-grense.",
+      "Uten eller feil header: ingen ops-metadata. Riktig token: trygg metadata. Vercel Firewall gjelder i alle tilfeller.",
     actionLinks: [backstageLinks.vercelEnv, backstageLinks.vercelDeployments, backstageLinks.guardFile],
     envVars: ["VIDDEL_OPS_TEST_TOKEN"],
     tech: "src/lib/chat-ops-test.ts · aldri PUBLIC_ prefix · aldri i klientkode",
   },
   {
-    id: "rate-limits",
-    title: "Endre rate limits (Vercel env)",
-    whatChanges: "Hvor mange spørsmål som tillates per IP — burst (10 min) og døgn. Default 10 og 50 hvis env mangler.",
-    where:
-      "Vercel → Environment Variables: VIDDEL_CHAT_BURST_LIMIT, VIDDEL_CHAT_DAILY_LIMIT. Kun positive heltall — ellers faller systemet tilbake til default.",
-    whereToGo: "Vercel → Settings → Environment Variables → Redeploy Production.",
-    after:
-      "Redeploy. For reliability-test: midlertidig 100/500, kjør script, sett tilbake etterpå. For permanent endring: avklar med @navigator først.",
-    test: "Ett vanlig spørsmål (skal fungere). reliability-script uten rate_limit-blokkering når grensene er hevet. For lang melding (skal avvises).",
-    actionLinks: [backstageLinks.vercelEnv, backstageLinks.vercelDeployments, backstageLinks.guardFile],
-    envVars: ["VIDDEL_CHAT_BURST_LIMIT", "VIDDEL_CHAT_DAILY_LIMIT"],
-    tech: "src/lib/chat-guard-limits.ts · src/lib/chat-api-guard.ts",
+    id: "vercel-firewall",
+    title: "Endre rate limits (Vercel Firewall)",
+    whatChanges: "Hvor mange kall som tillates per IP til /api/chat og /api/image-vision.",
+    where: "Vercel Dashboard → Firewall → Custom Rules.",
+    whereToGo: "Åpne Vercel Firewall og rediger den aktuelle ruteregelen.",
+    after: "Endringen gjelder uten redeploy. Test et vanlig kall og bekreft HTTP 429 når terskelen nås.",
+    test: "Ett vanlig spørsmål skal fungere. En kontrollert serie over terskelen skal få HTTP 429 og en vennlig melding i chatten.",
+    actionLinks: [backstageLinks.vercelFirewall, backstageLinks.vercelLogs],
+    tech: "Vercel Firewall custom rate-limit rules",
   },
   {
     id: "max-length",
     title: "Endre maks lengde på spørsmål",
     whatChanges: "Hvor langt spørsmål brukeren kan sende — i dag 2000 tegn.",
     where: "I input-valideringen for chat guard.",
-    whereToGo: "GitHub/Cursor for kodeendring i guard. Etterpå Vercel → Deployments.",
+    whereToGo: "GitHub/Codex for kodeendring i guard. Etterpå Vercel → Deployments.",
     after: "Commit, deploy, og test med spørsmål på og rett over grensen.",
     test: "Send spørsmål med 2000 tegn (skal fungere). Send 2001 tegn eller mer (skal avvises med tydelig melding).",
     actionLinks: [backstageLinks.guardFile, backstageLinks.vercelDeployments],
     tech: "src/lib/chat-api-guard.ts · brukt av src/pages/api/chat.ts",
-  },
-  {
-    id: "upstash",
-    title: "Endre eller bytte Upstash",
-    whatChanges: "Bytte telleren som holder styr på bruk — f.eks. ny Upstash-database eller nye nøkler.",
-    where: "Upstash Console for Redis/REST-token. Vercel for env-vars.",
-    whereToGo:
-      "Upstash Console → Redis viddel-chat-rate-limit. Vercel → Settings → Environment Variables. Vercel → Deployments for redeploy.",
-    after: "Redeploy Production. Test at chat svarer og at rate limit fortsatt virker.",
-    test: "Ett vanlig spørsmål i Spør Viddel. Sjekk at feilmelding er trygg hvis noe er feil — ikke teknisk rot.",
-    actionLinks: [
-      backstageLinks.upstashConsole,
-      backstageLinks.vercelEnv,
-      backstageLinks.vercelDeployments,
-    ],
-    envVars: ["UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN"],
-    tech: "Verdier aldri i repo, ChatGPT eller Cursor.",
   },
   {
     id: "ces",
@@ -787,36 +741,26 @@ export const changeRunbooks: ChangeRunbook[] = [
   {
     id: "disable-ai",
     title: "Slå av AI midlertidig",
-    whatChanges: "Stoppe AI-svar midlertidig — ved feil, kostnadsbekymring eller uventet adferd.",
-    where: "Fjern eller deaktiver CES env-vars i Vercel Production.",
-    whereToGo:
-      "Vercel → Environment Variables / Deployments. Kontrollert handling — påvirker production. Oppdater VIS/current-state etterpå.",
-    after: "Redeploy. Oppdater VIS current-state så teamet vet at AI er av.",
-    test: "Brukeren skal se trygg feilmelding («Viddel er ikke tilgjengelig akkurat nå») — ikke rå teknisk feil.",
-    actionLinks: [
-      backstageLinks.vercelEnv,
-      backstageLinks.vercelDeployments,
-      backstageLinks.currentStateFile,
-      backstageLinks.vis,
-    ],
-    tech: "configuration_missing · src/lib/ces-env.ts",
+    whatChanges: "Stoppe offentlig AI-svar midlertidig ved feil, kostnadsbekymring eller uventet adferd. Eier beholder tilgang.",
+    where: "Vercel Dashboard → vox-web → Flags → public-ai-enabled.",
+    whereToGo: "Sett Production til Off eller On. Den skjulte PIN-en på /no/chat/ styrer bare eiertilgangen.",
+    after: "Endringen gjelder straks og krever ikke redeploy.",
+    test: "Privat vindu skal se trygg utilgjengelig-melding. Nettleseren med eiercookie skal fortsatt få svar.",
+    actionLinks: [backstageLinks.chat, backstageLinks.vercelLogs],
+    envVars: [],
+    tech: "public-ai-enabled · @vercel/flags-core · src/lib/public-ai-access-v01.ts",
   },
   {
     id: "access",
-    title: "Tilgang / passord / ekstern pilot",
-    whatChanges: "Hvem som får bruke Spør Viddel ved ekstern pilot — ikke relevant nå (access er parkert).",
-    where: "Fremtidig retning: «Mine sider» / innlogget tilstand i globalmenyen.",
-    whereToGo:
-      "Ikke nå — eget arbeidsspor før ekstern pilot. UI-retning: «Mine sider» i globalmenyen, ikke kodefelt i chatten.",
-    after: "Server-side må fortsatt beskytte /api/chat når det kommer.",
-    test: "Når det kommer: chatten skal oppleves som tilgjengelig når brukeren er inne — uten passord i selve chat-flaten.",
-    actionLinks: [
-      backstageLinks.githubIssues,
-      backstageLinks.githubIssue181,
-      backstageLinks.vis,
-      backstageLinks.backstage,
-    ],
-    tech: "Access Gate #181 parkert/revertet.",
+    title: "Midlertidig eier-PIN",
+    whatChanges: "Eier-PIN og den lange eiercookie-hemmeligheten frem til ordentlig innlogging finnes.",
+    where: "Vercel Environment Variables, server-side og sensitive.",
+    whereToGo: "Sett VIDDEL_OWNER_PIN og VIDDEL_OWNER_SESSION_TOKEN. Del aldri verdiene i chat eller repo.",
+    after: "Redeploy. Eksisterende eierøkter må låses opp på nytt hvis session-token roteres.",
+    test: "Feil PIN avvises. Riktig PIN gir eiertilgang i 30 dager. Logg ut fjerner cookien.",
+    actionLinks: [backstageLinks.vercelEnv, backstageLinks.chat, backstageLinks.vercelFirewall],
+    envVars: ["VIDDEL_OWNER_PIN", "VIDDEL_OWNER_SESSION_TOKEN"],
+    tech: "Midlertidig MVP-kontroll — ikke full brukerinnlogging.",
   },
   {
     id: "status",
@@ -854,25 +798,25 @@ export const troubleshootingCases: TroubleshootingCase[] = [
   {
     id: "rate-limit",
     userSees: "«Du har stilt mange spørsmål på kort tid. Prøv igjen litt senere.»",
-    usuallyMeans: ["IP har nådd grensen (10 per 10 min eller 50 per døgn).", "Kan være ekte bruk eller misbruk."],
-    weCheck: ["Upstash tellere.", "Vent og prøv igjen.", "Vurder justering av grenser ved behov."],
-    techCodes: ["rate_limited"],
+    usuallyMeans: ["IP har nådd den aktive Vercel Firewall-grensen.", "Kan være ekte bruk eller misbruk."],
+    weCheck: ["Vercel Firewall-regelen.", "Vent og prøv igjen.", "Vurder justering av terskelen ved behov."],
+    techCodes: ["rate_limited", "HTTP 429"],
   },
   {
     id: "unavailable",
     userSees: "«Viddel er ikke tilgjengelig akkurat nå.»",
     usuallyMeans: [
+      "Offentlig AI-tilgang kan være slått av i Vercel Flags.",
+      "Vercel Flags kan være utilgjengelig; offentlig trafikk stoppes da trygt.",
       "CES-variabler mangler i Vercel.",
-      "Upstash mangler eller svarer ikke.",
       "Google/CES-feil.",
     ],
     weCheck: [
       "Vercel env-vars (Production).",
       "Vercel runtime logs.",
-      "Upstash status.",
       "CES status.",
     ],
-    techCodes: ["configuration_missing", "guard_unavailable", "auth"],
+    techCodes: ["public_ai_disabled", "configuration_missing", "auth"],
   },
   {
     id: "retry",
@@ -885,7 +829,8 @@ export const troubleshootingCases: TroubleshootingCase[] = [
 
 export const productionChecklist = [
   "Kan vi få ekte svar i Spør Viddel?",
-  "Er guard aktiv (Upstash env satt i Production)?",
+  "Virker eier-PIN, offentlig av/på-bryter og eiertilgang når offentlig tilgang er av?",
+  "Er Firewall-reglene aktive for begge AI-rutene?",
   "Ser vi feil i Vercel logs?",
   "Er VIS current-state oppdatert?",
   "Er Return Ticket lagt?",
@@ -893,8 +838,8 @@ export const productionChecklist = [
 
 export const beforeExternalSharing = [
   "Hybrid monitoring v0.1 er aktiv — intern test med Thomas og Vibeke før ekstern deling.",
-  "Sjekk Upstash driftstall og PostHog EU for mønstre — ikke innhold.",
-  "Access/login senere via «Mine sider» i globalmenyen — ikke kodefelt inne i chatten.",
+  "Sjekk Runtime Logs, Firewall og PostHog EU for mønstre — ikke innhold.",
+  "Eier-PIN er kun en skjult, midlertidig MVP-kontroll; ordentlig innlogging kommer senere.",
   "Ekstern pilot krever egen beslutning.",
 ] as const;
 
@@ -904,10 +849,10 @@ export const monitoringExplainer = {
   layers: [
     {
       id: "drift",
-      label: "Drift (Vercel + Upstash)",
+      label: "Drift (Vercel)",
       human:
-        "Server-side tellere på /api/chat: forespørsel, suksess, feil, rate limit, for lang melding, guard utilgjengelig og manglende konfigurasjon. Vercel Runtime Logs viser strukturerte [chat-drift]-linjer. Ops-test logges separat som [chat-ops-drift] (ops_test: true) — uten innhold, sessionId eller IP.",
-      where: "Upstash Redis (dagsnøkler) + Vercel → Deployments → Runtime Logs",
+        "Vercel Runtime Logs viser strukturerte app-utfall for /api/chat. Firewall stopper overskytende trafikk med HTTP 429 før funksjonen kjører. Ops-test logges separat som [chat-ops-drift] (ops_test: true) — uten innhold, sessionId eller IP.",
+      where: "Vercel → Firewall + Deployments → Runtime Logs",
     },
     {
       id: "product",
@@ -926,8 +871,8 @@ export const monitoringExplainer = {
 } as const;
 
 export const monitoringLogged = [
-  "Antall /api/chat-forespørsler per dag",
-  "Utfall: suksess, feil, rate_limited, message_too_long, guard_unavailable, configuration_missing",
+  "Strukturerte Vercel-utfall for /api/chat",
+  "App-utfall: suksess, feil, message_too_long og configuration_missing; Firewall HTTP 429 vises separat",
   "Ops-test: [chat-ops-drift] med signal, error_code, upstream_http_status, duration_bucket, retry_used, attempt_count, ops_test: true",
   "PostHog: chat_opened, ai_entry_clicked, article_ai_seed_clicked, chat_question_sent, chat_answer_success/error",
   "Feilkoder (error_code) — aldri meldingstekst",
@@ -956,24 +901,14 @@ export const monitoringEvents = [
 
 export type EnvVarEntry = {
   name: string;
-  group: "upstash" | "guard" | "ces" | "agent-search" | "auth" | "posthog" | "ops";
+  group: "ces" | "agent-search" | "auth" | "posthog" | "ops";
   controls: string;
 };
 
 export const envVars: EnvVarEntry[] = [
-  { name: "UPSTASH_REDIS_REST_URL", group: "upstash", controls: "Teller-endpoint." },
-  { name: "UPSTASH_REDIS_REST_TOKEN", group: "upstash", controls: "Teller-autentisering." },
-  {
-    name: "VIDDEL_CHAT_BURST_LIMIT",
-    group: "guard",
-    controls: "Spørsmål per IP per 10 min. Default 10. Pre-pilot test: midlertidig 100.",
-  },
-  {
-    name: "VIDDEL_CHAT_DAILY_LIMIT",
-    group: "guard",
-    controls: "Spørsmål per IP per døgn. Default 50. Pre-pilot test: midlertidig 500.",
-  },
-  { name: "VIDDEL_OPS_TEST_TOKEN", group: "ops", controls: "Hemmelig ops reliability test — bypass public IP-rate-limit kun for script med riktig header. Aldri frontend." },
+  { name: "VIDDEL_OWNER_PIN", group: "auth", controls: "Fire sifre; brukes kun til å låse opp eierøkten. Aldri frontend." },
+  { name: "VIDDEL_OWNER_SESSION_TOKEN", group: "auth", controls: "Minst 32 tilfeldige tegn; cookie-verdi og smal Firewall-bypass for AI-rutene." },
+  { name: "VIDDEL_OPS_TEST_TOKEN", group: "ops", controls: "Hemmelig ops reliability test som viser trygg responsmetadata. Omgår ikke Vercel Firewall. Aldri frontend." },
   {
     name: "VIDDEL_AI_BACKEND",
     group: "agent-search",
@@ -1011,7 +946,7 @@ export const envVars: EnvVarEntry[] = [
 
 export const envVarNotes = [
   "Sett kun i Vercel Production (Preview ved behov).",
-  "Verdier aldri i repo, ChatGPT eller Cursor.",
+  "Verdier aldri i repo, ChatGPT eller Codex-chat.",
   "Redeploy etter endring.",
 ] as const;
 
@@ -1023,7 +958,9 @@ export const sourceFiles = [
   "src/lib/render-assistant-markdown.ts",
   "src/pages/no/chat.astro",
   "src/lib/chat-api-guard.ts",
-  "src/lib/chat-guard-limits.ts",
+  "src/lib/owner-access-v01.ts",
+  "src/lib/public-ai-access-v01.ts",
+  "src/pages/api/owner-access/*",
   "src/lib/chat-ops-test.ts",
   "src/lib/chat-usage-metrics.ts",
   "src/lib/viddel-analytics-events.ts",

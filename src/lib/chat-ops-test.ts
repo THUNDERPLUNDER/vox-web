@@ -1,4 +1,4 @@
-/* CONTRACT: Ops-only reliability test gate for /api/chat — bypasses public IP rate limits, never exposed to client. */
+/* CONTRACT: Ops-only reliability metadata gate for /api/chat — never exposed to client and never bypasses Vercel Firewall. */
 
 import { timingSafeEqual } from "node:crypto";
 

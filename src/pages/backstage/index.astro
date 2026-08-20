@@ -17,7 +17,7 @@ import {
   statusPanel,
   systemMapLayers,
   troubleshootingCases,
-  upstashExplainer,
+  firewallExplainer,
   changeRunbooks,
   services,
   serviceMapFlow,
@@ -32,8 +32,6 @@ import {
 const base = import.meta.env.BASE_URL;
 
 const envGroups = [
-  { id: "upstash", label: "Upstash (teller + drift)" },
-  { id: "guard", label: "Public guard (rate limits)" },
   { id: "agent-search", label: "AI backend (direct :answer)" },
   { id: "ces", label: "CES (rollback / runSession)" },
   { id: "auth", label: "Google auth" },
@@ -252,9 +250,9 @@ const layerTone: Record<string, string> = {
     </section>
 
     <section class="bs__explainers">
-      <article class="bs-explainer" aria-labelledby="bs-upstash">
-        <h2 id="bs-upstash" class="bs-explainer__title">{upstashExplainer.title}</h2>
-        <p class="bs-explainer__body">{upstashExplainer.body}</p>
+      <article class="bs-explainer" aria-labelledby="bs-firewall">
+        <h2 id="bs-firewall" class="bs-explainer__title">{firewallExplainer.title}</h2>
+        <p class="bs-explainer__body">{firewallExplainer.body}</p>
       </article>
       <article class="bs-explainer" aria-labelledby="bs-ces">
         <h2 id="bs-ces" class="bs-explainer__title">{cesExplainer.title}</h2>

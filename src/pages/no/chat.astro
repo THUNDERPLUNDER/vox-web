@@ -207,6 +207,48 @@ const exampleQuestions = [
     </div>
   </main>
 
+  <dialog class="viddel-owner-panel" data-viddel-owner-panel aria-labelledby="viddel-owner-title">
+    <div class="viddel-owner-panel__card">
+      <div class="viddel-owner-panel__header">
+        <div>
+          <p class="viddel-owner-panel__eyebrow">Midlertidig eierkontroll</p>
+          <h2 id="viddel-owner-title">Tilgang til Viddel</h2>
+        </div>
+        <button type="button" class="viddel-owner-panel__close" data-viddel-owner-close aria-label="Lukk">×</button>
+      </div>
+
+      <form class="viddel-owner-panel__login" data-viddel-owner-login>
+        <label for="viddel-owner-pin">Eierkode</label>
+        <div class="viddel-owner-panel__pin-row">
+          <input
+            id="viddel-owner-pin"
+            data-viddel-owner-pin
+            type="password"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            pattern="[0-9]{4}"
+            maxlength="4"
+            placeholder="••••"
+            required
+          />
+          <button type="submit">Lås opp</button>
+        </div>
+      </form>
+
+      <div class="viddel-owner-panel__controls hidden" data-viddel-owner-controls>
+        <p class="viddel-owner-panel__owner-state">Eiertilgang er aktiv på denne enheten.</p>
+        <p class="viddel-owner-panel__owner-note">
+          Du kommer gjennom selv når offentlig AI-tilgang er slått av.
+        </p>
+        <button type="button" class="viddel-owner-panel__logout" data-viddel-owner-logout>
+          Glem eiertilgang på denne enheten
+        </button>
+      </div>
+
+      <p class="viddel-owner-panel__message hidden" data-viddel-owner-message role="status"></p>
+    </div>
+  </dialog>
+
   <style is:global>
     body.vox-shell--standalone-chat {
       display: flex;
@@ -223,6 +265,116 @@ const exampleQuestions = [
         flex: 1 1 auto;
         min-height: 0;
       }
+    }
+
+    .viddel-owner-panel {
+      background: transparent;
+      border: 0;
+      color: rgb(var(--text));
+      margin: auto;
+      max-width: min(92vw, 28rem);
+      padding: 0;
+      width: 100%;
+    }
+
+    .viddel-owner-panel::backdrop {
+      background: rgb(2 6 23 / 0.38);
+      backdrop-filter: blur(5px);
+    }
+
+    .viddel-owner-panel__card {
+      background: rgb(var(--surface-elevated));
+      border: 1px solid rgb(var(--border) / 0.55);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      display: grid;
+      gap: 1rem;
+      padding: 1.25rem;
+    }
+
+    .viddel-owner-panel__header,
+    .viddel-owner-panel__pin-row {
+      align-items: center;
+      display: flex;
+      gap: 0.75rem;
+      justify-content: space-between;
+    }
+
+    .viddel-owner-panel__eyebrow,
+    .viddel-owner-panel__owner-state,
+    .viddel-owner-panel__owner-note,
+    .viddel-owner-panel__message {
+      color: rgb(var(--text-secondary));
+      font-size: 0.78rem;
+      margin: 0;
+    }
+
+    .viddel-owner-panel h2 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      margin: 0.15rem 0 0;
+    }
+
+    .viddel-owner-panel__close {
+      background: transparent;
+      border: 0;
+      color: rgb(var(--muted));
+      cursor: pointer;
+      font-size: 1.4rem;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .viddel-owner-panel__login,
+    .viddel-owner-panel__controls {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .viddel-owner-panel__login label {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .viddel-owner-panel__pin-row input {
+      background: rgb(var(--surface));
+      border: 1px solid rgb(var(--border) / 0.75);
+      border-radius: var(--radius-md);
+      color: rgb(var(--text));
+      font: 600 1.2rem/1 var(--font-sans);
+      letter-spacing: 0.35em;
+      min-width: 0;
+      padding: 0.8rem 0.9rem;
+      width: 100%;
+    }
+
+    .viddel-owner-panel__pin-row button,
+    .viddel-owner-panel__logout {
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.8rem 1rem;
+      white-space: nowrap;
+    }
+
+    .viddel-owner-panel__pin-row button {
+      background: rgb(var(--text));
+      border: 1px solid rgb(var(--text));
+      color: rgb(var(--surface));
+    }
+
+    .viddel-owner-panel__owner-note {
+      background: rgb(var(--surface-subtle));
+      border-radius: var(--radius-md);
+      line-height: 1.4;
+      margin: 0;
+      padding: 0.9rem;
+    }
+
+    .viddel-owner-panel__logout {
+      background: transparent;
+      border: 1px solid rgb(var(--border) / 0.7);
+      color: rgb(var(--text-secondary));
     }
   </style>
 
@@ -260,6 +412,13 @@ const exampleQuestions = [
       const thumbEl = root?.querySelector("[data-viddel-chat-thumb]");
       const removeBtn = root?.querySelector("[data-viddel-chat-remove]");
       const exampleButtons = root?.querySelectorAll("[data-viddel-chat-example]");
+      const ownerPanel = document.querySelector<HTMLDialogElement>("[data-viddel-owner-panel]");
+      const ownerClose = ownerPanel?.querySelector<HTMLButtonElement>("[data-viddel-owner-close]");
+      const ownerLogin = ownerPanel?.querySelector<HTMLFormElement>("[data-viddel-owner-login]");
+      const ownerPinInput = ownerPanel?.querySelector<HTMLInputElement>("[data-viddel-owner-pin]");
+      const ownerControls = ownerPanel?.querySelector<HTMLElement>("[data-viddel-owner-controls]");
+      const ownerLogout = ownerPanel?.querySelector<HTMLButtonElement>("[data-viddel-owner-logout]");
+      const ownerMessage = ownerPanel?.querySelector<HTMLElement>("[data-viddel-owner-message]");
 
       if (
         !root ||
@@ -310,6 +469,79 @@ const exampleQuestions = [
       let selectedFile = null;
 
       const BODY_IMAGE_WARNING = /øre|hud|kropp|ansikt|person/i;
+
+      const setOwnerMessage = (message = "") => {
+        if (!ownerMessage) return;
+        ownerMessage.textContent = message;
+        ownerMessage.classList.toggle("hidden", !message);
+      };
+
+      const refreshOwnerPanel = async () => {
+        if (!ownerPanel || !ownerLogin || !ownerControls) return;
+        setOwnerMessage("");
+        try {
+          const response = await fetch("/api/owner-access/status", { credentials: "same-origin", cache: "no-store" });
+          const state = await response.json();
+          ownerLogin.classList.toggle("hidden", state.owner === true);
+          ownerControls.classList.toggle("hidden", state.owner !== true);
+          if (!state.ownerConfigured) setOwnerMessage("Eierkontrollen er ikke konfigurert ennå.");
+        } catch {
+          setOwnerMessage("Kunne ikke hente status akkurat nå.");
+        }
+      };
+
+      const openOwnerPanel = () => {
+        if (!ownerPanel || typeof ownerPanel.showModal !== "function") return;
+        ownerPanel.showModal();
+        refreshOwnerPanel().finally(() => ownerPinInput?.focus());
+      };
+
+      let ownerGestureClicks = 0;
+      let ownerGestureTimer = 0;
+      intro.addEventListener("click", () => {
+        window.clearTimeout(ownerGestureTimer);
+        ownerGestureClicks += 1;
+        if (ownerGestureClicks >= 5) {
+          ownerGestureClicks = 0;
+          openOwnerPanel();
+          return;
+        }
+        ownerGestureTimer = window.setTimeout(() => { ownerGestureClicks = 0; }, 1800);
+      });
+
+      ownerClose?.addEventListener("click", () => ownerPanel?.close());
+      ownerPanel?.addEventListener("click", (event) => {
+        if (event.target === ownerPanel) ownerPanel.close();
+      });
+
+      ownerLogin?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const pin = ownerPinInput?.value.trim() ?? "";
+        if (!/^\d{4}$/.test(pin)) {
+          setOwnerMessage("Skriv inn fire sifre.");
+          return;
+        }
+        setOwnerMessage("Kontrollerer …");
+        const response = await fetch("/api/owner-access/unlock", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ pin }),
+        });
+        ownerPinInput.value = "";
+        if (!response.ok) {
+          setOwnerMessage(response.status === 401 ? "Feil kode." : "Kunne ikke låse opp akkurat nå.");
+          return;
+        }
+        await refreshOwnerPanel();
+        setOwnerMessage("Eiertilgang er aktiv.");
+      });
+
+      ownerLogout?.addEventListener("click", async () => {
+        await fetch("/api/owner-access/logout", { method: "POST", credentials: "same-origin" });
+        await refreshOwnerPanel();
+        setOwnerMessage("Eiertilgangen er fjernet fra denne enheten.");
+      });
 
       const ensureSessionId = () => {
         try {
@@ -548,7 +780,10 @@ const exampleQuestions = [
         sendMessage(input.value);
       };
 
-      const friendlyError = (payload) => {
+      const friendlyError = (payload, status = 0) => {
+        if (status === 429 || payload?.error === "rate_limited") {
+          return "Du har stilt mange spørsmål på kort tid. Prøv igjen litt senere.";
+        }
         if (typeof payload?.message === "string" && payload.message.trim()) {
           return payload.message.trim();
         }
@@ -561,7 +796,10 @@ const exampleQuestions = [
         return "Vi fikk ikke tak i svaret akkurat nå. Prøv igjen.";
       };
 
-      const visionFailureMessage = (payload) => {
+      const visionFailureMessage = (payload, status = 0) => {
+        if (status === 429 || payload?.error === "rate_limited") {
+          return "Du har analysert flere bilder på kort tid. Prøv igjen litt senere.";
+        }
         if (typeof payload?.message === "string" && payload.message.trim()) return payload.message.trim();
         return "Jeg klarte ikke å analysere bildet akkurat nå. Prøv et tydelig bilde av høreapparatutstyret, eller still spørsmålet som tekst.";
       };
@@ -606,7 +844,7 @@ const exampleQuestions = [
 
           if (!visionRes.ok) {
             removePendingAssistant();
-            showError(visionFailureMessage(visionPayload));
+            showError(visionFailureMessage(visionPayload, visionRes.status));
             return;
           }
 
@@ -637,7 +875,7 @@ const exampleQuestions = [
 
           if (!response.ok) {
             removePendingAssistant();
-            showError(friendlyError(payload));
+            showError(friendlyError(payload, response.status));
             return;
           }
 
@@ -715,7 +953,11 @@ const exampleQuestions = [
           const payload = await response.json().catch(() => ({}));
 
           if (!response.ok) {
-            const trackedCode = typeof payload?.error === "string" ? payload.error : "unknown";
+            const trackedCode = response.status === 429
+              ? "rate_limited"
+              : typeof payload?.error === "string"
+                ? payload.error
+                : "unknown";
             if (typeof window.viddelTrack === "function") {
               if (trackedCode === "rate_limited") {
                 window.viddelTrack("chat_rate_limited", { entry_surface: entrySurface, error_code: trackedCode });
@@ -726,7 +968,7 @@ const exampleQuestions = [
               }
             }
             removePendingAssistant();
-            showError(friendlyError(payload));
+            showError(friendlyError(payload, response.status));
             return;
           }
 
