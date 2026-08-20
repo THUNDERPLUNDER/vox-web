@@ -1,0 +1,553 @@
+---
+/* CONTRACT: Temporary logo rasterization review for #121. Preview asset only; never canonical. */
+import VisInternalLayout from "../../../layouts/VisInternalLayout.astro";
+
+const base = import.meta.env.BASE_URL;
+const logoSrc = `${base}brand/preview/viddel-wordmark-5bar-preview.svg`;
+const sizes = [16, 18, 20, 22, 24, 26, 28, 30, 32];
+const headerSizes = [20, 24, 26];
+const viewBoxWidth = 937.88;
+const viewBoxHeight = 134;
+const referenceStemWidth = 15.57;
+const signalBarWidth = 8.96;
+
+const metricsFor = (height: number) => ({
+  width: (height * viewBoxWidth) / viewBoxHeight,
+  stem: (height * referenceStemWidth) / viewBoxHeight,
+  signal: (height * signalBarWidth) / viewBoxHeight,
+});
+
+const format = (value: number) => value.toFixed(2);
+---
+
+<VisInternalLayout title="Logo rasterization review v0.1" pageContractId="review">
+  <main class="logo-lab" data-logo-rasterization-review>
+    <nav class="logo-lab__breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis/review/`}>Viddel Review</a>
+      <span aria-hidden="true">/</span>
+      <span>Logo rasterization v0.1</span>
+    </nav>
+
+    <header class="logo-lab__hero">
+      <p class="logo-lab__kicker">#121 · Preview-only · 2026-08-20</p>
+      <h1>Logo rasterization review</h1>
+      <p>
+        Kontrollerer hvordan Primary 5-bar rasteriseres ved små webstørrelser før Small Optical
+        ferdigstilles. Denne flaten og SVG-en er testmateriale, ikke canonical brand-assets.
+      </p>
+      <dl class="logo-lab__runtime" aria-label="Runtimeinformasjon">
+        <div><dt>Device pixel ratio</dt><dd data-device-pixel-ratio>—</dd></div>
+        <div><dt>Viewport</dt><dd data-viewport-size>—</dd></div>
+        <div><dt>Browser zoom</dt><dd>Test ved 100 %</dd></div>
+      </dl>
+    </header>
+
+    <section class="logo-lab__decision" aria-labelledby="decision-heading">
+      <div>
+        <p class="logo-lab__kicker">Foreløpig konklusjon</p>
+        <h2 id="decision-heading">Small Optical bør få en nominell pixel-grid-størrelse</h2>
+      </div>
+      <ul>
+        <li><strong>20 px</strong> er anbefalt nominell størrelse for Small Optical og matcher dagens header.</li>
+        <li><strong>24 px</strong> beholdes som kontrollstørrelse når den nye geometrien testes.</li>
+        <li>Primary beholdes som referanse; denne testen autoriserer ingen canonical erstatning.</li>
+      </ul>
+    </section>
+
+    <section class="logo-lab__section" aria-labelledby="size-matrix-heading">
+      <header class="logo-lab__section-head">
+        <div>
+          <p class="logo-lab__kicker">1:1 CSS-piksler</p>
+          <h2 id="size-matrix-heading">Størrelsesmatrise</h2>
+        </div>
+        <p>Vurder ved normal zoom. Signalbredde under 2 CSS-px vil nødvendigvis antialiases på 1×.</p>
+      </header>
+
+      <div class="logo-matrix">
+        {sizes.map((size) => {
+          const metrics = metricsFor(size);
+          const isCandidate = size === 20 || size === 24;
+          return (
+            <article class:list={["logo-sample", isCandidate && "logo-sample--candidate"]}>
+              <header class="logo-sample__head">
+                <div>
+                  <h3>{size} px</h3>
+                  {isCandidate ? <span>Kandidat</span> : null}
+                </div>
+                <p>{format(metrics.width)} px bred</p>
+              </header>
+
+              <div class="logo-sample__renders">
+                <figure>
+                  <div class="logo-sample__stage" data-logo-stage>
+                    <img
+                      src={logoSrc}
+                      alt={`VIDDEL Primary 5-bar ved ${size} piksler`}
+                      width="938"
+                      height="134"
+                      style={`height: ${size}px`}
+                      data-logo-render
+                    />
+                  </div>
+                  <figcaption>Naturlig plassering · <span data-origin-readout>—</span></figcaption>
+                </figure>
+                <figure>
+                  <div class="logo-sample__stage" data-logo-stage>
+                    <img
+                      src={logoSrc}
+                      alt={`VIDDEL Primary 5-bar ved ${size} piksler, forskjøvet en halv piksel`}
+                      width="938"
+                      height="134"
+                      style={`height: ${size}px; transform: translateX(0.5px)`}
+                      data-logo-render
+                    />
+                  </div>
+                  <figcaption>+0,5 px forskyvning · <span data-origin-readout>—</span></figcaption>
+                </figure>
+              </div>
+
+              <dl class="logo-sample__metrics">
+                <div><dt>Referansestamme</dt><dd>{format(metrics.stem)} CSS-px</dd></div>
+                <div><dt>Signalstolpe</dt><dd>{format(metrics.signal)} CSS-px</dd></div>
+              </dl>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="logo-lab__section" aria-labelledby="header-context-heading">
+      <header class="logo-lab__section-head">
+        <div>
+          <p class="logo-lab__kicker">Reell bruk</p>
+          <h2 id="header-context-heading">Headerkontekst</h2>
+        </div>
+        <p>Samme logo i 64 px header med mobilmeny. Dette er størrelsestest, ikke header-redesign.</p>
+      </header>
+
+      <div class="header-tests">
+        {headerSizes.map((size) => (
+          <article class="header-test">
+            <p>{size} px høy logo</p>
+            <div class="header-test__bar">
+              <a href="#header-context-heading" aria-label="Viddel">
+                <img
+                  src={logoSrc}
+                  alt=""
+                  width="938"
+                  height="134"
+                  style={`height: ${size}px`}
+                  data-logo-render
+                />
+              </a>
+              <button type="button" aria-label="Eksempel på mobilmeny" tabindex="-1">
+                <span aria-hidden="true">☰</span>
+              </button>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="logo-lab__section logo-lab__reference" aria-labelledby="material-reference-heading">
+      <header class="logo-lab__section-head">
+        <div>
+          <p class="logo-lab__kicker">Referanseprinsipp</p>
+          <h2 id="material-reference-heading">Lærdom fra Material Symbols</h2>
+        </div>
+      </header>
+      <p>
+        Google bruker optiske størrelser fra 20 til 48 px og oppgir at 20- og 24-pikselvariantene
+        er de som er tegnet med perfekt pixel-grid alignment. For Viddel betyr det en egen Small
+        Optical-geometri rundt én valgt målstørrelse, ikke tilfeldig skalering av Primary.
+      </p>
+      <div class="logo-lab__reference-links">
+        <a href="https://developers.google.com/fonts/docs/material_symbols?hl=en">Material Symbols guide</a>
+        <a href="https://github.com/google/material-design-icons">Offisielt icon-repo</a>
+      </div>
+    </section>
+
+    <footer class="logo-lab__footer">
+      <strong>Beslutning for neste prototype:</strong> Tegn Small Optical mot et nominelt 20 px-grid og
+      kontroller resultatet ved 24 px. #121 forblir åpen.
+    </footer>
+  </main>
+</VisInternalLayout>
+
+<script>
+  const updateRuntimeReadouts = () => {
+    const dpr = window.devicePixelRatio || 1;
+    document.querySelectorAll<HTMLElement>("[data-device-pixel-ratio]").forEach((element) => {
+      element.textContent = `${dpr.toFixed(2)}×`;
+    });
+    document.querySelectorAll<HTMLElement>("[data-viewport-size]").forEach((element) => {
+      element.textContent = `${window.innerWidth} × ${window.innerHeight}`;
+    });
+    document.querySelectorAll<HTMLElement>("[data-logo-render]").forEach((logo) => {
+      const readout = logo.closest("figure")?.querySelector<HTMLElement>("[data-origin-readout]");
+      if (!readout) return;
+      const x = logo.getBoundingClientRect().x;
+      const fraction = ((x % 1) + 1) % 1;
+      readout.textContent = `x-fraksjon ${fraction.toFixed(2)}`;
+    });
+  };
+
+  updateRuntimeReadouts();
+  window.addEventListener("resize", updateRuntimeReadouts, { passive: true });
+</script>
+
+<style>
+  [data-logo-rasterization-review] {
+    --lab-ink: #0f1b2e;
+    --lab-blue: #3672e6;
+    --lab-muted: #667085;
+    --lab-border: #dce1e8;
+    --lab-paper: #ffffff;
+    max-width: 76rem;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+    color: var(--lab-ink);
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  }
+
+  .logo-lab__breadcrumb {
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    color: var(--lab-muted);
+    font-size: 0.78rem;
+  }
+
+  .logo-lab__breadcrumb a,
+  .logo-lab__reference-links a {
+    color: var(--lab-blue);
+    text-underline-offset: 0.18em;
+  }
+
+  .logo-lab__hero {
+    margin-top: 1.25rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--lab-border);
+    border-radius: 0.85rem;
+    background: var(--lab-paper);
+  }
+
+  .logo-lab__kicker {
+    margin: 0;
+    color: var(--lab-blue);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .logo-lab h1,
+  .logo-lab h2,
+  .logo-lab h3,
+  .logo-lab p {
+    margin-top: 0;
+  }
+
+  .logo-lab h1 {
+    margin-bottom: 0.65rem;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+
+  .logo-lab__hero > p:not(.logo-lab__kicker) {
+    max-width: 48rem;
+    margin-bottom: 0;
+    color: var(--lab-muted);
+    line-height: 1.65;
+  }
+
+  .logo-lab__runtime,
+  .logo-sample__metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 1.25rem 0 0;
+  }
+
+  .logo-lab__runtime div,
+  .logo-sample__metrics div {
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--lab-border);
+    border-radius: 0.55rem;
+    background: #f8fafc;
+  }
+
+  .logo-lab dt,
+  .logo-lab dd {
+    margin: 0;
+  }
+
+  .logo-lab dt {
+    color: var(--lab-muted);
+    font-size: 0.7rem;
+  }
+
+  .logo-lab dd {
+    margin-top: 0.2rem;
+    font-size: 0.84rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .logo-lab__decision {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid rgb(54 114 230 / 0.26);
+    border-radius: 0.75rem;
+    background: rgb(54 114 230 / 0.055);
+  }
+
+  .logo-lab__decision h2,
+  .logo-lab__section h2 {
+    margin: 0.25rem 0 0;
+    font-size: 1.15rem;
+    letter-spacing: -0.025em;
+  }
+
+  .logo-lab__decision ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: #475467;
+    font-size: 0.86rem;
+    line-height: 1.6;
+  }
+
+  .logo-lab__section {
+    margin-top: 2rem;
+  }
+
+  .logo-lab__section-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 0.9rem;
+  }
+
+  .logo-lab__section-head > p {
+    max-width: 35rem;
+    margin-bottom: 0;
+    color: var(--lab-muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .logo-matrix {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: 0.85rem;
+  }
+
+  .logo-sample {
+    overflow: hidden;
+    border: 1px solid var(--lab-border);
+    border-radius: 0.75rem;
+    background: var(--lab-paper);
+  }
+
+  .logo-sample--candidate {
+    border-color: rgb(54 114 230 / 0.48);
+    box-shadow: 0 0 0 2px rgb(54 114 230 / 0.07);
+  }
+
+  .logo-sample__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.75rem 0.9rem;
+    border-bottom: 1px solid var(--lab-border);
+    background: #f8fafc;
+  }
+
+  .logo-sample__head > div {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .logo-sample__head h3,
+  .logo-sample__head p {
+    margin: 0;
+  }
+
+  .logo-sample__head h3 {
+    font-size: 0.95rem;
+  }
+
+  .logo-sample__head span {
+    padding: 0.18rem 0.45rem;
+    border-radius: 999px;
+    background: rgb(54 114 230 / 0.1);
+    color: #2455ad;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .logo-sample__head p {
+    color: var(--lab-muted);
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .logo-sample__renders {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .logo-sample__renders figure {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .logo-sample__renders figure + figure {
+    border-left: 1px solid var(--lab-border);
+  }
+
+  .logo-sample__stage {
+    display: flex;
+    min-height: 5.75rem;
+    align-items: center;
+    overflow: hidden;
+    padding: 1rem;
+    background-color: #fff;
+    background-image:
+      linear-gradient(rgb(15 27 46 / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(15 27 46 / 0.04) 1px, transparent 1px);
+    background-size: 8px 8px;
+  }
+
+  .logo-sample__stage img,
+  .header-test__bar img {
+    display: block;
+    max-width: none;
+    width: auto;
+    flex: none;
+  }
+
+  .logo-sample figcaption {
+    padding: 0.45rem 0.65rem;
+    border-top: 1px solid var(--lab-border);
+    color: var(--lab-muted);
+    font-size: 0.64rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .logo-sample__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    padding: 0.7rem;
+    border-top: 1px solid var(--lab-border);
+  }
+
+  .header-tests {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .header-test {
+    overflow: hidden;
+    border: 1px solid var(--lab-border);
+    border-radius: 0.75rem;
+    background: var(--lab-paper);
+  }
+
+  .header-test > p {
+    margin: 0;
+    padding: 0.45rem 0.75rem;
+    border-bottom: 1px solid var(--lab-border);
+    color: var(--lab-muted);
+    font-size: 0.72rem;
+  }
+
+  .header-test__bar {
+    display: flex;
+    min-height: 4rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    background: #fff;
+  }
+
+  .header-test__bar a {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.5rem;
+  }
+
+  .header-test__bar button {
+    display: inline-grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border: 0;
+    border-radius: 0.55rem;
+    background: #fff;
+    color: var(--lab-ink);
+    box-shadow: 0 5px 18px rgb(15 27 46 / 0.08);
+    font-size: 0.95rem;
+  }
+
+  .logo-lab__reference,
+  .logo-lab__footer {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--lab-border);
+    border-radius: 0.75rem;
+    background: #f8fafc;
+  }
+
+  .logo-lab__reference > p,
+  .logo-lab__footer {
+    color: #475467;
+    font-size: 0.86rem;
+    line-height: 1.6;
+  }
+
+  .logo-lab__reference-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    font-size: 0.78rem;
+  }
+
+  .logo-lab__footer {
+    margin-top: 1rem;
+  }
+
+  @media (min-width: 720px) {
+    [data-logo-rasterization-review] {
+      padding: 2rem 1.5rem 5rem;
+    }
+
+    .logo-lab__decision {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      align-items: start;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .logo-lab__runtime {
+      grid-template-columns: 1fr;
+    }
+
+    .logo-sample__renders {
+      grid-template-columns: 1fr;
+    }
+
+    .logo-sample__renders figure + figure {
+      border-top: 1px solid var(--lab-border);
+      border-left: 0;
+    }
+  }
+</style>

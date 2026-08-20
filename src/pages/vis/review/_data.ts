@@ -35,6 +35,18 @@ export const reviewStatusLabels: Record<ReviewItemStatus, string> = {
 
 export const reviewRegistry: ReviewRegistryItem[] = [
   {
+    id: "logo-rasterization-v01",
+    title: "Logo rasterization review v0.1",
+    href: "/vis/review/logo-rasterization-v01/",
+    sprint: "2026-W34",
+    issue: "#121",
+    type: "active",
+    status: "in-review",
+    stakeholderSafe: true,
+    description:
+      "Preview-only størrelses- og pixel-grid-test for Primary 5-bar før nominell Small Optical-størrelse velges.",
+  },
+  {
     id: "sprint-preview-2026-w21",
     title: "Sprint Preview 2026-W21",
     href: "/vis/sprints/2026-w21/",
