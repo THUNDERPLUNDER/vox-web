@@ -36,9 +36,15 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
             </span>
           </span>
         ) : (
-          <span class="font-display text-[1.18rem] font-[650] tracking-[-0.03em] text-[rgb(var(--text))] antialiased sm:text-[1.45rem]">
-            Viddel
-          </span>
+          <!-- Preview-only header test for #121; do not treat this asset as canonical. -->
+          <img
+            src={`${base}brand/preview/viddel-wordmark-5bar-preview.svg`}
+            alt=""
+            width="938"
+            height="134"
+            class="h-5 w-auto"
+            data-viddel-logo-preview="primary-5bar"
+          />
         )
       }
     </a>
