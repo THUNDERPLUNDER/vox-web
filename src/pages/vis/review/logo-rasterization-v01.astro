@@ -22,13 +22,13 @@ const yOriginControls = [
 const comparisonSizes = [8, 10, 12, 14, 16, 18, 20, 22, 24];
 const sizes = [16, 18, 20, 22, 24, 26, 28, 30, 32];
 const mobileHeaderCases = [
-  { label: "Y · kontroll", size: 20, src: ySrc, width: 140, height: 20 },
+  { label: "Y", size: 20, src: ySrc, width: 140, height: 20, selected: true, status: "Foreløpig valgt" },
   { label: "Primary", size: 22, src: logoSrc, width: 938, height: 134 },
   { label: "Primary", size: 24, src: logoSrc, width: 938, height: 134 },
 ];
 const desktopHeaderCases = [
   { label: "Y · kontroll", size: 20, src: ySrc, width: 140, height: 20 },
-  { label: "Primary", size: 22, src: logoSrc, width: 938, height: 134 },
+  { label: "Primary", size: 22, src: logoSrc, width: 938, height: 134, selected: true, status: "Valgt" },
   { label: "Primary", size: 24, src: logoSrc, width: 938, height: 134 },
   { label: "Primary", size: 26, src: logoSrc, width: 938, height: 134 },
 ];
@@ -77,6 +77,7 @@ const format = (value: number) => value.toFixed(2);
         <li><strong>8–16 px:</strong> Variant A · 3 px hovedstammer · 3 signalstolper.</li>
         <li><strong>18–20 px:</strong> Variant Y · 2 px hovedstammer · 5 signalstolper.</li>
         <li><strong>22 px og opp:</strong> Primary ivaretar den delikate signalvekten.</li>
+        <li><strong>Header:</strong> Primary 22 px på desktop; Y 20 px på mobil er et foreløpig, reversibelt valg.</li>
         <li>Primary beholdes som referanse; denne testen autoriserer ingen canonical erstatning.</li>
         <li>Preview-kopiene normaliserer navy til <strong>#0F1B2E</strong>; Drive-eksportene har #0F1B2D.</li>
       </ul>
@@ -236,8 +237,8 @@ const format = (value: number) => value.toFixed(2);
           <h2 id="header-context-heading">Primary i faktisk headerhøyde</h2>
         </div>
         <p>
-          Velg størrelse separat for 64 px mobilheader og 72 px desktopheader. Y ved 20 px er kun
-          kontroll; Primary er kandidaten fra 22 px og opp.
+          Valgt nå: Y ved 20 px i 64 px mobilheader og Primary ved 22 px i 72 px desktopheader.
+          Dette registrerer beslutningen uten å endre produksjonsheaderen.
         </p>
       </header>
 
@@ -248,14 +249,15 @@ const format = (value: number) => value.toFixed(2);
               <p class="logo-lab__kicker">Mobil · 64 px header</p>
               <h3 id="mobile-header-heading">20 / 22 / 24 px</h3>
             </div>
-            <p>Vurder merkevaretyngde, luft mot menyknappen og samlet høyde.</p>
+            <p>Y 20 px er foreløpig valgt. Den er 140 px bred og kan reduseres senere hvis portrettbredden blir knapp.</p>
           </header>
           <div class="header-context__stack header-context__stack--mobile">
             {mobileHeaderCases.map((sample) => (
-              <figure class:list={["header-sample", sample.size === 24 && "header-sample--candidate"]}>
+              <figure class:list={["header-sample", sample.selected && "header-sample--candidate"]}>
                 <figcaption>
                   <strong>{sample.label}</strong>
                   <span>{sample.size} px</span>
+                  {sample.status ? <em>{sample.status}</em> : null}
                 </figcaption>
                 <div class="header-sample__viewport header-sample__viewport--mobile">
                   <a href="#mobile-header-heading" aria-label={`Viddel ${sample.size} piksler`}>
@@ -285,14 +287,15 @@ const format = (value: number) => value.toFixed(2);
               <p class="logo-lab__kicker">Desktop · 72 px header</p>
               <h3 id="desktop-header-heading">20 / 22 / 24 / 26 px</h3>
             </div>
-            <p>Vurder forholdet til navigasjonen og hvor tydelig logoen eier venstresiden.</p>
+            <p>Primary 22 px er valgt. Den gir mer nærvær uten å bli dominerende mot navigasjonen.</p>
           </header>
           <div class="header-context__stack header-context__stack--desktop">
             {desktopHeaderCases.map((sample) => (
-              <figure class:list={["header-sample", sample.size === 24 && "header-sample--candidate"]}>
+              <figure class:list={["header-sample", sample.selected && "header-sample--candidate"]}>
                 <figcaption>
                   <strong>{sample.label}</strong>
                   <span>{sample.size} px</span>
+                  {sample.status ? <em>{sample.status}</em> : null}
                 </figcaption>
                 <div class="header-sample__desktop-scroll">
                   <div class="header-sample__viewport header-sample__viewport--desktop">
@@ -328,6 +331,35 @@ const format = (value: number) => value.toFixed(2);
       </p>
     </section>
 
+    <section class="logo-lab__section" aria-labelledby="canonical-gate-heading">
+      <header class="logo-lab__section-head">
+        <div>
+          <p class="logo-lab__kicker">Neste godkjenningsport</p>
+          <h2 id="canonical-gate-heading">Teknisk QA og canonical navngivning</h2>
+        </div>
+        <p>Forslaget utvider den eldre totallsmodellen i #121 til tre eksplisitte wordmark-geometrier.</p>
+      </header>
+      <div class="canonical-gate">
+        <div>
+          <h3>QA-status for preview-filene</h3>
+          <ul>
+            <li>Primary, A og Y er rene vektorer uten tekst, font eller rasterbilder.</li>
+            <li>A og Y har tett <code>viewBox="0 0 140 20"</code> og eksplisitt 140 × 20-størrelse.</li>
+            <li>Preview-kopiene bruker navy <strong>#0F1B2E</strong> og blue <strong>#3672E6</strong>.</li>
+            <li>Drive-eksportene av A og Y må re-eksporteres med korrekt navy før canonical lock.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Foreslåtte canonical filnavn</h3>
+          <dl>
+            <div><dt>Primary · 5 stolper</dt><dd><code>viddel-wordmark-primary-5bar.svg</code></dd></div>
+            <div><dt>Small · Y · 5 stolper</dt><dd><code>viddel-wordmark-small-5bar.svg</code></dd></div>
+            <div><dt>Micro · A · 3 stolper</dt><dd><code>viddel-wordmark-micro-3bar.svg</code></dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
     <section class="logo-lab__section logo-lab__reference" aria-labelledby="material-reference-heading">
       <header class="logo-lab__section-head">
         <div>
@@ -347,8 +379,8 @@ const format = (value: number) => value.toFixed(2);
     </section>
 
     <footer class="logo-lab__footer">
-      <strong>Aktiv beslutningsport:</strong> Velg Primary-størrelse for mobil og desktop. Neste port
-      er teknisk QA og canonical navngivning av Primary, Small og Micro. #121 forblir åpen.
+      <strong>Aktiv beslutningsport:</strong> Godkjenn tre-wordmark-modellen og canonical filnavn.
+      Deretter re-eksporteres A og Y med korrekt navy før asset-lock. #121 forblir åpen.
     </footer>
   </main>
 </VisInternalLayout>
@@ -840,6 +872,18 @@ const format = (value: number) => value.toFixed(2);
     color: var(--lab-ink);
   }
 
+  .header-sample figcaption em {
+    padding: 0.18rem 0.4rem;
+    border-radius: 999px;
+    background: rgb(54 114 230 / 0.1);
+    color: var(--lab-blue);
+    font-size: 0.62rem;
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
   .header-sample__viewport {
     display: flex;
     align-items: center;
@@ -934,6 +978,58 @@ const format = (value: number) => value.toFixed(2);
     line-height: 1.5;
   }
 
+  .canonical-gate {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .canonical-gate > div {
+    padding: 1rem;
+    border: 1px solid var(--lab-border);
+    border-radius: 0.75rem;
+    background: var(--lab-paper);
+  }
+
+  .canonical-gate h3 {
+    margin-bottom: 0.65rem;
+    font-size: 0.9rem;
+  }
+
+  .canonical-gate ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: #475467;
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+
+  .canonical-gate dl {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+  }
+
+  .canonical-gate dl div {
+    display: grid;
+    gap: 0.15rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid var(--lab-border);
+  }
+
+  .canonical-gate dl div:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .canonical-gate dt {
+    color: var(--lab-muted);
+  }
+
+  .canonical-gate dd {
+    margin-top: 0;
+    overflow-wrap: anywhere;
+  }
+
   .logo-lab__reference,
   .logo-lab__footer {
     padding: 1rem 1.1rem;
@@ -969,6 +1065,10 @@ const format = (value: number) => value.toFixed(2);
     .logo-lab__decision {
       grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
       align-items: start;
+    }
+
+    .canonical-gate {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
