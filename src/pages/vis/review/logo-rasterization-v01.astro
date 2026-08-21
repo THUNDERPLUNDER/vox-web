@@ -4,6 +4,8 @@ import VisInternalLayout from "../../../layouts/VisInternalLayout.astro";
 
 const base = import.meta.env.BASE_URL;
 const logoSrc = `${base}brand/preview/viddel-wordmark-5bar-preview.svg`;
+const candidateSrc = `${base}brand/preview/viddel-wordmark-small-3bar-20px-candidate-a.svg`;
+const comparisonSizes = [16, 18, 20, 22, 24, 26];
 const sizes = [16, 18, 20, 22, 24, 26, 28, 30, 32];
 const headerSizes = [20, 24, 26];
 const viewBoxWidth = 937.88;
@@ -29,11 +31,11 @@ const format = (value: number) => value.toFixed(2);
     </nav>
 
     <header class="logo-lab__hero">
-      <p class="logo-lab__kicker">#121 · Preview-only · 2026-08-20</p>
+      <p class="logo-lab__kicker">#121 · Preview-only · 2026-08-21</p>
       <h1>Logo rasterization review</h1>
       <p>
-        Kontrollerer hvordan Primary 5-bar rasteriseres ved små webstørrelser før Small Optical
-        ferdigstilles. Denne flaten og SVG-en er testmateriale, ikke canonical brand-assets.
+        Sammenligner Primary 5-bar med Small Optical 3-bar Candidate A ved små webstørrelser.
+        Denne flaten og SVG-ene er testmateriale, ikke canonical brand-assets.
       </p>
       <dl class="logo-lab__runtime" aria-label="Runtimeinformasjon">
         <div><dt>Device pixel ratio</dt><dd data-device-pixel-ratio>—</dd></div>
@@ -51,7 +53,60 @@ const format = (value: number) => value.toFixed(2);
         <li><strong>20 px</strong> er anbefalt nominell størrelse for Small Optical og matcher dagens header.</li>
         <li><strong>24 px</strong> beholdes som kontrollstørrelse når den nye geometrien testes.</li>
         <li>Primary beholdes som referanse; denne testen autoriserer ingen canonical erstatning.</li>
+        <li>Repoets preview-kopi normaliserer navy til <strong>#0F1B2E</strong>; Drive-eksporten har #0F1B2D.</li>
       </ul>
+    </section>
+
+    <section class="logo-lab__section" aria-labelledby="candidate-comparison-heading">
+      <header class="logo-lab__section-head">
+        <div>
+          <p class="logo-lab__kicker">Candidate A · 3 px hovedstammer</p>
+          <h2 id="candidate-comparison-heading">Small Optical mot Primary</h2>
+        </div>
+        <p>Samme CSS-høyde og naturlig plassering. Vurder tyngde, lesbarhet og signal ved 100 % zoom.</p>
+      </header>
+
+      <div class="logo-matrix">
+        {comparisonSizes.map((size) => (
+          <article class:list={["logo-sample", size === 20 && "logo-sample--candidate"]}>
+            <header class="logo-sample__head">
+              <div>
+                <h3>{size} px</h3>
+                {size === 20 ? <span>Nominell</span> : null}
+              </div>
+              <p>{size === 20 ? "1:1 pixel-grid" : "skalert"}</p>
+            </header>
+            <div class="logo-sample__renders">
+              <figure>
+                <div class="logo-sample__stage" data-logo-stage>
+                  <img
+                    src={logoSrc}
+                    alt={`VIDDEL Primary 5-bar ved ${size} piksler`}
+                    width="938"
+                    height="134"
+                    style={`height: ${size}px`}
+                    data-logo-render
+                  />
+                </div>
+                <figcaption>Primary 5-bar · <span data-origin-readout>—</span></figcaption>
+              </figure>
+              <figure>
+                <div class="logo-sample__stage" data-logo-stage>
+                  <img
+                    src={candidateSrc}
+                    alt={`VIDDEL Small Optical 3-bar Candidate A ved ${size} piksler`}
+                    width="140"
+                    height="20"
+                    style={`height: ${size}px`}
+                    data-logo-render
+                  />
+                </div>
+                <figcaption>Small Optical A · <span data-origin-readout>—</span></figcaption>
+              </figure>
+            </div>
+          </article>
+        ))}
+      </div>
     </section>
 
     <section class="logo-lab__section" aria-labelledby="size-matrix-heading">
@@ -129,20 +184,43 @@ const format = (value: number) => value.toFixed(2);
         {headerSizes.map((size) => (
           <article class="header-test">
             <p>{size} px høy logo</p>
-            <div class="header-test__bar">
-              <a href="#header-context-heading" aria-label="Viddel">
-                <img
-                  src={logoSrc}
-                  alt=""
-                  width="938"
-                  height="134"
-                  style={`height: ${size}px`}
-                  data-logo-render
-                />
-              </a>
-              <button type="button" aria-label="Eksempel på mobilmeny" tabindex="-1">
-                <span aria-hidden="true">☰</span>
-              </button>
+            <div class="header-test__variants">
+              <div class="header-test__variant">
+                <span>Primary</span>
+                <div class="header-test__bar">
+                  <a href="#header-context-heading" aria-label="Viddel Primary">
+                    <img
+                      src={logoSrc}
+                      alt=""
+                      width="938"
+                      height="134"
+                      style={`height: ${size}px`}
+                      data-logo-render
+                    />
+                  </a>
+                  <button type="button" aria-label="Eksempel på mobilmeny" tabindex="-1">
+                    <span aria-hidden="true">☰</span>
+                  </button>
+                </div>
+              </div>
+              <div class="header-test__variant">
+                <span>Small Optical A</span>
+                <div class="header-test__bar">
+                  <a href="#header-context-heading" aria-label="Viddel Small Optical Candidate A">
+                    <img
+                      src={candidateSrc}
+                      alt=""
+                      width="140"
+                      height="20"
+                      style={`height: ${size}px`}
+                      data-logo-render
+                    />
+                  </a>
+                  <button type="button" aria-label="Eksempel på mobilmeny" tabindex="-1">
+                    <span aria-hidden="true">☰</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </article>
         ))}
@@ -168,8 +246,8 @@ const format = (value: number) => value.toFixed(2);
     </section>
 
     <footer class="logo-lab__footer">
-      <strong>Beslutning for neste prototype:</strong> Tegn Small Optical mot et nominelt 20 px-grid og
-      kontroller resultatet ved 24 px. #121 forblir åpen.
+      <strong>Beslutningsport:</strong> Sammenlign Candidate A med Primary ved 20 og 24 px før en
+      eventuell tynnere Candidate B tegnes. #121 forblir åpen.
     </footer>
   </main>
 </VisInternalLayout>
@@ -477,6 +555,24 @@ const format = (value: number) => value.toFixed(2);
     justify-content: space-between;
     padding: 0 1rem;
     background: #fff;
+  }
+
+  .header-test__variants {
+    display: grid;
+  }
+
+  .header-test__variant + .header-test__variant {
+    border-top: 1px solid var(--lab-border);
+  }
+
+  .header-test__variant > span {
+    display: block;
+    padding: 0.45rem 1rem 0;
+    color: var(--lab-muted);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
   .header-test__bar a {
