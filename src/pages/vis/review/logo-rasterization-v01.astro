@@ -21,7 +21,17 @@ const yOriginControls = [
 ];
 const comparisonSizes = [8, 10, 12, 14, 16, 18, 20, 22, 24];
 const sizes = [16, 18, 20, 22, 24, 26, 28, 30, 32];
-const headerSizes = [16, 20, 24];
+const mobileHeaderCases = [
+  { label: "Y · kontroll", size: 20, src: ySrc, width: 140, height: 20 },
+  { label: "Primary", size: 22, src: logoSrc, width: 938, height: 134 },
+  { label: "Primary", size: 24, src: logoSrc, width: 938, height: 134 },
+];
+const desktopHeaderCases = [
+  { label: "Y · kontroll", size: 20, src: ySrc, width: 140, height: 20 },
+  { label: "Primary", size: 22, src: logoSrc, width: 938, height: 134 },
+  { label: "Primary", size: 24, src: logoSrc, width: 938, height: 134 },
+  { label: "Primary", size: 26, src: logoSrc, width: 938, height: 134 },
+];
 const viewBoxWidth = 937.88;
 const viewBoxHeight = 134;
 const referenceStemWidth = 15.57;
@@ -222,41 +232,100 @@ const format = (value: number) => value.toFixed(2);
     <section class="logo-lab__section" aria-labelledby="header-context-heading">
       <header class="logo-lab__section-head">
         <div>
-          <p class="logo-lab__kicker">Reell bruk</p>
-          <h2 id="header-context-heading">Headerkontekst</h2>
+          <p class="logo-lab__kicker">Beslutningsport · reell bruk</p>
+          <h2 id="header-context-heading">Primary i faktisk headerhøyde</h2>
         </div>
-        <p>Samme logo i 64 px header med mobilmeny. Dette er størrelsestest, ikke header-redesign.</p>
+        <p>
+          Velg størrelse separat for 64 px mobilheader og 72 px desktopheader. Y ved 20 px er kun
+          kontroll; Primary er kandidaten fra 22 px og opp.
+        </p>
       </header>
 
-      <div class="header-tests">
-        {headerSizes.map((size) => (
-          <article class="header-test">
-            <p>{size} px høy logo</p>
-            <div class="header-test__variants">
-              {variants.map((variant) => (
-                <div class="header-test__variant">
-                  <span>{variant.label} · {variant.detail}</span>
-                  <div class="header-test__bar">
-                    <a href="#header-context-heading" aria-label={`Viddel ${variant.label}`}>
+      <div class="header-contexts">
+        <section class="header-context" aria-labelledby="mobile-header-heading">
+          <header class="header-context__head">
+            <div>
+              <p class="logo-lab__kicker">Mobil · 64 px header</p>
+              <h3 id="mobile-header-heading">20 / 22 / 24 px</h3>
+            </div>
+            <p>Vurder merkevaretyngde, luft mot menyknappen og samlet høyde.</p>
+          </header>
+          <div class="header-context__stack header-context__stack--mobile">
+            {mobileHeaderCases.map((sample) => (
+              <figure class:list={["header-sample", sample.size === 24 && "header-sample--candidate"]}>
+                <figcaption>
+                  <strong>{sample.label}</strong>
+                  <span>{sample.size} px</span>
+                </figcaption>
+                <div class="header-sample__viewport header-sample__viewport--mobile">
+                  <a href="#mobile-header-heading" aria-label={`Viddel ${sample.size} piksler`}>
+                    <img
+                      src={sample.src}
+                      alt=""
+                      width={sample.width}
+                      height={sample.height}
+                      style={`height: ${sample.size}px`}
+                      data-logo-render
+                    />
+                  </a>
+                  <button type="button" aria-label="Eksempel på mobilmeny" tabindex="-1">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                  </button>
+                </div>
+              </figure>
+            ))}
+          </div>
+        </section>
+
+        <section class="header-context" aria-labelledby="desktop-header-heading">
+          <header class="header-context__head">
+            <div>
+              <p class="logo-lab__kicker">Desktop · 72 px header</p>
+              <h3 id="desktop-header-heading">20 / 22 / 24 / 26 px</h3>
+            </div>
+            <p>Vurder forholdet til navigasjonen og hvor tydelig logoen eier venstresiden.</p>
+          </header>
+          <div class="header-context__stack header-context__stack--desktop">
+            {desktopHeaderCases.map((sample) => (
+              <figure class:list={["header-sample", sample.size === 24 && "header-sample--candidate"]}>
+                <figcaption>
+                  <strong>{sample.label}</strong>
+                  <span>{sample.size} px</span>
+                </figcaption>
+                <div class="header-sample__desktop-scroll">
+                  <div class="header-sample__viewport header-sample__viewport--desktop">
+                    <a href="#desktop-header-heading" aria-label={`Viddel ${sample.size} piksler`}>
                       <img
-                        src={variant.src}
+                        src={sample.src}
                         alt=""
-                        width={variant.width}
-                        height={variant.height}
-                        style={`height: ${size}px`}
+                        width={sample.width}
+                        height={sample.height}
+                        style={`height: ${sample.size}px`}
                         data-logo-render
                       />
                     </a>
-                    <button type="button" aria-label="Eksempel på mobilmeny" tabindex="-1">
-                      <span aria-hidden="true">☰</span>
-                    </button>
+                    <nav aria-label="Eksempel på desktopnavigasjon">
+                      <span class="is-active">Forside</span>
+                      <span>Hjelp</span>
+                      <span>Bedre lyd</span>
+                      <span>Ordbok</span>
+                      <span>Om Viddel</span>
+                    </nav>
+                    <span class="header-sample__cta">Spør Viddel</span>
                   </div>
                 </div>
-              ))}
-            </div>
-          </article>
-        ))}
+              </figure>
+            ))}
+          </div>
+        </section>
       </div>
+
+      <p class="header-context__note">
+        Dette er en isolert størrelsestest med preview-assets. Valget endrer ikke produksjonsheaderen
+        og gjør ingen SVG canonical.
+      </p>
     </section>
 
     <section class="logo-lab__section logo-lab__reference" aria-labelledby="material-reference-heading">
@@ -278,9 +347,8 @@ const format = (value: number) => value.toFixed(2);
     </section>
 
     <footer class="logo-lab__footer">
-      <strong>Neste beslutningsport:</strong> Avklar om origin-snapping eller
-      <code>geometricPrecision</code> forbedrer Y ved 20 px. Deretter testes Primary i header ved
-      22–26 px. #121 forblir åpen.
+      <strong>Aktiv beslutningsport:</strong> Velg Primary-størrelse for mobil og desktop. Neste port
+      er teknisk QA og canonical navngivning av Primary, Small og Micro. #121 forblir åpen.
     </footer>
   </main>
 </VisInternalLayout>
@@ -677,7 +745,7 @@ const format = (value: number) => value.toFixed(2);
 
   .logo-sample__stage img,
   .candidate-size__stage img,
-  .header-test__bar img {
+  .header-sample__viewport img {
     display: block;
     max-width: none;
     width: auto;
@@ -699,70 +767,171 @@ const format = (value: number) => value.toFixed(2);
     border-top: 1px solid var(--lab-border);
   }
 
-  .header-tests {
+  .header-contexts {
     display: grid;
-    gap: 0.75rem;
+    gap: 1.25rem;
   }
 
-  .header-test {
+  .header-context {
     overflow: hidden;
     border: 1px solid var(--lab-border);
     border-radius: 0.75rem;
     background: var(--lab-paper);
   }
 
-  .header-test > p {
-    margin: 0;
-    padding: 0.45rem 0.75rem;
+  .header-context__head {
+    display: flex;
+    gap: 1rem;
+    align-items: start;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
     border-bottom: 1px solid var(--lab-border);
-    color: var(--lab-muted);
-    font-size: 0.72rem;
+    background: #f8fafc;
   }
 
-  .header-test__bar {
-    display: flex;
-    min-height: 4rem;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 1rem;
+  .header-context__head h3,
+  .header-context__head p {
+    margin: 0;
+  }
+
+  .header-context__head h3 {
+    font-size: 1rem;
+  }
+
+  .header-context__head > p {
+    max-width: 28rem;
+    color: var(--lab-muted);
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .header-context__stack {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #f5f6f8;
+  }
+
+  .header-sample {
+    overflow: hidden;
+    margin: 0;
+    border: 1px solid var(--lab-border);
+    border-radius: 0.65rem;
     background: #fff;
   }
 
-  .header-test__variants {
-    display: grid;
+  .header-sample--candidate {
+    border-color: rgb(54 114 230 / 0.55);
+    box-shadow: 0 0 0 2px rgb(54 114 230 / 0.08);
   }
 
-  .header-test__variant + .header-test__variant {
-    border-top: 1px solid var(--lab-border);
-  }
-
-  .header-test__variant > span {
-    display: block;
-    padding: 0.45rem 1rem 0;
+  .header-sample figcaption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.45rem 0.7rem;
+    border-bottom: 1px solid var(--lab-border);
     color: var(--lab-muted);
-    font-size: 0.66rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
   }
 
-  .header-test__bar a {
+  .header-sample figcaption strong {
+    color: var(--lab-ink);
+  }
+
+  .header-sample__viewport {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+  }
+
+  .header-sample__viewport > a {
     display: inline-flex;
     align-items: center;
     padding: 0.375rem 0.5rem;
   }
 
-  .header-test__bar button {
-    display: inline-grid;
+  .header-sample__viewport--mobile {
+    width: min(100%, 390px);
+    height: 64px;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+  }
+
+  .header-sample__viewport--mobile button {
+    display: grid;
     width: 2.75rem;
     height: 2.75rem;
+    gap: 4px;
+    align-content: center;
     place-items: center;
     border: 0;
     border-radius: 0.55rem;
     background: #fff;
-    color: var(--lab-ink);
     box-shadow: 0 5px 18px rgb(15 27 46 / 0.08);
-    font-size: 0.95rem;
+  }
+
+  .header-sample__viewport--mobile button span {
+    display: block;
+    width: 16px;
+    height: 1px;
+    background: var(--lab-ink);
+  }
+
+  .header-sample__desktop-scroll {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  .header-sample__viewport--desktop {
+    min-width: 800px;
+    height: 72px;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+
+  .header-sample__viewport--desktop nav {
+    display: flex;
+    flex: 1;
+    gap: 0.15rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--lab-muted);
+    font-size: 0.78rem;
+  }
+
+  .header-sample__viewport--desktop nav span {
+    padding: 0.5rem 0.65rem;
+    border-radius: 0.45rem;
+  }
+
+  .header-sample__viewport--desktop nav .is-active {
+    background: #f8f7f3;
+    color: var(--lab-ink);
+    font-weight: 700;
+    box-shadow: 0 3px 12px rgb(15 27 46 / 0.05);
+  }
+
+  .header-sample__cta {
+    display: inline-flex;
+    min-width: 7.5rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1rem;
+    border: 1px solid rgb(15 27 46 / 0.7);
+    border-radius: 999px;
+    color: var(--lab-ink);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .header-context__note {
+    margin: 0.85rem 0 0;
+    color: var(--lab-muted);
+    font-size: 0.78rem;
+    line-height: 1.5;
   }
 
   .logo-lab__reference,
@@ -806,6 +975,14 @@ const format = (value: number) => value.toFixed(2);
   @media (max-width: 520px) {
     .logo-lab__runtime {
       grid-template-columns: 1fr;
+    }
+
+    .header-context__head {
+      display: block;
+    }
+
+    .header-context__head > p {
+      margin-top: 0.55rem;
     }
 
     .logo-sample__renders {
