@@ -105,14 +105,14 @@ const neighborMarks = [
         <h3 id="dark-header-review-heading">Small Y-signal i Primary ved 22 px</h3>
       </div>
       <p>
-        Ny avgrenset kontroll etter presisering: behold Primary-bokstavene på desktop, men test
-        det tydeligere Small Y-signalet fra mobilvarianten i den inverse 22 px-logoen.
+        Godkjent dark-mode-behandling: Primary-bokstaver på desktop med det tydeligere Small
+        Y-signalet fra mobilvarianten i den inverse 22 px-logoen.
       </p>
     </header>
 
     <div class="dark-header-review__grid">
       <article class="dark-header-check">
-        <header><strong>Desktop · nå i produksjon</strong><span>Primary · 22 px</span></header>
+        <header><strong>Desktop · godkjent produksjon</strong><span>22 px + signal 20 px</span></header>
         <div class="dark-header-check__stage">
           <img
             src={`${base}brand/viddel-wordmark-primary-5bar-inverse-blue.svg`}
@@ -122,11 +122,11 @@ const neighborMarks = [
             style="height: 22px"
           />
         </div>
-        <footer>Primary-bokstaver · Primary-signal</footer>
+        <footer>Primary 22 px · Small Y 20 px · pixel-hintede endekapper</footer>
       </article>
 
       <article class="dark-header-check dark-header-check--candidate">
-        <header><strong>Desktop · korrigert hybrid</strong><span>22 px + signal 20 px</span></header>
+        <header><strong>Godkjent QA-referanse</strong><span>Samme geometri</span></header>
         <div class="dark-header-check__stage">
           <img
             src={`${base}brand/test/viddel-wordmark-primary-5bar-inverse-small-signal-preview.svg`}
@@ -155,11 +155,9 @@ const neighborMarks = [
     </div>
 
     <footer class="dark-header-review__note">
-      <strong>Ny beslutningsport:</strong> Sammenlign dagens desktop med den korrigerte hybriden ved
-      100 % zoom. Plasseringen er låst én skjermpiksel mot høyre. De avrundede endekappene er
-      symmetrisk pixel-hintet i Y-retningen for å fjerne den optiske helningen. D-åpningene er fortsatt
-      økt med omtrent én skjermpiksel over og under signalet. Produksjonsheaderen og canonical Primary
-      er ikke endret.
+      <strong>Beslutning låst:</strong> Desktop inverse bruker Primary-bokstavene ved 22 px og det
+      pixel-hintede Small Y-signalet ved faktisk 20 px. D-åpningene er optisk økt med omtrent én
+      skjermpiksel over og under signalet. Mobilens Small Y-behandling ved 20 px er uendret.
     </footer>
   </section>
 
