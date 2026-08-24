@@ -33,12 +33,14 @@ const favicons = [
   { id: "blue", label: "Blue / white", background: "#3672e6", signal: "#ffffff", status: "Godkjent brandfarge" },
 ];
 const faviconTests = [
-  { id: "left-8", label: "Crisp −0.5", size: 8, offset: 4, sideHeight: 6 },
-  { id: "center-8", label: "Balanced AA", size: 8, offset: 4.5, sideHeight: 6 },
-  { id: "right-8", label: "Crisp +0.5", size: 8, offset: 5, sideHeight: 6 },
-  { id: "left-12", label: "Crisp −0.5", size: 12, offset: 4, sideHeight: 8 },
-  { id: "center-12", label: "Balanced AA", size: 12, offset: 4.5, sideHeight: 8 },
-  { id: "right-12", label: "Crisp +0.5", size: 12, offset: 5, sideHeight: 8 },
+  { id: "left-8", label: "Crisp −0.5", size: 8, offset: 4, sideHeight: 6, barWidth: 1 },
+  { id: "center-8", label: "Balanced AA", size: 8, offset: 4.5, sideHeight: 6, barWidth: 1 },
+  { id: "right-8", label: "Crisp +0.5", size: 8, offset: 5, sideHeight: 6, barWidth: 1 },
+  { id: "equal-8", label: "Equal 2 px", size: 8, offset: 4, sideHeight: 6, barWidth: 2 },
+  { id: "left-12", label: "Crisp −0.5", size: 12, offset: 4, sideHeight: 8, barWidth: 1 },
+  { id: "center-12", label: "Balanced AA", size: 12, offset: 4.5, sideHeight: 8, barWidth: 1 },
+  { id: "right-12", label: "Crisp +0.5", size: 12, offset: 5, sideHeight: 8, barWidth: 1 },
+  { id: "equal-12", label: "Equal 2 px", size: 12, offset: 4, sideHeight: 8, barWidth: 2 },
 ];
 ---
 
@@ -133,7 +135,8 @@ const faviconTests = [
       </div>
       <p>
         Tre like 1 px-stolper kan ikke være både matematisk sentrert og helt pikseljustert på en 16 px-flate.
-        Testen sammenligner derfor optisk hinting −0,5 / 0 / +0,5 px. Green er kun fargeutforskning.
+        Testen sammenligner optisk hinting −0,5 / 0 / +0,5 px og tre like 2 px-stolper. Green er kun
+        fargeutforskning.
       </p>
     </header>
 
@@ -149,7 +152,7 @@ const faviconTests = [
                     class="favicon-pixel-signal"
                     role="img"
                     aria-label={`${favicon.label}, ${test.label} ved faktisk ${test.size} piksler i 16 pikslers flate`}
-                    style={`--pixel-offset: ${test.offset}px; --pixel-center-height: ${test.size}px; --pixel-side-height: ${test.sideHeight}px; --signal-color: ${favicon.signal};`}
+                    style={`--pixel-offset: ${test.offset}px; --pixel-bar-width: ${test.barWidth}px; --pixel-center-height: ${test.size}px; --pixel-side-height: ${test.sideHeight}px; --signal-color: ${favicon.signal};`}
                   ><i></i><i></i><i></i></span>
                 </div>
                 <figcaption><strong>{test.label}</strong><span>{test.size} px</span></figcaption>
@@ -160,7 +163,7 @@ const faviconTests = [
             <span class="browser-tab__icons" aria-label={`${favicon.label}, fire favicon-varianter i tab-kontekst`}>
               {faviconTests.map((test) => (
                 <span class:list={["favicon-tile", favicon.id === "white" && "favicon-tile--outlined"]} style={`--favicon-size: 16px; --favicon-background: ${favicon.background};`}>
-                  <span class="favicon-pixel-signal" style={`--pixel-offset: ${test.offset}px; --pixel-center-height: ${test.size}px; --pixel-side-height: ${test.sideHeight}px; --signal-color: ${favicon.signal};`}><i></i><i></i><i></i></span>
+                  <span class="favicon-pixel-signal" style={`--pixel-offset: ${test.offset}px; --pixel-bar-width: ${test.barWidth}px; --pixel-center-height: ${test.size}px; --pixel-side-height: ${test.sideHeight}px; --signal-color: ${favicon.signal};`}><i></i><i></i><i></i></span>
                 </span>
               ))}
             </span>
@@ -172,8 +175,8 @@ const faviconTests = [
   </section>
 
   <footer class="brand-review__decision">
-    <strong>Aktiv beslutning:</strong> velg Crisp −0,5, Balanced AA eller Crisp +0,5 ved 8 og 12 px.
-    Velg deretter White/black, Black/white, Green/white eller Blue/white.
+    <strong>Aktiv beslutning:</strong> velg Crisp −0,5, Balanced AA, Crisp +0,5 eller Equal 2 px ved 8
+    og 12 px. Velg deretter White/black, Black/white, Green/white eller Blue/white.
   </footer>
 </section>
 
@@ -338,7 +341,8 @@ const faviconTests = [
   .favicon-card > header span { color: #667085; }
 
   .favicon-card__sizes {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     min-height: 6.25rem;
     gap: 1rem;
     align-items: end;
@@ -390,7 +394,7 @@ const faviconTests = [
   .favicon-pixel-signal i {
     position: absolute;
     top: 50%;
-    width: 1px;
+    width: var(--pixel-bar-width);
     height: var(--pixel-side-height);
     transform: translateY(-50%);
     border-radius: 0.5px;
