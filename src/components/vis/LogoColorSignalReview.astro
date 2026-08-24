@@ -29,32 +29,18 @@ const signalSizes = [8, 12, 16, 20, 24, 32];
 const faviconColor = { background: "#159a62", signal: "#ffffff" };
 const faviconVariants = [
   {
-    id: "micro3-square",
-    label: "Micro 3 · 16×16",
+    id: "micro5-reference",
+    label: "Micro 5 · referanse",
     status: "Referanse",
-    fillWidth: 16,
-    bars: [{ x: 4, height: 8 }, { x: 7, height: 12 }, { x: 10, height: 8 }],
-  },
-  {
-    id: "micro3-cut",
-    label: "Micro 3 · høyrepiksel transparent",
-    status: "Sentreringshypotese",
-    fillWidth: 15,
-    bars: [{ x: 4, height: 8 }, { x: 7, height: 12 }, { x: 10, height: 8 }],
-  },
-  {
-    id: "micro5-square",
-    label: "Micro 5 · 16×16",
-    status: "Gjenkjenningshypotese",
-    fillWidth: 16,
-    bars: [{ x: 1, height: 4 }, { x: 4, height: 8 }, { x: 7, height: 12 }, { x: 10, height: 8 }, { x: 13, height: 4 }],
-  },
-  {
-    id: "micro5-cut",
-    label: "Micro 5 · høyrepiksel transparent",
-    status: "Kombinert hypotese",
     fillWidth: 15,
     bars: [{ x: 1, height: 4 }, { x: 4, height: 8 }, { x: 7, height: 12 }, { x: 10, height: 8 }, { x: 13, height: 4 }],
+  },
+  {
+    id: "micro5-diamond",
+    label: "Micro 5 · ruterform",
+    status: "Kortere ytterstolper",
+    fillWidth: 15,
+    bars: [{ x: 1, height: 2 }, { x: 4, height: 8 }, { x: 7, height: 12 }, { x: 10, height: 8 }, { x: 13, height: 2 }],
   },
 ];
 const neighborMarks = [
@@ -159,8 +145,8 @@ const neighborMarks = [
         <h3 id="favicon-review-heading">Kontrastflate rundt signalet</h3>
       </div>
       <p>
-        Signal green/white er valgt. Denne 2×2-kontrollen isolerer to nye spørsmål: tre eller fem
-        stolper, og full 16 px fargeflate eller én transparent høyrepiksel. Signalet er fortsatt 12 px.
+        Signal green/white, 15×16-flaten og Micro 5 er valgt. Siste kontroll sammenligner bare
+        ytterstolper på 4 eller 2 px. Signalhøyde, mellomrom og plassering er ellers identiske.
       </p>
     </header>
 
@@ -179,7 +165,7 @@ const neighborMarks = [
                   style={`--signal-color: ${faviconColor.signal};`}
                 >{favicon.bars.map((bar) => <i style={`left: ${bar.x}px; height: ${bar.height}px;`}></i>)}</span>
               </div>
-              <figcaption><strong>{favicon.bars.length} stolper · 1 px</strong><span>{favicon.fillWidth}×16 px synlig flate</span></figcaption>
+              <figcaption><strong>{favicon.bars.map((bar) => bar.height).join("/")} px høyder</strong><span>{favicon.fillWidth}×16 px synlig flate</span></figcaption>
             </figure>
           </div>
           <div class="favicon-neighborhood" aria-label={`${favicon.label} blant generiske nabofaner`}>
@@ -203,9 +189,8 @@ const neighborMarks = [
   </section>
 
   <footer class="brand-review__decision">
-    <strong>Aktiv beslutning:</strong> Signal green/white er låst som fargeretning. Velg tre eller fem
-    stolper, og vurder om transparent høyrepiksel forbedrer sentreringen uten å svekke flaten.
-    Produksjonsfavicon er ikke endret.
+    <strong>Aktiv beslutning:</strong> Green/white, 15×16 og Micro 5 er låst. Velg referansen
+    4/8/12/8/4 eller ruterformen 2/8/12/8/2. Produksjonsfavicon er ikke endret.
   </footer>
 </section>
 
