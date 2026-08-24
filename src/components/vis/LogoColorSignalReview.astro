@@ -26,12 +26,37 @@ const signals = [
   { id: "micro", bars: "3bar", label: "Micro 3-bar", detail: "8 px · krevende tilfeller", aspect: 10 / 16.7414 },
 ];
 const signalSizes = [8, 12, 16, 20, 24, 32];
-const favicons = [
-  { id: "blue", label: "Blue / white", background: "#3672e6", signal: "#ffffff", status: "Primær brandkandidat" },
-  { id: "green", label: "Signal green / white", background: "#159a62", signal: "#ffffff", status: "Sekundær brandkandidat · test" },
-  { id: "black", label: "Black / white", background: "#000000", signal: "#ffffff", status: "Teknisk fallback" },
+const faviconColor = { background: "#159a62", signal: "#ffffff" };
+const faviconVariants = [
+  {
+    id: "micro3-square",
+    label: "Micro 3 · 16×16",
+    status: "Referanse",
+    fillWidth: 16,
+    bars: [{ x: 4, height: 8 }, { x: 7, height: 12 }, { x: 10, height: 8 }],
+  },
+  {
+    id: "micro3-cut",
+    label: "Micro 3 · høyrepiksel transparent",
+    status: "Sentreringshypotese",
+    fillWidth: 15,
+    bars: [{ x: 4, height: 8 }, { x: 7, height: 12 }, { x: 10, height: 8 }],
+  },
+  {
+    id: "micro5-square",
+    label: "Micro 5 · 16×16",
+    status: "Gjenkjenningshypotese",
+    fillWidth: 16,
+    bars: [{ x: 2, height: 4 }, { x: 5, height: 8 }, { x: 7, height: 12 }, { x: 9, height: 8 }, { x: 12, height: 4 }],
+  },
+  {
+    id: "micro5-cut",
+    label: "Micro 5 · høyrepiksel transparent",
+    status: "Kombinert hypotese",
+    fillWidth: 15,
+    bars: [{ x: 2, height: 4 }, { x: 5, height: 8 }, { x: 7, height: 12 }, { x: 9, height: 8 }, { x: 12, height: 4 }],
+  },
 ];
-const faviconLock = { label: "Micro 3 · Crisp −0,5", size: 12, offset: 4, sideHeight: 8, barWidth: 1 };
 const neighborMarks = [
   { mark: "A", color: "#111827", background: "#ffffff", shape: "square" },
   { mark: "✦", color: "#ffffff", background: "#ea4335", shape: "round" },
@@ -134,26 +159,26 @@ const neighborMarks = [
         <h3 id="favicon-review-heading">Kontrastflate rundt signalet</h3>
       </div>
       <p>
-        Geometrien er låst til Micro 3 med optisk hinting Crisp −0,5: et faktisk 12 px signal i en
-        16 px-flate. Nå sammenlignes bare gjenfinning og brandtilhørighet i en travel nettleserrad.
+        Signal green/white er valgt. Denne 2×2-kontrollen isolerer to nye spørsmål: tre eller fem
+        stolper, og full 16 px fargeflate eller én transparent høyrepiksel. Signalet er fortsatt 12 px.
       </p>
     </header>
 
     <div class="favicon-grid">
-      {favicons.map((favicon) => (
+      {faviconVariants.map((favicon) => (
         <article class="favicon-card">
           <header><strong>{favicon.label}</strong><span>{favicon.status}</span></header>
           <div class="favicon-card__sizes">
             <figure>
-              <div class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${favicon.background};`}>
+              <div class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${faviconColor.background}; --favicon-fill-width: ${favicon.fillWidth}px;`}>
                 <span
                   class="favicon-pixel-signal"
                   role="img"
-                  aria-label={`${favicon.label}, ${faviconLock.label} ved faktisk ${faviconLock.size} piksler i 16 pikslers flate`}
-                  style={`--pixel-offset: ${faviconLock.offset}px; --pixel-bar-width: ${faviconLock.barWidth}px; --pixel-center-height: ${faviconLock.size}px; --pixel-side-height: ${faviconLock.sideHeight}px; --signal-color: ${favicon.signal};`}
-                ><i></i><i></i><i></i></span>
+                  aria-label={`${favicon.label}, faktisk 12 pikslers signal i 16 pikslers canvas`}
+                  style={`--signal-color: ${faviconColor.signal};`}
+                >{favicon.bars.map((bar) => <i style={`left: ${bar.x}px; height: ${bar.height}px;`}></i>)}</span>
               </div>
-              <figcaption><strong>{faviconLock.label}</strong><span>12 px · låst</span></figcaption>
+              <figcaption><strong>{favicon.bars.length} stolper · 1 px</strong><span>{favicon.fillWidth}×16 px synlig flate</span></figcaption>
             </figure>
           </div>
           <div class="favicon-neighborhood" aria-label={`${favicon.label} blant generiske nabofaner`}>
@@ -161,8 +186,8 @@ const neighborMarks = [
               <span class:list={["neighbor-mark", `neighbor-mark--${neighbor.shape}`]} style={`--neighbor-color: ${neighbor.color}; --neighbor-background: ${neighbor.background};`}>{neighbor.mark}</span>
             ))}
             <span class="favicon-neighborhood__active">
-              <span class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${favicon.background};`}>
-                <span class="favicon-pixel-signal" style={`--pixel-offset: ${faviconLock.offset}px; --pixel-bar-width: ${faviconLock.barWidth}px; --pixel-center-height: ${faviconLock.size}px; --pixel-side-height: ${faviconLock.sideHeight}px; --signal-color: ${favicon.signal};`}><i></i><i></i><i></i></span>
+              <span class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${faviconColor.background}; --favicon-fill-width: ${favicon.fillWidth}px;`}>
+                <span class="favicon-pixel-signal" style={`--signal-color: ${faviconColor.signal};`}>{favicon.bars.map((bar) => <i style={`left: ${bar.x}px; height: ${bar.height}px;`}></i>)}</span>
               </span>
               <span>Viddel</span>
             </span>
@@ -176,8 +201,9 @@ const neighborMarks = [
   </section>
 
   <footer class="brand-review__decision">
-    <strong>Aktiv beslutning:</strong> geometrien er låst. Velg Blue/white eller Signal green/white.
-    Black/white beholdes som teknisk fallback; produksjonsfavicon er ikke endret.
+    <strong>Aktiv beslutning:</strong> Signal green/white er låst som fargeretning. Velg tre eller fem
+    stolper, og vurder om transparent høyrepiksel forbedrer sentreringen uten å svekke flaten.
+    Produksjonsfavicon er ikke endret.
   </footer>
 </section>
 
@@ -320,7 +346,7 @@ const neighborMarks = [
   }
 
   .favicon-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .favicon-card {
@@ -378,8 +404,8 @@ const neighborMarks = [
     place-items: center;
     overflow: hidden;
     border-radius: 22%;
-    background: var(--favicon-background);
-    box-shadow: 0 1px 4px rgb(15 27 46 / 0.2);
+    background: linear-gradient(90deg, var(--favicon-background) 0 var(--favicon-fill-width), transparent var(--favicon-fill-width));
+    filter: drop-shadow(0 1px 2px rgb(15 27 46 / 0.2));
   }
 
   .favicon-pixel-signal {
@@ -391,20 +417,11 @@ const neighborMarks = [
   .favicon-pixel-signal i {
     position: absolute;
     top: 50%;
-    width: var(--pixel-bar-width);
-    height: var(--pixel-side-height);
+    width: 1px;
     transform: translateY(-50%);
     border-radius: 0.5px;
     background: var(--signal-color);
   }
-
-  .favicon-pixel-signal i:nth-child(1) { left: var(--pixel-offset); }
-  .favicon-pixel-signal i:nth-child(2) {
-    top: 50%;
-    left: calc(var(--pixel-offset) + 3px);
-    height: var(--pixel-center-height);
-  }
-  .favicon-pixel-signal i:nth-child(3) { left: calc(var(--pixel-offset) + 6px); }
 
   .favicon-neighborhood {
     display: flex;
