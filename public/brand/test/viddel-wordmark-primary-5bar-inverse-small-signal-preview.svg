@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Preview-only hybrid for dark-header QA. Primary letters stay at 22 px; the native 20 px Small Y signal is pixel-snapped for the desktop header's 0.5 px origin. The D apertures are optically opened by one rendered pixel above and below the signal. -->
+<!-- Preview-only hybrid for dark-header QA. Primary letters stay at 22 px; the native 20 px Small Y signal is pixel-snapped for the desktop header's 0.5 px origin. Signal caps are vertically pixel-hinted, and the D apertures are optically opened by one rendered pixel above and below the signal. -->
 <svg xmlns="http://www.w3.org/2000/svg" width="937.88" height="134" viewBox="0 0 937.88 134">
   <defs>
     <clipPath id="open-d-apertures" clipPathUnits="userSpaceOnUse">
@@ -15,10 +15,10 @@
     <path d="M507.62,118.48l49.94-.03c18.24,0,35.11-8.76,43.13-25.28,3.18-6.55,5.79-13.69,5.54-20.99l-.56-16.12c-.18-5.06-2.38-9.93-4.44-14.48-3.77-8.32-9.91-14.85-17.84-19.41-9.13-5.25-19.27-6.76-29.82-6.74l-45.92.08-.04,29.86-14.95.07V8.13l.02-8.02,66.9.12c6.27.01,12.85,1.63,18.76,3.23,25.17,6.81,41.06,28.75,43.4,54.54l.04,17.21c.06,27.15-25.24,56.16-55.07,57.92l-11.15.66-62.9.07.03-22.73.03-20.15,14.92-.06v27.57l-.02-.01Z"/>
   </g>
   <g fill="#3672e6" transform="matrix(6.090909 0 0 6.090909 45.681818 6.090909)">
-    <path d="M62,4.6936c-.55,0-1,.4708-1,1.0463v8.5201c0,.5755.45,1.0464,1,1.0464s1-.4709,1-1.0464V5.7399c0-.5755-.45-1.0463-1-1.0463Z"/>
-    <path d="M70,4.6936c-.55,0-1,.4708-1,1.0463v8.5201c0,.5755.45,1.0464,1,1.0464s1-.4709,1-1.0464V5.7399c0-.5755-.45-1.0463-1-1.0463Z"/>
-    <path d="M74,7.6936c-.55,0-1,.4708-1,1.0463v2.5201c0,.5755.45,1.0464,1,1.0464s1-.4709,1-1.0464v-2.5201c0-.5755-.45-1.0463-1-1.0463Z"/>
-    <path d="M58,7.6936c-.55,0-1,.4708-1,1.0463v2.5201c0,.5755.45,1.0464,1,1.0464s1-.4709,1-1.0464v-2.5201c0-.5755-.45-1.0463-1-1.0463Z"/>
-    <path d="M66,1.6293c-.55,0-1,.4709-1,1.0464v14.6487c0,.5754.45,1.0463,1,1.0463s1-.4709,1-1.0463V2.6757c0-.5755-.45-1.0464-1-1.0464Z"/>
+    <path d="M62 5c-.5523 0-1 .4477-1 1v8c0 .5523.4477 1 1 1s1-.4477 1-1V6c0-.5523-.4477-1-1-1Z"/>
+    <path d="M70 5c-.5523 0-1 .4477-1 1v8c0 .5523.4477 1 1 1s1-.4477 1-1V6c0-.5523-.4477-1-1-1Z"/>
+    <path d="M74 8c-.5523 0-1 .4477-1 1v2c0 .5523.4477 1 1 1s1-.4477 1-1V9c0-.5523-.4477-1-1-1Z"/>
+    <path d="M58 8c-.5523 0-1 .4477-1 1v2c0 .5523.4477 1 1 1s1-.4477 1-1V9c0-.5523-.4477-1-1-1Z"/>
+    <path d="M66 2c-.5523 0-1 .4477-1 1v14c0 .5523.4477 1 1 1s1-.4477 1-1V3c0-.5523-.4477-1-1-1Z"/>
   </g>
 </svg>
