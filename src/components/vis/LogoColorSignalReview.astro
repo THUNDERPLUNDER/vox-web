@@ -98,6 +98,54 @@ const neighborMarks = [
     ))}
   </div>
 
+  <section class="dark-header-review light-header-review" aria-labelledby="light-header-review-heading">
+    <header class="signal-review__head">
+      <div>
+        <p>Light header · 22 px behandling</p>
+        <h3 id="light-header-review-heading">Samme optiske system i navy på lys flate</h3>
+      </div>
+      <p>
+        Den godkjente inverse geometrien er avledet uten skalering: Primary-bokstaver i navy og
+        Small Y-signalet i blått. Den generelle Primary-filen er beholdt uendret.
+      </p>
+    </header>
+
+    <div class="dark-header-review__grid">
+      <article class="dark-header-check light-header-check dark-header-check--candidate">
+        <header><strong>Desktop · ny lys behandling</strong><span>22 px + signal 20 px</span></header>
+        <div class="dark-header-check__stage">
+          <img
+            src={`${base}brand/viddel-wordmark-primary-5bar-light-header-22.svg`}
+            alt="VIDDEL med navy Primary-bokstaver og blått Small Y-signal"
+            width="937.88"
+            height="134"
+            style="height: 22px"
+          />
+        </div>
+        <footer>Header-only · navy #0F1B2E · blue #3672E6</footer>
+      </article>
+
+      <article class="dark-header-check light-header-check dark-header-check--reference">
+        <header><strong>Generell Primary · referanse</strong><span>Skalerbar master</span></header>
+        <div class="dark-header-check__stage">
+          <img
+            src={`${base}brand/viddel-wordmark-primary-5bar.svg`}
+            alt="VIDDEL generell Primary-referanse"
+            width="937.88"
+            height="134"
+            style="height: 22px"
+          />
+        </div>
+        <footer>Uendret · brukes fortsatt utenfor den optiske headerbehandlingen</footer>
+      </article>
+    </div>
+
+    <footer class="dark-header-review__note">
+      <strong>Avgrensning:</strong> Kun lys desktopheader fra 1024 px bruker den nye 22 px-filen.
+      Mobil, inverse desktop, footer og generell Primary er uendret.
+    </footer>
+  </section>
+
   <section class="dark-header-review" aria-labelledby="dark-header-review-heading">
     <header class="signal-review__head">
       <div>
@@ -418,6 +466,29 @@ const neighborMarks = [
 
   .dark-header-check--reference {
     border-style: dashed;
+  }
+
+  .light-header-check {
+    border-color: #d9dee7;
+    background: #fff;
+  }
+
+  .light-header-check.dark-header-check--candidate {
+    border-color: #87a9ef;
+  }
+
+  .light-header-check > header {
+    border-bottom-color: #d9dee7;
+    color: #0f1b2e;
+  }
+
+  .light-header-check > header span,
+  .light-header-check > footer {
+    color: #667085;
+  }
+
+  .light-header-check > footer {
+    border-top-color: #d9dee7;
   }
 
   .dark-header-check > header {
