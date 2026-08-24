@@ -29,18 +29,18 @@ const signalSizes = [8, 12, 16, 20, 24, 32];
 const faviconColor = { background: "#159a62", signal: "#ffffff" };
 const faviconVariants = [
   {
-    id: "micro5-reference",
-    label: "Micro 5 · referanse",
-    status: "Referanse",
-    fillWidth: 15,
-    bars: [{ x: 1, height: 4 }, { x: 4, height: 8 }, { x: 7, height: 12 }, { x: 10, height: 8 }, { x: 13, height: 4 }],
-  },
-  {
     id: "micro5-diamond",
-    label: "Micro 5 · ruterform",
-    status: "Kortere ytterstolper",
+    label: "Micro 5 · ruterform 12",
+    status: "Ny referanse",
     fillWidth: 15,
     bars: [{ x: 1, height: 2 }, { x: 4, height: 8 }, { x: 7, height: 12 }, { x: 10, height: 8 }, { x: 13, height: 2 }],
+  },
+  {
+    id: "micro5-diamond-compact",
+    label: "Micro 5 · ruterform 10",
+    status: "Kompakt kandidat",
+    fillWidth: 15,
+    bars: [{ x: 1, height: 2 }, { x: 4, height: 6 }, { x: 7, height: 10 }, { x: 10, height: 6 }, { x: 13, height: 2 }],
   },
 ];
 const neighborMarks = [
@@ -146,7 +146,7 @@ const neighborMarks = [
       </div>
       <p>
         Signal green/white, 15×16-flaten og Micro 5 er valgt. Siste kontroll sammenligner bare
-        ytterstolper på 4 eller 2 px. Signalhøyde, mellomrom og plassering er ellers identiske.
+        ruterformen 2/8/12/8/2 med en kompaktert 2/6/10/6/2. Mellomrom og plassering er identiske.
       </p>
     </header>
 
@@ -189,8 +189,8 @@ const neighborMarks = [
   </section>
 
   <footer class="brand-review__decision">
-    <strong>Aktiv beslutning:</strong> Green/white, 15×16 og Micro 5 er låst. Velg referansen
-    4/8/12/8/4 eller ruterformen 2/8/12/8/2. Produksjonsfavicon er ikke endret.
+    <strong>Aktiv beslutning:</strong> Green/white, 15×16 og Micro 5 er låst. Velg ruterform 12
+    (2/8/12/8/2) eller kompakt ruterform 10 (2/6/10/6/2). Produksjonsfavicon er ikke endret.
   </footer>
 </section>
 
