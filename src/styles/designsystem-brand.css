@@ -9,6 +9,7 @@
 .ds-brand-page__hero { max-width: 44rem; }
 
 .ds-brand-page__wordmarks,
+.ds-brand-page__headers,
 .ds-brand-page__signals {
   display: grid;
   gap: 1rem;
@@ -34,6 +35,8 @@
   max-width: 100%;
   width: auto;
 }
+
+.ds-brand-page__stage--dark { background: #080e1c; }
 
 .ds-brand-page__wordmark figcaption,
 .ds-brand-page__signal figcaption {
@@ -69,6 +72,44 @@
 }
 
 .ds-brand-page__runtime-rule strong { color: var(--brand-navy); }
+
+.ds-brand-page__section-intro {
+  color: var(--ds-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+  max-width: 46rem;
+}
+
+.ds-brand-page__downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.45rem;
+}
+
+.ds-brand-page__downloads a {
+  align-items: center;
+  border: 1px solid rgb(15 27 46 / 0.16);
+  border-radius: 999px;
+  color: var(--brand-navy);
+  display: inline-flex;
+  font-size: 0.6875rem;
+  font-weight: 650;
+  min-height: 1.8rem;
+  padding: 0.25rem 0.65rem;
+  text-decoration: none;
+}
+
+.ds-brand-page__downloads a:hover {
+  background: rgb(54 114 230 / 0.08);
+  border-color: rgb(54 114 230 / 0.4);
+}
+
+.ds-brand-page__downloads a:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 2px;
+}
 
 .ds-brand-page__table {
   border-bottom: 1px solid rgb(15 27 46 / 0.08);
@@ -143,6 +184,7 @@
 
 @media (min-width: 640px) {
   .ds-brand-page__wordmarks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ds-brand-page__headers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ds-brand-page__signals { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .ds-brand-page__table-row { grid-template-columns: 8rem 1fr 1fr; gap: 1rem; }
   .ds-brand-page__favicon { grid-template-columns: 9rem 1fr; }
