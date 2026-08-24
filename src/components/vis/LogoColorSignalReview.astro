@@ -102,17 +102,17 @@ const neighborMarks = [
     <header class="signal-review__head">
       <div>
         <p>Dark header · optisk kontroll</p>
-        <h3 id="dark-header-review-heading">Inverse blue er låst for headeren</h3>
+        <h3 id="dark-header-review-heading">Small Y-signal i Primary ved 22 px</h3>
       </div>
       <p>
-        Kontroll utført med samme canonical geometri og mørke headerflate. Inverse blue beholdes
-        både for Primary ved 22 px på desktop og Small Y ved 20 px på mobil.
+        Ny avgrenset kontroll etter presisering: behold Primary-bokstavene på desktop, men test
+        det tydeligere Small Y-signalet fra mobilvarianten i den inverse 22 px-logoen.
       </p>
     </header>
 
     <div class="dark-header-review__grid">
-      <article class="dark-header-check dark-header-check--selected">
-        <header><strong>Desktop · låst behandling</strong><span>Primary · 22 px</span></header>
+      <article class="dark-header-check">
+        <header><strong>Desktop · nå i produksjon</strong><span>Primary · 22 px</span></header>
         <div class="dark-header-check__stage">
           <img
             src={`${base}brand/viddel-wordmark-primary-5bar-inverse-blue.svg`}
@@ -122,25 +122,25 @@ const neighborMarks = [
             style="height: 22px"
           />
         </div>
-        <footer>Inverse blue · beholdes i produksjon</footer>
+        <footer>Primary-bokstaver · Primary-signal</footer>
       </article>
 
-      <article class="dark-header-check dark-header-check--rejected">
-        <header><strong>Desktop · vurdert alternativ</strong><span>Primary · 22 px</span></header>
+      <article class="dark-header-check dark-header-check--candidate">
+        <header><strong>Desktop · ny hybrid</strong><span>Primary + Small Y · 22 px</span></header>
         <div class="dark-header-check__stage">
           <img
-            src={`${base}brand/viddel-wordmark-primary-5bar-mono-white.svg`}
-            alt="VIDDEL Primary helt i hvitt"
+            src={`${base}brand/test/viddel-wordmark-primary-5bar-inverse-small-signal-preview.svg`}
+            alt="VIDDEL med Primary-bokstaver og Small Y-signal"
             width="937.88"
             height="134"
             style="height: 22px"
           />
         </div>
-        <footer>Mono white · vurdert, ikke valgt for header</footer>
+        <footer>Primary-bokstaver · Small Y-signal skalert proporsjonalt til 22 px</footer>
       </article>
 
-      <article class="dark-header-check dark-header-check--selected">
-        <header><strong>Mobil · låst behandling</strong><span>Small Y · 20 px</span></header>
+      <article class="dark-header-check dark-header-check--reference">
+        <header><strong>Mobil · signalreferanse</strong><span>Small Y · 20 px</span></header>
         <div class="dark-header-check__stage">
           <img
             src={`${base}brand/viddel-wordmark-small-5bar-inverse-blue.svg`}
@@ -150,27 +150,13 @@ const neighborMarks = [
             style="height: 20px"
           />
         </div>
-        <footer>Inverse blue · beholdes i produksjon</footer>
-      </article>
-
-      <article class="dark-header-check dark-header-check--rejected">
-        <header><strong>Mobil · vurdert alternativ</strong><span>Small Y · 20 px</span></header>
-        <div class="dark-header-check__stage">
-          <img
-            src={`${base}brand/viddel-wordmark-small-5bar-mono-white.svg`}
-            alt="VIDDEL Small Y helt i hvitt"
-            width="140"
-            height="20"
-            style="height: 20px"
-          />
-        </div>
-        <footer>Mono white · vurdert, ikke valgt for header</footer>
+        <footer>Small Y-bokstaver · Small Y-signal, uendret kontroll</footer>
       </article>
     </div>
 
     <footer class="dark-header-review__note">
-      <strong>Beslutning:</strong> Behold inverse blue i dark mode. Kontrollen utløser ingen ny
-      geometri og ingen endring i produksjonsheaderen.
+      <strong>Ny beslutningsport:</strong> Sammenlign dagens desktop med hybriden ved 100 % zoom.
+      Produksjonsheaderen og canonical Primary er ikke endret.
     </footer>
   </section>
 
@@ -424,13 +410,13 @@ const neighborMarks = [
     background: #080e1c;
   }
 
-  .dark-header-check--selected {
+  .dark-header-check--candidate {
     border-color: #4f7ed9;
     box-shadow: inset 0 0 0 1px rgb(79 126 217 / 0.35);
   }
 
-  .dark-header-check--rejected {
-    opacity: 0.72;
+  .dark-header-check--reference {
+    border-style: dashed;
   }
 
   .dark-header-check > header {
