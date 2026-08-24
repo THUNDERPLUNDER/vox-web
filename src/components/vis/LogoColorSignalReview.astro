@@ -26,14 +26,25 @@ const signals = [
   { id: "micro", bars: "3bar", label: "Micro 3-bar", detail: "8 px · krevende tilfeller", aspect: 10 / 16.7414 },
 ];
 const signalSizes = [8, 12, 16, 20, 24, 32];
-const faviconColor = { background: "#159a62", signal: "#ffffff" };
+const faviconBars = [{ x: 1, height: 2 }, { x: 4, height: 6 }, { x: 7, height: 10 }, { x: 10, height: 6 }, { x: 13, height: 2 }];
 const faviconVariants = [
   {
-    id: "micro5-diamond-compact",
-    label: "Micro 5 · kompakt ruterform",
-    status: "Valgt",
+    id: "micro5-green",
+    label: "Signal green / white",
+    status: "Foreløpig implementert",
+    background: "#159a62",
+    signal: "#ffffff",
     fillWidth: 15,
-    bars: [{ x: 1, height: 2 }, { x: 4, height: 6 }, { x: 7, height: 10 }, { x: 10, height: 6 }, { x: 13, height: 2 }],
+    bars: faviconBars,
+  },
+  {
+    id: "micro5-blue",
+    label: "Clear blue / white",
+    status: "Fargeutfordrer",
+    background: "#3672e6",
+    signal: "#ffffff",
+    fillWidth: 15,
+    bars: faviconBars,
   },
 ];
 const neighborMarks = [
@@ -138,8 +149,8 @@ const neighborMarks = [
         <h3 id="favicon-review-heading">Kontrastflate rundt signalet</h3>
       </div>
       <p>
-        Faviconretningen er låst: Signal green/white, 15×16-flate og Micro 5 med høydene
-        2/6/10/6/2. Produksjonsassetene er implementert på det reversible #121-testsporet.
+        Geometrien er låst til 15×16, Micro 5 og 2/6/10/6/2. Siste A/B sammenligner bare
+        Signal green #159A62 med klar Viddel-blå #3672E6, begge med hvitt signal.
       </p>
     </header>
 
@@ -149,13 +160,13 @@ const neighborMarks = [
           <header><strong>{favicon.label}</strong><span>{favicon.status}</span></header>
           <div class="favicon-card__sizes">
             <figure>
-              <div class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${faviconColor.background}; --favicon-fill-width: ${favicon.fillWidth}px;`}>
+              <div class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${favicon.background}; --favicon-fill-width: ${favicon.fillWidth}px;`}>
                 <span class="favicon-tile__field" aria-hidden="true"></span>
                 <span
                   class="favicon-pixel-signal"
                   role="img"
                   aria-label={`${favicon.label}, faktisk 12 pikslers signal i 16 pikslers canvas`}
-                  style={`--signal-color: ${faviconColor.signal};`}
+                  style={`--signal-color: ${favicon.signal};`}
                 >{favicon.bars.map((bar) => <i style={`left: ${bar.x}px; height: ${bar.height}px;`}></i>)}</span>
               </div>
               <figcaption><strong>{favicon.bars.map((bar) => bar.height).join("/")} px høyder</strong><span>{favicon.fillWidth}×16 px synlig flate</span></figcaption>
@@ -166,9 +177,9 @@ const neighborMarks = [
               <span class:list={["neighbor-mark", `neighbor-mark--${neighbor.shape}`]} style={`--neighbor-color: ${neighbor.color}; --neighbor-background: ${neighbor.background};`}>{neighbor.mark}</span>
             ))}
             <span class="favicon-neighborhood__active">
-              <span class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${faviconColor.background}; --favicon-fill-width: ${favicon.fillWidth}px;`}>
+              <span class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${favicon.background}; --favicon-fill-width: ${favicon.fillWidth}px;`}>
                 <span class="favicon-tile__field" aria-hidden="true"></span>
-                <span class="favicon-pixel-signal" style={`--signal-color: ${faviconColor.signal};`}>{favicon.bars.map((bar) => <i style={`left: ${bar.x}px; height: ${bar.height}px;`}></i>)}</span>
+                <span class="favicon-pixel-signal" style={`--signal-color: ${favicon.signal};`}>{favicon.bars.map((bar) => <i style={`left: ${bar.x}px; height: ${bar.height}px;`}></i>)}</span>
               </span>
               <span>Viddel</span>
             </span>
@@ -182,8 +193,8 @@ const neighborMarks = [
   </section>
 
   <footer class="brand-review__decision">
-    <strong>Beslutning låst:</strong> Green/white, 15×16, Micro 5 og 2/6/10/6/2. SVG og ICO er
-    koblet til app- og VIS-skall på denne testbranchen; footer og øvrige touchpoints er urørt.
+    <strong>Siste fargeport:</strong> velg Signal green/white eller Clear blue/white. Geometrien er
+    identisk og låst. Root-faviconen står foreløpig grønn på testbranchen; ingenting er merget.
   </footer>
 </section>
 
