@@ -26,8 +26,8 @@ export const designSystemMeta = {
   version: "v0.1",
   title: "Design System Source of Truth",
   canonicalPath: "/designsystem/",
-  updated: "2026-07-31",
-  issue: "#157 · #283",
+  updated: "2026-08-24",
+  issue: "#121 · #157 · #283",
   relatedDecisions: [
     "docs/project/decisions/DECISION_125M_C_STANDALONE_AI_CUSTOM_R1.md",
     "docs/project/decisions/DECISION_125M_CES_HEADLESS_INTEGRATION_CBA.md",
