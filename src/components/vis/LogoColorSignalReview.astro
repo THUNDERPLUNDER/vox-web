@@ -27,16 +27,16 @@ const signals = [
 ];
 const signalSizes = [8, 12, 16, 20, 24, 32];
 const favicons = [
-  { id: "blue", label: "Original blue", signal: "#3672e6", status: "Godkjent brandfarge" },
-  { id: "bright-blue", label: "Clear blue", signal: "#5b8cff", status: "Lysere blå · test" },
-  { id: "yellow", label: "Yellow", signal: "#ffc53d", status: "Kontrastfarge · test" },
-  { id: "green", label: "Green", signal: "#4fe0b5", status: "Kontrastfarge · test" },
+  { id: "white", label: "White / black", background: "#ffffff", signal: "#000000", status: "Nøytral kandidat" },
+  { id: "black", label: "Black / white", background: "#000000", signal: "#ffffff", status: "Nøytral kandidat" },
+  { id: "green", label: "Green / white", background: "#20b977", signal: "#ffffff", status: "Kontrastfarge · test" },
+  { id: "blue", label: "Blue / white", background: "#3672e6", signal: "#ffffff", status: "Godkjent brandfarge" },
 ];
 const faviconTests = [
-  { signal: signals[1], size: 8 },
-  { signal: signals[1], size: 12 },
-  { signal: signals[2], size: 8 },
-  { signal: signals[2], size: 12 },
+  { id: "canonical-8", label: "Original", size: 8, aspect: signals[2].aspect, src: `${base}brand/viddel-signal-micro-3bar.svg` },
+  { id: "grid-8", label: "Grid 2 px", size: 8, aspect: 6 / 8, src: `${base}brand/preview/viddel-signal-micro-3bar-favicon-8px-grid.svg` },
+  { id: "canonical-12", label: "Original", size: 12, aspect: signals[2].aspect, src: `${base}brand/viddel-signal-micro-3bar.svg` },
+  { id: "grid-12", label: "Grid 2 px", size: 12, aspect: 8 / 12, src: `${base}brand/preview/viddel-signal-micro-3bar-favicon-12px-grid.svg` },
 ];
 ---
 
@@ -130,8 +130,8 @@ const faviconTests = [
         <h3 id="favicon-review-heading">Kontrastflate rundt signalet</h3>
       </div>
       <p>
-        Alle bakgrunnsflater er 16 px og sorte. Signalene vises i faktisk 8 eller 12 px høyde,
-        uten automatisk skalering. Clear blue, Yellow og Green er kun fargeutforskning.
+        Original Micro 3 er matematisk sentrert, men får brøkdelsbredde ved 8 og 12 px. «Grid 2 px»
+        tester heltallsbredde med 2 px midtstolpe. Alle flater er 16 px; Green er kun fargeutforskning.
       </p>
     </header>
 
@@ -140,25 +140,25 @@ const faviconTests = [
         <article class="favicon-card">
           <header><strong>{favicon.label}</strong><span>{favicon.status}</span></header>
           <div class="favicon-card__sizes">
-            {faviconTests.map(({ signal, size }) => (
+            {faviconTests.map((test) => (
               <figure>
-                <div class="favicon-tile" style="--favicon-size: 16px; --favicon-background: #000000;">
+                <div class:list={["favicon-tile", favicon.id === "white" && "favicon-tile--outlined"]} style={`--favicon-size: 16px; --favicon-background: ${favicon.background};`}>
                   <span
                     class="signal-shape"
                     role="img"
-                    aria-label={`${favicon.label}, ${signal.label} ved faktisk ${size} piksler i 16 pikslers flate`}
-                    style={`--signal-url: url("${base}brand/viddel-signal-${signal.id}-${signal.bars}.svg"); --signal-height: ${size}px; --signal-aspect: ${signal.aspect}; --signal-color: ${favicon.signal};`}
+                    aria-label={`${favicon.label}, ${test.label} ved faktisk ${test.size} piksler i 16 pikslers flate`}
+                    style={`--signal-url: url("${test.src}"); --signal-height: ${test.size}px; --signal-aspect: ${test.aspect}; --signal-color: ${favicon.signal};`}
                   ></span>
                 </div>
-                <figcaption><strong>{signal.id === "small" ? "Small 5" : "Micro 3"}</strong><span>{size} px</span></figcaption>
+                <figcaption><strong>{test.label}</strong><span>{test.size} px</span></figcaption>
               </figure>
             ))}
           </div>
           <div class="browser-tab">
             <span class="browser-tab__icons" aria-label={`${favicon.label}, fire favicon-varianter i tab-kontekst`}>
-              {faviconTests.map(({ signal, size }) => (
-                <span class="favicon-tile" style="--favicon-size: 16px; --favicon-background: #000000;">
-                  <span class="signal-shape" style={`--signal-url: url("${base}brand/viddel-signal-${signal.id}-${signal.bars}.svg"); --signal-height: ${size}px; --signal-aspect: ${signal.aspect}; --signal-color: ${favicon.signal};`}></span>
+              {faviconTests.map((test) => (
+                <span class:list={["favicon-tile", favicon.id === "white" && "favicon-tile--outlined"]} style={`--favicon-size: 16px; --favicon-background: ${favicon.background};`}>
+                  <span class="signal-shape" style={`--signal-url: url("${test.src}"); --signal-height: ${test.size}px; --signal-aspect: ${test.aspect}; --signal-color: ${favicon.signal};`}></span>
                 </span>
               ))}
             </span>
@@ -170,8 +170,8 @@ const faviconTests = [
   </section>
 
   <footer class="brand-review__decision">
-    <strong>Aktiv beslutning:</strong> velg geometri og faktisk signalhøyde ved 16 px først. Vurder deretter
-    om original blå er tilstrekkelig, eller om en gjenkjennelig kontrastfarge skal inn i Viddel-universet.
+    <strong>Aktiv beslutning:</strong> velg Original eller Grid 2 px ved 8 og 12 px. Velg deretter mellom
+    White/black, Black/white, Green/white og Blue/white.
   </footer>
 </section>
 
@@ -375,6 +375,8 @@ const faviconTests = [
     background: var(--favicon-background);
     box-shadow: 0 1px 4px rgb(15 27 46 / 0.2);
   }
+
+  .favicon-tile--outlined { box-shadow: inset 0 0 0 1px #d9dee7, 0 1px 4px rgb(15 27 46 / 0.12); }
 
   .browser-tab {
     display: grid;
