@@ -27,13 +27,17 @@ const signals = [
 ];
 const signalSizes = [8, 12, 16, 20, 24, 32];
 const favicons = [
-  { id: "navy", label: "Navy / white", background: "#0f1b2e", signal: "#ffffff", status: "Trygg brandkandidat" },
-  { id: "blue", label: "Blue / white", background: "#3672e6", signal: "#ffffff", status: "Tydelig brandkandidat" },
-  { id: "sun", label: "Sun / navy", background: "#ffc53d", signal: "#0f1b2e", status: "Ny kontrastfarge" },
-  { id: "mint", label: "Mint / navy", background: "#4fe0b5", signal: "#0f1b2e", status: "Ny kontrastfarge" },
+  { id: "blue", label: "Original blue", signal: "#3672e6", status: "Godkjent brandfarge" },
+  { id: "bright-blue", label: "Clear blue", signal: "#5b8cff", status: "Lysere blå · test" },
+  { id: "yellow", label: "Yellow", signal: "#ffc53d", status: "Kontrastfarge · test" },
+  { id: "green", label: "Green", signal: "#4fe0b5", status: "Kontrastfarge · test" },
 ];
-const faviconSizes = [16, 32, 48];
-const faviconSignalFor = (size: number) => size === 16 ? signals[1] : signals[0];
+const faviconTests = [
+  { signal: signals[1], size: 8 },
+  { signal: signals[1], size: 12 },
+  { signal: signals[2], size: 8 },
+  { signal: signals[2], size: 12 },
+];
 ---
 
 <section class="brand-review" aria-labelledby="brand-review-heading">
@@ -126,8 +130,8 @@ const faviconSignalFor = (size: number) => size === 16 ? signals[1] : signals[0]
         <h3 id="favicon-review-heading">Kontrastflate rundt signalet</h3>
       </div>
       <p>
-        16 px bruker Small 5-bar; 32 og 48 px bruker Primary 5-bar. Sun og Mint er kun
-        fargeutforskning og innfører ingen ny brandfarge før eksplisitt valg.
+        Alle bakgrunnsflater er 16 px og sorte. Signalene vises i faktisk 8 eller 12 px høyde,
+        uten automatisk skalering. Clear blue, Yellow og Green er kun fargeutforskning.
       </p>
     </header>
 
@@ -136,31 +140,27 @@ const faviconSignalFor = (size: number) => size === 16 ? signals[1] : signals[0]
         <article class="favicon-card">
           <header><strong>{favicon.label}</strong><span>{favicon.status}</span></header>
           <div class="favicon-card__sizes">
-            {faviconSizes.map((size) => {
-              const signal = faviconSignalFor(size);
-              const inset = Math.max(3, Math.round(size * 0.22));
-              const signalHeight = size - inset * 2;
-              return (
-                <figure>
-                  <div
-                    class="favicon-tile"
-                    style={`--favicon-size: ${size}px; --favicon-background: ${favicon.background};`}
-                  >
-                    <span
-                      class="signal-shape"
-                      role="img"
-                      aria-label={`${favicon.label} favicon ved ${size} piksler`}
-                      style={`--signal-url: url("${base}brand/viddel-signal-${signal.id}-${signal.bars}.svg"); --signal-height: ${signalHeight}px; --signal-aspect: ${signal.aspect}; --signal-color: ${favicon.signal};`}
-                    ></span>
-                  </div>
-                  <figcaption>{size} px</figcaption>
-                </figure>
-              );
-            })}
+            {faviconTests.map(({ signal, size }) => (
+              <figure>
+                <div class="favicon-tile" style="--favicon-size: 16px; --favicon-background: #000000;">
+                  <span
+                    class="signal-shape"
+                    role="img"
+                    aria-label={`${favicon.label}, ${signal.label} ved faktisk ${size} piksler i 16 pikslers flate`}
+                    style={`--signal-url: url("${base}brand/viddel-signal-${signal.id}-${signal.bars}.svg"); --signal-height: ${size}px; --signal-aspect: ${signal.aspect}; --signal-color: ${favicon.signal};`}
+                  ></span>
+                </div>
+                <figcaption><strong>{signal.id === "small" ? "Small 5" : "Micro 3"}</strong><span>{size} px</span></figcaption>
+              </figure>
+            ))}
           </div>
           <div class="browser-tab">
-            <span class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${favicon.background};`}>
-              <span class="signal-shape" style={`--signal-url: url("${base}brand/viddel-signal-small-5bar.svg"); --signal-height: 10px; --signal-aspect: ${signals[1].aspect}; --signal-color: ${favicon.signal};`}></span>
+            <span class="browser-tab__icons" aria-label={`${favicon.label}, fire favicon-varianter i tab-kontekst`}>
+              {faviconTests.map(({ signal, size }) => (
+                <span class="favicon-tile" style="--favicon-size: 16px; --favicon-background: #000000;">
+                  <span class="signal-shape" style={`--signal-url: url("${base}brand/viddel-signal-${signal.id}-${signal.bars}.svg"); --signal-height: ${size}px; --signal-aspect: ${signal.aspect}; --signal-color: ${favicon.signal};`}></span>
+                </span>
+              ))}
             </span>
             <span>Viddel – hjelp med lyd</span><span aria-hidden="true">×</span>
           </div>
@@ -170,8 +170,8 @@ const faviconSignalFor = (size: number) => size === 16 ? signals[1] : signals[0]
   </section>
 
   <footer class="brand-review__decision">
-    <strong>Aktiv beslutning:</strong> velg favicon-bakgrunn. Geometrien følger allerede den godkjente
-    størrelsesprioriteten; «bare stolper uten flate» er tatt ut av kandidatfeltet.
+    <strong>Aktiv beslutning:</strong> velg geometri og faktisk signalhøyde ved 16 px først. Vurder deretter
+    om original blå er tilstrekkelig, eller om en gjenkjennelig kontrastfarge skal inn i Viddel-universet.
   </footer>
 </section>
 
@@ -356,9 +356,14 @@ const faviconSignalFor = (size: number) => size === 16 ? signals[1] : signals[0]
   }
 
   .favicon-card__sizes figcaption {
+    display: grid;
+    gap: 0.1rem;
     color: #667085;
     font-size: 0.62rem;
+    text-align: center;
   }
+
+  .favicon-card__sizes figcaption strong { color: #0f1b2e; font-size: 0.6rem; }
 
   .favicon-tile {
     display: grid;
@@ -382,6 +387,11 @@ const faviconSignalFor = (size: number) => size === 16 ? signals[1] : signals[0]
     background: #eef1f5;
     color: #475467;
     font-size: 0.65rem;
+  }
+
+  .browser-tab__icons {
+    display: flex;
+    gap: 0.22rem;
   }
 
   .signal-review__head h3 {
