@@ -10,11 +10,16 @@ const base = import.meta.env.BASE_URL;
 const wordmarks = [
   {
     name: "Primary 5-bar",
-    role: "Fra 22 px. Desktop-header bruker 22 px.",
+    role: "Skalerbar master fra 22 px. Ikke runtime-headerasset.",
     src: "brand/viddel-wordmark-primary-5bar.svg",
     width: 937.88,
     height: 134,
     renderHeight: 32,
+    downloads: [
+      { label: "Default SVG", src: "brand/viddel-wordmark-primary-5bar.svg" },
+      { label: "Mono navy", src: "brand/viddel-wordmark-primary-5bar-mono-navy.svg" },
+      { label: "Mono white", src: "brand/viddel-wordmark-primary-5bar-mono-white.svg" },
+    ],
   },
   {
     name: "Small 5-bar (Y)",
@@ -23,6 +28,12 @@ const wordmarks = [
     width: 140,
     height: 20,
     renderHeight: 20,
+    downloads: [
+      { label: "Default SVG", src: "brand/viddel-wordmark-small-5bar.svg" },
+      { label: "Inverse blue", src: "brand/viddel-wordmark-small-5bar-inverse-blue.svg" },
+      { label: "Mono navy", src: "brand/viddel-wordmark-small-5bar-mono-navy.svg" },
+      { label: "Mono white", src: "brand/viddel-wordmark-small-5bar-mono-white.svg" },
+    ],
   },
   {
     name: "Micro 3-bar (A)",
@@ -31,6 +42,51 @@ const wordmarks = [
     width: 140,
     height: 20,
     renderHeight: 16,
+    downloads: [
+      { label: "Default SVG", src: "brand/viddel-wordmark-micro-3bar.svg" },
+      { label: "Inverse blue", src: "brand/viddel-wordmark-micro-3bar-inverse-blue.svg" },
+      { label: "Mono navy", src: "brand/viddel-wordmark-micro-3bar-mono-navy.svg" },
+      { label: "Mono white", src: "brand/viddel-wordmark-micro-3bar-mono-white.svg" },
+    ],
+  },
+];
+
+const headerAssets = [
+  {
+    name: "Desktop · light",
+    role: "Fra 1024 px · rendres ved 22 px",
+    src: "brand/viddel-wordmark-primary-5bar-light-header-22.svg",
+    width: 937.88,
+    height: 134,
+    renderHeight: 22,
+    dark: false,
+  },
+  {
+    name: "Desktop · inverse",
+    role: "Fra 1024 px · rendres ved 22 px",
+    src: "brand/viddel-wordmark-primary-5bar-inverse-blue.svg",
+    width: 937.88,
+    height: 134,
+    renderHeight: 22,
+    dark: true,
+  },
+  {
+    name: "Mobil · light",
+    role: "Under 1024 px · rendres ved 20 px",
+    src: "brand/viddel-wordmark-small-5bar.svg",
+    width: 140,
+    height: 20,
+    renderHeight: 20,
+    dark: false,
+  },
+  {
+    name: "Mobil · inverse",
+    role: "Under 1024 px · rendres ved 20 px",
+    src: "brand/viddel-wordmark-small-5bar-inverse-blue.svg",
+    width: 140,
+    height: 20,
+    renderHeight: 20,
+    dark: true,
   },
 ];
 
@@ -64,7 +120,7 @@ const signals = [
       <p class="ds-catalog__hero-lead">
         Gjeldende geometrier og behandlinger for Viddel. Bruk filene som de er; størrelse avgjør hvilken optisk variant som velges.
       </p>
-      <p class="ds-catalog__hero-note">Versjon 2026-08-24 · footer og øvrige touchpoints inngår ikke i #121.</p>
+      <p class="ds-catalog__hero-note">Versjon 2026-08-24 · godkjente SVG-filer kan lastes ned direkte nedenfor.</p>
     </header>
 
     <section class="ds-catalog__section" aria-labelledby="brand-wordmarks">
@@ -75,14 +131,47 @@ const signals = [
             <div class="ds-brand-page__stage">
               <img src={`${base}${wordmark.src}`} alt={`VIDDEL ${wordmark.name}`} width={wordmark.width} height={wordmark.height} style={`height: ${wordmark.renderHeight}px`} />
             </div>
-            <figcaption><strong>{wordmark.name}</strong><span>{wordmark.role}</span></figcaption>
+            <figcaption>
+              <strong>{wordmark.name}</strong>
+              <span>{wordmark.role}</span>
+              <div class="ds-brand-page__downloads" aria-label={`Last ned ${wordmark.name}`}>
+                {wordmark.downloads.map((asset) => (
+                  <a href={`${base}${asset.src}`} download>{asset.label}</a>
+                ))}
+              </div>
+            </figcaption>
           </figure>
         ))}
       </div>
       <p class="ds-brand-page__runtime-rule">
-        <strong>Header:</strong> Primary ved 22 px fra 1024 px viewportbredde. Small Y ved 20 px under 1024 px.
-        Micro A er canonical for svært små flater, men er ikke en headervariant nå.
+        <strong>Header:</strong> Bruk de egne optiske filene nedenfor: desktop ved 22 px fra 1024 px
+        viewportbredde og Small Y ved 20 px under 1024 px. Micro A er canonical for svært små flater,
+        men er ikke en headervariant nå.
       </p>
+    </section>
+
+    <section class="ds-catalog__section" aria-labelledby="brand-header-assets">
+      <h2 id="brand-header-assets" class="ds-catalog__section-title">Header-optiske SVG-assets</h2>
+      <p class="ds-brand-page__section-intro">
+        Disse fire filene er produksjonsbehandlingene for headeren. Desktopvariantene kombinerer Primary-bokstaver ved 22 px med Small Y-signalet i faktisk 20 px.
+      </p>
+      <div class="ds-brand-page__headers">
+        {headerAssets.map((asset) => (
+          <figure class="ds-brand-page__wordmark ds-brand-page__header-asset">
+            <div class:list={["ds-brand-page__stage", { "ds-brand-page__stage--dark": asset.dark }]}>
+              <img src={`${base}${asset.src}`} alt={`VIDDEL ${asset.name}`} width={asset.width} height={asset.height} style={`height: ${asset.renderHeight}px`} />
+            </div>
+            <figcaption>
+              <strong>{asset.name}</strong>
+              <span>{asset.role}</span>
+              <div class="ds-brand-page__downloads">
+                <a href={`${base}${asset.src}`} download>Last ned SVG</a>
+              </div>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+      <p class="ds-brand-page__note"><code>preview/</code> og <code>test/</code> er QA-spor og tilbys ikke som brand-assets.</p>
     </section>
 
     <section class="ds-catalog__section" aria-labelledby="brand-colorways">
@@ -107,7 +196,13 @@ const signals = [
             <div class="ds-brand-page__signal-stage">
               <img src={`${base}${signal.src}`} alt={signal.name} width={signal.width} height={signal.height} />
             </div>
-            <figcaption><strong>{signal.name}</strong><span>{signal.role}</span></figcaption>
+            <figcaption>
+              <strong>{signal.name}</strong>
+              <span>{signal.role}</span>
+              <div class="ds-brand-page__downloads">
+                <a href={`${base}${signal.src}`} download>Last ned SVG</a>
+              </div>
+            </figcaption>
           </figure>
         ))}
       </div>
@@ -127,6 +222,9 @@ const signals = [
           <p>
             Clear blue #3672E6 med identisk hvitt signal er dokumentert som et mulig framtidig modningsalternativ. Det er ikke en aktiv variant.
           </p>
+          <div class="ds-brand-page__downloads">
+            <a href={`${base}brand/viddel-favicon-micro-5bar-green.svg`} download>Last ned favicon SVG</a>
+          </div>
         </div>
       </div>
     </section>
