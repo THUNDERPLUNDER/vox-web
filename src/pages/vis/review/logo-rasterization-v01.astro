@@ -4,16 +4,34 @@ import VisInternalLayout from "../../../layouts/VisInternalLayout.astro";
 
 const base = import.meta.env.BASE_URL;
 const logoSrc = `${base}brand/preview/viddel-wordmark-5bar-preview.svg`;
+const ySrc = `${base}brand/preview/viddel-wordmark-small-5bar-20px-candidate-y-thin.svg`;
+const yGeometricPrecisionSrc = `${base}brand/preview/viddel-wordmark-small-5bar-20px-candidate-y-thin-geometric-precision.svg`;
 const variants = [
   { id: "primary", label: "Primary", detail: "referanse · 5 stolper", src: logoSrc, width: 938, height: 134 },
   { id: "a", label: "A", detail: "3 px · 3 stolper", src: `${base}brand/preview/viddel-wordmark-small-3bar-20px-candidate-a.svg`, width: 140, height: 20 },
   { id: "b", label: "B", detail: "2 px · 3 stolper", src: `${base}brand/preview/viddel-wordmark-small-3bar-20px-candidate-b-thin.svg`, width: 140, height: 20 },
   { id: "x", label: "X", detail: "3 px · 5 stolper", src: `${base}brand/preview/viddel-wordmark-small-5bar-20px-candidate-x.svg`, width: 140, height: 20 },
-  { id: "y", label: "Y", detail: "2 px · 5 stolper", src: `${base}brand/preview/viddel-wordmark-small-5bar-20px-candidate-y-thin.svg`, width: 140, height: 20 },
+  { id: "y", label: "Y", detail: "2 px · 5 stolper", src: ySrc, width: 140, height: 20 },
+];
+const yOriginControls = [
+  { label: "Standard", detail: "Naturlig plassering · SVG auto", src: ySrc, snap: false },
+  { label: "Snappet", detail: "Hel CSS-piksel · SVG auto", src: ySrc, snap: true },
+  { label: "Geometric", detail: "Naturlig plassering · geometricPrecision", src: yGeometricPrecisionSrc, snap: false },
+  { label: "Begge", detail: "Hel CSS-piksel · geometricPrecision", src: yGeometricPrecisionSrc, snap: true },
 ];
 const comparisonSizes = [8, 10, 12, 14, 16, 18, 20, 22, 24];
 const sizes = [16, 18, 20, 22, 24, 26, 28, 30, 32];
-const headerSizes = [16, 20, 24];
+const mobileHeaderCases = [
+  { label: "Y", size: 20, src: ySrc, width: 140, height: 20, selected: true, status: "Foreløpig valgt" },
+  { label: "Primary", size: 22, src: logoSrc, width: 938, height: 134 },
+  { label: "Primary", size: 24, src: logoSrc, width: 938, height: 134 },
+];
+const desktopHeaderCases = [
+  { label: "Y · kontroll", size: 20, src: ySrc, width: 140, height: 20 },
+  { label: "Primary", size: 22, src: logoSrc, width: 938, height: 134, selected: true, status: "Valgt" },
+  { label: "Primary", size: 24, src: logoSrc, width: 938, height: 134 },
+  { label: "Primary", size: 26, src: logoSrc, width: 938, height: 134 },
+];
 const viewBoxWidth = 937.88;
 const viewBoxHeight = 134;
 const referenceStemWidth = 15.57;
@@ -52,12 +70,14 @@ const format = (value: number) => value.toFixed(2);
 
     <section class="logo-lab__decision" aria-labelledby="decision-heading">
       <div>
-        <p class="logo-lab__kicker">Foreløpig konklusjon</p>
-        <h2 id="decision-heading">Small Optical bør få en nominell pixel-grid-størrelse</h2>
+        <p class="logo-lab__kicker">Arbeidsbeslutning</p>
+        <h2 id="decision-heading">Tre optiske bruksområder er avgrenset</h2>
       </div>
       <ul>
-        <li><strong>20 px</strong> er felles nominell størrelse; 8–18 px er stress-tester, ikke egne mastere.</li>
-        <li><strong>24 px</strong> er kontrollstørrelse for å se når Primary bør ta over.</li>
+        <li><strong>8–16 px:</strong> Variant A · 3 px hovedstammer · 3 signalstolper.</li>
+        <li><strong>18–20 px:</strong> Variant Y · 2 px hovedstammer · 5 signalstolper.</li>
+        <li><strong>22 px og opp:</strong> Primary ivaretar den delikate signalvekten.</li>
+        <li><strong>Header:</strong> Primary 22 px på desktop; Y 20 px på mobil er et foreløpig, reversibelt valg.</li>
         <li>Primary beholdes som referanse; denne testen autoriserer ingen canonical erstatning.</li>
         <li>Preview-kopiene normaliserer navy til <strong>#0F1B2E</strong>; Drive-eksportene har #0F1B2D.</li>
       </ul>
@@ -105,6 +125,47 @@ const format = (value: number) => value.toFixed(2);
           </article>
         ))}
       </div>
+    </section>
+
+    <section class="logo-lab__section" aria-labelledby="origin-control-heading">
+      <header class="logo-lab__section-head">
+        <div>
+          <p class="logo-lab__kicker">Y · 20 px · rasteriseringskontroll</p>
+          <h2 id="origin-control-heading">Origin-snapping mot geometricPrecision</h2>
+        </div>
+        <p>
+          Samme vektorgeometri og størrelse i alle fire felt. Bare plasseringen av SVG-elementet og
+          root-attributtet <code>shape-rendering</code> varierer.
+        </p>
+      </header>
+
+      <div class="origin-control-grid">
+        {yOriginControls.map((control) => (
+          <figure class="origin-control">
+            <div class="origin-control__stage">
+              <img
+                src={control.src}
+                alt={`VIDDEL Y ved 20 piksler, ${control.detail}`}
+                width="140"
+                height="20"
+                data-logo-render
+                data-origin-snap={control.snap ? "true" : undefined}
+              />
+            </div>
+            <figcaption>
+              <strong>{control.label}</strong><br />
+              {control.detail}<br />
+              <span data-origin-readout>—</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+
+      <p class="origin-control__note">
+        Snappingen bruker målt <code>left/top</code>-korreksjon kun som diagnostikk. Den er ikke en
+        foreslått produksjonsimplementasjon. Vurder V-diagonalene, begge D-buene og de fem signalstolpene
+        ved 100 % zoom.
+      </p>
     </section>
 
     <section class="logo-lab__section" aria-labelledby="size-matrix-heading">
@@ -172,40 +233,130 @@ const format = (value: number) => value.toFixed(2);
     <section class="logo-lab__section" aria-labelledby="header-context-heading">
       <header class="logo-lab__section-head">
         <div>
-          <p class="logo-lab__kicker">Reell bruk</p>
-          <h2 id="header-context-heading">Headerkontekst</h2>
+          <p class="logo-lab__kicker">Beslutningsport · reell bruk</p>
+          <h2 id="header-context-heading">Primary i faktisk headerhøyde</h2>
         </div>
-        <p>Samme logo i 64 px header med mobilmeny. Dette er størrelsestest, ikke header-redesign.</p>
+        <p>
+          Valgt nå: Y ved 20 px i 64 px mobilheader og Primary ved 22 px i 72 px desktopheader.
+          Dette registrerer beslutningen uten å endre produksjonsheaderen.
+        </p>
       </header>
 
-      <div class="header-tests">
-        {headerSizes.map((size) => (
-          <article class="header-test">
-            <p>{size} px høy logo</p>
-            <div class="header-test__variants">
-              {variants.map((variant) => (
-                <div class="header-test__variant">
-                  <span>{variant.label} · {variant.detail}</span>
-                  <div class="header-test__bar">
-                    <a href="#header-context-heading" aria-label={`Viddel ${variant.label}`}>
+      <div class="header-contexts">
+        <section class="header-context" aria-labelledby="mobile-header-heading">
+          <header class="header-context__head">
+            <div>
+              <p class="logo-lab__kicker">Mobil · 64 px header</p>
+              <h3 id="mobile-header-heading">20 / 22 / 24 px</h3>
+            </div>
+            <p>Y 20 px er foreløpig valgt. Den er 140 px bred og kan reduseres senere hvis portrettbredden blir knapp.</p>
+          </header>
+          <div class="header-context__stack header-context__stack--mobile">
+            {mobileHeaderCases.map((sample) => (
+              <figure class:list={["header-sample", sample.selected && "header-sample--candidate"]}>
+                <figcaption>
+                  <strong>{sample.label}</strong>
+                  <span>{sample.size} px</span>
+                  {sample.status ? <em>{sample.status}</em> : null}
+                </figcaption>
+                <div class="header-sample__viewport header-sample__viewport--mobile">
+                  <a href="#mobile-header-heading" aria-label={`Viddel ${sample.size} piksler`}>
+                    <img
+                      src={sample.src}
+                      alt=""
+                      width={sample.width}
+                      height={sample.height}
+                      style={`height: ${sample.size}px`}
+                      data-logo-render
+                    />
+                  </a>
+                  <button type="button" aria-label="Eksempel på mobilmeny" tabindex="-1">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                  </button>
+                </div>
+              </figure>
+            ))}
+          </div>
+        </section>
+
+        <section class="header-context" aria-labelledby="desktop-header-heading">
+          <header class="header-context__head">
+            <div>
+              <p class="logo-lab__kicker">Desktop · 72 px header</p>
+              <h3 id="desktop-header-heading">20 / 22 / 24 / 26 px</h3>
+            </div>
+            <p>Primary 22 px er valgt. Den gir mer nærvær uten å bli dominerende mot navigasjonen.</p>
+          </header>
+          <div class="header-context__stack header-context__stack--desktop">
+            {desktopHeaderCases.map((sample) => (
+              <figure class:list={["header-sample", sample.selected && "header-sample--candidate"]}>
+                <figcaption>
+                  <strong>{sample.label}</strong>
+                  <span>{sample.size} px</span>
+                  {sample.status ? <em>{sample.status}</em> : null}
+                </figcaption>
+                <div class="header-sample__desktop-scroll">
+                  <div class="header-sample__viewport header-sample__viewport--desktop">
+                    <a href="#desktop-header-heading" aria-label={`Viddel ${sample.size} piksler`}>
                       <img
-                        src={variant.src}
+                        src={sample.src}
                         alt=""
-                        width={variant.width}
-                        height={variant.height}
-                        style={`height: ${size}px`}
+                        width={sample.width}
+                        height={sample.height}
+                        style={`height: ${sample.size}px`}
                         data-logo-render
                       />
                     </a>
-                    <button type="button" aria-label="Eksempel på mobilmeny" tabindex="-1">
-                      <span aria-hidden="true">☰</span>
-                    </button>
+                    <nav aria-label="Eksempel på desktopnavigasjon">
+                      <span class="is-active">Forside</span>
+                      <span>Hjelp</span>
+                      <span>Bedre lyd</span>
+                      <span>Ordbok</span>
+                      <span>Om Viddel</span>
+                    </nav>
+                    <span class="header-sample__cta">Spør Viddel</span>
                   </div>
                 </div>
-              ))}
-            </div>
-          </article>
-        ))}
+              </figure>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <p class="header-context__note">
+        Dette er en isolert størrelsestest med preview-assets. Valget endrer ikke produksjonsheaderen
+        og gjør ingen SVG canonical.
+      </p>
+    </section>
+
+    <section class="logo-lab__section" aria-labelledby="canonical-gate-heading">
+      <header class="logo-lab__section-head">
+        <div>
+          <p class="logo-lab__kicker">Neste godkjenningsport</p>
+          <h2 id="canonical-gate-heading">Teknisk QA og canonical navngivning</h2>
+        </div>
+        <p>Forslaget utvider den eldre totallsmodellen i #121 til tre eksplisitte wordmark-geometrier.</p>
+      </header>
+      <div class="canonical-gate">
+        <div>
+          <h3>QA-status for preview-filene</h3>
+          <ul>
+            <li>Primary, A og Y er rene vektorer uten tekst, font eller rasterbilder.</li>
+            <li>A og Y har tett <code>viewBox="0 0 140 20"</code> og eksplisitt 140 × 20-størrelse.</li>
+            <li>Preview-kopiene bruker navy <strong>#0F1B2E</strong> og blue <strong>#3672E6</strong>.</li>
+            <li>Drive-eksportene av A og Y må re-eksporteres med korrekt navy før canonical lock.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Foreslåtte canonical filnavn</h3>
+          <dl>
+            <div><dt>Primary · 5 stolper</dt><dd><code>viddel-wordmark-primary-5bar.svg</code></dd></div>
+            <div><dt>Small · Y · 5 stolper</dt><dd><code>viddel-wordmark-small-5bar.svg</code></dd></div>
+            <div><dt>Micro · A · 3 stolper</dt><dd><code>viddel-wordmark-micro-3bar.svg</code></dd></div>
+          </dl>
+        </div>
       </div>
     </section>
 
@@ -228,14 +379,27 @@ const format = (value: number) => value.toFixed(2);
     </section>
 
     <footer class="logo-lab__footer">
-      <strong>Beslutningsport:</strong> Velg først vekt (2 eller 3 px), deretter signal (3 eller 5
-      stolper), og til slutt størrelsesgrensen mot Primary. #121 forblir åpen.
+      <strong>Aktiv beslutningsport:</strong> Godkjenn tre-wordmark-modellen og canonical filnavn.
+      Deretter re-eksporteres A og Y med korrekt navy før asset-lock. #121 forblir åpen.
     </footer>
   </main>
 </VisInternalLayout>
 
 <script>
+  const fractionFor = (value: number) => ((value % 1) + 1) % 1;
+
+  const snapLogoOrigins = () => {
+    document.querySelectorAll<HTMLElement>("[data-origin-snap]").forEach((logo) => {
+      logo.style.left = "0px";
+      logo.style.top = "0px";
+      const rect = logo.getBoundingClientRect();
+      logo.style.left = `${Math.round(rect.x) - rect.x}px`;
+      logo.style.top = `${Math.round(rect.y) - rect.y}px`;
+    });
+  };
+
   const updateRuntimeReadouts = () => {
+    snapLogoOrigins();
     const dpr = window.devicePixelRatio || 1;
     document.querySelectorAll<HTMLElement>("[data-device-pixel-ratio]").forEach((element) => {
       element.textContent = `${dpr.toFixed(2)}×`;
@@ -246,9 +410,10 @@ const format = (value: number) => value.toFixed(2);
     document.querySelectorAll<HTMLElement>("[data-logo-render]").forEach((logo) => {
       const readout = logo.closest("figure")?.querySelector<HTMLElement>("[data-origin-readout]");
       if (!readout) return;
-      const x = logo.getBoundingClientRect().x;
-      const fraction = ((x % 1) + 1) % 1;
-      readout.textContent = `x-fraksjon ${fraction.toFixed(2)}`;
+      const rect = logo.getBoundingClientRect();
+      const xFraction = fractionFor(rect.x);
+      const yFraction = fractionFor(rect.y);
+      readout.textContent = `x ${xFraction.toFixed(2)} · y ${yFraction.toFixed(2)}`;
     });
   };
 
@@ -465,6 +630,71 @@ const format = (value: number) => value.toFixed(2);
     color: var(--lab-ink);
   }
 
+  .origin-control-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: hidden;
+    border: 1px solid var(--lab-border);
+    border-radius: 0.75rem;
+    background: var(--lab-paper);
+  }
+
+  .origin-control {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .origin-control:nth-child(even) {
+    border-left: 1px solid var(--lab-border);
+  }
+
+  .origin-control:nth-child(n + 3) {
+    border-top: 1px solid var(--lab-border);
+  }
+
+  .origin-control__stage {
+    display: flex;
+    min-height: 7rem;
+    align-items: center;
+    padding: 16px;
+    overflow: hidden;
+    background-color: #fff;
+    background-image:
+      linear-gradient(rgb(15 27 46 / 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(15 27 46 / 0.045) 1px, transparent 1px);
+    background-size: 8px 8px;
+  }
+
+  .origin-control__stage img {
+    position: relative;
+    display: block;
+    width: 140px;
+    height: 20px;
+    max-width: none;
+    flex: none;
+  }
+
+  .origin-control figcaption {
+    min-height: 4.5rem;
+    padding: 0.65rem 0.75rem;
+    border-top: 1px solid var(--lab-border);
+    color: var(--lab-muted);
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
+  }
+
+  .origin-control figcaption strong {
+    color: var(--lab-ink);
+  }
+
+  .origin-control__note {
+    margin: 0.85rem 0 0;
+    color: var(--lab-muted);
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
   .logo-sample {
     overflow: hidden;
     border: 1px solid var(--lab-border);
@@ -547,7 +777,7 @@ const format = (value: number) => value.toFixed(2);
 
   .logo-sample__stage img,
   .candidate-size__stage img,
-  .header-test__bar img {
+  .header-sample__viewport img {
     display: block;
     max-width: none;
     width: auto;
@@ -569,70 +799,235 @@ const format = (value: number) => value.toFixed(2);
     border-top: 1px solid var(--lab-border);
   }
 
-  .header-tests {
+  .header-contexts {
     display: grid;
-    gap: 0.75rem;
+    gap: 1.25rem;
   }
 
-  .header-test {
+  .header-context {
     overflow: hidden;
     border: 1px solid var(--lab-border);
     border-radius: 0.75rem;
     background: var(--lab-paper);
   }
 
-  .header-test > p {
-    margin: 0;
-    padding: 0.45rem 0.75rem;
+  .header-context__head {
+    display: flex;
+    gap: 1rem;
+    align-items: start;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
     border-bottom: 1px solid var(--lab-border);
-    color: var(--lab-muted);
-    font-size: 0.72rem;
+    background: #f8fafc;
   }
 
-  .header-test__bar {
-    display: flex;
-    min-height: 4rem;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 1rem;
+  .header-context__head h3,
+  .header-context__head p {
+    margin: 0;
+  }
+
+  .header-context__head h3 {
+    font-size: 1rem;
+  }
+
+  .header-context__head > p {
+    max-width: 28rem;
+    color: var(--lab-muted);
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .header-context__stack {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #f5f6f8;
+  }
+
+  .header-sample {
+    overflow: hidden;
+    margin: 0;
+    border: 1px solid var(--lab-border);
+    border-radius: 0.65rem;
     background: #fff;
   }
 
-  .header-test__variants {
-    display: grid;
+  .header-sample--candidate {
+    border-color: rgb(54 114 230 / 0.55);
+    box-shadow: 0 0 0 2px rgb(54 114 230 / 0.08);
   }
 
-  .header-test__variant + .header-test__variant {
-    border-top: 1px solid var(--lab-border);
-  }
-
-  .header-test__variant > span {
-    display: block;
-    padding: 0.45rem 1rem 0;
+  .header-sample figcaption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.45rem 0.7rem;
+    border-bottom: 1px solid var(--lab-border);
     color: var(--lab-muted);
-    font-size: 0.66rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .header-sample figcaption strong {
+    color: var(--lab-ink);
+  }
+
+  .header-sample figcaption em {
+    padding: 0.18rem 0.4rem;
+    border-radius: 999px;
+    background: rgb(54 114 230 / 0.1);
+    color: var(--lab-blue);
+    font-size: 0.62rem;
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
   }
 
-  .header-test__bar a {
+  .header-sample__viewport {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+  }
+
+  .header-sample__viewport > a {
     display: inline-flex;
     align-items: center;
     padding: 0.375rem 0.5rem;
   }
 
-  .header-test__bar button {
-    display: inline-grid;
+  .header-sample__viewport--mobile {
+    width: min(100%, 390px);
+    height: 64px;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+  }
+
+  .header-sample__viewport--mobile button {
+    display: grid;
     width: 2.75rem;
     height: 2.75rem;
+    gap: 4px;
+    align-content: center;
     place-items: center;
     border: 0;
     border-radius: 0.55rem;
     background: #fff;
-    color: var(--lab-ink);
     box-shadow: 0 5px 18px rgb(15 27 46 / 0.08);
-    font-size: 0.95rem;
+  }
+
+  .header-sample__viewport--mobile button span {
+    display: block;
+    width: 16px;
+    height: 1px;
+    background: var(--lab-ink);
+  }
+
+  .header-sample__desktop-scroll {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  .header-sample__viewport--desktop {
+    min-width: 800px;
+    height: 72px;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+
+  .header-sample__viewport--desktop nav {
+    display: flex;
+    flex: 1;
+    gap: 0.15rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--lab-muted);
+    font-size: 0.78rem;
+  }
+
+  .header-sample__viewport--desktop nav span {
+    padding: 0.5rem 0.65rem;
+    border-radius: 0.45rem;
+  }
+
+  .header-sample__viewport--desktop nav .is-active {
+    background: #f8f7f3;
+    color: var(--lab-ink);
+    font-weight: 700;
+    box-shadow: 0 3px 12px rgb(15 27 46 / 0.05);
+  }
+
+  .header-sample__cta {
+    display: inline-flex;
+    min-width: 7.5rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1rem;
+    border: 1px solid rgb(15 27 46 / 0.7);
+    border-radius: 999px;
+    color: var(--lab-ink);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .header-context__note {
+    margin: 0.85rem 0 0;
+    color: var(--lab-muted);
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  .canonical-gate {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .canonical-gate > div {
+    padding: 1rem;
+    border: 1px solid var(--lab-border);
+    border-radius: 0.75rem;
+    background: var(--lab-paper);
+  }
+
+  .canonical-gate h3 {
+    margin-bottom: 0.65rem;
+    font-size: 0.9rem;
+  }
+
+  .canonical-gate ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: #475467;
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+
+  .canonical-gate dl {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+  }
+
+  .canonical-gate dl div {
+    display: grid;
+    gap: 0.15rem;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid var(--lab-border);
+  }
+
+  .canonical-gate dl div:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .canonical-gate dt {
+    color: var(--lab-muted);
+  }
+
+  .canonical-gate dd {
+    margin-top: 0;
+    overflow-wrap: anywhere;
   }
 
   .logo-lab__reference,
@@ -671,11 +1066,23 @@ const format = (value: number) => value.toFixed(2);
       grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
       align-items: start;
     }
+
+    .canonical-gate {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 520px) {
     .logo-lab__runtime {
       grid-template-columns: 1fr;
+    }
+
+    .header-context__head {
+      display: block;
+    }
+
+    .header-context__head > p {
+      margin-top: 0.55rem;
     }
 
     .logo-sample__renders {
@@ -692,6 +1099,16 @@ const format = (value: number) => value.toFixed(2);
     }
 
     .candidate-size__variants figure + figure {
+      border-top: 1px solid var(--lab-border);
+      border-left: 0;
+    }
+
+    .origin-control-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .origin-control:nth-child(even),
+    .origin-control:nth-child(n + 3) {
       border-top: 1px solid var(--lab-border);
       border-left: 0;
     }
