@@ -36,9 +36,20 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
             </span>
           </span>
         ) : (
-          <span class="font-display text-[1.18rem] font-[650] tracking-[-0.03em] text-[rgb(var(--text))] antialiased sm:text-[1.45rem]">
-            Viddel
-          </span>
+          <picture class="block leading-none">
+            <source
+              media="(min-width: 1024px)"
+              srcset={`${base}brand/viddel-wordmark-primary-5bar.svg`}
+            />
+            <img
+              src={`${base}brand/viddel-wordmark-small-5bar.svg`}
+              alt=""
+              width="140"
+              height="20"
+              class="h-5 w-auto lg:h-[22px]"
+              data-viddel-wordmark="responsive"
+            />
+          </picture>
         )
       }
     </a>
