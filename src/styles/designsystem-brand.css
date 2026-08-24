@@ -1,0 +1,150 @@
+/* CONTRACT: Canonical Viddel brand asset reference page for #121. */
+
+.ds-brand-page {
+  --brand-navy: #0f1b2e;
+  --brand-blue: #3672e6;
+  --brand-green: #159a62;
+}
+
+.ds-brand-page__hero { max-width: 44rem; }
+
+.ds-brand-page__wordmarks,
+.ds-brand-page__signals {
+  display: grid;
+  gap: 1rem;
+}
+
+.ds-brand-page__wordmark,
+.ds-brand-page__signal {
+  margin: 0;
+}
+
+.ds-brand-page__stage,
+.ds-brand-page__signal-stage {
+  align-items: center;
+  background: #f4f6f8;
+  border-radius: 0.85rem;
+  display: flex;
+  min-height: 7rem;
+  padding: 1.5rem;
+}
+
+.ds-brand-page__stage img {
+  display: block;
+  max-width: 100%;
+  width: auto;
+}
+
+.ds-brand-page__wordmark figcaption,
+.ds-brand-page__signal figcaption {
+  display: grid;
+  gap: 0.15rem;
+  margin-top: 0.65rem;
+}
+
+.ds-brand-page__wordmark figcaption strong,
+.ds-brand-page__signal figcaption strong,
+.ds-brand-page__favicon h3,
+.ds-brand-page__rules h3 {
+  color: var(--brand-navy);
+  font-size: 0.9375rem;
+  margin: 0;
+}
+
+.ds-brand-page__wordmark figcaption span,
+.ds-brand-page__signal figcaption span,
+.ds-brand-page__runtime-rule,
+.ds-brand-page__note,
+.ds-brand-page__favicon p,
+.ds-brand-page__rules p {
+  color: var(--ds-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.ds-brand-page__runtime-rule {
+  margin-top: 1.25rem;
+  max-width: 44rem;
+}
+
+.ds-brand-page__runtime-rule strong { color: var(--brand-navy); }
+
+.ds-brand-page__table {
+  border-bottom: 1px solid rgb(15 27 46 / 0.08);
+  max-width: 48rem;
+}
+
+.ds-brand-page__table-row {
+  border-top: 1px solid rgb(15 27 46 / 0.08);
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem 0;
+}
+
+.ds-brand-page__table-row strong,
+.ds-brand-page__table-row span {
+  font-size: 0.8125rem;
+}
+
+.ds-brand-page__table-row span { color: var(--ds-muted); }
+.ds-brand-page__note { margin-top: 0.85rem; }
+
+.ds-brand-page__signal-stage {
+  justify-content: center;
+  min-height: 8rem;
+}
+
+.ds-brand-page__signal-stage img {
+  display: block;
+  height: 32px;
+  width: auto;
+}
+
+.ds-brand-page__favicon {
+  align-items: center;
+  display: grid;
+  gap: 1.25rem;
+  max-width: 44rem;
+}
+
+.ds-brand-page__favicon-stage {
+  align-items: center;
+  background-color: #f4f6f8;
+  background-image:
+    linear-gradient(rgb(15 27 46 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(15 27 46 / 0.05) 1px, transparent 1px);
+  background-size: 8px 8px;
+  border-radius: 0.85rem;
+  display: flex;
+  height: 8rem;
+  justify-content: center;
+}
+
+.ds-brand-page__favicon-stage img {
+  height: 64px;
+  image-rendering: pixelated;
+  width: 64px;
+}
+
+.ds-brand-page__favicon > div:last-child,
+.ds-brand-page__rules > div {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.ds-brand-page__rules {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 48rem;
+}
+
+.ds-brand-page__sources { max-width: 52rem; }
+
+@media (min-width: 640px) {
+  .ds-brand-page__wordmarks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ds-brand-page__signals { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ds-brand-page__table-row { grid-template-columns: 8rem 1fr 1fr; gap: 1rem; }
+  .ds-brand-page__favicon { grid-template-columns: 9rem 1fr; }
+  .ds-brand-page__rules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
