@@ -27,20 +27,20 @@ const signals = [
 ];
 const signalSizes = [8, 12, 16, 20, 24, 32];
 const favicons = [
-  { id: "white", label: "White / black", background: "#ffffff", signal: "#000000", status: "Nøytral kandidat" },
-  { id: "black", label: "Black / white", background: "#000000", signal: "#ffffff", status: "Nøytral kandidat" },
-  { id: "green", label: "Green / white", background: "#20b977", signal: "#ffffff", status: "Kontrastfarge · test" },
-  { id: "blue", label: "Blue / white", background: "#3672e6", signal: "#ffffff", status: "Godkjent brandfarge" },
+  { id: "blue", label: "Blue / white", background: "#3672e6", signal: "#ffffff", status: "Primær brandkandidat" },
+  { id: "green", label: "Signal green / white", background: "#159a62", signal: "#ffffff", status: "Sekundær brandkandidat · test" },
+  { id: "black", label: "Black / white", background: "#000000", signal: "#ffffff", status: "Teknisk fallback" },
 ];
-const faviconTests = [
-  { id: "left-8", label: "Crisp −0.5", size: 8, offset: 4, sideHeight: 6, barWidth: 1 },
-  { id: "center-8", label: "Balanced AA", size: 8, offset: 4.5, sideHeight: 6, barWidth: 1 },
-  { id: "right-8", label: "Crisp +0.5", size: 8, offset: 5, sideHeight: 6, barWidth: 1 },
-  { id: "equal-8", label: "Equal 2 px", size: 8, offset: 4, sideHeight: 6, barWidth: 2 },
-  { id: "left-12", label: "Crisp −0.5", size: 12, offset: 4, sideHeight: 8, barWidth: 1 },
-  { id: "center-12", label: "Balanced AA", size: 12, offset: 4.5, sideHeight: 8, barWidth: 1 },
-  { id: "right-12", label: "Crisp +0.5", size: 12, offset: 5, sideHeight: 8, barWidth: 1 },
-  { id: "equal-12", label: "Equal 2 px", size: 12, offset: 4, sideHeight: 8, barWidth: 2 },
+const faviconLock = { label: "Micro 3 · Crisp −0,5", size: 12, offset: 4, sideHeight: 8, barWidth: 1 };
+const neighborMarks = [
+  { mark: "A", color: "#111827", background: "#ffffff", shape: "square" },
+  { mark: "✦", color: "#ffffff", background: "#ea4335", shape: "round" },
+  { mark: "G", color: "#ffffff", background: "#4285f4", shape: "round" },
+  { mark: "●", color: "#111827", background: "#ffffff", shape: "square" },
+  { mark: "N", color: "#ffffff", background: "#ef4444", shape: "round" },
+  { mark: "◆", color: "#ffffff", background: "#7c3aed", shape: "square" },
+  { mark: "M", color: "#ffffff", background: "#111827", shape: "round" },
+  { mark: "+", color: "#ffffff", background: "#10b981", shape: "square" },
 ];
 ---
 
@@ -134,9 +134,8 @@ const faviconTests = [
         <h3 id="favicon-review-heading">Kontrastflate rundt signalet</h3>
       </div>
       <p>
-        Tre like 1 px-stolper kan ikke være både matematisk sentrert og helt pikseljustert på en 16 px-flate.
-        Testen sammenligner optisk hinting −0,5 / 0 / +0,5 px og tre like 2 px-stolper. Green er kun
-        fargeutforskning.
+        Geometrien er låst til Micro 3 med optisk hinting Crisp −0,5: et faktisk 12 px signal i en
+        16 px-flate. Nå sammenlignes bare gjenfinning og brandtilhørighet i en travel nettleserrad.
       </p>
     </header>
 
@@ -145,29 +144,31 @@ const faviconTests = [
         <article class="favicon-card">
           <header><strong>{favicon.label}</strong><span>{favicon.status}</span></header>
           <div class="favicon-card__sizes">
-            {faviconTests.map((test) => (
-              <figure>
-                <div class:list={["favicon-tile", favicon.id === "white" && "favicon-tile--outlined"]} style={`--favicon-size: 16px; --favicon-background: ${favicon.background};`}>
-                  <span
-                    class="favicon-pixel-signal"
-                    role="img"
-                    aria-label={`${favicon.label}, ${test.label} ved faktisk ${test.size} piksler i 16 pikslers flate`}
-                    style={`--pixel-offset: ${test.offset}px; --pixel-bar-width: ${test.barWidth}px; --pixel-center-height: ${test.size}px; --pixel-side-height: ${test.sideHeight}px; --signal-color: ${favicon.signal};`}
-                  ><i></i><i></i><i></i></span>
-                </div>
-                <figcaption><strong>{test.label}</strong><span>{test.size} px</span></figcaption>
-              </figure>
-            ))}
+            <figure>
+              <div class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${favicon.background};`}>
+                <span
+                  class="favicon-pixel-signal"
+                  role="img"
+                  aria-label={`${favicon.label}, ${faviconLock.label} ved faktisk ${faviconLock.size} piksler i 16 pikslers flate`}
+                  style={`--pixel-offset: ${faviconLock.offset}px; --pixel-bar-width: ${faviconLock.barWidth}px; --pixel-center-height: ${faviconLock.size}px; --pixel-side-height: ${faviconLock.sideHeight}px; --signal-color: ${favicon.signal};`}
+                ><i></i><i></i><i></i></span>
+              </div>
+              <figcaption><strong>{faviconLock.label}</strong><span>12 px · låst</span></figcaption>
+            </figure>
           </div>
-          <div class="browser-tab">
-            <span class="browser-tab__icons" aria-label={`${favicon.label}, fire favicon-varianter i tab-kontekst`}>
-              {faviconTests.map((test) => (
-                <span class:list={["favicon-tile", favicon.id === "white" && "favicon-tile--outlined"]} style={`--favicon-size: 16px; --favicon-background: ${favicon.background};`}>
-                  <span class="favicon-pixel-signal" style={`--pixel-offset: ${test.offset}px; --pixel-bar-width: ${test.barWidth}px; --pixel-center-height: ${test.size}px; --pixel-side-height: ${test.sideHeight}px; --signal-color: ${favicon.signal};`}><i></i><i></i><i></i></span>
-                </span>
-              ))}
+          <div class="favicon-neighborhood" aria-label={`${favicon.label} blant generiske nabofaner`}>
+            {neighborMarks.slice(0, 4).map((neighbor) => (
+              <span class:list={["neighbor-mark", `neighbor-mark--${neighbor.shape}`]} style={`--neighbor-color: ${neighbor.color}; --neighbor-background: ${neighbor.background};`}>{neighbor.mark}</span>
+            ))}
+            <span class="favicon-neighborhood__active">
+              <span class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${favicon.background};`}>
+                <span class="favicon-pixel-signal" style={`--pixel-offset: ${faviconLock.offset}px; --pixel-bar-width: ${faviconLock.barWidth}px; --pixel-center-height: ${faviconLock.size}px; --pixel-side-height: ${faviconLock.sideHeight}px; --signal-color: ${favicon.signal};`}><i></i><i></i><i></i></span>
+              </span>
+              <span>Viddel</span>
             </span>
-            <span>Viddel – hjelp med lyd</span><span aria-hidden="true">×</span>
+            {neighborMarks.slice(4).map((neighbor) => (
+              <span class:list={["neighbor-mark", `neighbor-mark--${neighbor.shape}`]} style={`--neighbor-color: ${neighbor.color}; --neighbor-background: ${neighbor.background};`}>{neighbor.mark}</span>
+            ))}
           </div>
         </article>
       ))}
@@ -175,8 +176,8 @@ const faviconTests = [
   </section>
 
   <footer class="brand-review__decision">
-    <strong>Aktiv beslutning:</strong> velg Crisp −0,5, Balanced AA, Crisp +0,5 eller Equal 2 px ved 8
-    og 12 px. Velg deretter White/black, Black/white, Green/white eller Blue/white.
+    <strong>Aktiv beslutning:</strong> geometrien er låst. Velg Blue/white eller Signal green/white.
+    Black/white beholdes som teknisk fallback; produksjonsfavicon er ikke endret.
   </footer>
 </section>
 
@@ -319,7 +320,7 @@ const faviconTests = [
   }
 
   .favicon-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .favicon-card {
@@ -342,10 +343,8 @@ const faviconTests = [
 
   .favicon-card__sizes {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
     min-height: 6.25rem;
-    gap: 1rem;
-    align-items: end;
+    place-items: center;
     justify-content: center;
     padding: 1rem;
     background-image:
@@ -383,8 +382,6 @@ const faviconTests = [
     box-shadow: 0 1px 4px rgb(15 27 46 / 0.2);
   }
 
-  .favicon-tile--outlined { box-shadow: inset 0 0 0 1px #d9dee7, 0 1px 4px rgb(15 27 46 / 0.12); }
-
   .favicon-pixel-signal {
     position: absolute;
     inset: 0;
@@ -409,22 +406,51 @@ const faviconTests = [
   }
   .favicon-pixel-signal i:nth-child(3) { left: calc(var(--pixel-offset) + 6px); }
 
-  .browser-tab {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 0.5rem;
+  .favicon-neighborhood {
+    display: flex;
+    gap: 0.38rem;
     align-items: center;
     margin: 0 0.65rem 0.65rem;
-    padding: 0.45rem 0.55rem;
+    padding: 0.42rem;
+    overflow: hidden;
     border-radius: 0.45rem;
-    background: #eef1f5;
+    background: #efb9aa;
     color: #475467;
     font-size: 0.65rem;
   }
 
-  .browser-tab__icons {
+  .favicon-neighborhood__active {
     display: flex;
-    gap: 0.22rem;
+    flex: 0 0 auto;
+    gap: 0.35rem;
+    align-items: center;
+    padding: 0.26rem 0.42rem;
+    border-radius: 0.38rem;
+    background: #fff;
+    box-shadow: 0 1px 4px rgb(15 27 46 / 0.16);
+    color: #0f1b2e;
+    font-weight: 700;
+  }
+
+  .neighbor-mark {
+    display: grid;
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    place-items: center;
+    border: 1px solid rgb(15 27 46 / 0.12);
+    background: var(--neighbor-background);
+    color: var(--neighbor-color);
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .neighbor-mark--round { border-radius: 50%; }
+  .neighbor-mark--square { border-radius: 3px; }
+
+  @media (max-width: 920px) {
+    .favicon-grid { grid-template-columns: 1fr; }
   }
 
   .signal-review__head h3 {
