@@ -36,7 +36,7 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
             </span>
           </span>
         ) : (
-          <picture class="block leading-none">
+          <picture class="viddel-wordmark viddel-wordmark--default block leading-none">
             <source
               media="(min-width: 1024px)"
               srcset={`${base}brand/viddel-wordmark-primary-5bar.svg`}
@@ -48,6 +48,22 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
               height="20"
               class="h-5 w-auto lg:h-[22px]"
               data-viddel-wordmark="responsive"
+              data-viddel-wordmark-treatment="default"
+            />
+          </picture>
+          <picture class="viddel-wordmark viddel-wordmark--inverse leading-none">
+            <source
+              media="(min-width: 1024px)"
+              srcset={`${base}brand/viddel-wordmark-primary-5bar-inverse-blue.svg`}
+            />
+            <img
+              src={`${base}brand/viddel-wordmark-small-5bar-inverse-blue.svg`}
+              alt=""
+              width="140"
+              height="20"
+              class="h-5 w-auto lg:h-[22px]"
+              data-viddel-wordmark="responsive"
+              data-viddel-wordmark-treatment="inverse-blue"
             />
           </picture>
         )
@@ -120,3 +136,27 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
     <MobileMenuTrigger />
   </div>
 </header>
+
+<style>
+  .viddel-wordmark--inverse {
+    display: none;
+  }
+
+  :global(html[data-theme="dark"]) .viddel-wordmark--default {
+    display: none;
+  }
+
+  :global(html[data-theme="dark"]) .viddel-wordmark--inverse {
+    display: block;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(html[data-theme="system"]) .viddel-wordmark--default {
+      display: none;
+    }
+
+    :global(html[data-theme="system"]) .viddel-wordmark--inverse {
+      display: block;
+    }
+  }
+</style>
