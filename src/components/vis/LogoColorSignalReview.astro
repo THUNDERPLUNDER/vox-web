@@ -102,17 +102,17 @@ const neighborMarks = [
     <header class="signal-review__head">
       <div>
         <p>Dark header · optisk kontroll</p>
-        <h3 id="dark-header-review-heading">Blått eller hvitt signal ved faktisk størrelse</h3>
+        <h3 id="dark-header-review-heading">Inverse blue er låst for headeren</h3>
       </div>
       <p>
-        Samme canonical geometri og samme mørke headerflate i alle felt. Bare signalbehandlingen
-        varierer. Desktop vises med Primary ved 22 px; mobil med Small Y ved 20 px.
+        Kontroll utført med samme canonical geometri og mørke headerflate. Inverse blue beholdes
+        både for Primary ved 22 px på desktop og Small Y ved 20 px på mobil.
       </p>
     </header>
 
     <div class="dark-header-review__grid">
-      <article class="dark-header-check">
-        <header><strong>Desktop · dagens behandling</strong><span>Primary · 22 px</span></header>
+      <article class="dark-header-check dark-header-check--selected">
+        <header><strong>Desktop · låst behandling</strong><span>Primary · 22 px</span></header>
         <div class="dark-header-check__stage">
           <img
             src={`${base}brand/viddel-wordmark-primary-5bar-inverse-blue.svg`}
@@ -122,11 +122,11 @@ const neighborMarks = [
             style="height: 22px"
           />
         </div>
-        <footer>Inverse blue · vurder separasjonen mellom de fem stolpene</footer>
+        <footer>Inverse blue · beholdes i produksjon</footer>
       </article>
 
-      <article class="dark-header-check dark-header-check--candidate">
-        <header><strong>Desktop · kontrastkandidat</strong><span>Primary · 22 px</span></header>
+      <article class="dark-header-check dark-header-check--rejected">
+        <header><strong>Desktop · vurdert alternativ</strong><span>Primary · 22 px</span></header>
         <div class="dark-header-check__stage">
           <img
             src={`${base}brand/viddel-wordmark-primary-5bar-mono-white.svg`}
@@ -136,11 +136,11 @@ const neighborMarks = [
             style="height: 22px"
           />
         </div>
-        <footer>Mono white · identisk geometri, maksimal lyskontrast</footer>
+        <footer>Mono white · vurdert, ikke valgt for header</footer>
       </article>
 
-      <article class="dark-header-check">
-        <header><strong>Mobil · dagens behandling</strong><span>Small Y · 20 px</span></header>
+      <article class="dark-header-check dark-header-check--selected">
+        <header><strong>Mobil · låst behandling</strong><span>Small Y · 20 px</span></header>
         <div class="dark-header-check__stage">
           <img
             src={`${base}brand/viddel-wordmark-small-5bar-inverse-blue.svg`}
@@ -150,11 +150,11 @@ const neighborMarks = [
             style="height: 20px"
           />
         </div>
-        <footer>Inverse blue · dagens mobile behandling</footer>
+        <footer>Inverse blue · beholdes i produksjon</footer>
       </article>
 
-      <article class="dark-header-check dark-header-check--candidate">
-        <header><strong>Mobil · kontrastkandidat</strong><span>Small Y · 20 px</span></header>
+      <article class="dark-header-check dark-header-check--rejected">
+        <header><strong>Mobil · vurdert alternativ</strong><span>Small Y · 20 px</span></header>
         <div class="dark-header-check__stage">
           <img
             src={`${base}brand/viddel-wordmark-small-5bar-mono-white.svg`}
@@ -164,12 +164,13 @@ const neighborMarks = [
             style="height: 20px"
           />
         </div>
-        <footer>Mono white · identisk geometri, maksimal lyskontrast</footer>
+        <footer>Mono white · vurdert, ikke valgt for header</footer>
       </article>
     </div>
 
     <footer class="dark-header-review__note">
-      Dette er en behandlingstest, ikke ny geometri. Produksjonsheaderen er ikke endret.
+      <strong>Beslutning:</strong> Behold inverse blue i dark mode. Kontrollen utløser ingen ny
+      geometri og ingen endring i produksjonsheaderen.
     </footer>
   </section>
 
@@ -423,9 +424,13 @@ const neighborMarks = [
     background: #080e1c;
   }
 
-  .dark-header-check--candidate {
-    border-color: #6f8fcf;
-    box-shadow: inset 0 0 0 1px rgb(111 143 207 / 0.28);
+  .dark-header-check--selected {
+    border-color: #4f7ed9;
+    box-shadow: inset 0 0 0 1px rgb(79 126 217 / 0.35);
+  }
+
+  .dark-header-check--rejected {
+    opacity: 0.72;
   }
 
   .dark-header-check > header {
