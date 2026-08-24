@@ -98,6 +98,81 @@ const neighborMarks = [
     ))}
   </div>
 
+  <section class="dark-header-review" aria-labelledby="dark-header-review-heading">
+    <header class="signal-review__head">
+      <div>
+        <p>Dark header · optisk kontroll</p>
+        <h3 id="dark-header-review-heading">Blått eller hvitt signal ved faktisk størrelse</h3>
+      </div>
+      <p>
+        Samme canonical geometri og samme mørke headerflate i alle felt. Bare signalbehandlingen
+        varierer. Desktop vises med Primary ved 22 px; mobil med Small Y ved 20 px.
+      </p>
+    </header>
+
+    <div class="dark-header-review__grid">
+      <article class="dark-header-check">
+        <header><strong>Desktop · dagens behandling</strong><span>Primary · 22 px</span></header>
+        <div class="dark-header-check__stage">
+          <img
+            src={`${base}brand/viddel-wordmark-primary-5bar-inverse-blue.svg`}
+            alt="VIDDEL Primary med hvitt ordmerke og blått signal"
+            width="937.88"
+            height="134"
+            style="height: 22px"
+          />
+        </div>
+        <footer>Inverse blue · vurder separasjonen mellom de fem stolpene</footer>
+      </article>
+
+      <article class="dark-header-check dark-header-check--candidate">
+        <header><strong>Desktop · kontrastkandidat</strong><span>Primary · 22 px</span></header>
+        <div class="dark-header-check__stage">
+          <img
+            src={`${base}brand/viddel-wordmark-primary-5bar-mono-white.svg`}
+            alt="VIDDEL Primary helt i hvitt"
+            width="937.88"
+            height="134"
+            style="height: 22px"
+          />
+        </div>
+        <footer>Mono white · identisk geometri, maksimal lyskontrast</footer>
+      </article>
+
+      <article class="dark-header-check">
+        <header><strong>Mobil · dagens behandling</strong><span>Small Y · 20 px</span></header>
+        <div class="dark-header-check__stage">
+          <img
+            src={`${base}brand/viddel-wordmark-small-5bar-inverse-blue.svg`}
+            alt="VIDDEL Small Y med hvitt ordmerke og blått signal"
+            width="140"
+            height="20"
+            style="height: 20px"
+          />
+        </div>
+        <footer>Inverse blue · dagens mobile behandling</footer>
+      </article>
+
+      <article class="dark-header-check dark-header-check--candidate">
+        <header><strong>Mobil · kontrastkandidat</strong><span>Small Y · 20 px</span></header>
+        <div class="dark-header-check__stage">
+          <img
+            src={`${base}brand/viddel-wordmark-small-5bar-mono-white.svg`}
+            alt="VIDDEL Small Y helt i hvitt"
+            width="140"
+            height="20"
+            style="height: 20px"
+          />
+        </div>
+        <footer>Mono white · identisk geometri, maksimal lyskontrast</footer>
+      </article>
+    </div>
+
+    <footer class="dark-header-review__note">
+      Dette er en behandlingstest, ikke ny geometri. Produksjonsheaderen er ikke endret.
+    </footer>
+  </section>
+
   <div class="signal-review">
     <header class="signal-review__head">
       <div>
@@ -328,6 +403,73 @@ const neighborMarks = [
     border-top: 1px solid #d9dee7;
   }
 
+  .dark-header-review {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 0.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid #d9dee7;
+  }
+
+  .dark-header-review__grid {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .dark-header-check {
+    overflow: hidden;
+    border: 1px solid #24324a;
+    border-radius: 0.75rem;
+    background: #080e1c;
+  }
+
+  .dark-header-check--candidate {
+    border-color: #6f8fcf;
+    box-shadow: inset 0 0 0 1px rgb(111 143 207 / 0.28);
+  }
+
+  .dark-header-check > header {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid #24324a;
+    color: #f5f7fb;
+    font-size: 0.68rem;
+  }
+
+  .dark-header-check > header span,
+  .dark-header-check > footer {
+    color: #aeb9cc;
+  }
+
+  .dark-header-check__stage {
+    display: flex;
+    min-height: 5.5rem;
+    align-items: center;
+    padding: 1rem 1.25rem;
+  }
+
+  .dark-header-check__stage img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .dark-header-check > footer {
+    padding: 0.5rem 0.7rem;
+    border-top: 1px solid #24324a;
+    font-size: 0.64rem;
+  }
+
+  .dark-header-review__note {
+    padding: 0.7rem 0.8rem;
+    border-radius: 0.65rem;
+    background: #eef3ff;
+    color: #475467;
+    font-size: 0.72rem;
+  }
+
   .favicon-review {
     display: grid;
     gap: 0.85rem;
@@ -554,6 +696,10 @@ const neighborMarks = [
 
     .signal-review__grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .dark-header-review__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
