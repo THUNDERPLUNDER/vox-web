@@ -47,14 +47,14 @@ const faviconVariants = [
     label: "Micro 5 · 16×16",
     status: "Gjenkjenningshypotese",
     fillWidth: 16,
-    bars: [{ x: 2, height: 4 }, { x: 5, height: 8 }, { x: 7, height: 12 }, { x: 9, height: 8 }, { x: 12, height: 4 }],
+    bars: [{ x: 1, height: 4 }, { x: 4, height: 8 }, { x: 7, height: 12 }, { x: 10, height: 8 }, { x: 13, height: 4 }],
   },
   {
     id: "micro5-cut",
     label: "Micro 5 · høyrepiksel transparent",
     status: "Kombinert hypotese",
     fillWidth: 15,
-    bars: [{ x: 2, height: 4 }, { x: 5, height: 8 }, { x: 7, height: 12 }, { x: 9, height: 8 }, { x: 12, height: 4 }],
+    bars: [{ x: 1, height: 4 }, { x: 4, height: 8 }, { x: 7, height: 12 }, { x: 10, height: 8 }, { x: 13, height: 4 }],
   },
 ];
 const neighborMarks = [
@@ -171,6 +171,7 @@ const neighborMarks = [
           <div class="favicon-card__sizes">
             <figure>
               <div class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${faviconColor.background}; --favicon-fill-width: ${favicon.fillWidth}px;`}>
+                <span class="favicon-tile__field" aria-hidden="true"></span>
                 <span
                   class="favicon-pixel-signal"
                   role="img"
@@ -187,6 +188,7 @@ const neighborMarks = [
             ))}
             <span class="favicon-neighborhood__active">
               <span class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${faviconColor.background}; --favicon-fill-width: ${favicon.fillWidth}px;`}>
+                <span class="favicon-tile__field" aria-hidden="true"></span>
                 <span class="favicon-pixel-signal" style={`--signal-color: ${faviconColor.signal};`}>{favicon.bars.map((bar) => <i style={`left: ${bar.x}px; height: ${bar.height}px;`}></i>)}</span>
               </span>
               <span>Viddel</span>
@@ -402,9 +404,14 @@ const neighborMarks = [
     width: var(--favicon-size);
     height: var(--favicon-size);
     place-items: center;
-    overflow: hidden;
-    border-radius: 22%;
-    background: linear-gradient(90deg, var(--favicon-background) 0 var(--favicon-fill-width), transparent var(--favicon-fill-width));
+  }
+
+  .favicon-tile__field {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--favicon-fill-width);
+    border-radius: 3px;
+    background: var(--favicon-background);
     filter: drop-shadow(0 1px 2px rgb(15 27 46 / 0.2));
   }
 
