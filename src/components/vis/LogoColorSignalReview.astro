@@ -9,34 +9,42 @@ const wordmarks = [
 ];
 
 const treatments = [
-  { id: "default", label: "Default", detail: "Navy + blue", dark: false },
-  { id: "mono-navy", label: "Mono dark", detail: "Alt i navy", dark: false },
-  { id: "inverse-blue", label: "Inverse", detail: "Hvit + blue", dark: true },
-  { id: "mono-white", label: "Mono white", detail: "Alt i hvitt", dark: true },
+  { id: "default", label: "Default", detail: "Navy + blue · godkjent", dark: false },
+  { id: "mono-navy", label: "Mono dark", detail: "Alt i navy · godkjent", dark: false },
+  { id: "inverse-blue", label: "Inverse", detail: "Hvit + blue · godkjent", dark: true },
+  { id: "mono-white", label: "Mono white", detail: "Alt i hvitt · godkjent", dark: true },
 ];
 
 const wordmarkSrc = (wordmark: (typeof wordmarks)[number], treatment: (typeof treatments)[number]) =>
   treatment.id === "default"
     ? `${base}brand/viddel-wordmark-${wordmark.id}-${wordmark.id === "micro" ? "3bar" : "5bar"}.svg`
-    : `${base}brand/preview/viddel-wordmark-${wordmark.id}-${treatment.id}.svg`;
+    : `${base}brand/viddel-wordmark-${wordmark.id}-${wordmark.id === "micro" ? "3bar" : "5bar"}-${treatment.id}.svg`;
 
 const signals = [
-  { id: "primary", label: "Primary 5-bar", detail: "uttrukket fra Primary", aspect: 108.57 / 93.73 },
-  { id: "small", label: "Small 5-bar", detail: "uttrukket fra Small Y", aspect: 18 / 16.7414 },
-  { id: "micro", label: "Micro 3-bar", detail: "uttrukket fra Micro A", aspect: 10 / 16.7414 },
+  { id: "primary", bars: "5bar", label: "Primary 5-bar", detail: "prioritet 20–32 px", aspect: 108.57 / 93.73 },
+  { id: "small", bars: "5bar", label: "Small 5-bar", detail: "prioritet 8–16 px", aspect: 18 / 16.7414 },
+  { id: "micro", bars: "3bar", label: "Micro 3-bar", detail: "8 px · krevende tilfeller", aspect: 10 / 16.7414 },
 ];
 const signalSizes = [8, 12, 16, 20, 24, 32];
+const favicons = [
+  { id: "navy", label: "Navy / white", background: "#0f1b2e", signal: "#ffffff", status: "Trygg brandkandidat" },
+  { id: "blue", label: "Blue / white", background: "#3672e6", signal: "#ffffff", status: "Tydelig brandkandidat" },
+  { id: "sun", label: "Sun / navy", background: "#ffc53d", signal: "#0f1b2e", status: "Ny kontrastfarge" },
+  { id: "mint", label: "Mint / navy", background: "#4fe0b5", signal: "#0f1b2e", status: "Ny kontrastfarge" },
+];
+const faviconSizes = [16, 32, 48];
+const faviconSignalFor = (size: number) => size === 16 ? signals[1] : signals[0];
 ---
 
 <section class="brand-review" aria-labelledby="brand-review-heading">
   <header class="brand-review__head">
     <div>
-      <p>#121 · neste beslutningsport</p>
+      <p>#121 · godkjent assetgrunnlag</p>
       <h2 id="brand-review-heading">Fargebehandlinger og standalone-signal</h2>
     </div>
     <p>
-      Geometrien er låst. Variantene under er mekanisk avledet fra de tre canonical wordmarkene;
-      ingen punkter, proporsjoner eller mellomrom er endret.
+      Geometrien, fargebehandlingene og størrelsesrollene er nå godkjent. Alle avledninger bruker
+      samme punkter, proporsjoner og mellomrom som sine canonical wordmarks.
     </p>
   </header>
 
@@ -88,7 +96,7 @@ const signalSizes = [8, 12, 16, 20, 24, 32];
                     class="signal-shape"
                     role="img"
                     aria-label={`${signal.label} ved ${size} piksler`}
-                    style={`--signal-url: url("${base}brand/preview/viddel-signal-${signal.id}.svg"); --signal-height: ${size}px; --signal-aspect: ${signal.aspect}; --signal-color: #3672e6;`}
+                    style={`--signal-url: url("${base}brand/viddel-signal-${signal.id}-${signal.bars}.svg"); --signal-height: ${size}px; --signal-aspect: ${signal.aspect}; --signal-color: #3672e6;`}
                   ></span>
                 </div>
                 <figcaption>{size} px</figcaption>
@@ -97,13 +105,13 @@ const signalSizes = [8, 12, 16, 20, 24, 32];
           </div>
           <div class="signal-card__contexts">
             <div class="signal-icon signal-icon--light" aria-label={`${signal.label}, blå på lys flate`}>
-              <span class="signal-shape" style={`--signal-url: url("${base}brand/preview/viddel-signal-${signal.id}.svg"); --signal-height: 24px; --signal-aspect: ${signal.aspect}; --signal-color: #3672e6;`}></span>
+              <span class="signal-shape" style={`--signal-url: url("${base}brand/viddel-signal-${signal.id}-${signal.bars}.svg"); --signal-height: 24px; --signal-aspect: ${signal.aspect}; --signal-color: #3672e6;`}></span>
             </div>
             <div class="signal-icon signal-icon--dark" aria-label={`${signal.label}, blå på mørk flate`}>
-              <span class="signal-shape" style={`--signal-url: url("${base}brand/preview/viddel-signal-${signal.id}.svg"); --signal-height: 24px; --signal-aspect: ${signal.aspect}; --signal-color: #3672e6;`}></span>
+              <span class="signal-shape" style={`--signal-url: url("${base}brand/viddel-signal-${signal.id}-${signal.bars}.svg"); --signal-height: 24px; --signal-aspect: ${signal.aspect}; --signal-color: #3672e6;`}></span>
             </div>
             <div class="signal-icon signal-icon--dark" aria-label={`${signal.label}, hvit på mørk flate`}>
-              <span class="signal-shape" style={`--signal-url: url("${base}brand/preview/viddel-signal-${signal.id}.svg"); --signal-height: 24px; --signal-aspect: ${signal.aspect}; --signal-color: #ffffff;`}></span>
+              <span class="signal-shape" style={`--signal-url: url("${base}brand/viddel-signal-${signal.id}-${signal.bars}.svg"); --signal-height: 24px; --signal-aspect: ${signal.aspect}; --signal-color: #ffffff;`}></span>
             </div>
           </div>
         </article>
@@ -111,9 +119,59 @@ const signalSizes = [8, 12, 16, 20, 24, 32];
     </div>
   </div>
 
+  <section class="favicon-review" aria-labelledby="favicon-review-heading">
+    <header class="signal-review__head">
+      <div>
+        <p>Favicon · ny beslutningsport</p>
+        <h3 id="favicon-review-heading">Kontrastflate rundt signalet</h3>
+      </div>
+      <p>
+        16 px bruker Small 5-bar; 32 og 48 px bruker Primary 5-bar. Sun og Mint er kun
+        fargeutforskning og innfører ingen ny brandfarge før eksplisitt valg.
+      </p>
+    </header>
+
+    <div class="favicon-grid">
+      {favicons.map((favicon) => (
+        <article class="favicon-card">
+          <header><strong>{favicon.label}</strong><span>{favicon.status}</span></header>
+          <div class="favicon-card__sizes">
+            {faviconSizes.map((size) => {
+              const signal = faviconSignalFor(size);
+              const inset = Math.max(3, Math.round(size * 0.22));
+              const signalHeight = size - inset * 2;
+              return (
+                <figure>
+                  <div
+                    class="favicon-tile"
+                    style={`--favicon-size: ${size}px; --favicon-background: ${favicon.background};`}
+                  >
+                    <span
+                      class="signal-shape"
+                      role="img"
+                      aria-label={`${favicon.label} favicon ved ${size} piksler`}
+                      style={`--signal-url: url("${base}brand/viddel-signal-${signal.id}-${signal.bars}.svg"); --signal-height: ${signalHeight}px; --signal-aspect: ${signal.aspect}; --signal-color: ${favicon.signal};`}
+                    ></span>
+                  </div>
+                  <figcaption>{size} px</figcaption>
+                </figure>
+              );
+            })}
+          </div>
+          <div class="browser-tab">
+            <span class="favicon-tile" style={`--favicon-size: 16px; --favicon-background: ${favicon.background};`}>
+              <span class="signal-shape" style={`--signal-url: url("${base}brand/viddel-signal-small-5bar.svg"); --signal-height: 10px; --signal-aspect: ${signals[1].aspect}; --signal-color: ${favicon.signal};`}></span>
+            </span>
+            <span>Viddel – hjelp med lyd</span><span aria-hidden="true">×</span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
   <footer class="brand-review__decision">
-    <strong>Beslutning etter review:</strong> godkjenn fargebehandlingene og velg hvilken 5-bar-geometri
-    som skal være standalone-master. Favicon avgjøres først etter dette.
+    <strong>Aktiv beslutning:</strong> velg favicon-bakgrunn. Geometrien følger allerede den godkjente
+    størrelsesprioriteten; «bare stolper uten flate» er tatt ut av kandidatfeltet.
   </footer>
 </section>
 
@@ -166,7 +224,8 @@ const signalSizes = [8, 12, 16, 20, 24, 32];
 
   .brand-review__matrix,
   .signal-review,
-  .signal-review__grid {
+  .signal-review__grid,
+  .favicon-grid {
     display: grid;
     gap: 0.85rem;
   }
@@ -244,6 +303,85 @@ const signalSizes = [8, 12, 16, 20, 24, 32];
     margin-top: 0.25rem;
     padding-top: 1rem;
     border-top: 1px solid #d9dee7;
+  }
+
+  .favicon-review {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 0.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid #d9dee7;
+  }
+
+  .favicon-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .favicon-card {
+    overflow: hidden;
+    border: 1px solid #d9dee7;
+    border-radius: 0.75rem;
+    background: #fff;
+  }
+
+  .favicon-card > header {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.55rem 0.65rem;
+    border-bottom: 1px solid #d9dee7;
+    font-size: 0.68rem;
+  }
+
+  .favicon-card > header span { color: #667085; }
+
+  .favicon-card__sizes {
+    display: flex;
+    min-height: 6.25rem;
+    gap: 1rem;
+    align-items: end;
+    justify-content: center;
+    padding: 1rem;
+    background-image:
+      linear-gradient(rgb(15 27 46 / 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(15 27 46 / 0.045) 1px, transparent 1px);
+    background-size: 8px 8px;
+  }
+
+  .favicon-card__sizes figure {
+    display: grid;
+    gap: 0.35rem;
+    justify-items: center;
+    margin: 0;
+  }
+
+  .favicon-card__sizes figcaption {
+    color: #667085;
+    font-size: 0.62rem;
+  }
+
+  .favicon-tile {
+    display: grid;
+    width: var(--favicon-size);
+    height: var(--favicon-size);
+    place-items: center;
+    overflow: hidden;
+    border-radius: 22%;
+    background: var(--favicon-background);
+    box-shadow: 0 1px 4px rgb(15 27 46 / 0.2);
+  }
+
+  .browser-tab {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.5rem;
+    align-items: center;
+    margin: 0 0.65rem 0.65rem;
+    padding: 0.45rem 0.55rem;
+    border-radius: 0.45rem;
+    background: #eef1f5;
+    color: #475467;
+    font-size: 0.65rem;
   }
 
   .signal-review__head h3 {
@@ -344,5 +482,6 @@ const signalSizes = [8, 12, 16, 20, 24, 32];
     .treatment:nth-child(even) { border-top: 1px solid #d9dee7; border-left: 0; }
     .treatment:first-child { border-top: 0; }
     .treatment__stage { justify-content: flex-start; }
+    .favicon-grid { grid-template-columns: 1fr; }
   }
 </style>
