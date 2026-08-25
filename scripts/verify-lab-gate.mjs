@@ -58,11 +58,19 @@ if (!existsSync(knowledgeUxPage)) {
   if (!page.includes("CLM-SIT-001-OTI-001")) {
     errors.push("/lab/knowledge-ux must identify its verified claim");
   }
+  for (const betaClaim of ["CLM-SIT-001-PHO-001", "CLM-SIT-001-RES-001"]) {
+    if (!page.includes(betaClaim)) {
+      errors.push(`/lab/knowledge-ux must identify beta claim ${betaClaim}`);
+    }
+  }
   if (!page.includes("V3_EDITORIAL_APPROVED")) {
     errors.push("/lab/knowledge-ux must expose the claim verification status");
   }
   if (!page.includes('releaseLabel: "BETA"')) {
     errors.push("/lab/knowledge-ux must expose a release label separately from verification status");
+  }
+  if (!page.includes("Beta · kildekontrollert") || !page.includes("Beta · ikke punktkontrollert")) {
+    errors.push("/lab/knowledge-ux must distinguish source-checked and non-point-checked beta answers");
   }
   if (!page.includes('Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow")')) {
     errors.push("/lab/knowledge-ux must be noindex, nofollow");

@@ -15,14 +15,34 @@ if (!hasValidLabSession(Astro.request)) {
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
 
-const claim = {
-  id: "CLM-SIT-001-OTI-001",
-  status: "V3_EDITORIAL_APPROVED",
-  releaseLabel: "BETA",
-  scope: "Oticon Intent 1–4 miniRITE · FW 1.0/1.1",
-  source: "Oticon Intent Instructions for Use",
-  locator: "s. 80–81 · støtte fra s. 20 og 28",
-  sourceUrl: "https://drive.google.com/file/d/1mgS8ohI8Ezq8fDPdwxBTft8cRgz4N4xY/view",
+const claims = {
+  oticon: {
+    id: "CLM-SIT-001-OTI-001",
+    status: "V3_EDITORIAL_APPROVED",
+    releaseLabel: "BETA",
+    scope: "Oticon Intent 1–4 miniRITE · FW 1.0/1.1",
+    source: "Oticon Intent Instructions for Use",
+    locator: "s. 80–81 · støtte fra s. 20 og 28",
+    sourceUrl: "https://drive.google.com/file/d/1mgS8ohI8Ezq8fDPdwxBTft8cRgz4N4xY/view",
+  },
+  phonak: {
+    id: "CLM-SIT-001-PHO-001",
+    status: "V1_SCOPE_CONFIRMED",
+    releaseLabel: "BETA",
+    scope: "Phonak Audéo I-R / I-R Trial · I90/I70/I50/I30",
+    source: "Phonak Audéo I User Guide",
+    locator: "029-1357-02/V1.00/2024-03 · s. 66–67",
+    sourceUrl: "https://drive.google.com/file/d/1lXJw28GEWkZ1v_JQuWmaNKhwfJ3u5sVY/view",
+  },
+  resound: {
+    id: "CLM-SIT-001-RES-001",
+    status: "V1_SCOPE_CONFIRMED",
+    releaseLabel: "BETA",
+    scope: "ReSound Nexia · oppladbar Receiver-In-Ear",
+    source: "ReSound Nexia User Guide",
+    locator: "402639011US/CA/VA · 26.01 · Rev. C · s. 64–65",
+    sourceUrl: "https://drive.google.com/file/d/1SlQofel1-tq-vUJxqd1Y5_QWCXNin0lK/view",
+  },
 };
 ---
 
@@ -62,7 +82,18 @@ const claim = {
         </div>
       </section>
 
-      <section id="verified-answer" class="result" hidden aria-live="polite">
+      <section id="manufacturer-choice" class="result" hidden aria-live="polite">
+        <p class="eyebrow">Avgrens svaret</p>
+        <h2>Hvilket høreapparat gjelder det?</h2>
+        <p class="hint">Velg bare hvis modellfamilien stemmer. Andre modeller er ikke dekket i denne mikrobatchen.</p>
+        <div class="choices" role="group" aria-label="Velg produsent og modellfamilie">
+          <button type="button" class="choice" data-answer="oticon">Oticon Intent 1–4 miniRITE</button>
+          <button type="button" class="choice" data-answer="phonak">Phonak Audéo I-R / I-R Trial</button>
+          <button type="button" class="choice" data-answer="resound">ReSound Nexia oppladbar RIE</button>
+        </div>
+      </section>
+
+      <section id="oticon-answer" class="result answer-result" hidden aria-live="polite">
         <div class="result-heading">
           <div>
             <p class="eyebrow">Kontrollert førstehjelp</p>
@@ -86,11 +117,11 @@ const claim = {
         <details class="source-card">
           <summary>Se kilde og gyldighetsområde</summary>
           <dl>
-            <div><dt>Gjelder</dt><dd>{claim.scope}</dd></div>
-            <div><dt>Kilde</dt><dd><a href={claim.sourceUrl} target="_blank" rel="noreferrer">{claim.source}</a>, {claim.locator}</dd></div>
-            <div><dt>Påstand</dt><dd>{claim.id}</dd></div>
-            <div><dt>Status</dt><dd>{claim.status}</dd></div>
-            <div><dt>Publisering</dt><dd>{claim.releaseLabel} – svarformatet testes fortsatt</dd></div>
+            <div><dt>Gjelder</dt><dd>{claims.oticon.scope}</dd></div>
+            <div><dt>Kilde</dt><dd><a href={claims.oticon.sourceUrl} target="_blank" rel="noreferrer">{claims.oticon.source}</a>, {claims.oticon.locator}</dd></div>
+            <div><dt>Påstand</dt><dd>{claims.oticon.id}</dd></div>
+            <div><dt>Status</dt><dd>{claims.oticon.status}</dd></div>
+            <div><dt>Publisering</dt><dd>{claims.oticon.releaseLabel} – svarformatet testes fortsatt</dd></div>
           </dl>
         </details>
 
@@ -103,6 +134,49 @@ const claim = {
           </div>
           <p class="feedback-confirmation" hidden aria-live="polite"></p>
         </div>
+      </section>
+
+      <section id="phonak-answer" class="result answer-result" hidden aria-live="polite">
+        <div class="result-heading">
+          <div><p class="eyebrow">Avgrenset førstehjelp</p><h2>Prøv dette i denne rekkefølgen</h2></div>
+          <span class="verified-badge beta-unchecked">Beta · ikke punktkontrollert</span>
+        </div>
+        <p class="beta-note">Manualens ekthet og modellomfang er kontrollert. Dette konkrete svaret står i kø for punktkontroll.</p>
+        <ol class="steps">
+          <li><span>1</span><p><strong>Se etter blokkering.</strong> Rengjør åpningen i høyttaleren eller øreproppen.</p></li>
+          <li><span>2</span><p><strong>Slå høreapparatet på.</strong> Hold den nederste delen av flerfunksjonsknappen inne i tre sekunder.</p></li>
+          <li><span>3</span><p><strong>Lad høreapparatet.</strong></p></li>
+          <li><span>4</span><p><strong>Start høreapparatet på nytt</strong> hvis det ser ut til å være i en feiltilstand.</p></li>
+        </ol>
+        <div class="stop-card"><strong>Fortsatt ingen lyd?</strong><p>Kontakt audiograf eller annen høreapparatfaglig hjelp.</p></div>
+        <details class="source-card"><summary>Se kilde og gyldighetsområde</summary><dl>
+          <div><dt>Gjelder</dt><dd>{claims.phonak.scope}</dd></div>
+          <div><dt>Kilde</dt><dd><a href={claims.phonak.sourceUrl} target="_blank" rel="noreferrer">{claims.phonak.source}</a>, {claims.phonak.locator}</dd></div>
+          <div><dt>Påstand</dt><dd>{claims.phonak.id}</dd></div><div><dt>Status</dt><dd>{claims.phonak.status}</dd></div>
+          <div><dt>Publisering</dt><dd>{claims.phonak.releaseLabel} – ikke punktkontrollert</dd></div>
+        </dl></details>
+        <div class="feedback" data-feedback><p><strong>Var dette tydelig?</strong></p><div role="group" aria-label="Gi tilbakemelding på svaret"><button type="button" data-feedback-value="Ja">Ja</button><button type="button" data-feedback-value="Delvis">Delvis</button><button type="button" data-feedback-value="Nei">Nei</button></div><p class="feedback-confirmation" hidden aria-live="polite"></p></div>
+      </section>
+
+      <section id="resound-answer" class="result answer-result" hidden aria-live="polite">
+        <div class="result-heading">
+          <div><p class="eyebrow">Avgrenset førstehjelp</p><h2>Prøv dette i denne rekkefølgen</h2></div>
+          <span class="verified-badge beta-unchecked">Beta · ikke punktkontrollert</span>
+        </div>
+        <p class="beta-note">Manualens ekthet og modellomfang er kontrollert. Dette konkrete svaret står i kø for punktkontroll.</p>
+        <ol class="steps">
+          <li><span>1</span><p><strong>Slå høreapparatet på.</strong></p></li>
+          <li><span>2</span><p><strong>Lad høreapparatet.</strong></p></li>
+          <li><span>3</span><p><strong>Lad selve laderen</strong> hvis den er tom.</p></li>
+        </ol>
+        <div class="stop-card"><strong>Stopp her hvis problemet er fysisk.</strong><p>Kontakt høreapparatfaglig hjelp hvis receiverledningen er skadet eller øreproppen er tett. Kontakt lege hvis øret kan være tett av ørevoks.</p></div>
+        <details class="source-card"><summary>Se kilde og gyldighetsområde</summary><dl>
+          <div><dt>Gjelder</dt><dd>{claims.resound.scope}</dd></div>
+          <div><dt>Kilde</dt><dd><a href={claims.resound.sourceUrl} target="_blank" rel="noreferrer">{claims.resound.source}</a>, {claims.resound.locator}</dd></div>
+          <div><dt>Påstand</dt><dd>{claims.resound.id}</dd></div><div><dt>Status</dt><dd>{claims.resound.status}</dd></div>
+          <div><dt>Publisering</dt><dd>{claims.resound.releaseLabel} – ikke punktkontrollert</dd></div>
+        </dl></details>
+        <div class="feedback" data-feedback><p><strong>Var dette tydelig?</strong></p><div role="group" aria-label="Gi tilbakemelding på svaret"><button type="button" data-feedback-value="Ja">Ja</button><button type="button" data-feedback-value="Delvis">Delvis</button><button type="button" data-feedback-value="Nei">Nei</button></div><p class="feedback-confirmation" hidden aria-live="polite"></p></div>
       </section>
 
       <section id="streaming-answer" class="result result-muted" hidden aria-live="polite">
@@ -118,15 +192,18 @@ const claim = {
     </main>
 
     <script>
-      const verifiedAnswer = document.getElementById("verified-answer");
+      const manufacturerChoice = document.getElementById("manufacturer-choice");
       const streamingAnswer = document.getElementById("streaming-answer");
       const routeButtons = document.querySelectorAll("[data-route]");
+      const answerButtons = document.querySelectorAll("[data-answer]");
+      const answers = document.querySelectorAll(".answer-result");
 
       function showResult(route) {
-        if (!(verifiedAnswer instanceof HTMLElement) || !(streamingAnswer instanceof HTMLElement)) return;
-        verifiedAnswer.hidden = route !== "all-sound";
+        if (!(manufacturerChoice instanceof HTMLElement) || !(streamingAnswer instanceof HTMLElement)) return;
+        manufacturerChoice.hidden = route !== "all-sound";
         streamingAnswer.hidden = route !== "streaming";
-        const target = route === "all-sound" ? verifiedAnswer : streamingAnswer;
+        answers.forEach((answer) => { if (answer instanceof HTMLElement) answer.hidden = true; });
+        const target = route === "all-sound" ? manufacturerChoice : streamingAnswer;
         target.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
@@ -134,13 +211,22 @@ const claim = {
         button.addEventListener("click", () => showResult(button.getAttribute("data-route")));
       });
 
+      answerButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const selected = document.getElementById(`${button.getAttribute("data-answer")}-answer`);
+          answers.forEach((answer) => { if (answer instanceof HTMLElement) answer.hidden = answer !== selected; });
+          selected?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+
       document.querySelectorAll("[data-feedback-value]").forEach((button) => {
         button.addEventListener("click", () => {
           const value = button.getAttribute("data-feedback-value") || "";
-          document.querySelectorAll("[data-feedback-value]").forEach((item) => {
+          const feedback = button.closest("[data-feedback]");
+          feedback?.querySelectorAll("[data-feedback-value]").forEach((item) => {
             item.setAttribute("aria-pressed", String(item === button));
           });
-          const confirmation = document.querySelector(".feedback-confirmation");
+          const confirmation = feedback?.querySelector(".feedback-confirmation");
           if (confirmation instanceof HTMLElement) {
             confirmation.textContent = `Takk. «${value}» er registrert bare i denne nettleserøkten.`;
             confirmation.hidden = false;
@@ -149,7 +235,8 @@ const claim = {
       });
 
       document.getElementById("restart")?.addEventListener("click", () => {
-        if (verifiedAnswer instanceof HTMLElement) verifiedAnswer.hidden = true;
+        if (manufacturerChoice instanceof HTMLElement) manufacturerChoice.hidden = true;
+        answers.forEach((answer) => { if (answer instanceof HTMLElement) answer.hidden = true; });
         if (streamingAnswer instanceof HTMLElement) streamingAnswer.hidden = true;
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
@@ -182,6 +269,8 @@ const claim = {
   .lab-badge, .verified-badge { flex: 0 0 auto; border-radius: 999px; padding: 0.45rem 0.7rem; font-size: 0.7rem; font-weight: 700; }
   .lab-badge { border: 1px solid rgb(var(--stroke) / 0.3); background: rgb(var(--surface-elevated)); color: rgb(var(--muted)); }
   .verified-badge { background: rgb(var(--primary) / 0.12); color: rgb(var(--primary)); }
+  .beta-unchecked { background: rgb(var(--focus) / 0.14); color: rgb(var(--text)); }
+  .beta-note { margin-bottom: 0.4rem; border-left: 3px solid rgb(var(--focus)); padding-left: 0.8rem; color: rgb(var(--muted)); line-height: 1.5; }
   .conversation { display: grid; grid-template-columns: 2.5rem 1fr; gap: 0.75rem; align-items: start; }
   .viddel-mark { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: 50%; background: rgb(var(--primary)); color: white; font-family: var(--font-display); font-weight: 700; }
   .bubble, .result { border: 1px solid rgb(var(--stroke) / 0.2); border-radius: 1.25rem; background: rgb(var(--surface-elevated)); box-shadow: var(--shadow-card); }
