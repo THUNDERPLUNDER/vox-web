@@ -1,6 +1,6 @@
 # Viddel competence map and situation packages v0.1
 
-Canonical working document: [VDL_KOMPETANSEKART_OG_SITUASJONSPAKKER_v0.1](https://docs.google.com/document/d/1LfeKivBL0_3TiAUwekCFXFgHUhspUWNgQNErXnpyiKA/edit)
+Canonical working document in the protected Drive knowledge workspace: `VDL_KOMPETANSEKART_OG_SITUASJONSPAKKER_v0.1`.
 
 Status: active canonical working definition for LAB → TRUSTED.
 
