@@ -1,4 +1,4 @@
-/* CONTRACT: Build-time check — Lab routes gated by password auth; Production needs VIDDEL_LAB_PUBLIC_ENABLED. */
+/* CONTRACT: Build-time check — authenticated Lab tools stay gated; knowledge UX is public noindex BETA. */
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -45,6 +45,36 @@ if (!existsSync(labPage)) {
 const labApi = join(process.cwd(), "src/pages/api/lab/image-vision.ts");
 if (!existsSync(labApi)) {
   errors.push("Missing /api/lab/image-vision route");
+}
+
+const knowledgeUxPage = join(process.cwd(), "src/pages/lab/knowledge-ux.astro");
+if (!existsSync(knowledgeUxPage)) {
+  errors.push("Missing /lab/knowledge-ux page");
+} else {
+  const page = readFileSync(knowledgeUxPage, "utf8");
+  if (page.includes("hasValidLabSession") || page.includes("isLabRouteAvailable")) {
+    errors.push("/lab/knowledge-ux must not depend on Lab environment variables or session auth");
+  }
+  if (!page.includes("CLM-SIT-001-OTI-001")) {
+    errors.push("/lab/knowledge-ux must identify its verified claim");
+  }
+  for (const betaClaim of ["CLM-SIT-001-PHO-001", "CLM-SIT-001-RES-001"]) {
+    if (!page.includes(betaClaim)) {
+      errors.push(`/lab/knowledge-ux must identify beta claim ${betaClaim}`);
+    }
+  }
+  if (!page.includes("V3_EDITORIAL_APPROVED")) {
+    errors.push("/lab/knowledge-ux must expose the claim verification status");
+  }
+  if (!page.includes('releaseLabel: "BETA"')) {
+    errors.push("/lab/knowledge-ux must expose a release label separately from verification status");
+  }
+  if (!page.includes("Beta · kildekontrollert") || !page.includes("Beta · ikke punktkontrollert")) {
+    errors.push("/lab/knowledge-ux must distinguish source-checked and non-point-checked beta answers");
+  }
+  if (!page.includes('<meta name="robots" content="noindex,nofollow"')) {
+    errors.push("/lab/knowledge-ux must include a noindex,nofollow meta tag");
+  }
 }
 
 const legacyDevPage = join(process.cwd(), "src/pages/dev/image-qa.astro");
