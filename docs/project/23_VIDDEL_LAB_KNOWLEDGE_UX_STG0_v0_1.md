@@ -20,6 +20,7 @@ Teste om ett kildekontrollert Viddel-svar oppleves tydelig og nyttig, før en st
 - Mobil-/TV-streaming skilles ut før svaret vises, fordi den kontrollerte påstanden ikke dekker dette.
 - Tilbakemelding lagres ikke sentralt i STG-0; den bekreftes bare i den aktive nettleserøkten.
 - Ny oppgave skal ikke kreve ny generell originalkontroll for denne påstanden når claim-ID, scope, locator og kildesignatur fortsatt matcher registeret.
+- Svarflaten viser `BETA` som produkt-/release-merking separat fra claimens verifikasjonsstatus. Se `24_VIDDEL_BETA_KNOWLEDGE_RELEASE_POLICY_v0_1.md`.
 
 ## UX-spørsmål
 

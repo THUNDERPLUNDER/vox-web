@@ -18,6 +18,7 @@ Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
 const claim = {
   id: "CLM-SIT-001-OTI-001",
   status: "V3_EDITORIAL_APPROVED",
+  releaseLabel: "BETA",
   scope: "Oticon Intent 1–4 miniRITE · FW 1.0/1.1",
   source: "Oticon Intent Instructions for Use",
   locator: "s. 80–81 · støtte fra s. 20 og 28",
@@ -67,7 +68,7 @@ const claim = {
             <p class="eyebrow">Kontrollert førstehjelp</p>
             <h2>Prøv dette i denne rekkefølgen</h2>
           </div>
-          <span class="verified-badge">Kildekontrollert</span>
+          <span class="verified-badge">Beta · kildekontrollert</span>
         </div>
 
         <ol class="steps">
@@ -89,6 +90,7 @@ const claim = {
             <div><dt>Kilde</dt><dd><a href={claim.sourceUrl} target="_blank" rel="noreferrer">{claim.source}</a>, {claim.locator}</dd></div>
             <div><dt>Påstand</dt><dd>{claim.id}</dd></div>
             <div><dt>Status</dt><dd>{claim.status}</dd></div>
+            <div><dt>Publisering</dt><dd>{claim.releaseLabel} – svarformatet testes fortsatt</dd></div>
           </dl>
         </details>
 

@@ -34,6 +34,7 @@
 - **Custom chat shell (feasibility, intern):** Rute **`/no/sandbox/chat-shell`** — aktiv **feasibility-spike** for en eventuell Viddel-eid samtaleflate. Første kodepass er en visuell shell-prototype med mockede meldinger og **uten** backend, agentkall, auth eller CES-bridge; **ikke produksjonskoblet**. Siste commit som rørte selve siden: **`b2d91050e8b737cbb663f4fd8894a84d68315be7`** (`src/pages/no/sandbox/chat-shell.astro`). Full definisjon: `docs/project/05_CHAT_SHELL_FEASIBILITY.md`.
 - **VIS (backstage):** Eget **landet** verktøy for HTML-wireframes under **`/vis`** (internt, `noindex`). **Ikke** hovedsporet for MVP-produkt eller chat-shell; holdes adskilt i arbeid og dokumentasjon.
 - **Knowledge UX STG-0 (LAB):** `/lab/knowledge-ux` er en passordbeskyttet, `noindex` smoke-test med én kildekontrollert Oticon-påstand (`CLM-SIT-001-OTI-001`, `V3_EDITORIAL_APPROVED`). Ingen agent-, CES-, GCP- eller produksjonskobling. Se `23_VIDDEL_LAB_KNOWLEDGE_UX_STG0_v0_1.md` og GitHub #336.
+- **Beta knowledge release:** `BETA` er nå en separat publiseringsmerking, ikke et nytt verifikasjonsnivå. Troverdige originalmanualer autentiseres og avgrenses én gang til V1; bare utvalgte svar punktkontrolleres videre til V2–V4. Se `24_VIDDEL_BETA_KNOWLEDGE_RELEASE_POLICY_v0_1.md`.
 - **Øvrig:** AI-agent i Google CES; manualer i Cloud stores; Stitch som visuell referanse.
 
 ## Det som fortsatt er under arbeid
@@ -67,4 +68,4 @@
 
 ## Sist oppdatert
 - Dato: 2026-08-25
-- Oppdatert av: STG-0 Knowledge UX lagt til som isolert, passordbeskyttet LAB-test. Offentlig rot og produksjonskoblinger er uendret.
+- Oppdatert av: STG-0 Knowledge UX og separat BETA-publiseringsregel lagt til. Offentlig rot og produksjonskoblinger er uendret.

@@ -61,6 +61,9 @@ if (!existsSync(knowledgeUxPage)) {
   if (!page.includes("V3_EDITORIAL_APPROVED")) {
     errors.push("/lab/knowledge-ux must expose the claim verification status");
   }
+  if (!page.includes('releaseLabel: "BETA"')) {
+    errors.push("/lab/knowledge-ux must expose a release label separately from verification status");
+  }
   if (!page.includes('Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow")')) {
     errors.push("/lab/knowledge-ux must be noindex, nofollow");
   }
