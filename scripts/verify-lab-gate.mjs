@@ -1,4 +1,4 @@
-/* CONTRACT: Build-time check — Lab routes gated by password auth; Production needs VIDDEL_LAB_PUBLIC_ENABLED. */
+/* CONTRACT: Build-time check — authenticated Lab tools stay gated; knowledge UX is public noindex BETA. */
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -52,8 +52,8 @@ if (!existsSync(knowledgeUxPage)) {
   errors.push("Missing /lab/knowledge-ux page");
 } else {
   const page = readFileSync(knowledgeUxPage, "utf8");
-  if (!page.includes("hasValidLabSession")) {
-    errors.push("/lab/knowledge-ux must call hasValidLabSession()");
+  if (page.includes("hasValidLabSession") || page.includes("isLabRouteAvailable")) {
+    errors.push("/lab/knowledge-ux must not depend on Lab environment variables or session auth");
   }
   if (!page.includes("CLM-SIT-001-OTI-001")) {
     errors.push("/lab/knowledge-ux must identify its verified claim");
@@ -72,8 +72,8 @@ if (!existsSync(knowledgeUxPage)) {
   if (!page.includes("Beta · kildekontrollert") || !page.includes("Beta · ikke punktkontrollert")) {
     errors.push("/lab/knowledge-ux must distinguish source-checked and non-point-checked beta answers");
   }
-  if (!page.includes('Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow")')) {
-    errors.push("/lab/knowledge-ux must be noindex, nofollow");
+  if (!page.includes('<meta name="robots" content="noindex,nofollow"')) {
+    errors.push("/lab/knowledge-ux must include a noindex,nofollow meta tag");
   }
 }
 

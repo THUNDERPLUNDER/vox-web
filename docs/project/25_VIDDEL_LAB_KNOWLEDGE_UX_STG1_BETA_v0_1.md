@@ -1,7 +1,7 @@
 # Viddel LAB Knowledge UX — STG-1 BETA v0.1
 
 Dato: 2026-08-25  
-Omfang: LAB-only, ingen produksjonsendring
+Omfang: offentlig `noindex` BETA-test på ordinær deployment; statisk innhold uten datastore/backend
 
 ## Formål
 
@@ -28,6 +28,7 @@ Teste om brukeren kan velge riktig produsent og modellfamilie for situasjonen «
 - Alle svar viser modellomfang, kilde, lokator, claim-ID og stoppunkt.
 - Mobil-/TV-streaming ligger utenfor batchen.
 - Ingen diagnose, behandling eller irreversible handlinger inngår.
+- Ruten krever ikke LAB-passord eller preview-spesifikke miljøvariabler.
 
 ## Verifikasjon
 

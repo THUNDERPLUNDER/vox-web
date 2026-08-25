@@ -15,8 +15,8 @@ Teste om ett kildekontrollert Viddel-svar oppleves tydelig og nyttig, før en st
 
 ## Guardrails
 
-- Ruten `/lab/knowledge-ux` er passordbeskyttet med eksisterende LAB-port.
-- Ruten er `noindex, nofollow` og gjør ingen agent-, CES-, GCP- eller produksjonskall.
+- Ruten `/lab/knowledge-ux` er offentlig tilgjengelig på ordinær deployment uten LAB-passord, slik at mobiltesting ikke avhenger av preview-miljøvariabler.
+- Ruten er `noindex, nofollow` og gjør ingen agent-, CES- eller GCP-kall. Innholdet er statisk BETA-innhold, ikke dynamisk datastore-søk.
 - Mobil-/TV-streaming skilles ut før svaret vises, fordi den kontrollerte påstanden ikke dekker dette.
 - Tilbakemelding lagres ikke sentralt i STG-0; den bekreftes bare i den aktive nettleserøkten.
 - Ny oppgave skal ikke kreve ny generell originalkontroll for denne påstanden når claim-ID, scope, locator og kildesignatur fortsatt matcher registeret.
@@ -31,4 +31,4 @@ Teste om ett kildekontrollert Viddel-svar oppleves tydelig og nyttig, før en st
 
 ## Promoteringsregel
 
-STG-0 kan flyttes fra `LAB_UX_READY` til `LAB_UX_LIVE` når byggekontroll, innloggingsport og mobilvisning er verifisert på en tilgjengelig preview. Det gir ikke status `V4_TRUSTED` og autoriserer ikke produksjonspublisering.
+STG-0 kan flyttes fra `LAB_UX_READY` til `LAB_UX_LIVE` når byggekontroll og mobilvisning er verifisert på den offentlige ruten. Det gir ikke status `V4_TRUSTED`; BETA-merking og påstandens separate verifikasjonsstatus beholdes.

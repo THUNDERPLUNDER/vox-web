@@ -1,19 +1,6 @@
 ---
-/* CONTRACT: STG-0 knowledge UX smoke test (#336). Password-gated LAB only; no agent/backend calls. */
+/* CONTRACT: Public noindex BETA knowledge UX smoke test (#336); no agent/backend calls. */
 import "../../styles/global.css";
-import { hasValidLabSession, isLabRouteAvailable } from "../../lib/lab-auth-v01.ts";
-
-export const prerender = false;
-
-if (!isLabRouteAvailable()) {
-  return new Response(null, { status: 404, statusText: "Not Found" });
-}
-
-if (!hasValidLabSession(Astro.request)) {
-  return Astro.redirect("/lab/login?return=/lab/knowledge-ux");
-}
-
-Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
 
 const claims = {
   oticon: {
