@@ -47,6 +47,25 @@ if (!existsSync(labApi)) {
   errors.push("Missing /api/lab/image-vision route");
 }
 
+const knowledgeUxPage = join(process.cwd(), "src/pages/lab/knowledge-ux.astro");
+if (!existsSync(knowledgeUxPage)) {
+  errors.push("Missing /lab/knowledge-ux page");
+} else {
+  const page = readFileSync(knowledgeUxPage, "utf8");
+  if (!page.includes("hasValidLabSession")) {
+    errors.push("/lab/knowledge-ux must call hasValidLabSession()");
+  }
+  if (!page.includes("CLM-SIT-001-OTI-001")) {
+    errors.push("/lab/knowledge-ux must identify its verified claim");
+  }
+  if (!page.includes("V3_EDITORIAL_APPROVED")) {
+    errors.push("/lab/knowledge-ux must expose the claim verification status");
+  }
+  if (!page.includes('Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow")')) {
+    errors.push("/lab/knowledge-ux must be noindex, nofollow");
+  }
+}
+
 const legacyDevPage = join(process.cwd(), "src/pages/dev/image-qa.astro");
 const legacyDevApi = join(process.cwd(), "src/pages/api/dev/image-vision.ts");
 if (existsSync(legacyDevPage)) {

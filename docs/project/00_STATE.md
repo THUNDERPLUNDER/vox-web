@@ -33,6 +33,7 @@
 - **Ordbok (Storyblok):** `src/pages/no/ordbok` og `src/pages/no/ordbok/[term].astro` henter publisert innhold fra Storyblok under `no/ordbok/` i statisk build.
 - **Custom chat shell (feasibility, intern):** Rute **`/no/sandbox/chat-shell`** — aktiv **feasibility-spike** for en eventuell Viddel-eid samtaleflate. Første kodepass er en visuell shell-prototype med mockede meldinger og **uten** backend, agentkall, auth eller CES-bridge; **ikke produksjonskoblet**. Siste commit som rørte selve siden: **`b2d91050e8b737cbb663f4fd8894a84d68315be7`** (`src/pages/no/sandbox/chat-shell.astro`). Full definisjon: `docs/project/05_CHAT_SHELL_FEASIBILITY.md`.
 - **VIS (backstage):** Eget **landet** verktøy for HTML-wireframes under **`/vis`** (internt, `noindex`). **Ikke** hovedsporet for MVP-produkt eller chat-shell; holdes adskilt i arbeid og dokumentasjon.
+- **Knowledge UX STG-0 (LAB):** `/lab/knowledge-ux` er en passordbeskyttet, `noindex` smoke-test med én kildekontrollert Oticon-påstand (`CLM-SIT-001-OTI-001`, `V3_EDITORIAL_APPROVED`). Ingen agent-, CES-, GCP- eller produksjonskobling. Se `23_VIDDEL_LAB_KNOWLEDGE_UX_STG0_v0_1.md` og GitHub #336.
 - **Øvrig:** AI-agent i Google CES; manualer i Cloud stores; Stitch som visuell referanse.
 
 ## Det som fortsatt er under arbeid
@@ -65,5 +66,5 @@
 - Publiseringsflyt CMS (MVP): Storyblok publish -> webhook -> Vercel deploy hook -> ny production build (`docs/project/04_PUBLISHING.md`) — testet og verifisert i praksis.
 
 ## Sist oppdatert
-- Dato: 2026-08-03
-- Oppdatert av: Offentlig rot, kontaktpunkt og canonical Viddel-navn dokumentert i `DECISION_PUBLIC_ROOT_CONTACT_CBA.md` og `DECISION_VIDDEL_CANONICAL_NAMING_CBA.md`; teknisk legacy-namespace er uendret.
+- Dato: 2026-08-25
+- Oppdatert av: STG-0 Knowledge UX lagt til som isolert, passordbeskyttet LAB-test. Offentlig rot og produksjonskoblinger er uendret.
