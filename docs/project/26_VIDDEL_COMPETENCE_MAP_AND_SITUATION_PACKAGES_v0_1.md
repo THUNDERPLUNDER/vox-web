@@ -58,6 +58,13 @@ Viddel must not diagnose, provide medical treatment, instruct individual hearing
 - BETA is a separate release label and may be used for low-risk V1+ answers with visible limitation, source, scope, claim ID and stop point.
 - V2–V4 is selective for winners, discrepancies, higher-risk content and answers promoted beyond beta.
 
+## Current execution slice — 2026-08-25
+
+- `SIT-006 Før audiografen` is `P0 / V1_SCOPE_CONFIRMED`. The first bounded deliverable is a short, user-owned preparation note: situation, goal, what was tried, outcome and questions. It may be released as a visibly labelled BETA candidate because it structures the user's own observations; it must not infer diagnosis, cause or clinical recommendation.
+- `SIT-007 Første uker / trygg gjenstart` is `P1 / V0_MAPPED`. The need is supported by the canonical qualitative syntheses, but concrete progression or adaptation advice remains on hold until one suitable primary or official non-clinical source is authenticated and the medical stop points are explicit.
+- `SRC-029` (the deep-research technical synthesis) and `SRC-030` (the listening-quality master plan) are discovery inputs. They preserve the value of the collected material for domain mapping and source discovery, but are not direct fact sources for published RAG answers.
+- The Source Fitness Review records the operational claim decisions. `STG-5` limits the next competence expansion to one `SIT-006` UX question while keeping `SIT-007` on hold.
+
 ## Evidence basis
 
 - `VDL_RESEARCH_CANONICAL_INDEX_CURRENT_STATE_v0.1`
