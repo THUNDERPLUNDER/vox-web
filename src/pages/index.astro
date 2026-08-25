@@ -11,7 +11,15 @@ const pageDescription =
   <main class="holding-page">
     <div class="holding-page__frame">
       <header class="holding-page__brand">
-        <img src="/brand/viddel-wordmark.svg" alt="Viddel" width="172" height="48" />
+        <div class="holding-page__brand-lockup" aria-label="Viddel">
+          <img
+            src="/brand/viddel-wordmark-primary-5bar.svg"
+            alt=""
+            width="937.88"
+            height="134"
+          />
+          <span class="holding-page__trademark" aria-hidden="true">™</span>
+        </div>
       </header>
 
       <article class="holding-page__content" aria-labelledby="holding-title">
@@ -57,11 +65,25 @@ const pageDescription =
     padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 6vw, 4.5rem) clamp(1.25rem, 3vw, 2.25rem);
   }
 
+  .holding-page__brand-lockup {
+    align-items: flex-start;
+    display: inline-flex;
+    gap: 0.18em;
+  }
+
   .holding-page__brand img {
     display: block;
-    width: clamp(7.5rem, 14vw, 9.5rem);
-    height: auto;
-    color: rgb(var(--reading-ink));
+    width: auto;
+    height: clamp(1.75rem, 3vw, 2.25rem);
+  }
+
+  .holding-page__trademark {
+    color: rgb(var(--reading-ink-secondary));
+    font-family: var(--font-body);
+    font-size: clamp(0.5rem, 0.75vw, 0.625rem);
+    font-weight: 600;
+    line-height: 1;
+    transform: translateY(-0.05em);
   }
 
   .holding-page__content {
