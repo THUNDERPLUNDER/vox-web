@@ -28,13 +28,21 @@ Bruk Cursor som reserve eller spesialist når arbeidet krever:
 
 1. Start fra GitHub issue eller tydelig prompt.
 2. Gjør safe-read av relevante repo-filer før endring.
-3. Hold scope lite og reviewbart.
-4. Bruk eksisterende mønstre, tokens, routes og VIS-struktur.
-5. Ikke endre backend, env, datastore, import-rutiner eller PostHog uten eksplisitt beslutning.
-6. Ikke logg prompt, AI-svar eller privat samtaleinnhold.
-7. Kjør relevante tester, minimum `npm run build` hvis repo-endringer er gjort.
-8. Commit, push branch og opprett PR.
-9. Legg Return Ticket på issue.
+3. Ved non-trivial produkt-, UI-, interaksjons-, frontend- eller systemarbeid: les og følg `docs/project/AI_DEVELOPMENT_CONTRACT.md`.
+4. Forstå brukerens situasjon og ønsket adferd før løsning velges; gjør konsekvensielle produkt-/arkitekturvalg synlige.
+5. Kartlegg eksisterende arkitektur/runtime og foreslå minste gode løsning før implementering.
+6. Hold scope lite og reviewbart.
+7. Bruk eksisterende mønstre, tokens, routes og VIS-struktur.
+8. Ikke endre backend, env, datastore, import-rutiner eller PostHog uten eksplisitt beslutning.
+9. Ikke logg prompt, AI-svar eller privat samtaleinnhold.
+10. Kjør relevante tester, minimum `npm run build` hvis repo-endringer er gjort.
+11. Ved browser-visible eller interaktiv endring: verifiser faktisk brukerflyt i browser når mulig; build alene er ikke produktverifikasjon.
+12. Commit, push branch og opprett PR.
+13. Legg Return Ticket på issue.
+
+For issue-drevet non-trivial arbeid kan Development Brief fra kontrakten brukes:
+
+`USER · BEHAVIOR · CURRENT SYSTEM · PROPOSED CHANGE · VERIFY`
 
 ## Return Ticket-mal
 
@@ -76,3 +84,4 @@ Formålet er å teste Codex på en strukturert docs/data/script-oppgave uten pro
 - endre PostHog
 - logge prompt eller AI-svar
 - redesigne VIS
+- ta konsekvensielle produkt- eller arkitekturvalg på vegne av produkteier
