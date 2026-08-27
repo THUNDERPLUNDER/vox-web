@@ -6,12 +6,30 @@ Operative regler for Cursor, Codex og menneskelig HITL i Viddel Lab.
 
 | Flate | Rolle |
 |-------|--------|
+| `docs/project/AI_DEVELOPMENT_CONTRACT.md` | Canonical execution standard for non-trivial AI-assisted development |
 | `/designsystem/` | Gjeldende designsystem-sannhet (mønstre, primitives, applied surfaces) |
 | `/backstage/` | Gjeldende systemreferanse (AI-flow, API, guards, env-vars, production) |
 | `src/data/mvp-current-state.ts` | Gjeldende operativ MVP-status og `currentSprint` |
 | `/vis/sprints/...` | Aktiv sprint (control room) eller historikk (arkiv) — avhenger av `currentSprint.status` |
 | GitHub Projects / issues | Oppgavebuss |
 | VIS (`/vis/`) | Intern reviewflate — leser MVP-status fra registry |
+
+## A0. AI Development Contract-regel
+
+Ved non-trivial produkt-, UI-, interaksjons-, frontend- eller systemarbeid skal `docs/project/AI_DEVELOPMENT_CONTRACT.md` følges før implementering.
+
+Minimumsrekkefølge:
+
+1. Forstå brukerens situasjon.
+2. Beskriv ønsket interaksjon og relevante edge cases.
+3. Kartlegg eksisterende arkitektur og runtime-adferd.
+4. Foreslå minste gode løsning og synliggjør konsekvensielle produkt-/arkitekturvalg.
+5. Implementer avtalt endring innen scope.
+6. Verifiser faktisk adferd der løsningen kjører; browser-visible arbeid skal sjekkes i browser når mulig.
+
+Agenten er utførende, ikke produkteier. Hvis arbeidet avdekker et konsekvensielt valg som ikke allerede er tatt, skal valget synliggjøres i stedet for å avgjøres implisitt.
+
+For issue-drevet arbeid kan kontraktens kompakte Development Brief brukes: `USER · BEHAVIOR · CURRENT SYSTEM · PROPOSED CHANGE · VERIFY`.
 
 ## A. Designsystem-regel
 
@@ -130,16 +148,19 @@ Intern shorthand er **ikke nok**. Return Ticket skal gi nok språk til at VIS ka
 ## E. Agent-sjekkliste (kort)
 
 1. Les issue/prompt og relevante docs.
-2. Les `/designsystem/` ved UI-arbeid.
-3. Les `src/data/mvp-current-state.ts` ved status-/VIS-arbeid.
-4. Vurder Backstage (`/backstage/`) ved endringer i API, guard, env-vars eller production.
-5. Vurder VIS Runtime Feed (`vis-runtime-feed.ts`) ved viktig Return Ticket — skriv for Thomas/Vibeke.
-6. Hold endringer små; `npm run build` før ferdig.
-7. Commit ferdig arbeid, push branch og opprett PR.
-8. Return Ticket på relevant issue.
+2. Ved non-trivial development: følg `docs/project/AI_DEVELOPMENT_CONTRACT.md` før implementering.
+3. Les `/designsystem/` ved UI-arbeid.
+4. Les `src/data/mvp-current-state.ts` ved status-/VIS-arbeid.
+5. Vurder Backstage (`/backstage/`) ved endringer i API, guard, env-vars eller production.
+6. Vurder VIS Runtime Feed (`vis-runtime-feed.ts`) ved viktig Return Ticket — skriv for Thomas/Vibeke.
+7. Hold endringer små; `npm run build` før ferdig.
+8. Ved browser-visible/interaktiv endring: verifiser faktisk brukerflyt i browser når mulig.
+9. Commit ferdig arbeid, push branch og opprett PR.
+10. Return Ticket på relevant issue.
 
 ## Filer
 
+- AI Development Contract: `docs/project/AI_DEVELOPMENT_CONTRACT.md`
 - Registry: `src/data/mvp-current-state.ts`
 - VIS Runtime Feed: `src/data/vis-runtime-feed.ts`, `src/lib/vis-runtime-feed-guard.ts`
 - Backstage: `src/data/backstage-v01.ts`, `src/lib/backstage-guard.ts`
