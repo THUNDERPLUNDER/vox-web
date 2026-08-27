@@ -34,6 +34,21 @@ Cursor is reserve/specialist for:
 - local IDE-heavy file navigation
 - cases where Codex gets stuck
 
+## AI Development Contract
+For non-trivial product, UI, interaction, frontend or system changes, follow `docs/project/AI_DEVELOPMENT_CONTRACT.md` before implementation.
+
+Required sequence:
+1. Understand the user's situation.
+2. Describe intended interaction and relevant edge cases.
+3. Map the existing architecture and runtime behavior.
+4. Propose the smallest good solution and make consequential product/architecture decisions visible.
+5. Implement the agreed change within scope.
+6. Verify actual behavior where it runs; browser-visible work must be checked in a browser when possible.
+
+The implementation agent is not the product decision-maker. If implementation reveals a consequential decision that has not been made, surface it rather than silently choosing a new product or architecture direction.
+
+For issue-driven work, use the compact Development Brief from the contract when useful: USER · BEHAVIOR · CURRENT SYSTEM · PROPOSED CHANGE · VERIFY.
+
 ## Before coding
 Every task starts from a GitHub issue or a clear prompt. If the task is ambiguous, clarify scope before changing files.
 
@@ -41,6 +56,7 @@ For non-trivial tasks, first do safe-read: inspect relevant project docs and fil
 Prefer reading:
 - README.md
 - docs/project/OPERATING_RULES.md
+- docs/project/AI_DEVELOPMENT_CONTRACT.md for non-trivial development work
 - docs/project/00_STATE.md
 - src/data/mvp-current-state.ts
 - `/designsystem/` (for UI/pattern work)
@@ -131,11 +147,13 @@ Dette er operativ minimumsflyt for Codex og Cursor i dette repoet.
 4. **Les før endring**
    - Les relevante filer i berørt filscope før du gjør endringer.
    - Bruk eksisterende mønstre, struktur og navngiving i repoet.
+   - For non-trivial development: følg `docs/project/AI_DEVELOPMENT_CONTRACT.md` og gjør produkt-/arkitekturvalg synlige før implementering.
 
 5. **Verifisering før ferdigmelding**
    - Kjør relevante repo-sjekker for endringen.
    - Minimum: `npm run build` (eller forklar konkret hvorfor den ikke kan kjøres).
    - Ved Preview/deploy: oppgi exact URL og hva som faktisk er verifisert.
+   - Ved browser-visible eller interaktiv endring: verifiser faktisk brukerflyt i browser når mulig; build alene er ikke produktverifikasjon.
    - Ikke si at noe finnes i production før production URL er deployet og verifisert.
 
 6. **Feilhåndtering ved funn etterpå**
