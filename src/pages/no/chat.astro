@@ -8,10 +8,63 @@ import "../../styles/viddel-chat-scroll.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
-const exampleQuestions = [
-  "Appen finner ikke høreapparatet",
-  "Høreapparatet har ikke lyd",
-  "Lyden blir slitsom i støy",
+const capabilityGuideCategories = [
+  {
+    title: "Høreapparatet virker ikke",
+    questions: [
+      "Høreapparatet mitt har ikke lyd. Hva kan jeg prøve først?",
+      "Bare ett høreapparat virker. Hva bør jeg sjekke?",
+      "Høreapparatet piper. Hva kan det skyldes?",
+    ],
+  },
+  {
+    title: "Mobil, app og Bluetooth",
+    questions: [
+      "Appen finner ikke høreapparatet. Hva gjør jeg?",
+      "Appen sier at apparatet er koblet til, men jeg får ikke telefonlyd. Hva kan jeg sjekke?",
+      "Bare ett apparat kobler til mobilen. Hva kan jeg prøve?",
+    ],
+  },
+  {
+    title: "Lyd i møter, TV og bil",
+    questions: [
+      "Hva kan jeg prøve i et møte med mange stemmer?",
+      "TV-lyden er utydelig selv med høreapparat. Hvor begynner jeg?",
+      "Lyden i bilen blir slitsom. Hva kan hjelpe?",
+    ],
+  },
+  {
+    title: "Musikk og lydkvalitet",
+    questions: [
+      "Musikk låter tynt og skarpt med høreapparat. Hva kan det skyldes?",
+      "Musikk høres grei ut, men ikke slik jeg husker den. Hvorfor?",
+      "Jeg savner små lyder som fuglesang og romklang. Hva kan jeg gjøre?",
+    ],
+  },
+  {
+    title: "Hvem hjelper med hva?",
+    questions: [
+      "Når bør jeg kontakte audiograf, fastlege eller NAV?",
+      "Hvem kan hjelpe når høreapparatet virker, men hverdagen fortsatt er vanskelig?",
+      "Jeg har et teknisk problem. Bør jeg kontakte audiografen eller leverandøren?",
+    ],
+  },
+  {
+    title: "Jobb, skole og støtte",
+    questions: [
+      "Hva kan gjøre møter på jobb lettere å følge?",
+      "Hvilke hjelpemidler kan være aktuelle på jobb eller skole?",
+      "Hvordan kan jeg forklare hørselsbehovene mine på jobb?",
+    ],
+  },
+  {
+    title: "Før timen hos audiografen",
+    questions: [
+      "Hva bør jeg legge merke til før neste time hos audiografen?",
+      "Kan du lage en kort huskeliste til audiografen?",
+      "Hvordan kan jeg beskrive at lyd blir skarp eller slitsom?",
+    ],
+  },
 ];
 ---
 
@@ -45,6 +98,37 @@ const exampleQuestions = [
               </header>
 
               <div class="viddel-chat-start__surface viddel-chat-start__surface--open" data-viddel-chat-start-surface>
+                <details class="viddel-chat-capability-guide" data-viddel-chat-capability-guide>
+                  <summary class="viddel-chat-capability-guide__trigger">
+                    <span>Hva kan jeg spørre om?</span>
+                    <span class="viddel-chat-capability-guide__trigger-icon" aria-hidden="true">⌄</span>
+                  </summary>
+                  <div class="viddel-chat-capability-guide__panel">
+                    <p class="viddel-chat-capability-guide__intro">Velg et tema og bruk et spørsmål som start. Du kan endre teksten før du sender.</p>
+                    <div class="viddel-chat-capability-guide__categories">
+                      {
+                        capabilityGuideCategories.map((category) => (
+                          <details class="viddel-chat-capability-guide__category" name="viddel-chat-capability-category">
+                            <summary>{category.title}</summary>
+                            <ul class="inline-chat-shell__seed-list viddel-chat-capability-guide__seeds" role="list">
+                              {category.questions.map((question) => (
+                                <li class="inline-chat-shell__seed-item">
+                                  <button
+                                    type="button"
+                                    class="inline-chat-shell__seed-btn inline-chat-shell__seed-row"
+                                    data-viddel-chat-seed={question}
+                                  >
+                                    <span class="inline-chat-shell__seed-question">{question}</span>
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          </details>
+                        ))
+                      }
+                    </div>
+                  </div>
+                </details>
                 <div class="inline-chat-shell__compose-stack" data-viddel-chat-compose-stack>
                   <p class="inline-chat-shell__status inline-chat-shell__status--dock hidden" data-viddel-chat-loading role="status">
                     Viddel svarer …
@@ -411,7 +495,8 @@ const exampleQuestions = [
       const attachmentStrip = root?.querySelector("[data-viddel-chat-attachment-strip]");
       const thumbEl = root?.querySelector("[data-viddel-chat-thumb]");
       const removeBtn = root?.querySelector("[data-viddel-chat-remove]");
-      const exampleButtons = root?.querySelectorAll("[data-viddel-chat-example]");
+      const capabilityGuide = root?.querySelector<HTMLDetailsElement>("[data-viddel-chat-capability-guide]");
+      const seedButtons = root?.querySelectorAll<HTMLButtonElement>("[data-viddel-chat-seed]") ?? [];
       const ownerPanel = document.querySelector<HTMLDialogElement>("[data-viddel-owner-panel]");
       const ownerClose = ownerPanel?.querySelector<HTMLButtonElement>("[data-viddel-owner-close]");
       const ownerLogin = ownerPanel?.querySelector<HTMLFormElement>("[data-viddel-owner-login]");
@@ -460,6 +545,7 @@ const exampleQuestions = [
       let isSending = false;
       let hasConversation = false;
       let pendingSeed = seedFromUrl;
+      let selectedGuideSeed = "";
       let activeTurn = null;
       /** @type {HTMLElement | null} */
       let pendingAssistantEl = null;
@@ -603,6 +689,7 @@ const exampleQuestions = [
         if (hasConversation) return;
         hasConversation = true;
         intro.classList.add("hidden");
+        capabilityGuide?.removeAttribute("open");
         dialog.classList.remove("hidden");
         shell.setAttribute("data-inline-chat-conversation", "active");
         shell.setAttribute("data-inline-chat-state", "active");
@@ -772,6 +859,7 @@ const exampleQuestions = [
       };
 
       const handleComposerInput = () => {
+        if (selectedGuideSeed && input.value.trim() !== selectedGuideSeed) selectedGuideSeed = "";
         resizeInput();
       };
 
@@ -927,7 +1015,7 @@ const exampleQuestions = [
         refreshSendState();
         input.disabled = true;
 
-        const inputType = exampleButtons.length && Array.from(exampleButtons).some((btn) => btn.getAttribute("data-viddel-chat-example") === message)
+        const inputType = selectedGuideSeed && message === selectedGuideSeed
           ? "seed"
           : seedFromUrl && message === seedFromUrl
             ? "seed"
@@ -940,6 +1028,7 @@ const exampleQuestions = [
           }
           window.viddelTrack("chat_question_sent", trackProps);
         }
+        selectedGuideSeed = "";
 
         try {
           const response = await fetch("/api/chat", {
@@ -1043,9 +1132,16 @@ const exampleQuestions = [
         },
       );
 
-      exampleButtons.forEach((button) => {
+      seedButtons.forEach((button) => {
         button.addEventListener("click", () => {
-          sendMessage(button.getAttribute("data-viddel-chat-example") || "");
+          const question = button.getAttribute("data-viddel-chat-seed")?.trim() ?? "";
+          if (!question) return;
+          input.value = question;
+          selectedGuideSeed = question;
+          handleComposerInput();
+          capabilityGuide?.removeAttribute("open");
+          input.focus();
+          input.setSelectionRange(question.length, question.length);
         });
       });
 
