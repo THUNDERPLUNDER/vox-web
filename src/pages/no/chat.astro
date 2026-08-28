@@ -1,6 +1,7 @@
 ---
 /* CONTRACT: Standalone Viddel AI chat — open start surface, headless via /api/chat. #125M-C R1 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import InspectToolsDrawer from "../../components/dev/InspectToolsDrawer.astro";
 import "../../styles/r1-dialog-article.css";
 import "../../styles/viddel-standalone-chat.css";
 import "../../styles/viddel-chat-attachment.css";
@@ -66,6 +67,12 @@ const capabilityGuideCategories = [
     ],
   },
 ];
+
+const publicSeedQuestions = [
+  "Appen finner ikke høreapparatet. Hva gjør jeg?",
+  "Hva kan gjøre møter på jobb lettere å følge?",
+  "Når bør jeg kontakte audiograf, fastlege eller NAV?",
+];
 ---
 
 <BaseLayout
@@ -76,6 +83,32 @@ const capabilityGuideCategories = [
   showHeaderDevtoolsToggle={false}
 >
   <meta slot="head" name="robots" content="noindex,follow" />
+
+  <InspectToolsDrawer>
+    <section class="viddel-chat-internal-guide" aria-labelledby="viddel-chat-internal-guide-title">
+      <p class="viddel-chat-internal-guide__eyebrow">Beta / QA</p>
+      <h2 id="viddel-chat-internal-guide-title">Capability-guide</h2>
+      <p class="viddel-chat-internal-guide__intro">Velg et spørsmål for å fylle composer. Spørsmålet sendes ikke automatisk.</p>
+      <div class="viddel-chat-internal-guide__categories">
+        {
+          capabilityGuideCategories.map((category) => (
+            <details class="viddel-chat-internal-guide__category" name="viddel-chat-internal-guide-category">
+              <summary>{category.title}</summary>
+              <ul class="viddel-chat-internal-guide__seeds" role="list">
+                {category.questions.map((question) => (
+                  <li>
+                    <button type="button" data-viddel-chat-seed={question}>
+                      {question}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+  </InspectToolsDrawer>
 
   <main class="viddel-chat-standalone" data-viddel-chat>
     <div class="r1-editorial-container">
@@ -98,37 +131,6 @@ const capabilityGuideCategories = [
               </header>
 
               <div class="viddel-chat-start__surface viddel-chat-start__surface--open" data-viddel-chat-start-surface>
-                <details class="viddel-chat-capability-guide" data-viddel-chat-capability-guide>
-                  <summary class="viddel-chat-capability-guide__trigger">
-                    <span>Hva kan jeg spørre om?</span>
-                    <span class="viddel-chat-capability-guide__trigger-icon" aria-hidden="true">⌄</span>
-                  </summary>
-                  <div class="viddel-chat-capability-guide__panel">
-                    <p class="viddel-chat-capability-guide__intro">Velg et tema og bruk et spørsmål som start. Du kan endre teksten før du sender.</p>
-                    <div class="viddel-chat-capability-guide__categories">
-                      {
-                        capabilityGuideCategories.map((category) => (
-                          <details class="viddel-chat-capability-guide__category" name="viddel-chat-capability-category">
-                            <summary>{category.title}</summary>
-                            <ul class="inline-chat-shell__seed-list viddel-chat-capability-guide__seeds" role="list">
-                              {category.questions.map((question) => (
-                                <li class="inline-chat-shell__seed-item">
-                                  <button
-                                    type="button"
-                                    class="inline-chat-shell__seed-btn inline-chat-shell__seed-row"
-                                    data-viddel-chat-seed={question}
-                                  >
-                                    <span class="inline-chat-shell__seed-question">{question}</span>
-                                  </button>
-                                </li>
-                              ))}
-                            </ul>
-                          </details>
-                        ))
-                      }
-                    </div>
-                  </div>
-                </details>
                 <div class="inline-chat-shell__compose-stack" data-viddel-chat-compose-stack>
                   <p class="inline-chat-shell__status inline-chat-shell__status--dock hidden" data-viddel-chat-loading role="status">
                     Viddel svarer …
@@ -261,6 +263,19 @@ const capabilityGuideCategories = [
                       </button>
                     </div>
                   </form>
+                </div>
+                <div class="viddel-chat-public-seeds" data-viddel-chat-public-seeds>
+                  <ul role="list">
+                    {
+                      publicSeedQuestions.map((question) => (
+                        <li>
+                          <button type="button" data-viddel-chat-seed={question}>
+                            {question}
+                          </button>
+                        </li>
+                      ))
+                    }
+                  </ul>
                 </div>
               </div>
             </div>
@@ -495,8 +510,7 @@ const capabilityGuideCategories = [
       const attachmentStrip = root?.querySelector("[data-viddel-chat-attachment-strip]");
       const thumbEl = root?.querySelector("[data-viddel-chat-thumb]");
       const removeBtn = root?.querySelector("[data-viddel-chat-remove]");
-      const capabilityGuide = root?.querySelector<HTMLDetailsElement>("[data-viddel-chat-capability-guide]");
-      const seedButtons = root?.querySelectorAll<HTMLButtonElement>("[data-viddel-chat-seed]") ?? [];
+      const seedButtons = document.querySelectorAll<HTMLButtonElement>("[data-viddel-chat-seed]");
       const ownerPanel = document.querySelector<HTMLDialogElement>("[data-viddel-owner-panel]");
       const ownerClose = ownerPanel?.querySelector<HTMLButtonElement>("[data-viddel-owner-close]");
       const ownerLogin = ownerPanel?.querySelector<HTMLFormElement>("[data-viddel-owner-login]");
@@ -689,7 +703,6 @@ const capabilityGuideCategories = [
         if (hasConversation) return;
         hasConversation = true;
         intro.classList.add("hidden");
-        capabilityGuide?.removeAttribute("open");
         dialog.classList.remove("hidden");
         shell.setAttribute("data-inline-chat-conversation", "active");
         shell.setAttribute("data-inline-chat-state", "active");
@@ -1139,7 +1152,6 @@ const capabilityGuideCategories = [
           input.value = question;
           selectedGuideSeed = question;
           handleComposerInput();
-          capabilityGuide?.removeAttribute("open");
           input.focus();
           input.setSelectionRange(question.length, question.length);
         });

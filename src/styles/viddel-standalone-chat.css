@@ -155,119 +155,117 @@ body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat
   gap: 0;
 }
 
-.viddel-chat-capability-guide {
-  margin: 0 auto 0.7rem;
+.viddel-chat-public-seeds {
+  margin: 0.7rem auto 0;
   max-width: min(100%, var(--r1-ai-dialog-measure, min(100%, 46rem)));
   position: relative;
   width: 100%;
   z-index: 2;
 }
 
-.viddel-chat-capability-guide__trigger {
-  align-items: center;
+.viddel-chat-public-seeds ul {
+  display: grid;
+  gap: 0.45rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.viddel-chat-public-seeds button {
+  background: rgb(var(--reading-paper) / 0.5);
+  border: 1px solid rgb(var(--border) / 0.28);
+  border-radius: 0.8rem;
   color: rgb(var(--reading-ink-secondary));
   cursor: pointer;
-  display: flex;
-  font-size: 0.84rem;
-  font-weight: 600;
-  gap: 0.35rem;
-  justify-content: center;
-  list-style: none;
-  margin-inline: auto;
-  padding: 0.35rem 0.5rem;
-  width: fit-content;
+  font: inherit;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  min-height: 100%;
+  padding: 0.58rem 0.65rem;
+  text-align: left;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+  width: 100%;
 }
 
-.viddel-chat-capability-guide__trigger::-webkit-details-marker,
-.viddel-chat-capability-guide__category > summary::-webkit-details-marker {
-  display: none;
+.viddel-chat-public-seeds button:hover {
+  background: rgb(var(--reading-paper) / 0.82);
+  border-color: rgb(var(--border) / 0.45);
+  color: rgb(var(--reading-ink));
 }
 
-.viddel-chat-capability-guide__trigger:focus-visible,
-.viddel-chat-capability-guide__category > summary:focus-visible {
-  border-radius: 0.5rem;
+.viddel-chat-public-seeds button:focus-visible {
   outline: 2px solid rgb(var(--reading-accent-iris) / 0.34);
   outline-offset: 2px;
 }
 
-.viddel-chat-capability-guide__trigger-icon {
-  display: inline-block;
-  font-size: 1rem;
-  line-height: 1;
-  transition: transform 140ms ease;
+body.vox-shell--standalone-chat[data-viddel-chat-active] .viddel-chat-public-seeds {
+  display: none;
 }
 
-.viddel-chat-capability-guide[open] .viddel-chat-capability-guide__trigger-icon {
-  transform: rotate(180deg);
+.viddel-chat-internal-guide {
+  border: 1px dashed rgb(var(--border) / 0.5);
+  border-radius: 6px;
+  padding: 0.65rem 0.75rem 0.75rem;
 }
 
-.viddel-chat-capability-guide__panel {
-  background: rgb(var(--reading-paper) / 0.97);
-  border: 1px solid rgb(var(--border) / 0.34);
-  border-radius: 1rem;
-  box-shadow: 0 18px 44px rgb(15 23 42 / 0.09);
-  margin-top: 0.35rem;
-  max-height: min(42vh, 24rem);
-  overflow-y: auto;
-  padding: 0.85rem;
+.viddel-chat-internal-guide__eyebrow,
+.viddel-chat-internal-guide__intro {
+  color: rgb(var(--muted));
+  font-size: 0.65rem;
+  line-height: 1.4;
+  margin: 0;
 }
 
-.viddel-chat-capability-guide__intro {
-  color: rgb(var(--reading-ink-secondary));
-  font-size: 0.78rem;
-  line-height: 1.45;
-  margin: 0 0 0.55rem;
+.viddel-chat-internal-guide h2 {
+  color: rgb(var(--text));
+  font-size: 0.9rem;
+  margin: 0.15rem 0 0.35rem;
 }
 
-.viddel-chat-capability-guide__categories {
+.viddel-chat-internal-guide__categories {
   display: grid;
-  gap: 0.18rem;
+  margin-top: 0.55rem;
 }
 
-.viddel-chat-capability-guide__category {
-  border-top: 1px solid rgb(var(--border) / 0.26);
-  padding-top: 0.18rem;
+.viddel-chat-internal-guide__category {
+  border-top: 1px solid rgb(var(--border) / 0.3);
 }
 
-.viddel-chat-capability-guide__category:first-child {
-  border-top: 0;
-}
-
-.viddel-chat-capability-guide__category > summary {
-  color: rgb(var(--reading-ink));
+.viddel-chat-internal-guide__category > summary {
+  color: rgb(var(--text-secondary));
   cursor: pointer;
-  font-size: 0.86rem;
+  font-size: 0.74rem;
   font-weight: 600;
+  line-height: 1.35;
+  padding: 0.5rem 0;
+}
+
+.viddel-chat-internal-guide__seeds {
+  display: grid;
+  gap: 0.3rem;
   list-style: none;
-  padding: 0.55rem 0.4rem;
+  margin: 0;
+  padding: 0 0 0.55rem;
 }
 
-.viddel-chat-capability-guide__category > summary::after {
-  color: rgb(var(--reading-ink-secondary));
-  content: "+";
-  float: right;
-  font-size: 1rem;
-  font-weight: 450;
-}
-
-.viddel-chat-capability-guide__category[open] > summary::after {
-  content: "−";
-}
-
-.viddel-chat-capability-guide__seeds {
-  padding: 0 0 0.45rem;
-}
-
-body.vox-shell--standalone-chat
-  [data-viddel-chat]
-  .viddel-chat-capability-guide
-  .viddel-chat-capability-guide__seeds
-  .inline-chat-shell__seed-row {
+.viddel-chat-internal-guide__seeds button {
+  background: rgb(var(--surface) / 0.55);
+  border: 1px solid rgb(var(--border) / 0.4);
+  border-radius: 0.5rem;
+  color: rgb(var(--text-secondary));
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  padding: 0.48rem 0.55rem;
+  text-align: left;
   width: 100%;
 }
 
-body.vox-shell--standalone-chat[data-viddel-chat-active] .viddel-chat-capability-guide {
-  display: none;
+.viddel-chat-internal-guide__seeds button:hover {
+  background: rgb(var(--surface-subtle) / 0.85);
+  color: rgb(var(--text));
 }
 
 body.vox-shell--standalone-chat:not([data-viddel-chat-active])
@@ -949,18 +947,8 @@ body.vox-shell--standalone-chat
     padding-inline: 0.05rem 0.1rem;
   }
 
-  .viddel-chat-capability-guide {
-    margin-bottom: 0.5rem;
-  }
-
-  .viddel-chat-capability-guide__trigger {
-    justify-content: flex-start;
-    margin-inline: 0;
-  }
-
-  .viddel-chat-capability-guide__panel {
-    max-height: min(45vh, 22rem);
-    padding: 0.7rem;
+  .viddel-chat-public-seeds ul {
+    grid-template-columns: 1fr;
   }
 
   body.vox-shell--standalone-chat
