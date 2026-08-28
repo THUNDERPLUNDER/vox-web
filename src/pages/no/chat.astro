@@ -1152,6 +1152,9 @@ const publicSeedQuestions = [
           input.value = question;
           selectedGuideSeed = question;
           handleComposerInput();
+          if (button.closest(".viddel-chat-internal-guide")) {
+            window.dispatchEvent(new CustomEvent("vox-inspect-drawer-force-close"));
+          }
           input.focus();
           input.setSelectionRange(question.length, question.length);
         });
