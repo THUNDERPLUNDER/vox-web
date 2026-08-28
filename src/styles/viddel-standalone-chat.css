@@ -155,54 +155,6 @@ body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat
   gap: 0;
 }
 
-.viddel-chat-public-seeds {
-  margin: 0.7rem auto 0;
-  max-width: min(100%, var(--r1-ai-dialog-measure, min(100%, 46rem)));
-  position: relative;
-  width: 100%;
-  z-index: 2;
-}
-
-.viddel-chat-public-seeds ul {
-  display: grid;
-  gap: 0.45rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.viddel-chat-public-seeds button {
-  background: rgb(var(--reading-paper) / 0.5);
-  border: 1px solid rgb(var(--border) / 0.28);
-  border-radius: 0.8rem;
-  color: rgb(var(--reading-ink-secondary));
-  cursor: pointer;
-  font: inherit;
-  font-size: 0.78rem;
-  line-height: 1.35;
-  min-height: 100%;
-  padding: 0.58rem 0.65rem;
-  text-align: left;
-  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
-  width: 100%;
-}
-
-.viddel-chat-public-seeds button:hover {
-  background: rgb(var(--reading-paper) / 0.82);
-  border-color: rgb(var(--border) / 0.45);
-  color: rgb(var(--reading-ink));
-}
-
-.viddel-chat-public-seeds button:focus-visible {
-  outline: 2px solid rgb(var(--reading-accent-iris) / 0.34);
-  outline-offset: 2px;
-}
-
-body.vox-shell--standalone-chat[data-viddel-chat-active] .viddel-chat-public-seeds {
-  display: none;
-}
-
 .viddel-chat-internal-guide {
   border: 1px dashed rgb(var(--border) / 0.5);
   border-radius: 6px;
@@ -945,10 +897,6 @@ body.vox-shell--standalone-chat
     .inline-chat-shell[data-inline-chat-mode="progressive"][data-inline-chat-conversation="idle"]
     .viddel-chat-start__surface .inline-chat-shell__seed-suggestions {
     padding-inline: 0.05rem 0.1rem;
-  }
-
-  .viddel-chat-public-seeds ul {
-    grid-template-columns: 1fr;
   }
 
   body.vox-shell--standalone-chat
