@@ -136,6 +136,61 @@
   width: 100%;
 }
 
+.viddel-chat-attach__attach-menu-chevron {
+  color: rgb(var(--reading-ink-secondary));
+  font-size: 1.2rem;
+  line-height: 1;
+  margin-left: auto;
+}
+
+.viddel-chat-attach__attach-menu-back {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: rgb(var(--reading-ink-secondary));
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-size: 0.78rem;
+  gap: 0.35rem;
+  padding: 0.35rem 0.5rem 0.45rem;
+  text-align: left;
+  width: 100%;
+}
+
+.viddel-chat-attach__question-list {
+  display: grid;
+  gap: 0.2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: min(20rem, calc(100vw - 2rem));
+}
+
+.viddel-chat-attach__question-item {
+  background: transparent;
+  border: 0;
+  border-radius: 0.6rem;
+  color: rgb(var(--reading-ink));
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+  width: 100%;
+}
+
+.viddel-chat-attach__question-item:hover {
+  background: rgb(var(--surface-subtle) / 0.95);
+}
+
+.viddel-chat-attach__attach-menu-back:focus-visible,
+.viddel-chat-attach__question-item:focus-visible {
+  outline: 2px solid rgb(var(--reading-accent-iris) / 0.42);
+  outline-offset: 1px;
+}
+
 .viddel-chat-attach__attach-menu-icon {
   color: rgb(var(--reading-ink-secondary));
   display: block;
@@ -199,6 +254,10 @@
   .viddel-chat-attach__attach-menu-item {
     font-size: 0.95rem;
     padding: 0.7rem 0.8rem;
+  }
+
+  .viddel-chat-attach__question-list {
+    width: auto;
   }
 }
 

@@ -16,12 +16,18 @@ export type ChatAttachmentMenuElements = {
 
 export type ChatAttachmentMenuCallbacks = {
   onFileSelected: (file: File) => void;
+  onClose?: () => void;
+};
+
+export type ChatAttachmentMenuController = {
+  close: () => void;
+  refreshPosition: () => void;
 };
 
 export function initChatAttachmentMenu(
   elements: ChatAttachmentMenuElements,
   callbacks: ChatAttachmentMenuCallbacks,
-): void {
+): ChatAttachmentMenuController {
   const {
     attachLayer,
     attachBtn,
@@ -88,6 +94,7 @@ export function initChatAttachmentMenu(
     attachBtn.setAttribute("aria-expanded", "false");
     resetAttachMenuInlineStyles();
     document.documentElement.style.removeProperty(sheetBottomVar);
+    callbacks.onClose?.();
   };
 
   const openAttachMenu = () => {
@@ -173,4 +180,9 @@ export function initChatAttachmentMenu(
     },
     { passive: true },
   );
+
+  return {
+    close: closeAttachMenu,
+    refreshPosition: positionAttachMenu,
+  };
 }

@@ -1,6 +1,7 @@
 ---
 /* CONTRACT: Standalone Viddel AI chat — open start surface, headless via /api/chat. #125M-C R1 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import InspectToolsDrawer from "../../components/dev/InspectToolsDrawer.astro";
 import "../../styles/r1-dialog-article.css";
 import "../../styles/viddel-standalone-chat.css";
 import "../../styles/viddel-chat-attachment.css";
@@ -8,10 +9,69 @@ import "../../styles/viddel-chat-scroll.css";
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, follow");
 
-const exampleQuestions = [
-  "Appen finner ikke høreapparatet",
-  "Høreapparatet har ikke lyd",
-  "Lyden blir slitsom i støy",
+const capabilityGuideCategories = [
+  {
+    title: "Høreapparatet virker ikke",
+    questions: [
+      "Høreapparatet mitt har ikke lyd. Hva kan jeg prøve først?",
+      "Bare ett høreapparat virker. Hva bør jeg sjekke?",
+      "Høreapparatet piper. Hva kan det skyldes?",
+    ],
+  },
+  {
+    title: "Mobil, app og Bluetooth",
+    questions: [
+      "Appen finner ikke høreapparatet. Hva gjør jeg?",
+      "Appen sier at apparatet er koblet til, men jeg får ikke telefonlyd. Hva kan jeg sjekke?",
+      "Bare ett apparat kobler til mobilen. Hva kan jeg prøve?",
+    ],
+  },
+  {
+    title: "Lyd i møter, TV og bil",
+    questions: [
+      "Hva kan jeg prøve i et møte med mange stemmer?",
+      "TV-lyden er utydelig selv med høreapparat. Hvor begynner jeg?",
+      "Lyden i bilen blir slitsom. Hva kan hjelpe?",
+    ],
+  },
+  {
+    title: "Musikk og lydkvalitet",
+    questions: [
+      "Musikk låter tynt og skarpt med høreapparat. Hva kan det skyldes?",
+      "Musikk høres grei ut, men ikke slik jeg husker den. Hvorfor?",
+      "Jeg savner små lyder som fuglesang og romklang. Hva kan jeg gjøre?",
+    ],
+  },
+  {
+    title: "Hvem hjelper med hva?",
+    questions: [
+      "Når bør jeg kontakte audiograf, fastlege eller NAV?",
+      "Hvem kan hjelpe når høreapparatet virker, men hverdagen fortsatt er vanskelig?",
+      "Jeg har et teknisk problem. Bør jeg kontakte audiografen eller leverandøren?",
+    ],
+  },
+  {
+    title: "Jobb, skole og støtte",
+    questions: [
+      "Hva kan gjøre møter på jobb lettere å følge?",
+      "Hvilke hjelpemidler kan være aktuelle på jobb eller skole?",
+      "Hvordan kan jeg forklare hørselsbehovene mine på jobb?",
+    ],
+  },
+  {
+    title: "Før timen hos audiografen",
+    questions: [
+      "Hva bør jeg legge merke til før neste time hos audiografen?",
+      "Kan du lage en kort huskeliste til audiografen?",
+      "Hvordan kan jeg beskrive at lyd blir skarp eller slitsom?",
+    ],
+  },
+];
+
+const publicSeedQuestions = [
+  "Appen finner ikke høreapparatet. Hva gjør jeg?",
+  "Hva kan gjøre møter på jobb lettere å følge?",
+  "Når bør jeg kontakte audiograf, fastlege eller NAV?",
 ];
 ---
 
@@ -23,6 +83,32 @@ const exampleQuestions = [
   showHeaderDevtoolsToggle={false}
 >
   <meta slot="head" name="robots" content="noindex,follow" />
+
+  <InspectToolsDrawer>
+    <section class="viddel-chat-internal-guide" aria-labelledby="viddel-chat-internal-guide-title">
+      <p class="viddel-chat-internal-guide__eyebrow">Beta / QA</p>
+      <h2 id="viddel-chat-internal-guide-title">Capability-guide</h2>
+      <p class="viddel-chat-internal-guide__intro">Velg et spørsmål for å fylle composer. Spørsmålet sendes ikke automatisk.</p>
+      <div class="viddel-chat-internal-guide__categories">
+        {
+          capabilityGuideCategories.map((category) => (
+            <details class="viddel-chat-internal-guide__category" name="viddel-chat-internal-guide-category">
+              <summary>{category.title}</summary>
+              <ul class="viddel-chat-internal-guide__seeds" role="list">
+                {category.questions.map((question) => (
+                  <li>
+                    <button type="button" data-viddel-chat-seed={question}>
+                      {question}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+  </InspectToolsDrawer>
 
   <main class="viddel-chat-standalone" data-viddel-chat>
     <div class="r1-editorial-container">
@@ -62,58 +148,144 @@ const exampleQuestions = [
                       class="viddel-chat-attach__attach-menu hidden"
                       data-viddel-chat-attach-menu
                       role="menu"
-                      aria-label="Legg til bilde"
+                      aria-label="Flere valg"
                     >
-                      <button
-                        type="button"
-                        class="viddel-chat-attach__attach-menu-item viddel-chat-attach__attach-menu-item--camera"
-                        data-viddel-chat-attach-camera
-                        role="menuitem"
-                      >
-                        <span class="viddel-chat-attach__attach-menu-item-content">
-                          <svg
-                            class="viddel-chat-attach__attach-menu-icon"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.85"
-                            aria-hidden="true"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              d="M4 8h3l2-2h6l2 2h3v11H4V8z"
-                            ></path>
-                            <circle cx="12" cy="13" r="3.25"></circle>
-                          </svg>
-                          <span>Ta bilde</span>
-                        </span>
-                      </button>
-                      <button
-                        type="button"
-                        class="viddel-chat-attach__attach-menu-item"
-                        data-viddel-chat-attach-pick
-                        role="menuitem"
-                      >
-                        <span class="viddel-chat-attach__attach-menu-item-content">
-                          <svg
-                            class="viddel-chat-attach__attach-menu-icon"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.85"
-                            aria-hidden="true"
-                          >
-                            <rect x="4" y="5" width="16" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"
-                            ></rect>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.5 14.5 11 11.5l2.5 3 2-1.5L18 15"
-                            ></path>
-                            <circle cx="9" cy="9" r="1"></circle>
-                          </svg>
-                          <span class="viddel-chat-attach__attach-menu-label--mobile">Velg bilde</span>
-                          <span class="viddel-chat-attach__attach-menu-label--desktop">Last opp bilde</span>
-                        </span>
-                      </button>
+                      <div data-viddel-chat-capabilities-root role="none">
+                        <button
+                          type="button"
+                          class="viddel-chat-attach__attach-menu-item"
+                          data-viddel-chat-image-trigger
+                          role="menuitem"
+                        >
+                          <span class="viddel-chat-attach__attach-menu-item-content">
+                            <svg
+                              class="viddel-chat-attach__attach-menu-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.85"
+                              aria-hidden="true"
+                            >
+                              <rect x="4" y="5" width="16" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"
+                              ></rect>
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M8.5 14.5 11 11.5l2.5 3 2-1.5L18 15"
+                              ></path>
+                              <circle cx="9" cy="9" r="1"></circle>
+                            </svg>
+                            <span>Legg til bilde</span>
+                            <span class="viddel-chat-attach__attach-menu-chevron" aria-hidden="true">›</span>
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          class="viddel-chat-attach__attach-menu-item"
+                          data-viddel-chat-question-trigger
+                          role="menuitem"
+                        >
+                          <span class="viddel-chat-attach__attach-menu-item-content">
+                            <svg
+                              class="viddel-chat-attach__attach-menu-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.85"
+                              aria-hidden="true"
+                            >
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M5 6.5h14v9H9l-4 3v-12z"></path>
+                            </svg>
+                            <span>Forslag til spørsmål</span>
+                            <span class="viddel-chat-attach__attach-menu-chevron" aria-hidden="true">›</span>
+                          </span>
+                        </button>
+                      </div>
+                      <div class="hidden" data-viddel-chat-image-panel role="none">
+                        <button
+                          type="button"
+                          class="viddel-chat-attach__attach-menu-back"
+                          data-viddel-chat-capabilities-back
+                          role="menuitem"
+                        >
+                          <span aria-hidden="true">‹</span>
+                          Legg til bilde
+                        </button>
+                        <button
+                          type="button"
+                          class="viddel-chat-attach__attach-menu-item viddel-chat-attach__attach-menu-item--camera"
+                          data-viddel-chat-attach-camera
+                          role="menuitem"
+                        >
+                          <span class="viddel-chat-attach__attach-menu-item-content">
+                            <svg
+                              class="viddel-chat-attach__attach-menu-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.85"
+                              aria-hidden="true"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M4 8h3l2-2h6l2 2h3v11H4V8z"
+                              ></path>
+                              <circle cx="12" cy="13" r="3.25"></circle>
+                            </svg>
+                            <span>Ta bilde</span>
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          class="viddel-chat-attach__attach-menu-item"
+                          data-viddel-chat-attach-pick
+                          role="menuitem"
+                        >
+                          <span class="viddel-chat-attach__attach-menu-item-content">
+                            <svg
+                              class="viddel-chat-attach__attach-menu-icon"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.85"
+                              aria-hidden="true"
+                            >
+                              <rect x="4" y="5" width="16" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"
+                              ></rect>
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M8.5 14.5 11 11.5l2.5 3 2-1.5L18 15"
+                              ></path>
+                              <circle cx="9" cy="9" r="1"></circle>
+                            </svg>
+                            <span class="viddel-chat-attach__attach-menu-label--mobile">Velg bilde</span>
+                            <span class="viddel-chat-attach__attach-menu-label--desktop">Last opp bilde</span>
+                          </span>
+                        </button>
+                      </div>
+                      <div class="hidden" data-viddel-chat-question-panel role="none">
+                        <button
+                          type="button"
+                          class="viddel-chat-attach__attach-menu-back"
+                          data-viddel-chat-capabilities-back
+                          role="menuitem"
+                        >
+                          <span aria-hidden="true">‹</span>
+                          Forslag til spørsmål
+                        </button>
+                        <ul class="viddel-chat-attach__question-list" role="none">
+                          {
+                            publicSeedQuestions.map((question) => (
+                              <li role="none">
+                                <button
+                                  type="button"
+                                  class="viddel-chat-attach__question-item"
+                                  data-viddel-chat-seed={question}
+                                  role="menuitem"
+                                >
+                                  {question}
+                                </button>
+                              </li>
+                            ))
+                          }
+                        </ul>
+                      </div>
                     </div>
                   </div>
                   <form class="inline-chat-shell__compose viddel-chat-attach__compose" data-viddel-chat-form>
@@ -145,7 +317,7 @@ const exampleQuestions = [
                           type="button"
                           class="viddel-chat-attach__attach"
                           data-viddel-chat-attach
-                          aria-label="Legg til bilde"
+                          aria-label="Flere valg"
                           aria-haspopup="menu"
                           aria-expanded="false"
                           aria-controls="viddel-chat-attach-menu"
@@ -408,10 +580,16 @@ const exampleQuestions = [
       const attachBackdrop = root?.querySelector("[data-viddel-chat-attach-backdrop]");
       const attachCameraBtn = root?.querySelector("[data-viddel-chat-attach-camera]");
       const attachPickBtn = root?.querySelector("[data-viddel-chat-attach-pick]");
+      const capabilitiesRoot = root?.querySelector<HTMLElement>("[data-viddel-chat-capabilities-root]");
+      const imageTrigger = root?.querySelector<HTMLButtonElement>("[data-viddel-chat-image-trigger]");
+      const questionTrigger = root?.querySelector<HTMLButtonElement>("[data-viddel-chat-question-trigger]");
+      const imagePanel = root?.querySelector<HTMLElement>("[data-viddel-chat-image-panel]");
+      const questionPanel = root?.querySelector<HTMLElement>("[data-viddel-chat-question-panel]");
+      const capabilitiesBackButtons = root?.querySelectorAll<HTMLButtonElement>("[data-viddel-chat-capabilities-back]") ?? [];
       const attachmentStrip = root?.querySelector("[data-viddel-chat-attachment-strip]");
       const thumbEl = root?.querySelector("[data-viddel-chat-thumb]");
       const removeBtn = root?.querySelector("[data-viddel-chat-remove]");
-      const exampleButtons = root?.querySelectorAll("[data-viddel-chat-example]");
+      const seedButtons = document.querySelectorAll<HTMLButtonElement>("[data-viddel-chat-seed]");
       const ownerPanel = document.querySelector<HTMLDialogElement>("[data-viddel-owner-panel]");
       const ownerClose = ownerPanel?.querySelector<HTMLButtonElement>("[data-viddel-owner-close]");
       const ownerLogin = ownerPanel?.querySelector<HTMLFormElement>("[data-viddel-owner-login]");
@@ -440,6 +618,11 @@ const exampleQuestions = [
         !attachBackdrop ||
         !attachCameraBtn ||
         !attachPickBtn ||
+        !capabilitiesRoot ||
+        !imageTrigger ||
+        !questionTrigger ||
+        !imagePanel ||
+        !questionPanel ||
         !attachmentStrip ||
         !thumbEl ||
         !removeBtn
@@ -460,6 +643,7 @@ const exampleQuestions = [
       let isSending = false;
       let hasConversation = false;
       let pendingSeed = seedFromUrl;
+      let selectedGuideSeed = "";
       let activeTurn = null;
       /** @type {HTMLElement | null} */
       let pendingAssistantEl = null;
@@ -772,6 +956,7 @@ const exampleQuestions = [
       };
 
       const handleComposerInput = () => {
+        if (selectedGuideSeed && input.value.trim() !== selectedGuideSeed) selectedGuideSeed = "";
         resizeInput();
       };
 
@@ -927,7 +1112,7 @@ const exampleQuestions = [
         refreshSendState();
         input.disabled = true;
 
-        const inputType = exampleButtons.length && Array.from(exampleButtons).some((btn) => btn.getAttribute("data-viddel-chat-example") === message)
+        const inputType = selectedGuideSeed && message === selectedGuideSeed
           ? "seed"
           : seedFromUrl && message === seedFromUrl
             ? "seed"
@@ -940,6 +1125,7 @@ const exampleQuestions = [
           }
           window.viddelTrack("chat_question_sent", trackProps);
         }
+        selectedGuideSeed = "";
 
         try {
           const response = await fetch("/api/chat", {
@@ -1024,7 +1210,13 @@ const exampleQuestions = [
         clearAttachment();
       });
 
-      initChatAttachmentMenu(
+      const resetCapabilitiesMenu = () => {
+        capabilitiesRoot.classList.remove("hidden");
+        imagePanel.classList.add("hidden");
+        questionPanel.classList.add("hidden");
+      };
+
+      const attachmentMenu = initChatAttachmentMenu(
         {
           attachLayer,
           attachBtn,
@@ -1040,12 +1232,55 @@ const exampleQuestions = [
             setAttachment(file);
             syncComposeReserve();
           },
+          onClose: resetCapabilitiesMenu,
         },
       );
 
-      exampleButtons.forEach((button) => {
+      const showCapabilitiesPanel = (panel: HTMLElement, focusTarget: HTMLButtonElement) => {
+        capabilitiesRoot.classList.add("hidden");
+        imagePanel.classList.toggle("hidden", panel !== imagePanel);
+        questionPanel.classList.toggle("hidden", panel !== questionPanel);
+        requestAnimationFrame(() => {
+          attachmentMenu.refreshPosition();
+          focusTarget.focus();
+        });
+      };
+
+      imageTrigger.addEventListener("click", () => {
+        const focusTarget = window.matchMedia("(max-width: 639px)").matches ? attachCameraBtn : attachPickBtn;
+        showCapabilitiesPanel(imagePanel, focusTarget);
+      });
+
+      questionTrigger.addEventListener("click", () => {
+        const firstQuestion = questionPanel.querySelector<HTMLButtonElement>("[data-viddel-chat-seed]");
+        if (firstQuestion) showCapabilitiesPanel(questionPanel, firstQuestion);
+      });
+
+      capabilitiesBackButtons.forEach((button) => {
         button.addEventListener("click", () => {
-          sendMessage(button.getAttribute("data-viddel-chat-example") || "");
+          const focusTarget = button.closest("[data-viddel-chat-question-panel]") ? questionTrigger : imageTrigger;
+          resetCapabilitiesMenu();
+          requestAnimationFrame(() => {
+            attachmentMenu.refreshPosition();
+            focusTarget.focus();
+          });
+        });
+      });
+
+      seedButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const question = button.getAttribute("data-viddel-chat-seed")?.trim() ?? "";
+          if (!question) return;
+          input.value = question;
+          selectedGuideSeed = question;
+          handleComposerInput();
+          if (button.closest(".viddel-chat-internal-guide")) {
+            window.dispatchEvent(new CustomEvent("vox-inspect-drawer-force-close"));
+          } else if (button.closest("[data-viddel-chat-question-panel]")) {
+            attachmentMenu.close();
+          }
+          input.focus();
+          input.setSelectionRange(question.length, question.length);
         });
       });
 

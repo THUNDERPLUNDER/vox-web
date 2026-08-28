@@ -155,6 +155,71 @@ body.vox-shell--standalone-chat:not([data-viddel-chat-active]) [data-viddel-chat
   gap: 0;
 }
 
+.viddel-chat-internal-guide {
+  border: 1px dashed rgb(var(--border) / 0.5);
+  border-radius: 6px;
+  padding: 0.65rem 0.75rem 0.75rem;
+}
+
+.viddel-chat-internal-guide__eyebrow,
+.viddel-chat-internal-guide__intro {
+  color: rgb(var(--muted));
+  font-size: 0.65rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.viddel-chat-internal-guide h2 {
+  color: rgb(var(--text));
+  font-size: 0.9rem;
+  margin: 0.15rem 0 0.35rem;
+}
+
+.viddel-chat-internal-guide__categories {
+  display: grid;
+  margin-top: 0.55rem;
+}
+
+.viddel-chat-internal-guide__category {
+  border-top: 1px solid rgb(var(--border) / 0.3);
+}
+
+.viddel-chat-internal-guide__category > summary {
+  color: rgb(var(--text-secondary));
+  cursor: pointer;
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1.35;
+  padding: 0.5rem 0;
+}
+
+.viddel-chat-internal-guide__seeds {
+  display: grid;
+  gap: 0.3rem;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0.55rem;
+}
+
+.viddel-chat-internal-guide__seeds button {
+  background: rgb(var(--surface) / 0.55);
+  border: 1px solid rgb(var(--border) / 0.4);
+  border-radius: 0.5rem;
+  color: rgb(var(--text-secondary));
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  padding: 0.48rem 0.55rem;
+  text-align: left;
+  width: 100%;
+}
+
+.viddel-chat-internal-guide__seeds button:hover {
+  background: rgb(var(--surface-subtle) / 0.85);
+  color: rgb(var(--text));
+}
+
 body.vox-shell--standalone-chat:not([data-viddel-chat-active])
   [data-viddel-chat]
   .viddel-chat-start--open
