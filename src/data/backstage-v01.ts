@@ -3,14 +3,15 @@
 export const backstageMeta = {
   title: "Backstage",
   lead: "Backstage er kontrollrommet for hvordan Viddel fungerer bak scenen. Her forklarer vi AI-flyten, beskyttelsen, feilstater og hva som må sjekkes før vi deler med flere.",
-  updatedAt: "2026-08-20",
-  issue: "#180 · #184 · #222",
+  updatedAt: "2026-08-30",
+  issue: "#180 · #184 · #222 · #346",
 } as const;
 
 export const statusPanel = [
   { label: "Spør Viddel", value: "Midlertidig utilgjengelig — guard v0.2 under QA", tone: "wait" as const },
   { label: "Guard", value: "Eierbryter + Vercel Firewall", tone: "ok" as const },
   { label: "Monitoring", value: "Vercel logs + PostHog EU", tone: "ok" as const },
+  { label: "Conversation feedback", value: "Neon EU · 90 dager", tone: "ok" as const },
 ] as const;
 
 export const quickAnswers = [
@@ -37,6 +38,11 @@ export const quickAnswers = [
     question: "Hva måles når noen bruker AI-chatten?",
     answer:
       "Vercel viser forespørsler, HTTP 429 og strukturerte app-utfall uten at vi lagrer spørsmål eller svar. PostHog EU får få produkt-events — hvilken side, inngang og feilkode — aldri innhold.",
+  },
+  {
+    question: "Hva lagres når noen gir tilbakemelding?",
+    answer:
+      "En separat Neon-database i Frankfurt lagrer score, valgte hurtiggrunner, valgfri kommentar, tidspunkt, route og miljø i 90 dager. CES-session, spørsmål, svar og samtaleutdrag følger aldri med.",
   },
 ] as const;
 
@@ -844,8 +850,8 @@ export const beforeExternalSharing = [
 ] as const;
 
 export const monitoringExplainer = {
-  title: "AI usage monitoring v0.1",
-  lead: "Trygghet før ekstern deling — smalt, trinnvis og uten innholdslogging.",
+  title: "AI usage monitoring og feedback v0.1",
+  lead: "Trygghet før ekstern deling — smalt, trinnvis og uten logging av samtaleinnhold.",
   layers: [
     {
       id: "drift",
@@ -867,6 +873,13 @@ export const monitoringExplainer = {
       human: "Operativ kjøring av AI — ikke produktanalytics. CES logger ikke i vårt lag.",
       where: "Google CES / Vertex — se cesExplainer",
     },
+    {
+      id: "feedback",
+      label: "Conversation feedback (Neon EU)",
+      human:
+        "Eksplisitt tilbakemelding lagres i en egen Neon Postgres Free-database i AWS Frankfurt. Kun score, hurtiggrunner, valgfri kommentar og kontrollert metadata — aldri chatspørsmål, svar, transcript eller CES-session.",
+      where: "Vercel → Storage → neon-apricot-coin · 90 dagers retention",
+    },
   ],
 } as const;
 
@@ -877,6 +890,7 @@ export const monitoringLogged = [
   "PostHog: chat_opened, ai_entry_clicked, article_ai_seed_clicked, chat_question_sent, chat_answer_success/error",
   "Feilkoder (error_code) — aldri meldingstekst",
   "Route, entry_surface, article_slug, seed_id (hash — ikke spørsmålstekst)",
+  "Neon feedback: separat feedback-reference, score, valgte grunner, valgfri kommentar, server-tidspunkt, route og environment",
 ] as const;
 
 export const monitoringNotLogged = [
@@ -886,6 +900,7 @@ export const monitoringNotLogged = [
   "Session replay fra chat-input",
   "Brukerprofiler eller persistent identitet",
   "Høreapparatmodell som fritekst",
+  "CES session-ID, spørsmål, svar, transcript eller samtaleutdrag i feedback-store",
 ] as const;
 
 export const monitoringEvents = [
@@ -901,7 +916,7 @@ export const monitoringEvents = [
 
 export type EnvVarEntry = {
   name: string;
-  group: "ces" | "agent-search" | "auth" | "posthog" | "ops";
+  group: "ces" | "agent-search" | "auth" | "posthog" | "ops" | "feedback";
   controls: string;
 };
 
@@ -942,6 +957,21 @@ export const envVars: EnvVarEntry[] = [
   { name: "GOOGLE_SERVICE_ACCOUNT_JSON", group: "auth", controls: "Google auth — kun server-side." },
   { name: "PUBLIC_POSTHOG_KEY", group: "posthog", controls: "PostHog prosjektnøkkel (public, EU)." },
   { name: "PUBLIC_POSTHOG_HOST", group: "posthog", controls: "PostHog API-host — default https://eu.i.posthog.com" },
+  {
+    name: "FEEDBACK_DATABASE_DATABASE_URL",
+    group: "feedback",
+    controls: "Neon Postgres-tilkobling fra Vercel Marketplace. Kun server-side; Frankfurt/EU.",
+  },
+  {
+    name: "FEEDBACK_DATABASE_URL",
+    group: "feedback",
+    controls: "Valgfritt kort alias ved lokal/manuell konfigurasjon.",
+  },
+  {
+    name: "CRON_SECRET",
+    group: "feedback",
+    controls: "Hemmelig bearer-token som beskytter daglig sletting av feedback eldre enn 90 dager.",
+  },
 ];
 
 export const envVarNotes = [
@@ -967,4 +997,9 @@ export const sourceFiles = [
   "src/components/analytics/ViddelAnalytics.astro",
   "src/lib/ces-env.ts",
   "src/lib/ces-run-session.ts",
+  "src/pages/api/conversation-feedback.ts",
+  "src/pages/api/conversation-feedback-retention.ts",
+  "src/lib/conversation-feedback-v01.ts",
+  "src/lib/conversation-feedback-store-v01.ts",
+  "src/components/conversation/ConversationFeedbackPanel.astro",
 ] as const;

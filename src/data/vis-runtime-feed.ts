@@ -41,8 +41,30 @@ export type VisRuntimeFeed = {
 
 /** Manually updated after important Return Tickets — not synced from GitHub. */
 export const visRuntimeFeed = {
-  updatedAt: "2026-08-20",
+  updatedAt: "2026-08-30",
   activeNow: [
+    {
+      id: "conversation-feedback-v01",
+      headline: "Vi gjør det mulig å vurdere en samtale uten å lagre selve samtalen.",
+      workTitle: "Conversation Feedback v0.1 (#346)",
+      area: "Samtaledesign og personvern",
+      why:
+        "Intern beta-QA trenger både en enkel vurdering og brukerens egne forbedringskommentarer, men spørsmål, svar og CES-session skal ikke bli et nytt skjult datalager.",
+      status:
+        "Neon Free i Frankfurt er koblet til Production og Preview. Schema, API, 90-dagers cleanup og adaptivt Tilbakemelding-panel er implementert; Preview-QA gjenstår.",
+      possibleSolution:
+        "En separat feedback-reference knytter score, hurtiggrunner og valgfri kommentar til én feedbackpost. Desktop bruker høyrepanel og mobil bruker sheet.",
+      nextDecision:
+        "Legg inn CRON_SECRET, verifiser lagring og automatisk cleanup i Preview, og gjennomfør desktop-/mobil-QA før merge.",
+      issue: "#346",
+      issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/346",
+      progressSteps: [
+        { id: "storage", label: "Neon EU koblet", state: "done" },
+        { id: "code", label: "Schema og feedbackflyt", state: "done" },
+        { id: "qa", label: "Preview-QA", state: "current" },
+        { id: "production", label: "Production-verifisering", state: "upcoming" },
+      ],
+    },
     {
       id: "public-ai-guard-v02",
       headline: "Vi gjenoppretter chatten med en enkel eierkode og et lett kostnadsvern for andre.",
@@ -73,6 +95,11 @@ export const visRuntimeFeed = {
     "Production 503 er sporet til Upstash rate-limit storage-feil før AI-kallet. Guard v0.2 fjerner denne feilkilden og flytter trafikkgrensen til Vercel Firewall.",
   links: {
     primary: [
+      {
+        label: "Issue #346",
+        href: "https://github.com/THUNDERPLUNDER/vox-web/issues/346",
+        kind: "issue",
+      },
       {
         label: "Issue #180",
         href: "https://github.com/THUNDERPLUNDER/vox-web/issues/180",

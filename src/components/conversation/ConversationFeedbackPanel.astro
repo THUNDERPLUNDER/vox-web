@@ -1,0 +1,559 @@
+---
+/* CONTRACT: End-user Conversation Feedback v0.1 panel. Kept separate from internal Inspect tools. #346 */
+const scoreOptions = [
+  { value: "helpful", label: "Nyttig" },
+  { value: "partial", label: "Delvis" },
+  { value: "not_helpful", label: "Ikke nyttig" },
+];
+
+const reasonOptions = [
+  { value: "incorrect", label: "Svaret var feil" },
+  { value: "too_long", label: "For mye / for langt" },
+  { value: "tone_missed", label: "Tonen traff ikke" },
+  { value: "misunderstood", label: "Forsto ikke spørsmålet" },
+  { value: "wrong_next_step", label: "Feil neste steg" },
+  { value: "other", label: "Annet" },
+];
+---
+
+<div class="conversation-feedback" data-conversation-feedback-root data-open="false">
+  <button
+    type="button"
+    class="conversation-feedback__backdrop"
+    data-conversation-feedback-backdrop
+    aria-label="Lukk tilbakemelding"
+    tabindex="-1"
+  ></button>
+
+  <aside
+    id="conversation-feedback-panel"
+    class="conversation-feedback__panel"
+    data-conversation-feedback-panel
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="conversation-feedback-title"
+    aria-hidden="true"
+    inert
+    tabindex="-1"
+  >
+    <header class="conversation-feedback__header">
+      <div>
+        <p class="conversation-feedback__eyebrow">Samtalen</p>
+        <h2 id="conversation-feedback-title">Tilbakemelding</h2>
+      </div>
+      <button
+        type="button"
+        class="conversation-feedback__close"
+        data-conversation-feedback-close
+        aria-label="Lukk tilbakemelding"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </header>
+
+    <div class="conversation-feedback__body" data-conversation-feedback-form-state>
+      <p class="conversation-feedback__question">Hvordan var denne samtalen?</p>
+      <form data-conversation-feedback-form>
+        <fieldset class="conversation-feedback__scores">
+          <legend class="sr-only">Velg vurdering</legend>
+          {
+            scoreOptions.map((option) => (
+              <label class="conversation-feedback__score">
+                <input type="radio" name="score" value={option.value} />
+                <span>{option.label}</span>
+              </label>
+            ))
+          }
+        </fieldset>
+
+        <div class="conversation-feedback__details" data-conversation-feedback-details hidden>
+          <fieldset class="conversation-feedback__reasons">
+            <legend>Hva kunne vært bedre?</legend>
+            <p>Velg gjerne én eller flere.</p>
+            <div class="conversation-feedback__reason-grid">
+              {
+                reasonOptions.map((option) => (
+                  <label class="conversation-feedback__reason">
+                    <input type="checkbox" name="reason" value={option.value} />
+                    <span>{option.label}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+
+          <label class="conversation-feedback__comment">
+            <span>Kommentar <small>valgfritt</small></span>
+            <textarea
+              name="comment"
+              rows="4"
+              maxlength="500"
+              placeholder="Hva bør vi forbedre?"
+              data-conversation-feedback-comment
+            ></textarea>
+            <small class="conversation-feedback__count" data-conversation-feedback-count>0 / 500</small>
+          </label>
+
+          <p class="conversation-feedback__privacy">
+            Tilbakemeldingen gjelder hele samtalen. Spørsmålene og svarene dine blir ikke sendt med.
+          </p>
+          <p class="conversation-feedback__error" data-conversation-feedback-error role="alert" hidden></p>
+          <button type="submit" class="conversation-feedback__submit" data-conversation-feedback-submit>
+            Send tilbakemelding
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="conversation-feedback__success" data-conversation-feedback-success hidden role="status">
+      <span aria-hidden="true">✓</span>
+      <h3>Takk for tilbakemeldingen</h3>
+      <p>Den hjelper oss å gjøre samtalene bedre.</p>
+      <button type="button" data-conversation-feedback-done>Lukk</button>
+    </div>
+  </aside>
+</div>
+
+<script>
+  (() => {
+    const root = document.querySelector<HTMLElement>("[data-conversation-feedback-root]");
+    const panel = root?.querySelector<HTMLElement>("[data-conversation-feedback-panel]");
+    const backdrop = root?.querySelector<HTMLButtonElement>("[data-conversation-feedback-backdrop]");
+    const closeButton = root?.querySelector<HTMLButtonElement>("[data-conversation-feedback-close]");
+    const doneButton = root?.querySelector<HTMLButtonElement>("[data-conversation-feedback-done]");
+    const form = root?.querySelector<HTMLFormElement>("[data-conversation-feedback-form]");
+    const formState = root?.querySelector<HTMLElement>("[data-conversation-feedback-form-state]");
+    const details = root?.querySelector<HTMLElement>("[data-conversation-feedback-details]");
+    const comment = root?.querySelector<HTMLTextAreaElement>("[data-conversation-feedback-comment]");
+    const count = root?.querySelector<HTMLElement>("[data-conversation-feedback-count]");
+    const error = root?.querySelector<HTMLElement>("[data-conversation-feedback-error]");
+    const submit = root?.querySelector<HTMLButtonElement>("[data-conversation-feedback-submit]");
+    const success = root?.querySelector<HTMLElement>("[data-conversation-feedback-success]");
+
+    if (!root || !panel || !backdrop || !closeButton || !doneButton || !form || !formState || !details || !comment || !count || !error || !submit || !success) return;
+
+    const REFERENCE_KEY = "viddel-conversation-feedback-reference";
+    let previousFocus: HTMLElement | null = null;
+
+    const feedbackReference = () => {
+      try {
+        const existing = sessionStorage.getItem(REFERENCE_KEY);
+        if (existing && /^feedback-[a-f0-9]{32}$/.test(existing)) return existing;
+      } catch (_) {}
+      const created = `feedback-${crypto.randomUUID().replace(/-/g, "")}`;
+      try {
+        sessionStorage.setItem(REFERENCE_KEY, created);
+      } catch (_) {}
+      return created;
+    };
+
+    const showError = (message = "") => {
+      error.textContent = message;
+      error.hidden = !message;
+    };
+
+    const close = () => {
+      root.dataset.open = "false";
+      panel.setAttribute("aria-hidden", "true");
+      panel.inert = true;
+      document.body.classList.remove("conversation-feedback-open");
+      previousFocus?.focus();
+    };
+
+    const open = (event: Event) => {
+      const customEvent = event as CustomEvent<{ trigger?: HTMLElement }>;
+      previousFocus = customEvent.detail?.trigger ?? (document.activeElement as HTMLElement | null);
+      root.dataset.open = "true";
+      panel.setAttribute("aria-hidden", "false");
+      panel.inert = false;
+      document.body.classList.add("conversation-feedback-open");
+      requestAnimationFrame(() => panel.focus());
+    };
+
+    window.addEventListener("viddel-conversation-feedback-open", open);
+    backdrop.addEventListener("click", close);
+    closeButton.addEventListener("click", close);
+    doneButton.addEventListener("click", close);
+    window.addEventListener("keydown", (event) => {
+      if (root.dataset.open !== "true") return;
+      if (event.key === "Escape") {
+        close();
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const focusable = Array.from(panel.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      )).filter((element) => !element.closest("[hidden]"));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
+    form.addEventListener("change", (event) => {
+      const target = event.target as HTMLInputElement;
+      if (target.name === "score") {
+        details.hidden = false;
+        showError();
+        requestAnimationFrame(() => details.scrollIntoView({ block: "nearest", behavior: "smooth" }));
+      }
+    });
+
+    comment.addEventListener("input", () => {
+      count.textContent = `${comment.value.length} / 500`;
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const score = form.querySelector<HTMLInputElement>('input[name="score"]:checked')?.value;
+      if (!score) {
+        showError("Velg Nyttig, Delvis eller Ikke nyttig.");
+        return;
+      }
+
+      const selectedReasons = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="reason"]:checked'))
+        .map((input) => input.value);
+
+      showError();
+      submit.disabled = true;
+      submit.textContent = "Sender …";
+
+      try {
+        const response = await fetch("/api/conversation-feedback", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            feedback_reference: feedbackReference(),
+            score,
+            selected_reasons: selectedReasons,
+            optional_comment: comment.value.trim() || null,
+            route: window.location.pathname,
+          }),
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(typeof payload.message === "string" ? payload.message : "Kunne ikke sende tilbakemeldingen.");
+
+        formState.hidden = true;
+        success.hidden = false;
+        requestAnimationFrame(() => doneButton.focus());
+      } catch (caught) {
+        const message = caught instanceof Error ? caught.message : "Kunne ikke sende tilbakemeldingen. Prøv igjen.";
+        showError(message);
+      } finally {
+        submit.disabled = false;
+        submit.textContent = "Send tilbakemelding";
+      }
+    });
+  })();
+</script>
+
+<style>
+  .conversation-feedback {
+    position: fixed;
+    inset: 0;
+    z-index: 102;
+    pointer-events: none;
+  }
+
+  .conversation-feedback__backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgb(18 21 20 / 0.35);
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+
+  .conversation-feedback__panel {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: min(25rem, 92vw);
+    overflow-y: auto;
+    background: rgb(var(--surface, 255 255 255));
+    border-left: 1px solid rgb(var(--border, 220 222 220));
+    box-shadow: -16px 0 48px rgb(12 18 16 / 0.14);
+    transform: translateX(102%);
+    transition: transform 220ms ease;
+    outline: none;
+  }
+
+  .conversation-feedback[data-open="true"] {
+    pointer-events: auto;
+  }
+
+  .conversation-feedback[data-open="true"] .conversation-feedback__backdrop {
+    opacity: 1;
+  }
+
+  .conversation-feedback[data-open="true"] .conversation-feedback__panel {
+    transform: translateX(0);
+  }
+
+  .conversation-feedback__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.25rem 1rem;
+    border-bottom: 1px solid rgb(var(--border, 220 222 220) / 0.75);
+  }
+
+  .conversation-feedback__eyebrow,
+  .conversation-feedback__header h2,
+  .conversation-feedback__question,
+  .conversation-feedback__reasons p,
+  .conversation-feedback__privacy,
+  .conversation-feedback__success h3,
+  .conversation-feedback__success p {
+    margin: 0;
+  }
+
+  .conversation-feedback__eyebrow {
+    color: rgb(var(--text-secondary, 90 94 92));
+    font-size: 0.72rem;
+    font-weight: 650;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .conversation-feedback__header h2 {
+    margin-top: 0.25rem;
+    color: rgb(var(--text));
+    font-size: 1.2rem;
+  }
+
+  .conversation-feedback__close {
+    display: grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    place-items: center;
+    border: 1px solid rgb(var(--border, 220 222 220));
+    border-radius: 999px;
+    background: transparent;
+    color: rgb(var(--text));
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+
+  .conversation-feedback__body,
+  .conversation-feedback__success {
+    padding: 1.4rem 1.25rem 2rem;
+  }
+
+  .conversation-feedback__question {
+    color: rgb(var(--text));
+    font-size: 1.05rem;
+    font-weight: 620;
+  }
+
+  .conversation-feedback__scores {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .conversation-feedback__score input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .conversation-feedback__score span {
+    display: grid;
+    min-height: 3rem;
+    place-items: center;
+    padding: 0.5rem;
+    border: 1px solid rgb(var(--border, 220 222 220));
+    border-radius: 0.65rem;
+    color: rgb(var(--text));
+    font-size: 0.85rem;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .conversation-feedback__score input:focus-visible + span,
+  .conversation-feedback__reason input:focus-visible + span,
+  .conversation-feedback__close:focus-visible,
+  .conversation-feedback__submit:focus-visible,
+  .conversation-feedback__success button:focus-visible {
+    outline: 2px solid rgb(var(--focus));
+    outline-offset: 2px;
+  }
+
+  .conversation-feedback__score input:checked + span {
+    border-color: rgb(var(--text));
+    background: rgb(var(--text));
+    color: rgb(var(--surface));
+  }
+
+  .conversation-feedback__details {
+    margin-top: 1.5rem;
+  }
+
+  .conversation-feedback__reasons {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .conversation-feedback__reasons legend {
+    color: rgb(var(--text));
+    font-weight: 620;
+  }
+
+  .conversation-feedback__reasons p {
+    margin-top: 0.2rem;
+    color: rgb(var(--text-secondary, 90 94 92));
+    font-size: 0.82rem;
+  }
+
+  .conversation-feedback__reason-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+  }
+
+  .conversation-feedback__reason input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .conversation-feedback__reason span {
+    display: block;
+    padding: 0.48rem 0.68rem;
+    border: 1px solid rgb(var(--border, 220 222 220));
+    border-radius: 999px;
+    color: rgb(var(--text-secondary, 90 94 92));
+    font-size: 0.82rem;
+    cursor: pointer;
+  }
+
+  .conversation-feedback__reason input:checked + span {
+    border-color: rgb(var(--primary));
+    background: rgb(var(--primary) / 0.08);
+    color: rgb(var(--text));
+  }
+
+  .conversation-feedback__comment {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1.4rem;
+    color: rgb(var(--text));
+    font-size: 0.9rem;
+    font-weight: 620;
+  }
+
+  .conversation-feedback__comment small {
+    color: rgb(var(--text-secondary, 90 94 92));
+    font-weight: 450;
+  }
+
+  .conversation-feedback__comment textarea {
+    width: 100%;
+    resize: vertical;
+    border: 1px solid rgb(var(--border, 220 222 220));
+    border-radius: 0.65rem;
+    background: rgb(var(--surface, 255 255 255));
+    color: rgb(var(--text));
+    font: inherit;
+    font-weight: 450;
+    line-height: 1.5;
+    padding: 0.75rem;
+  }
+
+  .conversation-feedback__count {
+    justify-self: end;
+  }
+
+  .conversation-feedback__privacy {
+    margin-top: 1rem;
+    color: rgb(var(--text-secondary, 90 94 92));
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  .conversation-feedback__error {
+    margin: 0.8rem 0 0;
+    color: rgb(151 45 45);
+    font-size: 0.84rem;
+  }
+
+  .conversation-feedback__submit,
+  .conversation-feedback__success button {
+    width: 100%;
+    margin-top: 1.1rem;
+    padding: 0.78rem 1rem;
+    border: 1px solid rgb(var(--text));
+    border-radius: 0.65rem;
+    background: rgb(var(--text));
+    color: rgb(var(--surface));
+    font: inherit;
+    font-weight: 620;
+  }
+
+  .conversation-feedback__submit:disabled {
+    cursor: wait;
+    opacity: 0.65;
+  }
+
+  .conversation-feedback__success {
+    text-align: center;
+  }
+
+  .conversation-feedback__success > span {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: 1rem auto;
+    place-items: center;
+    border-radius: 999px;
+    background: rgb(var(--primary) / 0.12);
+    color: rgb(var(--text));
+  }
+
+  .conversation-feedback__success p {
+    margin-top: 0.45rem;
+    color: rgb(var(--text-secondary, 90 94 92));
+  }
+
+  :global(body.conversation-feedback-open) {
+    overflow: hidden;
+  }
+
+  @media (max-width: 639px) {
+    .conversation-feedback__panel {
+      inset: auto 0 0;
+      width: 100%;
+      max-height: min(88dvh, 46rem);
+      border: 1px solid rgb(var(--border, 220 222 220));
+      border-bottom: 0;
+      border-radius: 1rem 1rem 0 0;
+      box-shadow: 0 -16px 48px rgb(12 18 16 / 0.14);
+      transform: translateY(102%);
+    }
+
+    .conversation-feedback[data-open="true"] .conversation-feedback__panel {
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .conversation-feedback__backdrop,
+    .conversation-feedback__panel {
+      transition: none;
+    }
+  }
+</style>

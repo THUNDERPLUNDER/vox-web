@@ -1052,6 +1052,38 @@ body.vox-shell--standalone-chat[data-viddel-chat-active] [data-viddel-chat] .inl
   bottom: 0;
 }
 
+.viddel-chat-feedback-trigger {
+  display: flex;
+  justify-content: center;
+  padding: 1.1rem 1rem 0;
+}
+
+.viddel-chat-feedback-trigger.hidden {
+  display: none;
+}
+
+.viddel-chat-feedback-trigger button {
+  padding: 0.45rem 0.7rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgb(var(--text-secondary));
+  font: inherit;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--border));
+  text-underline-offset: 0.22rem;
+}
+
+.viddel-chat-feedback-trigger button:hover {
+  color: rgb(var(--text-primary));
+}
+
+.viddel-chat-feedback-trigger button:focus-visible {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 2px;
+}
+
 @media (min-width: 640px) {
   body.vox-shell--standalone-chat .vox-shell-standalone-chat__stage {
     max-width: min(100%, 46rem);
