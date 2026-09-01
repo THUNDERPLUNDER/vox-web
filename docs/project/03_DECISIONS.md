@@ -3,6 +3,12 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
+## 2026-09-01 - Codex/Work på Viddel Worker er eneste aktive utførelseslag
+- Beslutning: OpenAI Codex/Work på **Viddel Worker** (M3, host `mac.lan`) er eneste aktive og primære utførelseslag for Viddel-repoet. **Viddel Studio** betegner det fysiske hjemmeoppsettet, og **Viddel Mobile** er operatørflate, ikke aktiv repo- eller runtime-node. Cursor er pauset og skal ikke brukes eller motta handoffs uten en ny, eksplisitt beslutning fra Thomas.
+- Begrunnelse: Repoets operative kilder skal speile den faktiske execution-topologien og unngå en utdatert stafettmodell der @rigger bare operasjonaliserer og Cursor utfører. Én primær node reduserer risiko for branch-, runtime-, env- og credential-drift mellom maskiner.
+- Konsekvens: @rigger gjennomfører planlegging, implementering, test, verifikasjon og Return Ticket direkte i Codex/Work, alltid innenfor eksplisitt prompt/issue, avtalt scope og gjeldende godkjenningsgrenser. Historiske Cursor-referanser beholdes som historikk. Dynamiske IP-adresser inngår ikke i repo-kanon. Keep-awake og nettverks-recovery er ikke verifisert og følger som en separat, read-only teknisk oppgave før eventuelle systemendringer vurderes. Beslutningen erstatter den aktive stackstatusen fra 2026-03-27 uten å omskrive historikken.
+- Kildegrunnlag: `TO_NAVIGATOR_2026-09-01_VIDDEL_REMOTE_WORKFLOW_CANONICAL_PATCH_v0.1` og formell handoff fra @navigator 2026-09-01.
+
 ## 2026-08-20 - Public AI guard v0.2: lett eierkontroll og Vercel Firewall
 - Beslutning: IP-basert rate limiting flyttes til Vercel Firewall for `/api/chat` og `/api/image-vision`. En skjult, midlertidig eierkontroll bruker firesifret PIN til å sette en separat sterk eiercookie. Offentlig AI-tilgang styres av Boolean-flagget `public-ai-enabled` i Vercel, mens eier kommer gjennom ubegrenset.
 - Begrunnelse: En feil i den eksterne Upstash-telleren ga `guard_unavailable` og gjorde hele chatten utilgjengelig før AI-kallet. Plattformbegrensning gir færre bevegelige deler.

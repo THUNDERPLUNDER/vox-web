@@ -1,7 +1,7 @@
 # 07_GITHUB_TASK_FLOW
 
 ## Formål
-Gjøre GitHub Projects til KlarLyds delte oppgavebuss på tvers av Thomas, Vibeke, @navigator, @rigger, Cursor og senere @knaus.
+Gjøre GitHub Projects til KlarLyds delte oppgavebuss på tvers av Thomas, Vibeke, @navigator, @rigger, OpenAI Codex/Work og senere @knaus.
 
 ## Prinsipp
 Vi bruker ett felles GitHub Project med flere views, ikke flere parallelle prosjekter.
@@ -90,7 +90,7 @@ Kort bør vise:
 
 ### 3. Board — Execution
 Formål:
-Operativ flyt for @rigger, Codex og Cursor.
+Operativ flyt for @rigger og Codex/Work på Viddel Worker.
 
 Oppsett:
 - layout: Board
@@ -125,14 +125,17 @@ Oppsett:
 ### @rigger
 - bryter Track ned til Task ved behov
 - gjør oppgaven byggbar
+- gjennomfører implementering, test og verifikasjon direkte i Codex/Work på Viddel Worker
 - sikrer riktig statusflyt
 - sikrer at handoff og Return Ticket henger sammen med kortet
 
-### Codex / Cursor
+### Codex/Work på Viddel Worker
 - utfører kun på grunnlag av konkret Task / issue eller tydelig prompt
 - leverer commit, push, commit hash, push-status, PR og verifikasjon
 - oppgir exact Preview/deploy URL når relevant
 - returnerer med Return Ticket på issue
+
+Cursor er pauset og er ikke del av aktiv execution-flyt eller normal handoff-kjede.
 
 ### Thomas og Vibeke
 - følger primært Roadmap — Tracks og Board — Workstreams

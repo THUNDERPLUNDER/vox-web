@@ -42,8 +42,9 @@ GitHub issues = work and decisions
 Repo docs = canonical written knowledge
 VIS = operational display layer
 Google Workspace = mirror/collaboration layer, especially for Gemini
-ChatGPT/@rigger = synthesis and repo-aware strategy
-Cursor = repo execution
+OpenAI Codex/Work on Viddel Worker = active repo execution
+@rigger = planning, implementation, verification and Return Ticket within explicit scope
+Cursor = paused / historical, not active runtime
 Gemini/@navigator = calendar, Gmail, Workspace and inspiration
 ```
 
@@ -182,38 +183,33 @@ For stakeholder dialogue, start with user-near and local actors to validate lang
 
 ## 8. Agent roles
 
-### ChatGPT / @rigger
+### OpenAI Codex/Work / @rigger
 
 Role:
-- strategy
+- operationalization and buildability
 - structure
 - synthesis
 - repo-aware project work
 - GitHub issue shaping
 - presentation drafting
 - research synthesis
+- implementation
+- tests and verification
+- Return Tickets
 
 Instruction:
 Read this Control Center for Viddel work that involves status, strategy, research, presentations or cross-thread continuity.
 
+Execution environment:
+- Viddel Worker (M3, host `mac.lan`)
+- only active and primary execution node for the Viddel repository
+- all work remains bounded by the explicit prompt/issue, agreed scope and approval limits
+
 ### Cursor
 
-Role:
-- execute repo changes
-- update docs
-- build VIS pages
-- implement workflows
+Status: **Paused / historical**.
 
-Instruction:
-Safe-read this Control Center before larger Viddel tasks.
-
-Cursor prompts should still require:
-
-- commit
-- push
-- commit hash
-- push status
-- verification items
+Cursor is not part of the active runtime or normal handoff chain. Historical references remain for traceability. Reactivation requires an explicit decision from Thomas.
 
 ### Gemini / @navigator
 
@@ -267,10 +263,10 @@ Start from Viddel Control Center.
 
 ## 10. New thread / task starter
 
-Use this in new ChatGPT/Cursor threads:
+Use this in new Codex/Work threads:
 
 ```text
-Context: This is Viddel. Start from `docs/project/VIDDEL_PROJECT_CONTROL_CENTER_v0_1.md` and follow the linked canonical docs relevant to the task. GitHub issues are source of truth for work state. VIS is the operational display layer.
+Context: This is Viddel. Work in OpenAI Codex/Work on Viddel Worker. Start from `docs/project/VIDDEL_PROJECT_CONTROL_CENTER_v0_1.md` and follow the linked canonical docs relevant to the task. GitHub issues are source of truth for work state. VIS is the operational display layer. Stay within the explicit prompt/issue and agreed scope.
 ```
 
 For manufacturer data:

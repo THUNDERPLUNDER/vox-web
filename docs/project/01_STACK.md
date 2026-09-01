@@ -7,7 +7,7 @@ Dette dokumentet beskriver den operative stacken for MVP-en: hva vi bygger med, 
 - AI-agent: Google CES
 - Frontend: **Astro 5**
 - Hosting: Vercel
-- Kodeverktøy: Cursor
+- Kodeverktøy / utførelseslag: OpenAI Codex/Work på **Viddel Worker** (M3, host `mac.lan`)
 - Versjonskontroll: Git / GitHub
 
 ## Frontend og styling (faktisk)
@@ -26,7 +26,7 @@ Dette dokumentet beskriver den operative stacken for MVP-en: hva vi bygger med, 
 
 ## Arbeidsflyt
 - Strategi: Thomas + @Navigator
-- Implementering: @rigger bryter ned arbeid, Cursor utfører i kodebasen
+- Implementering: @rigger planlegger, implementerer, tester og verifiserer direkte i Codex/Work på Viddel Worker, innenfor eksplisitt prompt/issue og avtalt scope
 - Deploy: Endringer pushes via Git/GitHub og deployes til Vercel
 - Logging / dokumentasjon: Løpende logg og roadmap føres av @Navigator, source-of-truth-filer holdes oppdatert i prosjektet
 
@@ -37,8 +37,10 @@ Dette dokumentet beskriver den operative stacken for MVP-en: hva vi bygger med, 
   - Tailwind v4 (Vite-plugin)
   - `tokens.css` + `global.css` + utilities i komponenter
   - Global shell (header + mobil drawer) i `BaseLayout`
-  - Vercel, Cursor, Git/GitHub
+  - Vercel, OpenAI Codex/Work på Viddel Worker, Git/GitHub
   - Google Stitch (referanse)
+- **Pauset:**
+  - Cursor — ikke del av aktiv runtime eller normal handoff-kjede; historiske referanser beholdes
 - **På vei inn / videre:**
   - Mer innhold og ferdige sider
   - Ordbok med reell termliste (`getStaticPaths()` utover minimal tom liste)
@@ -51,4 +53,4 @@ Dette dokumentet beskriver den operative stacken for MVP-en: hva vi bygger med, 
   - Valgfri fremtidig konsolidering av design i Tailwind `@theme` eller config — avklares ved behov
 
 ## Sist oppdatert
-- 2026-04-02 (synket med repo)
+- 2026-09-01 (execution-topologi synkronisert; produktstack ellers uendret)
