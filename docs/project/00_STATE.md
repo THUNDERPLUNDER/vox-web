@@ -10,6 +10,7 @@
 - Hva vi prøver å få til i MVP: Bygge en første versjon der en bruker kan få praktisk hjelp via AI-agenten, forstå hva tjenesten hjelper med via nettsiden, og møte en første mengde søkbart innhold i artikler og ordbok som kan gi trafikk fra Google og AI-baserte søk, slik at vi kan teste nytte, tillit og teknisk gjennomførbarhet.
 
 ## Nå står vi her (baseline for neste tråd)
+- **Execution-topologi:** OpenAI Codex/Work på **Viddel Worker** (M3, host `mac.lan`) er eneste aktive og primære utførelseslag for repoet. **Viddel Studio** er det fysiske hjemmeoppsettet. **Viddel Mobile** er operatørflate, ikke aktiv repo- eller runtime-node. Cursor er pauset.
 - **Stack:** Astro 5, Tailwind CSS v4 via `@tailwindcss/vite`, **ingen** `tailwind.config.*`.
 - **Styling:** `tokens.css` = designverdier / semantiske tokens; `global.css` = wiring, base, hooks (`.sonic-pulse-cta`, `.vox-surface-*`); utilities i `.astro`.
 - **Tema:** `data-theme` (system / light / dark), `localStorage`, `ThemeControl` i footer — **landet og i bruk**.
@@ -62,10 +63,11 @@
 
 ## Arbeidsmåte
 - Strategi og logg: Strategisk arbeid, roadmap og løpende logg føres primært av @Navigator i Gemini.
-- Kode og implementering: ChatGPT/@rigger bryter arbeid ned i konkrete steg, og Cursor utfører i kodebasen.
+- Kode og implementering: @rigger gjennomfører planlegging, implementering, test, verifikasjon og Return Ticket direkte i OpenAI Codex/Work på Viddel Worker, alltid innenfor eksplisitt prompt/issue og avtalt scope.
+- Cursor: Pauset og ikke del av aktiv runtime eller normal handoff-kjede. Historiske Cursor-referanser beholdes som historikk.
 - Hosting / drift: Nettsiden bygges i Astro, versjoneres i Git/GitHub og deployes via Vercel. AI-agenten kjøres i Google CES.
 - Publiseringsflyt CMS (MVP): Storyblok publish -> webhook -> Vercel deploy hook -> ny production build (`docs/project/04_PUBLISHING.md`) — testet og verifisert i praksis.
 
 ## Sist oppdatert
-- Dato: 2026-08-25
-- Oppdatert av: STG-0 Knowledge UX og separat BETA-publiseringsregel lagt til. Offentlig rot og produksjonskoblinger er uendret.
+- Dato: 2026-09-01
+- Oppdatert av: Execution-topologi synkronisert. Codex/Work på Viddel Worker er aktivt utførelseslag; Cursor er pauset. Produkt-, production- og MVP-status er ellers uendret.

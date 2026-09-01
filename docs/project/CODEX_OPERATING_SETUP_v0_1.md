@@ -1,10 +1,19 @@
 # Codex Operating Setup v0.1
 
-Kort onboarding for å bruke Codex som standard executor i Viddel Lab / vox-web.
+Kort onboarding for å bruke OpenAI Codex/Work som aktivt utførelseslag i Viddel Lab / vox-web.
+
+## Aktiv execution-topologi
+
+- **Viddel Studio:** fysisk hjemmeoppsett
+- **Viddel Worker:** M3-maskinen med host `mac.lan`; eneste aktive og primære repo-/runtime-node
+- **Viddel Mobile:** operatørflate; ikke aktiv repo- eller runtime-node
+- **Cursor:** pauset; ikke del av aktiv runtime eller normal handoff-kjede
+
+@rigger gjennomfører planlegging, implementering, test, verifikasjon og Return Ticket direkte i Codex/Work på Viddel Worker. Arbeidet skal alltid ha eksplisitt prompt/issue, avtalt scope og synlige godkjenningsgrenser. Always-on betyr tilgjengelighet, ikke ukontrollert autonomi.
 
 ## Når bruke Codex
 
-Bruk Codex først for rutinearbeid som har tydelig issue, akseptkriterier og lav runtime-risiko:
+Bruk Codex/Work som aktiv executor for repoarbeid med tydelig issue eller prompt, akseptkriterier og avklart runtime-risiko:
 
 - docs
 - data/source inventory
@@ -14,15 +23,9 @@ Bruk Codex først for rutinearbeid som har tydelig issue, akseptkriterier og lav
 - strukturert GitHub issue-arbeid
 - PR-arbeid med klare akseptkriterier
 
-## Når bruke Cursor
+## Cursor-status
 
-Bruk Cursor som reserve eller spesialist når arbeidet krever:
-
-- visuell debugging
-- CSS/layout-finjustering
-- live dev-server-iterasjon
-- lokal IDE-tung filnavigering
-- situasjoner der Codex står fast
+Cursor er pauset. Historiske Cursor-kontrakter og referanser beholdes for sporbarhet, men Cursor skal ikke brukes eller motta handoffs uten en ny, eksplisitt beslutning fra Thomas.
 
 ## Standard arbeidsflyt
 

@@ -14,11 +14,16 @@ The product should feel warm, premium, technically strong, and useful in everyda
 - GitHub issues/PRs as task bus
 
 ## Working role
-Codex and Cursor are implementation agents.
+OpenAI Codex/Work on **Viddel Worker** (M3, host `mac.lan`) is the only active and primary execution environment for this repository.
 Use GitHub and the repository as source of truth for code, project docs, issues, branches and PRs.
 Do not assume access to ChatGPT project memory. Read repo context before coding.
 
-Codex is the default executor for routine repo work:
+The active topology is:
+- **Viddel Studio** = the physical home-office setup
+- **Viddel Worker** = the M3 execution node (`mac.lan`)
+- **Viddel Mobile** = the operator surface; not an active repo or runtime node
+
+Codex is the active executor for repo work, including:
 - docs
 - data/source inventory
 - scripts
@@ -26,13 +31,11 @@ Codex is the default executor for routine repo work:
 - small Astro/VIS pages
 - structured GitHub issue work
 - PR work with clear acceptance criteria
+- implementation, tests, verification and Return Tickets within the explicit prompt/issue and agreed scope
 
-Cursor is reserve/specialist for:
-- visual debugging
-- CSS/layout fine tuning
-- live dev-server iteration
-- local IDE-heavy file navigation
-- cases where Codex gets stuck
+Cursor is paused. Historical Cursor references remain as history, but Cursor is not part of the active runtime or normal handoff chain and must not be used again without an explicit decision from Thomas.
+
+Always-on availability does not broaden agent authority. Long-running or asynchronous work still requires a defined objective, scope, approval boundaries, definition of done and Return Ticket.
 
 ## AI Development Contract
 For non-trivial product, UI, interaction, frontend or system changes, follow `docs/project/AI_DEVELOPMENT_CONTRACT.md` before implementation.
@@ -127,14 +130,14 @@ Follow-up issue if deferred:
 The Return Ticket must include commit hash, push status, PR link, tests run and exact Preview/deploy URL when relevant.
 
 ## Agent Workflow v0.1
-Dette er operativ minimumsflyt for Codex og Cursor i dette repoet.
+Dette er operativ minimumsflyt for Codex/Work på Viddel Worker i dette repoet.
 
 1. **Startgrunnlag**
    - Arbeid starter fra en GitHub issue eller en tydelig prompt.
    - Hvis oppgaven er uklar, avklar scope før kodeendring.
 
 2. **Rolle**
-   - Codex/Cursor er utførende kodeagenter.
+   - Codex/Work er aktivt utførelseslag.
    - Agenten implementerer bestilt arbeid, ikke ny strategi.
 
 3. **Scope og endringer**

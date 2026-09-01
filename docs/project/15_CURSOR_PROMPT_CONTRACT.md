@@ -1,6 +1,8 @@
 # Cursor Prompt Contract
 
-Bruk denne fast i Cursor-prompter.
+> **Status: PAUSET / HISTORISK fra 2026-09-01.** Cursor er ikke del av aktiv runtime eller normal handoff-kjede. Dokumentet beholdes som historisk kontrakt og skal ikke brukes uten en ny, eksplisitt beslutning fra Thomas.
+
+Historisk innhold følger nedenfor.
 
 ## Før du gjør noe
 ```text
