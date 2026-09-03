@@ -41,7 +41,7 @@ export type VisRuntimeFeed = {
 
 /** Manually updated after important Return Tickets — not synced from GitHub. */
 export const visRuntimeFeed = {
-  updatedAt: "2026-08-30",
+  updatedAt: "2026-08-20",
   activeNow: [
     {
       id: "conversation-feedback-v01",
@@ -51,18 +51,18 @@ export const visRuntimeFeed = {
       why:
         "Intern beta-QA trenger både en enkel vurdering og brukerens egne forbedringskommentarer, men spørsmål, svar og CES-session skal ikke bli et nytt skjult datalager.",
       status:
-        "Neon Free i Frankfurt er koblet til Production og Preview. Schema, API, 90-dagers cleanup og adaptivt Tilbakemelding-panel er implementert; Preview-QA gjenstår.",
+        "Neon Free i Frankfurt er koblet til Production og Preview. Schema, API, Neon-write og adaptivt Tilbakemelding-panel er verifisert; 90-dagers cleanup er implementert, men ikke operativt verifisert.",
       possibleSolution:
         "En separat feedback-reference knytter score, hurtiggrunner og valgfri kommentar til én feedbackpost. Desktop bruker høyrepanel og mobil bruker sheet.",
       nextDecision:
-        "Legg inn CRON_SECRET, verifiser lagring og automatisk cleanup i Preview, og gjennomfør desktop-/mobil-QA før merge.",
+        "Legg inn CRON_SECRET, redeploy og kjør autentisert cleanup-test. Deretter gjenstår owner-gated ekte samtale med feedback på desktop og mobil før merge.",
       issue: "#346",
       issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/346",
       progressSteps: [
         { id: "storage", label: "Neon EU koblet", state: "done" },
         { id: "code", label: "Schema og feedbackflyt", state: "done" },
-        { id: "qa", label: "Preview-QA", state: "current" },
-        { id: "production", label: "Production-verifisering", state: "upcoming" },
+        { id: "qa", label: "Retention-QA", state: "current" },
+        { id: "production", label: "Owner-gated slutt-QA", state: "upcoming" },
       ],
     },
     {

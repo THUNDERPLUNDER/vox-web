@@ -96,6 +96,7 @@ const reasonOptions = [
 
           <p class="conversation-feedback__privacy">
             Tilbakemeldingen gjelder hele samtalen. Spørsmålene og svarene dine blir ikke sendt med.
+            Unngå å skrive personlige opplysninger eller helseopplysninger i kommentaren.
           </p>
           <p class="conversation-feedback__error" data-conversation-feedback-error role="alert" hidden></p>
           <button type="submit" class="conversation-feedback__submit" data-conversation-feedback-submit>
@@ -132,20 +133,8 @@ const reasonOptions = [
 
     if (!root || !panel || !backdrop || !closeButton || !doneButton || !form || !formState || !details || !comment || !count || !error || !submit || !success) return;
 
-    const REFERENCE_KEY = "viddel-conversation-feedback-reference";
+    const feedbackReference = `feedback-${crypto.randomUUID().replace(/-/g, "")}`;
     let previousFocus: HTMLElement | null = null;
-
-    const feedbackReference = () => {
-      try {
-        const existing = sessionStorage.getItem(REFERENCE_KEY);
-        if (existing && /^feedback-[a-f0-9]{32}$/.test(existing)) return existing;
-      } catch (_) {}
-      const created = `feedback-${crypto.randomUUID().replace(/-/g, "")}`;
-      try {
-        sessionStorage.setItem(REFERENCE_KEY, created);
-      } catch (_) {}
-      return created;
-    };
 
     const showError = (message = "") => {
       error.textContent = message;
@@ -231,7 +220,7 @@ const reasonOptions = [
           credentials: "same-origin",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            feedback_reference: feedbackReference(),
+            feedback_reference: feedbackReference,
             score,
             selected_reasons: selectedReasons,
             optional_comment: comment.value.trim() || null,

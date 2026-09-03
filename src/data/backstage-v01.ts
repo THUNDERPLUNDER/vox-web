@@ -3,7 +3,7 @@
 export const backstageMeta = {
   title: "Backstage",
   lead: "Backstage er kontrollrommet for hvordan Viddel fungerer bak scenen. Her forklarer vi AI-flyten, beskyttelsen, feilstater og hva som må sjekkes før vi deler med flere.",
-  updatedAt: "2026-08-30",
+  updatedAt: "2026-08-20",
   issue: "#180 · #184 · #222 · #346",
 } as const;
 
@@ -11,7 +11,7 @@ export const statusPanel = [
   { label: "Spør Viddel", value: "Midlertidig utilgjengelig — guard v0.2 under QA", tone: "wait" as const },
   { label: "Guard", value: "Eierbryter + Vercel Firewall", tone: "ok" as const },
   { label: "Monitoring", value: "Vercel logs + PostHog EU", tone: "ok" as const },
-  { label: "Conversation feedback", value: "Neon EU · 90 dager", tone: "ok" as const },
+  { label: "Conversation feedback", value: "Neon EU · retention Needs QA", tone: "wait" as const },
 ] as const;
 
 export const quickAnswers = [
@@ -42,7 +42,7 @@ export const quickAnswers = [
   {
     question: "Hva lagres når noen gir tilbakemelding?",
     answer:
-      "En separat Neon-database i Frankfurt lagrer score, valgte hurtiggrunner, valgfri kommentar, tidspunkt, route og miljø i 90 dager. CES-session, spørsmål, svar og samtaleutdrag følger aldri med.",
+      "En separat Neon-database i Frankfurt lagrer score, valgte hurtiggrunner, valgfri kommentar, tidspunkt, route og miljø. CES-session, spørsmål, svar og samtaleutdrag følger aldri med. Automatisk sletting etter 90 dager er implementert, men ikke operativt verifisert ennå.",
   },
 ] as const;
 
@@ -878,7 +878,7 @@ export const monitoringExplainer = {
       label: "Conversation feedback (Neon EU)",
       human:
         "Eksplisitt tilbakemelding lagres i en egen Neon Postgres Free-database i AWS Frankfurt. Kun score, hurtiggrunner, valgfri kommentar og kontrollert metadata — aldri chatspørsmål, svar, transcript eller CES-session.",
-      where: "Vercel → Storage → neon-apricot-coin · 90 dagers retention",
+      where: "Vercel → Storage → neon-apricot-coin · 90-dagers retention Needs QA",
     },
   ],
 } as const;

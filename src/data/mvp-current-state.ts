@@ -66,7 +66,7 @@ export type ClosedSprint = {
 };
 
 export const mvpCurrentState = {
-  updatedAt: "2026-08-30",
+  updatedAt: "2026-08-20",
   currentSprint: {
     id: "2026-w21",
     label: "2026-W21",
@@ -121,7 +121,7 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Needs QA",
-      note: "Guard v0.2 må fortsatt verifiseres før bredere deling. Conversation Feedback v0.1 legger til en separat, transcript-fri Tilbakemelding-flyt med Neon EU og 90 dagers retention.",
+      note: "Guard v0.2 må fortsatt verifiseres før bredere deling. Conversation Feedback v0.1 legger til en separat, transcript-fri Tilbakemelding-flyt med Neon EU; 90-dagers retention er implementert, men ikke operativt verifisert.",
       visFrontpage: true,
       kind: "public",
       frontpageDescription: "Headless AI-chat med adaptiv, privacy-first tilbakemeldingsflyt under QA.",
@@ -225,7 +225,7 @@ export const mvpCurrentState = {
   recentChanges: [
     {
       date: "2026-08-30",
-      summary: "Conversation Feedback v0.1 — separat Neon EU-store, adaptivt Tilbakemelding-panel og 90 dagers retention (#346)",
+      summary: "Conversation Feedback v0.1 — separat Neon EU-store og adaptivt Tilbakemelding-panel; 90-dagers retention er fortsatt Needs QA (#346)",
       issue: "#346",
       commit: "—",
     },
