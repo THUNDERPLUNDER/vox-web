@@ -274,7 +274,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     try {
-      const result = await runAgentSearchAnswer(agentEnv.config, { message });
+      const result = await runAgentSearchAnswer(agentEnv.config, { message, sessionId });
       const meta: ChatSuccessMeta = {
         duration_bucket: result.meta.durationBucket,
         retry_used: result.meta.retryUsed,

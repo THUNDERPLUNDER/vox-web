@@ -2,6 +2,12 @@
 
 import { getGoogleAccessToken } from "./ces-auth";
 import {
+  buildAgentSearchSessionId,
+  buildAgentSearchSessionParent,
+  buildAgentSearchSessionResource,
+  isAgentSearchSessionReadyStatus,
+} from "./agent-search-session";
+import {
   VIDDEL_RESPONSE_CONTRACT_VERSION,
   VIDDEL_RESPONSE_PREAMBLE,
 } from "./viddel-response-contract";
@@ -32,6 +38,7 @@ export type AgentSearchEnvResult =
 
 export type AgentSearchAnswerInput = {
   message: string;
+  sessionId: string;
 };
 
 export type AgentSearchAnswerResult = {
@@ -49,8 +56,6 @@ export type AgentSearchAnswerMeta = {
   hasCitations: boolean;
   responseContractVersion: string;
 };
-
-type AgentSearchAnswerSessionMode = "omit" | "full";
 
 function readEnv(name: string): string {
   return (process.env[name] ?? import.meta.env[name] ?? "").trim();
@@ -86,13 +91,13 @@ export function resolveAgentSearchEnv(): AgentSearchEnvResult {
   };
 }
 
-function resolveAnswerSessionMode(): AgentSearchAnswerSessionMode {
-  const raw = readEnv("AGENT_SEARCH_ANSWER_SESSION").toLowerCase();
-  return raw === "full" ? "full" : "omit";
-}
-
-function buildAnswerSessionResource(config: AgentSearchEnvConfig): string {
-  return `projects/${config.projectId}/locations/${config.location}/collections/${COLLECTION}/engines/${config.engineId}/sessions/-`;
+function buildCreateSessionUrl(
+  host: string,
+  config: AgentSearchEnvConfig,
+  localSessionId: string,
+): string {
+  const sessionId = buildAgentSearchSessionId(localSessionId);
+  return `${host}/v1/${buildAgentSearchSessionParent(config)}/sessions?sessionId=${encodeURIComponent(sessionId)}`;
 }
 
 function buildAnswerUrl(host: string, config: AgentSearchEnvConfig): string {
@@ -100,9 +105,13 @@ function buildAnswerUrl(host: string, config: AgentSearchEnvConfig): string {
   return `${host}/v1/${resource}:answer`;
 }
 
-function buildAnswerRequestBody(config: AgentSearchEnvConfig, message: string): Record<string, unknown> {
+export function buildAnswerRequestBody(
+  config: AgentSearchEnvConfig,
+  input: AgentSearchAnswerInput,
+): Record<string, unknown> {
   const body: Record<string, unknown> = {
-    query: { text: message },
+    query: { text: input.message },
+    session: buildAgentSearchSessionResource(config, input.sessionId),
     groundingSpec: {
       includeGroundingSupports: true,
     },
@@ -115,10 +124,6 @@ function buildAnswerRequestBody(config: AgentSearchEnvConfig, message: string): 
       },
     },
   };
-
-  if (resolveAnswerSessionMode() === "full") {
-    body.session = buildAnswerSessionResource(config);
-  }
 
   return body;
 }
@@ -188,6 +193,28 @@ async function runAgentSearchAnswerOnce(
   const timeoutId = setTimeout(() => controller.abort(), CES_FETCH_TIMEOUT_MS);
 
   try {
+    const sessionResponse = await fetch(buildCreateSessionUrl(host, config, input.sessionId), {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json; charset=utf-8",
+      },
+      body: "{}",
+    });
+
+    if (!isAgentSearchSessionReadyStatus(sessionResponse.status)) {
+      const responseText = await sessionResponse.text().catch(() => "");
+      const { hint } = extractSafeGoogleError(responseText);
+      const code = mapGoogleHttpToCesCode(sessionResponse.status, hint);
+      throw new CesRunSessionError(
+        `agent_search_session_upstream_${sessionResponse.status}`,
+        code,
+        502,
+        sessionResponse.status,
+      );
+    }
+
     const response = await fetch(buildAnswerUrl(host, config), {
       method: "POST",
       signal: controller.signal,
@@ -195,7 +222,7 @@ async function runAgentSearchAnswerOnce(
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json; charset=utf-8",
       },
-      body: JSON.stringify(buildAnswerRequestBody(config, input.message)),
+      body: JSON.stringify(buildAnswerRequestBody(config, input)),
     });
 
     const responseText = await response.text().catch(() => "");
