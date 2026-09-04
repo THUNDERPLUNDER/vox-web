@@ -121,10 +121,10 @@ export const mvpCurrentState = {
       label: "Spør Viddel",
       route: "/no/chat/",
       status: "Needs QA",
-      note: "Production-feil diagnostisert 19. august: Upstash-guard stoppet /api/chat før AI-kallet. Guard v0.2 har midlertidig eierkontroll og må verifiseres med Vercel Flags og Vercel Firewall før merge.",
+      note: "Guard v0.2 må fortsatt verifiseres før bredere deling. Conversation Feedback v0.1 legger til en separat, transcript-fri Tilbakemelding-flyt med Neon EU; 90-dagers retention er implementert, men ikke operativt verifisert.",
       visFrontpage: true,
       kind: "public",
-      frontpageDescription: "Headless AI-chat — feil diagnostisert, enklere guard under QA.",
+      frontpageDescription: "Headless AI-chat med adaptiv, privacy-first tilbakemeldingsflyt under QA.",
     },
     {
       id: "conversation-area-prototype",
@@ -223,6 +223,12 @@ export const mvpCurrentState = {
     },
   ] satisfies NextRisk[],
   recentChanges: [
+    {
+      date: "2026-08-30",
+      summary: "Conversation Feedback v0.1 — separat Neon EU-store og adaptivt Tilbakemelding-panel; 90-dagers retention er fortsatt Needs QA (#346)",
+      issue: "#346",
+      commit: "—",
+    },
     {
       date: "2026-08-20",
       summary: "Midlertidig eierkontroll implementert lokalt: firesifret PIN, sikker eiercookie og global offentlig AI-bryter i Vercel Flags.",

@@ -1,6 +1,7 @@
 ---
 /* CONTRACT: Standalone Viddel AI chat — open start surface, headless via /api/chat. #125M-C R1 */
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ConversationFeedbackPanel from "../../components/conversation/ConversationFeedbackPanel.astro";
 import InspectToolsDrawer from "../../components/dev/InspectToolsDrawer.astro";
 import "../../styles/r1-dialog-article.css";
 import "../../styles/viddel-standalone-chat.css";
@@ -109,6 +110,8 @@ const publicSeedQuestions = [
       </div>
     </section>
   </InspectToolsDrawer>
+
+  <ConversationFeedbackPanel />
 
   <main class="viddel-chat-standalone" data-viddel-chat>
     <div class="r1-editorial-container">
@@ -370,6 +373,16 @@ const publicSeedQuestions = [
                   aria-relevant="additions text"
                 >
                 </div>
+                <div class="viddel-chat-feedback-trigger hidden" data-viddel-feedback-trigger-wrap>
+                  <button
+                    type="button"
+                    data-viddel-feedback-trigger
+                    aria-controls="conversation-feedback-panel"
+                    aria-haspopup="dialog"
+                  >
+                    Gi tilbakemelding
+                  </button>
+                </div>
                 <div class="viddel-chat-scroll__bottom-spacer" data-viddel-chat-scroll-spacer aria-hidden="true"></div>
               </div>
             </div>
@@ -566,6 +579,8 @@ const publicSeedQuestions = [
       const dialog = root?.querySelector("[data-viddel-chat-dialog]");
       const scrollViewport = root?.querySelector("[data-viddel-chat-scroll-viewport]");
       const transcript = root?.querySelector("[data-viddel-chat-transcript]");
+      const feedbackTriggerWrap = root?.querySelector<HTMLElement>("[data-viddel-feedback-trigger-wrap]");
+      const feedbackTrigger = root?.querySelector<HTMLButtonElement>("[data-viddel-feedback-trigger]");
       const composeStack = root?.querySelector("[data-viddel-chat-compose-stack]");
       const startGroup = shell?.querySelector("[data-viddel-chat-start]");
       const loadingEl = root?.querySelector("[data-viddel-chat-loading]");
@@ -605,6 +620,8 @@ const publicSeedQuestions = [
         !dialog ||
         !scrollViewport ||
         !transcript ||
+        !feedbackTriggerWrap ||
+        !feedbackTrigger ||
         !composeStack ||
         !loadingEl ||
         !errorEl ||
@@ -920,6 +937,7 @@ const publicSeedQuestions = [
         renderAssistantMarkdownInto(body, text);
         assistant.append(eyebrow, body);
         activeTurn.append(assistant);
+        feedbackTriggerWrap.classList.remove("hidden");
         completeInitialConversation();
         scrollDialogToEnd();
       };
@@ -1282,6 +1300,12 @@ const publicSeedQuestions = [
           input.focus();
           input.setSelectionRange(question.length, question.length);
         });
+      });
+
+      feedbackTrigger.addEventListener("click", () => {
+        window.dispatchEvent(new CustomEvent("viddel-conversation-feedback-open", {
+          detail: { trigger: feedbackTrigger },
+        }));
       });
 
       if ("ResizeObserver" in window) {
