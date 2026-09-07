@@ -165,7 +165,7 @@ Vi vil gjerne snakke med brukere, fagfolk, organisasjoner og andre som kan gjør
 
 The support-platform language above describes Viddel's long-term North Star, not current product capability or current scope.
 
-Do not expand the public page into a platform feature list or imply that Viddel currently serves every named role. Keep the current beta/product scope separate and early-stage.
+Keep it as one restrained direction section. Do not expand the public page into a platform feature list or imply that Viddel currently serves every named role. Keep the current beta/product scope separate and early-stage.
 
 ---
 
