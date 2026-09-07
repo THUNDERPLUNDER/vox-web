@@ -7,12 +7,14 @@ Operative regler for Cursor, Codex og menneskelig HITL i Viddel Lab.
 | Flate | Rolle |
 |-------|--------|
 | `docs/project/AI_DEVELOPMENT_CONTRACT.md` | Canonical execution standard for non-trivial AI-assisted development |
+| `Viddel – Project Brain (Current)` | Canonical levende syntese for overordnet prosjekt-state |
+| `src/data/vis-project-state-v01.ts` | Kuratert repo-snapshot av Project Brain for `/vis/`; ikke backlog eller ny sannhet |
 | `/designsystem/` | Gjeldende designsystem-sannhet (mønstre, primitives, applied surfaces) |
 | `/backstage/` | Gjeldende systemreferanse (AI-flow, API, guards, env-vars, production) |
-| `src/data/mvp-current-state.ts` | Gjeldende operativ MVP-status og `currentSprint` |
+| `src/data/mvp-current-state.ts` | Smal produkt-/runtime-status og legacy `currentSprint`; ikke overordnet prosjekt-state |
 | `/vis/sprints/...` | Aktiv sprint (control room) eller historikk (arkiv) — avhenger av `currentSprint.status` |
 | GitHub Projects / issues | Oppgavebuss |
-| VIS (`/vis/`) | Intern reviewflate — leser MVP-status fra registry |
+| VIS (`/vis/`) | Kuratert Project Brain-read model og inngang til Grunnmur → Design → Kode; ikke backlog |
 
 ## A0. AI Development Contract-regel
 
@@ -38,19 +40,19 @@ Før UI-endringer skal `/designsystem/` og relevante mønstre leses.
 - Finnes mønsteret → gjenbruk det.
 - Nytt mønster eller vesentlig endring → oppdater `/designsystem/` **eller** forklar i Return Ticket hvorfor det ikke trengs.
 
-## B. VIS current-state-regel
+## B. MVP product/runtime-regel
 
-Hvis en oppgave endrer **MVP-status**, public flater, designmønstre, AI-status, applied surfaces eller neste risiko:
+Hvis en oppgave endrer faktisk **produkt-/runtime-status**, public flater, designmønstre, AI-status, applied surfaces eller neste risiko:
 
 → oppdater `src/data/mvp-current-state.ts`
 
-VIS-forsiden (`/vis/`) henter «MVP nå» fra denne filen. Ikke hardkod statuskort i VIS-forsiden.
+Registeret eier ikke samlet prosjekt-state. Overordnet syntese eies av Project Brain og projiseres kuratert gjennom `src/data/vis-project-state-v01.ts` til `/vis/`.
 
 ## B2. VIS sprint guard (maskinlesbar)
 
-Aktiv sprint styres av `mvpCurrentState.currentSprint` i `src/data/mvp-current-state.ts`:
+Sprintmetadata i `mvpCurrentState.currentSprint` er et legacy produkt-/lab-register og vises ikke som gjeldende Project State på `/vis/`. Ved vedlikehold av sprintflatene gjelder fortsatt:
 
-- `status: "active"` → vises som **Denne sprinten** i kontrollrom og som primær hub. **Ikke** i «Historikk / arkiv».
+- `status: "active"` → må ikke samtidig ligge i «Historikk / arkiv» i det gamle sprintregisteret.
 - `status: "closed"` → flytt til `closedSprints[]` og vis kun i arkiv.
 
 Ved sprintskifte:
@@ -73,9 +75,9 @@ Ved endring i `src/lib/chat-api-guard.ts` (limits, max length): oppdater Backsta
 
 Validering: `npm run verify:backstage-guard` (kjøres automatisk før `npm run build`).
 
-## B4. VIS Runtime Feed — kommunikasjonsregel
+## B4. VIS Runtime Feed — smal runtime-regel
 
-`src/data/vis-runtime-feed.ts` vises øverst på `/vis/` som kort kontrollrom-sammendrag.
+`src/data/vis-runtime-feed.ts` beholdes som et smalt runtime-/presentasjonssnapshot. Det vises ikke som samlet prosjekt-state og konkurrerer ikke med Project Brain-projeksjonen på `/vis/`.
 
 **Skriv for Thomas og Vibeke** — ikke som intern teknisk status.
 
@@ -91,13 +93,15 @@ Validering: `npm run verify:backstage-guard` (kjøres automatisk før `npm run b
 
 > «Solution assessment ferdig — Thomas vurderer Hybrid v0.1.»
 
-Etter viktig Return Ticket: oppdater feed **eller** forklar i Return Ticket hvorfor VIS runtime ikke påvirkes.
+Etter en viktig produkt-/runtime-Return Ticket: oppdater feed **eller** forklar i Return Ticket hvorfor VIS runtime ikke påvirkes.
 
 Validering: `npm run verify:vis-runtime-feed` (kjøres automatisk før `npm run build`).
 
 ## C. VIS frontpage-regel
 
-- VIS-forsiden viser gjeldende MVP-status fra `getVisFrontpageEntries()` / `mvpCurrentState`.
+- VIS-forsiden viser en kuratert projeksjon fra Project Brain gjennom `vis-project-state-v01.ts`.
+- VIS-forsiden er ikke backlog, research-evidens eller teknisk runtime truth.
+- `mvp-current-state.ts` og `vis-runtime-feed.ts` kan fortsatt brukes i smale produkt-/runtime-sammenhenger, men eier ikke overordnet state.
 - GitHub Projects er fortsatt oppgavebuss.
 - `/designsystem/` er canonical designreferanse.
 
@@ -152,7 +156,7 @@ Intern shorthand er **ikke nok**. Return Ticket skal gi nok språk til at VIS ka
 3. Les `/designsystem/` ved UI-arbeid.
 4. Les `src/data/mvp-current-state.ts` ved status-/VIS-arbeid.
 5. Vurder Backstage (`/backstage/`) ved endringer i API, guard, env-vars eller production.
-6. Vurder VIS Runtime Feed (`vis-runtime-feed.ts`) ved viktig Return Ticket — skriv for Thomas/Vibeke.
+6. Vurder VIS Runtime Feed (`vis-runtime-feed.ts`) ved viktig produkt-/runtime-Return Ticket — skriv for Thomas/Vibeke.
 7. Hold endringer små; `npm run build` før ferdig.
 8. Ved browser-visible/interaktiv endring: verifiser faktisk brukerflyt i browser når mulig.
 9. Commit ferdig arbeid, push branch og opprett PR.

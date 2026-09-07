@@ -1,5 +1,5 @@
-/* CONTRACT: VIS Runtime Feed v0.1 — kondensert agent-status for /vis/ (manuelt ved Return Ticket).
-   Kommunikasjonsregel: skriv for Thomas/Vibeke — headline uten forkunnskap. Se OPERATING_RULES § B4. */
+/* CONTRACT: VIS Runtime Feed v0.1 — retained narrow runtime snapshot, not overall project state.
+   Project Brain + vis-project-state-v01 own the curated /vis overview. See OPERATING_RULES § B4. */
 
 export type VisRuntimeProgressStep = {
   id: string;

@@ -1,1017 +1,447 @@
 ---
-/* CONTRACT: VIS frontpage v0.1 — kontrollrom med visuell prioritet; MVP from registry, hubs from vis-frontpage-hubs-v01. */
+/* CONTRACT: VIS Project State v0.1 — curated Project Brain read model; never backlog. */
 import VisInternalLayout from "../../layouts/VisInternalLayout.astro";
-import { groupedVisEntries, visTypeLabelNo, wireframeIndexEntries } from "../../lib/vis-wireframes";
-import { getVisFrontpageEntries, getCurrentSprintVisEntry, mvpCurrentState } from "../../data/mvp-current-state.ts";
-import { getClosedSprintArchiveLinks } from "../../lib/vis-sprint-guard.ts";
-import {
-  getVisFrontpageHubs,
-  visFrontpageMandate,
-  visPrimaryNextWorkIds,
-  visSourceOfTruthNotes,
-} from "../../data/vis-frontpage-hubs-v01.ts";
-import { getVisRuntimeFeed } from "../../data/vis-runtime-feed.ts";
+import { groupedVisEntries, wireframeIndexEntries } from "../../lib/vis-wireframes";
+import { visProjectStateV01 } from "../../data/vis-project-state-v01.ts";
 
-const runtimeFeed = getVisRuntimeFeed();
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const internalHref = (path: string) => `${base}${path.replace(/^\//, "")}`;
 
-const base = import.meta.env.BASE_URL;
-const mvpNowEntries = getVisFrontpageEntries(base);
-const currentSprint = getCurrentSprintVisEntry(base);
-const closedSprintArchiveLinks = getClosedSprintArchiveLinks(base);
-const hubs = getVisFrontpageHubs(base);
-const primaryHubs = hubs.filter((h) => h.tier === "primary");
-const secondaryHubs = hubs.filter((h) => h.tier === "secondary");
+const architectureLayers = [
+  {
+    number: "01",
+    id: "grunnmur",
+    title: "Grunnmur",
+    question: "Hva styrer Viddel?",
+    description:
+      "North Star, bruker- og stakeholdergrunnlag, opplevelsesprinsipper, IA, tillit, innhold og språk. Grunnmuren peker til varige kilder — den er ikke en backlog.",
+    links: [
+      { label: "North Star og Project State", href: "#project-state" },
+      { label: "IA-prinsipper", href: internalHref("/vis/system/ia-principles-v01") },
+      { label: "Artikkel- og innholdsgrunnlag", href: internalHref("/vis/system/article") },
+    ],
+  },
+  {
+    number: "02",
+    id: "design",
+    title: "Design",
+    question: "Hvordan skal Viddel oppleves?",
+    description:
+      "Det kodebaserte designsystemet er canonical for tokens, primitives, mønstre og anvendte flater. Brand er en synlig del av dette laget, ikke et eget arkitekturlag.",
+    links: [
+      { label: "Åpne Designsystem", href: internalHref("/designsystem/") },
+      { label: "Primitives og tokens", href: internalHref("/designsystem/#primitives-heading") },
+      { label: "Mønstre og applied surfaces", href: internalHref("/designsystem/#patterns-overview") },
+    ],
+    brand: true,
+  },
+  {
+    number: "03",
+    id: "kode",
+    title: "Kode / produkt",
+    question: "Hva er implementert og verifisert?",
+    description:
+      "Produktflatene og repoet viser implementert virkelighet. Backstage forklarer systemet, mens GitHub Issues og Projects eier arbeid og status.",
+    links: [
+      { label: "Se produktet", href: internalHref("/no/") },
+      { label: "Åpne Backstage", href: internalHref("/backstage/") },
+      {
+        label: "Åpne repoet",
+        href: "https://github.com/THUNDERPLUNDER/vox-web",
+        external: true,
+      },
+    ],
+  },
+] as const;
 
-const chatEntry = mvpNowEntries.find((e) => e.title === "Spør Viddel production");
-const designsystemEntry = mvpNowEntries.find((e) => e.title === "Designsystem");
-const otherMvpEntries = mvpNowEntries.filter(
-  (e) => e.title !== "Spør Viddel production" && e.title !== "Designsystem",
-);
-
-const primaryNextWork = visPrimaryNextWorkIds
-  .map((id) => mvpCurrentState.nextRisks.find((r) => r.id === id))
-  .filter((r): r is (typeof mvpCurrentState.nextRisks)[number] => !!r);
-const laterNextWork = mvpCurrentState.nextRisks.filter((r) => !visPrimaryNextWorkIds.includes(r.id as (typeof visPrimaryNextWorkIds)[number]));
+const operationalLinks = [
+  {
+    title: "Roadmap",
+    description: "Retning og faser som egen read model — ikke daglig backlog.",
+    href: internalHref("/vis/system/roadmap-timeline-v01"),
+  },
+  {
+    title: "GitHub runtime",
+    description: "Operativ drill-down til issues og PR-er. GitHub er task truth.",
+    href: internalHref("/vis/system/github-runtime-status"),
+  },
+  {
+    title: "Backstage",
+    description: "Systemreferanse for AI, API, guards, miljø og production.",
+    href: internalHref("/backstage/"),
+  },
+  {
+    title: "Review",
+    description: "Kandidater og QA før mønstre eller flater blir canonical.",
+    href: internalHref("/vis/review/"),
+  },
+  {
+    title: "Redaksjonelle bilder",
+    description: "Kuraterte assets og bildevalg for innhold.",
+    href: internalHref("/vis/assets/editorial"),
+  },
+] as const;
 
 const archiveEntries = wireframeIndexEntries();
 const archiveGrouped = groupedVisEntries(archiveEntries);
-
-const quickHubLinks = primaryHubs.filter((h) => h.href).slice(0, 3);
-const activeWork = runtimeFeed.activeNow[0];
-const primaryLinks = runtimeFeed.links.primary;
-const secondaryLinks = runtimeFeed.links.secondary ?? [];
 ---
 
-<VisInternalLayout title="VIS kontrollrom" showPageIntro={false}>
-  <main class="vis-room">
-    <header class="vis-room__header">
-      <p class="vis-room__kicker">Intern · VIS</p>
-      <h1>{visFrontpageMandate.title}</h1>
-      <p class="vis-room__lead">{visFrontpageMandate.lead}</p>
+<VisInternalLayout title="VIS Project State" showPageIntro={false}>
+  <main class="project-state-page">
+    <header class="project-state-page__header">
+      <p class="eyebrow">VIS · kuratert prosjektoversikt</p>
+      <h1>Viddel Project State</h1>
+      <p class="project-state-page__lead">
+        Hva Viddel bygger, hva som betyr mest nå, og hvor den underliggende sannheten bor.
+        VIS er en leseflate — ikke backlog eller ny source of truth.
+      </p>
     </header>
 
-    {
-      activeWork ? (
-        <aside class="vis-room__runtime" aria-label="Akkurat nå">
-          <div class="vis-room__runtime-head">
-            <h2 class="vis-room__runtime-title">Akkurat nå</h2>
-            <span class="vis-room__runtime-updated">{runtimeFeed.updatedAt}</span>
-          </div>
-
-          <p class="vis-room__runtime-headline">{activeWork.headline}</p>
-
-          <ol class="vis-room__runtime-progress" aria-label="Fremdrift">
-            {activeWork.progressSteps.map((step, index) => (
-              <li
-                class:list={[
-                  "vis-room__runtime-step",
-                  step.state === "done" && "vis-room__runtime-step--done",
-                  step.state === "current" && "vis-room__runtime-step--current",
-                  step.state === "upcoming" && "vis-room__runtime-step--upcoming",
-                ]}
-              >
-                {index > 0 ? <span class="vis-room__runtime-step-arrow" aria-hidden="true">→</span> : null}
-                <span class="vis-room__runtime-step-label">{step.label}</span>
-              </li>
-            ))}
-          </ol>
-
-          <dl class="vis-room__runtime-meta">
-            <div class="vis-room__runtime-row">
-              <dt>Arbeid</dt>
-              <dd>
-                {activeWork.issueLink ? (
-                  <a href={activeWork.issueLink}>{activeWork.workTitle}</a>
-                ) : (
-                  activeWork.workTitle
-                )}
-              </dd>
-            </div>
-            <div class="vis-room__runtime-row">
-              <dt>Område</dt>
-              <dd>{activeWork.area}</dd>
-            </div>
-            <div class="vis-room__runtime-row">
-              <dt>Hvorfor</dt>
-              <dd>{activeWork.why}</dd>
-            </div>
-            <div class="vis-room__runtime-row">
-              <dt>Status</dt>
-              <dd>{activeWork.status}</dd>
-            </div>
-            <div class="vis-room__runtime-row">
-              <dt>Mulig løsning</dt>
-              <dd>{activeWork.possibleSolution}</dd>
-            </div>
-            <div class="vis-room__runtime-row vis-room__runtime-row--decision">
-              <dt>Neste beslutning</dt>
-              <dd>{activeWork.nextDecision}</dd>
-            </div>
-          </dl>
-
-          <p class="vis-room__runtime-foot">
-            <span class="vis-room__runtime-foot-label">Sist ferdigstilt</span>
-            {runtimeFeed.recentlyCompletedSummary}
-          </p>
-
-          <p class="vis-room__runtime-foot vis-room__runtime-foot--muted">
-            <span class="vis-room__runtime-foot-label">Siste retur</span>
-            {runtimeFeed.lastReturnTicketSummary}
-          </p>
-
-          {
-            primaryLinks.length > 0 || secondaryLinks.length > 0 ? (
-              <nav class="vis-room__runtime-nav" aria-label="Runtime-lenker">
-                {primaryLinks.map((link) => (
-                  <a
-                    href={link.href}
-                    class="vis-room__runtime-nav-link vis-room__runtime-nav-link--primary"
-                    rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  >
-                    {link.label}
-                  </a>
-                ))}
-                {secondaryLinks.map((link) => (
-                  <a
-                    href={link.href}
-                    class="vis-room__runtime-nav-link vis-room__runtime-nav-link--secondary"
-                    rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </nav>
-            ) : null
-          }
-        </aside>
-      ) : null
-    }
-
-    <section class="vis-room__hero" aria-label="Kontrollrom-status">
-      <div class="vis-room__hero-grid">
-        <article class="vis-room__panel vis-room__panel--primary" aria-labelledby="vis-now-status">
-          <p id="vis-now-status" class="vis-room__panel-label">Nå-status</p>
-          {chatEntry ? (
-            <a href={chatEntry.href} class="vis-room__hero-link">
-              <span class="vis-room__live-dot" aria-hidden="true"></span>
-              <span class="vis-room__hero-title">Spør Viddel — live i production</span>
-              <span class="vis-room__hero-meta">CES aktiv · Upstash guard · intern test</span>
-            </a>
-          ) : (
-            <p class="vis-room__hero-title">MVP-status utilgjengelig</p>
-          )}
-          <p class="vis-room__focus">{mvpCurrentState.currentFocus}</p>
-          <p class="vis-room__updated">Oppdatert {mvpCurrentState.updatedAt}</p>
-        </article>
-
-        <article class="vis-room__panel" aria-labelledby="vis-next-priority">
-          <p id="vis-next-priority" class="vis-room__panel-label">Neste arbeid</p>
-          <ol class="vis-room__priority-list">
-            {primaryNextWork.map((item, index) => (
-              <li>
-                <span class="vis-room__priority-index">{index + 1}</span>
-                <span class="vis-room__priority-label">{item.label}</span>
-              </li>
-            ))}
-          </ol>
-        </article>
-
-        <nav class="vis-room__panel" aria-labelledby="vis-go-next">
-          <p id="vis-go-next" class="vis-room__panel-label">Gå videre</p>
-          <ul class="vis-room__go-list">
-            {quickHubLinks.map((hub) => (
-              <li>
-                <a href={hub.href}>{hub.title}</a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+    <section id="project-state" class="project-state" aria-labelledby="project-state-title">
+      <div class="project-state__source">
+        <div>
+          <p class="eyebrow">Project State · v0.1</p>
+          <h2 id="project-state-title">Hva er sant og viktig nå?</h2>
+        </div>
+        <p>
+          Kuratert fra <strong>{visProjectStateV01.sourceDocument}</strong>
+          <span aria-hidden="true">·</span>
+          <time datetime={visProjectStateV01.brainLastMeaningfulUpdate}>
+            sist meningsfullt oppdatert 7. september 2026
+          </time>
+        </p>
       </div>
 
-      {
-        currentSprint.isActive ? (
-          <article class="vis-room__sprint-strip" aria-labelledby="vis-current-sprint">
-            <p id="vis-current-sprint" class="vis-room__panel-label">Denne sprinten</p>
-            <a href={currentSprint.href} class="vis-room__sprint-link">
-              <span class="vis-room__sprint-title">{currentSprint.title}</span>
-              <span class="vis-room__sprint-focus">{currentSprint.weekFocus}</span>
-              {currentSprint.issue ? (
-                <span class="vis-room__sprint-meta">Issue {currentSprint.issue}</span>
-              ) : null}
-            </a>
-          </article>
-        ) : null
-      }
-    </section>
-
-    <section class="vis-room__section" aria-labelledby="vis-mvp-now">
-      <h2 id="vis-mvp-now" class="vis-room__section-title">MVP nå</h2>
-      <div class="vis-room__mvp">
-        {chatEntry ? (
-          <a href={chatEntry.href} class="vis-room__mvp-primary">
-            <span class="vis-room__mvp-primary-label">Hovedstatus</span>
-            <span class="vis-room__mvp-primary-title">{chatEntry.title}</span>
-            <span class="vis-room__mvp-primary-desc">{chatEntry.description}</span>
-          </a>
-        ) : null}
-        <ul class="vis-room__mvp-secondary">
-          {otherMvpEntries.map((item) => (
-            <li>
-              <a href={item.href}>
-                <span class="vis-room__mvp-secondary-title">{item.title.replace(" production", "")}</span>
-                <span class="vis-room__mvp-secondary-status">{item.status}</span>
-              </a>
-            </li>
-          ))}
-          {designsystemEntry ? (
-            <li class="vis-room__mvp-secondary--ref">
-              <a href={designsystemEntry.href}>
-                <span class="vis-room__mvp-secondary-title">Designsystem</span>
-                <span class="vis-room__mvp-secondary-status">Canonical referanse</span>
-              </a>
-            </li>
-          ) : null}
-        </ul>
+      <div class="project-state__north-star">
+        <p class="eyebrow">North Star</p>
+        <p class="project-state__north-star-copy">{visProjectStateV01.northStar}</p>
+        <p>{visProjectStateV01.northStarContext}</p>
+        <blockquote>
+          <strong>{visProjectStateV01.strategicPrinciple}</strong>
+          <span>{visProjectStateV01.strategicPrincipleMeaning}</span>
+        </blockquote>
       </div>
-    </section>
 
-    <section class="vis-room__section" aria-labelledby="vis-hubs">
-      <h2 id="vis-hubs" class="vis-room__section-title">Huber</h2>
-      <p class="vis-room__section-lead">Innganger til faste kunnskapsområder — ikke backlog.</p>
+      <div class="project-state__phase">
+        <p class="eyebrow">Fase nå</p>
+        <p>{visProjectStateV01.phase}</p>
+      </div>
 
-      <div class="vis-room__hub-group">
-        <h3 class="vis-room__hub-group-title">Primære</h3>
-        <ul class="vis-room__hub-list vis-room__hub-list--primary">
-          {primaryHubs.map((hub) => (
-            <li class:list={[!hub.href && "vis-room__hub-item--planned"]}>
-              {hub.href ? (
-                <a href={hub.href}>
-                  <span class="vis-room__hub-title">{hub.title}</span>
-                  <span class="vis-room__hub-mandate">{hub.mandate}</span>
-                </a>
-              ) : (
+      <div class="project-state__grid">
+        <section aria-labelledby="priorities-title">
+          <p class="eyebrow">Prioriteringer</p>
+          <h3 id="priorities-title">Det vi holder fokus på</h3>
+          <ol class="state-list state-list--numbered">
+            {visProjectStateV01.priorities.map((item) => (
+              <li>
                 <div>
-                  <span class="vis-room__hub-title">{hub.title}</span>
-                  <span class="vis-room__hub-planned">Kommer {hub.issue ?? ""}</span>
-                  <span class="vis-room__hub-mandate">{hub.mandate}</span>
+                  <h4>{item.title}</h4>
+                  <p>{item.description}</p>
+                  {item.href ? <a href={item.href} rel="noopener noreferrer">Se beslutningssporet</a> : null}
                 </div>
-              )}
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section aria-labelledby="decisions-title">
+          <p class="eyebrow">Siste beslutninger</p>
+          <h3 id="decisions-title">Slik styres retningen</h3>
+          <ul class="state-list">
+            {visProjectStateV01.latestDecisions.map((item) => (
+              <li>
+                <h4>{item.title}</h4>
+                <p>{item.description}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
       </div>
 
-      <div class="vis-room__hub-group vis-room__hub-group--secondary">
-        <h3 class="vis-room__hub-group-title">Sekundære</h3>
-        <ul class="vis-room__hub-list vis-room__hub-list--secondary">
-          {secondaryHubs.map((hub) => (
-            <li>
-              <a href={hub.href}>
-                <span class="vis-room__hub-title">{hub.title}</span>
-                <span class="vis-room__hub-mandate">{hub.mandate}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+      <div class="project-state__lower-grid">
+        <section class="state-panel" aria-labelledby="questions-title">
+          <p class="eyebrow">Åpent / hypoteser</p>
+          <h3 id="questions-title">Det vi fortsatt må lære</h3>
+          <ul class="state-list state-list--compact">
+            {visProjectStateV01.openQuestions.map((item) => (
+              <li>
+                <h4>{item.title}</h4>
+                <p>{item.description}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="state-panel state-panel--next" aria-labelledby="actions-title">
+          <p class="eyebrow">Neste 1–3 handlinger</p>
+          <h3 id="actions-title">Neste kontrollerte steg</h3>
+          <ol class="state-list state-list--compact">
+            {visProjectStateV01.nextActions.map((item) => (
+              <li>
+                <h4>{item.title}</h4>
+                <p>{item.description}</p>
+                {item.href ? <a href={item.href} rel="noopener noreferrer">Se beslutningssporet</a> : null}
+              </li>
+            ))}
+          </ol>
+        </section>
       </div>
     </section>
 
-    {
-      laterNextWork.length > 0 ? (
-        <details class="vis-room__details">
-          <summary>Senere / parkert ({laterNextWork.length})</summary>
-          <ul class="vis-room__later-list">
-            {laterNextWork.map((item) => (
-              <li>
-                <span class="vis-room__later-label">{item.label}</span>
-                {item.detail ? <span class="vis-room__later-detail">{item.detail}</span> : null}
-              </li>
-            ))}
-          </ul>
-        </details>
-      ) : null
-    }
+    <section class="architecture" aria-labelledby="architecture-title">
+      <div class="section-heading">
+        <p class="eyebrow">Viddels varige system</p>
+        <h2 id="architecture-title">Grunnmur <span aria-hidden="true">→</span> Design <span aria-hidden="true">→</span> Kode</h2>
+        <p>
+          Lagene viser hvor beslutninger, uttrykk og implementert virkelighet hører hjemme.
+          VIS samler inngangene, men overtar ikke eierskapet.
+        </p>
+      </div>
 
-    <details class="vis-room__details vis-room__details--archive">
-      <summary>Historikk / arkiv</summary>
-      {
-        closedSprintArchiveLinks.length > 0 ? (
-          <ul class="vis-room__archive-links">
-            {closedSprintArchiveLinks.map((link) => (
-              <li>
-                <a href={link.href}>{link.label}</a>
-              </li>
-            ))}
-          </ul>
-        ) : null
-      }
-      <ul class="vis-room__archive-links">
-        <li><a href={`${base}vis/system/`}>System legacy</a></li>
-      </ul>
-      {
-        archiveEntries.length > 0 ? (
-          <div class="vis-room__archive-groups">
+      <div class="architecture__grid">
+        {architectureLayers.map((layer) => (
+          <article id={layer.id} class:list={["architecture-card", layer.brand && "architecture-card--design"]}>
+            <p class="architecture-card__number">{layer.number}</p>
+            <p class="eyebrow">{layer.question}</p>
+            <h3>{layer.title}</h3>
+            <p>{layer.description}</p>
+
+            {layer.brand ? (
+              <a class="brand-preview" href={internalHref("/designsystem/brand/")}>
+                <span class="brand-preview__stage">
+                  <img
+                    src={internalHref("/brand/viddel-wordmark-primary-5bar.svg")}
+                    alt="VIDDEL"
+                    width="938"
+                    height="134"
+                  />
+                </span>
+                <span>
+                  <strong>Logo, signal og favicon</strong>
+                  <small>Se canonical assets og bruksregler</small>
+                </span>
+              </a>
+            ) : null}
+
+            <nav aria-label={`${layer.title}-innganger`}>
+              {layer.links.map((link) => (
+                <a href={link.href} rel={"external" in link && link.external ? "noopener noreferrer" : undefined}>
+                  {link.label}<span aria-hidden="true">↗</span>
+                </a>
+              ))}
+            </nav>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="operations" aria-labelledby="operations-title">
+      <div class="section-heading section-heading--compact">
+        <p class="eyebrow">Operativ drill-down</p>
+        <h2 id="operations-title">Gå dypere når du trenger det</h2>
+        <p>Disse flatene beholder sine egne, avgrensede roller.</p>
+      </div>
+      <nav class="operations__grid" aria-label="Operative støtteflater">
+        {operationalLinks.map((link) => (
+          <a href={link.href}>
+            <strong>{link.title}</strong>
+            <span>{link.description}</span>
+          </a>
+        ))}
+      </nav>
+    </section>
+
+    <details class="history">
+      <summary>Historikk / legacy</summary>
+      <div class="history__body">
+        <p>
+          Eldre sprint-, Control Center- og wireframeflater er beslutningshistorikk. De beskriver ikke
+          dagens samlede prosjektstatus.
+        </p>
+        <nav class="history__links" aria-label="Historiske VIS-flater">
+          <a href={internalHref("/vis/sprints/2026-w21/")}>Sprint 2026-W21 · historikk</a>
+          <a href={internalHref("/vis/system/control-center")}>Control Center · superseded</a>
+          <a href={internalHref("/vis/system/")}>System legacy og referanser</a>
+        </nav>
+        {archiveEntries.length > 0 ? (
+          <div class="history__groups">
             {archiveGrouped.map((group) => (
               <section>
                 <h3>{group.section}</h3>
                 <ul>
-                  {group.items.map(({ filename: name, slug, displayTitle }) => (
+                  {group.items.map(({ filename, slug, displayTitle }) => (
                     <li>
-                      <a href={`${base}vis/${encodeURIComponent(slug)}`}>{displayTitle}</a>
-                      <span class="vis-room__archive-file">{name}</span>
+                      <a href={internalHref(`/vis/${encodeURIComponent(slug)}`)}>{displayTitle}</a>
+                      <span>{filename}</span>
                     </li>
                   ))}
                 </ul>
               </section>
             ))}
           </div>
-        ) : null
-      }
+        ) : null}
+      </div>
     </details>
 
-    <footer class="vis-room__sot">
-      <p class="vis-room__sot-title">Source of truth</p>
-      <p class="vis-room__sot-line">
-        {visSourceOfTruthNotes.map((note) => `${note.label} (${note.role})`).join(" · ")}
+    <footer class="source-map">
+      <p class="eyebrow">Kildekart</p>
+      <p>
+        <strong>Project Brain</strong> eier overordnet syntese · <strong>GitHub</strong> eier oppgaver og status ·
+        <strong>/designsystem/</strong> eier designpresentasjonen · <strong>Backstage</strong> eier systemreferansen ·
+        <strong>VIS</strong> er den kuraterte leseflaten.
+      </p>
+      <p class="source-map__meta">
+        Project Brain oppdatert <time datetime={visProjectStateV01.brainLastMeaningfulUpdate}>7. september 2026</time>
+        · VIS-projeksjon oppdatert <time datetime={visProjectStateV01.projectionUpdatedAt}>7. september 2026</time>
+        · Eier {visProjectStateV01.projectionOwner}
       </p>
     </footer>
   </main>
 
   <style>
-    .vis-room {
-      max-width: 56rem;
+    .project-state-page {
+      --vis-ink: 15 27 46;
+      --vis-muted: 82 96 113;
+      --vis-line: 213 222 232;
+      --vis-blue: 54 114 230;
+      --vis-green: 21 154 98;
+      max-width: 72rem;
       margin: 0 auto;
-      padding: 2rem 1rem 3rem;
-      color: rgb(17 24 39);
+      padding: clamp(1.4rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2rem) 4rem;
+      color: rgb(var(--vis-ink));
     }
 
-    .vis-room__kicker {
-      margin: 0;
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__header h1 {
+    .project-state-page__header { max-width: 48rem; margin-bottom: 1.5rem; }
+    .project-state-page__header h1, .section-heading h2, .project-state h2,
+    .project-state h3, .architecture-card h3 { text-wrap: balance; }
+    .project-state-page__header h1 {
       margin: 0.35rem 0 0;
-      font-size: clamp(1.5rem, 3vw, 1.85rem);
+      font-size: clamp(2rem, 5vw, 3.55rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
       font-weight: 650;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
     }
-
-    .vis-room__lead {
-      margin: 0.55rem 0 0;
-      max-width: 34rem;
-      font-size: 0.92rem;
-      line-height: 1.55;
-      color: rgb(75 85 99);
-    }
-
-    .vis-room__runtime {
-      margin-top: 1.35rem;
-      padding-bottom: 1.15rem;
-      border-bottom: 1px solid rgb(243 244 246);
+    .project-state-page__lead {
       max-width: 44rem;
+      margin: 0.9rem 0 0;
+      color: rgb(var(--vis-muted));
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      line-height: 1.65;
     }
-
-    .vis-room__runtime-head {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 0.75rem;
-      margin-bottom: 0.55rem;
-    }
-
-    .vis-room__runtime-title {
+    .eyebrow {
       margin: 0;
-      font-size: 0.68rem;
-      font-weight: 650;
-      letter-spacing: 0.12em;
+      color: rgb(var(--vis-muted));
+      font-size: 0.69rem;
+      font-weight: 700;
+      letter-spacing: 0.13em;
       text-transform: uppercase;
-      color: rgb(107 114 128);
     }
-
-    .vis-room__runtime-updated {
-      font-size: 0.72rem;
-      color: rgb(156 163 175);
+    .project-state {
+      overflow: hidden;
+      border: 1px solid rgb(190 205 221);
+      border-radius: 1.35rem;
+      background: radial-gradient(circle at 92% 2%, rgb(54 114 230 / 0.13), transparent 26rem), linear-gradient(145deg, rgb(247 250 253), rgb(255 255 255));
+      box-shadow: 0 20px 60px rgb(15 27 46 / 0.08);
     }
-
-    .vis-room__runtime-headline {
-      margin: 0;
-      max-width: 40rem;
-      font-size: 0.94rem;
-      line-height: 1.5;
-      font-weight: 550;
-      color: rgb(31 41 55);
-    }
-
-    .vis-room__runtime-progress {
+    .project-state__source, .project-state__north-star, .project-state__phase,
+    .project-state__grid, .project-state__lower-grid { padding: clamp(1.2rem, 3vw, 2rem); }
+    .project-state__source {
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.35rem 0.15rem;
-      margin: 0.75rem 0 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .vis-room__runtime-step {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.15rem;
-    }
-
-    .vis-room__runtime-step-label {
-      display: inline-block;
-      padding: 0.18rem 0.55rem;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      font-weight: 550;
-      line-height: 1.3;
-      border: 1px solid rgb(229 231 235);
-      color: rgb(107 114 128);
-      background: rgb(255 255 255);
-    }
-
-    .vis-room__runtime-step--done .vis-room__runtime-step-label {
-      border-color: rgb(209 250 229);
-      color: rgb(6 95 70);
-      background: rgb(236 253 245);
-    }
-
-    .vis-room__runtime-step--current .vis-room__runtime-step-label {
-      border-color: rgb(191 219 254);
-      color: rgb(30 64 175);
-      background: rgb(239 246 255);
-    }
-
-    .vis-room__runtime-step-arrow {
-      margin: 0 0.15rem;
-      font-size: 0.68rem;
-      color: rgb(209 213 219);
-    }
-
-    .vis-room__runtime-meta {
-      margin: 0.85rem 0 0;
-      display: grid;
-      gap: 0.55rem;
-    }
-
-    .vis-room__runtime-row {
-      display: grid;
-      grid-template-columns: 7.5rem 1fr;
-      gap: 0.65rem;
-      align-items: start;
-    }
-
-    .vis-room__runtime-row dt {
-      margin: 0;
-      font-size: 0.72rem;
-      font-weight: 650;
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__runtime-row dd {
-      margin: 0;
-      font-size: 0.82rem;
-      line-height: 1.48;
-      color: rgb(55 65 81);
-    }
-
-    .vis-room__runtime-row dd a {
-      color: rgb(31 41 55);
-      font-weight: 550;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-      text-decoration-color: rgb(209 213 219);
-    }
-
-    .vis-room__runtime-row dd a:hover {
-      text-decoration-color: rgb(107 114 128);
-    }
-
-    .vis-room__runtime-row--decision dd {
-      font-weight: 550;
-      color: rgb(31 41 55);
-    }
-
-    .vis-room__runtime-foot {
-      margin: 0.75rem 0 0;
-      font-size: 0.8rem;
-      line-height: 1.45;
-      color: rgb(75 85 99);
-    }
-
-    .vis-room__runtime-foot--muted {
-      margin-top: 0.35rem;
-      font-size: 0.76rem;
-      color: rgb(156 163 175);
-    }
-
-    .vis-room__runtime-foot-label {
-      display: block;
-      margin-bottom: 0.12rem;
-      font-size: 0.68rem;
-      font-weight: 650;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: rgb(156 163 175);
-    }
-
-    .vis-room__runtime-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem 0.85rem;
-      margin-top: 0.75rem;
-    }
-
-    .vis-room__runtime-nav-link {
-      font-size: 0.8rem;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-
-    .vis-room__runtime-nav-link--primary {
-      font-weight: 600;
-      color: rgb(31 41 55);
-      text-decoration-color: rgb(209 213 219);
-    }
-
-    .vis-room__runtime-nav-link--primary:hover {
-      text-decoration-color: rgb(107 114 128);
-    }
-
-    .vis-room__runtime-nav-link--secondary {
-      font-weight: 500;
-      color: rgb(156 163 175);
-      text-decoration-color: rgb(229 231 235);
-    }
-
-    .vis-room__runtime-nav-link--secondary:hover {
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__hero {
-      margin-top: 1.75rem;
-    }
-
-    .vis-room__hero-grid {
-      display: grid;
-      gap: 1.25rem;
-    }
-
-    .vis-room__panel {
-      padding: 0.15rem 0;
-    }
-
-    .vis-room__panel-label {
-      margin: 0 0 0.65rem;
-      font-size: 0.68rem;
-      font-weight: 650;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__panel--primary {
-      padding-bottom: 0.25rem;
-    }
-
-    .vis-room__hero-link {
-      display: block;
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .vis-room__hero-link:hover .vis-room__hero-title {
-      color: rgb(17 24 39);
-    }
-
-    .vis-room__live-dot {
-      display: inline-block;
-      width: 0.5rem;
-      height: 0.5rem;
-      margin-right: 0.35rem;
-      border-radius: 999px;
-      background: rgb(16 185 129);
-      vertical-align: 0.05em;
-    }
-
-    .vis-room__hero-title {
-      display: block;
-      font-size: clamp(1.15rem, 2.4vw, 1.45rem);
-      font-weight: 650;
-      letter-spacing: -0.02em;
-      line-height: 1.25;
-      color: rgb(31 41 55);
-    }
-
-    .vis-room__hero-meta {
-      display: block;
-      margin-top: 0.25rem;
-      font-size: 0.82rem;
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__focus {
-      margin: 0.85rem 0 0;
-      max-width: 38rem;
-      font-size: 0.86rem;
-      line-height: 1.55;
-      color: rgb(75 85 99);
-    }
-
-    .vis-room__updated {
-      margin: 0.45rem 0 0;
-      font-size: 0.72rem;
-      color: rgb(156 163 175);
-    }
-
-    .vis-room__priority-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .vis-room__priority-list li {
-      display: flex;
-      align-items: baseline;
-      gap: 0.55rem;
-      padding: 0.28rem 0;
-      font-size: 0.88rem;
-      line-height: 1.4;
-    }
-
-    .vis-room__priority-index {
-      flex-shrink: 0;
-      width: 1.1rem;
-      font-size: 0.78rem;
-      font-weight: 650;
-      color: rgb(156 163 175);
-    }
-
-    .vis-room__priority-label {
-      color: rgb(31 41 55);
-      font-weight: 550;
-    }
-
-    .vis-room__go-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .vis-room__go-list a {
-      display: block;
-      padding: 0.22rem 0;
-      font-size: 0.92rem;
-      font-weight: 550;
-      color: rgb(31 41 55);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-color: rgb(209 213 219);
-    }
-
-    .vis-room__go-list a:hover {
-      text-decoration-color: rgb(107 114 128);
-    }
-
-    .vis-room__sprint-strip {
-      margin-top: 1.5rem;
-      padding-top: 1.25rem;
-      border-top: 1px solid rgb(243 244 246);
-    }
-
-    .vis-room__sprint-link {
-      display: block;
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .vis-room__sprint-link:hover .vis-room__sprint-title {
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    .vis-room__sprint-title {
-      display: block;
-      font-size: 1rem;
-      font-weight: 650;
-      letter-spacing: -0.01em;
-      color: rgb(31 41 55);
-    }
-
-    .vis-room__sprint-focus {
-      display: block;
-      margin-top: 0.3rem;
-      max-width: 40rem;
-      font-size: 0.84rem;
-      line-height: 1.5;
-      color: rgb(75 85 99);
-    }
-
-    .vis-room__sprint-meta {
-      display: block;
-      margin-top: 0.25rem;
-      font-size: 0.72rem;
-      color: rgb(156 163 175);
-    }
-
-    .vis-room__section {
-      margin-top: 2.75rem;
-    }
-
-    .vis-room__section-title {
-      margin: 0;
-      font-size: 0.72rem;
-      font-weight: 650;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__section-lead {
-      margin: 0.35rem 0 0;
-      font-size: 0.82rem;
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__mvp {
-      margin-top: 1rem;
-    }
-
-    .vis-room__mvp-primary {
-      display: block;
-      padding: 0.2rem 0 1rem;
-      color: inherit;
-      text-decoration: none;
-      border-bottom: 1px solid rgb(229 231 235);
-    }
-
-    .vis-room__mvp-primary-label {
-      display: block;
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgb(156 163 175);
-    }
-
-    .vis-room__mvp-primary-title {
-      display: block;
-      margin-top: 0.35rem;
-      font-size: 1.05rem;
-      font-weight: 650;
-      letter-spacing: -0.02em;
-    }
-
-    .vis-room__mvp-primary-desc {
-      display: block;
-      margin-top: 0.25rem;
-      font-size: 0.84rem;
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__mvp-secondary {
-      margin: 0;
-      padding: 0.65rem 0 0;
-      list-style: none;
-    }
-
-    .vis-room__mvp-secondary li + li {
-      margin-top: 0.15rem;
-    }
-
-    .vis-room__mvp-secondary a {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
       gap: 1rem;
-      padding: 0.35rem 0;
-      color: inherit;
-      text-decoration: none;
-      font-size: 0.86rem;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-bottom: 1px solid rgb(var(--vis-line));
+    }
+    .project-state__source h2 { margin: 0.35rem 0 0; font-size: clamp(1.45rem, 3vw, 2rem); letter-spacing: -0.025em; }
+    .project-state__source > p { max-width: 25rem; margin: 0; color: rgb(var(--vis-muted)); font-size: 0.78rem; line-height: 1.5; text-align: right; }
+    .project-state__north-star { max-width: 58rem; padding-bottom: 1.3rem; }
+    .project-state__north-star-copy { margin: 0.65rem 0 0.55rem; font-size: clamp(1.2rem, 2.5vw, 1.65rem); line-height: 1.48; letter-spacing: -0.02em; font-weight: 560; }
+    .project-state__north-star > p:last-of-type { margin: 0; color: rgb(var(--vis-muted)); line-height: 1.65; }
+    .project-state__north-star blockquote { display: flex; gap: 0.6rem 1rem; align-items: baseline; flex-wrap: wrap; margin: 1.25rem 0 0; padding-left: 1rem; border-left: 3px solid rgb(var(--vis-green)); }
+    .project-state__north-star blockquote strong { font-size: 1.05rem; }
+    .project-state__north-star blockquote span { color: rgb(var(--vis-muted)); }
+    .project-state__phase { display: grid; gap: 0.45rem; grid-template-columns: minmax(8rem, 0.26fr) 1fr; border-top: 1px solid rgb(var(--vis-line)); border-bottom: 1px solid rgb(var(--vis-line)); background: rgb(15 27 46 / 0.025); }
+    .project-state__phase p { margin: 0; line-height: 1.65; }
+    .project-state__grid, .project-state__lower-grid { display: grid; gap: clamp(1.4rem, 4vw, 2.5rem); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .project-state__grid > section + section { padding-left: clamp(1.4rem, 4vw, 2.5rem); border-left: 1px solid rgb(var(--vis-line)); }
+    .project-state h3 { margin: 0.35rem 0 1rem; font-size: 1.18rem; letter-spacing: -0.015em; }
+    .state-list { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+    .state-list li { min-width: 0; }
+    .state-list h4 { margin: 0; font-size: 0.96rem; line-height: 1.35; }
+    .state-list p { margin: 0.3rem 0 0; color: rgb(var(--vis-muted)); font-size: 0.9rem; line-height: 1.58; }
+    .state-list a { display: inline-block; margin-top: 0.45rem; color: rgb(35 83 173); font-size: 0.78rem; font-weight: 650; text-decoration: none; }
+    .state-list a:hover, .state-list a:focus-visible { text-decoration: underline; }
+    .state-list--numbered { counter-reset: priority; }
+    .state-list--numbered li { display: grid; grid-template-columns: 1.75rem 1fr; gap: 0.7rem; counter-increment: priority; }
+    .state-list--numbered li::before { display: grid; width: 1.65rem; height: 1.65rem; place-items: center; border-radius: 999px; background: rgb(var(--vis-ink)); color: white; content: counter(priority); font-size: 0.7rem; font-weight: 700; }
+    .project-state__lower-grid { padding-top: 0; }
+    .state-panel { padding: 1.2rem; border: 1px solid rgb(var(--vis-line)); border-radius: 0.9rem; background: rgb(255 255 255 / 0.72); }
+    .state-panel--next { border-color: rgb(54 114 230 / 0.3); background: rgb(54 114 230 / 0.045); }
+    .state-list--compact { gap: 0.8rem; }
+    .architecture, .operations { margin-top: clamp(3rem, 7vw, 5rem); }
+    .section-heading { max-width: 49rem; margin-bottom: 1.4rem; }
+    .section-heading h2 { margin: 0.35rem 0 0; font-size: clamp(1.6rem, 3.5vw, 2.4rem); letter-spacing: -0.035em; }
+    .section-heading > p:last-child { margin: 0.7rem 0 0; color: rgb(var(--vis-muted)); line-height: 1.65; }
+    .architecture__grid { display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .architecture-card { display: flex; min-width: 0; min-height: 26rem; flex-direction: column; padding: 1.25rem; border: 1px solid rgb(var(--vis-line)); border-radius: 1rem; background: white; }
+    .architecture-card--design { border-color: rgb(54 114 230 / 0.35); background: linear-gradient(160deg, rgb(54 114 230 / 0.07), white 45%); box-shadow: 0 16px 34px rgb(54 114 230 / 0.09); }
+    .architecture-card__number { margin: 0 0 2rem; color: rgb(153 166 181); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; }
+    .architecture-card h3 { margin: 0.35rem 0 0; font-size: 1.5rem; letter-spacing: -0.025em; }
+    .architecture-card > p:not(.eyebrow):not(.architecture-card__number) { margin: 0.8rem 0 1rem; color: rgb(var(--vis-muted)); font-size: 0.92rem; line-height: 1.6; }
+    .architecture-card nav { display: grid; gap: 0.25rem; margin-top: auto; padding-top: 1rem; border-top: 1px solid rgb(var(--vis-line)); }
+    .architecture-card nav a { display: flex; justify-content: space-between; gap: 0.7rem; padding: 0.6rem 0; color: rgb(var(--vis-ink)); font-size: 0.86rem; font-weight: 630; text-decoration: none; }
+    .architecture-card nav a:hover, .architecture-card nav a:focus-visible { color: rgb(35 83 173); }
+    .brand-preview { display: grid; gap: 0.7rem; margin: 0.2rem 0 1rem; color: rgb(var(--vis-ink)); text-decoration: none; }
+    .brand-preview__stage { display: grid; min-height: 4.25rem; place-items: center; padding: 1rem; border: 1px solid rgb(54 114 230 / 0.2); border-radius: 0.75rem; background: rgb(255 255 255 / 0.8); }
+    .brand-preview img { width: min(100%, 10rem); height: auto; }
+    .brand-preview strong, .brand-preview small { display: block; }
+    .brand-preview strong { font-size: 0.87rem; }
+    .brand-preview small { margin-top: 0.2rem; color: rgb(var(--vis-muted)); font-size: 0.75rem; }
+    .section-heading--compact { margin-bottom: 1rem; }
+    .operations__grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid rgb(var(--vis-line)); border-bottom: 1px solid rgb(var(--vis-line)); }
+    .operations__grid a { display: flex; min-width: 0; flex-direction: column; gap: 0.45rem; padding: 1rem; color: rgb(var(--vis-ink)); text-decoration: none; }
+    .operations__grid a + a { border-left: 1px solid rgb(var(--vis-line)); }
+    .operations__grid a:hover, .operations__grid a:focus-visible { background: rgb(54 114 230 / 0.045); }
+    .operations__grid strong { font-size: 0.9rem; }
+    .operations__grid span { color: rgb(var(--vis-muted)); font-size: 0.78rem; line-height: 1.5; }
+    .history { margin-top: 3rem; border-top: 1px solid rgb(var(--vis-line)); border-bottom: 1px solid rgb(var(--vis-line)); }
+    .history summary { padding: 1rem 0; color: rgb(var(--vis-muted)); font-size: 0.85rem; font-weight: 650; cursor: pointer; }
+    .history__body { padding: 0 0 1.4rem; }
+    .history__body > p { max-width: 44rem; color: rgb(var(--vis-muted)); font-size: 0.85rem; line-height: 1.6; }
+    .history__links { display: flex; gap: 0.5rem 1rem; flex-wrap: wrap; margin-top: 0.9rem; }
+    .history a { color: rgb(35 83 173); font-size: 0.8rem; }
+    .history__groups { display: grid; gap: 1.5rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 1.5rem; }
+    .history__groups h3 { margin: 0 0 0.5rem; font-size: 0.8rem; }
+    .history__groups ul { display: grid; gap: 0.45rem; margin: 0; padding: 0; list-style: none; }
+    .history__groups li { display: grid; gap: 0.15rem; }
+    .history__groups li span { color: rgb(130 143 157); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.64rem; overflow-wrap: anywhere; }
+    .source-map { margin-top: 2rem; padding: 1.2rem; border-radius: 0.8rem; background: rgb(15 27 46); color: white; }
+    .source-map .eyebrow { color: rgb(180 196 217); }
+    .source-map > p:not(.eyebrow) { margin: 0.55rem 0 0; color: rgb(222 231 242); font-size: 0.83rem; line-height: 1.65; }
+    .source-map__meta { color: rgb(163 180 201) !important; font-size: 0.72rem !important; }
+
+    @media (max-width: 960px) {
+      .architecture__grid { grid-template-columns: 1fr; }
+      .architecture-card { min-height: 0; }
+      .architecture-card__number { margin-bottom: 1rem; }
+      .operations__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .operations__grid a + a { border-left: 0; }
+      .operations__grid a:nth-child(even) { border-left: 1px solid rgb(var(--vis-line)); }
+      .operations__grid a:nth-child(n + 3) { border-top: 1px solid rgb(var(--vis-line)); }
     }
 
-    .vis-room__mvp-secondary a:hover .vis-room__mvp-secondary-title {
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-
-    .vis-room__mvp-secondary-title {
-      color: rgb(55 65 81);
-    }
-
-    .vis-room__mvp-secondary-status {
-      flex-shrink: 0;
-      font-size: 0.72rem;
-      color: rgb(156 163 175);
-    }
-
-    .vis-room__mvp-secondary--ref .vis-room__mvp-secondary-title,
-    .vis-room__mvp-secondary--ref .vis-room__mvp-secondary-status {
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__hub-group {
-      margin-top: 1.25rem;
-    }
-
-    .vis-room__hub-group--secondary {
-      margin-top: 1.75rem;
-    }
-
-    .vis-room__hub-group-title {
-      margin: 0 0 0.5rem;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__hub-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .vis-room__hub-list--primary .vis-room__hub-title {
-      font-size: 1rem;
-    }
-
-    .vis-room__hub-list--secondary .vis-room__hub-title {
-      font-size: 0.92rem;
-      font-weight: 550;
-    }
-
-    .vis-room__hub-list li + li {
-      margin-top: 0.15rem;
-    }
-
-    .vis-room__hub-list a,
-    .vis-room__hub-item--planned > div {
-      display: block;
-      padding: 0.55rem 0;
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .vis-room__hub-list a:hover .vis-room__hub-title {
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    .vis-room__hub-title {
-      display: block;
-      font-weight: 650;
-      letter-spacing: -0.01em;
-      color: rgb(31 41 55);
-    }
-
-    .vis-room__hub-mandate {
-      display: block;
-      margin-top: 0.15rem;
-      font-size: 0.8rem;
-      line-height: 1.45;
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__hub-planned {
-      display: block;
-      margin-top: 0.1rem;
-      font-size: 0.72rem;
-      color: rgb(156 163 175);
-    }
-
-    .vis-room__hub-item--planned .vis-room__hub-title {
-      color: rgb(75 85 99);
-    }
-
-    .vis-room__details {
-      margin-top: 2.5rem;
-      font-size: 0.82rem;
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__details summary {
-      cursor: pointer;
-      font-weight: 550;
-      color: rgb(107 114 128);
-    }
-
-    .vis-room__details--archive {
-      margin-top: 1.25rem;
-    }
-
-    .vis-room__later-list,
-    .vis-room__archive-links {
-      margin: 0.75rem 0 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .vis-room__later-list li + li,
-    .vis-room__archive-links li + li {
-      margin-top: 0.45rem;
-    }
-
-    .vis-room__later-label {
-      display: block;
-      font-weight: 550;
-      color: rgb(75 85 99);
-    }
-
-    .vis-room__later-detail {
-      display: block;
-      margin-top: 0.1rem;
-      font-size: 0.78rem;
-      line-height: 1.45;
-    }
-
-    .vis-room__archive-links a {
-      color: rgb(75 85 99);
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-
-    .vis-room__archive-groups {
-      margin-top: 1rem;
-    }
-
-    .vis-room__archive-groups h3 {
-      margin: 0.75rem 0 0.35rem;
-      font-size: 0.68rem;
-      font-weight: 650;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgb(156 163 175);
-    }
-
-    .vis-room__archive-groups ul {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .vis-room__archive-groups li {
-      padding: 0.2rem 0;
-    }
-
-    .vis-room__archive-groups a {
-      font-size: 0.78rem;
-      color: rgb(75 85 99);
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-
-    .vis-room__archive-file {
-      display: block;
-      font-family: ui-monospace, monospace;
-      font-size: 0.65rem;
-      color: rgb(156 163 175);
-    }
-
-    .vis-room__sot {
-      margin-top: 2.5rem;
-      padding-top: 1rem;
-      border-top: 1px solid rgb(243 244 246);
-    }
-
-    .vis-room__sot-title {
-      margin: 0;
-      font-size: 0.65rem;
-      font-weight: 650;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgb(156 163 175);
-    }
-
-    .vis-room__sot-line {
-      margin: 0.35rem 0 0;
-      font-size: 0.68rem;
-      line-height: 1.5;
-      color: rgb(156 163 175);
-    }
-
-    @media (max-width: 520px) {
-      .vis-room__runtime-row {
-        grid-template-columns: 1fr;
-        gap: 0.15rem;
-      }
-    }
-
-    @media (min-width: 768px) {
-      .vis-room {
-        padding: 2.5rem 1.5rem 3.5rem;
-      }
-
-      .vis-room__hero-grid {
-        grid-template-columns: 1.4fr 1fr 0.85fr;
-        gap: 2rem;
-        align-items: start;
-      }
+    @media (max-width: 640px) {
+      .project-state-page { padding-inline: 0.8rem; }
+      .project-state__source, .project-state__grid, .project-state__lower-grid, .project-state__phase { grid-template-columns: 1fr; }
+      .project-state__source { align-items: flex-start; flex-direction: column; }
+      .project-state__source > p { text-align: left; }
+      .project-state__grid > section + section { padding-top: 1.4rem; padding-left: 0; border-top: 1px solid rgb(var(--vis-line)); border-left: 0; }
+      .project-state__north-star blockquote { align-items: flex-start; flex-direction: column; }
+      .operations__grid, .history__groups { grid-template-columns: 1fr; }
+      .operations__grid a:nth-child(even) { border-left: 0; }
+      .operations__grid a + a { border-top: 1px solid rgb(var(--vis-line)); }
     }
   </style>
 </VisInternalLayout>

@@ -1,5 +1,5 @@
 ---
-/* CONTRACT: VIS Control Center — human-readable front door for Viddel canonical project knowledge. */
+/* CONTRACT: Legacy VIS Control Center — superseded by Project Brain + /vis Project State. */
 import fs from "node:fs";
 import path from "node:path";
 import VisInternalLayout from "../../../layouts/VisInternalLayout.astro";
@@ -100,13 +100,19 @@ const activeTracks = [
     </nav>
 
     <header class="control-hero">
-      <p class="control-kicker">Project Control Center</p>
-      <h1>Viddel Control Center</h1>
+      <p class="control-kicker">Historisk referanse · superseded</p>
+      <h1>Viddel Control Center (legacy)</h1>
       <p>
-        Start her når en ny tråd, agent eller arbeidsøkt trenger Viddel-kontekst.
-        Denne siden gir oversikt først, og peker videre til detaljer når det trengs.
+        Denne siden beholdes som historisk dokumentasjon. Gjeldende prosjektsyntese eies av
+        Project Brain, og den kuraterte inngangen er nå <a href={`${base}vis`}>VIS Project State</a>.
       </p>
     </header>
+
+    <aside class="control-superseded" aria-label="Erstattet inngang">
+      <strong>Ikke bruk denne siden som nå-status eller oppstartsflate.</strong>
+      <span>Innholdet under kan være utdatert og beskriver tidligere prosjektarkitektur.</span>
+      <a href={`${base}vis`}>Gå til Project State</a>
+    </aside>
 
     <section class="control-glance" aria-label="Kort status">
       <article class="control-status-card control-status-card--primary">
@@ -299,6 +305,31 @@ const activeTracks = [
       color: rgb(var(--reading-ink-secondary));
       font-size: clamp(1rem, 2vw, 1.18rem);
       line-height: 1.65;
+    }
+
+    .control-hero a {
+      color: inherit;
+      font-weight: 700;
+    }
+
+    .control-superseded {
+      display: grid;
+      gap: 0.35rem;
+      margin-top: 1rem;
+      padding: 1rem;
+      border: 1px solid rgb(180 83 9 / 0.28);
+      border-radius: 0.8rem;
+      background: rgb(255 247 237);
+      color: rgb(120 53 15);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .control-superseded a {
+      width: fit-content;
+      margin-top: 0.25rem;
+      color: rgb(146 64 14);
+      font-weight: 700;
     }
 
     .control-glance {

@@ -61,6 +61,7 @@ Prefer reading:
 - docs/project/OPERATING_RULES.md
 - docs/project/AI_DEVELOPMENT_CONTRACT.md for non-trivial development work
 - docs/project/00_STATE.md
+- src/data/vis-project-state-v01.ts for overall Project State / VIS work
 - src/data/mvp-current-state.ts
 - `/designsystem/` (for UI/pattern work)
 - docs/project/03_DECISIONS.md
@@ -92,9 +93,9 @@ Full doc: `docs/project/OPERATING_RULES.md`
 
 **Designsystem:** Before UI changes, read `/designsystem/`. Reuse patterns; update `/designsystem/` or explain in Return Ticket if changing patterns.
 
-**Current state:** When MVP status, surfaces, patterns, AI status or risks change, update `src/data/mvp-current-state.ts`. VIS frontpage reads from this file.
+**Current state:** Project Brain owns the living overall project synthesis; `src/data/vis-project-state-v01.ts` is the curated `/vis/` projection. When actual product/runtime status, surfaces, patterns, AI status or risks change, update the narrow `src/data/mvp-current-state.ts` registry where relevant.
 
-**Source of truth:** `/designsystem/` = design patterns · `src/data/mvp-current-state.ts` = operativ MVP-status · `/vis/sprints/...` = historikk.
+**Source of truth:** Project Brain = overall synthesis · GitHub = tasks/status · `/designsystem/` = design patterns · `src/data/mvp-current-state.ts` = narrow product/runtime status · `/vis/sprints/...` = historikk.
 
 **Return Ticket extras:** VIS/current-state impact · Backstage impact · Navigation/page-contract impact · Follow-up if deferred. If N/A, say so explicitly.
 
