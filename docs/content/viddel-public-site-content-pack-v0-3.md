@@ -163,7 +163,7 @@ Vi vil gjerne snakke med brukere, fagfolk, organisasjoner og andre som kan gjør
 
 ### North Star guardrail for `/om`
 
-The support-platform language above describes long-term direction, not current product capability or current scope.
+The support-platform language above describes Viddel's long-term North Star, not current product capability or current scope.
 
 Do not expand the public page into a platform feature list or imply that Viddel currently serves every named role. Keep the current beta/product scope separate and early-stage.
 
