@@ -135,7 +135,7 @@ Så bygger vi, tester og lærer.
 
 Det vi lærer påvirker både produktet, innholdet og hva vi velger å arbeide videre med.
 
-Vi tror god hjelp begynner med å lytte. Relevans læres gjennom virkelige situasjoner, spørsmål, korreksjoner og erfaring over tid.
+Vi tror god hjelp begynner med å lytte. **Relevansen læres** gjennom virkelige situasjoner, spørsmål, korreksjoner og erfaring over tid.
 
 ## KI med ansvar
 
