@@ -119,6 +119,14 @@ En time hos audiografen er bare en liten del av livet med svekket hørsel.
 
 Viddel skal hjelpe med spørsmålene og situasjonene som oppstår imellom, og gjøre det enklere å forberede seg til timer hos audiograf.
 
+## Nær hjelpen rundt
+
+På sikt ser vi for oss Viddel som en norsk støtteplattform rundt hørsel, et felles kunnskaps- og navigasjonslag for personen med hørselsutfordringer og menneskene rundt som hjelper.
+
+Det kan være pårørende, likepersoner, hørselshjelpere, organisasjoner og fagfolk.
+
+God hjelp avhenger av hvem som spør, situasjonen de står i og hva som faktisk er kjent. Derfor skal Viddel lytte, spørre og lære før hjelpen blir mer spesifikk.
+
 ## Vi bygger fra virkelige behov
 
 Vi snakker med mennesker som lever med svekket hørsel og med fagfolk som møter dem.
@@ -126,6 +134,8 @@ Vi snakker med mennesker som lever med svekket hørsel og med fagfolk som møter
 Så bygger vi, tester og lærer.
 
 Det vi lærer påvirker både produktet, innholdet og hva vi velger å arbeide videre med.
+
+Vi tror god hjelp begynner med å lytte. Relevans læres gjennom virkelige situasjoner, spørsmål, korreksjoner og erfaring over tid.
 
 ## KI med ansvar
 
@@ -139,6 +149,8 @@ Råd om diagnose, behandling og individuell tilpasning overlater vi til fagfolke
 
 Viddel AS er et norsk selskap i tidlig fase.
 
+Nærhet til norsk hverdag, fagmiljø og støtteapparat er en del av produktideen.
+
 Vi bygger produktkompetanse og eierskap i Norge, og bruker spesialisert ekstern kompetanse der det gir mening.
 
 Målet er å kunne utvikle og forvalte Viddel over tid med stadig mer kompetanse i eget miljø.
@@ -148,6 +160,12 @@ Målet er å kunne utvikle og forvalte Viddel over tid med stadig mer kompetanse
 Vi vil gjerne snakke med brukere, fagfolk, organisasjoner og andre som kan gjøre Viddel bedre.
 
 **kontakt@viddel.no**
+
+### North Star guardrail for `/om`
+
+The support-platform language above describes long-term direction, not current product capability or current scope.
+
+Do not expand the public page into a platform feature list or imply that Viddel currently serves every named role. Keep the current beta/product scope separate and early-stage.
 
 ---
 
