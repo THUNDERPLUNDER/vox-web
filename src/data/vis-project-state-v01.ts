@@ -15,7 +15,7 @@ export const visProjectStateV01 = {
     "ANLCKQnmrSy3nydlZ7upkL5mbPpors8wex-tq2vvHQw228bhceaovy_2ldaD-_fDAp0BuoojMlI086K0Aat--pseNRPzl6B9GYtDv5n_LpQ",
   brainLastMeaningfulUpdate: "2026-09-07",
   projectionUpdatedAt: "2026-09-07",
-  projectionOwner: "Thomas / @navigator",
+  projectionOwner: "Thomas",
   northStar:
     "Viddel skal være et lavterskel, ikke-klinisk mestrings-, forberedelses- og navigasjonslag for mennesker med svekket hørsel. Langsiktig bygger vi en norsk støtteplattform rundt hørsel: et felles kunnskaps- og navigasjonslag for personen med hørselsutfordringer og menneskene som hjelper rundt.",
   northStarContext:
