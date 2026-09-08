@@ -19,6 +19,7 @@ Dette dokumentet samler sentrale lenker til prosjektets operative flater.
 ## Design
 - Google Stitch-design: [legg inn direkte lenke senere]
 - Designstrategi: `docs/project/DESIGN.md`
+- VIS Human Working Language v0.1: `docs/design/VIS_HUMAN_WORKING_LANGUAGE_v0_1.md`
 
 ## Dokumentasjon
 - Roadmap: [legg inn lenke senere]
