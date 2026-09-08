@@ -1,6 +1,6 @@
-/* CONTRACT: VIS Runtime Feed guard — build-time checks that feed registry is complete and wired to /vis/. */
+/* CONTRACT: VIS Runtime Feed guard — build-time checks for the retained narrow runtime registry. */
 
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { getVisRuntimeFeed, type VisRuntimeActiveWork } from "../data/vis-runtime-feed.ts";
@@ -74,26 +74,14 @@ function activeWorkErrors(entries: VisRuntimeActiveWork[], section: string): str
   return errors;
 }
 
-/** Fail build if VIS runtime feed registry is incomplete or /vis/ does not import it. */
+/** Fail build if the retained runtime feed registry is incomplete. */
 export function validateVisRuntimeFeedGuard(): string[] {
   const errors: string[] = [];
 
   const feedData = join(srcRoot, "data/vis-runtime-feed.ts");
-  const visIndex = join(srcRoot, "pages/vis/index.astro");
-
   if (!existsSync(feedData)) {
     errors.push("Missing VIS runtime feed data: src/data/vis-runtime-feed.ts");
     return errors;
-  }
-
-  if (!existsSync(visIndex)) {
-    errors.push("Missing VIS frontpage: src/pages/vis/index.astro");
-    return errors;
-  }
-
-  const visSource = readFileSync(visIndex, "utf8");
-  if (!visSource.includes("vis-runtime-feed")) {
-    errors.push("/vis/ must import vis-runtime-feed (src/data/vis-runtime-feed.ts)");
   }
 
   const feed = getVisRuntimeFeed();

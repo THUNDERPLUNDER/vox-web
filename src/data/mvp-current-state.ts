@@ -1,6 +1,7 @@
-/* CONTRACT: Operativ MVP current-state registry — single source for VIS frontpage and agent status checks.
-   Update when MVP status, applied surfaces, design patterns, AI status or next risks change.
-*/
+/* CONTRACT: Narrow product/runtime MVP registry — not the overall project-state source for /vis/.
+   Project Brain owns the living synthesis; vis-project-state-v01 is its curated VIS projection.
+   Update this registry when its product surfaces, runtime facts or legacy sprint metadata change.
+ */
 
 export type SurfaceStatus =
   | "Applied"

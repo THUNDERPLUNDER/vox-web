@@ -1,7 +1,5 @@
 /* CONTRACT: VIS Tree Navigation v0.1 — felles datakilde for tremeny, hub-kort og page contract. */
 
-import { mvpCurrentState } from "./mvp-current-state.ts";
-
 export type VisHubAvailability = "active" | "planned" | "historikk";
 
 export type VisHubTier = "primary" | "secondary";
@@ -55,43 +53,42 @@ export type VisNavSection = {
   items: VisNavItem[];
 };
 
-const sprintRoute = mvpCurrentState.currentSprint.route.replace(/\/$/, "");
-
 export const visPageContracts: Record<string, VisPageContract> = {
   "vis-kontrollrom": {
     id: "vis-kontrollrom",
-    title: "VIS kontrollrom",
-    type: "kontrollrom",
+    title: "VIS Project State",
+    type: "project-state-read-model",
     status: "active",
-    purpose: "Rask oversikt over hva som er sant nå, og hvor du går videre. Ikke backlog.",
+    purpose: "Kuratert Project Brain-projeksjon og inngang til Grunnmur, Design og Kode. Ikke backlog.",
     primaryTask: "status-nå",
-    audience: ["Thomas", "Vibeke"],
-    relatedArea: ["runtime-feed", "gitbuss"],
-    lastReviewed: "2026-06-01",
+    audience: ["Thomas", "Vibeke", "interessenter"],
+    relatedArea: ["project-brain", "designsystem", "gitbuss"],
+    canonicalSource: "Viddel – Project Brain (Current)",
+    lastReviewed: "2026-09-07",
     ownerRole: "Thomas",
-    nextAction: "Les «Akkurat nå» og velg arbeidsflate i menyen.",
+    nextAction: "Les Project State og gå videre til den kilden eller arbeidsflaten du trenger.",
   },
   "runtime-feed": {
     id: "runtime-feed",
     title: "Runtime feed",
     type: "runtime-data",
-    status: "active",
-    purpose: "Kort «Akkurat nå» på forsiden — hva skjer og hva er neste beslutning.",
-    primaryTask: "status-nå",
+    status: "historical",
+    purpose: "Tidligere runtime-presentasjon. Beholdes smalt og eier ikke overordnet prosjektstatus.",
+    primaryTask: "historikk",
     audience: ["Thomas", "Vibeke"],
     canonicalSource: "src/data/vis-runtime-feed.ts",
-    lastReviewed: "2026-06-01",
+    lastReviewed: "2026-09-07",
     ownerRole: "Thomas",
   },
   "sprint-active": {
     id: "sprint-active",
-    title: "Sprint 2026-W21",
+    title: "Sprint 2026-W21 (historikk)",
     type: "sprint-lab",
-    status: "active",
-    purpose: "Designarbeid og beslutninger denne sprinten.",
-    primaryTask: "jobber-med",
+    status: "historical",
+    purpose: "Historisk designarbeid og beslutningsgrunnlag. Ikke gjeldende prosjektstatus.",
+    primaryTask: "historikk",
     audience: ["Thomas", "Vibeke"],
-    lastReviewed: "2026-06-01",
+    lastReviewed: "2026-09-07",
     ownerRole: "Thomas",
     nextAction: "Åpne relevant lab og ta beslutning i Review.",
   },
@@ -183,14 +180,14 @@ export const visPageContracts: Record<string, VisPageContract> = {
     id: "agentdrift-runbook",
     title: "Agentdrift / runbook",
     type: "system-doc",
-    status: "reference",
-    purpose: "Agent-runbook og filpeker — operativ hjelp for Cursor og agenter.",
-    primaryTask: "forstå-system",
-    audience: ["Cursor", "@rigger"],
+    status: "legacy",
+    purpose: "Superseded Control Center. Beholdes som historisk referanse; Project Brain + VIS Project State er ny inngang.",
+    primaryTask: "historikk",
+    audience: ["Thomas"],
     canonicalSource: "/backstage/",
-    lastReviewed: "2026-06-01",
+    lastReviewed: "2026-09-07",
     ownerRole: "Thomas",
-    nextAction: "Start agent-oppgave med riktig kontekst.",
+    nextAction: "Bruk Project Brain og VIS Project State som gjeldende inngang.",
   },
   "ia-inventory": {
     id: "ia-inventory",
@@ -300,22 +297,9 @@ export const visNavSections: VisNavSection[] = [
     items: [
       {
         id: "kontrollrom",
-        label: "VIS kontrollrom",
+        label: "Project State",
         href: "/vis",
         pageContractId: "vis-kontrollrom",
-        hubTier: "primary",
-      },
-      {
-        id: "runtime-feed",
-        label: "Runtime feed",
-        navOnly: true,
-        pageContractId: "runtime-feed",
-      },
-      {
-        id: "sprint-active",
-        label: "Sprint 2026-W21",
-        href: sprintRoute,
-        pageContractId: "sprint-active",
         hubTier: "primary",
       },
     ],
@@ -409,7 +393,7 @@ export const visNavSections: VisNavSection[] = [
     items: [
       {
         id: "agentdrift",
-        label: "Agentdrift / runbook",
+        label: "Control Center (superseded)",
         href: "/vis/system/control-center",
         pageContractId: "agentdrift-runbook",
       },
@@ -431,6 +415,12 @@ export const visNavSections: VisNavSection[] = [
     id: "history",
     label: "Historikk",
     items: [
+      {
+        id: "sprint-w21-history",
+        label: "Sprint 2026-W21",
+        href: "/vis/sprints/2026-w21",
+        pageContractId: "sprint-active",
+      },
       {
         id: "raw-wireframes",
         label: "Raw wireframes",
@@ -473,13 +463,13 @@ export const visNavSections: VisNavSection[] = [
 
 export const visNavigationMeta = {
   version: "v0.1",
-  updatedAt: "2026-06-05",
+  updatedAt: "2026-09-07",
   dataSource: "src/data/vis-navigation-v01.ts",
 } as const;
 
 export const visFrontpageMandate = {
-  title: "VIS kontrollrom",
-  lead: "Rask oversikt over hva som er sant nå, neste steg og hvor du går videre. Ikke backlog.",
+  title: "Viddel Project State",
+  lead: "Kuratert prosjektoversikt og inngang til Grunnmur, Design og Kode. Ikke backlog.",
 } as const;
 
 export const visPrimaryNextWorkIds = [
@@ -488,7 +478,9 @@ export const visPrimaryNextWorkIds = [
 ] as const;
 
 export const visSourceOfTruthNotes = [
-  { label: "src/data/mvp-current-state.ts", role: "Gjeldende MVP-status" },
+  { label: "Viddel – Project Brain (Current)", role: "Overordnet prosjektsyntese" },
+  { label: "src/data/vis-project-state-v01.ts", role: "Kuratert VIS-projeksjon" },
+  { label: "src/data/mvp-current-state.ts", role: "Smal produkt-/runtime-status" },
   { label: "/designsystem/", role: "Gjeldende UI/mønstre" },
   { label: "/backstage/", role: "System/API/guard — canonical referanse" },
   { label: "GitHub issues/projects", role: "Oppgavebuss" },
