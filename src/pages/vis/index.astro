@@ -5,6 +5,7 @@ import { groupedVisEntries, wireframeIndexEntries } from "../../lib/vis-wirefram
 import { visProjectStateV01 } from "../../data/vis-project-state-v01.ts";
 import {
   roadmapFrontPreview,
+  roadmapFrontPreviewLabels,
   roadmapHorizons,
   roadmapInitiatives,
   roadmapWatchSignals,
@@ -96,7 +97,11 @@ const roadmapPreviewColumns = roadmapHorizons.map((horizon) => ({
   ...horizon,
   initiatives: roadmapFrontPreview[horizon.id]
     .map((id) => roadmapInitiatives.find((initiative) => initiative.id === id))
-    .filter((initiative) => initiative !== undefined),
+    .filter((initiative) => initiative !== undefined)
+    .map((initiative) => ({
+      initiative,
+      label: roadmapFrontPreviewLabels[initiative.id] ?? initiative.title,
+    })),
 }));
 const roadmapPreviewWatch = roadmapFrontPreview.watch
   .map((id) => roadmapWatchSignals.find((signal) => signal.id === id))
@@ -148,7 +153,8 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
         <div class="roadmap-preview__heading">
           <div>
             <p class="eyebrow">Roadmap · kompakt</p>
-            <h3 id="roadmap-preview-title">Fra gjeldende port til bevarte muligheter</h3>
+            <h3 id="roadmap-preview-title">Veien videre</h3>
+            <p class="roadmap-preview__intro">Hva vi arbeider med nå, hva som trolig kommer etter, og hva vi foreløpig holder åpent.</p>
           </div>
           <a href={internalHref("/vis/system/roadmap-timeline-v01")}>Åpne hele roadmapet</a>
         </div>
@@ -157,7 +163,7 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
             <section aria-labelledby={`preview-${horizon.id}`}>
               <h4 id={`preview-${horizon.id}`}>{horizon.label}</h4>
               <ul role="list">
-                {horizon.initiatives.map((initiative) => <li>{initiative.title}</li>)}
+                {horizon.initiatives.map((item) => <li>{item.label}</li>)}
               </ul>
             </section>
           ))}
@@ -407,6 +413,7 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
     .project-state__roadmap-preview { border-bottom: 1px solid rgb(var(--vis-line)); background: rgb(255 255 255 / 0.48); }
     .roadmap-preview__heading { display: flex; gap: 1rem; align-items: flex-end; justify-content: space-between; }
     .roadmap-preview__heading h3 { margin-bottom: 0; }
+    .roadmap-preview__intro { max-width: 44rem; margin: 0.35rem 0 0; color: rgb(var(--vis-muted)); font-size: 0.76rem; line-height: 1.5; }
     .roadmap-preview__heading a { flex: none; color: rgb(35 83 173); font-size: 0.78rem; font-weight: 650; text-decoration: none; }
     .roadmap-preview__heading a:hover, .roadmap-preview__heading a:focus-visible { text-decoration: underline; }
     .roadmap-preview__horizons { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 1.1rem; border-top: 1px solid rgb(var(--vis-line)); border-bottom: 1px solid rgb(var(--vis-line)); }

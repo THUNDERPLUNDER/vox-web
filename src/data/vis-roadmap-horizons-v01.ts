@@ -50,9 +50,9 @@ export const roadmapProjectionMeta = {
 } as const;
 
 export const roadmapHorizons: Array<{ id: RoadmapHorizon; label: string; description: string }> = [
-  { id: "now", label: "NOW", description: "Det som rydder reelle porter eller skaper nødvendig læring nå." },
-  { id: "next", label: "NEXT", description: "Neste kontrollerte steg når eksplisitte porter er passert." },
-  { id: "later", label: "LATER", description: "Bevarte muligheter som bare trekkes frem av evidens eller behov." },
+  { id: "now", label: "NOW", description: "Det vi arbeider med eller må avklare nå." },
+  { id: "next", label: "NEXT", description: "Det vi tror kommer etter, hvis dagens avklaringer går som forventet." },
+  { id: "later", label: "LATER", description: "Muligheter vi vil huske, men ikke har planlagt å gjøre ennå." },
 ];
 
 export const roadmapTracks: Array<{ id: RoadmapTrackId; code: string; label: string }> = [
@@ -297,11 +297,20 @@ export const roadmapFrontPreview = {
   watch: ["funding-terms", "clinic-evidence", "beta-evidence"],
 } satisfies Record<RoadmapHorizon | "watch", string[]>;
 
+export const roadmapFrontPreviewLabels: Record<string, string> = {
+  "beta-gate": "Gjør AI-hjelpen klar for begrenset beta",
+  "funding-scope": "Avklar finansiering og rammer med IN/DOGA",
+  "clinic-value": "Finn ut hvilken verdi Viddel kan skape for klinikker",
+  "funded-round-one": "Bygg første finansierte MVP-runde",
+  "first-user-loop": "Test med de første brukerne",
+  inventory: "Utforsk varig bruker-eid kontekst",
+};
+
 export const executionLikelihoodLabels: Record<ExecutionLikelihood, string> = {
-  committed: "Forpliktet retning",
-  probable: "Sannsynlig neste bevegelse",
-  conditional: "Betinget av eksplisitt gate",
-  option: "Bevart mulighet",
+  committed: "Besluttet",
+  probable: "Sannsynlig",
+  conditional: "Avhenger av",
+  option: "Mulighet",
 };
 
 export const strategicFunctionLabels: Record<StrategicFunction, string> = {

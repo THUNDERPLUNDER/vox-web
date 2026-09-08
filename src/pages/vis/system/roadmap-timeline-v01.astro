@@ -2,6 +2,7 @@
 /* CONTRACT: VIS Horizon Roadmap v0.1 — curated Project Brain direction joined to separate live GitHub task status. */
 import VisInternalLayout from "../../../layouts/VisInternalLayout.astro";
 import RoadmapInitiativeCard from "../../../components/vis/RoadmapInitiativeCard.astro";
+import RoadmapLikelihoodMark from "../../../components/vis/RoadmapLikelihoodMark.astro";
 import {
   roadmapDecisionForks,
   githubIssueHref,
@@ -53,8 +54,7 @@ const mobileInitiatives = roadmapHorizons.map((horizon) => ({
       <p class="roadmap-eyebrow">Project Brain projection · {roadmapProjectionMeta.version}</p>
       <h1>{roadmapProjectionMeta.title}</h1>
       <p class="roadmap-hero__lead">
-        En redaksjonell prognose for retning og porter — ikke kalenderplan eller task-backlog.
-        Les fra <strong>NOW</strong> mot <strong>NEXT</strong> og <strong>LATER</strong>; følg <strong>WATCH</strong> som eget signallag.
+        Dette er et arbeidskart, ikke en fast plan. Det viser hva vi arbeider med nå, hva vi tror kommer etter, og hvilke muligheter vi holder åpne. WATCH viser ting vi følger med på fordi de kan endre rekkefølgen.
       </p>
       <div class="roadmap-source">
         <p>
@@ -130,13 +130,46 @@ const mobileInitiatives = roadmapHorizons.map((horizon) => ({
       </p>
     </section>
 
+    <details class="roadmap-legend" open>
+      <summary>Slik leser du roadmapet</summary>
+      <div class="roadmap-legend__body">
+        <section>
+          <h2>Gjennomføringssignal</h2>
+          <ul class="roadmap-legend__likelihood" role="list">
+            <li><RoadmapLikelihoodMark likelihood="committed" /><span>Valgt retning eller aktiv avklaring.</span></li>
+            <li><RoadmapLikelihoodMark likelihood="probable" /><span>Forventet bevegelse, men ikke låst.</span></li>
+            <li><RoadmapLikelihoodMark likelihood="conditional" /><span>Krever eksplisitt gate eller trigger.</span></li>
+            <li><RoadmapLikelihoodMark likelihood="option" /><span>Bevart, ikke planlagt.</span></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Timing</h2>
+          <ul role="list">
+            <li><span class="legend-timing legend-timing--fixed"></span><strong>Fast</strong> — faktisk dato eller punkt.</li>
+            <li><span class="legend-timing legend-timing--bounded"></span><strong>Avgrenset</strong> — definert, bredere vindu.</li>
+            <li><span class="legend-timing legend-timing--open"></span><strong>Åpen</strong> — ingen etablert dato; åpen hale.</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Relasjoner og metadata</h2>
+          <ul role="list">
+            <li><span class="legend-milestone" aria-hidden="true"></span><strong>Milepæl</strong> er et faktisk punkt eller vindu; ingen er datofestet i denne projeksjonen.</li>
+            <li><span class="legend-dependency" aria-hidden="true"></span><strong>Avhengighet / gate</strong> forklarer hva som må være sant før bevegelse.</li>
+            <li><strong>WATCH</strong> er signaler som kan endre retning, ikke et horizon.</li>
+            <li><strong>LEASE / OWN / ECOSYSTEM</strong> er sekundær strategisk funksjon, synlig i detaljene.</li>
+            <li><strong>GitHub-status</strong> er live task-drill-down og aldri et mål på likelihood eller timing.</li>
+          </ul>
+        </section>
+      </div>
+    </details>
+
     <section class="roadmap-watch" aria-labelledby="watch-title">
       <div class="roadmap-watch__heading">
         <div>
           <p class="roadmap-eyebrow">Parallelt signallag</p>
           <h2 id="watch-title">WATCH</h2>
         </div>
-        <p>Signaler kan endre gates eller prioritet. De er ikke et fjerde horizon og ikke planlagte leveranser.</p>
+        <p>Ting vi følger med på fordi de kan flytte, endre eller stoppe noe i planen.</p>
       </div>
       <div class="roadmap-watch__grid">
         {roadmapWatchSignals.map((signal) => (
@@ -163,39 +196,6 @@ const mobileInitiatives = roadmapHorizons.map((horizon) => ({
         </ul>
       </div>
     </section>
-
-    <details class="roadmap-legend">
-      <summary>Slik leser du roadmapet</summary>
-      <div class="roadmap-legend__body">
-        <section>
-          <h2>Gjennomføringssignal</h2>
-          <ul role="list">
-            <li><span class="legend-line legend-line--committed"></span><strong>Forpliktet</strong> — valgt retning eller aktiv avklaring.</li>
-            <li><span class="legend-line legend-line--probable"></span><strong>Sannsynlig</strong> — forventet bevegelse, men ikke låst.</li>
-            <li><span class="legend-line legend-line--conditional"></span><strong>Betinget</strong> — krever eksplisitt gate eller trigger.</li>
-            <li><span class="legend-line legend-line--option"></span><strong>Mulighet</strong> — bevart, ikke planlagt.</li>
-          </ul>
-        </section>
-        <section>
-          <h2>Timing</h2>
-          <ul role="list">
-            <li><span class="legend-timing legend-timing--fixed"></span><strong>Fast</strong> — faktisk dato eller punkt.</li>
-            <li><span class="legend-timing legend-timing--bounded"></span><strong>Avgrenset</strong> — definert, bredere vindu.</li>
-            <li><span class="legend-timing legend-timing--open"></span><strong>Åpen</strong> — ingen etablert dato; åpen hale.</li>
-          </ul>
-        </section>
-        <section>
-          <h2>Relasjoner og metadata</h2>
-          <ul role="list">
-            <li><span class="legend-milestone" aria-hidden="true"></span><strong>Milepæl</strong> er et faktisk punkt eller vindu; ingen er datofestet i denne projeksjonen.</li>
-            <li><span class="legend-dependency" aria-hidden="true"></span><strong>Avhengighet / gate</strong> forklarer hva som må være sant før bevegelse.</li>
-            <li><strong>WATCH</strong> er signaler som kan endre retning, ikke et horizon.</li>
-            <li><strong>LEASE / OWN / ECOSYSTEM</strong> er sekundær strategisk funksjon, synlig i detaljene.</li>
-            <li><strong>GitHub-status</strong> er live task-drill-down og aldri et mål på likelihood eller timing.</li>
-          </ul>
-        </section>
-      </div>
-    </details>
 
     <footer class="roadmap-footer">
       <p>
@@ -321,17 +321,15 @@ const mobileInitiatives = roadmapHorizons.map((horizon) => ({
   .roadmap-context li strong { font-size: 0.76rem; }
   .roadmap-context li span { color: rgb(var(--roadmap-muted)); font-size: 0.72rem; line-height: 1.48; }
 
-  .roadmap-legend { margin-top: 1.2rem; border-top: 1px solid rgb(var(--roadmap-line)); border-bottom: 1px solid rgb(var(--roadmap-line)); }
+  .roadmap-legend { margin-top: 0.75rem; border-top: 1px solid rgb(var(--roadmap-line)); border-bottom: 1px solid rgb(var(--roadmap-line)); }
   .roadmap-legend > summary { padding: 1rem 0; color: rgb(var(--roadmap-ink)); font-size: 0.86rem; font-weight: 680; cursor: pointer; }
   .roadmap-legend__body { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.3rem; padding: 0 0 1.3rem; }
   .roadmap-legend h2 { margin: 0 0 0.6rem; font-size: 0.77rem; }
   .roadmap-legend ul { display: grid; gap: 0.55rem; margin: 0; padding: 0; list-style: none; }
   .roadmap-legend li { color: rgb(var(--roadmap-muted)); font-size: 0.7rem; line-height: 1.48; }
   .roadmap-legend li strong { color: rgb(var(--roadmap-ink)); }
-  .legend-line, .legend-timing { display: inline-block; width: 1.5rem; margin-right: 0.4rem; vertical-align: 0.15rem; border-top: 3px solid rgb(var(--roadmap-blue)); }
-  .legend-line--probable { opacity: 0.7; }
-  .legend-line--conditional { opacity: 0.58; border-top-style: dashed; }
-  .legend-line--option { opacity: 0.4; border-top-style: dotted; }
+  .roadmap-legend__likelihood li { display: grid; grid-template-columns: minmax(8rem, auto) minmax(0, 1fr); gap: 0.55rem; align-items: center; }
+  .legend-timing { display: inline-block; width: 1.5rem; margin-right: 0.4rem; vertical-align: 0.15rem; border-top: 3px solid rgb(var(--roadmap-blue)); }
   .legend-timing { border-top-width: 1px; }
   .legend-timing--fixed { width: 0.5rem; border-top-width: 4px; }
   .legend-timing--bounded { width: 2rem; }

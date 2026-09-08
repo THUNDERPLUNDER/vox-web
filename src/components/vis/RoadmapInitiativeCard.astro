@@ -6,6 +6,7 @@ import {
   strategicFunctionLabels,
   type RoadmapInitiative,
 } from "../../data/vis-roadmap-horizons-v01.ts";
+import RoadmapLikelihoodMark from "./RoadmapLikelihoodMark.astro";
 
 interface Props {
   initiative: RoadmapInitiative;
@@ -26,11 +27,11 @@ const horizonLabel = initiative.horizons.map((horizon) => horizon.toUpperCase())
   data-roadmap-track={initiative.track}
 >
   <summary>
-    <span class="roadmap-card__signal" aria-hidden="true"></span>
     <span class="roadmap-card__heading">
       <span class="roadmap-card__eyebrow">
         {trackCode ? `Spor ${trackCode} · ` : ""}{horizonLabel}
       </span>
+      <RoadmapLikelihoodMark likelihood={initiative.executionLikelihood} />
       <strong>{initiative.title}</strong>
       <span class="roadmap-card__summary">{initiative.summary}</span>
     </span>
@@ -82,7 +83,6 @@ const horizonLabel = initiative.horizons.map((horizon) => horizon.toUpperCase())
 
 <style>
   .roadmap-card {
-    --card-strength: 1;
     position: relative;
     min-width: 0;
     overflow: hidden;
@@ -92,13 +92,9 @@ const horizonLabel = initiative.horizons.map((horizon) => horizon.toUpperCase())
     box-shadow: 0 8px 22px rgb(15 27 46 / 0.045);
   }
 
-  .roadmap-card--probable { --card-strength: 0.76; }
-  .roadmap-card--conditional { --card-strength: 0.55; border-style: dashed; }
-  .roadmap-card--option { --card-strength: 0.34; border-style: dotted; background: rgb(255 255 255 / 0.68); }
-
   summary {
     display: grid;
-    grid-template-columns: 0.3rem minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 0.7rem;
     align-items: stretch;
     padding: 0.9rem;
@@ -109,31 +105,6 @@ const horizonLabel = initiative.horizons.map((horizon) => horizon.toUpperCase())
   summary::-webkit-details-marker { display: none; }
   summary:hover, summary:focus-visible { background: rgb(var(--roadmap-blue) / 0.035); }
   summary:focus-visible { outline: 2px solid rgb(var(--roadmap-focus)); outline-offset: -2px; }
-
-  .roadmap-card__signal {
-    position: relative;
-    width: 0.28rem;
-    min-height: 100%;
-    border-radius: 999px;
-    background: rgb(var(--roadmap-blue) / var(--card-strength));
-  }
-
-  .roadmap-card--conditional .roadmap-card__signal,
-  .roadmap-card--option .roadmap-card__signal {
-    border: 1px dashed rgb(var(--roadmap-blue) / 0.45);
-    background: transparent;
-  }
-
-  .roadmap-card--timing-open .roadmap-card__signal::after {
-    position: absolute;
-    right: 50%;
-    bottom: 0;
-    width: 1px;
-    height: 1rem;
-    background: linear-gradient(rgb(var(--roadmap-blue) / var(--card-strength)), transparent);
-    content: "";
-    transform: translate(50%, 75%);
-  }
 
   .roadmap-card__heading { display: grid; gap: 0.3rem; min-width: 0; }
   .roadmap-card__eyebrow {
@@ -148,7 +119,7 @@ const horizonLabel = initiative.horizons.map((horizon) => horizon.toUpperCase())
   .roadmap-card__expand { align-self: start; color: rgb(var(--roadmap-muted)); font-size: 1.1rem; line-height: 1; }
   details[open] .roadmap-card__expand { transform: rotate(45deg); }
 
-  .roadmap-card__details { padding: 0 0.9rem 0.95rem 1.9rem; }
+  .roadmap-card__details { padding: 0 0.9rem 0.95rem; }
   dl { display: grid; gap: 0.55rem; margin: 0; padding-top: 0.8rem; border-top: 1px solid rgb(var(--roadmap-line)); }
   dl > div { display: grid; gap: 0.15rem; }
   dt { color: rgb(var(--roadmap-muted)); font-size: 0.62rem; font-weight: 720; letter-spacing: 0.06em; text-transform: uppercase; }
