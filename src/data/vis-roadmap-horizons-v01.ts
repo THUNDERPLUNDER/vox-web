@@ -40,7 +40,7 @@ export const roadmapProjectionMeta = {
   title: "Viddel Horizon Roadmap",
   sourceDocument: "Viddel – Project Brain (Current)",
   sourceRevision:
-    "ANLCKQn4mP3opGq4VxCjnvLEnLAoZKpBUJQvtqn6GjjDO73k8S3uTWvwcy13xdd9Quz2jqqXtB55RB_kHkZJGYtX6_dZJfQ8FAXaGyXp-m8",
+    "ANLCKQky9jMeCTdUWNxfFl3GkxGJcMQWvVFfHa3Y0CCCjo4rhqVb2XhRyBOhHrYjCfomJ2G4-UW-Y4Qer1-28x41DPMc7zHKqPNyw3pNcYY",
   operatingModelRevision:
     "ANLCKQksoDTdByzhOiblhA2EJ2B08dXmzelQzI4PzwN7QCmjgIEWlkU56EuXr4i4DHqQ2NfN0BeGxXNHIvcg_G7T_HKp__hZHMZYhQtPKoQ",
   projectionDate: "2026-09-08",
@@ -225,16 +225,16 @@ export const roadmapInitiatives: RoadmapInitiative[] = [
   {
     id: "research-collaboration",
     projectionOrder: 12,
-    title: "Forskning / akademia + senere finansieringssamarbeid",
-    summary: "Bevar muligheten uten å gjøre et ubekreftet partnerskap til roadmap-forpliktelse.",
-    track: "knowledge-advantage",
-    horizons: ["later"],
+    title: "Research & Ecosystem Partnerships",
+    summary: "Bygge en liten læringsallianse med brukerorganisasjon, audiologisk/forskningsfaglig miljø og klinisk feltpartner.",
+    track: "field-value",
+    horizons: ["next"],
     strategicFunction: "ECOSYSTEM",
-    executionLikelihood: "option",
+    executionLikelihood: "probable",
     timing: openTiming,
-    gate: "Nyttig partner/problem + evidens + finansiering",
+    gate: "Konkret partner + tidsnær aktivitet, relevant finansieringsvindu eller beta-/klinikkfunn med tydelig forskningsspørsmål",
     significance: "potentially-high",
-    sourceIssues: [374],
+    sourceIssues: [389],
   },
 ];
 
