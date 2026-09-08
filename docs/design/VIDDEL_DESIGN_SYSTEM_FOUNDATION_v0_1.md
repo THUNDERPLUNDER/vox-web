@@ -23,6 +23,14 @@ Use this order when sources disagree:
 
 GitHub Issues and Projects remain the work/status layer. VIS is not the backlog.
 
+### Human-facing VIS language
+
+`docs/design/VIS_HUMAN_WORKING_LANGUAGE_v0_1.md` is the active language contract for human-facing `/vis` copy and roadmap presentation.
+
+It does **not** replace public Viddel TOV, technical documentation, runtime terminology or GitHub execution contracts. Its job is to ensure that VIS presents meaning first and system terminology second, while preserving precise technical and governance language in details and source layers.
+
+When a meaningful VIS copy pattern changes, update the language contract in the same PR or explicitly record why the change is local.
+
 ## Token ownership layers
 
 ### A. Brand primitives
