@@ -1,6 +1,8 @@
 ---
 /* CONTRACT: Minimal public company shell for viddel.no. Reuses production tokens without product navigation, CES or internal tools. */
 import "../styles/global.css";
+import "../styles/public-site.css";
+import PublicFooter from "../components/public/PublicFooter.astro";
 
 const {
   title = "Viddel",
@@ -11,6 +13,10 @@ const {
   description?: string;
   canonical?: string;
 };
+
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
 ---
 
 <!doctype html>
@@ -37,7 +43,21 @@ const {
     <meta property="og:url" content={canonical} />
     <title>{title}</title>
   </head>
-  <body>
-    <slot />
+  <body class="public-site">
+    <div class="public-site__shell">
+      <header class="public-header">
+        <a class="public-header__brand" href={base} aria-label="Viddel – forsiden">
+          <img
+            src={`${base}brand/viddel-wordmark-primary-5bar.svg`}
+            alt=""
+            width="937.88"
+            height="134"
+          />
+          <span class="public-header__trademark" aria-hidden="true">™</span>
+        </a>
+      </header>
+      <slot />
+      <PublicFooter />
+    </div>
   </body>
 </html>
