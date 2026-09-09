@@ -57,6 +57,34 @@ export type AgentSearchAnswerMeta = {
   responseContractVersion: string;
 };
 
+type AgentSearchFailureStage = "session_create" | "answer";
+
+class AgentSearchUpstreamError extends CesRunSessionError {
+  readonly failureStage: AgentSearchFailureStage;
+  readonly safeGoogleHint: string | null;
+
+  constructor(
+    message: string,
+    code: CesErrorCode,
+    status: number,
+    upstreamHttpStatus: number,
+    failureStage: AgentSearchFailureStage,
+    safeGoogleHint: string | null,
+  ) {
+    super(message, code, status, upstreamHttpStatus);
+    this.name = "AgentSearchUpstreamError";
+    this.failureStage = failureStage;
+    this.safeGoogleHint = safeGoogleHint;
+  }
+}
+
+export function readAgentSearchFailureDiagnostic(
+  error: CesRunSessionError,
+): { stage: AgentSearchFailureStage; hint: string | null } | null {
+  if (!(error instanceof AgentSearchUpstreamError)) return null;
+  return { stage: error.failureStage, hint: error.safeGoogleHint };
+}
+
 function readEnv(name: string): string {
   return (process.env[name] ?? import.meta.env[name] ?? "").trim();
 }
@@ -135,8 +163,9 @@ function extractSafeGoogleError(responseText: string): { hint: string | null } {
     };
     const msg = parsed.error?.message;
     if (typeof msg !== "string") return { hint: null };
-    const hint = msg.slice(0, 160);
-    return { hint: hint.length < msg.length ? `${hint}…` : hint };
+    const sanitized = msg.replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim();
+    const hint = sanitized.slice(0, 160);
+    return { hint: hint.length < sanitized.length ? `${hint}…` : hint || null };
   } catch {
     return { hint: null };
   }
@@ -207,11 +236,13 @@ async function runAgentSearchAnswerOnce(
       const responseText = await sessionResponse.text().catch(() => "");
       const { hint } = extractSafeGoogleError(responseText);
       const code = mapGoogleHttpToCesCode(sessionResponse.status, hint);
-      throw new CesRunSessionError(
+      throw new AgentSearchUpstreamError(
         `agent_search_session_upstream_${sessionResponse.status}`,
         code,
         502,
         sessionResponse.status,
+        "session_create",
+        hint,
       );
     }
 
@@ -230,7 +261,14 @@ async function runAgentSearchAnswerOnce(
     if (!response.ok) {
       const { hint } = extractSafeGoogleError(responseText);
       const code = mapGoogleHttpToCesCode(response.status, hint);
-      throw new CesRunSessionError(`agent_search_upstream_${response.status}`, code, 502, response.status);
+      throw new AgentSearchUpstreamError(
+        `agent_search_upstream_${response.status}`,
+        code,
+        502,
+        response.status,
+        "answer",
+        hint,
+      );
     }
 
     let payload: Record<string, unknown> = {};
