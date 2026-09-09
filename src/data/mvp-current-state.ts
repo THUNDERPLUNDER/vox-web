@@ -78,7 +78,7 @@ export const mvpCurrentState = {
   } satisfies CurrentSprint,
   closedSprints: [] satisfies ClosedSprint[],
   currentFocus:
-    "Vi forenkler intern QA: preview.viddel.no skal være en åpen, globalt noindex testflate med AI tilgjengelig, mens Production beholder én av/på-bryter og Vercel Firewall.",
+    "Spør Viddel er midlertidig utilgjengelig etter feil i Upstash-telleren. Offentlig av/på-bryter og Vercel Firewall er implementert; Preview-QA gjenstår.",
   mvpSurfaces: [
     {
       id: "public-root",
@@ -201,11 +201,6 @@ export const mvpCurrentState = {
       id: "backstage-v01",
       label: "Backstage v0.1 — live",
       detail: "Intern systemreferanse på /backstage/ — AI-flow, guards, env-vars og production checklist (#184).",
-    },
-    {
-      id: "stable-open-preview",
-      label: "Stabil åpen Preview — Needs QA",
-      detail: "Preview skal være åpen og globalt noindex for Thomas/Vibeke. Production AI forblir stengt eller kontrollert av public-ai-enabled.",
     },
     {
       id: "transcript-qa",

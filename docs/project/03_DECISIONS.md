@@ -3,11 +3,6 @@
 ## Formål
 Dette dokumentet samler bevisste valg som styrer prosjektet, slik at vi unngår å diskutere de samme grunnpremissene på nytt.
 
-## 2026-09-09 - Stabil åpen Preview og Production-only AI-port
-- Beslutning: `preview.viddel.no` skal følge den faste `preview`-branchen og være en åpen, globalt `noindex` testflate for Thomas og Vibeke. Preview bruker AI uten Viddel-spesifikk eier-PIN eller cookie. Production beholder én fail-closed bryter, `public-ai-enabled`, og skal ikke åpnes i denne oppgaven.
-- Begrunnelse: Midlertidig eier-PIN, eiercookie og PR-spesifikke Preview-adresser har gitt mer operativ friksjon enn verdi før ekstern beta.
-- Konsekvens: Owner-access-biblioteket, API-rutene og skjult UI fjernes uten erstatningsauth. Vercel Firewall, origin-/lengdeguard og `VIDDEL_CONVERSATION_STATE_SECRET` beholdes for sine separate formål. Flyten er feature-branch → `preview` → Thomas/Vibeke-QA → `main`. Se GitHub #396.
-
 ## 2026-09-01 - Codex/Work på Viddel Worker er eneste aktive utførelseslag
 - Beslutning: OpenAI Codex/Work på **Viddel Worker** (M3, host `mac.lan`) er eneste aktive og primære utførelseslag for Viddel-repoet. **Viddel Studio** betegner det fysiske hjemmeoppsettet, og **Viddel Mobile** er operatørflate, ikke aktiv repo- eller runtime-node. Cursor er pauset og skal ikke brukes eller motta handoffs uten en ny, eksplisitt beslutning fra Thomas.
 - Begrunnelse: Repoets operative kilder skal speile den faktiske execution-topologien og unngå en utdatert stafettmodell der @rigger bare operasjonaliserer og Cursor utfører. Én primær node reduserer risiko for branch-, runtime-, env- og credential-drift mellom maskiner.

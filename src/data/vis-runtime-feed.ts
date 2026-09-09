@@ -41,7 +41,7 @@ export type VisRuntimeFeed = {
 
 /** Manually updated after important Return Tickets — not synced from GitHub. */
 export const visRuntimeFeed = {
-  updatedAt: "2026-09-09",
+  updatedAt: "2026-08-20",
   activeNow: [
     {
       id: "conversation-feedback-v01",
@@ -55,36 +55,14 @@ export const visRuntimeFeed = {
       possibleSolution:
         "En separat feedback-reference knytter score, hurtiggrunner og valgfri kommentar til én feedbackpost. Desktop bruker høyrepanel og mobil bruker sheet.",
       nextDecision:
-        "Kjør ekte samtale med feedback på den stabile Preview-flaten på desktop og mobil når runtime er klar.",
+        "Legg inn CRON_SECRET, redeploy og kjør autentisert cleanup-test. Deretter gjenstår ekte samtale med feedback på desktop og mobil før merge.",
       issue: "#346",
       issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/346",
       progressSteps: [
         { id: "storage", label: "Neon EU koblet", state: "done" },
         { id: "code", label: "Schema og feedbackflyt", state: "done" },
         { id: "qa", label: "Retention-QA", state: "current" },
-        { id: "production", label: "Preview slutt-QA", state: "upcoming" },
-      ],
-    },
-    {
-      id: "stable-open-preview",
-      headline: "Vi lager én stabil og åpen testflate for Thomas og Vibeke, uten skjult eierkode.",
-      workTitle: "Stable open preview + production-only AI gate (#396)",
-      area: "Drift og AI",
-      why:
-        "PIN, eiercookie og PR-spesifikke adresser ga unødvendig friksjon før intern QA. Preview skal være enkel å bruke uten å åpne Production.",
-      status:
-        "Kodeforenkling pågår: Preview åpnes og merkes globalt noindex; Production beholder public-ai-enabled og Vercel Firewall.",
-      possibleSolution:
-        "Feature-arbeid promoteres til den faste preview-branchen for Thomas/Vibeke-QA før main.",
-      nextDecision:
-        "Promoter grønn feature-branch til preview og verifiser preview.viddel.no før eventuell merge til main.",
-      issue: "#396",
-      issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/396",
-      progressSteps: [
-        { id: "decision", label: "Forenkling besluttet", state: "done" },
-        { id: "code", label: "Access-lag fjernes", state: "current" },
-        { id: "preview", label: "Stabil Preview-QA", state: "upcoming" },
-        { id: "main", label: "Owner merge-port", state: "upcoming" },
+        { id: "production", label: "Slutt-QA", state: "upcoming" },
       ],
     },
   ],
@@ -97,11 +75,6 @@ export const visRuntimeFeed = {
       {
         label: "Issue #346",
         href: "https://github.com/THUNDERPLUNDER/vox-web/issues/346",
-        kind: "issue",
-      },
-      {
-        label: "Issue #396",
-        href: "https://github.com/THUNDERPLUNDER/vox-web/issues/396",
         kind: "issue",
       },
       {

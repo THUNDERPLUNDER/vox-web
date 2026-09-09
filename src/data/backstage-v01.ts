@@ -3,13 +3,13 @@
 export const backstageMeta = {
   title: "Backstage",
   lead: "Backstage er kontrollrommet for hvordan Viddel fungerer bak scenen. Her forklarer vi AI-flyten, beskyttelsen, feilstater og hva som må sjekkes før vi deler med flere.",
-  updatedAt: "2026-09-09",
-  issue: "#180 · #184 · #222 · #346 · #396",
+  updatedAt: "2026-08-20",
+  issue: "#180 · #184 · #222 · #346",
 } as const;
 
 export const statusPanel = [
-  { label: "Spør Viddel", value: "Åpen i Preview · Production flaggstyrt", tone: "wait" as const },
-  { label: "Guard", value: "Production-flagg + Vercel Firewall", tone: "ok" as const },
+  { label: "Spør Viddel", value: "Midlertidig utilgjengelig — guard v0.2 under QA", tone: "wait" as const },
+  { label: "Guard", value: "Vercel Flags + Vercel Firewall", tone: "ok" as const },
   { label: "Monitoring", value: "Vercel logs + PostHog EU", tone: "ok" as const },
   { label: "Conversation feedback", value: "Neon EU · retention Needs QA", tone: "wait" as const },
 ] as const;
@@ -824,7 +824,6 @@ export const troubleshootingCases: TroubleshootingCase[] = [
 export const productionChecklist = [
   "Kan vi få ekte svar i Spør Viddel?",
   "Er AI stengt i Production når public-ai-enabled er av?",
-  "Er Preview åpen og globalt noindex?",
   "Er Firewall-reglene aktive for begge AI-rutene?",
   "Ser vi feil i Vercel logs?",
   "Er VIS current-state oppdatert?",
