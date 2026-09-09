@@ -402,6 +402,7 @@ export const aiChatConfigExplainer = {
         "Direct-chatten bruker en kryptert token som er bundet til nettlesersesjonen. Manglende, utløpt, endret eller feilbundet token starter med tom, generell tilstand.",
       bullets: [
         "Kun aktiv situasjon, etablert brukerkontekst med evidens, avgrensede korreksjoner og kort siste leverte svargrunnlag bæres mellom vendinger.",
+        "Reload i samme fane fortsetter samtalen; en ny eller duplisert fane roterer sessionId og skjult stateToken.",
         "Uetablert produktkontekst holder retrieval på knowledge_scope=general.",
         "Svarkandidaten må få eksplisitt policy-PASS; ellers én reparasjon og deretter fast generell fallback.",
         "Ingen persistent profil, rå historikk, prompt- eller svarlogging.",
@@ -411,6 +412,7 @@ export const aiChatConfigExplainer = {
         "src/lib/conversation-state-token-v01.ts",
         "src/lib/conversation-policy-v01.ts",
         "src/lib/conversation-delivery-gate-v01.ts",
+        "src/lib/chat-browser-session-v01.ts",
       ],
       links: [backstageLinks.apiRouteFile, backstageLinks.vercelEnv],
       caution: "Den dedikerte server-secret-en må være minst 32 tilfeldige tegn og satt før direct-chatten deployes. Del aldri verdien.",
@@ -1040,6 +1042,7 @@ export const sourceFiles = [
   "src/lib/conversation-policy-v01.ts",
   "src/lib/conversation-delivery-gate-v01.ts",
   "src/lib/conversation-vertex-json-v01.ts",
+  "src/lib/chat-browser-session-v01.ts",
   "src/lib/viddel-response-contract.ts",
   "src/lib/render-assistant-markdown.ts",
   "src/pages/no/chat.astro",

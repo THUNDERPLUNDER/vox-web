@@ -570,6 +570,14 @@ const publicSeedQuestions = [
       validateChatImageFile,
     } from "../../lib/chat-image-file-v01";
     import { composeChatImageMessage } from "../../lib/chat-image-message-v01";
+    import {
+      CHAT_SESSION_OCCUPIED,
+      CHAT_SESSION_PRESENCE_CHANNEL,
+      CHAT_SESSION_PROBE,
+      isMatchingPeerProbe,
+      isOccupiedReplyForInstance,
+      shouldReuseStoredConversation,
+    } from "../../lib/chat-browser-session-v01";
     import { renderAssistantMarkdownInto } from "../../lib/render-assistant-markdown";
 
     (() => {
@@ -650,6 +658,8 @@ const publicSeedQuestions = [
       const SESSION_KEY = "viddel-chat-session";
       const STATE_TOKEN_KEY = "viddel-chat-state-token";
       const SESSION_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}$/;
+      const navigationEntry = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+      const navigationType = navigationEntry?.type ?? "navigate";
       const params = new URLSearchParams(window.location.search);
       const seedFromUrl = (params.get("seed") || params.get("q") || "").trim();
       const entrySurface = (params.get("from") || "standalone").trim() || "standalone";
@@ -745,17 +755,80 @@ const publicSeedQuestions = [
         setOwnerMessage("Eiertilgangen er fjernet fra denne enheten.");
       });
 
-      const ensureSessionId = () => {
+      const createSessionId = () => `viddel-${crypto.randomUUID().replace(/-/g, "").slice(0, 24)}`;
+
+      const readStoredSessionId = () => {
         try {
           const existing = sessionStorage.getItem(SESSION_KEY);
           if (existing && SESSION_PATTERN.test(existing)) return existing;
         } catch (_) {}
-        const created = `viddel-${crypto.randomUUID().replace(/-/g, "").slice(0, 24)}`;
+        return "";
+      };
+
+      let activeSessionId = readStoredSessionId();
+      const rotateConversationSession = () => {
+        activeSessionId = createSessionId();
         try {
-          sessionStorage.setItem(SESSION_KEY, created);
+          sessionStorage.setItem(SESSION_KEY, activeSessionId);
           sessionStorage.removeItem(STATE_TOKEN_KEY);
         } catch (_) {}
-        return created;
+        return activeSessionId;
+      };
+
+      const reuseStoredConversation = shouldReuseStoredConversation(
+        Boolean(activeSessionId),
+        navigationType,
+      );
+      if (!reuseStoredConversation) rotateConversationSession();
+
+      const tabInstanceId = crypto.randomUUID();
+      let presenceChannel: BroadcastChannel | null = null;
+      let settlePresenceCheck: (() => void) | null = null;
+      let sessionReady: Promise<string> = Promise.resolve(activeSessionId);
+
+      if ("BroadcastChannel" in window) {
+        presenceChannel = new BroadcastChannel(CHAT_SESSION_PRESENCE_CHANNEL);
+        presenceChannel.addEventListener("message", (event) => {
+          if (isMatchingPeerProbe(event.data, activeSessionId, tabInstanceId)) {
+            presenceChannel?.postMessage({
+              type: CHAT_SESSION_OCCUPIED,
+              sessionId: activeSessionId,
+              instanceId: tabInstanceId,
+              targetInstanceId: event.data.instanceId,
+            });
+            return;
+          }
+          if (isOccupiedReplyForInstance(event.data, activeSessionId, tabInstanceId)) {
+            rotateConversationSession();
+            settlePresenceCheck?.();
+          }
+        });
+
+        if (reuseStoredConversation) {
+          sessionReady = new Promise((resolve) => {
+            let settled = false;
+            const finish = () => {
+              if (settled) return;
+              settled = true;
+              settlePresenceCheck = null;
+              resolve(activeSessionId);
+            };
+            settlePresenceCheck = finish;
+            presenceChannel?.postMessage({
+              type: CHAT_SESSION_PROBE,
+              sessionId: activeSessionId,
+              instanceId: tabInstanceId,
+            });
+            window.setTimeout(finish, 120);
+          });
+        }
+      }
+
+      window.addEventListener("pagehide", () => presenceChannel?.close(), { once: true });
+
+      const ensureSessionId = async () => {
+        await sessionReady;
+        return activeSessionId || rotateConversationSession();
       };
 
       const readStateToken = () => {
@@ -1084,7 +1157,7 @@ const publicSeedQuestions = [
           }
 
           const composedMessage = composeChatImageMessage(visionPayload.vision, userProblem);
-          const sessionId = ensureSessionId();
+          const sessionId = await ensureSessionId();
           const response = await fetch("/api/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -1167,7 +1240,7 @@ const publicSeedQuestions = [
         selectedGuideSeed = "";
 
         try {
-          const sessionId = ensureSessionId();
+          const sessionId = await ensureSessionId();
           const response = await fetch("/api/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

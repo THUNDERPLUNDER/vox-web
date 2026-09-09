@@ -4,11 +4,90 @@ import { readFile } from "node:fs/promises";
 const tokenModule = await import("../src/lib/conversation-state-token-v01.ts");
 const policyModule = await import("../src/lib/conversation-policy-v01.ts");
 const deliveryModule = await import("../src/lib/conversation-delivery-gate-v01.ts");
+const browserSessionModule = await import("../src/lib/chat-browser-session-v01.ts");
 
 const secret = "test-only-secret-that-is-longer-than-thirty-two-characters";
 const sessionId = "viddel-0123456789abcdef01234567";
 const now = 1_800_000_000_000;
 const fixedIv = new Uint8Array(12).fill(7);
+
+const storedSessionId = "viddel-stored0123456789abcdef01";
+const freshSessionId = "viddel-fresh0123456789abcdef01";
+const simulateInitialBrowserSession = ({ existingSessionId, stateToken, navigationType, occupied }) => {
+  let sessionId = existingSessionId;
+  let nextStateToken = stateToken;
+  const rotate = () => {
+    sessionId = freshSessionId;
+    nextStateToken = "";
+  };
+  const reuse = browserSessionModule.shouldReuseStoredConversation(Boolean(sessionId), navigationType);
+  if (!reuse) rotate();
+  if (reuse && occupied) rotate();
+  return { sessionId, stateToken: nextStateToken };
+};
+
+assert.deepEqual(
+  simulateInitialBrowserSession({
+    existingSessionId: storedSessionId,
+    stateToken: "opaque-state-token",
+    navigationType: "reload",
+    occupied: false,
+  }),
+  { sessionId: storedSessionId, stateToken: "opaque-state-token" },
+  "reload in the same tab must preserve session id and state token",
+);
+assert.deepEqual(
+  simulateInitialBrowserSession({
+    existingSessionId: "",
+    stateToken: "",
+    navigationType: "navigate",
+    occupied: false,
+  }),
+  { sessionId: freshSessionId, stateToken: "" },
+  "genuinely new tab must start a new empty conversation",
+);
+assert.deepEqual(
+  simulateInitialBrowserSession({
+    existingSessionId: storedSessionId,
+    stateToken: "opaque-state-token",
+    navigationType: "navigate",
+    occupied: false,
+  }),
+  { sessionId: freshSessionId, stateToken: "" },
+  "copied sessionStorage on a duplicated tab must rotate on fresh navigation",
+);
+
+const originalInstance = "tab-original";
+const duplicatedInstance = "tab-copy";
+const probe = {
+  type: browserSessionModule.CHAT_SESSION_PROBE,
+  sessionId: storedSessionId,
+  instanceId: duplicatedInstance,
+};
+assert.equal(
+  browserSessionModule.isMatchingPeerProbe(probe, storedSessionId, originalInstance),
+  true,
+);
+const occupiedReply = {
+  type: browserSessionModule.CHAT_SESSION_OCCUPIED,
+  sessionId: storedSessionId,
+  instanceId: originalInstance,
+  targetInstanceId: duplicatedInstance,
+};
+assert.equal(
+  browserSessionModule.isOccupiedReplyForInstance(occupiedReply, storedSessionId, duplicatedInstance),
+  true,
+);
+assert.deepEqual(
+  simulateInitialBrowserSession({
+    existingSessionId: storedSessionId,
+    stateToken: "opaque-state-token",
+    navigationType: "reload",
+    occupied: true,
+  }),
+  { sessionId: freshSessionId, stateToken: "" },
+  "peer collision must rotate even if a browser reports the duplicated tab as reload",
+);
 
 const empty = tokenModule.emptyConversationState();
 assert.deepEqual(
@@ -271,5 +350,9 @@ assert.match(apiSource, /withLastDeliveryContext\(turn\.state, delivery\.text\)/
 const clientSource = await readFile(new URL("../src/pages/no/chat.astro", import.meta.url), "utf8");
 assert.ok((clientSource.match(/stateToken: readStateToken\(\)/g) ?? []).length === 2, "text and image paths carry state token");
 assert.ok((clientSource.match(/acceptStateToken\(payload\)/g) ?? []).length === 2, "text and image paths commit delivered state token");
+assert.ok((clientSource.match(/await ensureSessionId\(\)/g) ?? []).length === 2, "text and image paths wait for tab identity");
+assert.match(clientSource, /performance\.getEntriesByType\("navigation"\)/);
+assert.match(clientSource, /sessionStorage\.removeItem\(STATE_TOKEN_KEY\)/);
+assert.match(clientSource, /new BroadcastChannel\(CHAT_SESSION_PRESENCE_CHANNEL\)/);
 
 console.log("Conversation state + policy v0.1 contract OK");
