@@ -254,7 +254,7 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  if (!(await canUsePublicAi(request))) {
+  if (!(await canUsePublicAi())) {
     return respond(
       opsTest,
       { error: "public_ai_disabled", message: "Viddel er ikke tilgjengelig akkurat nå." },
