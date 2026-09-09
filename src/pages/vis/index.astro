@@ -3,6 +3,13 @@
 import VisInternalLayout from "../../layouts/VisInternalLayout.astro";
 import { groupedVisEntries, wireframeIndexEntries } from "../../lib/vis-wireframes";
 import { visProjectStateV01 } from "../../data/vis-project-state-v01.ts";
+import {
+  roadmapFrontPreview,
+  roadmapFrontPreviewLabels,
+  roadmapHorizons,
+  roadmapInitiatives,
+  roadmapWatchSignals,
+} from "../../data/vis-roadmap-horizons-v01.ts";
 
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
@@ -86,6 +93,19 @@ const operationalLinks = [
 
 const archiveEntries = wireframeIndexEntries();
 const archiveGrouped = groupedVisEntries(archiveEntries);
+const roadmapPreviewColumns = roadmapHorizons.map((horizon) => ({
+  ...horizon,
+  initiatives: roadmapFrontPreview[horizon.id]
+    .map((id) => roadmapInitiatives.find((initiative) => initiative.id === id))
+    .filter((initiative) => initiative !== undefined)
+    .map((initiative) => ({
+      initiative,
+      label: roadmapFrontPreviewLabels[initiative.id] ?? initiative.title,
+    })),
+}));
+const roadmapPreviewWatch = roadmapFrontPreview.watch
+  .map((id) => roadmapWatchSignals.find((signal) => signal.id === id))
+  .filter((signal) => signal !== undefined);
 ---
 
 <VisInternalLayout title="VIS Project State" showPageIntro={false}>
@@ -128,6 +148,31 @@ const archiveGrouped = groupedVisEntries(archiveEntries);
         <p class="eyebrow">Fase nå</p>
         <p>{visProjectStateV01.phase}</p>
       </div>
+
+      <section class="project-state__roadmap-preview" aria-labelledby="roadmap-preview-title">
+        <div class="roadmap-preview__heading">
+          <div>
+            <p class="eyebrow">Roadmap · kompakt</p>
+            <h3 id="roadmap-preview-title">Veien videre</h3>
+            <p class="roadmap-preview__intro">Hva vi arbeider med nå, hva som trolig kommer etter, og hva vi foreløpig holder åpent.</p>
+          </div>
+          <a href={internalHref("/vis/system/roadmap-timeline-v01")}>Åpne hele roadmapet</a>
+        </div>
+        <div class="roadmap-preview__horizons">
+          {roadmapPreviewColumns.map((horizon) => (
+            <section aria-labelledby={`preview-${horizon.id}`}>
+              <h4 id={`preview-${horizon.id}`}>{horizon.label}</h4>
+              <ul role="list">
+                {horizon.initiatives.map((item) => <li>{item.label}</li>)}
+              </ul>
+            </section>
+          ))}
+        </div>
+        <div class="roadmap-preview__watch">
+          <strong>WATCH</strong>
+          <p>{roadmapPreviewWatch.map((signal) => signal.title).join(" · ")}</p>
+        </div>
+      </section>
 
       <div class="project-state__grid">
         <section aria-labelledby="priorities-title">
@@ -346,6 +391,7 @@ const archiveGrouped = groupedVisEntries(archiveEntries);
       box-shadow: 0 20px 60px rgb(15 27 46 / 0.08);
     }
     .project-state__source, .project-state__north-star, .project-state__phase,
+    .project-state__roadmap-preview,
     .project-state__grid, .project-state__lower-grid { padding: clamp(1.2rem, 3vw, 2rem); }
     .project-state__source {
       display: flex;
@@ -364,6 +410,21 @@ const archiveGrouped = groupedVisEntries(archiveEntries);
     .project-state__north-star blockquote span { color: rgb(var(--vis-muted)); }
     .project-state__phase { display: grid; gap: 0.45rem; grid-template-columns: minmax(8rem, 0.26fr) 1fr; border-top: 1px solid rgb(var(--vis-line)); border-bottom: 1px solid rgb(var(--vis-line)); background: rgb(15 27 46 / 0.025); }
     .project-state__phase p { margin: 0; line-height: 1.65; }
+    .project-state__roadmap-preview { border-bottom: 1px solid rgb(var(--vis-line)); background: rgb(255 255 255 / 0.48); }
+    .roadmap-preview__heading { display: flex; gap: 1rem; align-items: flex-end; justify-content: space-between; }
+    .roadmap-preview__heading h3 { margin-bottom: 0; }
+    .roadmap-preview__intro { max-width: 44rem; margin: 0.35rem 0 0; color: rgb(var(--vis-muted)); font-size: 0.76rem; line-height: 1.5; }
+    .roadmap-preview__heading a { flex: none; color: rgb(35 83 173); font-size: 0.78rem; font-weight: 650; text-decoration: none; }
+    .roadmap-preview__heading a:hover, .roadmap-preview__heading a:focus-visible { text-decoration: underline; }
+    .roadmap-preview__horizons { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 1.1rem; border-top: 1px solid rgb(var(--vis-line)); border-bottom: 1px solid rgb(var(--vis-line)); }
+    .roadmap-preview__horizons > section { min-width: 0; padding: 0.9rem; }
+    .roadmap-preview__horizons > section + section { border-left: 1px solid rgb(var(--vis-line)); }
+    .roadmap-preview__horizons h4 { margin: 0; color: rgb(var(--vis-blue)); font-size: 0.69rem; letter-spacing: 0.1em; }
+    .roadmap-preview__horizons ul { display: grid; gap: 0.42rem; margin: 0.65rem 0 0; padding: 0; list-style: none; }
+    .roadmap-preview__horizons li { font-size: 0.78rem; font-weight: 620; line-height: 1.4; }
+    .roadmap-preview__watch { display: flex; gap: 0.65rem 1rem; align-items: baseline; padding-top: 0.75rem; }
+    .roadmap-preview__watch strong { color: rgb(var(--vis-blue)); font-size: 0.65rem; letter-spacing: 0.1em; }
+    .roadmap-preview__watch p { margin: 0; color: rgb(var(--vis-muted)); font-size: 0.72rem; line-height: 1.45; }
     .project-state__grid, .project-state__lower-grid { display: grid; gap: clamp(1.4rem, 4vw, 2.5rem); grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .project-state__grid > section + section { padding-left: clamp(1.4rem, 4vw, 2.5rem); border-left: 1px solid rgb(var(--vis-line)); }
     .project-state h3 { margin: 0.35rem 0 1rem; font-size: 1.18rem; letter-spacing: -0.015em; }
@@ -437,6 +498,10 @@ const archiveGrouped = groupedVisEntries(archiveEntries);
       .project-state__source, .project-state__grid, .project-state__lower-grid, .project-state__phase { grid-template-columns: 1fr; }
       .project-state__source { align-items: flex-start; flex-direction: column; }
       .project-state__source > p { text-align: left; }
+      .roadmap-preview__heading { align-items: flex-start; flex-direction: column; }
+      .roadmap-preview__horizons { grid-template-columns: 1fr; }
+      .roadmap-preview__horizons > section + section { border-top: 1px solid rgb(var(--vis-line)); border-left: 0; }
+      .roadmap-preview__watch { align-items: flex-start; flex-direction: column; }
       .project-state__grid > section + section { padding-top: 1.4rem; padding-left: 0; border-top: 1px solid rgb(var(--vis-line)); border-left: 0; }
       .project-state__north-star blockquote { align-items: flex-start; flex-direction: column; }
       .operations__grid, .history__groups { grid-template-columns: 1fr; }
