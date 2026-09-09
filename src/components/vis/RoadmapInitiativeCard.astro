@@ -1,0 +1,161 @@
+---
+import {
+  executionLikelihoodLabels,
+  githubIssueHref,
+  significanceLabels,
+  strategicFunctionLabels,
+  type RoadmapInitiative,
+} from "../../data/vis-roadmap-horizons-v01.ts";
+import RoadmapLikelihoodMark from "./RoadmapLikelihoodMark.astro";
+
+interface Props {
+  initiative: RoadmapInitiative;
+  trackCode?: string;
+}
+
+const { initiative, trackCode } = Astro.props;
+const horizonLabel = initiative.horizons.map((horizon) => horizon.toUpperCase()).join(" → ");
+---
+
+<details
+  class:list={[
+    "roadmap-card",
+    `roadmap-card--${initiative.executionLikelihood}`,
+    `roadmap-card--timing-${initiative.timing.confidence}`,
+  ]}
+  data-roadmap-initiative={initiative.id}
+  data-roadmap-track={initiative.track}
+>
+  <summary>
+    <span class="roadmap-card__heading">
+      <span class="roadmap-card__eyebrow">
+        {trackCode ? `Spor ${trackCode} · ` : ""}{horizonLabel}
+      </span>
+      <RoadmapLikelihoodMark likelihood={initiative.executionLikelihood} />
+      <strong>{initiative.title}</strong>
+      <span class="roadmap-card__summary">{initiative.summary}</span>
+    </span>
+    <span class="roadmap-card__expand" aria-hidden="true">+</span>
+  </summary>
+
+  <div class="roadmap-card__details">
+    <div class="roadmap-card__intro">
+      <p class="roadmap-card__intro-label">Hva dette handler om</p>
+      <p class="roadmap-card__intro-copy">{initiative.summary}</p>
+      <p class="roadmap-card__intro-sources">
+        <strong>GitHub:</strong>{" "}
+        {initiative.sourceIssues.map((issueNumber, index) => (
+          <>
+            {index > 0 && <span aria-hidden="true"> · </span>}
+            <a href={githubIssueHref(issueNumber)} rel="noopener noreferrer">#{issueNumber}</a>
+          </>
+        ))}
+      </p>
+    </div>
+
+    <dl>
+      <div>
+        <dt>Gjennomføringssignal</dt>
+        <dd>{executionLikelihoodLabels[initiative.executionLikelihood]}</dd>
+      </div>
+      <div>
+        <dt>Timing</dt>
+        <dd>{initiative.timing.label}</dd>
+      </div>
+      <div>
+        <dt>Strategisk funksjon</dt>
+        <dd><span class="roadmap-card__function">{initiative.strategicFunction}</span> {strategicFunctionLabels[initiative.strategicFunction]}</dd>
+      </div>
+      <div>
+        <dt>Gate / trigger</dt>
+        <dd>{initiative.gate}</dd>
+      </div>
+      <div>
+        <dt>Betydning</dt>
+        <dd>{significanceLabels[initiative.significance]}</dd>
+      </div>
+    </dl>
+
+    <div
+      class="roadmap-card__github"
+      data-github-readiness
+      data-source-issues={initiative.sourceIssues.join(",")}
+    >
+      <p><strong>Live GitHub-status:</strong> <span data-github-readiness-label>Laster kildespor …</span></p>
+      <ul role="list">
+        {initiative.sourceIssues.map((issueNumber) => (
+          <li>
+            <a href={githubIssueHref(issueNumber)} rel="noopener noreferrer">#{issueNumber}</a>
+            <span data-github-issue-state={issueNumber}>sjekk GitHub</span>
+          </li>
+        ))}
+      </ul>
+      <p class="roadmap-card__github-note">Task-status er live drill-down, ikke gjennomføringssannsynlighet eller timing.</p>
+    </div>
+  </div>
+</details>
+
+<style>
+  .roadmap-card {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgb(var(--roadmap-line));
+    border-radius: 0.85rem;
+    background: rgb(255 255 255 / 0.94);
+    box-shadow: 0 8px 22px rgb(15 27 46 / 0.045);
+  }
+
+  summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.7rem;
+    align-items: stretch;
+    padding: 0.9rem;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker { display: none; }
+  summary:hover, summary:focus-visible { background: rgb(var(--roadmap-blue) / 0.035); }
+  summary:focus-visible { outline: 2px solid rgb(var(--roadmap-focus)); outline-offset: -2px; }
+
+  .roadmap-card__heading { display: grid; gap: 0.3rem; min-width: 0; }
+  .roadmap-card__eyebrow {
+    color: rgb(var(--roadmap-muted));
+    font-size: 0.62rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .roadmap-card strong { color: rgb(var(--roadmap-ink)); font-size: 0.9rem; line-height: 1.32; }
+  .roadmap-card__summary { color: rgb(var(--roadmap-muted)); font-size: 0.75rem; line-height: 1.45; }
+  .roadmap-card__expand { align-self: start; color: rgb(var(--roadmap-muted)); font-size: 1.1rem; line-height: 1; }
+  details[open] .roadmap-card__expand { transform: rotate(45deg); }
+
+  .roadmap-card__details { padding: 0 0.9rem 0.95rem; }
+  .roadmap-card__intro { display: grid; gap: 0.3rem; padding-top: 0.8rem; border-top: 1px solid rgb(var(--roadmap-line)); }
+  .roadmap-card__intro p { margin: 0; }
+  .roadmap-card__intro-label { color: rgb(var(--roadmap-muted)); font-size: 0.62rem; font-weight: 720; letter-spacing: 0.06em; text-transform: uppercase; }
+  .roadmap-card__intro-copy { color: rgb(var(--roadmap-ink)); font-size: 0.75rem; line-height: 1.5; }
+  .roadmap-card__intro-sources { color: rgb(var(--roadmap-muted)); font-size: 0.68rem; line-height: 1.45; }
+  .roadmap-card__intro-sources strong { color: inherit; font-size: inherit; }
+  .roadmap-card__intro-sources a { color: rgb(35 83 173); font-weight: 720; }
+  dl { display: grid; gap: 0.55rem; margin: 0.8rem 0 0; padding-top: 0.8rem; border-top: 1px solid rgb(var(--roadmap-line)); }
+  dl > div { display: grid; gap: 0.15rem; }
+  dt { color: rgb(var(--roadmap-muted)); font-size: 0.62rem; font-weight: 720; letter-spacing: 0.06em; text-transform: uppercase; }
+  dd { margin: 0; color: rgb(var(--roadmap-ink)); font-size: 0.72rem; line-height: 1.48; }
+  .roadmap-card__function { display: inline-block; margin-right: 0.25rem; color: rgb(35 83 173); font-size: 0.62rem; font-weight: 800; letter-spacing: 0.08em; }
+
+  .roadmap-card__github { margin-top: 0.8rem; padding-top: 0.7rem; border-top: 1px solid rgb(var(--roadmap-line)); }
+  .roadmap-card__github p { margin: 0; color: rgb(var(--roadmap-muted)); font-size: 0.66rem; line-height: 1.45; }
+  .roadmap-card__github ul { display: flex; gap: 0.35rem 0.65rem; flex-wrap: wrap; margin: 0.45rem 0 0; padding: 0; list-style: none; }
+  .roadmap-card__github li { display: flex; gap: 0.25rem; align-items: baseline; font-size: 0.68rem; }
+  .roadmap-card__github a { color: rgb(35 83 173); font-weight: 720; }
+  .roadmap-card__github li span { color: rgb(var(--roadmap-muted)); }
+  .roadmap-card__github-note { margin-top: 0.45rem !important; font-style: italic; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .roadmap-card__expand { transition: transform 150ms ease; }
+  }
+</style>

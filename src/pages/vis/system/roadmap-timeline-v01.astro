@@ -1,486 +1,367 @@
 ---
-/* CONTRACT: VIS read model v0.1 — initiatives from GitHub KL-META, grouped by repo lane manifest (no Gantt, no task expansion). */
+/* CONTRACT: VIS Horizon Roadmap v0.1 — curated Project Brain direction joined to separate live GitHub task status. */
 import VisInternalLayout from "../../../layouts/VisInternalLayout.astro";
-import laneManifest from "../../../../docs/project/roadmap_timeline_lanes.v0.1.json";
+import RoadmapInitiativeCard from "../../../components/vis/RoadmapInitiativeCard.astro";
+import RoadmapLikelihoodMark from "../../../components/vis/RoadmapLikelihoodMark.astro";
+import {
+  roadmapDecisionForks,
+  githubIssueHref,
+  roadmapHorizons,
+  roadmapInitiatives,
+  roadmapProgramFrame,
+  roadmapProjectionMeta,
+  roadmapTracks,
+  roadmapWatchSignals,
+  type RoadmapInitiative,
+  type RoadmapTrackId,
+} from "../../../data/vis-roadmap-horizons-v01.ts";
 
-const base = import.meta.env.BASE_URL;
-const owner = "THUNDERPLUNDER";
-const repo = "vox-web";
-const roadmapClientProps = JSON.stringify({ laneManifest, owner, repo });
+const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const shapingCommentHref = `https://github.com/THUNDERPLUNDER/vox-web/issues/${roadmapProjectionMeta.shapingIssue}#issuecomment-${roadmapProjectionMeta.shapingCommentId}`;
+
+type Placement = { initiative: RoadmapInitiative; column: number; span: number; row: number };
+
+function placeInitiatives(track: RoadmapTrackId): Placement[] {
+  const horizonOrder = ["now", "next", "later"] as const;
+  const nextFreeRow = [1, 1, 1];
+  return roadmapInitiatives
+    .filter((initiative) => initiative.track === track)
+    .sort((a, b) => a.projectionOrder - b.projectionOrder)
+    .map((initiative) => {
+      const column = horizonOrder.indexOf(initiative.horizons[0]!);
+      const span = initiative.horizons.length;
+      const row = Math.max(...nextFreeRow.slice(column, column + span));
+      for (let index = column; index < column + span; index += 1) nextFreeRow[index] = row + 1;
+      return { initiative, column: column + 1, span, row };
+    });
+}
+
+const mobileInitiatives = roadmapHorizons.map((horizon) => ({
+  ...horizon,
+  initiatives: roadmapInitiatives
+    .filter((initiative) => initiative.horizons[0] === horizon.id)
+    .sort((a, b) => a.projectionOrder - b.projectionOrder),
+}));
 ---
 
-<VisInternalLayout title="Roadmap timeline v0.4.1" pageContractId="roadmap">
-  <main class="px-4 py-6 sm:px-6 sm:py-8">
-    <header class="rounded-md border border-gray-300 bg-white px-4 py-4 sm:px-5">
-      <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Live dashboard</p>
-      <h1 class="mt-1 text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl">
-        Roadmap timeline (canonical) v0.4.1
-      </h1>
-      <p class="mt-3 max-w-3xl text-sm leading-relaxed text-gray-600">
-        Operativ roadmap-flate i VIS. Initiativer og oppgaver leses fra GitHub-bussen via KL-META; lane-navn og rekkefolge hentes fra lane-manifestet.
+<VisInternalLayout title="Viddel Horizon Roadmap v0.1" pageContractId="roadmap" showPageIntro={false}>
+  <main class="roadmap-page">
+    <nav class="roadmap-breadcrumb" aria-label="Du er her">
+      <a href={`${base}vis`}>VIS</a><span aria-hidden="true">/</span><span>Roadmap</span>
+    </nav>
+
+    <header class="roadmap-hero">
+      <p class="roadmap-eyebrow">Project Brain projection · {roadmapProjectionMeta.version}</p>
+      <h1>{roadmapProjectionMeta.title}</h1>
+      <p class="roadmap-hero__lead">
+        Dette er et arbeidskart, ikke en fast plan. Det viser hva vi arbeider med nå, hva vi tror kommer etter, og hvilke muligheter vi holder åpne. WATCH viser ting vi følger med på fordi de kan endre rekkefølgen.
       </p>
-      <p class="mt-3 text-xs text-gray-600">
-        GitHub er source of truth. VIS er read-only human-layer for spor → initiativ → oppgave.
-      </p>
-      <div class="mt-4 rounded border border-gray-200 bg-gray-50 px-3 py-2">
-        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-600">Pensjonerte sider</p>
-        <ul class="mt-1 space-y-1 text-xs text-gray-600">
-          <li>
-            <code class="font-mono">/vis/KlarLyd_Live_Board_Roadmap_v01</code> erstattes av{" "}
-            <a href={`${base}vis/system/roadmap-timeline-v01`} class="underline underline-offset-2">denne roadmap-siden</a>.
-          </li>
-          <li>
-            <code class="font-mono">/vis/system/task-bus-live</code> erstattes av{" "}
-            <a href={`${base}vis/system/roadmap-timeline-v01`} class="underline underline-offset-2">roadmap timeline</a>.
-          </li>
-        </ul>
+      <div class="roadmap-source">
+        <p>
+          <strong>{roadmapProjectionMeta.sourceDocument}</strong> eier strategisk retning.
+          GitHub eier task- og runtime-status. VIS kobler kildene uten å gjøre dem til samme signal.
+        </p>
+        <a href={shapingCommentHref} rel="noopener noreferrer">Åpne shaping-kilden i #374</a>
       </div>
     </header>
 
-    <section class="mt-6 rounded-md border border-gray-300 bg-white p-4">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Initiativer etter spor</h2>
-        <div class="flex items-center gap-2">
-          <label for="vis-roadmap-range" class="text-xs font-medium text-gray-600">Tidsspenn</label>
-          <select
-            id="vis-roadmap-range"
-            class="rounded border border-gray-300 bg-white px-2 py-1 text-xs text-gray-700"
-          >
-            <option value="2026">2026</option>
-            <option value="2026-2027">2026-2027</option>
-          </select>
-          <button
-            type="button"
-            id="vis-roadmap-refresh"
-            class="rounded border border-gray-300 bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100"
-          >
-            Oppdater nå
-          </button>
+    <section class="roadmap-forecast" aria-labelledby="forecast-title">
+      <div class="roadmap-section-heading">
+        <div>
+          <p class="roadmap-eyebrow">Retning</p>
+          <h2 id="forecast-title">NOW <span aria-hidden="true">→</span> NEXT <span aria-hidden="true">→</span> LATER</h2>
         </div>
+        <p>Ingen dato vises før en virkelig dato eller et reelt vindu er etablert.</p>
       </div>
-      <details class="mt-2 rounded border border-gray-200 bg-gray-50/70 px-2 py-1.5">
-        <summary class="cursor-pointer text-xs font-medium text-gray-700">Vis forklaring av datagrunnlag</summary>
-        <p class="mt-2 text-xs text-gray-600">
-          Initiativer oppdages fra GitHub-bussen via KL-META (<code class="font-mono">type: initiative</code>) i <code class="font-mono">{owner}/{repo}</code>.
-        </p>
-        <p class="mt-1 text-[11px] text-gray-500">
-          Sikker avgrensning i v0.3: leser de siste 100 issue-elementene fra GitHub API-responsen.
-        </p>
-        <p class="mt-1 text-[11px] text-gray-500">
-          Human-layer regel i v0.3.1: viser kun åpne initiatives (<code class="font-mono">state: open</code>).
-        </p>
-      </details>
-      <p id="vis-roadmap-meta" class="mt-1 text-[11px] text-gray-500">Laster…</p>
-      <div id="vis-roadmap-root" class="mt-4 space-y-4"></div>
+
+      <div class="roadmap-desktop" aria-label="Roadmap etter strategisk spor og horizon">
+        <div class="roadmap-axis">
+          <p>Spor</p>
+          {roadmapHorizons.map((horizon) => (
+            <div>
+              <strong>{horizon.label}</strong>
+              <span>{horizon.description}</span>
+            </div>
+          ))}
+        </div>
+
+        {roadmapTracks.map((track) => (
+          <section class="roadmap-track" aria-labelledby={`track-${track.id}`}>
+            <header>
+              <span>{track.code}</span>
+              <h3 id={`track-${track.id}`}>{track.label}</h3>
+            </header>
+            <div class="roadmap-track__grid">
+              <span class="roadmap-track__guide roadmap-track__guide--one" aria-hidden="true"></span>
+              <span class="roadmap-track__guide roadmap-track__guide--two" aria-hidden="true"></span>
+              {placeInitiatives(track.id).map(({ initiative, column, span, row }) => (
+                <div style={`grid-column: ${column} / span ${span}; grid-row: ${row};`}>
+                  <RoadmapInitiativeCard initiative={initiative} />
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <div class="roadmap-mobile" aria-label="Roadmap etter horizon">
+        {mobileInitiatives.map((horizon) => (
+          <section aria-labelledby={`mobile-${horizon.id}`}>
+            <header>
+              <p class="roadmap-eyebrow">Horizon</p>
+              <h3 id={`mobile-${horizon.id}`}>{horizon.label}</h3>
+              <p>{horizon.description}</p>
+            </header>
+            <div class="roadmap-mobile__items">
+              {horizon.initiatives.map((initiative) => (
+                <RoadmapInitiativeCard
+                  initiative={initiative}
+                  trackCode={roadmapTracks.find((track) => track.id === initiative.track)?.code}
+                />
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <p class="roadmap-supporting-source">
+        <strong>Pull-basert støtte:</strong> <a href={githubIssueHref(339)} rel="noopener noreferrer">#339 kunnskapsoperasjon</a>
+        aktiveres ved observert kunnskapsgap eller freshness-behov og er derfor ikke et eget toppnivåobjekt.
+      </p>
     </section>
 
-    <p class="mt-6 text-xs text-gray-600">
-      Se også <a href={`${base}vis/system`} class="underline underline-offset-2">/vis/system</a>.
-    </p>
+    <details class="roadmap-legend" open>
+      <summary>Slik leser du roadmapet</summary>
+      <div class="roadmap-legend__body">
+        <section>
+          <h2>Gjennomføringssignal</h2>
+          <ul class="roadmap-legend__likelihood" role="list">
+            <li><RoadmapLikelihoodMark likelihood="committed" /><span>Valgt retning eller aktiv avklaring.</span></li>
+            <li><RoadmapLikelihoodMark likelihood="probable" /><span>Forventet bevegelse, men ikke låst.</span></li>
+            <li><RoadmapLikelihoodMark likelihood="conditional" /><span>Krever eksplisitt gate eller trigger.</span></li>
+            <li><RoadmapLikelihoodMark likelihood="option" /><span>Bevart, ikke planlagt.</span></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Timing</h2>
+          <ul role="list">
+            <li><span class="legend-timing legend-timing--fixed"></span><strong>Fast</strong> — faktisk dato eller punkt.</li>
+            <li><span class="legend-timing legend-timing--bounded"></span><strong>Avgrenset</strong> — definert, bredere vindu.</li>
+            <li><span class="legend-timing legend-timing--open"></span><strong>Åpen</strong> — ingen etablert dato; åpen hale.</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Relasjoner og metadata</h2>
+          <ul role="list">
+            <li><span class="legend-milestone" aria-hidden="true"></span><strong>Milepæl</strong> er et faktisk punkt eller vindu; ingen er datofestet i denne projeksjonen.</li>
+            <li><span class="legend-dependency" aria-hidden="true"></span><strong>Avhengighet / gate</strong> forklarer hva som må være sant før bevegelse.</li>
+            <li><strong>WATCH</strong> er signaler som kan endre retning, ikke et horizon.</li>
+            <li><strong>LEASE / OWN / ECOSYSTEM</strong> er sekundær strategisk funksjon, synlig i detaljene.</li>
+            <li><strong>GitHub-status</strong> er live task-drill-down og aldri et mål på likelihood eller timing.</li>
+          </ul>
+        </section>
+      </div>
+    </details>
+
+    <section class="roadmap-watch" aria-labelledby="watch-title">
+      <div class="roadmap-watch__heading">
+        <div>
+          <p class="roadmap-eyebrow">Parallelt signallag</p>
+          <h2 id="watch-title">WATCH</h2>
+        </div>
+        <p>Ting vi følger med på fordi de kan flytte, endre eller stoppe noe i planen.</p>
+      </div>
+      <div class="roadmap-watch__grid">
+        {roadmapWatchSignals.map((signal) => (
+          <article>
+            <span aria-hidden="true"></span>
+            <h3>{signal.title}</h3>
+            <p>{signal.note}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="roadmap-context" aria-label="Roadmap-kontekst">
+      <div>
+        <p class="roadmap-eyebrow">Foreløpig programramme</p>
+        <p>{roadmapProgramFrame}</p>
+      </div>
+      <div>
+        <p class="roadmap-eyebrow">Synlige beslutningsforker</p>
+        <ul role="list">
+          {roadmapDecisionForks.map((fork) => (
+            <li><strong>{fork.title}</strong><span>{fork.body}</span></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <footer class="roadmap-footer">
+      <p>
+        Projisert {roadmapProjectionMeta.projectionDate} · eier: {roadmapProjectionMeta.projectionOwner} ·
+        kilde- og Operating Model-revisjoner er bundet i repo-projeksjonen.
+      </p>
+      <a href={`${base}vis`}>Tilbake til VIS Project State</a>
+    </footer>
   </main>
 </VisInternalLayout>
 
-<!-- Props for client module: define:vars + import in the same Astro script breaks prod bundling; JSON bootstrap keeps one bundled module. -->
-<script type="application/json" id="vis-roadmap-props" set:html={roadmapClientProps} />
-<style is:global>
-  /* No explicit chevron icon in v0.4.5 microfix: entire epic row is the control. */
-</style>
-
 <script>
-  import {
-    groupInitiativesByLane,
-    initiativesFromGitHubIssues,
-    tasksFromGitHubIssues,
-    type TaskReadModel,
-    type LaneManifestV01,
-    type RoadmapLaneGroup,
-  } from "../../../lib/roadmap-timeline-v01.ts";
+  type GitHubIssue = { number: number; state: "open" | "closed"; pull_request?: unknown };
+  const endpoint = "https://api.github.com/repos/THUNDERPLUNDER/vox-web/issues?state=all&per_page=100&sort=updated";
 
-  const propsEl = document.getElementById("vis-roadmap-props");
-  if (!propsEl?.textContent) {
-    throw new Error("vis-roadmap-props mangler");
-  }
-  const { laneManifest, owner, repo } = JSON.parse(propsEl.textContent) as {
-    laneManifest: LaneManifestV01;
-    owner: string;
-    repo: string;
-  };
-
-  const endpoint = `https://api.github.com/repos/${owner}/${repo}/issues?state=all&per_page=100`;
-  const root = document.getElementById("vis-roadmap-root");
-  const meta = document.getElementById("vis-roadmap-meta");
-  const refresh = document.getElementById("vis-roadmap-refresh");
-  const rangeSelect = document.getElementById("vis-roadmap-range") as HTMLSelectElement | null;
-  let initiativesCache: ReturnType<typeof initiativesFromGitHubIssues> | null = null;
-  let tasksByParentCache: Map<number, TaskReadModel[]> | null = null;
-
-  const RANGE_MONTHS: Record<string, { startYear: number; monthCount: number }> = {
-    "2026": { startYear: 2026, monthCount: 12 },
-    "2026-2027": { startYear: 2026, monthCount: 24 },
-  };
-  const monthNamesNo = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
-  const knownLaneIds = new Set((laneManifest.lanes ?? []).map((lane) => lane.id));
-  const laneToneById: Record<string, string> = {
-    content: "bg-amber-50/65 border-amber-200",
-    ia: "bg-sky-50/65 border-sky-200",
-    "ai-agent": "bg-violet-50/65 border-violet-200",
-    "ui-design": "bg-rose-50/65 border-rose-200",
-    "ops-architecture": "bg-emerald-50/65 border-emerald-200",
-  };
-
-  const fmtPlan = (iso: string | null) => {
-    if (!iso) return "—";
-    const parts = iso.split("-").map((x) => Number.parseInt(x, 10));
-    if (parts.length < 3 || parts.some((n) => Number.isNaN(n))) return iso;
-    const [y, m, d] = parts;
-    return new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium" }).format(new Date(y!, m! - 1, d!));
-  };
-
-  const renderEmpty = (message: string) => {
-    if (!root) return;
-    root.innerHTML = `<p class="rounded border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-600">${message}</p>`;
-  };
-
-  const parseIsoDate = (iso: string | null): Date | null => {
-    if (!iso) return null;
-    const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    if (!m) return null;
-    const y = Number.parseInt(m[1]!, 10);
-    const mo = Number.parseInt(m[2]!, 10);
-    const d = Number.parseInt(m[3]!, 10);
-    if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
-    return new Date(y, mo - 1, d);
-  };
-
-  const monthIndex = (date: Date, startYear: number) => (date.getFullYear() - startYear) * 12 + date.getMonth();
-
-  const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
-
-  const activeRange = () => RANGE_MONTHS[rangeSelect?.value ?? "2026"] ?? RANGE_MONTHS["2026"];
-
-  const resolveTaskStatus = (task: TaskReadModel): { labelNo: "Neste" | "Pågående" | "Ferdig"; lampClass: string } => {
-    if (task.issueState === "closed") {
-      return { labelNo: "Ferdig", lampClass: "bg-emerald-500" };
-    }
-    const labels = task.labelNames.map((x) => x.toLowerCase());
-    const isReview = labels.some((x) => x.includes("review"));
-    const isInWork =
-      labels.some((x) => x.includes("i arbeid")) ||
-      labels.some((x) => x.includes("pågår")) ||
-      labels.some((x) => x.includes("in progress")) ||
-      labels.some((x) => x.startsWith("status:in-progress"));
-    const hasRecentActivity = (() => {
-      if (!task.updatedAt) return false;
-      const ms = Date.parse(task.updatedAt);
-      if (Number.isNaN(ms)) return false;
-      const tenDaysMs = 10 * 24 * 60 * 60 * 1000;
-      return Date.now() - ms <= tenDaysMs;
-    })();
-    const isDone = labels.some((x) => x.includes("done")) || labels.some((x) => x.includes("ferdig"));
-    if (isDone) return { labelNo: "Ferdig", lampClass: "bg-emerald-500" };
-    if (isReview || isInWork || hasRecentActivity) return { labelNo: "Pågående", lampClass: "bg-amber-500" };
-    return { labelNo: "Neste", lampClass: "bg-sky-500" };
-  };
-
-  const todayIso = () => {
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = `${d.getMonth() + 1}`.padStart(2, "0");
-    const day = `${d.getDate()}`.padStart(2, "0");
-    return `${y}-${m}-${day}`;
-  };
-
-  const initiativeIsStarted = (initiative: { issueNumber: number; planStart: string | null }) => {
-    const childTasks = tasksByParentCache?.get(initiative.issueNumber) ?? [];
-    const hasStartedByTask = childTasks.some((task) => resolveTaskStatus(task).labelNo !== "Neste");
-    const hasStartedByDate = !!initiative.planStart && initiative.planStart <= todayIso();
-    return hasStartedByTask || hasStartedByDate;
-  };
-
-  const renderFromCache = () => {
-    if (!root || !meta || !initiativesCache) return;
-    const range = activeRange();
-    const discoveredGroups = groupInitiativesByLane(laneManifest, initiativesCache);
-    const discoveredByLaneId = new Map(discoveredGroups.map((group) => [group.laneId, group]));
-    const groups: RoadmapLaneGroup[] = laneManifest.lanes
-      .slice()
-      .sort((a, b) => a.order - b.order)
-      .map((lane) => {
-        const discovered = discoveredByLaneId.get(lane.id);
-        return (
-          discovered ?? {
-            laneId: lane.id,
-            labelNo: lane.label_no,
-            order: lane.order,
-            initiatives: [],
-          }
-        );
-      });
-    const sortedGroups = groups.sort((a, b) => {
-      const startA = a.initiatives
-        .filter((it) => initiativeIsStarted(it))
-        .map((it) => it.planStart)
-        .filter((x): x is string => typeof x === "string")
-        .sort()[0];
-      const startB = b.initiatives
-        .filter((it) => initiativeIsStarted(it))
-        .map((it) => it.planStart)
-        .filter((x): x is string => typeof x === "string")
-        .sort()[0];
-      const aActive = !!startA;
-      const bActive = !!startB;
-      if (aActive !== bActive) return aActive ? -1 : 1;
-      if (aActive && bActive) {
-        if (startA! !== startB!) return startA! < startB! ? -1 : 1;
-      }
-      return a.order - b.order;
+  function setFallback() {
+    document.querySelectorAll<HTMLElement>("[data-github-readiness-label]").forEach((node) => {
+      node.textContent = "GitHub må åpnes for fersk status";
     });
-    const frag = document.createDocumentFragment();
+  }
 
-    const axis = document.createElement("div");
-    axis.className = "mb-1 px-1";
-    axis.innerHTML = `<div id="vis-roadmap-axis-grid" class="grid gap-1 text-[11px] text-gray-600"></div>`;
-    const axisGrid = axis.querySelector("#vis-roadmap-axis-grid") as HTMLElement | null;
-    if (axisGrid) {
-      axisGrid.style.gridTemplateColumns = `repeat(${range.monthCount}, minmax(0, 1fr))`;
-      for (let i = 0; i < range.monthCount; i += 1) {
-        const m = document.createElement("div");
-        m.className = "truncate border-r border-gray-200 pr-1";
-        const y = range.startYear + Math.floor(i / 12);
-        m.textContent = `${monthNamesNo[i % 12]} ${y}`;
-        axisGrid.appendChild(m);
-      }
-    }
-    root.innerHTML = "";
-    root.style.backgroundImage = "";
-    root.style.backgroundSize = "";
-    root.style.backgroundPosition = "";
-    root.classList.add("relative");
+  async function hydrateGitHubStatus() {
+    try {
+      const response = await fetch(endpoint, { headers: { Accept: "application/vnd.github+json" } });
+      if (!response.ok) throw new Error("GitHub-status utilgjengelig");
+      const issues = (await response.json()) as GitHubIssue[];
+      const issueByNumber = new Map(
+        issues.filter((issue) => !issue.pull_request).map((issue) => [issue.number, issue]),
+      );
 
-    const monthMarkers = document.createElement("div");
-    monthMarkers.className = "pointer-events-none absolute inset-0 z-0";
-    for (let i = 1; i < range.monthCount; i += 1) {
-      const marker = document.createElement("div");
-      marker.className = "absolute top-0 bottom-0 w-px bg-slate-900/10";
-      marker.style.left = `${(i / range.monthCount) * 100}%`;
-      monthMarkers.appendChild(marker);
-    }
-    const contentLayer = document.createElement("div");
-    contentLayer.className = "relative z-10 space-y-4";
-    root.appendChild(monthMarkers);
-    root.appendChild(contentLayer);
-    contentLayer.appendChild(axis);
-
-    for (const lane of sortedGroups) {
-      const section = document.createElement("section");
-      section.className = "rounded-md border p-2.5 border-gray-200";
-      const laneTone = laneToneById[lane.laneId] ?? "bg-gray-50/80 border-gray-200";
-      section.classList.add(...laneTone.split(" "));
-      section.innerHTML = `
-        <div class="-m-2.5 mb-1.5 px-2.5 py-1.5">
-          <h3 class="text-base font-semibold text-gray-900"><span class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Spor</span> · ${lane.labelNo}</h3>
-        </div>
-        <div class="mt-2 space-y-2.5" id="lane-items"></div>
-      `;
-      const laneItems = section.querySelector("#lane-items");
-      if (!laneItems) continue;
-      if (lane.initiatives.length === 0) {
-        laneItems.innerHTML =
-          '<p class="rounded border border-dashed border-gray-300 bg-white/70 px-2.5 py-2 text-xs text-gray-600">Ingen initiativer i dette sporet ennå.</p>';
-      }
-
-      for (const it of lane.initiatives) {
-        const start = parseIsoDate(it.planStart) ?? parseIsoDate(it.planEnd);
-        const end = parseIsoDate(it.planEnd) ?? parseIsoDate(it.planStart);
-        if (!start || !end) continue;
-        const startCol = clamp(monthIndex(start, range.startYear) + 1, 1, range.monthCount);
-        const rawEndExclusive = monthIndex(end, range.startYear) + 2;
-        const endCol = clamp(rawEndExclusive <= startCol ? startCol + 1 : rawEndExclusive, 2, range.monthCount + 1);
-
-        const item = document.createElement("details");
-        item.className = "rounded border border-gray-300 bg-white px-3 py-2";
-        const childTasks = tasksByParentCache?.get(it.issueNumber) ?? [];
-        const taskCount = childTasks.length;
-        const initiativeStarted = initiativeIsStarted(it);
-        item.open = false;
-        item.innerHTML = `
-          <summary class="cursor-pointer list-none py-1">
-            <div class="flex items-baseline justify-between gap-3">
-              <p class="min-w-0 truncate text-sm font-semibold text-gray-900"><span class="text-[10px] font-semibold uppercase tracking-wide text-gray-500">Initiativ</span> · #${it.issueNumber} ${escapeHtml(it.title)}</p>
-              <span class="shrink-0 text-xs font-semibold text-gray-800">Oppgaver: ${taskCount}</span>
-            </div>
-            <div class="mt-1 grid gap-1 rounded border border-gray-200 bg-gray-50 p-1" id="bar-grid-summary"></div>
-          </summary>
-          <div class="grid gap-2 pb-1 pt-1">
-            <p class="text-xs leading-relaxed text-gray-700"><span class="font-medium text-gray-800">Oppsummering:</span> ${escapeHtml(it.summaryNo || "—")}</p>
-            ${
-              it.explainerNo
-                ? `<p class="text-xs leading-relaxed text-gray-600"><span class="font-medium text-gray-700">Kort forklart:</span> ${escapeHtml(it.explainerNo)}</p>`
-                : ""
-            }
-            <dl class="grid gap-1 text-xs text-gray-700 sm:grid-cols-2">
-              <div><dt class="inline font-medium text-gray-600">Planlagt start:</dt> <dd class="inline">${fmtPlan(it.planStart)}</dd></div>
-              <div><dt class="inline font-medium text-gray-600">Planlagt slutt:</dt> <dd class="inline">${fmtPlan(it.planEnd)}</dd></div>
-            </dl>
-            <p>
-              <a href="${it.htmlUrl}" target="_blank" rel="noreferrer" class="text-xs font-medium text-gray-900 underline underline-offset-2">
-                Åpne i GitHub (#${it.issueNumber})
-              </a>
-            </p>
-            <div class="rounded border border-gray-200 bg-gray-50/70 px-2 py-1.5">
-              <p class="text-xs font-medium text-gray-700">Oppgaver (${taskCount})</p>
-              ${taskCount === 0 ? '<p class="mt-1 text-[11px] text-gray-500">Ingen child tasks koblet til dette initiativet ennå.</p>' : ""}
-              <div class="mt-2 grid gap-2 md:grid-cols-3" id="task-board">
-                <section class="rounded border border-gray-200 bg-white p-2">
-                  <p class="text-[11px] font-semibold text-gray-700">Neste</p>
-                  <ul class="mt-1.5 space-y-1.5 text-xs text-gray-700" data-col="Neste"></ul>
-                </section>
-                <section class="rounded border border-gray-200 bg-white p-2">
-                  <p class="text-[11px] font-semibold text-gray-700">Pågående</p>
-                  <ul class="mt-1.5 space-y-1.5 text-xs text-gray-700" data-col="Pågående"></ul>
-                </section>
-                <section class="rounded border border-gray-200 bg-white p-2">
-                  <p class="text-[11px] font-semibold text-gray-700">Ferdig</p>
-                  <ul class="mt-1.5 space-y-1.5 text-xs text-gray-700" data-col="Ferdig"></ul>
-                </section>
-              </div>
-            </div>
-          </div>
-        `;
-
-        const mountBar = (el: HTMLElement | null) => {
-          if (!el) return;
-          el.style.gridTemplateColumns = `repeat(${range.monthCount}, minmax(0, 1fr))`;
-          const bar = document.createElement("div");
-          bar.className = `h-4 rounded ${initiativeStarted ? "bg-gray-700" : "bg-gray-400"}`;
-          bar.style.gridColumn = `${startCol} / ${endCol}`;
-          bar.title = `${it.title}: ${fmtPlan(it.planStart)} -> ${fmtPlan(it.planEnd)}`;
-          el.appendChild(bar);
-        };
-        mountBar(item.querySelector("#bar-grid-summary") as HTMLElement | null);
-        const taskBoard = item.querySelector("#task-board");
-        if (taskBoard) {
-          const byCol = new Map<"Neste" | "Pågående" | "Ferdig", TaskReadModel[]>([
-            ["Neste", []],
-            ["Pågående", []],
-            ["Ferdig", []],
-          ]);
-          for (const task of childTasks) {
-            const taskStatus = resolveTaskStatus(task);
-            byCol.get(taskStatus.labelNo)!.push(task);
-          }
-          for (const col of ["Neste", "Pågående", "Ferdig"] as const) {
-            const ul = taskBoard.querySelector(`ul[data-col="${col}"]`) as HTMLElement | null;
-            if (!ul) continue;
-            const tasks = byCol.get(col) ?? [];
-            if (tasks.length === 0) {
-              const empty = document.createElement("li");
-              empty.className = "text-gray-500";
-              empty.textContent = "Ingen oppgaver.";
-              ul.appendChild(empty);
-              continue;
-            }
-            for (const task of tasks) {
-              const li = document.createElement("li");
-              const taskStatus = resolveTaskStatus(task);
-              li.className = "rounded border border-gray-200 bg-white px-2 py-1";
-              li.innerHTML = `
-                <div class="flex items-center justify-between gap-2">
-                  <p class="font-medium text-gray-800">#${task.issueNumber} ${escapeHtml(task.title)}</p>
-                  <span class="inline-flex items-center gap-1.5 text-[11px] text-gray-600">
-                    <span class="h-2 w-2 rounded-full ${taskStatus.lampClass}" aria-hidden="true"></span>
-                    ${taskStatus.labelNo}
-                  </span>
-                </div>
-                <p class="mt-0.5 text-gray-600">Plan: ${fmtPlan(task.planStart)} -> ${fmtPlan(task.planEnd)}</p>
-                <p class="mt-1"><a href="${task.htmlUrl}" target="_blank" rel="noreferrer" class="font-medium underline underline-offset-2">Åpne i GitHub (#${task.issueNumber})</a></p>
-              `;
-              ul.appendChild(li);
-            }
-          }
-        }
-        laneItems.appendChild(item);
-      }
-      frag.appendChild(section);
-    }
-    contentLayer.appendChild(frag);
-    meta.textContent = `Sist oppdatert: ${new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
-  };
-
-  const load = () => {
-    if (!root || !meta) return;
-    meta.textContent = "Laster fra GitHub API…";
-    root.innerHTML = "";
-
-    fetch(endpoint, {
-      headers: { Accept: "application/vnd.github+json" },
-      cache: "no-store",
-    })
-      .then((res) => {
-        if (!res.ok) {
-          if (res.status === 403) throw new Error("GitHub API rate limit nådd i dette miljøet.");
-          throw new Error(`GitHub API svarte ${res.status}.`);
-        }
-        return res.json();
-      })
-      .then((all: unknown) => {
-        if (!Array.isArray(all)) {
-          renderEmpty("Uventet svar fra GitHub API.");
-          return;
-        }
-        const issueCandidates = all.filter(
-          (issue): issue is { number: number; title: string; body: string | null; html_url: string; state: string; pull_request?: unknown } =>
-            issue &&
-            typeof issue === "object" &&
-            "number" in issue &&
-            typeof (issue as { number: unknown }).number === "number" &&
-            "state" in issue &&
-            !("pull_request" in issue && (issue as { pull_request?: unknown }).pull_request),
-        );
-        const openIssueCandidates = issueCandidates.filter((issue) => issue.state === "open");
-
-        initiativesCache = initiativesFromGitHubIssues(openIssueCandidates)
-          .filter((initiative) => knownLaneIds.has(initiative.laneId))
-          .sort((a, b) => a.issueNumber - b.issueNumber);
-
-        const allTasks = tasksFromGitHubIssues(issueCandidates)
-          .filter((task) => knownLaneIds.has(task.laneId) && task.parentIssueNumber !== null);
-        const byParent = new Map<number, TaskReadModel[]>();
-        for (const task of allTasks) {
-          const key = task.parentIssueNumber!;
-          const existing = byParent.get(key);
-          if (existing) existing.push(task);
-          else byParent.set(key, [task]);
-        }
-        for (const items of byParent.values()) {
-          items.sort((a, b) => a.issueNumber - b.issueNumber);
-        }
-        tasksByParentCache = byParent;
-
-        if (initiativesCache.length === 0) {
-          renderEmpty("Fant ingen åpne initiative-issues med KL-META i kjent spor blant de siste 100 issue-elementene.");
-          meta.textContent = `Sist forsøkt: ${new Intl.DateTimeFormat("nb-NO", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
-          return;
-        }
-        renderFromCache();
-      })
-      .catch((error: unknown) => {
-        renderEmpty("Kunne ikke hente initiativer akkurat nå. Prøv igjen eller åpne GitHub direkte.");
-        meta.textContent = `Feil: ${error instanceof Error ? error.message : "ukjent"}`;
+      document.querySelectorAll<HTMLElement>("[data-github-issue-state]").forEach((node) => {
+        const issueNumber = Number.parseInt(node.dataset.githubIssueState ?? "", 10);
+        const issue = issueByNumber.get(issueNumber);
+        node.textContent = issue ? (issue.state === "closed" ? "lukket" : "åpen") : "åpne GitHub";
       });
-  };
 
-  function escapeHtml(s: string) {
-    return s
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+      document.querySelectorAll<HTMLElement>("[data-github-readiness]").forEach((container) => {
+        const sourceIssues = (container.dataset.sourceIssues ?? "")
+          .split(",")
+          .map((value) => Number.parseInt(value, 10))
+          .filter(Number.isFinite);
+        const found = sourceIssues.map((issue) => issueByNumber.get(issue)).filter(Boolean) as GitHubIssue[];
+        const label = container.querySelector<HTMLElement>("[data-github-readiness-label]");
+        if (!label) return;
+        if (found.length !== sourceIssues.length) label.textContent = "delvis tilgjengelig — bruk drill-down";
+        else if (found.every((issue) => issue.state === "closed")) label.textContent = "alle kildespor lukket";
+        else label.textContent = `${found.filter((issue) => issue.state === "open").length} åpne kildespor`;
+      });
+    } catch {
+      setFallback();
+    }
   }
 
-  if (root && meta && refresh) {
-    refresh.addEventListener("click", load);
-    rangeSelect?.addEventListener("change", renderFromCache);
-    load();
-  }
+  hydrateGitHubStatus();
 </script>
+
+<style is:global>
+  .roadmap-page {
+    --roadmap-ink: 15 27 46;
+    --roadmap-muted: 82 96 113;
+    --roadmap-line: 213 222 232;
+    --roadmap-blue: 54 114 230;
+    --roadmap-focus: 14 165 233;
+    max-width: 88rem;
+    margin: 0 auto;
+    padding: clamp(1.35rem, 3vw, 2.5rem) clamp(0.85rem, 3vw, 2rem) 4rem;
+    color: rgb(var(--roadmap-ink));
+  }
+
+  .roadmap-breadcrumb { display: flex; gap: 0.5rem; color: rgb(var(--roadmap-muted)); font-size: 0.75rem; }
+  .roadmap-breadcrumb a, .roadmap-footer a, .roadmap-source a { color: rgb(35 83 173); }
+  .roadmap-hero { max-width: 64rem; padding: clamp(1rem, 3vw, 2rem) 0 clamp(2rem, 5vw, 3.8rem); }
+  .roadmap-eyebrow { margin: 0; color: rgb(var(--roadmap-muted)); font-size: 0.67rem; font-weight: 750; letter-spacing: 0.13em; text-transform: uppercase; }
+  .roadmap-hero h1 { margin: 0.45rem 0 0; font-size: clamp(2.2rem, 6vw, 4.8rem); line-height: 0.98; letter-spacing: -0.05em; font-weight: 630; text-wrap: balance; }
+  .roadmap-hero__lead { max-width: 52rem; margin: 1rem 0 0; color: rgb(var(--roadmap-muted)); font-size: clamp(1rem, 2vw, 1.2rem); line-height: 1.65; }
+  .roadmap-source { display: flex; gap: 0.8rem 1.5rem; align-items: baseline; justify-content: space-between; max-width: 58rem; margin-top: 1.3rem; padding-top: 0.9rem; border-top: 1px solid rgb(var(--roadmap-line)); }
+  .roadmap-source p { max-width: 45rem; margin: 0; color: rgb(var(--roadmap-muted)); font-size: 0.75rem; line-height: 1.55; }
+  .roadmap-source a { flex: none; font-size: 0.72rem; font-weight: 650; }
+
+  .roadmap-forecast { overflow: hidden; border: 1px solid rgb(190 205 221); border-radius: 1.25rem; background: linear-gradient(145deg, rgb(247 250 253), rgb(255 255 255)); box-shadow: 0 20px 60px rgb(15 27 46 / 0.07); }
+  .roadmap-section-heading { display: flex; gap: 1rem; align-items: flex-end; justify-content: space-between; padding: clamp(1.1rem, 3vw, 1.8rem); border-bottom: 1px solid rgb(var(--roadmap-line)); }
+  .roadmap-section-heading h2, .roadmap-watch h2 { margin: 0.35rem 0 0; font-size: clamp(1.45rem, 3vw, 2.2rem); letter-spacing: -0.035em; }
+  .roadmap-section-heading > p { max-width: 26rem; margin: 0; color: rgb(var(--roadmap-muted)); font-size: 0.76rem; line-height: 1.5; text-align: right; }
+
+  .roadmap-desktop { min-width: 64rem; }
+  .roadmap-axis, .roadmap-track { display: grid; grid-template-columns: minmax(9rem, 0.58fr) repeat(3, minmax(15rem, 1fr)); }
+  .roadmap-axis { position: sticky; top: 0; z-index: 4; border-bottom: 1px solid rgb(var(--roadmap-line)); background: rgb(247 250 253 / 0.96); backdrop-filter: blur(10px); }
+  .roadmap-axis > p { margin: 0; padding: 0.8rem; color: rgb(var(--roadmap-muted)); font-size: 0.62rem; font-weight: 750; letter-spacing: 0.1em; text-transform: uppercase; }
+  .roadmap-axis > div { padding: 0.8rem 0.9rem; border-left: 1px solid rgb(var(--roadmap-line)); }
+  .roadmap-axis strong, .roadmap-axis span { display: block; }
+  .roadmap-axis strong { font-size: 0.78rem; letter-spacing: 0.08em; }
+  .roadmap-axis span { max-width: 17rem; margin-top: 0.25rem; color: rgb(var(--roadmap-muted)); font-size: 0.64rem; line-height: 1.4; }
+  .roadmap-track + .roadmap-track { border-top: 1px solid rgb(var(--roadmap-line)); }
+  .roadmap-track > header { position: sticky; left: 0; z-index: 3; display: flex; gap: 0.6rem; align-items: baseline; padding: 1rem 0.8rem; background: rgb(249 251 253 / 0.96); }
+  .roadmap-track > header span { color: rgb(var(--roadmap-blue)); font-size: 0.68rem; font-weight: 800; }
+  .roadmap-track > header h3 { margin: 0; font-size: 0.78rem; line-height: 1.35; }
+  .roadmap-track__grid { position: relative; display: grid; grid-column: 2 / -1; grid-template-columns: repeat(3, minmax(15rem, 1fr)); grid-auto-rows: minmax(min-content, auto); gap: 0.65rem; padding: 0.7rem; }
+  .roadmap-track__grid > div { min-width: 0; }
+  .roadmap-track__guide { position: absolute; top: 0; bottom: 0; width: 1px; background: rgb(var(--roadmap-line)); }
+  .roadmap-track__guide--one { left: 33.333%; }
+  .roadmap-track__guide--two { left: 66.666%; }
+
+  .roadmap-mobile { display: none; }
+  .roadmap-supporting-source { margin: 0; padding: 0.85rem 1rem; border-top: 1px solid rgb(var(--roadmap-line)); color: rgb(var(--roadmap-muted)); font-size: 0.68rem; line-height: 1.5; }
+  .roadmap-supporting-source a { color: rgb(35 83 173); }
+
+  .roadmap-watch { margin-top: 1.2rem; padding: clamp(1.1rem, 3vw, 1.8rem); border: 1px solid rgb(190 205 221); border-radius: 1.1rem; background: rgb(15 27 46); color: white; }
+  .roadmap-watch .roadmap-eyebrow { color: rgb(169 191 220); }
+  .roadmap-watch__heading { display: flex; gap: 1rem; align-items: end; justify-content: space-between; }
+  .roadmap-watch__heading > p { max-width: 33rem; margin: 0; color: rgb(190 204 222); font-size: 0.76rem; line-height: 1.5; text-align: right; }
+  .roadmap-watch__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 1.2rem; border-top: 1px solid rgb(255 255 255 / 0.18); }
+  .roadmap-watch article { position: relative; padding: 1rem 0.9rem 0; }
+  .roadmap-watch article + article { border-left: 1px solid rgb(255 255 255 / 0.12); }
+  .roadmap-watch article > span { position: absolute; top: -0.2rem; left: 0.9rem; width: 0.42rem; height: 0.42rem; border-radius: 50%; background: rgb(105 160 255); box-shadow: 0 0 0 0.22rem rgb(105 160 255 / 0.15); }
+  .roadmap-watch h3 { margin: 0; font-size: 0.8rem; line-height: 1.35; }
+  .roadmap-watch article p { margin: 0.35rem 0 0; color: rgb(190 204 222); font-size: 0.69rem; line-height: 1.45; }
+
+  .roadmap-context { display: grid; grid-template-columns: 0.75fr 1.25fr; gap: 1px; margin-top: 1.2rem; overflow: hidden; border: 1px solid rgb(var(--roadmap-line)); border-radius: 1rem; background: rgb(var(--roadmap-line)); }
+  .roadmap-context > div { padding: 1.1rem; background: rgb(255 255 255 / 0.82); }
+  .roadmap-context p:not(.roadmap-eyebrow) { margin: 0.55rem 0 0; color: rgb(var(--roadmap-muted)); font-size: 0.78rem; line-height: 1.55; }
+  .roadmap-context ul { display: grid; gap: 0.75rem; margin: 0.6rem 0 0; padding: 0; list-style: none; }
+  .roadmap-context li { display: grid; gap: 0.2rem; }
+  .roadmap-context li strong { font-size: 0.76rem; }
+  .roadmap-context li span { color: rgb(var(--roadmap-muted)); font-size: 0.72rem; line-height: 1.48; }
+
+  .roadmap-legend { margin-top: 0.75rem; border-top: 1px solid rgb(var(--roadmap-line)); border-bottom: 1px solid rgb(var(--roadmap-line)); }
+  .roadmap-legend > summary { padding: 1rem 0; color: rgb(var(--roadmap-ink)); font-size: 0.86rem; font-weight: 680; cursor: pointer; }
+  .roadmap-legend__body { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.3rem; padding: 0 0 1.3rem; }
+  .roadmap-legend h2 { margin: 0 0 0.6rem; font-size: 0.77rem; }
+  .roadmap-legend ul { display: grid; gap: 0.55rem; margin: 0; padding: 0; list-style: none; }
+  .roadmap-legend li { color: rgb(var(--roadmap-muted)); font-size: 0.7rem; line-height: 1.48; }
+  .roadmap-legend li strong { color: rgb(var(--roadmap-ink)); }
+  .roadmap-legend__likelihood li { display: grid; grid-template-columns: minmax(8rem, auto) minmax(0, 1fr); gap: 0.55rem; align-items: center; }
+  .legend-timing { display: inline-block; width: 1.5rem; margin-right: 0.4rem; vertical-align: 0.15rem; border-top: 3px solid rgb(var(--roadmap-blue)); }
+  .legend-timing { border-top-width: 1px; }
+  .legend-timing--fixed { width: 0.5rem; border-top-width: 4px; }
+  .legend-timing--bounded { width: 2rem; }
+  .legend-timing--open { border-top-style: dotted; mask-image: linear-gradient(to right, black, transparent); }
+  .legend-milestone { display: inline-block; width: 0.5rem; height: 0.5rem; margin-right: 0.55rem; border: 2px solid rgb(var(--roadmap-blue)); border-radius: 50%; vertical-align: -0.02rem; }
+  .legend-dependency { display: inline-block; width: 1.2rem; margin-right: 0.45rem; border-top: 1px dashed rgb(var(--roadmap-blue)); vertical-align: 0.18rem; }
+
+  .roadmap-footer { display: flex; gap: 1rem; align-items: baseline; justify-content: space-between; padding-top: 1.4rem; }
+  .roadmap-footer p { max-width: 50rem; margin: 0; color: rgb(var(--roadmap-muted)); font-size: 0.68rem; line-height: 1.5; }
+  .roadmap-footer a { flex: none; font-size: 0.75rem; font-weight: 650; }
+
+  @media (max-width: 1120px) {
+    .roadmap-forecast { overflow-x: auto; }
+    .roadmap-watch__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .roadmap-watch article:nth-child(odd) { border-left: 0; }
+    .roadmap-watch article:nth-child(n + 3) { margin-top: 0.7rem; border-top: 1px solid rgb(255 255 255 / 0.12); }
+  }
+
+  @media (max-width: 720px) {
+    .roadmap-hero { padding-bottom: 2.1rem; }
+    .roadmap-source, .roadmap-section-heading, .roadmap-watch__heading, .roadmap-footer { align-items: flex-start; flex-direction: column; }
+    .roadmap-section-heading > p, .roadmap-watch__heading > p { text-align: left; }
+    .roadmap-desktop { display: none; }
+    .roadmap-mobile { display: block; }
+    .roadmap-mobile > section { padding: 1rem; }
+    .roadmap-mobile > section + section { border-top: 1px solid rgb(var(--roadmap-line)); }
+    .roadmap-mobile > section > header h3 { margin: 0.25rem 0 0; font-size: 1.15rem; letter-spacing: 0.05em; }
+    .roadmap-mobile > section > header > p:last-child { margin: 0.35rem 0 0; color: rgb(var(--roadmap-muted)); font-size: 0.72rem; line-height: 1.45; }
+    .roadmap-mobile__items { display: grid; gap: 0.65rem; margin-top: 0.85rem; }
+    .roadmap-watch__grid, .roadmap-context, .roadmap-legend__body { grid-template-columns: 1fr; }
+    .roadmap-watch article + article { border-left: 0; }
+    .roadmap-watch article:nth-child(n + 2) { margin-top: 0.7rem; border-top: 1px solid rgb(255 255 255 / 0.12); }
+    .roadmap-context { gap: 1px; }
+  }
+</style>

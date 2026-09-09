@@ -146,10 +146,10 @@ export const visPageContracts: Record<string, VisPageContract> = {
     title: "Roadmap",
     type: "runtime-tool",
     status: "active",
-    purpose: "Retning og faser over tid — ikke daglig task-backlog.",
+    purpose: "NOW → NEXT → LATER med WATCH som separat signallag — ikke daglig task-backlog.",
     primaryTask: "forstå-system",
     audience: ["Thomas", "Vibeke"],
-    lastReviewed: "2026-06-01",
+    lastReviewed: "2026-09-08",
     ownerRole: "Thomas",
   },
   "redaksjonelle-bilder": {

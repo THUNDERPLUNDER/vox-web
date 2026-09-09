@@ -1,0 +1,80 @@
+---
+import {
+  executionLikelihoodLabels,
+  type ExecutionLikelihood,
+} from "../../data/vis-roadmap-horizons-v01.ts";
+
+interface Props {
+  likelihood: ExecutionLikelihood;
+}
+
+const { likelihood } = Astro.props;
+---
+
+<span class="roadmap-likelihood" data-likelihood={likelihood}>
+  <svg class="roadmap-likelihood__shape" viewBox="0 0 52 34" aria-hidden="true">
+    {likelihood === "committed" && <path d="M3 16C3 7.5 11 2 23 2.5C36 3 46 8 47 17C48 25 39 31 25 31C12 31 3 26 3 16Z" />}
+    {likelihood === "probable" && <path d="M7 17C7 9 14 5 24 5C35 5 43 10 43 18C43 25 35 29 24 29C14 29 7 25 7 17Z" />}
+    {likelihood === "conditional" && (
+      <>
+        <path d="M9 17C9 10 14 7 21 7C23 7 24 8 25 9L21 26C14 26 9 23 9 17Z" />
+        <path d="M29 8C37 8 42 12 42 18C42 23 36 27 28 27L32 11C31 10 30 9 29 8Z" />
+      </>
+    )}
+    {likelihood === "option" && <path d="M14 18C14 12 19 9 26 9C33 9 38 12 38 18C38 24 33 27 26 27C19 27 14 24 14 18Z" />}
+  </svg>
+  <span class="roadmap-likelihood__label">{executionLikelihoodLabels[likelihood]}</span>
+</span>
+
+<style>
+  .roadmap-likelihood {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    width: max-content;
+    color: rgb(var(--roadmap-blue));
+  }
+
+  .roadmap-likelihood__shape {
+    width: 2.8rem;
+    height: 1.8rem;
+    flex: none;
+    overflow: visible;
+  }
+
+  .roadmap-likelihood__shape path {
+    fill: currentColor;
+    stroke: currentColor;
+    stroke-linejoin: round;
+  }
+
+  .roadmap-likelihood[data-likelihood="committed"] .roadmap-likelihood__shape path {
+    fill-opacity: 0.92;
+    stroke-width: 0;
+  }
+
+  .roadmap-likelihood[data-likelihood="probable"] .roadmap-likelihood__shape path {
+    fill-opacity: 0.62;
+    stroke-width: 0;
+  }
+
+  .roadmap-likelihood[data-likelihood="conditional"] .roadmap-likelihood__shape path {
+    fill-opacity: 0.3;
+    stroke-width: 1.1;
+    stroke-opacity: 0.48;
+  }
+
+  .roadmap-likelihood[data-likelihood="option"] .roadmap-likelihood__shape path {
+    fill: transparent;
+    stroke-width: 1.5;
+    stroke-opacity: 0.42;
+  }
+
+  .roadmap-likelihood__label {
+    font-size: 0.65rem;
+    font-weight: 750;
+    letter-spacing: 0.065em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+</style>
