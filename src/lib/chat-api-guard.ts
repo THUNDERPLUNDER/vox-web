@@ -12,6 +12,7 @@ const ALLOWED_ORIGIN_SUFFIXES = [".vercel.app"] as const;
 const ALLOWED_ORIGIN_EXACT = new Set([
   "https://viddel.no",
   "https://www.viddel.no",
+  "https://preview.viddel.no",
 ]);
 
 function readEnv(name: string): string {
