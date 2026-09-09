@@ -40,7 +40,8 @@ assert.equal(agentSearchSession.isAgentSearchSessionReadyStatus(404), false);
 assert.equal(agentSearchSession.isAgentSearchSessionReadyStatus(503), false);
 
 const chatSource = await readFile(new URL("../src/pages/api/chat.ts", import.meta.url), "utf8");
-assert.match(chatSource, /runAgentSearchAnswer\(agentEnv\.config, \{ message, sessionId \}\)/);
+assert.match(chatSource, /runAgentSearchAnswer\(agentEnv\.config, \{/);
+assert.match(chatSource, /message,\s+sessionId,/);
 
 const implementationSource = await readFile(
   new URL("../src/lib/agent-search-answer.ts", import.meta.url),

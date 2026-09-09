@@ -648,6 +648,7 @@ const publicSeedQuestions = [
       }
 
       const SESSION_KEY = "viddel-chat-session";
+      const STATE_TOKEN_KEY = "viddel-chat-state-token";
       const SESSION_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}$/;
       const params = new URLSearchParams(window.location.search);
       const seedFromUrl = (params.get("seed") || params.get("q") || "").trim();
@@ -752,8 +753,25 @@ const publicSeedQuestions = [
         const created = `viddel-${crypto.randomUUID().replace(/-/g, "").slice(0, 24)}`;
         try {
           sessionStorage.setItem(SESSION_KEY, created);
+          sessionStorage.removeItem(STATE_TOKEN_KEY);
         } catch (_) {}
         return created;
+      };
+
+      const readStateToken = () => {
+        try {
+          const token = sessionStorage.getItem(STATE_TOKEN_KEY);
+          return typeof token === "string" && token.length <= 12000 ? token : "";
+        } catch (_) {
+          return "";
+        }
+      };
+
+      const acceptStateToken = (payload) => {
+        if (typeof payload?.stateToken !== "string" || !payload.stateToken || payload.stateToken.length > 12000) return;
+        try {
+          sessionStorage.setItem(STATE_TOKEN_KEY, payload.stateToken);
+        } catch (_) {}
       };
 
       const syncComposeReserve = () => {
@@ -1066,12 +1084,14 @@ const publicSeedQuestions = [
           }
 
           const composedMessage = composeChatImageMessage(visionPayload.vision, userProblem);
+          const sessionId = ensureSessionId();
           const response = await fetch("/api/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               message: composedMessage,
-              sessionId: ensureSessionId(),
+              sessionId,
+              stateToken: readStateToken() || undefined,
             }),
           });
           const payload = await response.json().catch(() => ({}));
@@ -1090,6 +1110,7 @@ const publicSeedQuestions = [
           }
 
           clearError();
+          acceptStateToken(payload);
           if (typeof window.viddelTrack === "function") {
             window.viddelTrack("chat_answer_success", { entry_surface: entrySurface });
           }
@@ -1146,12 +1167,14 @@ const publicSeedQuestions = [
         selectedGuideSeed = "";
 
         try {
+          const sessionId = ensureSessionId();
           const response = await fetch("/api/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               message,
-              sessionId: ensureSessionId(),
+              sessionId,
+              stateToken: readStateToken() || undefined,
             }),
           });
           const payload = await response.json().catch(() => ({}));
@@ -1187,6 +1210,7 @@ const publicSeedQuestions = [
           }
 
           clearError();
+          acceptStateToken(payload);
           if (typeof window.viddelTrack === "function") {
             window.viddelTrack("chat_answer_success", { entry_surface: entrySurface });
           }

@@ -21,6 +21,14 @@ import {
 } from "../../lib/chat-ops-meta";
 import { resolveViddelAiBackend, type ViddelAiBackend } from "../../lib/viddel-ai-backend";
 import { canUsePublicAi } from "../../lib/public-ai-access-v01.ts";
+import { deriveConversationTurn } from "../../lib/conversation-policy-v01";
+import { enforceConversationDeliveryPolicy } from "../../lib/conversation-delivery-gate-v01";
+import {
+  openConversationStateToken,
+  resolveConversationStateSecret,
+  sealConversationStateToken,
+  withLastDeliveryContext,
+} from "../../lib/conversation-state-token-v01";
 
 export const prerender = false;
 
@@ -29,6 +37,7 @@ const SESSION_ID_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9-_]{4,62}$/;
 type ChatRequestBody = {
   message?: unknown;
   sessionId?: unknown;
+  stateToken?: unknown;
 };
 
 type ChatSuccessMeta = {
@@ -111,7 +120,7 @@ function configurationMissingResponse(opsTest: boolean, backendMode: ViddelAiBac
 function successResponse(
   opsTest: boolean,
   backendMode: ViddelAiBackend,
-  body: { text: string; turnCompleted: boolean; turnIndex: number },
+  body: { text: string; turnCompleted: boolean; turnIndex: number; stateToken?: string },
   meta: ChatSuccessMeta,
 ): Response {
   return chatResponse(body, 200, opsTest, {
@@ -208,6 +217,8 @@ export const POST: APIRoute = async ({ request }) => {
 
   const message = typeof body.message === "string" ? body.message.trim() : "";
   const sessionId = typeof body.sessionId === "string" ? body.sessionId.trim() : "";
+  const rawStateToken = typeof body.stateToken === "string" ? body.stateToken.trim() : "";
+  const stateToken = rawStateToken.length <= 12000 ? rawStateToken : "";
 
   if (!message) {
     return respond(
@@ -269,12 +280,45 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (backendMode === "google_agent_search_direct") {
     const agentEnv = resolveAgentSearchEnv();
-    if (!agentEnv.ok) {
+    const stateSecret = resolveConversationStateSecret();
+    if (!agentEnv.ok || !stateSecret.ok) {
       return configurationMissingResponse(opsTest, backendMode);
     }
 
     try {
-      const result = await runAgentSearchAnswer(agentEnv.config, { message, sessionId });
+      const previous = openConversationStateToken(
+        stateToken,
+        sessionId,
+        stateSecret.secret,
+      );
+      const turnIndex = previous.turnIndex + 1;
+      const turn = await deriveConversationTurn(
+        agentEnv.config,
+        previous.state,
+        message,
+        turnIndex,
+      );
+      const result = await runAgentSearchAnswer(agentEnv.config, {
+        message,
+        sessionId,
+        authorityFrame: turn.authorityFrame,
+        productSpecificAllowed: turn.policy.productSpecificAllowed,
+      });
+      const delivery = await enforceConversationDeliveryPolicy(
+        agentEnv.config,
+        turn.state,
+        turn.policy,
+        message,
+        result.text,
+      );
+      const nextStateToken = sealConversationStateToken(
+        {
+          sessionId,
+          turnIndex,
+          state: withLastDeliveryContext(turn.state, delivery.text),
+        },
+        stateSecret.secret,
+      );
       const meta: ChatSuccessMeta = {
         duration_bucket: result.meta.durationBucket,
         retry_used: result.meta.retryUsed,
@@ -287,9 +331,10 @@ export const POST: APIRoute = async ({ request }) => {
         opsTest,
         backendMode,
         {
-          text: result.text,
+          text: delivery.text,
           turnCompleted: result.turnCompleted,
-          turnIndex: result.turnIndex,
+          turnIndex,
+          stateToken: nextStateToken,
         },
         meta,
       );
