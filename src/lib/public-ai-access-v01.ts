@@ -1,7 +1,7 @@
-/* CONTRACT: Global public AI switch in Vercel Flags. Owner sessions always bypass the switch. */
+/* CONTRACT: Preview AI is open; every other environment fails closed behind the Production flag. */
 
 import { flagsClient } from "@vercel/flags-core";
-import { hasOwnerSession } from "./owner-access-v01.ts";
+import { isVercelPreview } from "./vercel-environment.ts";
 
 export const PUBLIC_AI_FLAG = "public-ai-enabled";
 
@@ -26,10 +26,10 @@ export async function getPublicAiState(
 }
 
 export async function canUsePublicAi(
-  request: Request,
   evaluateFlag?: () => Promise<boolean>,
+  environment = process.env.VERCEL_ENV,
 ): Promise<boolean> {
-  if (hasOwnerSession(request)) return true;
+  if (isVercelPreview(environment)) return true;
   const state = await getPublicAiState(evaluateFlag);
   return state.enabled;
 }

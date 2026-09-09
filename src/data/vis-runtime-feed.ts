@@ -41,7 +41,7 @@ export type VisRuntimeFeed = {
 
 /** Manually updated after important Return Tickets — not synced from GitHub. */
 export const visRuntimeFeed = {
-  updatedAt: "2026-08-20",
+  updatedAt: "2026-09-09",
   activeNow: [
     {
       id: "conversation-feedback-v01",
@@ -55,37 +55,36 @@ export const visRuntimeFeed = {
       possibleSolution:
         "En separat feedback-reference knytter score, hurtiggrunner og valgfri kommentar til én feedbackpost. Desktop bruker høyrepanel og mobil bruker sheet.",
       nextDecision:
-        "Legg inn CRON_SECRET, redeploy og kjør autentisert cleanup-test. Deretter gjenstår owner-gated ekte samtale med feedback på desktop og mobil før merge.",
+        "Kjør ekte samtale med feedback på den stabile Preview-flaten på desktop og mobil når runtime er klar.",
       issue: "#346",
       issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/346",
       progressSteps: [
         { id: "storage", label: "Neon EU koblet", state: "done" },
         { id: "code", label: "Schema og feedbackflyt", state: "done" },
         { id: "qa", label: "Retention-QA", state: "current" },
-        { id: "production", label: "Owner-gated slutt-QA", state: "upcoming" },
+        { id: "production", label: "Preview slutt-QA", state: "upcoming" },
       ],
     },
     {
-      id: "public-ai-guard-v02",
-      headline: "Vi gjenoppretter chatten med en enkel eierkode og et lett kostnadsvern for andre.",
-      workTitle: "Public AI guard v0.2 (#180)",
+      id: "stable-open-preview",
+      headline: "Vi lager én stabil og åpen testflate for Thomas og Vibeke, uten skjult eierkode.",
+      workTitle: "Stable open preview + production-only AI gate (#396)",
       area: "Drift og AI",
       why:
-        "Upstash-telleren feilet før AI-kallet og gjorde Spør Viddel utilgjengelig. Frem til innlogging trenger den offentlige MVP-en bare et lett vern mot åpenbart misbruk.",
+        "PIN, eiercookie og PR-spesifikke adresser ga unødvendig friksjon før intern QA. Preview skal være enkel å bruke uten å åpne Production.",
       status:
-        "Feilen er diagnostisert. Eier-PIN, sikker eierøkt og offentlig av/på-flagg er implementert lokalt; Preview-test og Firewall-oppsett gjenstår.",
+        "Kodeforenkling pågår: Preview åpnes og merkes globalt noindex; Production beholder public-ai-enabled og Vercel Firewall.",
       possibleSolution:
-        "Vercel Flags holder én av/på-verdi. Vercel Firewall begrenser PIN-forsøk, tekstspørsmål og bildeanalyse uten ny teller-infrastruktur.",
+        "Feature-arbeid promoteres til den faste preview-branchen for Thomas/Vibeke-QA før main.",
       nextDecision:
-        "Koble koden til det opprettede flagget, kontroller eierflyten i Preview, og aktiver deretter de gjennomgåtte Firewall-reglene.",
-      issue: "#180",
-      issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/180",
+        "Promoter grønn feature-branch til preview og verifiser preview.viddel.no før eventuell merge til main.",
+      issue: "#396",
+      issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/396",
       progressSteps: [
-        { id: "diagnosis", label: "Feilkilde funnet", state: "done" },
-        { id: "code", label: "Guard v0.2 i kode", state: "done" },
-        { id: "config", label: "Vercel-flagg opprettet", state: "done" },
-        { id: "firewall", label: "Firewall-regler", state: "upcoming" },
-        { id: "production", label: "Production-verifisering", state: "upcoming" },
+        { id: "decision", label: "Forenkling besluttet", state: "done" },
+        { id: "code", label: "Access-lag fjernes", state: "current" },
+        { id: "preview", label: "Stabil Preview-QA", state: "upcoming" },
+        { id: "main", label: "Owner merge-port", state: "upcoming" },
       ],
     },
   ],
@@ -101,8 +100,8 @@ export const visRuntimeFeed = {
         kind: "issue",
       },
       {
-        label: "Issue #180",
-        href: "https://github.com/THUNDERPLUNDER/vox-web/issues/180",
+        label: "Issue #396",
+        href: "https://github.com/THUNDERPLUNDER/vox-web/issues/396",
         kind: "issue",
       },
       {
