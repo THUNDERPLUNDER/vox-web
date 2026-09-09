@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import {
   githubIssueHref,
   roadmapInitiatives,
@@ -63,6 +64,22 @@ assert.ok(
     error.includes("Invalid GitHub drill-down"),
   ),
   "every initiative must keep a GitHub drill-down",
+);
+
+const cardSource = await readFile(
+  new URL("../src/components/vis/RoadmapInitiativeCard.astro", import.meta.url),
+  "utf8",
+);
+const introPosition = cardSource.indexOf("Hva dette handler om");
+const metadataPosition = cardSource.indexOf("<dl>");
+assert.ok(introPosition >= 0, "expanded roadmap cards must introduce the initiative in human language");
+assert.ok(
+  cardSource.indexOf("<strong>GitHub:</strong>", introPosition) > introPosition,
+  "expanded roadmap cards must show linked source issues with the human-facing intro",
+);
+assert.ok(
+  metadataPosition > introPosition,
+  "the human-facing initiative intro must appear before roadmap metadata",
 );
 
 console.log("VIS Horizon Roadmap guard passed (12 objects, horizon/WATCH/timing/GitHub contracts verified).");

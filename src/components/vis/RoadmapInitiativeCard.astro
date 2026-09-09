@@ -39,6 +39,20 @@ const horizonLabel = initiative.horizons.map((horizon) => horizon.toUpperCase())
   </summary>
 
   <div class="roadmap-card__details">
+    <div class="roadmap-card__intro">
+      <p class="roadmap-card__intro-label">Hva dette handler om</p>
+      <p class="roadmap-card__intro-copy">{initiative.summary}</p>
+      <p class="roadmap-card__intro-sources">
+        <strong>GitHub:</strong>{" "}
+        {initiative.sourceIssues.map((issueNumber, index) => (
+          <>
+            {index > 0 && <span aria-hidden="true"> · </span>}
+            <a href={githubIssueHref(issueNumber)} rel="noopener noreferrer">#{issueNumber}</a>
+          </>
+        ))}
+      </p>
+    </div>
+
     <dl>
       <div>
         <dt>Gjennomføringssignal</dt>
@@ -120,7 +134,14 @@ const horizonLabel = initiative.horizons.map((horizon) => horizon.toUpperCase())
   details[open] .roadmap-card__expand { transform: rotate(45deg); }
 
   .roadmap-card__details { padding: 0 0.9rem 0.95rem; }
-  dl { display: grid; gap: 0.55rem; margin: 0; padding-top: 0.8rem; border-top: 1px solid rgb(var(--roadmap-line)); }
+  .roadmap-card__intro { display: grid; gap: 0.3rem; padding-top: 0.8rem; border-top: 1px solid rgb(var(--roadmap-line)); }
+  .roadmap-card__intro p { margin: 0; }
+  .roadmap-card__intro-label { color: rgb(var(--roadmap-muted)); font-size: 0.62rem; font-weight: 720; letter-spacing: 0.06em; text-transform: uppercase; }
+  .roadmap-card__intro-copy { color: rgb(var(--roadmap-ink)); font-size: 0.75rem; line-height: 1.5; }
+  .roadmap-card__intro-sources { color: rgb(var(--roadmap-muted)); font-size: 0.68rem; line-height: 1.45; }
+  .roadmap-card__intro-sources strong { color: inherit; font-size: inherit; }
+  .roadmap-card__intro-sources a { color: rgb(35 83 173); font-weight: 720; }
+  dl { display: grid; gap: 0.55rem; margin: 0.8rem 0 0; padding-top: 0.8rem; border-top: 1px solid rgb(var(--roadmap-line)); }
   dl > div { display: grid; gap: 0.15rem; }
   dt { color: rgb(var(--roadmap-muted)); font-size: 0.62rem; font-weight: 720; letter-spacing: 0.06em; text-transform: uppercase; }
   dd { margin: 0; color: rgb(var(--roadmap-ink)); font-size: 0.72rem; line-height: 1.48; }
