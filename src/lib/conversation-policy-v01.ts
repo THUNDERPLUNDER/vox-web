@@ -37,6 +37,9 @@ type StateUpdateCandidate = {
   clarificationNeeded?: unknown;
 };
 
+const CONTEXT_DEPENDENT_FOLLOW_UP_PATTERN =
+  /^(?:hva\s+(?:(?:gjør|skal)\s+jeg|bør\s+jeg\s+gjøre)(?:\s+nå)?|hva\s+(?:var|er)\s+det\s+jeg\s+(?:slet|sliter)\s+med(?:\s+igjen)?|kan\s+du\s+(?:forklare|utdype)(?:\s+(?:det|dette))?\s+mer)$/iu;
+
 export type ConversationTurn = {
   state: ConversationState;
   policy: ConversationPolicy;
@@ -68,6 +71,11 @@ function shortString(value: unknown, maxLength = 320): string {
 
 function hasExactEvidence(message: string, evidence: string): boolean {
   return Boolean(evidence) && message.includes(evidence);
+}
+
+function isContextDependentFollowUpEvidence(evidence: string): boolean {
+  const normalized = evidence.trim().replace(/[.!?…]+$/u, "").trim();
+  return CONTEXT_DEPENDENT_FOLLOW_UP_PATTERN.test(normalized);
 }
 
 function containsLiteral(haystack: string, needle: string): boolean {
@@ -108,7 +116,8 @@ export function validateStateUpdateCandidate(
   if (
     candidate.activeSituation?.certainty === "clear" &&
     activeSummary &&
-    hasExactEvidence(message, activeEvidence)
+    hasExactEvidence(message, activeEvidence) &&
+    (!previous.activeSituation || !isContextDependentFollowUpEvidence(activeEvidence))
   ) {
     activeSituation = { summary: activeSummary, provenance: provenance(activeEvidence) };
   }
@@ -209,6 +218,7 @@ function buildStateUpdatePrompt(previous: ConversationState, message: string): s
     "Ikke klassifiser et uklart objekt som et bestemt produkt eller en bestemt komponent.",
     "Produktkontekst krever eksplisitt merke OG modell i nåværende eller verifisert tidligere brukertekst.",
     "Ukjent produkt skal ikke kreve oppklaring dersom generell situasjonshjelp er mulig.",
+    "En generisk eller kontekstavhengig oppfølging uten ny konkret situasjon skal bevare forrige activeSituation; ikke oppsummer selve oppfølgingsspørsmålet som en ny situasjon.",
     "Korreksjoner skal alltid ha scope=current_situation, aldri globalt.",
     "JSON-format:",
     JSON.stringify({
