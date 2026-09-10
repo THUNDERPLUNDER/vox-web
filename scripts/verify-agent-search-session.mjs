@@ -47,6 +47,11 @@ const implementationSource = await readFile(
   "utf8",
 );
 assert.doesNotMatch(implementationSource, /sessions\/\-/);
+assert.doesNotMatch(implementationSource, /sessions\?sessionId=/);
+assert.match(
+  implementationSource,
+  /body: JSON\.stringify\(\{\s*name: buildAgentSearchSessionResource\(config, input\.sessionId\),?\s*\}\)/,
+);
 assert.match(implementationSource, /session: buildAgentSearchSessionResource\(config, input\.sessionId\)/);
 assert.match(implementationSource, /isAgentSearchSessionReadyStatus\(sessionResponse\.status\)/);
 assert.match(implementationSource, /parsed\.error\?\.message/);

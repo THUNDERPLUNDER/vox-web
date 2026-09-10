@@ -2,7 +2,6 @@
 
 import { getGoogleAccessToken } from "./ces-auth";
 import {
-  buildAgentSearchSessionId,
   buildAgentSearchSessionParent,
   buildAgentSearchSessionResource,
   isAgentSearchSessionReadyStatus,
@@ -122,10 +121,8 @@ export function resolveAgentSearchEnv(): AgentSearchEnvResult {
 function buildCreateSessionUrl(
   host: string,
   config: AgentSearchEnvConfig,
-  localSessionId: string,
 ): string {
-  const sessionId = buildAgentSearchSessionId(localSessionId);
-  return `${host}/v1/${buildAgentSearchSessionParent(config)}/sessions?sessionId=${encodeURIComponent(sessionId)}`;
+  return `${host}/v1/${buildAgentSearchSessionParent(config)}/sessions`;
 }
 
 function buildAnswerUrl(host: string, config: AgentSearchEnvConfig): string {
@@ -222,14 +219,16 @@ async function runAgentSearchAnswerOnce(
   const timeoutId = setTimeout(() => controller.abort(), CES_FETCH_TIMEOUT_MS);
 
   try {
-    const sessionResponse = await fetch(buildCreateSessionUrl(host, config, input.sessionId), {
+    const sessionResponse = await fetch(buildCreateSessionUrl(host, config), {
       method: "POST",
       signal: controller.signal,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json; charset=utf-8",
       },
-      body: "{}",
+      body: JSON.stringify({
+        name: buildAgentSearchSessionResource(config, input.sessionId),
+      }),
     });
 
     if (!isAgentSearchSessionReadyStatus(sessionResponse.status)) {
