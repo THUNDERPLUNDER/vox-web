@@ -236,9 +236,15 @@ const componentContextTurn = update(empty, componentContextMessage, 1, {
   requestedMode: "general_help",
 });
 const componentFollowUp = update(componentContextTurn.state, "Hva gjør jeg nå?", 2, {
-  activeSituation: { summary: "Uklart", evidence: "", certainty: "ambiguous" },
+  activeSituation: {
+    summary: "Brukeren spør hva de skal gjøre nå",
+    evidence: "Hva gjør jeg nå?",
+    certainty: "clear",
+  },
   requestedMode: "general_help",
 });
+assert.equal(componentFollowUp.state.activeSituation?.summary, "Voks i filteret");
+assert.equal(componentFollowUp.state.activeSituation?.provenance.quote, componentContextMessage);
 assert.equal(
   deliveryModule.introducesUnestablishedComponentTroubleshooting(
     componentFollowUp.state,
@@ -275,10 +281,21 @@ const reloadedCorrectionState = tokenModule.openConversationStateToken(
   now + 1,
 );
 assert.equal(reloadedCorrectionState.valid, true);
+const recallMessage = "Hva var det jeg slet med igjen?";
+const recallFollowUp = update(reloadedCorrectionState.state, recallMessage, 4, {
+  activeSituation: {
+    summary: "Brukeren spør om å bli minnet på hva de slet med tidligere",
+    evidence: recallMessage,
+    certainty: "clear",
+  },
+  requestedMode: "general_help",
+});
+assert.equal(recallFollowUp.state.activeSituation?.summary, "Stemmer blir utydelige når flere snakker");
+assert.equal(recallFollowUp.state.activeSituation?.provenance.quote, correctionTurns[1]);
 assert.equal(
   deliveryModule.buildActiveSituationRecallResponse(
-    reloadedCorrectionState.state,
-    "Hva var det jeg slet med igjen?",
+    recallFollowUp.state,
+    recallMessage,
   ),
   "Du fortalte at stemmer blir utydelige når flere snakker.",
   "same-tab reload must surface the preserved active situation",
@@ -293,14 +310,47 @@ assert.equal(
 );
 const recallDelivery = await deliveryModule.enforceConversationDeliveryPolicy(
   {},
-  reloadedCorrectionState.state,
+  recallFollowUp.state,
   corrected.policy,
-  "Hva var det jeg slet med igjen?",
+  recallMessage,
   "Irrelevant retrieval candidate",
 );
 assert.equal(recallDelivery.outcome, "candidate");
 assert.equal(recallDelivery.repairAttempts, 0);
 assert.equal(recallDelivery.text, "Du fortalte at stemmer blir utydelige når flere snakker.");
+
+for (const followUpMessage of [
+  "Hva gjør jeg nå?",
+  "Hva bør jeg gjøre?",
+  recallMessage,
+  "Kan du forklare mer?",
+]) {
+  const followUp = update(correctionState, followUpMessage, 3, {
+    activeSituation: {
+      summary: `Meta-oppsummering av: ${followUpMessage}`,
+      evidence: followUpMessage,
+      certainty: "clear",
+    },
+    requestedMode: "general_help",
+  });
+  assert.equal(
+    followUp.state.activeSituation?.summary,
+    correctionState.activeSituation?.summary,
+    `${followUpMessage} must preserve the previous concrete active situation`,
+  );
+}
+
+const genuineSituationChangeMessage = "Nå er problemet at venstre høreapparat ikke har lyd.";
+const genuineSituationChange = update(correctionState, genuineSituationChangeMessage, 3, {
+  activeSituation: {
+    summary: "Venstre høreapparat har ikke lyd",
+    evidence: genuineSituationChangeMessage,
+    certainty: "clear",
+  },
+  requestedMode: "general_help",
+});
+assert.equal(genuineSituationChange.state.activeSituation?.summary, "Venstre høreapparat har ikke lyd");
+assert.equal(genuineSituationChange.state.activeSituation?.provenance.quote, genuineSituationChangeMessage);
 
 // Control conversation 2: established product can open specificity only when relevant.
 const productMessage = "Jeg bruker Phonak Audéo Lumity, og vil endre programmet for støy.";
