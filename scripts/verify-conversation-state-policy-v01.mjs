@@ -195,16 +195,14 @@ assert.equal(corrected.state.corrections[0].scopeTurnIndex, 2);
 assert.equal(corrected.policy.mode, "general_help");
 assert.equal(
   deliveryModule.introducesUnestablishedComponentTroubleshooting(
-    corrected.state,
     correctionTurns[3],
-    "Det kan skyldes blokkering, et skittent filter eller voks i høreapparatet.",
+    "Kan du sjekke om det er noe som blokkerer lyden i høreapparatene dine, for eksempel et skittent filter eller voks?",
   ),
   true,
   "component troubleshooting must not replace the active social-listening situation",
 );
 assert.equal(
   deliveryModule.introducesUnestablishedComponentTroubleshooting(
-    corrected.state,
     correctionTurns[3],
     "Prøv en roligere plassering der du ser den som snakker.",
   ),
@@ -213,7 +211,6 @@ assert.equal(
 );
 assert.equal(
   deliveryModule.introducesUnestablishedComponentTroubleshooting(
-    corrected.state,
     "Jeg ser voks i filteret. Hva gjør jeg?",
     "Rengjør filteret som anvist for høreapparatet.",
   ),
@@ -327,6 +324,34 @@ const pass = () => ({
   usefulAndSafe: true,
 });
 const fail = (field = "noUnsupportedProductContext") => ({ ...pass(), decision: "FAIL", [field]: false });
+const ownerQaComponentCandidate =
+  "Kan du sjekke om det er noe som blokkerer lyden i høreapparatene dine, for eksempel et skittent filter eller voks?";
+let ownerQaRepairCalls = 0;
+const ownerQaDelivery = await deliveryModule.runDeliveryPipeline(
+  ownerQaComponentCandidate,
+  async (text) => deliveryModule.introducesUnestablishedComponentTroubleshooting(correctionTurns[3], text)
+    ? fail()
+    : pass(),
+  async () => {
+    ownerQaRepairCalls += 1;
+    return "Prøv rengjøring av filter, dome eller andre komponenter som kan blokkere lyden.";
+  },
+);
+assert.equal(ownerQaRepairCalls, 1, "the observed owner-QA candidate must receive only one repair");
+assert.equal(ownerQaDelivery.outcome, "fallback", "repair must not reintroduce component troubleshooting");
+assert.doesNotMatch(
+  ownerQaDelivery.text,
+  /filter|voks|blokkering|blokker(?:e|er|t)?(?:\s+lyden)?|dome|rengjøring|komponent/iu,
+  "final delivery after the exact correction must contain no unestablished component troubleshooting",
+);
+assert.equal(
+  deliveryModule.introducesUnestablishedComponentTroubleshooting(
+    "Jeg ser voks i filteret. Hva gjør jeg?",
+    "Rengjør filteret som anvist for høreapparatet.",
+  ),
+  false,
+  "the bounded guard must allow component help explicitly established by the current user",
+);
 const fixtureEvaluator = async (candidate) => {
   if (/app|mobil|remote|filter|dome|komponent/i.test(candidate)) return fail();
   if (candidate.includes("Oticon")) return fail();

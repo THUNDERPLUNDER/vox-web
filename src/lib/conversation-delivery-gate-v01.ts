@@ -34,10 +34,8 @@ export type DeliveryRepairer = (text: string) => Promise<string>;
 
 const ACTIVE_SITUATION_RECALL_PATTERN =
   /\b(?:hva\s+(?:var|er)\s+det\s+jeg\s+(?:slet|sliter)\s+med|hva\s+(?:slet|sliter)\s+jeg\s+med|minn\s+meg\s+på\s+hva\s+jeg\s+(?:slet|sliter)\s+med)\b/iu;
-const SOCIAL_LISTENING_SITUATION_PATTERN =
-  /\b(?:flere\s+(?:som\s+)?snakker|flere\s+stemm(?:er|ene)|stemm(?:e|en|er|ene)|samtale(?:n|r)?|rundt\s+bordet|mister\s+tråden)\b/iu;
 const COMPONENT_TROUBLESHOOTING_PATTERN =
-  /\b(?:voksfilter(?:et|e|ne)?|ørevoks|voks|filter(?:et|e|ne)?|dome(?:n|r|ne)?|lydutgang(?:en)?|rengjør(?:e|ing|es)?|blokkering(?:en)?|blokkert|smuss|komponent(?:en|er|ene)?)\b/iu;
+  /\b(?:voksfilter(?:et|e|ne)?|ørevoks|voks|filter(?:et|e|ne)?|dome(?:n|r|ne)?|lydutgang(?:en)?|rengjør(?:e|ing|es)?|blokkering(?:en|er)?|blokker(?:e|er|t)?(?:\s+lyden)?|smuss|komponent(?:en|er|ene)?)\b/iu;
 
 export function buildActiveSituationRecallResponse(
   state: ConversationState,
@@ -51,16 +49,10 @@ export function buildActiveSituationRecallResponse(
 }
 
 export function introducesUnestablishedComponentTroubleshooting(
-  state: ConversationState,
   currentMessage: string,
   candidate: string,
 ): boolean {
-  const activeSituation = [
-    state.activeSituation?.summary ?? "",
-    state.activeSituation?.provenance.quote ?? "",
-  ].join(" ");
   return (
-    SOCIAL_LISTENING_SITUATION_PATTERN.test(activeSituation) &&
     !COMPONENT_TROUBLESHOOTING_PATTERN.test(currentMessage) &&
     COMPONENT_TROUBLESHOOTING_PATTERN.test(candidate)
   );
@@ -169,7 +161,7 @@ function repairPrompt(
     policy.productSpecificAllowed
       ? "Behold bare produktdetaljer som matcher eksplisitt etablert og relevant merke/modell."
       : "Fjern all uetablert utstyrs- og produktspesifisitet.",
-    ...(!policy.productSpecificAllowed && introducesUnestablishedComponentTroubleshooting(state, currentMessage, candidate)
+    ...(!policy.productSpecificAllowed && introducesUnestablishedComponentTroubleshooting(currentMessage, candidate)
       ? ["Fjern filter-, voks-, rengjørings-, lydutgang- og annen komponentfeilsøking. Den er ikke etablert av brukeren; hjelpen skal styres av den aktive tale-/samtalesituasjonen."]
       : []),
     "Ikke legg til nye antakelser. Maks ett nøytralt oppklaringsspørsmål dersom nødvendig.",
@@ -202,7 +194,7 @@ export async function enforceConversationDeliveryPolicy(
     (text) => {
       if (
         !policy.productSpecificAllowed &&
-        introducesUnestablishedComponentTroubleshooting(state, currentMessage, text)
+        introducesUnestablishedComponentTroubleshooting(currentMessage, text)
       ) {
         return Promise.resolve({
           decision: "FAIL",
