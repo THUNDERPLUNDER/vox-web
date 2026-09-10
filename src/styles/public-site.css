@@ -102,11 +102,7 @@ body.public-site {
 
 .public-mood {
   width: 100%;
-  margin: 0 0 clamp(2.75rem, 5.5vw, 4.5rem);
-}
-
-.public-page__hero + .public-mood {
-  margin-top: calc(-1 * clamp(2rem, 4vw, 3.25rem));
+  margin: 0;
 }
 
 .public-mood img {
@@ -123,9 +119,19 @@ body.public-site {
 .public-section {
   display: grid;
   grid-template-columns: minmax(9.5rem, 12rem) minmax(0, 42rem);
-  gap: clamp(2rem, 5.5vw, 4.5rem);
+  column-gap: clamp(2rem, 5.5vw, 4.5rem);
+  row-gap: 1.5rem;
   padding: clamp(3rem, 6.5vw, 5rem) 0;
   border-top: 1px solid rgb(var(--border) / 0.72);
+}
+
+.public-section--with-mood {
+  padding-top: clamp(2rem, 4vw, 3.25rem);
+}
+
+.public-section--with-mood .public-mood {
+  grid-column: 1 / -1;
+  margin-bottom: 0.2rem;
 }
 
 .public-section h2,
@@ -180,13 +186,19 @@ body.public-site {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(15rem, 0.9fr);
   grid-template-areas:
+    "mood mood"
     "heading media"
     "lead media"
     "body media";
   column-gap: clamp(2.25rem, 5vw, 4.75rem);
   row-gap: 1.5rem;
-  padding: clamp(3.5rem, 7vw, 6rem) 0;
+  padding: clamp(2rem, 4.5vw, 3.75rem) 0 clamp(3.5rem, 7vw, 6rem);
   border-top: 1px solid rgb(var(--border) / 0.72);
+}
+
+.public-authored > .public-mood {
+  grid-area: mood;
+  margin-bottom: 0.2rem;
 }
 
 .public-authored h2 { grid-area: heading; }
@@ -274,8 +286,6 @@ body.public-site {
     line-height: 1.06;
   }
 
-  .public-mood { margin-bottom: clamp(2.5rem, 8vw, 3.5rem); }
-  .public-page__hero + .public-mood { margin-top: -1.75rem; }
   .public-mood img {
     height: clamp(5.5rem, 24vw, 7rem);
     border-radius: 0.7rem;
@@ -287,17 +297,22 @@ body.public-site {
     padding: clamp(2.75rem, 10vw, 4rem) 0;
   }
 
+  .public-section--with-mood {
+    padding-top: clamp(1.75rem, 7vw, 2.75rem);
+  }
+
   .public-section__body { max-width: 38rem; }
 
   .public-authored {
     grid-template-columns: 1fr;
     grid-template-areas:
+      "mood"
       "heading"
       "lead"
       "media"
       "body";
     gap: 1.35rem;
-    padding: clamp(3rem, 11vw, 4.5rem) 0;
+    padding: clamp(1.75rem, 7vw, 2.75rem) 0 clamp(3rem, 11vw, 4.5rem);
   }
 
   .public-authored__media {
