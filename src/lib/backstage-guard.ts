@@ -21,8 +21,6 @@ const REQUIRED_ENV_VARS = [
   "CES_APP_VERSION_ID",
   "CES_DEPLOYMENT_ID",
   "GOOGLE_SERVICE_ACCOUNT_JSON",
-  "VIDDEL_OWNER_PIN",
-  "VIDDEL_OWNER_SESSION_TOKEN",
 ] as const;
 
 const REQUIRED_ERROR_CODES = [
@@ -38,7 +36,6 @@ const REQUIRED_RUNBOOK_IDS = [
   "max-length",
   "ces",
   "disable-ai",
-  "access",
   "status",
 ] as const;
 

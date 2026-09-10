@@ -9,7 +9,7 @@ export const backstageMeta = {
 
 export const statusPanel = [
   { label: "Spør Viddel", value: "Midlertidig utilgjengelig — guard v0.2 under QA", tone: "wait" as const },
-  { label: "Guard", value: "Eierbryter + Vercel Firewall", tone: "ok" as const },
+  { label: "Guard", value: "Vercel Flags + Vercel Firewall", tone: "ok" as const },
   { label: "Monitoring", value: "Vercel logs + PostHog EU", tone: "ok" as const },
   { label: "Conversation feedback", value: "Neon EU · retention Needs QA", tone: "wait" as const },
 ] as const;
@@ -18,12 +18,12 @@ export const quickAnswers = [
   {
     question: "Hva skjer når noen spør Viddel?",
     answer:
-      "Spørsmålet går gjennom Viddel sitt eget grensesnitt. Appen sjekker om eier eller offentlig tilgang er aktiv, Firewall begrenser offentlig bruk, og spørsmålet sendes så til AI-motoren.",
+      "Spørsmålet går gjennom Viddel sitt eget grensesnitt. Preview er åpen for intern test, mens Production kontrolleres av én av/på-bryter. Firewall begrenser trafikk før spørsmålet sendes til AI-motoren.",
   },
   {
     question: "Hva beskytter oss?",
     answer:
-      "Eier låser opp med en firesifret kode som gir en separat sterk cookie. Vercel Flags holder én offentlig av/på-verdi. Vercel Firewall begrenser offentlig trafikk per IP, mens appen sjekker origin og meldingslengde.",
+      "Production styres av én av/på-verdi i Vercel Flags. Vercel Firewall begrenser trafikk per IP, mens appen sjekker origin og meldingslengde. Preview er åpen, men merkes globalt som noindex.",
   },
   {
     question: "Hva gjør vi når noe ikke virker?",
@@ -79,9 +79,9 @@ export const systemMapLayers: SystemMapLayer[] = [
   {
     id: "guard",
     layer: "Beskyttelse",
-    title: "Eierkontroll + Vercel Firewall",
+    title: "Miljøport + Vercel Firewall",
     human:
-      "Eier bruker AI uten offentlig kvote. Offentlig tilgang styres i Vercel Flags, og Vercel Firewall begrenser andre per IP. Appen sjekker origin og maks meldingslengde.",
+      "Preview er åpen for intern test. Production styres i Vercel Flags, og Vercel Firewall begrenser trafikk per IP. Appen sjekker origin og maks meldingslengde.",
   },
   {
     id: "state-policy",
@@ -145,9 +145,9 @@ export const chatFlowSteps: ChatFlowStep[] = [
   {
     step: 4,
     title: "Tilgangen kontrolleres",
-    human: "Eier kommer gjennom med sikker cookie. For andre må offentlig tilgang være på, og Firewall begrenser mengden per IP.",
+    human: "Preview er åpen for intern test. I Production må offentlig tilgang være på, og Firewall begrenser mengden per IP.",
     why: "Dette beskytter kostnad og misbruk.",
-    tech: "owner cookie · Vercel Flag public-ai-enabled · Vercel Firewall HTTP 429",
+    tech: "VERCEL_ENV · Vercel Flag public-ai-enabled · Vercel Firewall HTTP 429",
   },
   {
     step: 5,
@@ -181,7 +181,7 @@ export const protectionRules = [
   {
     title: "Offentlig bryter",
     value: "Vercel Flags",
-    human: "Én global verdi kan slås av/på i Vercel. Eier fungerer også når offentlig tilgang er av.",
+    human: "Én verdi slår AI av/på i Production. Preview er åpen uavhengig av Production-bryteren.",
   },
   {
     title: "Maks lengde",
@@ -195,14 +195,14 @@ export const protectionRules = [
   },
 ] as const;
 
-/** Guard strategy — temporary owner control + Vercel Firewall (#180 v0.2). */
+/** Guard strategy — open Preview, Production flag and Vercel Firewall (#396). */
 export const guardStrategyExplainer = {
-  title: "Public guard v0.2",
-  lead: "Frem til innlogging gir en enkel eierkode, ett Vercel-flagg og Vercel Firewall et lett kostnadsvern. Appen beholder enkle, stabile innholdssjekker.",
+  title: "Preview / Production guard",
+  lead: "Preview er en åpen intern testflate. Production beholder ett Vercel-flagg og Vercel Firewall som lett kostnadsvern. Appen beholder enkle, stabile innholdssjekker.",
   publicGuard: {
-    label: "Public guard (#180)",
+    label: "Miljøport (#396)",
     human:
-      "Appen sjekker eiercookie, offentlig av/på-status, origin og maks meldingslengde. Vercel Flags brukes bare til én bryter — ikke som teller.",
+      "Appen åpner AI direkte i Preview. I Production sjekkes offentlig av/på-status, origin og maks meldingslengde. Vercel Flags brukes bare til én Production-bryter — ikke som teller.",
   },
   vercelLimits: {
     label: "Juster grenser i Vercel Firewall",
@@ -796,26 +796,14 @@ export const changeRunbooks: ChangeRunbook[] = [
   {
     id: "disable-ai",
     title: "Slå av AI midlertidig",
-    whatChanges: "Stoppe offentlig AI-svar midlertidig ved feil, kostnadsbekymring eller uventet adferd. Eier beholder tilgang.",
+    whatChanges: "Stoppe AI-svar i Production midlertidig ved feil, kostnadsbekymring eller uventet adferd. Preview påvirkes ikke.",
     where: "Vercel Dashboard → vox-web → Flags → public-ai-enabled.",
-    whereToGo: "Sett Production til Off eller On. Den skjulte PIN-en på /no/chat/ styrer bare eiertilgangen.",
+    whereToGo: "Sett Production til Off eller On. Preview er bevisst åpen for intern QA.",
     after: "Endringen gjelder straks og krever ikke redeploy.",
-    test: "Privat vindu skal se trygg utilgjengelig-melding. Nettleseren med eiercookie skal fortsatt få svar.",
+    test: "Production skal vise trygg utilgjengelig-melding når flagget er av. Preview skal fortsatt nå AI-ruten.",
     actionLinks: [backstageLinks.chat, backstageLinks.vercelLogs],
     envVars: [],
     tech: "public-ai-enabled · @vercel/flags-core · src/lib/public-ai-access-v01.ts",
-  },
-  {
-    id: "access",
-    title: "Midlertidig eier-PIN",
-    whatChanges: "Eier-PIN og den lange eiercookie-hemmeligheten frem til ordentlig innlogging finnes.",
-    where: "Vercel Environment Variables, server-side og sensitive.",
-    whereToGo: "Sett VIDDEL_OWNER_PIN og VIDDEL_OWNER_SESSION_TOKEN. Del aldri verdiene i chat eller repo.",
-    after: "Redeploy. Eksisterende eierøkter må låses opp på nytt hvis session-token roteres.",
-    test: "Feil PIN avvises. Riktig PIN gir eiertilgang i 30 dager. Logg ut fjerner cookien.",
-    actionLinks: [backstageLinks.vercelEnv, backstageLinks.chat, backstageLinks.vercelFirewall],
-    envVars: ["VIDDEL_OWNER_PIN", "VIDDEL_OWNER_SESSION_TOKEN"],
-    tech: "Midlertidig MVP-kontroll — ikke full brukerinnlogging.",
   },
   {
     id: "status",
@@ -884,7 +872,7 @@ export const troubleshootingCases: TroubleshootingCase[] = [
 
 export const productionChecklist = [
   "Kan vi få ekte svar i Spør Viddel?",
-  "Virker eier-PIN, offentlig av/på-bryter og eiertilgang når offentlig tilgang er av?",
+  "Er AI stengt i Production når public-ai-enabled er av?",
   "Er Firewall-reglene aktive for begge AI-rutene?",
   "Ser vi feil i Vercel logs?",
   "Er VIS current-state oppdatert?",
@@ -894,7 +882,7 @@ export const productionChecklist = [
 export const beforeExternalSharing = [
   "Hybrid monitoring v0.1 er aktiv — intern test med Thomas og Vibeke før ekstern deling.",
   "Sjekk Runtime Logs, Firewall og PostHog EU for mønstre — ikke innhold.",
-  "Eier-PIN er kun en skjult, midlertidig MVP-kontroll; ordentlig innlogging kommer senere.",
+  "Preview er en åpen, noindex intern testflate — ikke en tilgangskontrollert beta.",
   "Ekstern pilot krever egen beslutning.",
 ] as const;
 
@@ -970,8 +958,6 @@ export type EnvVarEntry = {
 };
 
 export const envVars: EnvVarEntry[] = [
-  { name: "VIDDEL_OWNER_PIN", group: "auth", controls: "Fire sifre; brukes kun til å låse opp eierøkten. Aldri frontend." },
-  { name: "VIDDEL_OWNER_SESSION_TOKEN", group: "auth", controls: "Minst 32 tilfeldige tegn; cookie-verdi og smal Firewall-bypass for AI-rutene." },
   { name: "VIDDEL_OPS_TEST_TOKEN", group: "ops", controls: "Hemmelig ops reliability test som viser trygg responsmetadata. Omgår ikke Vercel Firewall. Aldri frontend." },
   {
     name: "VIDDEL_CONVERSATION_STATE_SECRET",
@@ -1047,9 +1033,9 @@ export const sourceFiles = [
   "src/lib/render-assistant-markdown.ts",
   "src/pages/no/chat.astro",
   "src/lib/chat-api-guard.ts",
-  "src/lib/owner-access-v01.ts",
   "src/lib/public-ai-access-v01.ts",
-  "src/pages/api/owner-access/*",
+  "src/lib/vercel-environment.ts",
+  "src/middleware.ts",
   "src/lib/chat-ops-test.ts",
   "src/lib/chat-usage-metrics.ts",
   "src/lib/viddel-analytics-events.ts",

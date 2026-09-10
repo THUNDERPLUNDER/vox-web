@@ -78,7 +78,7 @@ export const mvpCurrentState = {
   } satisfies CurrentSprint,
   closedSprints: [] satisfies ClosedSprint[],
   currentFocus:
-    "Spør Viddel er midlertidig utilgjengelig etter feil i Upstash-telleren. Guard v0.2 med eier-PIN, offentlig av/på-bryter og Vercel Firewall er implementert lokalt; Vercel-konfigurasjon og Preview-QA gjenstår.",
+    "Spør Viddel er midlertidig utilgjengelig etter feil i Upstash-telleren. Offentlig av/på-bryter og Vercel Firewall er implementert; Preview-QA gjenstår.",
   mvpSurfaces: [
     {
       id: "public-root",
@@ -201,11 +201,6 @@ export const mvpCurrentState = {
       id: "backstage-v01",
       label: "Backstage v0.1 — live",
       detail: "Intern systemreferanse på /backstage/ — AI-flow, guards, env-vars og production checklist (#184).",
-    },
-    {
-      id: "temporary-owner-access",
-      label: "Midlertidig eierkontroll — Needs QA",
-      detail: "Skjult firesifret eier-PIN og offentlig av/på-flagg er kun en lett MVP-kontroll. Ordentlig brukerinnlogging er fortsatt parkert til eget arbeidsspor.",
     },
     {
       id: "transcript-qa",

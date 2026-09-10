@@ -1,6 +1,10 @@
 /* CONTRACT: Server proxy for Viddel chat — guards, optional CES or Agent Search backend, no content logging. */
 import type { APIRoute } from "astro";
-import { runAgentSearchAnswer, resolveAgentSearchEnv } from "../../lib/agent-search-answer";
+import {
+  readAgentSearchFailureDiagnostic,
+  runAgentSearchAnswer,
+  resolveAgentSearchEnv,
+} from "../../lib/agent-search-answer";
 import {
   CHAT_GUARD_MESSAGES,
   CHAT_MAX_MESSAGE_LENGTH,
@@ -149,6 +153,7 @@ function handleBackendError(
     backend_mode: backendMode,
   });
   if (!opsTest) {
+    const agentSearchDiagnostic = readAgentSearchFailureDiagnostic(error);
     console.error("[api/chat] backend_failed", {
       backend_mode: backendMode,
       error_code: error.code,
@@ -157,6 +162,12 @@ function handleBackendError(
       retry_used: error.retryUsed,
       attempt_count: error.attemptCount,
       session_id_length: sessionId.length,
+      ...(agentSearchDiagnostic
+        ? {
+            upstream_stage: agentSearchDiagnostic.stage,
+            google_error_hint: agentSearchDiagnostic.hint,
+          }
+        : {}),
     });
   }
   return chatResponse(
@@ -265,7 +276,7 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  if (!(await canUsePublicAi(request))) {
+  if (!(await canUsePublicAi())) {
     return respond(
       opsTest,
       { error: "public_ai_disabled", message: "Viddel er ikke tilgjengelig akkurat nå." },

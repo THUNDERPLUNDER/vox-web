@@ -55,37 +55,14 @@ export const visRuntimeFeed = {
       possibleSolution:
         "En separat feedback-reference knytter score, hurtiggrunner og valgfri kommentar til én feedbackpost. Desktop bruker høyrepanel og mobil bruker sheet.",
       nextDecision:
-        "Legg inn CRON_SECRET, redeploy og kjør autentisert cleanup-test. Deretter gjenstår owner-gated ekte samtale med feedback på desktop og mobil før merge.",
+        "Legg inn CRON_SECRET, redeploy og kjør autentisert cleanup-test. Deretter gjenstår ekte samtale med feedback på desktop og mobil før merge.",
       issue: "#346",
       issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/346",
       progressSteps: [
         { id: "storage", label: "Neon EU koblet", state: "done" },
         { id: "code", label: "Schema og feedbackflyt", state: "done" },
         { id: "qa", label: "Retention-QA", state: "current" },
-        { id: "production", label: "Owner-gated slutt-QA", state: "upcoming" },
-      ],
-    },
-    {
-      id: "public-ai-guard-v02",
-      headline: "Vi gjenoppretter chatten med en enkel eierkode og et lett kostnadsvern for andre.",
-      workTitle: "Public AI guard v0.2 (#180)",
-      area: "Drift og AI",
-      why:
-        "Upstash-telleren feilet før AI-kallet og gjorde Spør Viddel utilgjengelig. Frem til innlogging trenger den offentlige MVP-en bare et lett vern mot åpenbart misbruk.",
-      status:
-        "Feilen er diagnostisert. Eier-PIN, sikker eierøkt og offentlig av/på-flagg er implementert lokalt; Preview-test og Firewall-oppsett gjenstår.",
-      possibleSolution:
-        "Vercel Flags holder én av/på-verdi. Vercel Firewall begrenser PIN-forsøk, tekstspørsmål og bildeanalyse uten ny teller-infrastruktur.",
-      nextDecision:
-        "Koble koden til det opprettede flagget, kontroller eierflyten i Preview, og aktiver deretter de gjennomgåtte Firewall-reglene.",
-      issue: "#180",
-      issueLink: "https://github.com/THUNDERPLUNDER/vox-web/issues/180",
-      progressSteps: [
-        { id: "diagnosis", label: "Feilkilde funnet", state: "done" },
-        { id: "code", label: "Guard v0.2 i kode", state: "done" },
-        { id: "config", label: "Vercel-flagg opprettet", state: "done" },
-        { id: "firewall", label: "Firewall-regler", state: "upcoming" },
-        { id: "production", label: "Production-verifisering", state: "upcoming" },
+        { id: "production", label: "Slutt-QA", state: "upcoming" },
       ],
     },
   ],
@@ -98,11 +75,6 @@ export const visRuntimeFeed = {
       {
         label: "Issue #346",
         href: "https://github.com/THUNDERPLUNDER/vox-web/issues/346",
-        kind: "issue",
-      },
-      {
-        label: "Issue #180",
-        href: "https://github.com/THUNDERPLUNDER/vox-web/issues/180",
         kind: "issue",
       },
       {

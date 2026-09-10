@@ -15,7 +15,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  if (!(await canUsePublicAi(request))) {
+  if (!(await canUsePublicAi())) {
     return new Response(JSON.stringify({ error: "public_ai_disabled", message: "Viddel er ikke tilgjengelig akkurat nå." }), {
       status: 503,
       headers: { "Content-Type": "application/json; charset=utf-8" },
