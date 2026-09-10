@@ -3,8 +3,8 @@
 export const backstageMeta = {
   title: "Backstage",
   lead: "Backstage er kontrollrommet for hvordan Viddel fungerer bak scenen. Her forklarer vi AI-flyten, beskyttelsen, feilstater og hva som må sjekkes før vi deler med flere.",
-  updatedAt: "2026-08-20",
-  issue: "#180 · #184 · #222 · #346",
+  updatedAt: "2026-09-09",
+  issue: "#180 · #184 · #222 · #346 · #384",
 } as const;
 
 export const statusPanel = [
@@ -84,11 +84,25 @@ export const systemMapLayers: SystemMapLayer[] = [
       "Preview er åpen for intern test. Production styres i Vercel Flags, og Vercel Firewall begrenser trafikk per IP. Appen sjekker origin og maks meldingslengde.",
   },
   {
+    id: "state-policy",
+    layer: "Viddel-policy",
+    title: "Samtaletilstand og avgrensning",
+    human: "Viddel verifiserer brukergrunnlag, velger generell eller produktspesifikk kunnskapsramme og holder tilstanden i en kryptert, sesjonsbundet token.",
+    tech: "stateToken · general_help / clarify / product_specific_allowed",
+  },
+  {
     id: "ai",
     layer: "AI-motor",
     title: "Google Agent Search :answer",
-    human: "Production bruker direct :answer. CES runSession er rollback-path.",
+    human: "Production bruker direct :answer til å lage en svarkandidat. CES runSession er rollback-path.",
     tech: "VIDDEL_AI_BACKEND · google_agent_search_direct",
+  },
+  {
+    id: "delivery-policy",
+    layer: "Viddel-policy",
+    title: "Kontroll før levering",
+    human: "Svarkandidaten leveres bare ved eksplisitt policy-PASS. Ellers tillates én avgrenset reparasjon før en fast, generell fallback.",
+    tech: "PASS · én repair · safe fallback",
   },
   {
     id: "response",
@@ -137,13 +151,26 @@ export const chatFlowSteps: ChatFlowStep[] = [
   },
   {
     step: 5,
-    title: "AI-motoren svarer",
-    human: "Backend velges av VIDDEL_AI_BACKEND. Production: Google Agent Search :answer med Viddel response contract v0.1.",
-    why: "Svaret kommer fra Google Discovery Engine — ikke fra widget i nettleseren.",
-    tech: "google_agent_search_direct · src/lib/agent-search-answer.ts",
+    title: "Viddel verifiserer samtalegrunnlaget",
+    human: "En kryptert, sesjonsbundet token holder kun aktiv situasjon, brukerbekreftet kontekst, avgrensede korreksjoner og et kort siste svargrunnlag.",
+    why: "Modellens egne antakelser skal ikke bli brukerfakta eller åpne produktspesifikk kunnskap.",
+    tech: "stateToken · eksakt brukerevidens · policy",
   },
   {
     step: 6,
+    title: "AI-motoren svarer",
+    human: "Backend velges av VIDDEL_AI_BACKEND. Production: Google Agent Search :answer lager en kandidat med Viddel response contract v0.3 og en smal authority frame.",
+    why: "Generell kunnskap er påkrevd inntil eksplisitt og relevant merke/modell er etablert.",
+    tech: "google_agent_search_direct · src/lib/agent-search-answer.ts",
+  },
+  {
+    step: 7,
+    title: "Viddel kontrollerer kandidaten",
+    human: "Kandidaten må få eksplisitt PASS for situasjon, korreksjon, kunnskapsnivå og trygg nytte. Ved feil gjøres høyst én reparasjon før generell fallback.",
+    tech: "conversation-delivery-gate-v01.ts",
+  },
+  {
+    step: 8,
     title: "Viddel viser svaret",
     human: "Svaret rendres som lesbar tekst (Markdown → DOM) i chatten — uten CES-widget i nettleseren.",
     tech: "src/lib/render-assistant-markdown.ts · /no/chat/",
@@ -303,7 +330,7 @@ export const backstageLinks = {
     external: true,
   },
   responseContractFile: {
-    label: "Response contract v0.1",
+    label: "Response contract v0.3",
     href: "https://github.com/THUNDERPLUNDER/vox-web/blob/main/src/lib/viddel-response-contract.ts",
     external: true,
   },
@@ -369,6 +396,28 @@ export const aiChatConfigExplainer = {
       links: [backstageLinks.viddelAiBackendFile, backstageLinks.apiRouteFile, backstageLinks.vercelEnv],
     },
     {
+      id: "conversation-state-policy",
+      title: "Hvordan eier Viddel samtalegrunnlaget?",
+      human:
+        "Direct-chatten bruker en kryptert token som er bundet til nettlesersesjonen. Manglende, utløpt, endret eller feilbundet token starter med tom, generell tilstand.",
+      bullets: [
+        "Kun aktiv situasjon, etablert brukerkontekst med evidens, avgrensede korreksjoner og kort siste leverte svargrunnlag bæres mellom vendinger.",
+        "Reload i samme fane fortsetter samtalen; en ny eller duplisert fane roterer sessionId og skjult stateToken.",
+        "Uetablert produktkontekst holder retrieval på knowledge_scope=general.",
+        "Svarkandidaten må få eksplisitt policy-PASS; ellers én reparasjon og deretter fast generell fallback.",
+        "Ingen persistent profil, rå historikk, prompt- eller svarlogging.",
+      ],
+      envVars: ["VIDDEL_CONVERSATION_STATE_SECRET"],
+      files: [
+        "src/lib/conversation-state-token-v01.ts",
+        "src/lib/conversation-policy-v01.ts",
+        "src/lib/conversation-delivery-gate-v01.ts",
+        "src/lib/chat-browser-session-v01.ts",
+      ],
+      links: [backstageLinks.apiRouteFile, backstageLinks.vercelEnv],
+      caution: "Den dedikerte server-secret-en må være minst 32 tilfeldige tegn og satt før direct-chatten deployes. Del aldri verdien.",
+    },
+    {
       id: "direct-answer",
       title: "Hva bruker direct :answer?",
       human:
@@ -396,9 +445,9 @@ export const aiChatConfigExplainer = {
       id: "response-contract",
       title: "Hvor styres svarstil?",
       human:
-        "Viddel response contract v0.1 ligger i repo — ikke skjult i GCP Console. Endres som versjonert produktendring, ikke ad hoc i console.",
+        "Viddel response contract v0.3 ligger i repo — ikke skjult i GCP Console. Endres som versjonert produktendring, ikke ad hoc i console.",
       bullets: [
-        "VIDDEL_RESPONSE_CONTRACT_VERSION = v0.1",
+        "VIDDEL_RESPONSE_CONTRACT_VERSION = v0.3",
         "VIDDEL_RESPONSE_PREAMBLE styrer lengde, tone, ordvalg, oppfølgingsspørsmål og audiograf-håndtering.",
         "Reduserer manual-dump og lange kildeutdrag.",
         "Preamble sendes som answerGenerationSpec.promptSpec.preamble i :answer-kallet.",
@@ -911,6 +960,11 @@ export type EnvVarEntry = {
 export const envVars: EnvVarEntry[] = [
   { name: "VIDDEL_OPS_TEST_TOKEN", group: "ops", controls: "Hemmelig ops reliability test som viser trygg responsmetadata. Omgår ikke Vercel Firewall. Aldri frontend." },
   {
+    name: "VIDDEL_CONVERSATION_STATE_SECRET",
+    group: "auth",
+    controls: "Dedikert server-only nøkkel for kryptert, 12-timers og sessionId-bundet samtaletilstand. Minst 32 tilfeldige tegn.",
+  },
+  {
     name: "VIDDEL_AI_BACKEND",
     group: "agent-search",
     controls: "Backend for /api/chat: google_agent_search_direct eller ces_channel. Default ces_channel.",
@@ -970,6 +1024,11 @@ export const sourceFiles = [
   "src/pages/api/chat.ts",
   "src/lib/viddel-ai-backend.ts",
   "src/lib/agent-search-answer.ts",
+  "src/lib/conversation-state-token-v01.ts",
+  "src/lib/conversation-policy-v01.ts",
+  "src/lib/conversation-delivery-gate-v01.ts",
+  "src/lib/conversation-vertex-json-v01.ts",
+  "src/lib/chat-browser-session-v01.ts",
   "src/lib/viddel-response-contract.ts",
   "src/lib/render-assistant-markdown.ts",
   "src/pages/no/chat.astro",

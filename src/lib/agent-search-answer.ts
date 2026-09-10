@@ -20,6 +20,7 @@ import {
   type CesErrorCode,
   type DurationBucket,
 } from "./ces-run-session";
+import { conversationRetrievalFilter } from "./conversation-policy-v01.ts";
 
 const COLLECTION = "default_collection";
 const DEFAULT_ANSWER_SERVING = "default_serving_config";
@@ -39,6 +40,8 @@ export type AgentSearchEnvResult =
 export type AgentSearchAnswerInput = {
   message: string;
   sessionId: string;
+  authorityFrame?: string;
+  productSpecificAllowed?: boolean;
 };
 
 export type AgentSearchAnswerResult = {
@@ -137,6 +140,9 @@ export function buildAnswerRequestBody(
   config: AgentSearchEnvConfig,
   input: AgentSearchAnswerInput,
 ): Record<string, unknown> {
+  const preamble = input.authorityFrame?.trim()
+    ? `${VIDDEL_RESPONSE_PREAMBLE}\n\n${input.authorityFrame.trim()}`
+    : VIDDEL_RESPONSE_PREAMBLE;
   const body: Record<string, unknown> = {
     query: { text: input.message },
     session: buildAgentSearchSessionResource(config, input.sessionId),
@@ -148,10 +154,19 @@ export function buildAnswerRequestBody(
       ignoreNonAnswerSeekingQuery: false,
       includeCitations: true,
       promptSpec: {
-        preamble: VIDDEL_RESPONSE_PREAMBLE,
+        preamble,
       },
     },
   };
+
+  const retrievalFilter = conversationRetrievalFilter(input.productSpecificAllowed === true);
+  if (retrievalFilter) {
+    body.searchSpec = {
+      searchParams: {
+        filter: retrievalFilter,
+      },
+    };
+  }
 
   return body;
 }
