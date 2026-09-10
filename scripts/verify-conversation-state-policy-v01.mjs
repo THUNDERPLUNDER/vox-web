@@ -195,6 +195,7 @@ assert.equal(corrected.state.corrections[0].scopeTurnIndex, 2);
 assert.equal(corrected.policy.mode, "general_help");
 assert.equal(
   deliveryModule.introducesUnestablishedComponentTroubleshooting(
+    corrected.state,
     correctionTurns[3],
     "Kan du sjekke om det er noe som blokkerer lyden i høreapparatene dine, for eksempel et skittent filter eller voks?",
   ),
@@ -203,6 +204,7 @@ assert.equal(
 );
 assert.equal(
   deliveryModule.introducesUnestablishedComponentTroubleshooting(
+    corrected.state,
     correctionTurns[3],
     "Prøv en roligere plassering der du ser den som snakker.",
   ),
@@ -211,11 +213,55 @@ assert.equal(
 );
 assert.equal(
   deliveryModule.introducesUnestablishedComponentTroubleshooting(
+    empty,
     "Jeg ser voks i filteret. Hva gjør jeg?",
     "Rengjør filteret som anvist for høreapparatet.",
   ),
   false,
   "explicit component context in the current user message must remain eligible",
+);
+
+const componentContextMessage = "Jeg ser voks i filteret.";
+const componentContextTurn = update(empty, componentContextMessage, 1, {
+  activeSituation: {
+    summary: "Voks i filteret",
+    evidence: componentContextMessage,
+    certainty: "clear",
+  },
+  establishedContext: [{
+    kind: "general",
+    summary: "Brukeren ser voks i filteret",
+    evidence: componentContextMessage,
+  }],
+  requestedMode: "general_help",
+});
+const componentFollowUp = update(componentContextTurn.state, "Hva gjør jeg nå?", 2, {
+  activeSituation: { summary: "Uklart", evidence: "", certainty: "ambiguous" },
+  requestedMode: "general_help",
+});
+assert.equal(
+  deliveryModule.introducesUnestablishedComponentTroubleshooting(
+    componentFollowUp.state,
+    "Hva gjør jeg nå?",
+    "Rengjør filteret forsiktig.",
+  ),
+  false,
+  "authoritative component evidence from a prior user turn must keep follow-up help eligible",
+);
+assert.equal(
+  deliveryModule.introducesUnestablishedComponentTroubleshooting(
+    {
+      ...empty,
+      activeSituation: {
+        summary: "Voks i filteret",
+        provenance: { source: "user", quote: "Jeg trenger hjelp.", turnIndex: 1 },
+      },
+    },
+    "Hva gjør jeg nå?",
+    "Rengjør filteret forsiktig.",
+  ),
+  true,
+  "model-shaped active-situation summary must not establish component context",
 );
 
 const reloadedCorrectionState = tokenModule.openConversationStateToken(
@@ -329,7 +375,7 @@ const ownerQaComponentCandidate =
 let ownerQaRepairCalls = 0;
 const ownerQaDelivery = await deliveryModule.runDeliveryPipeline(
   ownerQaComponentCandidate,
-  async (text) => deliveryModule.introducesUnestablishedComponentTroubleshooting(correctionTurns[3], text)
+  async (text) => deliveryModule.introducesUnestablishedComponentTroubleshooting(corrected.state, correctionTurns[3], text)
     ? fail()
     : pass(),
   async () => {
@@ -346,11 +392,26 @@ assert.doesNotMatch(
 );
 assert.equal(
   deliveryModule.introducesUnestablishedComponentTroubleshooting(
+    empty,
     "Jeg ser voks i filteret. Hva gjør jeg?",
     "Rengjør filteret som anvist for høreapparatet.",
   ),
   false,
   "the bounded guard must allow component help explicitly established by the current user",
+);
+const establishedComponentDelivery = await deliveryModule.runDeliveryPipeline(
+  "Rengjør filteret forsiktig.",
+  async (text) => deliveryModule.introducesUnestablishedComponentTroubleshooting(
+    componentFollowUp.state,
+    "Hva gjør jeg nå?",
+    text,
+  ) ? fail() : pass(),
+  async () => "unused",
+);
+assert.equal(
+  establishedComponentDelivery.outcome,
+  "candidate",
+  "component help grounded in authoritative prior user evidence must remain deliverable",
 );
 const fixtureEvaluator = async (candidate) => {
   if (/app|mobil|remote|filter|dome|komponent/i.test(candidate)) return fail();

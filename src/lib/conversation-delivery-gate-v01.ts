@@ -49,11 +49,17 @@ export function buildActiveSituationRecallResponse(
 }
 
 export function introducesUnestablishedComponentTroubleshooting(
+  state: ConversationState,
   currentMessage: string,
   candidate: string,
 ): boolean {
+  const componentContextIsEstablished = [
+    currentMessage,
+    state.activeSituation?.provenance.quote ?? "",
+    ...effectiveEstablishedContext(state).map((item) => item.provenance.quote),
+  ].some((evidence) => COMPONENT_TROUBLESHOOTING_PATTERN.test(evidence));
   return (
-    !COMPONENT_TROUBLESHOOTING_PATTERN.test(currentMessage) &&
+    !componentContextIsEstablished &&
     COMPONENT_TROUBLESHOOTING_PATTERN.test(candidate)
   );
 }
@@ -161,7 +167,7 @@ function repairPrompt(
     policy.productSpecificAllowed
       ? "Behold bare produktdetaljer som matcher eksplisitt etablert og relevant merke/modell."
       : "Fjern all uetablert utstyrs- og produktspesifisitet.",
-    ...(!policy.productSpecificAllowed && introducesUnestablishedComponentTroubleshooting(currentMessage, candidate)
+    ...(!policy.productSpecificAllowed && introducesUnestablishedComponentTroubleshooting(state, currentMessage, candidate)
       ? ["Fjern filter-, voks-, rengjørings-, lydutgang- og annen komponentfeilsøking. Den er ikke etablert av brukeren; hjelpen skal styres av den aktive tale-/samtalesituasjonen."]
       : []),
     "Ikke legg til nye antakelser. Maks ett nøytralt oppklaringsspørsmål dersom nødvendig.",
@@ -194,7 +200,7 @@ export async function enforceConversationDeliveryPolicy(
     (text) => {
       if (
         !policy.productSpecificAllowed &&
-        introducesUnestablishedComponentTroubleshooting(currentMessage, text)
+        introducesUnestablishedComponentTroubleshooting(state, currentMessage, text)
       ) {
         return Promise.resolve({
           decision: "FAIL",
