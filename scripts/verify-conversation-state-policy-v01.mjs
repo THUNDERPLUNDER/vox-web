@@ -193,6 +193,71 @@ assert.equal(corrected.state.corrections.length, 1);
 assert.equal(corrected.state.corrections[0].provenance.quote, correctionTurns[3]);
 assert.equal(corrected.state.corrections[0].scopeTurnIndex, 2);
 assert.equal(corrected.policy.mode, "general_help");
+assert.equal(
+  deliveryModule.introducesUnestablishedComponentTroubleshooting(
+    corrected.state,
+    correctionTurns[3],
+    "Det kan skyldes blokkering, et skittent filter eller voks i høreapparatet.",
+  ),
+  true,
+  "component troubleshooting must not replace the active social-listening situation",
+);
+assert.equal(
+  deliveryModule.introducesUnestablishedComponentTroubleshooting(
+    corrected.state,
+    correctionTurns[3],
+    "Prøv en roligere plassering der du ser den som snakker.",
+  ),
+  false,
+  "situation-first general help must remain eligible",
+);
+assert.equal(
+  deliveryModule.introducesUnestablishedComponentTroubleshooting(
+    corrected.state,
+    "Jeg ser voks i filteret. Hva gjør jeg?",
+    "Rengjør filteret som anvist for høreapparatet.",
+  ),
+  false,
+  "explicit component context in the current user message must remain eligible",
+);
+
+const reloadedCorrectionState = tokenModule.openConversationStateToken(
+  tokenModule.sealConversationStateToken(
+    { sessionId, turnIndex: 3, state: corrected.state },
+    secret,
+    { now, iv: fixedIv },
+  ),
+  sessionId,
+  secret,
+  now + 1,
+);
+assert.equal(reloadedCorrectionState.valid, true);
+assert.equal(
+  deliveryModule.buildActiveSituationRecallResponse(
+    reloadedCorrectionState.state,
+    "Hva var det jeg slet med igjen?",
+  ),
+  "Du fortalte at stemmer blir utydelige når flere snakker.",
+  "same-tab reload must surface the preserved active situation",
+);
+assert.equal(
+  deliveryModule.buildActiveSituationRecallResponse(
+    empty,
+    "Hva var det jeg slet med igjen?",
+  ),
+  null,
+  "a fresh conversation must not invent an active situation",
+);
+const recallDelivery = await deliveryModule.enforceConversationDeliveryPolicy(
+  {},
+  reloadedCorrectionState.state,
+  corrected.policy,
+  "Hva var det jeg slet med igjen?",
+  "Irrelevant retrieval candidate",
+);
+assert.equal(recallDelivery.outcome, "candidate");
+assert.equal(recallDelivery.repairAttempts, 0);
+assert.equal(recallDelivery.text, "Du fortalte at stemmer blir utydelige når flere snakker.");
 
 // Control conversation 2: established product can open specificity only when relevant.
 const productMessage = "Jeg bruker Phonak Audéo Lumity, og vil endre programmet for støy.";
