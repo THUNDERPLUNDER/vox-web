@@ -47,7 +47,18 @@ const implementationSource = await readFile(
   "utf8",
 );
 assert.doesNotMatch(implementationSource, /sessions\/\-/);
-assert.doesNotMatch(implementationSource, /sessions\?sessionId=/);
+assert.match(
+  implementationSource,
+  /const sessionId = buildAgentSearchSessionId\(localSessionId\)/,
+);
+assert.match(
+  implementationSource,
+  /sessions\?sessionId=\$\{encodeURIComponent\(sessionId\)\}/,
+);
+assert.match(
+  implementationSource,
+  /buildCreateSessionUrl\(host, config, input\.sessionId\)/,
+);
 assert.match(
   implementationSource,
   /body: JSON\.stringify\(\{\s*name: buildAgentSearchSessionResource\(config, input\.sessionId\),?\s*\}\)/,
