@@ -8,65 +8,106 @@ import PublicHoldingLayout from "../layouts/PublicHoldingLayout.astro";
   description="Viddel utvikler praktisk og kunnskapsbasert støtte for mennesker med svekket hørsel."
   canonical="https://www.viddel.no/om"
 >
-  <main class="public-page">
+  <main class="public-page public-page--about">
     <header class="public-page__hero">
       <span class="public-page__signal" aria-hidden="true"></span>
       <h1>Om Viddel</h1>
-      <p class="public-page__lead"><strong>Vi vil gjøre det lettere å leve godt med svekket hørsel.</strong></p>
-      <p class="public-page__lead">Hørsel påvirker samtaler, sosial deltakelse, energi, teknologi og kontakten med verden rundt oss.</p>
-      <p class="public-page__lead">Viddel utvikles for situasjonene der dette merkes i hverdagen.</p>
+      <p class="public-page__lead"><strong>Vi lager Viddel fordi hørsel foregår i hverdagen.</strong></p>
+      <p class="public-page__lead">Det er hjemme, på jobb, rundt middagsbordet, i bilen, på tur og foran TV-en at man merker hva hørselen faktisk betyr. Det er også der spørsmålene dukker opp, gjerne lenge etter at timen hos audiografen er over.</p>
+      <p class="public-page__lead">Viddel er en norsk digital tjeneste under utvikling som skal gjøre det lettere å forstå hva som skjer, finne relevant kunnskap og få mer ut av hjelpen som allerede finnes.</p>
+      <p class="public-page__lead">Vi er fortsatt i tidlig fase, og den første versjonen forberedes for testing.</p>
     </header>
 
-    <section class="public-section" aria-labelledby="om-mellom-title">
-      <h2 id="om-mellom-title">Hverdagen skjer mellom timene</h2>
-      <div class="public-section__body">
-        <p>En time hos audiografen er bare en liten del av livet med svekket hørsel.</p>
-        <p>Viddel skal hjelpe med spørsmålene og situasjonene som oppstår imellom, og gjøre det enklere å forberede seg til timer hos audiograf.</p>
+    <figure class="public-mood public-mood--about" aria-hidden="true">
+      <img
+        src="/images/public/viddel-aapning.svg"
+        alt=""
+        width="1200"
+        height="677"
+        decoding="async"
+      />
+    </figure>
+
+    <section class="public-authored" aria-labelledby="musikken-title">
+      <h2 id="musikken-title">For meg begynte det egentlig med musikken</h2>
+
+      <div class="public-authored__lead public-authored__copy">
+        <p>Musikk har alltid vært en viktig for meg, og på ungdomsskolen på åttitallet hørte jeg mye på band som ble en del av identiteten min. Walkman ute, stereo hjemme.</p>
+      </div>
+
+      <figure class="public-authored__media">
+        <img
+          src="/images/public/viddel-tandberg-kitchen.webp"
+          alt="Tandberg TR 2080 og høyttaler hjemme på kjøkkenet."
+          width="480"
+          height="853"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+
+      <div class="public-authored__body public-authored__copy">
+        <p>Penger fra konfirmasjonen gikk til mitt eget første stereoanlegg, og da jeg senere etablerte eget hjem begynte jeg å interessere meg for gammel hi-fi, særlig Tandberg og miljøene på nett rundt de gamle forsterkerne.</p>
+
+        <p>Der kom jeg i kontakt med folk som hadde jobbet på Tandberg-fabrikken og andre entusiaster som beskrev de små forskjellene i lyd som også jeg hørte, men først da fikk et språk for.</p>
+
+        <p>Et sted på veien begynte jeg å kjenne at musikken ikke helt hadde den samme åpenheten som jeg husket.</p>
+
+        <p>Tror det var da jeg kjøpte meg nye hodetelefoner rundt 2000, begynte jeg å synes at musikk var litt kjedeligere enn før. forstod ikke helt hvorfor, men det var som om den var blitt litt flatere, at det manglet noe diskant, uten at jeg tenkte at nå hører jeg dårlig.</p>
+
+        <p>Samtidig merket jeg at jeg oftere ikke fikk med meg alt folk sa under lunsjen i kantina på Telenor, jeg måtte be folk gjenta det de sa oftere enn før</p>
+
+        <p>Begge foreldrene mine brukte høreapparater, så jeg hadde vel også i bakhodet at dette kunne komme til å gjelde meg.</p>
+
+        <p>Da jeg etter hvert fikk prøve høreapparater, syntes jeg egentlig det var ganske spennende. De var små og sølvfargede, hadde Bluetooth og kunne kobles til iPhonen, og jeg syntes teknologidelen var ganske kul.</p>
+
+        <p>Jeg hadde allerede da lite hår på hodet og barbert bort det lille som var igjen, så de var jo veldig synlige bak ørene, men det syntes jeg egentlig var helt greit.</p>
+
+        <p>Jeg syntes egentlig de var ganske kule.</p>
+
+        <p>Den kanskje viktigste opplevelsen var musikken igjen. Jeg hadde fått tak i en gammel Tandberg TR 2080 og noen ganske gode brukte høyttalere, anlegget som vel fortsatt står på kjøkkenet, satte meg på gulvet og satte på <em>Dark Side of the Moon</em>, siden jeg visste den utfordrer HiFi-egenskapene ved et anlegg.</p>
+
+        <p>Og der! stereoperspektivet, plasseringen av instrumentene i rommet og det store lydlandskapet var tilbake.</p>
+
+        <p>Jeg husker at jeg satt der med en tåre i øyekroken og tenkte omtrent: Yes. Det er jo håp!</p>
+
+        <p>Jeg tror den gleden jeg kjente der på kjøkkengulvet har vært med meg siden. Jeg var vel rundt 48 og hadde på et vis begynt å tenke at noe av det jeg likte så godt med musikk kanskje bare var borte. Så var det plutselig ikke det likevel. Gleden av gode lytteopplevelser trenger jo ikke å forsvinne fordi hørselen har blitt litt svakere. Det er vel noe av det jeg gjerne vil formidle videre.</p>
+
+        <p class="public-authored__byline">Thomas Raddum, Viddel</p>
       </div>
     </section>
 
-    <section class="public-section" aria-labelledby="naer-hjelpen-title">
-      <h2 id="naer-hjelpen-title">Nær hjelpen rundt</h2>
+    <section class="public-section" aria-labelledby="bygge-title">
+      <h2 id="bygge-title">Hva vi prøver å bygge</h2>
       <div class="public-section__body">
-        <p>På sikt ser vi for oss Viddel som en norsk støtteplattform rundt hørsel, et felles kunnskaps- og navigasjonslag for personen med hørselsutfordringer og menneskene rundt som hjelper.</p>
-        <p>Det kan være pårørende, likepersoner, hørselshjelpere, organisasjoner og fagfolk.</p>
-        <p>God hjelp avhenger av hvem som spør, situasjonen de står i og hva som faktisk er kjent. Derfor skal Viddel lytte, spørre og lære før hjelpen blir mer spesifikk.</p>
+        <p>Arbeidet med Viddel har etter hvert vist oss at hørselshverdagen er langt større enn høreapparatet alene. I intervjuene våre går det igjen spørsmål om samtaler og støy, mobil og Bluetooth, tilvenning, musikk og lydkvalitet, og om hvor man faktisk skal henvende seg når man trenger mer hjelp.</p>
+        <p>Viddel skal samle praktisk hjelp og kunnskap rundt slike situasjoner. På sikt ønsker vi også å gjøre det enklere å finne fram i kunnskapen og hjelpen rundt hørsel, både for personen selv og for mennesker som hjelper rundt.</p>
+        <p>En viktig del av dette er å forstå situasjonen før hjelpen blir for spesifikk. Hva vet vi faktisk? Hvilket høreapparat eller hvilken telefon gjelder spørsmålet? Er dette noe brukeren kan prøve selv, eller bør en audiograf, produsent eller annen fagperson hjelpe videre?</p>
+        <p>Fagmiljøene vi har snakket med peker særlig på verdien av at brukeren er bedre forberedt når han eller hun møter audiografen, og kan beskrive situasjonen, hva som er prøvd og hvilke spørsmål som fortsatt står åpne.</p>
       </div>
     </section>
 
-    <section class="public-section" aria-labelledby="virkelige-behov-title">
-      <h2 id="virkelige-behov-title">Vi bygger fra virkelige behov</h2>
+    <section class="public-section" aria-labelledby="ki-title">
+      <h2 id="ki-title">KI er en del av verktøykassen</h2>
       <div class="public-section__body">
-        <p>Vi snakker med mennesker som lever med svekket hørsel og med fagfolk som møter dem.</p>
-        <p>Så bygger vi, tester og lærer.</p>
-        <p>Det vi lærer påvirker både produktet, innholdet og hva vi velger å arbeide videre med.</p>
-        <p>Vi tror god hjelp begynner med å lytte. <strong>Relevansen læres</strong> gjennom virkelige situasjoner, spørsmål, korreksjoner og erfaring over tid.</p>
-      </div>
-    </section>
-
-    <section class="public-section" aria-labelledby="ki-ansvar-title">
-      <h2 id="ki-ansvar-title">KI med ansvar</h2>
-      <div class="public-section__body">
-        <p>KI gjør det mulig å finne fram i mye kunnskap og gi mer relevant hjelp i situasjonen du står i.</p>
-        <p>Vi arbeider med tydelige kilder, faglige grenser og kvalitetssikring.</p>
-        <p>Råd om diagnose, behandling og individuell tilpasning overlater vi til fagfolkene.</p>
+        <p>KI gjør det mulig å finne fram i mye kunnskap og tilpasse hjelpen bedre til situasjonen brukeren står i. Kvaliteten avhenger samtidig av hvilke kilder vi bruker, hva systemet faktisk vet og hvilke antakelser KI-modellen får gjøre.</p>
+        <p>Det er mye av dette vi arbeider med nå. Vi snakker med brukere og fagfolk, bygger, tester og endrer når vi lærer.</p>
+        <p>Råd om diagnose, behandling og individuell tilpasning av høreapparater hører hjemme hos fagfolkene. Viddel skal være tydelig på hvor den grensen går.</p>
       </div>
     </section>
 
     <section class="public-section" aria-labelledby="norge-title">
-      <h2 id="norge-title">Bygges i Norge</h2>
+      <h2 id="norge-title">Lages i Norge, med hjelp utenfra</h2>
       <div class="public-section__body">
-        <p>Viddel AS er et norsk selskap i tidlig fase.</p>
-        <p>Nærhet til norsk hverdag, fagmiljø og støtteapparat er en del av produktideen.</p>
-        <p>Vi bygger produktkompetanse og eierskap i Norge, og bruker spesialisert ekstern kompetanse der det gir mening.</p>
-        <p>Målet er å kunne utvikle og forvalte Viddel over tid med stadig mer kompetanse i eget miljø.</p>
+        <p>Viddel AS er et norsk selskap i tidlig fase. Vi vil bygge opp kompetansen og eierskapet i Norge, tett på norsk hverdag, fagmiljøene og støtteapparatet.</p>
+        <p>Samtidig bruker vi spesialisert kompetanse og KI-verktøy der de gjør arbeidet bedre. Vi ønsker å være tydelige på hva vi selv står for: valgene vi tar, kildene vi bruker, grensene vi setter og det vi til slutt publiserer eller bygger under Viddel-navnet.</p>
       </div>
     </section>
 
     <section class="public-section public-section--contact" aria-labelledby="bidra-title">
       <h2 id="bidra-title">Vil du bidra?</h2>
       <div class="public-section__body">
-        <p>Vi vil gjerne snakke med brukere, fagfolk, organisasjoner og andre som kan gjøre Viddel bedre.</p>
+        <p>Vi vil gjerne høre fra mennesker som lever med svekket hørsel, fagfolk og andre som ser problemer eller muligheter vi burde forstå bedre.</p>
         <p><a href="mailto:kontakt@viddel.no">kontakt@viddel.no</a></p>
       </div>
     </section>
