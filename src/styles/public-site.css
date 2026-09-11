@@ -116,6 +116,10 @@ body.public-site {
 .public-mood--home img { object-position: 50% 52%; }
 .public-mood--about img { object-position: 50% 50%; }
 
+.public-page__hero > .public-mood {
+  margin-bottom: clamp(1.5rem, 3vw, 2.1rem);
+}
+
 .public-section {
   display: grid;
   grid-template-columns: minmax(9.5rem, 12rem) minmax(0, 42rem);
@@ -123,15 +127,6 @@ body.public-site {
   row-gap: 1.5rem;
   padding: clamp(3rem, 6.5vw, 5rem) 0;
   border-top: 1px solid rgb(var(--border) / 0.72);
-}
-
-.public-section--with-mood {
-  padding-top: clamp(2rem, 4vw, 3.25rem);
-}
-
-.public-section--with-mood .public-mood {
-  grid-column: 1 / -1;
-  margin-bottom: 0.2rem;
 }
 
 .public-section h2,
@@ -186,7 +181,6 @@ body.public-site {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(15rem, 0.9fr);
   grid-template-areas:
-    "mood mood"
     "heading media"
     "lead media"
     "body media";
@@ -194,11 +188,6 @@ body.public-site {
   row-gap: 1.5rem;
   padding: clamp(2rem, 4.5vw, 3.75rem) 0 clamp(3.5rem, 7vw, 6rem);
   border-top: 1px solid rgb(var(--border) / 0.72);
-}
-
-.public-authored > .public-mood {
-  grid-area: mood;
-  margin-bottom: 0.2rem;
 }
 
 .public-authored h2 { grid-area: heading; }
@@ -297,16 +286,11 @@ body.public-site {
     padding: clamp(2.75rem, 10vw, 4rem) 0;
   }
 
-  .public-section--with-mood {
-    padding-top: clamp(1.75rem, 7vw, 2.75rem);
-  }
-
   .public-section__body { max-width: 38rem; }
 
   .public-authored {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "mood"
       "heading"
       "lead"
       "media"
