@@ -17,6 +17,14 @@ assert.ok(
   roadmapWatchSignals.every((signal) => !roadmapInitiatives.some((item) => item.id === signal.id)),
   "WATCH must remain a distinct signal layer",
 );
+const hearingLandscapeWatch = roadmapWatchSignals.find((signal) => signal.id === "hearing-landscape");
+assert.ok(hearingLandscapeWatch, "the hearing-landscape WATCH signal must remain visible");
+assert.deepEqual(hearingLandscapeWatch.sourceIssues, [404], "the hearing-landscape signal must retain #404 provenance");
+assert.ok(
+  hearingLandscapeWatch.detail?.verified.includes("digital førstelinje") &&
+    hearingLandscapeWatch.detail.open.includes("fortsatt WATCH"),
+  "the hearing-landscape signal must separate verified direction from open implications",
+);
 assert.equal(
   githubIssueHref(374),
   "https://github.com/THUNDERPLUNDER/vox-web/issues/374",

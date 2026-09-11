@@ -33,6 +33,15 @@ export type RoadmapWatchSignal = {
   id: string;
   title: string;
   note: string;
+  evidenceLabel?: string;
+  lastVerified?: string;
+  sourceIssues?: number[];
+  sourceLinks?: Array<{ label: string; href: string }>;
+  detail?: {
+    verified: string;
+    open: string;
+    trigger: string;
+  };
 };
 
 export const roadmapProjectionMeta = {
@@ -43,7 +52,7 @@ export const roadmapProjectionMeta = {
     "ANLCKQky9jMeCTdUWNxfFl3GkxGJcMQWvVFfHa3Y0CCCjo4rhqVb2XhRyBOhHrYjCfomJ2G4-UW-Y4Qer1-28x41DPMc7zHKqPNyw3pNcYY",
   operatingModelRevision:
     "ANLCKQksoDTdByzhOiblhA2EJ2B08dXmzelQzI4PzwN7QCmjgIEWlkU56EuXr4i4DHqQ2NfN0BeGxXNHIvcg_G7T_HKp__hZHMZYhQtPKoQ",
-  projectionDate: "2026-09-08",
+  projectionDate: "2026-09-11",
   shapingIssue: 374,
   shapingCommentId: 5583033572,
   projectionOwner: "Thomas",
@@ -274,6 +283,28 @@ export const roadmapWatchSignals: RoadmapWatchSignal[] = [
     title: "Senere finansieringsvinduer",
     note: "Tas inn når et reelt vindu blir materielt for roadmapet.",
   },
+  {
+    id: "hearing-landscape",
+    title: "Hørselslandskap i endring",
+    note: "Politikk · kapasitet · arbeidsdeling · eldrebølge · offentlig digital førstelinje",
+    evidenceLabel: "Verifisert retning · gjennomføring fortsatt åpen",
+    lastVerified: "2026-09-11",
+    sourceIssues: [404],
+    sourceLinks: [
+      {
+        label: "Helsepersonellplan 2040",
+        href: "https://www.regjeringen.no/contentassets/6d2ec1946c744942a24cb528ca666ae0/no/pdfs/stm202520260011000dddpdfs.pdf",
+      },
+    ],
+    detail: {
+      verified:
+        "Regjeringen vil etablere en trygg offentlig KI-basert digital førstelinje via Helsenorge. Planen beskriver også samarbeid med næringslivet og kjøp av kvalitetssikrede løsninger i markedet.",
+      open:
+        "Innkjøpsform, finansiering, godkjenningsmodell, integrasjonspunkter og tidslinje er ikke avklart. Konsekvensen for Viddels posisjon er derfor fortsatt WATCH.",
+      trigger:
+        "Et konkret program, en anskaffelse, partnerskapsmodell, refusjonsordning, sertifiseringsvei eller et åpent integrasjonspunkt som kan endre Viddels marked eller roadmap.",
+    },
+  },
 ];
 
 export const roadmapDecisionForks = [
@@ -294,7 +325,7 @@ export const roadmapFrontPreview = {
   now: ["beta-gate", "funding-scope", "clinic-value"],
   next: ["funded-round-one", "first-user-loop"],
   later: ["inventory"],
-  watch: ["funding-terms", "clinic-evidence", "beta-evidence"],
+  watch: ["funding-terms", "clinic-evidence", "beta-evidence", "hearing-landscape"],
 } satisfies Record<RoadmapHorizon | "watch", string[]>;
 
 export const roadmapFrontPreviewLabels: Record<string, string> = {

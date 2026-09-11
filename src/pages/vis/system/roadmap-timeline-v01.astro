@@ -173,10 +173,46 @@ const mobileInitiatives = roadmapHorizons.map((horizon) => ({
       </div>
       <div class="roadmap-watch__grid">
         {roadmapWatchSignals.map((signal) => (
-          <article>
+          <article class:list={{ "roadmap-watch__item--featured": Boolean(signal.detail) }}>
             <span aria-hidden="true"></span>
+            {signal.evidenceLabel ? <p class="roadmap-watch__status">{signal.evidenceLabel}</p> : null}
             <h3>{signal.title}</h3>
             <p>{signal.note}</p>
+            {signal.detail ? (
+              <details class="roadmap-watch__details">
+                <summary>Se hva vi vet og følger med på</summary>
+                <dl>
+                  <div>
+                    <dt>Verifisert</dt>
+                    <dd>{signal.detail.verified}</dd>
+                  </div>
+                  <div>
+                    <dt>Fortsatt åpent</dt>
+                    <dd>{signal.detail.open}</dd>
+                  </div>
+                  <div>
+                    <dt>Trigger for ny vurdering</dt>
+                    <dd>{signal.detail.trigger}</dd>
+                  </div>
+                </dl>
+                <p class="roadmap-watch__sources">
+                  <strong>Kilder:</strong>{" "}
+                  {signal.sourceIssues?.map((issueNumber, index) => (
+                    <>
+                      {index > 0 && <span aria-hidden="true"> · </span>}
+                      <a href={githubIssueHref(issueNumber)} rel="noopener noreferrer">#{issueNumber}</a>
+                    </>
+                  ))}
+                  {signal.sourceLinks?.map((source, index) => (
+                    <>
+                      {(signal.sourceIssues?.length || index > 0) && <span aria-hidden="true"> · </span>}
+                      <a href={source.href} rel="noopener noreferrer">{source.label}</a>
+                    </>
+                  ))}
+                  {signal.lastVerified ? <> · sist verifisert <time datetime={signal.lastVerified}>11. september 2026</time></> : null}
+                </p>
+              </details>
+            ) : null}
           </article>
         ))}
       </div>
@@ -312,6 +348,17 @@ const mobileInitiatives = roadmapHorizons.map((horizon) => ({
   .roadmap-watch article > span { position: absolute; top: -0.2rem; left: 0.9rem; width: 0.42rem; height: 0.42rem; border-radius: 50%; background: rgb(105 160 255); box-shadow: 0 0 0 0.22rem rgb(105 160 255 / 0.15); }
   .roadmap-watch h3 { margin: 0; font-size: 0.8rem; line-height: 1.35; }
   .roadmap-watch article p { margin: 0.35rem 0 0; color: rgb(190 204 222); font-size: 0.69rem; line-height: 1.45; }
+  .roadmap-watch .roadmap-watch__status { margin-bottom: 0.35rem; color: rgb(149 189 255); font-size: 0.61rem; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase; }
+  .roadmap-watch__item--featured { grid-column: 1 / -1; margin-top: 0.9rem; border-top: 1px solid rgb(255 255 255 / 0.12); border-left: 0 !important; }
+  .roadmap-watch__details { margin-top: 0.8rem; }
+  .roadmap-watch__details > summary { color: rgb(223 233 247); font-size: 0.69rem; font-weight: 680; cursor: pointer; }
+  .roadmap-watch__details > summary:hover, .roadmap-watch__details > summary:focus-visible { color: white; }
+  .roadmap-watch__details dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.9rem; margin: 0.8rem 0 0; }
+  .roadmap-watch__details dl > div { padding-top: 0.65rem; border-top: 1px solid rgb(255 255 255 / 0.12); }
+  .roadmap-watch__details dt { color: rgb(149 189 255); font-size: 0.61rem; font-weight: 750; letter-spacing: 0.07em; text-transform: uppercase; }
+  .roadmap-watch__details dd { margin: 0.3rem 0 0; color: rgb(210 222 237); font-size: 0.69rem; line-height: 1.5; }
+  .roadmap-watch .roadmap-watch__sources { margin-top: 0.8rem; color: rgb(169 191 220); }
+  .roadmap-watch__sources a { color: rgb(190 215 255); font-weight: 680; }
 
   .roadmap-context { display: grid; grid-template-columns: 0.75fr 1.25fr; gap: 1px; margin-top: 1.2rem; overflow: hidden; border: 1px solid rgb(var(--roadmap-line)); border-radius: 1rem; background: rgb(var(--roadmap-line)); }
   .roadmap-context > div { padding: 1.1rem; background: rgb(255 255 255 / 0.82); }
@@ -359,7 +406,7 @@ const mobileInitiatives = roadmapHorizons.map((horizon) => ({
     .roadmap-mobile > section > header h3 { margin: 0.25rem 0 0; font-size: 1.15rem; letter-spacing: 0.05em; }
     .roadmap-mobile > section > header > p:last-child { margin: 0.35rem 0 0; color: rgb(var(--roadmap-muted)); font-size: 0.72rem; line-height: 1.45; }
     .roadmap-mobile__items { display: grid; gap: 0.65rem; margin-top: 0.85rem; }
-    .roadmap-watch__grid, .roadmap-context, .roadmap-legend__body { grid-template-columns: 1fr; }
+    .roadmap-watch__grid, .roadmap-context, .roadmap-legend__body, .roadmap-watch__details dl { grid-template-columns: 1fr; }
     .roadmap-watch article + article { border-left: 0; }
     .roadmap-watch article:nth-child(n + 2) { margin-top: 0.7rem; border-top: 1px solid rgb(255 255 255 / 0.12); }
     .roadmap-context { gap: 1px; }
