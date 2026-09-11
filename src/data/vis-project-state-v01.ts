@@ -12,9 +12,9 @@ export const visProjectStateV01 = {
   sourceUrl:
     "https://docs.google.com/document/d/138fF8MyOEa4wAGa7rvcv5BFkBmieoNpq14DcZwSTzAE/edit",
   sourceRevision:
-    "ANLCKQnmrSy3nydlZ7upkL5mbPpors8wex-tq2vvHQw228bhceaovy_2ldaD-_fDAp0BuoojMlI086K0Aat--pseNRPzl6B9GYtDv5n_LpQ",
-  brainLastMeaningfulUpdate: "2026-09-07",
-  projectionUpdatedAt: "2026-09-07",
+    "ANLCKQm2NZqVO4dardrZtEbDl2gN1CbCs8VK9whKcOfbDVCUQ_rpftx8Ur57N9aGB9bAFn9Iw4Uy9YclpxGYlBI_f-4Jcgu2fzG0ZKqRX6o",
+  brainLastMeaningfulUpdate: "2026-09-11",
+  projectionUpdatedAt: "2026-09-11",
   projectionOwner: "Thomas",
   northStar:
     "Viddel skal være et lavterskel, ikke-klinisk mestrings-, forberedelses- og navigasjonslag for mennesker med svekket hørsel. Langsiktig bygger vi en norsk støtteplattform rundt hørsel: et felles kunnskaps- og navigasjonslag for personen med hørselsutfordringer og menneskene som hjelper rundt.",
@@ -24,77 +24,79 @@ export const visProjectStateV01 = {
   strategicPrincipleMeaning:
     "Vi lytter, avklarer og lærer — og lar ny informasjon endre hjelpen.",
   phase:
-    "Viddel har en fungerende prototype og live AI-chat i produksjon. Arbeidet er i kontrollert MVP- og test-readiness, ikke i åpen feature-ekspansjon.",
+    "Viddel har en fungerende prototype og en stabil Preview for intern og pre-beta testing. AI-hjelpen er blitt bedre, men videre hardening er bevisst parkert før limited-beta-beslutningen. Nå jobber vi parallelt med klinikkverdi, direkte brukerlæring og hvordan Viddel presenteres utad.",
   priorities: [
     {
-      title: "Tryggere og mer relevant AI-hjelp",
+      title: "Test klinikkverdien",
       description:
-        "Forme minste Viddel-eide samtaletilstand og policy før neste sikkerhets- og eier-QA-port.",
-      href: "https://github.com/THUNDERPLUNDER/vox-web/issues/384",
-    },
-    {
-      title: "Dokumentere reell klinikkverdi",
-      description:
-        "Validere arbeidsflyt, nytte og betalingsvilje gjennom avgrensede samtaler — som hypoteser inntil de er bekreftet.",
+        "Finn ut hvilke konkrete problemer Viddel kan løse i klinikkens arbeidsflyt, hvem som opplever verdien, og om noen faktisk vil betale. Behandle betalingsvilje og effekt som hypoteser til vi har evidens.",
       href: "https://github.com/THUNDERPLUNDER/vox-web/issues/355",
     },
     {
-      title: "Holde prosjektbildet forståelig",
+      title: "Lær direkte fra brukere og Hørselsforbundet",
       description:
-        "VIS viser en kuratert Project Brain-projeksjon. GitHub fortsetter å eie oppgaver og faktisk arbeidsstatus.",
-      href: "https://github.com/THUNDERPLUNDER/vox-web/issues/354",
+        "Fortsett kvalitative samtaler og feltlæring slik at produkt, innhold og research bygger på virkelige situasjoner. Hold researchintervju og produktbeta tydelig adskilt.",
+      href: "https://github.com/THUNDERPLUNDER/vox-web/issues/415",
+    },
+    {
+      title: "Gjør Viddel tydelig utad",
+      description:
+        "Sørg for at mennesker som møter Thomas, Vibeke eller Viddel på nett forstår det samme prosjektet: hva Viddel er nå, hva vi bygger og hva vi fortsatt prøver å lære.",
+      href: "https://github.com/THUNDERPLUNDER/vox-web/issues/409",
     },
   ] satisfies ProjectStateItem[],
   latestDecisions: [
     {
-      title: "Én kilde per ansvar",
+      title: "AI-hardening er parkert med kjent gjeld",
       description:
-        "Project Brain eier den levende prosjektsyntesen. GitHub eier oppgaver. VIS er en kuratert leseflate.",
+        "#384 er god nok til at annet arbeid kan fortsette, men gjenværende kvalitet og #370 må vurderes igjen før #361 limited-beta GO/NO-GO.",
     },
     {
-      title: "Retning før datoer",
+      title: "Viddel utad er et eget NOW-spor",
       description:
-        "Initiativer vurderes som NOW, NEXT, LATER eller WATCH. Datoer brukes bare når de er reelle milepæler.",
+        "LinkedIn, offentlig web og partner-/introduksjonsmateriell kan utvikles parallelt med produktet så lenge påstandene er sanne mot faktisk state.",
     },
     {
-      title: "Viddel eier relevansen",
+      title: "Researchintervju er ikke produktbeta",
       description:
-        "Standard AI og infrastruktur kan kjøpes; Viddels relevans, domenevalg, state og læring må eies.",
+        "Direkte brukerlæring kan fortsette nå. Produktbeta krever fortsatt et eksplisitt #361 GO og separat opt-in.",
     },
   ] satisfies ProjectStateItem[],
   openQuestions: [
     {
       title: "Åpent spørsmål · betalende verdi",
       description:
-        "Hvem har faktisk betalingsvilje, og hvilken dokumenterbar verdi skapes for klinikk eller andre betalere?",
+        "Hvem har faktisk betalingsvilje, og hvilken dokumenterbar verdi skaper Viddel for klinikker eller andre betalere?",
     },
     {
       title: "Åpent spørsmål · beta-læring",
       description:
-        "Hva er minste reelle testreise og feedback-oppsett som gir læring uten tung analyse eller unødvendig samtalelagring?",
+        "Hva må være godt nok før de første reelle produkttestene gir nyttig læring uten å bygge mer enn vi trenger?",
     },
     {
       title: "Hypotese · bruker-eid kontekst",
       description:
-        "Hvor mye bedre blir relevansen når brukeren selv kan etablere og korrigere den viktigste situasjonskonteksten?",
+        "Blir hjelpen merkbart bedre når brukeren selv kan etablere og korrigere viktig informasjon om utstyr og situasjon?",
     },
   ] satisfies ProjectStateItem[],
   nextActions: [
     {
-      title: "1 · Form arkitekturvalget",
+      title: "Test klinikkhypotesen videre",
       description:
-        "Fullfør den avgrensede arkitekturformingen og ta en eksplisitt Thomas-beslutning før eventuell implementering.",
-      href: "https://github.com/THUNDERPLUNDER/vox-web/issues/384",
+        "Fortsett klinikkverdi, IN/DOGA, designpartner og prospect-samtaler uten å gjøre betalingsvilje eller klinikkeffekt til fakta før de er dokumentert.",
+      href: "https://github.com/THUNDERPLUNDER/vox-web/issues/355",
     },
     {
-      title: "2 · Gå gjennom sikkerhets- og QA-portene",
+      title: "Fortsett direkte brukerlæring og Viddel utad",
       description:
-        "Ved godkjent løsning: avgrens implementeringen, kjør sikkerhetsporten og deretter nøyaktig eier-QA før GO/NO-GO.",
+        "Følg opp #406/#415, HLF-intro #407 og External Presence #409/#410 som parallelle spor som ikke trenger å vente på AI-gatene.",
+      href: "https://github.com/THUNDERPLUNDER/vox-web/issues/415",
     },
     {
-      title: "3 · Fortsett kommersiell læring",
+      title: "La AI-hardening ligge til beta-gaten krever den",
       description:
-        "Fortsett klinikkverdi-, IN/DOGA- og prospect-validering parallelt uten å presentere hypoteser som fakta.",
+        "Ikke gjenåpne #384/#370 automatisk. Gå tilbake til gjenværende evidens når #361 limited-beta GO/NO-GO faktisk skal tas, eller hvis ny QA viser at kvaliteten blokkerer nyttig bruk.",
+      href: "https://github.com/THUNDERPLUNDER/vox-web/issues/361",
     },
   ] satisfies ProjectStateItem[],
 } as const;

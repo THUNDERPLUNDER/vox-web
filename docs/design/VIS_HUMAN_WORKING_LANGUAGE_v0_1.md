@@ -145,7 +145,7 @@ Denne delen er den operative copy-mapen for hovedflaten. Endringer skal bevare P
 
 ### Systemlabel
 Behold:
-`Project State · v0.1`
+`VIS · Project State v0.1`
 
 ### Hovedoverskrift
 Fra:
@@ -181,7 +181,7 @@ Ikke forenkle North Star-innhold slik at strategisk mening går tapt. Språkvask
 
 **KEEP**.
 
-Hvis fasebeskrivelsen inneholder `test-readiness`, foretrekk vanligvis **klar for testing** med eventuell teknisk status sekundært.
+Beskriv faktisk arbeidsfase med vanlig språk og behold grensene mellom prototype, Preview, pre-beta og eksplisitt limited-beta-beslutning. Parkert arbeid skal beskrives som parkert, ikke som neste automatiske handling.
 
 ## Veien videre
 
@@ -345,6 +345,8 @@ Her er `canonical`, revisions-ID-er og eiermetadata lov og ønskelig når de tre
 # 9. Copy map — Horizon Roadmap
 
 Roadmapet skal fortsatt bruke `NOW → NEXT → LATER` som struktur og `WATCH` som separat lag.
+
+Roadmap-spesifikk display-copy og kompakt initiatividentitet ferdigstilles mot den dynamiske, godkjente projeksjonen som eies av #414; ikke opprett en parallell statisk roadmap-språkkilde.
 
 ## Hero
 
