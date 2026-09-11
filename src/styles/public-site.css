@@ -108,16 +108,16 @@ body.public-site {
 .public-mood img {
   display: block;
   width: 100%;
-  height: clamp(7.5rem, 11vw, 10rem);
+  height: clamp(1.25rem, 2vw, 2rem);
   object-fit: cover;
-  border-radius: clamp(0.75rem, 1.5vw, 1.15rem);
+  border-radius: 0;
 }
 
 .public-mood--home img { object-position: 50% 52%; }
 .public-mood--about img { object-position: 50% 50%; }
 
 .public-page__hero > .public-mood {
-  margin-bottom: clamp(1.5rem, 3vw, 2.1rem);
+  margin-bottom: clamp(2rem, 3.5vw, 2.6rem);
 }
 
 .public-section {
@@ -276,8 +276,7 @@ body.public-site {
   }
 
   .public-mood img {
-    height: clamp(5.5rem, 24vw, 7rem);
-    border-radius: 0.7rem;
+    height: clamp(0.875rem, 4vw, 1.375rem);
   }
 
   .public-section {
