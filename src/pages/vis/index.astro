@@ -23,7 +23,7 @@ const architectureLayers = [
     title: "Grunnmur",
     question: "Hva styrer Viddel?",
     description:
-      "North Star, bruker- og stakeholdergrunnlag, opplevelsesprinsipper, IA, tillit, innhold og språk. Grunnmuren peker til varige kilder — den er ikke en backlog.",
+      "Her bestemmer vi hva Viddel skal være og hvem vi bygger for. North Star, brukerinnsikt, innhold, språk og grunnleggende prinsipper hører hjemme her.",
     links: [
       { label: "North Star og Project State", href: "#project-state" },
       { label: "IA-prinsipper", href: internalHref("/vis/system/ia-principles-v01") },
@@ -36,7 +36,7 @@ const architectureLayers = [
     title: "Design",
     question: "Hvordan skal Viddel oppleves?",
     description:
-      "Det kodebaserte designsystemet er canonical for tokens, primitives, mønstre og anvendte flater. Brand er en synlig del av dette laget, ikke et eget arkitekturlag.",
+      "Her bestemmer vi hvordan Viddel skal oppleves og fungere for brukeren. Designsystem, komponenter, mønstre, brand og anvendte flater hører hjemme her.",
     links: [
       { label: "Åpne Designsystem", href: internalHref("/designsystem/") },
       { label: "Primitives og tokens", href: internalHref("/designsystem/#primitives-heading") },
@@ -50,7 +50,7 @@ const architectureLayers = [
     title: "Kode / produkt",
     question: "Hva er implementert og verifisert?",
     description:
-      "Produktflatene og repoet viser implementert virkelighet. Backstage forklarer systemet, mens GitHub Issues og Projects eier arbeid og status.",
+      "Her ser vi det som faktisk er bygget. Produktet, Backstage og GitHub viser implementasjon og teknisk status.",
     links: [
       { label: "Se produktet", href: internalHref("/no/") },
       { label: "Åpne Backstage", href: internalHref("/backstage/") },
@@ -66,27 +66,27 @@ const architectureLayers = [
 const operationalLinks = [
   {
     title: "Roadmap",
-    description: "Retning og faser som egen read model — ikke daglig backlog.",
+    description: "Se hva vi gjør nå, hva som trolig kommer etter og hvilke muligheter vi holder åpne.",
     href: internalHref("/vis/system/roadmap-timeline-v01"),
   },
   {
-    title: "GitHub runtime",
-    description: "Operativ drill-down til issues og PR-er. GitHub er task truth.",
+    title: "GitHub-status",
+    description: "Se issues, PR-er og faktisk arbeidsstatus.",
     href: internalHref("/vis/system/github-runtime-status"),
   },
   {
     title: "Backstage",
-    description: "Systemreferanse for AI, API, guards, miljø og production.",
+    description: "Se hvordan AI, API-er, guards, miljø og produksjon faktisk er satt opp.",
     href: internalHref("/backstage/"),
   },
   {
     title: "Review",
-    description: "Kandidater og QA før mønstre eller flater blir canonical.",
+    description: "Se kandidater og QA før mønstre eller flater blir godkjent.",
     href: internalHref("/vis/review/"),
   },
   {
     title: "Redaksjonelle bilder",
-    description: "Kuraterte assets og bildevalg for innhold.",
+    description: "Se kuraterte bilder og valg for innhold.",
     href: internalHref("/vis/assets/editorial"),
   },
 ] as const;
@@ -108,14 +108,14 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
   .filter((signal) => signal !== undefined);
 ---
 
-<VisInternalLayout title="VIS Project State" showPageIntro={false}>
+<VisInternalLayout title="Viddel akkurat nå" showPageIntro={false}>
   <main class="project-state-page">
     <header class="project-state-page__header">
-      <p class="eyebrow">VIS · kuratert prosjektoversikt</p>
-      <h1>Viddel Project State</h1>
+      <p class="eyebrow">VIS · Project State v0.1</p>
+      <h1>Viddel akkurat nå</h1>
       <p class="project-state-page__lead">
-        Hva Viddel bygger, hva som betyr mest nå, og hvor den underliggende sannheten bor.
-        VIS er en leseflate — ikke backlog eller ny source of truth.
+        Hva vi bygger, hva som betyr mest nå og hva vi gjør videre. VIS gir et samlet bilde av prosjektet;
+        oppgaver og faktisk status ligger fortsatt i GitHub.
       </p>
     </header>
 
@@ -123,13 +123,13 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
       <div class="project-state__source">
         <div>
           <p class="eyebrow">Project State · v0.1</p>
-          <h2 id="project-state-title">Hva er sant og viktig nå?</h2>
+          <h2 id="project-state-title">Hva er viktig nå?</h2>
         </div>
         <p>
           Kuratert fra <strong>{visProjectStateV01.sourceDocument}</strong>
           <span aria-hidden="true">·</span>
           <time datetime={visProjectStateV01.brainLastMeaningfulUpdate}>
-            sist meningsfullt oppdatert 7. september 2026
+            sist meningsfullt oppdatert 11. september 2026
           </time>
         </p>
       </div>
@@ -177,7 +177,7 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
       <div class="project-state__grid">
         <section aria-labelledby="priorities-title">
           <p class="eyebrow">Prioriteringer</p>
-          <h3 id="priorities-title">Det vi holder fokus på</h3>
+          <h3 id="priorities-title">Dette prioriterer vi nå</h3>
           <ol class="state-list state-list--numbered">
             {visProjectStateV01.priorities.map((item) => (
               <li>
@@ -221,7 +221,7 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
 
         <section class="state-panel state-panel--next" aria-labelledby="actions-title">
           <p class="eyebrow">Neste 1–3 handlinger</p>
-          <h3 id="actions-title">Neste kontrollerte steg</h3>
+          <h3 id="actions-title">Dette gjør vi videre</h3>
           <ol class="state-list state-list--compact">
             {visProjectStateV01.nextActions.map((item) => (
               <li>
@@ -237,11 +237,11 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
 
     <section class="architecture" aria-labelledby="architecture-title">
       <div class="section-heading">
-        <p class="eyebrow">Viddels varige system</p>
+        <p class="eyebrow">Slik henger Viddel sammen</p>
         <h2 id="architecture-title">Grunnmur <span aria-hidden="true">→</span> Design <span aria-hidden="true">→</span> Kode</h2>
         <p>
-          Lagene viser hvor beslutninger, uttrykk og implementert virkelighet hører hjemme.
-          VIS samler inngangene, men overtar ikke eierskapet.
+          Tre lag hjelper oss å skille retning, design og det som faktisk er bygget. Det gjør det lettere
+          å vite hvor en beslutning hører hjemme og hvor vi finner detaljene.
         </p>
       </div>
 
@@ -284,8 +284,8 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
 
     <section class="operations" aria-labelledby="operations-title">
       <div class="section-heading section-heading--compact">
-        <p class="eyebrow">Operativ drill-down</p>
-        <h2 id="operations-title">Gå dypere når du trenger det</h2>
+        <p class="eyebrow">Detaljer og arbeidsflater</p>
+        <h2 id="operations-title">Gå til detaljene</h2>
         <p>Disse flatene beholder sine egne, avgrensede roller.</p>
       </div>
       <nav class="operations__grid" aria-label="Operative støtteflater">
@@ -331,15 +331,15 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
     </details>
 
     <footer class="source-map">
-      <p class="eyebrow">Kildekart</p>
+      <p class="eyebrow">Hvor informasjonen kommer fra</p>
       <p>
-        <strong>Project Brain</strong> eier overordnet syntese · <strong>GitHub</strong> eier oppgaver og status ·
-        <strong>/designsystem/</strong> eier designpresentasjonen · <strong>Backstage</strong> eier systemreferansen ·
-        <strong>VIS</strong> er den kuraterte leseflaten.
+        <strong>Project Brain</strong> eier overordnet syntese og retning. <strong>GitHub</strong> eier oppgaver og
+        faktisk arbeidsstatus. <strong>/designsystem/</strong> eier designreferansen, <strong>Backstage</strong> eier
+        den tekniske systemreferansen, og <strong>VIS</strong> gir den menneskelige, kuraterte oversikten.
       </p>
       <p class="source-map__meta">
-        Project Brain oppdatert <time datetime={visProjectStateV01.brainLastMeaningfulUpdate}>7. september 2026</time>
-        · VIS-projeksjon oppdatert <time datetime={visProjectStateV01.projectionUpdatedAt}>7. september 2026</time>
+        Project Brain oppdatert <time datetime={visProjectStateV01.brainLastMeaningfulUpdate}>11. september 2026</time>
+        · VIS-projeksjon oppdatert <time datetime={visProjectStateV01.projectionUpdatedAt}>11. september 2026</time>
         · Eier {visProjectStateV01.projectionOwner}
       </p>
     </footer>
