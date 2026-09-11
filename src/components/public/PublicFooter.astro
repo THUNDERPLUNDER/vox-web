@@ -1,0 +1,17 @@
+---
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const publicHref = (path: string) => `${base}${path.replace(/^\//, "")}`;
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+---
+
+<footer class="public-footer">
+  <p class="public-footer__company">VIDDEL AS</p>
+  <nav class="public-footer__nav" aria-label="Offentlig informasjon">
+    <a href={publicHref("/om")} aria-current={currentPath.endsWith("/om") ? "page" : undefined}>Om Viddel</a>
+    <a href={publicHref("/ansvar")} aria-current={currentPath.endsWith("/ansvar") ? "page" : undefined}>Slik bygger vi</a>
+    <a href={publicHref("/personvern")} aria-current={currentPath.endsWith("/personvern") ? "page" : undefined}>Personvern</a>
+    <a href="mailto:kontakt@viddel.no">kontakt@viddel.no</a>
+  </nav>
+</footer>

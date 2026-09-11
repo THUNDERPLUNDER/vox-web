@@ -1,0 +1,35 @@
+---
+/* CONTRACT: Limited early-stage public privacy page; separate from /no/personvern. */
+import PublicHoldingLayout from "../layouts/PublicHoldingLayout.astro";
+---
+
+<PublicHoldingLayout
+  title="Personvern – Viddel"
+  description="Informasjon om hvordan Viddel arbeider med personvern i utviklings- og testfasen."
+  canonical="https://www.viddel.no/personvern"
+>
+  <main class="public-page">
+    <header class="public-page__hero">
+      <span class="public-page__signal" aria-hidden="true"></span>
+      <h1>Personvern</h1>
+      <p class="public-page__lead">Viddel AS er ansvarlig for behandlingen av personopplysninger i Viddels tjenester.</p>
+      <p class="public-page__lead">Vi er i en tidlig utviklings- og testfase. Denne siden oppdateres når nye funksjoner eller former for databehandling tas i bruk.</p>
+    </header>
+
+    <section class="public-section" aria-labelledby="utgangspunkt-title">
+      <h2 id="utgangspunkt-title">Vårt utgangspunkt</h2>
+      <div class="public-section__body">
+        <p>Vi ønsker å samle så lite personinformasjon som mulig og være tydelige på hvorfor informasjon behandles.</p>
+        <p>Før tjenester åpnes for testing eller bruk, skal relevant informasjon om formål, datatyper, lagring, leverandører og rettigheter være tilgjengelig for brukeren.</p>
+      </div>
+    </section>
+
+    <section class="public-section public-section--contact" aria-labelledby="personvern-kontakt-title">
+      <h2 id="personvern-kontakt-title">Spørsmål om personvern</h2>
+      <div class="public-section__body">
+        <p>Har du spørsmål om hvordan Viddel arbeider med personvern, kan du kontakte:</p>
+        <p><a href="mailto:kontakt@viddel.no">kontakt@viddel.no</a></p>
+      </div>
+    </section>
+  </main>
+</PublicHoldingLayout>

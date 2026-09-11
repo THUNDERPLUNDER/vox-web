@@ -1,183 +1,55 @@
 ---
-/* CONTRACT: Public company landing at viddel.no. Product MVP remains available separately under /no. */
+/* CONTRACT: Public company homepage at viddel.no. Product MVP remains separate under /no. */
 import PublicHoldingLayout from "../layouts/PublicHoldingLayout.astro";
 
-const pageTitle = "Viddel – hjelp med lyd i hverdagen";
+const pageTitle = "Viddel – hør mer av hverdagen";
 const pageDescription =
-  "Viddel utvikler en produsentuavhengig digital tjeneste som samler praktisk hjelp om høreapparat, mobil og lyd.";
+  "Viddel utvikler en norsk digital tjeneste som skal gjøre det lettere å forstå og mestre hørsel, lyd og teknologi i hverdagen.";
 ---
 
-<PublicHoldingLayout title={pageTitle} description={pageDescription}>
-  <main class="holding-page">
-    <div class="holding-page__frame">
-      <header class="holding-page__brand">
-        <div class="holding-page__brand-lockup" aria-label="Viddel">
-          <img
-            src="/brand/viddel-wordmark-primary-5bar.svg"
-            alt=""
-            width="937.88"
-            height="134"
-          />
-          <span class="holding-page__trademark" aria-hidden="true">™</span>
-        </div>
-      </header>
+<PublicHoldingLayout title={pageTitle} description={pageDescription} canonical="https://www.viddel.no/">
+  <main class="public-page">
+    <header class="public-page__hero">
+      <figure class="public-mood public-mood--home" aria-hidden="true">
+        <img
+          src="/images/public/viddel-hverdagsenergi.svg"
+          alt=""
+          width="1200"
+          height="734"
+          decoding="async"
+        />
+      </figure>
+      <h1>Hør mer av hverdagen</h1>
+      <p class="public-page__lead"><strong>Viddel utvikler en norsk digital tjeneste for mennesker med svekket hørsel.</strong></p>
+      <p class="public-page__lead">Vi lager den for spørsmålene som dukker opp hjemme, på jobb, i bilen og rundt middagsbordet, når det ikke alltid er opplagt hva et problem skyldes, hva man kan prøve selv eller hvem som kan hjelpe videre.</p>
+      <p class="public-page__lead">Viddel er fortsatt i tidlig fase, og den første versjonen forberedes for testing.</p>
+    </header>
 
-      <article class="holding-page__content" aria-labelledby="holding-title">
-        <span class="holding-page__signal" aria-hidden="true"></span>
-        <h1 id="holding-title">Hjelp med lyd i hverdagen</h1>
+    <section class="public-section" aria-labelledby="resten-av-uka-title">
+      <h2 id="resten-av-uka-title">Resten av uka</h2>
+      <div class="public-section__body">
+        <p>En time hos audiografen kan være viktig, men livet med hørselen skjer resten av uka.</p>
+        <p>Det er da man oppdager at samtalen rundt bordet krever mer energi enn før, at mobilen og høreapparatet ikke helt gjør det man forventet, eller at man kommer på spørsmålet man skulle ha stilt først etter at man har kommet hjem.</p>
+        <p>Noen ting kan løses med ganske enkel kunnskap. Andre trenger hjelp fra en audiograf eller en annen fagperson. Viddel skal gjøre det lettere å forstå situasjonen og finne et fornuftig neste steg.</p>
+      </div>
+    </section>
 
-        <div class="holding-page__copy">
-          <p>
-            Viddel utvikler en produsentuavhengig digital tjeneste for høreapparatbrukere. Den samler praktisk
-            hjelp om høreapparat, mobil og lyd, og forklarer hvordan ting henger sammen når spørsmålene oppstår
-            i hverdagen.
-          </p>
-          <p>
-            Vi arbeider nå med en avgrenset førsteversjon og forbereder brukertesting. Tjenesten er foreløpig
-            ikke åpen for allmenn bruk.
-          </p>
-        </div>
+    <section class="public-section" aria-labelledby="bygger-laerer-title">
+      <h2 id="bygger-laerer-title">Vi bygger mens vi lærer</h2>
+      <div class="public-section__body">
+        <p>Vi utvikler Viddel sammen med mennesker som lever med svekket hørsel og fagfolk som kjenner problemene fra sin side. Det vi lærer bruker vi til å bygge, teste og endre den første versjonen.</p>
+        <p>KI gjør det mulig å finne fram i mye kunnskap og gi mer relevant hjelp i situasjonen brukeren står i. Samtidig må kildene være gode, systemet må vite hva som faktisk er kjent, og det må være tydelig når spørsmålet hører hjemme hos en fagperson.</p>
+        <p>Diagnose, behandling og individuell tilpasning av høreapparater overlater vi til fagfolkene.</p>
+      </div>
+    </section>
 
-        <p class="holding-page__contact">
-          Spørsmål? Skriv til <a href="mailto:kontakt@viddel.no">kontakt@viddel.no</a>.
-        </p>
-      </article>
-
-      <footer class="holding-page__footer">Viddel AS</footer>
-    </div>
+    <section class="public-section public-section--contact" aria-labelledby="kontakt-title">
+      <h2 id="kontakt-title">Har du noe vi bør høre?</h2>
+      <div class="public-section__body">
+        <p>Kanskje du lever med svekket hørsel selv, jobber med hørsel eller har sett et problem vi burde forstå bedre.</p>
+        <p>Vi vil gjerne høre fra deg.</p>
+        <p><a href="mailto:kontakt@viddel.no">kontakt@viddel.no</a></p>
+      </div>
+    </section>
   </main>
 </PublicHoldingLayout>
-
-<style>
-  .holding-page {
-    min-height: 100svh;
-    background:
-      linear-gradient(180deg, rgb(var(--article-page-canvas)) 0%, rgb(var(--article-page-canvas)) 72%, rgb(var(--surface-subtle)) 100%);
-    color: rgb(var(--reading-ink));
-  }
-
-  .holding-page__frame {
-    display: grid;
-    min-height: 100svh;
-    grid-template-rows: auto 1fr auto;
-    width: min(100%, 72rem);
-    margin: 0 auto;
-    padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 6vw, 4.5rem) clamp(1.25rem, 3vw, 2.25rem);
-  }
-
-  .holding-page__brand-lockup {
-    align-items: flex-start;
-    display: inline-flex;
-    gap: 0.12em;
-  }
-
-  .holding-page__brand img {
-    display: block;
-    width: auto;
-    height: clamp(1.75rem, 3vw, 2.25rem);
-  }
-
-  .holding-page__trademark {
-    color: rgb(var(--reading-ink));
-    font-family: var(--font-body);
-    font-size: clamp(0.6875rem, 0.9vw, 0.8125rem);
-    font-weight: 600;
-    line-height: 1;
-    transform: translateY(-0.05em);
-  }
-
-  .holding-page__content {
-    align-self: center;
-    max-width: 45rem;
-    padding: clamp(4rem, 10vh, 7.5rem) 0 clamp(5rem, 12vh, 8rem);
-  }
-
-  .holding-page__signal {
-    display: block;
-    width: 3.25rem;
-    height: 0.25rem;
-    margin-bottom: clamp(1.4rem, 3vw, 2rem);
-    border-radius: 999px;
-    background: rgb(var(--accent-primary));
-  }
-
-  .holding-page h1 {
-    max-width: 42rem;
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: clamp(2.4rem, 6vw, 4.6rem);
-    font-weight: 600;
-    line-height: 1.04;
-    letter-spacing: -0.055em;
-    text-wrap: balance;
-  }
-
-  .holding-page__copy {
-    display: grid;
-    gap: 1rem;
-    max-width: 42rem;
-    margin-top: clamp(1.7rem, 4vw, 2.6rem);
-    color: rgb(var(--reading-ink-secondary));
-    font-size: clamp(1.05rem, 2vw, 1.2rem);
-    line-height: 1.65;
-  }
-
-  .holding-page__copy p,
-  .holding-page__contact {
-    margin: 0;
-  }
-
-  .holding-page__contact {
-    max-width: 42rem;
-    margin-top: clamp(2rem, 5vw, 3rem);
-    padding-top: 1.25rem;
-    border-top: 1px solid rgb(var(--border) / 0.72);
-    font-size: clamp(1rem, 1.8vw, 1.1rem);
-    line-height: 1.6;
-  }
-
-  .holding-page__contact a {
-    color: rgb(var(--reading-ink));
-    font-weight: 600;
-    text-decoration-color: rgb(var(--accent-primary) / 0.65);
-    text-decoration-thickness: 2px;
-    text-underline-offset: 0.2em;
-  }
-
-  .holding-page__contact a:hover {
-    text-decoration-color: rgb(var(--accent-primary));
-  }
-
-  .holding-page__contact a:focus-visible {
-    border-radius: 2px;
-    outline: 3px solid rgb(var(--focus-ring) / 0.38);
-    outline-offset: 4px;
-  }
-
-  .holding-page__footer {
-    padding-top: 1rem;
-    border-top: 1px solid rgb(var(--border) / 0.5);
-    color: rgb(var(--reading-ink-secondary));
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  @media (max-width: 639px) {
-    .holding-page__frame {
-      padding-top: 1.4rem;
-    }
-
-    .holding-page__content {
-      align-self: start;
-      padding-top: clamp(4.5rem, 14vh, 7rem);
-    }
-
-    .holding-page h1 {
-      font-size: clamp(2.25rem, 11vw, 3.25rem);
-      line-height: 1.07;
-    }
-  }
-
-</style>

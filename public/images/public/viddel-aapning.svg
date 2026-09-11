@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 677" role="img" aria-labelledby="title desc">
+  <title id="title">Åpning</title>
+  <desc id="desc">Rolig abstrakt komposisjon med kjølig blå flate, varm gul flate og myke skygger som gir dybde og overgang.</desc>
+  <defs>
+    <linearGradient id="cool" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#DDEAF1"/>
+      <stop offset="0.7" stop-color="#AFCBDD"/>
+      <stop offset="1" stop-color="#7EA6C2"/>
+    </linearGradient>
+    <linearGradient id="warm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFD354"/>
+      <stop offset="0.55" stop-color="#F6AD27"/>
+      <stop offset="1" stop-color="#E77A2F"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#173A58" stop-opacity="0.36"/>
+      <stop offset="1" stop-color="#173A58" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="677" fill="#F5F4EE"/>
+  <path d="M0 0 H735 L610 677 H0Z" fill="url(#cool)"/>
+  <path d="M720 0 H1200 V677 H585Z" fill="url(#warm)"/>
+  <path d="M500 -40 C635 145 640 348 535 720" stroke="url(#shade)" stroke-width="150" fill="none" filter="url(#blur)"/>
+  <g fill="#254A62" fill-opacity="0.17" filter="url(#blur)">
+    <ellipse cx="1030" cy="170" rx="74" ry="130" transform="rotate(-24 1030 170)"/>
+    <ellipse cx="1098" cy="265" rx="62" ry="118" transform="rotate(-28 1098 265)"/>
+    <ellipse cx="990" cy="345" rx="54" ry="105" transform="rotate(-18 990 345)"/>
+  </g>
+</svg>

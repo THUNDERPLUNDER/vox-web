@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 734" role="img" aria-labelledby="title desc">
+  <title id="title">Hverdagsenergi</title>
+  <desc id="desc">Abstrakt komposisjon med blå himmel, varmt lys og transparente gule og oransje flater i bevegelse.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#68B9E9"/>
+      <stop offset="0.6" stop-color="#BFE5F7"/>
+      <stop offset="1" stop-color="#F7F0D5"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFD85A" stop-opacity="0.88"/>
+      <stop offset="0.55" stop-color="#F7B52E" stop-opacity="0.78"/>
+      <stop offset="1" stop-color="#F27935" stop-opacity="0.88"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFCE45" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#EA6C31" stop-opacity="0.92"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="734" fill="url(#sky)"/>
+  <path d="M-90 690 C80 470 230 325 420 135 C500 55 540 -10 560 -80 L770 -80 C675 95 650 245 665 405 C678 545 742 660 820 790 L-90 790Z" fill="url(#gold)"/>
+  <path d="M245 780 C290 560 350 385 480 218 C590 78 760 -10 930 -90 L1090 -90 C940 128 860 300 845 470 C833 596 864 690 930 790Z" fill="#F8CC49" fill-opacity="0.48"/>
+  <path d="M670 790 C760 612 870 505 1010 410 C1090 356 1165 325 1260 300 L1260 790Z" fill="url(#amber)"/>
+  <path d="M0 660 C160 626 306 626 470 650 C580 666 675 696 770 734 H0Z" fill="#FFF9E9" fill-opacity="0.35" filter="url(#soft)"/>
+</svg>
