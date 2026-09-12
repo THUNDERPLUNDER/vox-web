@@ -7,8 +7,8 @@ import {
   validateRoadmapProjection,
 } from "../src/data/vis-roadmap-horizons-v01.ts";
 
-assert.deepEqual(validateRoadmapProjection(), [], "the curated 12-object projection must be valid");
-assert.equal(roadmapInitiatives.length, 12, "the projection must contain exactly 12 roadmap objects");
+assert.deepEqual(validateRoadmapProjection(), [], "the curated 13-object projection must be valid");
+assert.equal(roadmapInitiatives.length, 13, "the projection must contain exactly 13 roadmap objects");
 assert.ok(
   roadmapInitiatives.every((item) => item.timing.confidence === "open" && !item.timing.start && !item.timing.end),
   "undated open initiatives must not gain date anchors",
@@ -21,6 +21,14 @@ assert.equal(
   githubIssueHref(374),
   "https://github.com/THUNDERPLUNDER/vox-web/issues/374",
   "GitHub drill-down must resolve canonically",
+);
+assert.ok(
+  roadmapInitiatives.some((item) => item.id === "external-presence" && item.horizons.includes("now")),
+  "External Presence must be represented as an approved NOW initiative",
+);
+assert.ok(
+  !roadmapWatchSignals.some((signal) => signal.id === "funding-terms"),
+  "the resolved IN decision must not remain an open WATCH signal",
 );
 
 const baseline = roadmapInitiatives[0];
@@ -82,4 +90,4 @@ assert.ok(
   "the human-facing initiative intro must appear before roadmap metadata",
 );
 
-console.log("VIS Horizon Roadmap guard passed (12 objects, horizon/WATCH/timing/GitHub contracts verified).");
+console.log("VIS Horizon Roadmap guard passed (13 objects, horizon/WATCH/timing/GitHub contracts verified).");
