@@ -12,9 +12,9 @@ export const visProjectStateV01 = {
   sourceUrl:
     "https://docs.google.com/document/d/138fF8MyOEa4wAGa7rvcv5BFkBmieoNpq14DcZwSTzAE/edit",
   sourceRevision:
-    "ANLCKQm2NZqVO4dardrZtEbDl2gN1CbCs8VK9whKcOfbDVCUQ_rpftx8Ur57N9aGB9bAFn9Iw4Uy9YclpxGYlBI_f-4Jcgu2fzG0ZKqRX6o",
-  brainLastMeaningfulUpdate: "2026-09-11",
-  projectionUpdatedAt: "2026-09-11",
+    "ANLCKQmBcAoTnKyFyEvU-Cj49KvnKJXkV9Mn5dZci0UsTlRBirzZVOl46sarKYOU9wNfTYMjxotFTSpvaT4w3ZgB3Q7aSuS10gr-bvEY0IY",
+  brainLastMeaningfulUpdate: "2026-09-12",
+  projectionUpdatedAt: "2026-09-12",
   projectionOwner: "Thomas",
   northStar:
     "Viddel skal være et lavterskel, ikke-klinisk mestrings-, forberedelses- og navigasjonslag for mennesker med svekket hørsel. Langsiktig bygger vi en norsk støtteplattform rundt hørsel: et felles kunnskaps- og navigasjonslag for personen med hørselsutfordringer og menneskene som hjelper rundt.",
@@ -24,12 +24,18 @@ export const visProjectStateV01 = {
   strategicPrincipleMeaning:
     "Vi lytter, avklarer og lærer — og lar ny informasjon endre hjelpen.",
   phase:
-    "Viddel har en fungerende prototype og en stabil Preview for intern og pre-beta testing. AI-hjelpen er blitt bedre, men videre hardening er bevisst parkert før limited-beta-beslutningen. Nå jobber vi parallelt med klinikkverdi, direkte brukerlæring og hvordan Viddel presenteres utad.",
+    "Viddel har fått Oppstartstilskudd 1 fra Innovasjon Norge. Markedsklar-sporet er aktivert med NoA / Kristine Hoff som foretrukket designpartner, avhengig av endelig kapasitet og periode før samarbeidsavtale og DOGA-søknad. Parallelt tester vi klinikkverdi, lærer direkte fra brukere og Hørselsforbundet, og gjør Viddel tydeligere utad. Videre AI-hardening er bevisst parkert til #361 faktisk krever den.",
   priorities: [
+    {
+      title: "Få Markedsklar formelt på plass",
+      description:
+        "Bekreft kapasitet og periode med NoA / Kristine, signer samarbeidsavtalen og send DOGA-søknaden. Hold sprinten rettet mot kunde-, verdi- og betalingsusikkerhet, ikke generell produkt- eller UI-redesign.",
+      href: "https://github.com/THUNDERPLUNDER/vox-web/issues/383",
+    },
     {
       title: "Test klinikkverdien",
       description:
-        "Finn ut hvilke konkrete problemer Viddel kan løse i klinikkens arbeidsflyt, hvem som opplever verdien, og om noen faktisk vil betale. Behandle betalingsvilje og effekt som hypoteser til vi har evidens.",
+        "Finn ut hvilke konkrete problemer Viddel kan løse i klinikkens arbeidsflyt, hvem som opplever verdien, og om noen faktisk vil betale. Klinikkeffekt og betalingsvilje er fortsatt hypoteser.",
       href: "https://github.com/THUNDERPLUNDER/vox-web/issues/355",
     },
     {
@@ -47,6 +53,16 @@ export const visProjectStateV01 = {
   ] satisfies ProjectStateItem[],
   latestDecisions: [
     {
+      title: "Oppstartstilskudd 1 er godkjent",
+      description:
+        "Finansieringen er ikke lenger en åpen ekstern gate. Den gir rom for avgrenset gjennomføring, men er ikke i seg selv grunn til å utvide MVP- eller arkitekturscope.",
+    },
+    {
+      title: "NoA / Kristine er valgt for Markedsklar",
+      description:
+        "Viddel ønsker å gjennomføre Markedsklar med Kristine Hoff / NoA, med endelig kapasitet og periode som neste praktiske avklaring før avtale og DOGA-søknad.",
+    },
+    {
       title: "AI-hardening er parkert med kjent gjeld",
       description:
         "#384 er god nok til at annet arbeid kan fortsette, men gjenværende kvalitet og #370 må vurderes igjen før #361 limited-beta GO/NO-GO.",
@@ -56,11 +72,6 @@ export const visProjectStateV01 = {
       description:
         "LinkedIn, offentlig web og partner-/introduksjonsmateriell kan utvikles parallelt med produktet så lenge påstandene er sanne mot faktisk state.",
     },
-    {
-      title: "Researchintervju er ikke produktbeta",
-      description:
-        "Direkte brukerlæring kan fortsette nå. Produktbeta krever fortsatt et eksplisitt #361 GO og separat opt-in.",
-    },
   ] satisfies ProjectStateItem[],
   openQuestions: [
     {
@@ -69,21 +80,27 @@ export const visProjectStateV01 = {
         "Hvem har faktisk betalingsvilje, og hvilken dokumenterbar verdi skaper Viddel for klinikker eller andre betalere?",
     },
     {
+      title: "Åpent spørsmål · klinikkflyt",
+      description:
+        "Kan en bedre forberedt bruker gi konkret operativ verdi i klinikken uten at vi antar tids- eller kapasitetsgevinst før det er undersøkt?",
+    },
+    {
       title: "Åpent spørsmål · beta-læring",
       description:
         "Hva må være godt nok før de første reelle produkttestene gir nyttig læring uten å bygge mer enn vi trenger?",
     },
-    {
-      title: "Hypotese · bruker-eid kontekst",
-      description:
-        "Blir hjelpen merkbart bedre når brukeren selv kan etablere og korrigere viktig informasjon om utstyr og situasjon?",
-    },
   ] satisfies ProjectStateItem[],
   nextActions: [
     {
-      title: "Test klinikkhypotesen videre",
+      title: "Fullfør Markedsklar-oppsettet",
       description:
-        "Fortsett klinikkverdi, IN/DOGA, designpartner og prospect-samtaler uten å gjøre betalingsvilje eller klinikkeffekt til fakta før de er dokumentert.",
+        "Få NoA / Kristine kapasitet og periode bekreftet, signer samarbeidsavtalen og send DOGA-søknaden.",
+      href: "https://github.com/THUNDERPLUNDER/vox-web/issues/383",
+    },
+    {
+      title: "Fortsett klinikk- og prospectvalidering",
+      description:
+        "Bruk eksisterende relasjoner og prospectliste til å lære om arbeidsflyt, verdi og beslutning/payer uten å promotere betalingsvilje eller klinikkeffekt til fakta.",
       href: "https://github.com/THUNDERPLUNDER/vox-web/issues/355",
     },
     {
@@ -91,12 +108,6 @@ export const visProjectStateV01 = {
       description:
         "Følg opp #406/#415, HLF-intro #407 og External Presence #409/#410 som parallelle spor som ikke trenger å vente på AI-gatene.",
       href: "https://github.com/THUNDERPLUNDER/vox-web/issues/415",
-    },
-    {
-      title: "La AI-hardening ligge til beta-gaten krever den",
-      description:
-        "Ikke gjenåpne #384/#370 automatisk. Gå tilbake til gjenværende evidens når #361 limited-beta GO/NO-GO faktisk skal tas, eller hvis ny QA viser at kvaliteten blokkerer nyttig bruk.",
-      href: "https://github.com/THUNDERPLUNDER/vox-web/issues/361",
     },
   ] satisfies ProjectStateItem[],
 } as const;
