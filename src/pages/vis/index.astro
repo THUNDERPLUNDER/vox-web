@@ -15,6 +15,10 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 const internalHref = (path: string) => `${base}${path.replace(/^\//, "")}`;
+const formatVisDate = (value: string) =>
+  new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric" }).format(
+    new Date(`${value}T12:00:00Z`),
+  );
 
 const architectureLayers = [
   {
@@ -129,13 +133,19 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
           Kuratert fra <strong>{visProjectStateV01.sourceDocument}</strong>
           <span aria-hidden="true">·</span>
           <time datetime={visProjectStateV01.brainLastMeaningfulUpdate}>
-            sist meningsfullt oppdatert 11. september 2026
+            sist meningsfullt oppdatert {formatVisDate(visProjectStateV01.brainLastMeaningfulUpdate)}
           </time>
         </p>
       </div>
 
       <div class="project-state__north-star">
-        <p class="eyebrow">North Star</p>
+        <div class="north-star-heading">
+          <svg class="north-star-marker" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2.8 14 10l7.2 2-7.2 2-2 7.2-2-7.2-7.2-2 7.2-2 2-7.2Z" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linejoin="round" />
+            <circle cx="12" cy="12" r="1.25" fill="currentColor" />
+          </svg>
+          <p class="eyebrow">North Star</p>
+        </div>
         <p class="project-state__north-star-copy">{visProjectStateV01.northStar}</p>
         <p>{visProjectStateV01.northStarContext}</p>
         <blockquote>
@@ -156,7 +166,15 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
             <h3 id="roadmap-preview-title">Veien videre</h3>
             <p class="roadmap-preview__intro">Hva vi arbeider med nå, hva som trolig kommer etter, og hva vi foreløpig holder åpent.</p>
           </div>
-          <a href={internalHref("/vis/system/roadmap-timeline-v01")}>Åpne hele roadmapet</a>
+          <a class="roadmap-preview__cta" href={internalHref("/vis/system/roadmap-timeline-v01")}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 18.5V8.8m0 0 4-3.3 5 3.3 5-3.3v9.7l-5 3.3-5-3.3-4 3.3V8.8Z" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>
+              <strong>Åpne hele roadmapet</strong>
+              <small>Se NOW, NEXT, LATER og WATCH i full visning.</small>
+            </span>
+          </a>
         </div>
         <div class="roadmap-preview__horizons">
           {roadmapPreviewColumns.map((horizon) => (
@@ -338,8 +356,8 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
         den tekniske systemreferansen, og <strong>VIS</strong> gir den menneskelige, kuraterte oversikten.
       </p>
       <p class="source-map__meta">
-        Project Brain oppdatert <time datetime={visProjectStateV01.brainLastMeaningfulUpdate}>11. september 2026</time>
-        · VIS-projeksjon oppdatert <time datetime={visProjectStateV01.projectionUpdatedAt}>11. september 2026</time>
+        Project Brain oppdatert <time datetime={visProjectStateV01.brainLastMeaningfulUpdate}>{formatVisDate(visProjectStateV01.brainLastMeaningfulUpdate)}</time>
+        · VIS-projeksjon oppdatert <time datetime={visProjectStateV01.projectionUpdatedAt}>{formatVisDate(visProjectStateV01.projectionUpdatedAt)}</time>
         · Eier {visProjectStateV01.projectionOwner}
       </p>
     </footer>
@@ -403,6 +421,8 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
     .project-state__source h2 { margin: 0.35rem 0 0; font-size: clamp(1.45rem, 3vw, 2rem); letter-spacing: -0.025em; }
     .project-state__source > p { max-width: 25rem; margin: 0; color: rgb(var(--vis-muted)); font-size: 0.78rem; line-height: 1.5; text-align: right; }
     .project-state__north-star { max-width: 58rem; padding-bottom: 1.3rem; }
+    .north-star-heading { display: flex; gap: 0.55rem; align-items: center; }
+    .north-star-marker { width: 1.05rem; height: 1.05rem; flex: none; color: rgb(var(--vis-blue)); }
     .project-state__north-star-copy { margin: 0.65rem 0 0.55rem; font-size: clamp(1.2rem, 2.5vw, 1.65rem); line-height: 1.48; letter-spacing: -0.02em; font-weight: 560; }
     .project-state__north-star > p:last-of-type { margin: 0; color: rgb(var(--vis-muted)); line-height: 1.65; }
     .project-state__north-star blockquote { display: flex; gap: 0.6rem 1rem; align-items: baseline; flex-wrap: wrap; margin: 1.25rem 0 0; padding-left: 1rem; border-left: 3px solid rgb(var(--vis-green)); }
@@ -414,8 +434,13 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
     .roadmap-preview__heading { display: flex; gap: 1rem; align-items: flex-end; justify-content: space-between; }
     .roadmap-preview__heading h3 { margin-bottom: 0; }
     .roadmap-preview__intro { max-width: 44rem; margin: 0.35rem 0 0; color: rgb(var(--vis-muted)); font-size: 0.76rem; line-height: 1.5; }
-    .roadmap-preview__heading a { flex: none; color: rgb(35 83 173); font-size: 0.78rem; font-weight: 650; text-decoration: none; }
-    .roadmap-preview__heading a:hover, .roadmap-preview__heading a:focus-visible { text-decoration: underline; }
+    .roadmap-preview__cta { display: flex; min-height: 44px; flex: none; gap: 0.65rem; align-items: center; padding: 0.55rem 0.7rem; border: 1px solid rgb(54 114 230 / 0.24); border-radius: 0.7rem; background: rgb(54 114 230 / 0.045); color: rgb(35 83 173); text-decoration: none; transition: background 140ms ease, border-color 140ms ease, box-shadow 140ms ease; }
+    .roadmap-preview__cta svg { width: 1.1rem; height: 1.1rem; flex: none; }
+    .roadmap-preview__cta span, .roadmap-preview__cta strong, .roadmap-preview__cta small { display: block; }
+    .roadmap-preview__cta strong { font-size: 0.78rem; font-weight: 680; }
+    .roadmap-preview__cta small { margin-top: 0.1rem; color: rgb(var(--vis-muted)); font-size: 0.67rem; line-height: 1.35; }
+    .roadmap-preview__cta:hover { border-color: rgb(54 114 230 / 0.42); background: rgb(54 114 230 / 0.085); }
+    .roadmap-preview__cta:focus-visible { outline: 2px solid rgb(var(--vis-blue)); outline-offset: 3px; }
     .roadmap-preview__horizons { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 1.1rem; border-top: 1px solid rgb(var(--vis-line)); border-bottom: 1px solid rgb(var(--vis-line)); }
     .roadmap-preview__horizons > section { min-width: 0; padding: 0.9rem; }
     .roadmap-preview__horizons > section + section { border-left: 1px solid rgb(var(--vis-line)); }
@@ -499,6 +524,7 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
       .project-state__source { align-items: flex-start; flex-direction: column; }
       .project-state__source > p { text-align: left; }
       .roadmap-preview__heading { align-items: flex-start; flex-direction: column; }
+      .roadmap-preview__cta { width: 100%; justify-content: flex-start; }
       .roadmap-preview__horizons { grid-template-columns: 1fr; }
       .roadmap-preview__horizons > section + section { border-top: 1px solid rgb(var(--vis-line)); border-left: 0; }
       .roadmap-preview__watch { align-items: flex-start; flex-direction: column; }
