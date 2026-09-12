@@ -1,0 +1,91 @@
+name: One-off VIS presentation patch
+
+on:
+  push:
+    branches:
+      - rigger/vis-current-state-2026-09-12
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: rigger/vis-current-state-2026-09-12
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Apply bounded VIS patch
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('src/pages/vis/index.astro')
+          s = p.read_text()
+
+          anchor = 'const internalHref = (path: string) => `${base}${path.replace(/^\\//, "")}`;\n'
+          insert = anchor + '''const formatVisDate = (value: string) =>\n  new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric" }).format(\n    new Date(`${value}T12:00:00Z`),\n  );\n'''
+          assert anchor in s, 'date helper anchor missing'
+          s = s.replace(anchor, insert, 1)
+
+          s = s.replace(
+            '            sist meningsfullt oppdatert 11. september 2026\n',
+            '            sist meningsfullt oppdatert {formatVisDate(visProjectStateV01.brainLastMeaningfulUpdate)}\n',
+            1,
+          )
+          s = s.replace(
+            '        Project Brain oppdatert <time datetime={visProjectStateV01.brainLastMeaningfulUpdate}>11. september 2026</time>\n        · VIS-projeksjon oppdatert <time datetime={visProjectStateV01.projectionUpdatedAt}>11. september 2026</time>\n',
+            '        Project Brain oppdatert <time datetime={visProjectStateV01.brainLastMeaningfulUpdate}>{formatVisDate(visProjectStateV01.brainLastMeaningfulUpdate)}</time>\n        · VIS-projeksjon oppdatert <time datetime={visProjectStateV01.projectionUpdatedAt}>{formatVisDate(visProjectStateV01.projectionUpdatedAt)}</time>\n',
+            1,
+          )
+
+          old_ns = '''      <div class="project-state__north-star">\n        <p class="eyebrow">North Star</p>'''
+          new_ns = '''      <div class="project-state__north-star">\n        <div class="north-star-heading">\n          <svg class="north-star-marker" viewBox="0 0 24 24" aria-hidden="true">\n            <path d="M12 2.8 14 10l7.2 2-7.2 2-2 7.2-2-7.2-7.2-2 7.2-2 2-7.2Z" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linejoin="round" />\n            <circle cx="12" cy="12" r="1.25" fill="currentColor" />\n          </svg>\n          <p class="eyebrow">North Star</p>\n        </div>'''
+          assert old_ns in s, 'North Star markup anchor missing'
+          s = s.replace(old_ns, new_ns, 1)
+
+          old_cta = '          <a href={internalHref("/vis/system/roadmap-timeline-v01")}>Åpne hele roadmapet</a>'
+          new_cta = '''          <a class="roadmap-preview__cta" href={internalHref("/vis/system/roadmap-timeline-v01")}>\n            <svg viewBox="0 0 24 24" aria-hidden="true">\n              <path d="M5 18.5V8.8m0 0 4-3.3 5 3.3 5-3.3v9.7l-5 3.3-5-3.3-4 3.3V8.8Z" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round" />\n            </svg>\n            <span>\n              <strong>Åpne hele roadmapet</strong>\n              <small>Se NOW, NEXT, LATER og WATCH i full visning.</small>\n            </span>\n          </a>'''
+          assert old_cta in s, 'roadmap CTA anchor missing'
+          s = s.replace(old_cta, new_cta, 1)
+
+          old_css = '''    .project-state__north-star { max-width: 58rem; padding-bottom: 1.3rem; }\n    .project-state__north-star-copy'''
+          new_css = '''    .project-state__north-star { max-width: 58rem; padding-bottom: 1.3rem; }\n    .north-star-heading { display: flex; gap: 0.55rem; align-items: center; }\n    .north-star-marker { width: 1.05rem; height: 1.05rem; flex: none; color: rgb(var(--vis-blue)); }\n    .project-state__north-star-copy'''
+          assert old_css in s, 'North Star CSS anchor missing'
+          s = s.replace(old_css, new_css, 1)
+
+          old_cta_css = '''    .roadmap-preview__heading a { flex: none; color: rgb(35 83 173); font-size: 0.78rem; font-weight: 650; text-decoration: none; }\n    .roadmap-preview__heading a:hover, .roadmap-preview__heading a:focus-visible { text-decoration: underline; }'''
+          new_cta_css = '''    .roadmap-preview__cta { display: flex; min-height: 44px; flex: none; gap: 0.65rem; align-items: center; padding: 0.55rem 0.7rem; border: 1px solid rgb(54 114 230 / 0.24); border-radius: 0.7rem; background: rgb(54 114 230 / 0.045); color: rgb(35 83 173); text-decoration: none; transition: background 140ms ease, border-color 140ms ease, box-shadow 140ms ease; }\n    .roadmap-preview__cta svg { width: 1.1rem; height: 1.1rem; flex: none; }\n    .roadmap-preview__cta span, .roadmap-preview__cta strong, .roadmap-preview__cta small { display: block; }\n    .roadmap-preview__cta strong { font-size: 0.78rem; font-weight: 680; }\n    .roadmap-preview__cta small { margin-top: 0.1rem; color: rgb(var(--vis-muted)); font-size: 0.67rem; line-height: 1.35; }\n    .roadmap-preview__cta:hover { border-color: rgb(54 114 230 / 0.42); background: rgb(54 114 230 / 0.085); }\n    .roadmap-preview__cta:focus-visible { outline: 2px solid rgb(var(--vis-blue)); outline-offset: 3px; }'''
+          assert old_cta_css in s, 'roadmap CTA CSS anchor missing'
+          s = s.replace(old_cta_css, new_cta_css, 1)
+
+          mobile_anchor = '      .roadmap-preview__heading { align-items: flex-start; flex-direction: column; }\n'
+          mobile_insert = mobile_anchor + '      .roadmap-preview__cta { width: 100%; justify-content: flex-start; }\n'
+          assert mobile_anchor in s, 'mobile CTA anchor missing'
+          s = s.replace(mobile_anchor, mobile_insert, 1)
+
+          p.write_text(s)
+          PY
+
+      - run: npm run verify:vis-roadmap-horizons
+      - run: npm run build
+      - run: git diff --check
+
+      - name: Commit bounded patch and remove one-off workflow
+        run: |
+          rm .github/workflows/rigger-oneoff-vis-patch.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/pages/vis/index.astro .github/workflows/rigger-oneoff-vis-patch.yml
+          git commit -m "feat(vis): refresh dates and clarify roadmap affordances"
+          git push origin HEAD:rigger/vis-current-state-2026-09-12
