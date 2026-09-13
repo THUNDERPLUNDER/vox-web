@@ -1,5 +1,6 @@
-/* CONTRACT: Curated Horizon Roadmap v0.1 projection. Project Brain owns direction;
-   GitHub owns task/runtime status; VIS is a read-only projection of both. */
+/* BUNDLED FALLBACK / COMPATIBILITY: Curated Horizon Roadmap v0.1.
+   Once #414 v0.2 is active, approved mutable roadmap state comes from vis-state at runtime.
+   Project Brain owns direction; GitHub owns task/runtime status; VIS remains a read-only projection. */
 
 export type RoadmapHorizon = "now" | "next" | "later";
 export type RoadmapTrackId = "product-beta" | "funding-delivery" | "field-value" | "knowledge-advantage";

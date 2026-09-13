@@ -1,15 +1,12 @@
 ---
 /* CONTRACT: VIS Project State v0.1 — curated Project Brain read model; never backlog. */
+export const prerender = false;
+
 import VisInternalLayout from "../../layouts/VisInternalLayout.astro";
 import { groupedVisEntries, wireframeIndexEntries } from "../../lib/vis-wireframes";
 import { visProjectStateV01 } from "../../data/vis-project-state-v01.ts";
-import {
-  roadmapFrontPreview,
-  roadmapFrontPreviewLabels,
-  roadmapHorizons,
-  roadmapInitiatives,
-  roadmapWatchSignals,
-} from "../../data/vis-roadmap-horizons-v01.ts";
+import { roadmapHorizons } from "../../data/vis-roadmap-horizons-v01.ts";
+import { loadVisRoadmapProjectionV02 } from "../../data/load-vis-roadmap-projection-v02.ts";
 
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
@@ -19,6 +16,14 @@ const formatVisDate = (value: string) =>
   new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric" }).format(
     new Date(`${value}T12:00:00Z`),
   );
+
+Astro.response.headers.set("Cache-Control", "no-store");
+const { projection: roadmapProjection, sourceState: roadmapSourceState } =
+  await loadVisRoadmapProjectionV02();
+const roadmapInitiatives = roadmapProjection.initiatives;
+const roadmapWatchSignals = roadmapProjection.watchSignals;
+const roadmapFrontPreview = roadmapProjection.frontPreview;
+const roadmapFrontPreviewLabels = roadmapProjection.frontPreviewLabels;
 
 const architectureLayers = [
   {
@@ -190,6 +195,13 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
           <strong>WATCH</strong>
           <p>{roadmapPreviewWatch.map((signal) => signal.title).join(" · ")}</p>
         </div>
+        <p class="roadmap-preview__source">
+          {
+            roadmapSourceState === "fresh"
+              ? <>Roadmap state · {formatVisDate(roadmapProjection.approvedAt)} · rev {roadmapProjection.projectionRevision} · godkjent av {roadmapProjection.approvedBy}</>
+              : <>Roadmap state · fallback til sist bundne godkjente projeksjon · live state-kilde utilgjengelig</>
+          }
+        </p>
       </section>
 
       <div class="project-state__grid">
@@ -450,6 +462,7 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
     .roadmap-preview__watch { display: flex; gap: 0.65rem 1rem; align-items: baseline; padding-top: 0.75rem; }
     .roadmap-preview__watch strong { color: rgb(var(--vis-blue)); font-size: 0.65rem; letter-spacing: 0.1em; }
     .roadmap-preview__watch p { margin: 0; color: rgb(var(--vis-muted)); font-size: 0.72rem; line-height: 1.45; }
+    .roadmap-preview__source { margin: 0.7rem 0 0; color: rgb(130 143 157); font-size: 0.66rem; line-height: 1.4; }
     .project-state__grid, .project-state__lower-grid { display: grid; gap: clamp(1.4rem, 4vw, 2.5rem); grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .project-state__grid > section + section { padding-left: clamp(1.4rem, 4vw, 2.5rem); border-left: 1px solid rgb(var(--vis-line)); }
     .project-state h3 { margin: 0.35rem 0 1rem; font-size: 1.18rem; letter-spacing: -0.015em; }
