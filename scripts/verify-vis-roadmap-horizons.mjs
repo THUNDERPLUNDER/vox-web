@@ -99,6 +99,28 @@ const remoteResponse = await fetch(ROADMAP_PROJECTION_V02_URL, { cache: "no-stor
 assert.ok(remoteResponse.ok, `approved v0.2 state source must be reachable (${remoteResponse.status})`);
 const remoteProjection = await remoteResponse.json();
 assert.deepEqual(validateRoadmapProjectionV02(remoteProjection), [], "approved v0.2 projection must validate");
+const richWatchFixture = structuredClone(remoteProjection);
+richWatchFixture.watchSignals = [
+  ...richWatchFixture.watchSignals,
+  {
+    id: "watch-contract-fixture",
+    title: "WATCH contract fixture",
+    note: "Compact signal",
+    evidenceLabel: "Verified direction · implications open",
+    lastVerified: "2026-09-13",
+    sourceIssues: [404],
+    sourceLinks: [{ label: "Primary source", href: "https://example.com/source" }],
+    detail: { verified: "Verified fact", open: "Open implication", trigger: "Concrete trigger" },
+  },
+];
+richWatchFixture.frontPreview.watch = [...richWatchFixture.frontPreview.watch, "watch-contract-fixture"];
+assert.deepEqual(validateRoadmapProjectionV02(richWatchFixture), [], "rich WATCH metadata must validate generically");
+const invalidRichWatchFixture = structuredClone(richWatchFixture);
+invalidRichWatchFixture.watchSignals.at(-1).sourceIssues = [];
+assert.ok(
+  validateRoadmapProjectionV02(invalidRichWatchFixture).some((error) => error.includes("Invalid WATCH sourceIssues")),
+  "rich WATCH provenance must remain contract-validated",
+);
 assert.ok(
   remoteProjection.initiatives.some(
     (item) => item.id === "lived-hearing" && item.horizons.includes("next") && item.sourceIssues.includes(428) && item.sourceIssues.includes(429),

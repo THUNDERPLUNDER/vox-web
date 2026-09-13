@@ -34,6 +34,15 @@ export type RoadmapWatchSignal = {
   id: string;
   title: string;
   note: string;
+  evidenceLabel?: string;
+  lastVerified?: string;
+  sourceIssues?: number[];
+  sourceLinks?: Array<{ label: string; href: string }>;
+  detail?: {
+    verified: string;
+    open: string;
+    trigger: string;
+  };
 };
 
 export const roadmapProjectionMeta = {

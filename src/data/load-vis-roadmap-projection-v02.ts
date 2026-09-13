@@ -103,6 +103,21 @@ export function validateRoadmapProjectionV02(value: unknown): string[] {
       }
       if (watchIds.has(raw.id)) errors.push(`Duplicate WATCH id: ${raw.id}.`);
       watchIds.add(raw.id);
+      if (raw.evidenceLabel !== undefined && !isNonEmptyString(raw.evidenceLabel)) {
+        errors.push(`Invalid WATCH evidenceLabel on ${raw.id}.`);
+      }
+      if (raw.lastVerified !== undefined && (!isNonEmptyString(raw.lastVerified) || !/^\d{4}-\d{2}-\d{2}$/.test(raw.lastVerified))) {
+        errors.push(`Invalid WATCH lastVerified on ${raw.id}.`);
+      }
+      if (raw.sourceIssues !== undefined && (!Array.isArray(raw.sourceIssues) || raw.sourceIssues.length < 1 || raw.sourceIssues.some((issue) => !Number.isInteger(issue) || Number(issue) <= 0))) {
+        errors.push(`Invalid WATCH sourceIssues on ${raw.id}.`);
+      }
+      if (raw.sourceLinks !== undefined && (!Array.isArray(raw.sourceLinks) || raw.sourceLinks.some((source) => !isRecord(source) || !isNonEmptyString(source.label) || !isNonEmptyString(source.href)))) {
+        errors.push(`Invalid WATCH sourceLinks on ${raw.id}.`);
+      }
+      if (raw.detail !== undefined && (!isRecord(raw.detail) || !isNonEmptyString(raw.detail.verified) || !isNonEmptyString(raw.detail.open) || !isNonEmptyString(raw.detail.trigger))) {
+        errors.push(`Invalid WATCH detail on ${raw.id}.`);
+      }
     }
   }
 
