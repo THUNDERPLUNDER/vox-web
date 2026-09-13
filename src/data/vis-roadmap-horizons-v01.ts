@@ -1,5 +1,6 @@
-/* CONTRACT: Curated Horizon Roadmap v0.1 projection. Project Brain owns direction;
-   GitHub owns task/runtime status; VIS is a read-only projection of both. */
+/* BUNDLED FALLBACK / COMPATIBILITY: Curated Horizon Roadmap v0.1.
+   Once #414 v0.2 is active, approved mutable roadmap state comes from vis-state at runtime.
+   Project Brain owns direction; GitHub owns task/runtime status; VIS remains a read-only projection. */
 
 export type RoadmapHorizon = "now" | "next" | "later";
 export type RoadmapTrackId = "product-beta" | "funding-delivery" | "field-value" | "knowledge-advantage";
@@ -33,6 +34,15 @@ export type RoadmapWatchSignal = {
   id: string;
   title: string;
   note: string;
+  evidenceLabel?: string;
+  lastVerified?: string;
+  sourceIssues?: number[];
+  sourceLinks?: Array<{ label: string; href: string }>;
+  detail?: {
+    verified: string;
+    open: string;
+    trigger: string;
+  };
 };
 
 export const roadmapProjectionMeta = {
@@ -85,7 +95,7 @@ export const roadmapInitiatives: RoadmapInitiative[] = [
   {
     id: "doga-markedsklar",
     projectionOrder: 2,
-    title: "NoA / Kristine + Markedsklar",
+    title: "Designpartner + Markedsklar",
     summary: "Bruk Markedsklar til å undersøke første betalende kunde, klinikkverdi, arbeidsflyt og betalingsusikkerhet — ikke som generell produkt- eller UI-sprint.",
     track: "field-value",
     horizons: ["now", "next"],
@@ -255,7 +265,7 @@ export const roadmapInitiatives: RoadmapInitiative[] = [
 export const roadmapWatchSignals: RoadmapWatchSignal[] = [
   {
     id: "doga-path",
-    title: "NoA / DOGA: kapasitet, periode og formell vei",
+    title: "Markedsklar / DOGA: kapasitet, periode og formell vei",
     note: "Kan flytte tidspunkt og rekkefølge, men IN-beslutningen er ikke lenger en åpen gate.",
   },
   {
@@ -307,7 +317,7 @@ export const roadmapFrontPreview = {
 } satisfies Record<RoadmapHorizon | "watch", string[]>;
 
 export const roadmapFrontPreviewLabels: Record<string, string> = {
-  "doga-markedsklar": "Få Markedsklar med NoA / Kristine formelt på plass",
+  "doga-markedsklar": "Få Markedsklar med designpartner formelt på plass",
   "clinic-value": "Finn ut hvilken verdi Viddel kan skape for klinikker",
   "external-presence": "Gjør Viddel tydelig utad",
   "funded-round-one": "Avgrens første finansierte MVP-runde",

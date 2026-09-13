@@ -1,4 +1,9 @@
 {
+  "git": {
+    "deploymentEnabled": {
+      "vis-state": false
+    }
+  },
   "redirects": [
     {
       "source": "/no/hub",

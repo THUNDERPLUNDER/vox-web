@@ -15,7 +15,7 @@ export const visProjectStateV01 = {
     "ANLCKQmBcAoTnKyFyEvU-Cj49KvnKJXkV9Mn5dZci0UsTlRBirzZVOl46sarKYOU9wNfTYMjxotFTSpvaT4w3ZgB3Q7aSuS10gr-bvEY0IY",
   brainLastMeaningfulUpdate: "2026-09-12",
   projectionUpdatedAt: "2026-09-12",
-  projectionOwner: "Thomas",
+  projectionOwner: "Viddel",
   northStar:
     "Viddel skal være et lavterskel, ikke-klinisk mestrings-, forberedelses- og navigasjonslag for mennesker med svekket hørsel. Langsiktig bygger vi en norsk støtteplattform rundt hørsel: et felles kunnskaps- og navigasjonslag for personen med hørselsutfordringer og menneskene som hjelper rundt.",
   northStarContext:
@@ -24,12 +24,12 @@ export const visProjectStateV01 = {
   strategicPrincipleMeaning:
     "Vi lytter, avklarer og lærer — og lar ny informasjon endre hjelpen.",
   phase:
-    "Viddel har fått Oppstartstilskudd 1 fra Innovasjon Norge. Markedsklar-sporet er aktivert med NoA / Kristine Hoff som foretrukket designpartner, avhengig av endelig kapasitet og periode før samarbeidsavtale og DOGA-søknad. Parallelt tester vi klinikkverdi, lærer direkte fra brukere og Hørselsforbundet, og gjør Viddel tydeligere utad. Videre AI-hardening er bevisst parkert til #361 faktisk krever den.",
+    "Viddel har fått Oppstartstilskudd 1 fra Innovasjon Norge. Markedsklar-sporet er aktivert med valgt designpartner, avhengig av endelig kapasitet og periode før samarbeidsavtale og DOGA-søknad. Parallelt tester vi klinikkverdi, lærer direkte fra brukere og Hørselsforbundet, og gjør Viddel tydeligere utad. Videre AI-hardening er bevisst parkert til #361 faktisk krever den.",
   priorities: [
     {
       title: "Få Markedsklar formelt på plass",
       description:
-        "Bekreft kapasitet og periode med NoA / Kristine, signer samarbeidsavtalen og send DOGA-søknaden. Hold sprinten rettet mot kunde-, verdi- og betalingsusikkerhet, ikke generell produkt- eller UI-redesign.",
+        "Bekreft kapasitet og periode med valgt designpartner, signer samarbeidsavtalen og send DOGA-søknaden. Hold sprinten rettet mot kunde-, verdi- og betalingsusikkerhet, ikke generell produkt- eller UI-redesign.",
       href: "https://github.com/THUNDERPLUNDER/vox-web/issues/383",
     },
     {
@@ -47,7 +47,7 @@ export const visProjectStateV01 = {
     {
       title: "Gjør Viddel tydelig utad",
       description:
-        "Sørg for at mennesker som møter Thomas, Vibeke eller Viddel på nett forstår det samme prosjektet: hva Viddel er nå, hva vi bygger og hva vi fortsatt prøver å lære.",
+        "Sørg for at mennesker som møter Viddel gjennom teamet, på nett eller i materiell, forstår det samme prosjektet: hva Viddel er nå, hva vi bygger og hva vi fortsatt prøver å lære.",
       href: "https://github.com/THUNDERPLUNDER/vox-web/issues/409",
     },
   ] satisfies ProjectStateItem[],
@@ -58,9 +58,9 @@ export const visProjectStateV01 = {
         "Finansieringen er ikke lenger en åpen ekstern gate. Den gir rom for avgrenset gjennomføring, men er ikke i seg selv grunn til å utvide MVP- eller arkitekturscope.",
     },
     {
-      title: "NoA / Kristine er valgt for Markedsklar",
+      title: "Designpartner er valgt for Markedsklar",
       description:
-        "Viddel ønsker å gjennomføre Markedsklar med Kristine Hoff / NoA, med endelig kapasitet og periode som neste praktiske avklaring før avtale og DOGA-søknad.",
+        "Viddel ønsker å gjennomføre Markedsklar med valgt designpartner, med endelig kapasitet og periode som neste praktiske avklaring før avtale og DOGA-søknad.",
     },
     {
       title: "AI-hardening er parkert med kjent gjeld",
@@ -94,7 +94,7 @@ export const visProjectStateV01 = {
     {
       title: "Fullfør Markedsklar-oppsettet",
       description:
-        "Få NoA / Kristine kapasitet og periode bekreftet, signer samarbeidsavtalen og send DOGA-søknaden.",
+        "Få designpartnerens kapasitet og periode bekreftet, signer samarbeidsavtalen og send DOGA-søknaden.",
       href: "https://github.com/THUNDERPLUNDER/vox-web/issues/383",
     },
     {

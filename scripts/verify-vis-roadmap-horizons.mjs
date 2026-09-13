@@ -6,6 +6,11 @@ import {
   roadmapWatchSignals,
   validateRoadmapProjection,
 } from "../src/data/vis-roadmap-horizons-v01.ts";
+import {
+  ROADMAP_PROJECTION_V02_URL,
+  loadVisRoadmapProjectionV02,
+  validateRoadmapProjectionV02,
+} from "../src/data/load-vis-roadmap-projection-v02.ts";
 
 assert.deepEqual(validateRoadmapProjection(), [], "the curated 13-object projection must be valid");
 assert.equal(roadmapInitiatives.length, 13, "the projection must contain exactly 13 roadmap objects");
@@ -90,4 +95,57 @@ assert.ok(
   "the human-facing initiative intro must appear before roadmap metadata",
 );
 
-console.log("VIS Horizon Roadmap guard passed (13 objects, horizon/WATCH/timing/GitHub contracts verified).");
+const remoteResponse = await fetch(ROADMAP_PROJECTION_V02_URL, { cache: "no-store" });
+assert.ok(remoteResponse.ok, `approved v0.2 state source must be reachable (${remoteResponse.status})`);
+const remoteProjection = await remoteResponse.json();
+assert.deepEqual(validateRoadmapProjectionV02(remoteProjection), [], "approved v0.2 projection must validate");
+const richWatchFixture = structuredClone(remoteProjection);
+richWatchFixture.watchSignals = [
+  ...richWatchFixture.watchSignals,
+  {
+    id: "watch-contract-fixture",
+    title: "WATCH contract fixture",
+    note: "Compact signal",
+    evidenceLabel: "Verified direction · implications open",
+    lastVerified: "2026-09-13",
+    sourceIssues: [404],
+    sourceLinks: [{ label: "Primary source", href: "https://example.com/source" }],
+    detail: { verified: "Verified fact", open: "Open implication", trigger: "Concrete trigger" },
+  },
+];
+richWatchFixture.frontPreview.watch = [...richWatchFixture.frontPreview.watch, "watch-contract-fixture"];
+assert.deepEqual(validateRoadmapProjectionV02(richWatchFixture), [], "rich WATCH metadata must validate generically");
+const invalidRichWatchFixture = structuredClone(richWatchFixture);
+invalidRichWatchFixture.watchSignals.at(-1).sourceIssues = [];
+assert.ok(
+  validateRoadmapProjectionV02(invalidRichWatchFixture).some((error) => error.includes("Invalid WATCH sourceIssues")),
+  "rich WATCH provenance must remain contract-validated",
+);
+assert.ok(
+  remoteProjection.initiatives.some(
+    (item) => item.id === "lived-hearing" && item.horizons.includes("next") && item.sourceIssues.includes(428) && item.sourceIssues.includes(429),
+  ),
+  "approved v0.2 state must project #428 and expose #429 through drill-down",
+);
+assert.ok(
+  remoteProjection.frontPreview.next.includes("lived-hearing"),
+  "compact preview must expose the approved lived-hearing competence area",
+);
+
+const freshLoad = await loadVisRoadmapProjectionV02();
+assert.equal(freshLoad.sourceState, "fresh", "reachable valid approved source must load as fresh");
+assert.equal(freshLoad.projection.projectionRevision, remoteProjection.projectionRevision);
+
+const realFetch = globalThis.fetch;
+globalThis.fetch = async () => new Response("unavailable", { status: 503 });
+try {
+  const fallbackLoad = await loadVisRoadmapProjectionV02();
+  assert.equal(fallbackLoad.sourceState, "fallback", "fetch failure must select explicit fallback");
+  assert.ok(fallbackLoad.projection.initiatives.length > 0, "fallback must never render an empty roadmap");
+} finally {
+  globalThis.fetch = realFetch;
+}
+
+console.log(
+  `VIS Horizon Roadmap guard passed (13-object bundled fallback + ${remoteProjection.initiatives.length}-object approved v0.2 source verified).`,
+);
