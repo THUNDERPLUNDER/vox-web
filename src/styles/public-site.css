@@ -177,6 +177,13 @@ body.public-site {
 
 .public-section--contact .public-section__body { color: rgb(var(--reading-ink)); }
 
+.public-partner-stamp {
+  display: block;
+  width: min(11.5rem, 70%);
+  height: auto;
+  margin-top: 0.2rem;
+}
+
 .public-authored {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(15rem, 0.9fr);
