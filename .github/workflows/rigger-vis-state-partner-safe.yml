@@ -1,0 +1,43 @@
+name: rigger-vis-state-partner-safe
+on:
+  push:
+    paths:
+      - '.github/workflows/rigger-vis-state-partner-safe.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: vis-state
+          fetch-depth: 0
+      - name: Update approved roadmap state
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('docs/state/vis-roadmap-projection-v02.json')
+          data = json.loads(path.read_text())
+          data['projectionRevision'] = '2026-09-13.2'
+          data['approvedBy'] = 'Viddel'
+          for item in data['initiatives']:
+              if item['id'] == 'doga-markedsklar':
+                  item['title'] = 'Designpartner + Markedsklar'
+          for signal in data['watchSignals']:
+              if signal['id'] == 'doga-path':
+                  signal['title'] = 'Markedsklar / DOGA: kapasitet, periode og formell vei'
+          data['frontPreviewLabels']['doga-markedsklar'] = 'Få Markedsklar med designpartner formelt på plass'
+          path.write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')) + '\n')
+          json.loads(path.read_text())
+          PY
+      - name: Commit approved state revision
+        run: |
+          git config user.name "THUNDERPLUNDER"
+          git config user.email "140942800+THUNDERPLUNDER@users.noreply.github.com"
+          git add docs/state/vis-roadmap-projection-v02.json
+          git commit -m "VIS state: use role labels on partner-facing roadmap"
+          git rm .github/workflows/rigger-vis-state-partner-safe.yml
+          git commit -m "VIS state: remove one-off meeting-safe executor"
+          git push origin HEAD:vis-state
