@@ -1,0 +1,200 @@
+name: rigger-414-watch-contract
+
+on:
+  push:
+    branches:
+      - rigger/414-dynamic-roadmap-v02
+    paths:
+      - .github/workflows/rigger-414-watch-contract.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: rigger/414-dynamic-roadmap-v02
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Add generic rich WATCH contract
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          data = Path('src/data/vis-roadmap-horizons-v01.ts')
+          s = data.read_text()
+          old = '''export type RoadmapWatchSignal = {
+            id: string;
+            title: string;
+            note: string;
+          };'''
+          new = '''export type RoadmapWatchSignal = {
+            id: string;
+            title: string;
+            note: string;
+            evidenceLabel?: string;
+            lastVerified?: string;
+            sourceIssues?: number[];
+            sourceLinks?: Array<{ label: string; href: string }>;
+            detail?: {
+              verified: string;
+              open: string;
+              trigger: string;
+            };
+          };'''
+          if old not in s:
+              raise SystemExit('RoadmapWatchSignal block not found')
+          data.write_text(s.replace(old, new))
+
+          loader = Path('src/data/load-vis-roadmap-projection-v02.ts')
+          s = loader.read_text()
+          old = '''      if (watchIds.has(raw.id)) errors.push(`Duplicate WATCH id: ${raw.id}.`);
+                watchIds.add(raw.id);'''
+          new = '''      if (watchIds.has(raw.id)) errors.push(`Duplicate WATCH id: ${raw.id}.`);
+                watchIds.add(raw.id);
+                if (raw.evidenceLabel !== undefined && !isNonEmptyString(raw.evidenceLabel)) {
+                  errors.push(`Invalid WATCH evidenceLabel on ${raw.id}.`);
+                }
+                if (raw.lastVerified !== undefined && (!isNonEmptyString(raw.lastVerified) || !/^\\d{4}-\\d{2}-\\d{2}$/.test(raw.lastVerified))) {
+                  errors.push(`Invalid WATCH lastVerified on ${raw.id}.`);
+                }
+                if (raw.sourceIssues !== undefined && (!Array.isArray(raw.sourceIssues) || raw.sourceIssues.length < 1 || raw.sourceIssues.some((issue) => !Number.isInteger(issue) || Number(issue) <= 0))) {
+                  errors.push(`Invalid WATCH sourceIssues on ${raw.id}.`);
+                }
+                if (raw.sourceLinks !== undefined && (!Array.isArray(raw.sourceLinks) || raw.sourceLinks.some((source) => !isRecord(source) || !isNonEmptyString(source.label) || !isNonEmptyString(source.href)))) {
+                  errors.push(`Invalid WATCH sourceLinks on ${raw.id}.`);
+                }
+                if (raw.detail !== undefined && (!isRecord(raw.detail) || !isNonEmptyString(raw.detail.verified) || !isNonEmptyString(raw.detail.open) || !isNonEmptyString(raw.detail.trigger))) {
+                  errors.push(`Invalid WATCH detail on ${raw.id}.`);
+                }'''
+          if old not in s:
+              raise SystemExit('WATCH validation insertion point not found')
+          loader.write_text(s.replace(old, new))
+
+          page = Path('src/pages/vis/system/roadmap-timeline-v01.astro')
+          s = page.read_text()
+          old = '''        {roadmapWatchSignals.map((signal) => (
+                    <article>
+                      <span aria-hidden="true"></span>
+                      <h3>{signal.title}</h3>
+                      <p>{signal.note}</p>
+                    </article>
+                  ))}'''
+          new = '''        {roadmapWatchSignals.map((signal) => (
+                    <article class:list={{ "roadmap-watch__item--featured": Boolean(signal.detail) }}>
+                      <span aria-hidden="true"></span>
+                      {signal.evidenceLabel ? <p class="roadmap-watch__status">{signal.evidenceLabel}</p> : null}
+                      <h3>{signal.title}</h3>
+                      <p>{signal.note}</p>
+                      {signal.detail ? (
+                        <details class="roadmap-watch__details">
+                          <summary>Se hva vi vet og følger med på</summary>
+                          <dl>
+                            <div>
+                              <dt>Verifisert</dt>
+                              <dd>{signal.detail.verified}</dd>
+                            </div>
+                            <div>
+                              <dt>Fortsatt åpent</dt>
+                              <dd>{signal.detail.open}</dd>
+                            </div>
+                            <div>
+                              <dt>Trigger for ny vurdering</dt>
+                              <dd>{signal.detail.trigger}</dd>
+                            </div>
+                          </dl>
+                          <p class="roadmap-watch__sources">
+                            <strong>Kilder:</strong>{" "}
+                            {signal.sourceIssues?.map((issueNumber, index) => (
+                              <>
+                                {index > 0 && <span aria-hidden="true"> · </span>}
+                                <a href={githubIssueHref(issueNumber)} rel="noopener noreferrer">#{issueNumber}</a>
+                              </>
+                            ))}
+                            {signal.sourceLinks?.map((source, index) => (
+                              <>
+                                {(signal.sourceIssues?.length || index > 0) && <span aria-hidden="true"> · </span>}
+                                <a href={source.href} rel="noopener noreferrer">{source.label}</a>
+                              </>
+                            ))}
+                            {signal.lastVerified ? <> · sist verifisert <time datetime={signal.lastVerified}>{signal.lastVerified}</time></> : null}
+                          </p>
+                        </details>
+                      ) : null}
+                    </article>
+                  ))}'''
+          if old not in s:
+              raise SystemExit('WATCH markup block not found')
+          s = s.replace(old, new)
+          old = '''  .roadmap-watch h3 { margin: 0; font-size: 0.8rem; line-height: 1.35; }
+            .roadmap-watch article p { margin: 0.35rem 0 0; color: rgb(190 204 222); font-size: 0.69rem; line-height: 1.45; }'''
+          new = '''  .roadmap-watch h3 { margin: 0; font-size: 0.8rem; line-height: 1.35; }
+            .roadmap-watch article p { margin: 0.35rem 0 0; color: rgb(190 204 222); font-size: 0.69rem; line-height: 1.45; }
+            .roadmap-watch .roadmap-watch__status { margin-bottom: 0.35rem; color: rgb(149 189 255); font-size: 0.61rem; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase; }
+            .roadmap-watch__item--featured { grid-column: 1 / -1; margin-top: 0.9rem; border-top: 1px solid rgb(255 255 255 / 0.12); border-left: 0 !important; }
+            .roadmap-watch__details { margin-top: 0.8rem; }
+            .roadmap-watch__details > summary { color: rgb(223 233 247); font-size: 0.69rem; font-weight: 680; cursor: pointer; }
+            .roadmap-watch__details > summary:hover, .roadmap-watch__details > summary:focus-visible { color: white; }
+            .roadmap-watch__details dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.9rem; margin: 0.8rem 0 0; }
+            .roadmap-watch__details dl > div { padding-top: 0.65rem; border-top: 1px solid rgb(255 255 255 / 0.12); }
+            .roadmap-watch__details dt { color: rgb(149 189 255); font-size: 0.61rem; font-weight: 750; letter-spacing: 0.07em; text-transform: uppercase; }
+            .roadmap-watch__details dd { margin: 0.3rem 0 0; color: rgb(210 222 237); font-size: 0.69rem; line-height: 1.5; }
+            .roadmap-watch .roadmap-watch__sources { margin-top: 0.8rem; color: rgb(169 191 220); }
+            .roadmap-watch__sources a { color: rgb(190 215 255); font-weight: 680; }'''
+          if old not in s:
+              raise SystemExit('WATCH CSS insertion point not found')
+          s = s.replace(old, new)
+          old = '    .roadmap-watch__grid, .roadmap-context, .roadmap-legend__body { grid-template-columns: 1fr; }'
+          new = '    .roadmap-watch__grid, .roadmap-context, .roadmap-legend__body, .roadmap-watch__details dl { grid-template-columns: 1fr; }'
+          if old not in s:
+              raise SystemExit('mobile WATCH grid rule not found')
+          page.write_text(s.replace(old, new))
+
+          test = Path('scripts/verify-vis-roadmap-horizons.mjs')
+          s = test.read_text()
+          old = '''assert.deepEqual(validateRoadmapProjectionV02(remoteProjection), [], "approved v0.2 projection must validate");'''
+          new = '''assert.deepEqual(validateRoadmapProjectionV02(remoteProjection), [], "approved v0.2 projection must validate");
+          const richWatchFixture = structuredClone(remoteProjection);
+          richWatchFixture.watchSignals = [
+            ...richWatchFixture.watchSignals,
+            {
+              id: "watch-contract-fixture",
+              title: "WATCH contract fixture",
+              note: "Compact signal",
+              evidenceLabel: "Verified direction · implications open",
+              lastVerified: "2026-09-13",
+              sourceIssues: [404],
+              sourceLinks: [{ label: "Primary source", href: "https://example.com/source" }],
+              detail: { verified: "Verified fact", open: "Open implication", trigger: "Concrete trigger" },
+            },
+          ];
+          richWatchFixture.frontPreview.watch = [...richWatchFixture.frontPreview.watch, "watch-contract-fixture"];
+          assert.deepEqual(validateRoadmapProjectionV02(richWatchFixture), [], "rich WATCH metadata must validate generically");
+          const invalidRichWatchFixture = structuredClone(richWatchFixture);
+          invalidRichWatchFixture.watchSignals.at(-1).sourceIssues = [];
+          assert.ok(
+            validateRoadmapProjectionV02(invalidRichWatchFixture).some((error) => error.includes("Invalid WATCH sourceIssues")),
+            "rich WATCH provenance must remain contract-validated",
+          );'''
+          if old not in s:
+              raise SystemExit('v0.2 remote validation assertion not found')
+          test.write_text(s.replace(old, new))
+          PY
+      - run: npm run verify:vis-roadmap-horizons
+      - run: npm run build
+      - run: git diff --check
+      - name: Commit bounded WATCH-contract support and remove executor
+        run: |
+          rm .github/workflows/rigger-414-watch-contract.yml
+          git config user.name "rigger"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/data/vis-roadmap-horizons-v01.ts src/data/load-vis-roadmap-projection-v02.ts src/pages/vis/system/roadmap-timeline-v01.astro scripts/verify-vis-roadmap-horizons.mjs .github/workflows/rigger-414-watch-contract.yml
+          git commit -m "#414 make WATCH projection state-rich and generic"
+          git push origin HEAD:rigger/414-dynamic-roadmap-v02
