@@ -89,5 +89,3 @@ If the task can be completed safely:
   - remaining blocker or human verification needed
 
 Do not claim a commit hash or PR URL before the safe-output layer has created them. Flow Mode will reconcile PR metadata and update worker fitness after execution.
-
-<!-- compile-trigger: #439 -->
