@@ -32,8 +32,17 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          encoded="$(base64 -w0 .github/workflows/claude-issue-dispatch.lock.yml)"
-          blob_sha="$(gh api --method POST "repos/${GITHUB_REPOSITORY}/git/blobs" -f content="$encoded" -f encoding=base64 --jq .sha)"
+          python - <<'PY'
+          import base64, json
+          from pathlib import Path
+          p = Path('.github/workflows/claude-issue-dispatch.lock.yml')
+          payload = {
+              'content': base64.b64encode(p.read_bytes()).decode('ascii'),
+              'encoding': 'base64',
+          }
+          Path('/tmp/gh-aw-lock-blob.json').write_text(json.dumps(payload))
+          PY
+          blob_sha="$(gh api --method POST "repos/${GITHUB_REPOSITORY}/git/blobs" --input /tmp/gh-aw-lock-blob.json --jq .sha)"
           echo "GH_AW_LOCK_BLOB_SHA=${blob_sha}"
           echo "GH_AW_LOCK_SHA256=$(sha256sum .github/workflows/claude-issue-dispatch.lock.yml | awk '{print $1}')"
 
