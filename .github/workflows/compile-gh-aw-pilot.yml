@@ -9,7 +9,7 @@ on:
       - .github/workflows/compile-gh-aw-pilot.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   compile:
@@ -28,7 +28,16 @@ jobs:
       - name: Compile reviewed agentic workflow
         run: gh aw compile --approve .github/workflows/claude-issue-dispatch.md
 
-      - name: Upload compiled lockfile for reviewed write-back
+      - name: Stage compiled lockfile as Git blob only
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          encoded="$(base64 -w0 .github/workflows/claude-issue-dispatch.lock.yml)"
+          blob_sha="$(gh api --method POST "repos/${GITHUB_REPOSITORY}/git/blobs" -f content="$encoded" -f encoding=base64 --jq .sha)"
+          echo "GH_AW_LOCK_BLOB_SHA=${blob_sha}"
+          echo "GH_AW_LOCK_SHA256=$(sha256sum .github/workflows/claude-issue-dispatch.lock.yml | awk '{print $1}')"
+
+      - name: Upload compiled lockfile as short-lived audit artifact
         uses: actions/upload-artifact@v4
         with:
           name: claude-issue-dispatch-lock
