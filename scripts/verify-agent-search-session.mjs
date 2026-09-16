@@ -49,6 +49,14 @@ const implementationSource = await readFile(
 assert.doesNotMatch(implementationSource, /sessions\/\-/);
 assert.match(implementationSource, /session: buildAgentSearchSessionResource\(config, input\.sessionId\)/);
 assert.match(implementationSource, /isAgentSearchSessionReadyStatus\(sessionResponse\.status\)/);
+assert.match(implementationSource, /parsed\.error\?\.message/);
+assert.match(implementationSource, /msg\.replace\(\/\[\\u0000-\\u001f\\u007f\]\//);
+assert.match(implementationSource, /sanitized\.slice\(0, 160\)/);
+assert.match(implementationSource, /"session_create",\s*hint/);
+assert.match(implementationSource, /"answer",\s*hint/);
 assert.doesNotMatch(implementationSource, /console\.(?:log|info|warn|error)/);
+
+assert.match(chatSource, /upstream_stage: agentSearchDiagnostic\.stage/);
+assert.match(chatSource, /google_error_hint: agentSearchDiagnostic\.hint/);
 
 console.log("Agent Search session continuity contract OK");
