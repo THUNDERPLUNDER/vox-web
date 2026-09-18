@@ -13,7 +13,7 @@ import {
   data-source={INTEREST_SIGNUP_SOURCE}
   novalidate
 >
-  <label class="public-interest__label" for="public-interest-email">E-postadresse</label>
+  <label class="public-interest__label" for="public-interest-email">E-post</label>
 
   <div class="public-interest__fields" data-interest-signup-fields>
     <input
@@ -26,7 +26,7 @@ import {
       placeholder="navn@eksempel.no"
       required
     />
-    <button type="submit" data-interest-signup-submit>Meld interesse</button>
+    <button type="submit" data-interest-signup-submit>Ja, interessert</button>
   </div>
 
   <div class="public-interest__honeypot" aria-hidden="true">
@@ -42,7 +42,7 @@ import {
   </div>
 
   <p class="public-interest__privacy" data-interest-signup-privacy>
-    Når du melder interesse, lagrer Viddel e-postadressen din for å kunne kontakte deg om utvikling, testing og relevante oppdateringer.
+    Vi bruker bare e-postadressen til å kontakte deg om Viddel. Du kan når som helst be oss slette den.
     <a href="/personvern">Les om personvern.</a>
   </p>
 
@@ -66,7 +66,7 @@ import {
 
     if (!form || !email || !website || !fields || !privacy || !submit || !status) return;
 
-    const originalLabel = submit.textContent ?? "Meld interesse";
+    const originalLabel = submit.textContent ?? "Ja, interessert";
 
     const setStatus = (message = "", tone: "success" | "error" | "" = "") => {
       status.textContent = message;
