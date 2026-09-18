@@ -75,3 +75,44 @@ export async function saveInterestSignup(
       environment = EXCLUDED.environment
   `;
 }
+
+
+export type InterestSignupRecord = {
+  email: string;
+  createdAt: string;
+  consentAt: string;
+  consentVersion: string;
+  source: string;
+  environment: string;
+};
+
+function toIso(value: unknown): string {
+  const date = value instanceof Date ? value : new Date(String(value ?? ""));
+  return Number.isNaN(date.getTime()) ? String(value ?? "") : date.toISOString();
+}
+
+export async function listInterestSignups(): Promise<InterestSignupRecord[]> {
+  const sql = getInputSql();
+  await ensureInterestSchema(sql);
+
+  const rows = await sql`
+    SELECT
+      email,
+      created_at,
+      consent_at,
+      consent_version,
+      source,
+      environment
+    FROM public_interest_signup
+    ORDER BY consent_at DESC, id DESC
+  `;
+
+  return rows.map((row) => ({
+    email: String(row.email ?? ""),
+    createdAt: toIso(row.created_at),
+    consentAt: toIso(row.consent_at),
+    consentVersion: String(row.consent_version ?? ""),
+    source: String(row.source ?? ""),
+    environment: String(row.environment ?? ""),
+  }));
+}
