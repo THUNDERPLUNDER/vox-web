@@ -36,6 +36,7 @@
     "@tailwindcss/vite": "^4.2.1",
     "@vercel/flags-core": "^1.7.1",
     "astro": "^5.17.1",
+    "better-auth": "^1.7.5",
     "tailwindcss": "^4.2.1"
   }
 }
