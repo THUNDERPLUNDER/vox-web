@@ -1,12 +1,23 @@
 {
   "contractVersion": "0.2",
-  "projectionRevision": "2026-09-14.1",
-  "approvedAt": "2026-09-14",
+  "projectionRevision": "2026-09-18.1",
+  "approvedAt": "2026-09-18",
   "approvedBy": "Viddel",
   "title": "Viddel Horizon Roadmap",
   "sourceDocument": "Viddel – Project Brain (Current)",
   "projectBrainRevision": "ANLCKQmH9jZ3bVyEZwvWfsLbEEsFY1BKpzqsxMJXKESseyceP7nhFP1Gv-aYnHyxjpNSlOtk5AO0fL9PWbwq5A3WZghD7Vhvsy1uXFpjUWA",
-  "provenance": ["#317", "#355", "#383", "#409", "#428", "#429", "#404", "#405", "#435"],
+  "provenance": [
+    "#317",
+    "#355",
+    "#383",
+    "#409",
+    "#428",
+    "#429",
+    "#404",
+    "#405",
+    "#435",
+    "#451"
+  ],
   "initiatives": [
     {
       "id": "funding-scope",
@@ -14,13 +25,21 @@
       "title": "Oppstartstilskudd 1 → aktiv leveransekoordinering",
       "summary": "IN-tilskuddet er godkjent. Finansiering er ikke lenger en åpen gate; nå må støtten omsettes i avgrenset Markedsklar- og leveransekoordinering uten scope creep.",
       "track": "funding-delivery",
-      "horizons": ["now"],
+      "horizons": [
+        "now"
+      ],
       "strategicFunction": "ECOSYSTEM",
       "executionLikelihood": "committed",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "Godkjent ramme → Markedsklar-avtale / DOGA → tydelig startklart eksternt scope",
       "significance": "critical",
-      "sourceIssues": [355, 383]
+      "sourceIssues": [
+        355,
+        383
+      ]
     },
     {
       "id": "doga-markedsklar",
@@ -28,13 +47,22 @@
       "title": "Designpartner + Markedsklar",
       "summary": "Bruk Markedsklar til å undersøke første betalende kunde, klinikkverdi, arbeidsflyt og betalingsusikkerhet — ikke som generell produkt- eller UI-sprint.",
       "track": "field-value",
-      "horizons": ["now", "next"],
+      "horizons": [
+        "now",
+        "next"
+      ],
       "strategicFunction": "ECOSYSTEM",
       "executionLikelihood": "probable",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "Kapasitet + periode → samarbeidsavtale → DOGA-søknad",
       "significance": "critical",
-      "sourceIssues": [383, 355]
+      "sourceIssues": [
+        383,
+        355
+      ]
     },
     {
       "id": "clinic-value",
@@ -42,13 +70,22 @@
       "title": "Klinikkverdi + første betalende-kunde-hypotese",
       "summary": "Teste konkret arbeidsflyt, nytte og betalingsvilje uten å gjøre hypoteser til fakta.",
       "track": "field-value",
-      "horizons": ["now"],
+      "horizons": [
+        "now"
+      ],
       "strategicFunction": "ECOSYSTEM",
       "executionLikelihood": "committed",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "Kontrollerte prospect-/klinikkintervjuer + Markedsklar-læring",
       "significance": "critical",
-      "sourceIssues": [355, 375, 383]
+      "sourceIssues": [
+        355,
+        375,
+        383
+      ]
     },
     {
       "id": "user-relationships",
@@ -56,13 +93,25 @@
       "title": "Brukerrelasjoner + feltlæring før beta",
       "summary": "Lære fra interesserte brukere, Hørselsforbundet og kvalitative samtaler uten å forveksle researchintervju med produktbeta.",
       "track": "field-value",
-      "horizons": ["now", "next"],
+      "horizons": [
+        "now",
+        "next"
+      ],
       "strategicFunction": "ECOSYSTEM",
       "executionLikelihood": "probable",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "Relasjoner og research kan bygges nå; produktbeta venter på eksplisitt #361 GO",
       "significance": "high",
-      "sourceIssues": [406, 407, 415, 361, 363]
+      "sourceIssues": [
+        406,
+        407,
+        415,
+        361,
+        363
+      ]
     },
     {
       "id": "external-presence",
@@ -70,13 +119,22 @@
       "title": "External Presence — gjør Viddel tydelig utad",
       "summary": "Offentlig web, LinkedIn og partner-/introduksjonsmateriell utvikles som et parallelt NOW-spor, uten å vente på produkt- eller AI-gater.",
       "track": "field-value",
-      "horizons": ["now"],
+      "horizons": [
+        "now"
+      ],
       "strategicFunction": "ECOSYSTEM",
       "executionLikelihood": "committed",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "Påstander og presentasjon må være sanne mot faktisk Viddel-state",
       "significance": "high",
-      "sourceIssues": [409, 410, 411]
+      "sourceIssues": [
+        409,
+        410,
+        411
+      ]
     },
     {
       "id": "delivery-partner",
@@ -84,13 +142,23 @@
       "title": "Velg + onboard utviklingspartner",
       "summary": "Aktiver ekstern teknisk levering først når det konkrete finansierte scope-et, leverandørvalget, kontrakten og tilgangene er avklart.",
       "track": "funding-delivery",
-      "horizons": ["next"],
+      "horizons": [
+        "next"
+      ],
       "strategicFunction": "LEASE",
       "executionLikelihood": "conditional",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "Avgrenset leveransescope → leverandørvalg → kontrakt / access GO",
       "significance": "high",
-      "sourceIssues": [355, 364, 362, 313]
+      "sourceIssues": [
+        355,
+        364,
+        362,
+        313
+      ]
     },
     {
       "id": "funded-round-one",
@@ -98,13 +166,21 @@
       "title": "Finansiert teknisk baseline + MVP Round 1",
       "summary": "Avgrens første finansierte produktløft etter at leveranseomfang og læringsmål faktisk er kjent.",
       "track": "product-beta",
-      "horizons": ["next"],
+      "horizons": [
+        "next"
+      ],
       "strategicFunction": "OWN",
       "executionLikelihood": "conditional",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "Startklart finansiert scope + External Delivery GO",
       "significance": "critical",
-      "sourceIssues": [379, 355]
+      "sourceIssues": [
+        379,
+        355
+      ]
     },
     {
       "id": "beta-gate",
@@ -112,13 +188,22 @@
       "title": "Limited-beta gate + gjenværende AI QA",
       "summary": "Dagens state/policy-baseline er god nok til at annet arbeid kan fortsette. Gjenværende AI-kvalitet, fallback og sikkerhet tas opp igjen når #361 faktisk skal avgjøres.",
       "track": "product-beta",
-      "horizons": ["next"],
+      "horizons": [
+        "next"
+      ],
       "strategicFunction": "OWN",
       "executionLikelihood": "conditional",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "#361 GO/NO-GO krever ny owner-QA og eksplisitt vurdering av kjent gjeld / #370",
       "significance": "critical",
-      "sourceIssues": [384, 370, 361]
+      "sourceIssues": [
+        384,
+        370,
+        361
+      ]
     },
     {
       "id": "first-user-loop",
@@ -126,13 +211,21 @@
       "title": "Første begrensede ekte brukerloop",
       "summary": "Teste om Viddel forstår situasjonen og gir nyttige neste steg uten alvorlige feil.",
       "track": "product-beta",
-      "horizons": ["next"],
+      "horizons": [
+        "next"
+      ],
       "strategicFunction": "ECOSYSTEM",
       "executionLikelihood": "conditional",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "BETA GO i #361",
       "significance": "critical",
-      "sourceIssues": [361, 363]
+      "sourceIssues": [
+        361,
+        363
+      ]
     },
     {
       "id": "round-two",
@@ -140,13 +233,21 @@
       "title": "Round 2 — evidens → fixes → regression",
       "summary": "La faktisk brukerevidens styre neste avgrensede feilretting og regresjonstest.",
       "track": "product-beta",
-      "horizons": ["next"],
+      "horizons": [
+        "next"
+      ],
       "strategicFunction": "OWN",
       "executionLikelihood": "conditional",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "Faktisk evidens fra brukerloop",
       "significance": "high",
-      "sourceIssues": [361, 363]
+      "sourceIssues": [
+        361,
+        363
+      ]
     },
     {
       "id": "retrieval-benchmark",
@@ -154,13 +255,20 @@
       "title": "Viddel Retrieval Benchmark + evalueringskapabilitet",
       "summary": "Mål komponenter mot Viddel-eid evalueringsgrunnlag fremfor leverandøromdømme.",
       "track": "knowledge-advantage",
-      "horizons": ["next"],
+      "horizons": [
+        "next"
+      ],
       "strategicFunction": "OWN",
       "executionLikelihood": "probable",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "Beta-arkitekturen er stabil nok til at benchmark-resultater kan brukes",
       "significance": "high",
-      "sourceIssues": [372]
+      "sourceIssues": [
+        372
+      ]
     },
     {
       "id": "lived-hearing",
@@ -168,13 +276,23 @@
       "title": "Levd hørsel som Viddel-kompetanse",
       "summary": "Bygge egen kunnskap om hvordan hørsel faktisk leves gjennom brukerens språk, konkrete lytteepisoder, observasjon, forskning og Viddel-evals.",
       "track": "knowledge-advantage",
-      "horizons": ["next"],
+      "horizons": [
+        "next"
+      ],
       "strategicFunction": "OWN",
       "executionLikelihood": "probable",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "#429 Lexicon + episodekorpus + observasjonsmetode + partnerfalsifikasjon må vise et reelt delta i spørsmål, evals eller hjelp; ellers MERGE/PARK",
       "significance": "potentially-high",
-      "sourceIssues": [428, 429, 415, 389]
+      "sourceIssues": [
+        428,
+        429,
+        415,
+        389
+      ]
     },
     {
       "id": "editorial-writing-protocol",
@@ -182,13 +300,22 @@
       "title": "Editorial Writing Protocol — menneskelig norsk → Viddel-stemme",
       "summary": "Bygge, teste og deretter fryse en modellportabel skriveprotokoll som gir sterke norske Viddel-tekster med NO-HITL som default og minimal redaksjonell reparasjon fra Thomas.",
       "track": "knowledge-advantage",
-      "horizons": ["next"],
+      "horizons": [
+        "next"
+      ],
       "strategicFunction": "OWN",
       "executionLikelihood": "conditional",
-      "timing": {"confidence": "open", "label": "Triggerbasert — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Triggerbasert — ingen dato er etablert"
+      },
       "gate": "Aktiveres ved første materielle artikkel-/copybehov der kvalitets- og repetisjonsgevinsten forsvarer protokollarbeidet; #435 eier fase- og gateplanen.",
       "significance": "high",
-      "sourceIssues": [435, 89, 207]
+      "sourceIssues": [
+        435,
+        89,
+        207
+      ]
     },
     {
       "id": "research-collaboration",
@@ -196,13 +323,20 @@
       "title": "Research & Ecosystem Partnerships",
       "summary": "Bygge en liten læringsallianse med brukerorganisasjon, audiologisk/forskningsfaglig miljø og klinisk feltpartner.",
       "track": "field-value",
-      "horizons": ["next"],
+      "horizons": [
+        "next"
+      ],
       "strategicFunction": "ECOSYSTEM",
       "executionLikelihood": "probable",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "Konkret partner + tidsnær aktivitet, relevant finansieringsvindu eller beta-/klinikkfunn med tydelig forskningsspørsmål",
       "significance": "potentially-high",
-      "sourceIssues": [389]
+      "sourceIssues": [
+        389
+      ]
     },
     {
       "id": "inventory",
@@ -210,30 +344,68 @@
       "title": "Inventory / varig brukereid kontekst",
       "summary": "Bevart konsept for synlig og varig utstyrs-/situasjonskontekst — ikke planlagt implementering.",
       "track": "product-beta",
-      "horizons": ["later"],
+      "horizons": [
+        "later"
+      ],
       "strategicFunction": "OWN",
       "executionLikelihood": "option",
-      "timing": {"confidence": "open", "label": "Åpen timing — ingen dato er etablert"},
+      "timing": {
+        "confidence": "open",
+        "label": "Åpen timing — ingen dato er etablert"
+      },
       "gate": "Beta-evidens viser at synlig, varig kontekst forbedrer relevans eller tillit",
       "significance": "potentially-high",
-      "sourceIssues": [385]
+      "sourceIssues": [
+        385
+      ]
     }
   ],
   "watchSignals": [
-    {"id": "doga-path", "title": "Markedsklar / DOGA: kapasitet, periode og formell vei", "note": "Kan flytte tidspunkt og rekkefølge, men IN-beslutningen er ikke lenger en åpen gate."},
-    {"id": "clinic-evidence", "title": "Klinikkverdi / arbeidsflyt / betalingsvilje", "note": "Faktisk evidens kan styrke, endre eller stoppe hypotesen."},
-    {"id": "beta-evidence", "title": "Beta-nytte / alvorlige feil / sikkerhet", "note": "Observerte funn styrer gate, fixes og neste testloop når beta-sporet aktiveres igjen."},
-    {"id": "capability-cost", "title": "Modell-, retrieval- og agentkapabilitet / kost", "note": "Følges bare når endringer påvirker en Viddel-gate eller OWN-antakelse."},
-    {"id": "research-partners", "title": "Forsknings- og akademiasamarbeid", "note": "Aktiveres ved konkret problem, partner og evidensbehov."},
-    {"id": "later-funding", "title": "Senere finansieringsvinduer", "note": "Tas inn når et reelt vindu blir materielt for roadmapet."},
+    {
+      "id": "doga-path",
+      "title": "Markedsklar / DOGA: kapasitet, periode og formell vei",
+      "note": "Kan flytte tidspunkt og rekkefølge, men IN-beslutningen er ikke lenger en åpen gate."
+    },
+    {
+      "id": "clinic-evidence",
+      "title": "Klinikkverdi / arbeidsflyt / betalingsvilje",
+      "note": "Faktisk evidens kan styrke, endre eller stoppe hypotesen."
+    },
+    {
+      "id": "beta-evidence",
+      "title": "Beta-nytte / alvorlige feil / sikkerhet",
+      "note": "Observerte funn styrer gate, fixes og neste testloop når beta-sporet aktiveres igjen."
+    },
+    {
+      "id": "capability-cost",
+      "title": "Modell-, retrieval- og agentkapabilitet / kost",
+      "note": "Følges bare når endringer påvirker en Viddel-gate eller OWN-antakelse."
+    },
+    {
+      "id": "research-partners",
+      "title": "Forsknings- og akademiasamarbeid",
+      "note": "Aktiveres ved konkret problem, partner og evidensbehov."
+    },
+    {
+      "id": "later-funding",
+      "title": "Senere finansieringsvinduer",
+      "note": "Tas inn når et reelt vindu blir materielt for roadmapet."
+    },
     {
       "id": "hearing-landscape",
       "title": "Hørselslandskap i endring",
       "note": "Politikk · kapasitet · arbeidsdeling · eldrebølge · offentlig digital førstelinje",
       "evidenceLabel": "Verifisert retning · gjennomføring fortsatt åpen",
       "lastVerified": "2026-09-11",
-      "sourceIssues": [404],
-      "sourceLinks": [{"label": "Helsepersonellplan 2040", "href": "https://www.regjeringen.no/contentassets/6d2ec1946c744942a24cb528ca666ae0/no/pdfs/stm202520260011000dddpdfs.pdf"}],
+      "sourceIssues": [
+        404
+      ],
+      "sourceLinks": [
+        {
+          "label": "Helsepersonellplan 2040",
+          "href": "https://www.regjeringen.no/contentassets/6d2ec1946c744942a24cb528ca666ae0/no/pdfs/stm202520260011000dddpdfs.pdf"
+        }
+      ],
       "detail": {
         "verified": "Regjeringen vil etablere en trygg offentlig KI-basert digital førstelinje via Helsenorge. Planen beskriver også samarbeid med næringslivet og kjøp av kvalitetssikrede løsninger i markedet.",
         "open": "Innkjøpsform, finansiering, godkjenningsmodell, integrasjonspunkter og tidslinje er ikke avklart. Konsekvensen for Viddels posisjon er derfor fortsatt WATCH.",
@@ -242,10 +414,25 @@
     }
   ],
   "frontPreview": {
-    "now": ["doga-markedsklar", "clinic-value", "external-presence"],
-    "next": ["funded-round-one", "lived-hearing", "retrieval-benchmark"],
-    "later": ["inventory"],
-    "watch": ["doga-path", "clinic-evidence", "beta-evidence", "hearing-landscape"]
+    "now": [
+      "doga-markedsklar",
+      "clinic-value",
+      "external-presence"
+    ],
+    "next": [
+      "funded-round-one",
+      "lived-hearing",
+      "retrieval-benchmark"
+    ],
+    "later": [
+      "inventory"
+    ],
+    "watch": [
+      "doga-path",
+      "clinic-evidence",
+      "beta-evidence",
+      "hearing-landscape"
+    ]
   },
   "frontPreviewLabels": {
     "doga-markedsklar": "Få Markedsklar med designpartner formelt på plass",
@@ -257,8 +444,191 @@
     "inventory": "Utforsk varig bruker-eid kontekst"
   },
   "decisionForks": [
-    {"title": "Når kommer første brukerloop?", "body": "#361 / #363 kan komme før finansiert Round 1 eller etter den. Gate og faktisk readiness avgjør — roadmapet låser ikke sekvensen nå."},
-    {"title": "Markedsklar og finansiert utvikling", "body": "Markedsklar-læringen og teknisk levering kan bli iterative eller parallelle. Vi låser ikke et lineært fossefall før kapasitet, periode og leveransescope faktisk er kjent."}
+    {
+      "title": "Når kommer første brukerloop?",
+      "body": "#361 / #363 kan komme før finansiert Round 1 eller etter den. Gate og faktisk readiness avgjør — roadmapet låser ikke sekvensen nå."
+    },
+    {
+      "title": "Markedsklar og finansiert utvikling",
+      "body": "Markedsklar-læringen og teknisk levering kan bli iterative eller parallelle. Vi låser ikke et lineært fossefall før kapasitet, periode og leveransescope faktisk er kjent."
+    }
   ],
-  "programFrame": "Oppstartstilskudd 1 er godkjent. Nå ligger tyngden på Markedsklar, klinikkverdi, direkte feltlæring, External Presence og oppbygging av Viddel-eid kunnskap, mens beta-hardening er parkert til #361 faktisk trenger den."
+  "programFrame": "Oppstartstilskudd 1 er godkjent. Nå ligger tyngden på Markedsklar, klinikkverdi, direkte feltlæring, External Presence og oppbygging av Viddel-eid kunnskap, mens beta-hardening er parkert til #361 faktisk trenger den.",
+  "temporalTimeline": {
+    "startMonth": "2026-09",
+    "endMonth": "2027-01",
+    "lanes": [
+      {
+        "id": "marketready",
+        "label": "Markedsklar"
+      },
+      {
+        "id": "product",
+        "label": "Produkt"
+      },
+      {
+        "id": "learning",
+        "label": "Læring"
+      },
+      {
+        "id": "test",
+        "label": "Test"
+      }
+    ],
+    "items": [
+      {
+        "id": "marketready-rig",
+        "lane": "marketready",
+        "label": "Rigge + lære",
+        "start": "2026-09",
+        "end": "2026-11",
+        "timing": "bounded",
+        "sourceInitiativeIds": [
+          "doga-markedsklar",
+          "clinic-value"
+        ]
+      },
+      {
+        "id": "marketready-test-support",
+        "lane": "marketready",
+        "label": "Teststøtte",
+        "start": "2026-11",
+        "end": "2026-12",
+        "timing": "open",
+        "sourceInitiativeIds": [
+          "doga-markedsklar"
+        ]
+      },
+      {
+        "id": "marketready-synthesis",
+        "lane": "marketready",
+        "label": "Syntese",
+        "start": "2027-01",
+        "end": "2027-01",
+        "timing": "open",
+        "sourceInitiativeIds": [
+          "doga-markedsklar",
+          "clinic-value"
+        ]
+      },
+      {
+        "id": "product-mobilise",
+        "lane": "product",
+        "label": "Mobilisere",
+        "start": "2026-09",
+        "end": "2026-09",
+        "timing": "bounded",
+        "sourceInitiativeIds": [
+          "delivery-partner",
+          "funding-scope"
+        ]
+      },
+      {
+        "id": "product-testable",
+        "lane": "product",
+        "label": "Gjøre testbar",
+        "start": "2026-10",
+        "end": "2026-11",
+        "timing": "bounded",
+        "sourceInitiativeIds": [
+          "funded-round-one",
+          "beta-gate"
+        ]
+      },
+      {
+        "id": "product-iterate",
+        "lane": "product",
+        "label": "Avgrenset iterasjon",
+        "start": "2026-12",
+        "end": "2027-01",
+        "timing": "open",
+        "sourceInitiativeIds": [
+          "round-two"
+        ]
+      },
+      {
+        "id": "learning-field-clinic",
+        "lane": "learning",
+        "label": "Felt + klinikk",
+        "start": "2026-09",
+        "end": "2026-10",
+        "timing": "bounded",
+        "sourceInitiativeIds": [
+          "clinic-value",
+          "user-relationships"
+        ]
+      },
+      {
+        "id": "learning-users-field",
+        "lane": "learning",
+        "label": "Brukere i felt",
+        "start": "2026-11",
+        "end": "2026-12",
+        "timing": "open",
+        "sourceInitiativeIds": [
+          "user-relationships",
+          "first-user-loop"
+        ]
+      },
+      {
+        "id": "learning-synthesis",
+        "lane": "learning",
+        "label": "Syntese",
+        "start": "2027-01",
+        "end": "2027-01",
+        "timing": "open",
+        "sourceInitiativeIds": [
+          "user-relationships",
+          "research-collaboration"
+        ]
+      },
+      {
+        "id": "test-design",
+        "lane": "test",
+        "label": "Testdesign",
+        "start": "2026-09",
+        "end": "2026-10",
+        "timing": "bounded",
+        "sourceInitiativeIds": [
+          "beta-gate",
+          "first-user-loop"
+        ]
+      },
+      {
+        "id": "test-start",
+        "lane": "test",
+        "label": "Teststart",
+        "start": "2026-11",
+        "end": "2026-11",
+        "timing": "open",
+        "sourceInitiativeIds": [
+          "first-user-loop"
+        ]
+      },
+      {
+        "id": "test-evidence",
+        "lane": "test",
+        "label": "Evidens + læring",
+        "start": "2026-12",
+        "end": "2026-12",
+        "timing": "open",
+        "sourceInitiativeIds": [
+          "round-two"
+        ]
+      },
+      {
+        "id": "test-way-forward",
+        "lane": "test",
+        "label": "Veien videre",
+        "start": "2027-01",
+        "end": "2027-01",
+        "timing": "open",
+        "milestone": true,
+        "sourceInitiativeIds": [
+          "round-two",
+          "retrieval-benchmark"
+        ]
+      }
+    ]
+  }
 }
