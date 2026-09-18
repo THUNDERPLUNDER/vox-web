@@ -1,0 +1,38 @@
+---
+/* CONTRACT: Partner/admin Viddel Access landing. #457 */
+import "../../styles/global.css";
+import { requireViddelRole } from "../../lib/access-auth-v01.ts";
+
+export const prerender = false;
+
+const access = await requireViddelRole(Astro.request, "partner");
+if (!access.ok) {
+  if (access.status === 401) {
+    return Astro.redirect("/login?return=/partner");
+  }
+  return new Response("Forbidden", { status: 403 });
+}
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
+Astro.response.headers.set("Cache-Control", "private, no-store, max-age=0");
+---
+
+<!doctype html>
+<html lang="no" data-theme="system">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Partnerområde · Viddel</title>
+  </head>
+  <body class="min-h-dvh bg-[rgb(var(--bg))] text-[rgb(var(--text))] antialiased">
+    <main class="mx-auto max-w-4xl space-y-6 px-5 py-10">
+      <header class="space-y-1">
+        <p class="text-xs font-medium uppercase tracking-[0.14em] text-[rgb(var(--muted))]">Viddel</p>
+        <h1 class="font-display text-3xl font-semibold tracking-tight">Partnerområde</h1>
+        <p class="text-sm text-[rgb(var(--muted))]">Innlogget som {access.session.name}.</p>
+      </header>
+      <p class="text-sm text-[rgb(var(--muted))]">Delte partnerflater kommer hit når vi faktisk trenger dem.</p>
+    </main>
+  </body>
+</html>

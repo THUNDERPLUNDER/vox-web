@@ -1,6 +1,7 @@
 <!-- CONTRACT: Global site header with desktop nav and mobile menu trigger. -->
 ---
 import MobileMenuTrigger from "./MobileMenuTrigger.astro";
+import AccountMenu from "../access/AccountMenu.astro";
 import { NO_NAV_CHAT_HREF, NO_NAV_CHAT_LABEL, NO_NAV_LINKS } from "../../lib/no-nav-links";
 import { isNavActive } from "../../lib/nav-active";
 
@@ -133,6 +134,7 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
         </a>
       )
     }
+    <AccountMenu variant="header" />
     <MobileMenuTrigger />
   </div>
 </header>

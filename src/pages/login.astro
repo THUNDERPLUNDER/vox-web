@@ -1,0 +1,89 @@
+---
+/* CONTRACT: Viddel Access login for admins/partners. Not end-user auth. #457 */
+import "../styles/global.css";
+import { getViddelAccessSession, isAccessAuthConfigured } from "../lib/access-auth-v01.ts";
+
+export const prerender = false;
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
+Astro.response.headers.set("Cache-Control", "private, no-store, max-age=0");
+
+const requestedReturn = Astro.url.searchParams.get("return")?.trim() ?? "";
+const safeReturn =
+  requestedReturn.startsWith("/admin") || requestedReturn.startsWith("/partner")
+    ? requestedReturn
+    : "";
+
+const existing = await getViddelAccessSession(Astro.request);
+if (existing) {
+  const fallback = existing.role === "admin" ? "/admin" : "/partner";
+  return Astro.redirect(safeReturn || fallback);
+}
+
+const configured = isAccessAuthConfigured();
+const errorCode = Astro.url.searchParams.get("error")?.trim() ?? "";
+const denied = errorCode === "email_not_allowed";
+---
+
+<!doctype html>
+<html lang="no" data-theme="system">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Logg inn · Viddel</title>
+  </head>
+  <body class="min-h-dvh bg-[rgb(var(--bg))] text-[rgb(var(--text))] antialiased">
+    <main class="mx-auto flex min-h-dvh max-w-md items-center px-5 py-10">
+      <section class="w-full space-y-6 rounded-[var(--radius-lg)] border border-[rgb(var(--border))] bg-[rgb(var(--surface-elevated))] p-6 shadow-[var(--shadow-sm)]">
+        <div class="space-y-2">
+          <p class="text-xs font-medium uppercase tracking-[0.14em] text-[rgb(var(--muted))]">Viddel</p>
+          <h1 class="font-display text-2xl font-semibold tracking-tight">Logg inn</h1>
+          <p class="text-sm leading-relaxed text-[rgb(var(--muted))]">
+            For administratorer og samarbeidspartnere med tilgang til Viddel.
+          </p>
+        </div>
+
+        {denied ? (
+          <p class="rounded-[var(--radius-sm)] bg-[rgb(var(--surface-subtle))] p-3 text-sm" role="alert">
+            Denne Google-kontoen har ikke tilgang til Viddel.
+          </p>
+        ) : null}
+
+        {!configured ? (
+          <p class="rounded-[var(--radius-sm)] bg-[rgb(var(--surface-subtle))] p-3 text-sm" role="status">
+            Innloggingen er ikke konfigurert ennå.
+          </p>
+        ) : (
+          <button
+            type="button"
+            data-google-login
+            data-return-to={safeReturn}
+            class="inline-flex w-full items-center justify-center rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--text))] px-4 py-3 text-sm font-semibold text-[rgb(var(--bg))]"
+          >
+            Fortsett med Google
+          </button>
+        )}
+
+        <p class="text-xs leading-relaxed text-[rgb(var(--muted))]">
+          Innloggingen gjelder interne og delte Viddel-flater. Den oppretter ingen brukerprofil i selve Viddel-tjenesten.
+        </p>
+      </section>
+    </main>
+
+    {configured ? (
+      <script>
+        import { accessAuthClient } from "../lib/access-auth-client-v01";
+
+        const button = document.querySelector<HTMLButtonElement>("[data-google-login]");
+        button?.addEventListener("click", async () => {
+          const callbackURL = button.dataset.returnTo || "/partner";
+          await accessAuthClient.signIn.social({
+            provider: "google",
+            callbackURL,
+          });
+        });
+      </script>
+    ) : null}
+  </body>
+</html>
