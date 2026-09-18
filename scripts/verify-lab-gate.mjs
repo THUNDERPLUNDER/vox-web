@@ -47,6 +47,38 @@ if (!existsSync(labApi)) {
   errors.push("Missing /api/lab/image-vision route");
 }
 
+const interestListPage = join(process.cwd(), "src/pages/lab/interesse.astro");
+if (!existsSync(interestListPage)) {
+  errors.push("Missing /lab/interesse page");
+} else {
+  const page = readFileSync(interestListPage, "utf8");
+  if (!page.includes("isLabRouteAvailable") || !page.includes("hasValidLabSession")) {
+    errors.push("/lab/interesse must use the Lab availability + session gate");
+  }
+  if (!page.includes('Cache-Control", "private, no-store')) {
+    errors.push("/lab/interesse must disable caching");
+  }
+  if (!page.includes('X-Robots-Tag", "noindex, nofollow')) {
+    errors.push("/lab/interesse must be noindex,nofollow");
+  }
+}
+
+const interestCsvApi = join(process.cwd(), "src/pages/api/lab/interest-signups.csv.ts");
+if (!existsSync(interestCsvApi)) {
+  errors.push("Missing /api/lab/interest-signups.csv route");
+} else {
+  const api = readFileSync(interestCsvApi, "utf8");
+  if (!api.includes("isLabRouteAvailable") || !api.includes("hasValidLabSession")) {
+    errors.push("/api/lab/interest-signups.csv must use the Lab availability + session gate");
+  }
+  if (!api.includes("private, no-store")) {
+    errors.push("/api/lab/interest-signups.csv must disable caching");
+  }
+  if (api.includes("console.log") || api.includes("record.email")) {
+    errors.push("/api/lab/interest-signups.csv must not log or interpolate email into logs");
+  }
+}
+
 const knowledgeUxPage = join(process.cwd(), "src/pages/lab/knowledge-ux.astro");
 if (!existsSync(knowledgeUxPage)) {
   errors.push("Missing /lab/knowledge-ux page");
