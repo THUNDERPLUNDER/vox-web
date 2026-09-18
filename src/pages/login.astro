@@ -58,6 +58,7 @@ const denied = errorCode === "email_not_allowed";
           <button
             type="button"
             data-google-login
+            data-return-to={safeReturn}
             class="inline-flex w-full items-center justify-center rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--text))] px-4 py-3 text-sm font-semibold text-[rgb(var(--bg))]"
           >
             Fortsett med Google
@@ -71,11 +72,12 @@ const denied = errorCode === "email_not_allowed";
     </main>
 
     {configured ? (
-      <script define:vars={{ safeReturn }}>
+      <script>
         import { accessAuthClient } from "../lib/access-auth-client-v01";
 
-        document.querySelector("[data-google-login]")?.addEventListener("click", async () => {
-          const callbackURL = safeReturn || "/partner";
+        const button = document.querySelector<HTMLButtonElement>("[data-google-login]");
+        button?.addEventListener("click", async () => {
+          const callbackURL = button.dataset.returnTo || "/partner";
           await accessAuthClient.signIn.social({
             provider: "google",
             callbackURL,
