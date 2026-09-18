@@ -6,11 +6,13 @@ import {
   roadmapProgramFrame as fallbackProgramFrame,
   roadmapProjectionMeta as fallbackMeta,
   roadmapTracks,
+  roadmapTemporalTimeline as fallbackTemporalTimeline,
   roadmapWatchSignals as fallbackWatchSignals,
   type ExecutionLikelihood,
   type RoadmapHorizon,
   type RoadmapInitiative,
   type RoadmapTrackId,
+  type RoadmapTemporalTimeline,
   type RoadmapWatchSignal,
   type StrategicFunction,
   type TimingConfidence,
@@ -32,6 +34,7 @@ export type RoadmapProjectionV02 = {
   watchSignals: RoadmapWatchSignal[];
   frontPreview: Record<RoadmapHorizon | "watch", string[]>;
   frontPreviewLabels: Record<string, string>;
+  temporalTimeline: RoadmapTemporalTimeline;
   decisionForks: Array<{ title: string; body: string }>;
   programFrame: string;
 };
@@ -70,6 +73,7 @@ function fallbackProjection(): RoadmapProjectionV02 {
     watchSignals: fallbackWatchSignals,
     frontPreview: fallbackFrontPreview,
     frontPreviewLabels: fallbackFrontPreviewLabels,
+    temporalTimeline: fallbackTemporalTimeline,
     decisionForks: [...fallbackDecisionForks],
     programFrame: fallbackProgramFrame,
   };
@@ -166,6 +170,85 @@ export function validateRoadmapProjectionV02(value: unknown): string[] {
       if (raw.timing.confidence === "open" && (start || end)) errors.push(`Open timing must not have date anchors on ${id}.`);
       if (raw.timing.confidence === "fixed" && (!isNonEmptyString(start) || end)) errors.push(`Fixed timing requires one explicit date on ${id}.`);
       if (raw.timing.confidence === "bounded" && (!isNonEmptyString(start) || !isNonEmptyString(end))) errors.push(`Bounded timing requires explicit start and end on ${id}.`);
+    }
+  }
+
+  const monthPattern = /^\d{4}-\d{2}$/;
+  if (!isRecord(value.temporalTimeline)) {
+    errors.push("temporalTimeline must be an object.");
+  } else {
+    const temporal = value.temporalTimeline;
+    if (!isNonEmptyString(temporal.startMonth) || !monthPattern.test(temporal.startMonth)) {
+      errors.push("temporalTimeline.startMonth must use YYYY-MM.");
+    }
+    if (!isNonEmptyString(temporal.endMonth) || !monthPattern.test(temporal.endMonth)) {
+      errors.push("temporalTimeline.endMonth must use YYYY-MM.");
+    }
+    if (
+      isNonEmptyString(temporal.startMonth) &&
+      isNonEmptyString(temporal.endMonth) &&
+      monthPattern.test(temporal.startMonth) &&
+      monthPattern.test(temporal.endMonth) &&
+      temporal.startMonth > temporal.endMonth
+    ) {
+      errors.push("temporalTimeline startMonth must not be after endMonth.");
+    }
+
+    const laneIds = new Set<string>();
+    if (!Array.isArray(temporal.lanes) || temporal.lanes.length < 1) {
+      errors.push("temporalTimeline.lanes must be a non-empty array.");
+    } else {
+      for (const lane of temporal.lanes) {
+        if (!isRecord(lane) || !isNonEmptyString(lane.id) || !isNonEmptyString(lane.label)) {
+          errors.push("Each temporal lane needs id and label.");
+          continue;
+        }
+        if (laneIds.has(lane.id)) errors.push(`Duplicate temporal lane id: ${lane.id}.`);
+        laneIds.add(lane.id);
+      }
+    }
+
+    const itemIds = new Set<string>();
+    if (!Array.isArray(temporal.items) || temporal.items.length < 1) {
+      errors.push("temporalTimeline.items must be a non-empty array.");
+    } else {
+      for (const item of temporal.items) {
+        if (!isRecord(item) || !isNonEmptyString(item.id)) {
+          errors.push("Each temporal item needs an id.");
+          continue;
+        }
+        if (itemIds.has(item.id)) errors.push(`Duplicate temporal item id: ${item.id}.`);
+        itemIds.add(item.id);
+        if (!isNonEmptyString(item.lane) || !laneIds.has(item.lane)) {
+          errors.push(`Unknown temporal lane on ${item.id}.`);
+        }
+        if (!isNonEmptyString(item.label)) errors.push(`Temporal label missing on ${item.id}.`);
+        if (!isNonEmptyString(item.start) || !monthPattern.test(item.start) || !isNonEmptyString(item.end) || !monthPattern.test(item.end)) {
+          errors.push(`Temporal item dates must use YYYY-MM on ${item.id}.`);
+        } else {
+          if (item.start > item.end) errors.push(`Temporal item start must not follow end on ${item.id}.`);
+          if (
+            isNonEmptyString(temporal.startMonth) &&
+            isNonEmptyString(temporal.endMonth) &&
+            (item.start < temporal.startMonth || item.end > temporal.endMonth)
+          ) {
+            errors.push(`Temporal item falls outside timeline on ${item.id}.`);
+          }
+        }
+        if (!isNonEmptyString(item.timing) || !timingConfidences.includes(item.timing as TimingConfidence)) {
+          errors.push(`Invalid temporal timing on ${item.id}.`);
+        }
+        if (item.milestone !== undefined && typeof item.milestone !== "boolean") {
+          errors.push(`Temporal milestone must be boolean on ${item.id}.`);
+        }
+        if (
+          !Array.isArray(item.sourceInitiativeIds) ||
+          item.sourceInitiativeIds.length < 1 ||
+          item.sourceInitiativeIds.some((id) => !isNonEmptyString(id) || !initiativeIds.has(id))
+        ) {
+          errors.push(`Unknown temporal source initiative on ${item.id}.`);
+        }
+      }
     }
   }
 
