@@ -1,6 +1,7 @@
 ---
 /* CONTRACT: Public company homepage at viddel.no. Product MVP remains separate under /no. */
 import PublicHoldingLayout from "../layouts/PublicHoldingLayout.astro";
+import InterestSignupForm from "../components/public/InterestSignupForm.astro";
 
 const pageTitle = "Viddel – hør mer av hverdagen";
 const pageDescription =
@@ -40,6 +41,14 @@ const pageDescription =
         <p>Vi utvikler Viddel sammen med mennesker som lever med svekket hørsel og fagfolk som kjenner problemene fra sin side. Det vi lærer bruker vi til å bygge, teste og endre den første versjonen.</p>
         <p>KI gjør det mulig å finne fram i mye kunnskap og gi mer relevant hjelp i situasjonen brukeren står i. Samtidig må kildene være gode, systemet må vite hva som faktisk er kjent, og det må være tydelig når spørsmålet hører hjemme hos en fagperson.</p>
         <p>Diagnose, behandling og individuell tilpasning av høreapparater overlater vi til fagfolkene.</p>
+      </div>
+    </section>
+
+    <section class="public-section public-section--interest" aria-labelledby="interesse-title">
+      <h2 id="interesse-title">Interessert?</h2>
+      <div class="public-section__body">
+        <p>Legg igjen e-postadressen hvis du vil høre fra oss når vi tester eller har noe nytt å dele.</p>
+        <InterestSignupForm />
       </div>
     </section>
 

@@ -85,10 +85,10 @@ export const mvpCurrentState = {
       label: "Viddel.no",
       route: "/",
       status: "Applied",
-      note: "Canonical offentlig Viddel-side med verifisert kontaktpunkt. Legacy-domenet vox.raddum.no skal settes som domene-redirect til www.viddel.no i Vercel; dette er ikke aktivert ennå. Produkt-MVP-en ligger fortsatt separat under /no/.",
+      note: "Canonical offentlig Viddel-side med verifisert kontaktpunkt og lavterskel interessentpåmelding. Påmeldingen lagrer kun e-post + samtykkemetadata i en egen Neon-tabell og oppretter ingen konto. Legacy-domenet vox.raddum.no skal settes som domene-redirect til www.viddel.no i Vercel; dette er ikke aktivert ennå. Produkt-MVP-en ligger fortsatt separat under /no/.",
       visFrontpage: true,
       kind: "public",
-      frontpageDescription: "Offentlig presentasjon og kontaktpunkt for Viddel AS.",
+      frontpageDescription: "Offentlig presentasjon, kontaktpunkt og interessentpåmelding for Viddel AS.",
     },
     {
       id: "frontpage",

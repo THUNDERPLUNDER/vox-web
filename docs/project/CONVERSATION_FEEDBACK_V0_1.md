@@ -4,7 +4,7 @@ Status: implemented for internal beta/conversation-design QA in issue #346. Oper
 
 ## Storage and region
 
-- Store: Neon Postgres Free, dedicated Vercel Marketplace resource `neon-apricot-coin`.
+- Store: Neon Postgres Free, shared Viddel input resource `neon-apricot-coin`; `conversation_feedback` remains a purpose-separated table.
 - Region: AWS Frankfurt, Germany (EU).
 - Vercel project: `vox-web`, connected to Production and Preview.
 - Server credential: `FEEDBACK_DATABASE_DATABASE_URL` from the Vercel integration. `FEEDBACK_DATABASE_URL` is also accepted as a local/manual alias.

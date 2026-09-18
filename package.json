@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs && node --experimental-strip-types scripts/verify-backstage-guard.mjs && node --experimental-strip-types scripts/verify-vis-runtime-feed.mjs && node --experimental-strip-types scripts/verify-vis-roadmap-horizons.mjs && node --experimental-strip-types scripts/verify-lab-gate.mjs && node --experimental-strip-types scripts/verify-owner-access.mjs && node --experimental-strip-types scripts/verify-conversation-feedback-v01.mjs && node --experimental-strip-types scripts/verify-agent-search-session.mjs && node --experimental-strip-types scripts/verify-status-audiologist-prototype.mjs && astro build",
+    "build": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs && node --experimental-strip-types scripts/verify-backstage-guard.mjs && node --experimental-strip-types scripts/verify-vis-runtime-feed.mjs && node --experimental-strip-types scripts/verify-vis-roadmap-horizons.mjs && node --experimental-strip-types scripts/verify-lab-gate.mjs && node --experimental-strip-types scripts/verify-owner-access.mjs && node --experimental-strip-types scripts/verify-conversation-feedback-v01.mjs && node --experimental-strip-types scripts/verify-agent-search-session.mjs && node --experimental-strip-types scripts/verify-status-audiologist-prototype.mjs && node --experimental-strip-types scripts/verify-interest-signup-v01.mjs && astro build",
     "verify:vis-sprint-guard": "node --experimental-strip-types scripts/verify-vis-sprint-guard.mjs",
     "verify:backstage-guard": "node --experimental-strip-types scripts/verify-backstage-guard.mjs",
     "verify:owner-access": "node --experimental-strip-types scripts/verify-owner-access.mjs",
@@ -13,6 +13,7 @@
     "verify:vis-runtime-feed": "node --experimental-strip-types scripts/verify-vis-runtime-feed.mjs",
     "verify:vis-roadmap-horizons": "node --experimental-strip-types scripts/verify-vis-roadmap-horizons.mjs",
     "verify:status-audiologist": "node --experimental-strip-types scripts/verify-status-audiologist-prototype.mjs",
+    "verify:interest-signup": "node --experimental-strip-types scripts/verify-interest-signup-v01.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "storyblok:bootstrap:slice01": "node scripts/storyblok-bootstrap-slice-01.mjs",
