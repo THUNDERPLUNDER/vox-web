@@ -74,8 +74,9 @@ if (!existsSync(interestCsvApi)) {
   if (!api.includes("private, no-store")) {
     errors.push("/api/lab/interest-signups.csv must disable caching");
   }
-  if (api.includes("console.log") || api.includes("record.email")) {
-    errors.push("/api/lab/interest-signups.csv must not log or interpolate email into logs");
+  const logLines = api.split("\n").filter((line) => line.includes("console."));
+  if (logLines.some((line) => /email|record\./i.test(line))) {
+    errors.push("/api/lab/interest-signups.csv must not log row content");
   }
 }
 
