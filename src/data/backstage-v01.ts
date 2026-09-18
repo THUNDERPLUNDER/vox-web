@@ -3,8 +3,8 @@
 export const backstageMeta = {
   title: "Backstage",
   lead: "Backstage er kontrollrommet for hvordan Viddel fungerer bak scenen. Her forklarer vi AI-flyten, beskyttelsen, feilstater og hva som må sjekkes før vi deler med flere.",
-  updatedAt: "2026-08-20",
-  issue: "#180 · #184 · #222 · #346",
+  updatedAt: "2026-09-18",
+  issue: "#180 · #184 · #222 · #346 · #453",
 } as const;
 
 export const statusPanel = [
@@ -12,6 +12,7 @@ export const statusPanel = [
   { label: "Guard", value: "Eierbryter + Vercel Firewall", tone: "ok" as const },
   { label: "Monitoring", value: "Vercel logs + PostHog EU", tone: "ok" as const },
   { label: "Conversation feedback", value: "Neon EU · retention Needs QA", tone: "wait" as const },
+  { label: "Interessentpåmelding", value: "Neon EU · egen tabell", tone: "ok" as const },
 ] as const;
 
 export const quickAnswers = [
@@ -42,7 +43,12 @@ export const quickAnswers = [
   {
     question: "Hva lagres når noen gir tilbakemelding?",
     answer:
-      "En separat Neon-database i Frankfurt lagrer score, valgte hurtiggrunner, valgfri kommentar, tidspunkt, route og miljø. CES-session, spørsmål, svar og samtaleutdrag følger aldri med. Automatisk sletting etter 90 dager er implementert, men ikke operativt verifisert ennå.",
+      "En egen conversation_feedback-tabell i Viddels Neon-ressurs i Frankfurt lagrer score, valgte hurtiggrunner, valgfri kommentar, tidspunkt, route og miljø. CES-session, spørsmål, svar og samtaleutdrag følger aldri med. Automatisk sletting etter 90 dager er implementert, men ikke operativt verifisert ennå.",
+  },
+  {
+    question: "Hva lagres når noen melder interesse?",
+    answer:
+      "En egen public_interest_signup-tabell i samme Neon-ressurs lagrer normalisert e-postadresse, påmeldings- og samtykketidspunkt, samtykkeversjon, kilde og miljø. Dataene kobles ikke til chat, feedback eller brukerprofil.",
   },
 ] as const;
 
@@ -877,7 +883,7 @@ export const monitoringExplainer = {
       id: "feedback",
       label: "Conversation feedback (Neon EU)",
       human:
-        "Eksplisitt tilbakemelding lagres i en egen Neon Postgres Free-database i AWS Frankfurt. Kun score, hurtiggrunner, valgfri kommentar og kontrollert metadata — aldri chatspørsmål, svar, transcript eller CES-session.",
+        "Eksplisitt tilbakemelding lagres i en egen conversation_feedback-tabell i Viddels Neon Postgres Free-ressurs i AWS Frankfurt. Kun score, hurtiggrunner, valgfri kommentar og kontrollert metadata — aldri chatspørsmål, svar, transcript eller CES-session.",
       where: "Vercel → Storage → neon-apricot-coin · 90-dagers retention Needs QA",
     },
   ],
@@ -891,12 +897,13 @@ export const monitoringLogged = [
   "Feilkoder (error_code) — aldri meldingstekst",
   "Route, entry_surface, article_slug, seed_id (hash — ikke spørsmålstekst)",
   "Neon feedback: separat feedback-reference, score, valgte grunner, valgfri kommentar, server-tidspunkt, route og environment",
+  "Neon interessentliste: normalisert e-post, server-tidspunkt, samtykkeversjon, source og environment — kun etter eksplisitt påmelding",
 ] as const;
 
 export const monitoringNotLogged = [
   "Full spørsmålstekst",
   "Full svartekst",
-  "Navn, e-post eller helseopplysninger",
+  "Navn eller helseopplysninger i monitoring/chat/feedback; e-post lagres kun ved eksplisitt interessentpåmelding og sendes ikke til logger eller PostHog",
   "Session replay fra chat-input",
   "Brukerprofiler eller persistent identitet",
   "Høreapparatmodell som fritekst",
@@ -916,7 +923,7 @@ export const monitoringEvents = [
 
 export type EnvVarEntry = {
   name: string;
-  group: "ces" | "agent-search" | "auth" | "posthog" | "ops" | "feedback";
+  group: "ces" | "agent-search" | "auth" | "posthog" | "ops" | "feedback" | "input-store";
   controls: string;
 };
 
@@ -959,13 +966,13 @@ export const envVars: EnvVarEntry[] = [
   { name: "PUBLIC_POSTHOG_HOST", group: "posthog", controls: "PostHog API-host — default https://eu.i.posthog.com" },
   {
     name: "FEEDBACK_DATABASE_DATABASE_URL",
-    group: "feedback",
-    controls: "Neon Postgres-tilkobling fra Vercel Marketplace. Kun server-side; Frankfurt/EU.",
+    group: "input-store",
+    controls: "Delt Neon Postgres-tilkobling for formålsseparate input-tabeller (conversation feedback + interessentpåmelding). Legacy env-navn beholdes. Kun server-side; Frankfurt/EU.",
   },
   {
     name: "FEEDBACK_DATABASE_URL",
-    group: "feedback",
-    controls: "Valgfritt kort alias ved lokal/manuell konfigurasjon.",
+    group: "input-store",
+    controls: "Valgfritt kort alias til samme delte Neon-ressurs ved lokal/manuell konfigurasjon.",
   },
   {
     name: "CRON_SECRET",
@@ -1001,5 +1008,9 @@ export const sourceFiles = [
   "src/pages/api/conversation-feedback-retention.ts",
   "src/lib/conversation-feedback-v01.ts",
   "src/lib/conversation-feedback-store-v01.ts",
+  "src/pages/api/interest-signup.ts",
+  "src/lib/interest-signup-v01.ts",
+  "src/lib/interest-signup-store-v01.ts",
+  "src/components/public/InterestSignupForm.astro",
   "src/components/conversation/ConversationFeedbackPanel.astro",
 ] as const;

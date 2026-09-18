@@ -1,0 +1,118 @@
+---
+/* CONTRACT: Low-friction public interest signup. Email only; no account, profile or health data. #453 */
+import {
+  INTEREST_SIGNUP_CONSENT_VERSION,
+  INTEREST_SIGNUP_SOURCE,
+} from "../../lib/interest-signup-v01.ts";
+---
+
+<form
+  class="public-interest"
+  data-interest-signup-form
+  data-consent-version={INTEREST_SIGNUP_CONSENT_VERSION}
+  data-source={INTEREST_SIGNUP_SOURCE}
+  novalidate
+>
+  <label class="public-interest__label" for="public-interest-email">E-postadresse</label>
+
+  <div class="public-interest__fields" data-interest-signup-fields>
+    <input
+      id="public-interest-email"
+      name="email"
+      type="email"
+      autocomplete="email"
+      inputmode="email"
+      maxlength="254"
+      placeholder="navn@eksempel.no"
+      required
+    />
+    <button type="submit" data-interest-signup-submit>Meld interesse</button>
+  </div>
+
+  <div class="public-interest__honeypot" aria-hidden="true">
+    <label for="public-interest-website">Nettside</label>
+    <input
+      id="public-interest-website"
+      name="website"
+      type="text"
+      autocomplete="off"
+      tabindex="-1"
+      data-interest-signup-website
+    />
+  </div>
+
+  <p class="public-interest__privacy" data-interest-signup-privacy>
+    Når du melder interesse, lagrer Viddel e-postadressen din for å kunne kontakte deg om utvikling, testing og relevante oppdateringer.
+    <a href="/personvern">Les om personvern.</a>
+  </p>
+
+  <p
+    class="public-interest__status"
+    data-interest-signup-status
+    role="status"
+    aria-live="polite"
+  ></p>
+</form>
+
+<script>
+  (() => {
+    const form = document.querySelector<HTMLFormElement>("[data-interest-signup-form]");
+    const email = form?.querySelector<HTMLInputElement>('input[name="email"]');
+    const website = form?.querySelector<HTMLInputElement>("[data-interest-signup-website]");
+    const fields = form?.querySelector<HTMLElement>("[data-interest-signup-fields]");
+    const privacy = form?.querySelector<HTMLElement>("[data-interest-signup-privacy]");
+    const submit = form?.querySelector<HTMLButtonElement>("[data-interest-signup-submit]");
+    const status = form?.querySelector<HTMLElement>("[data-interest-signup-status]");
+
+    if (!form || !email || !website || !fields || !privacy || !submit || !status) return;
+
+    const originalLabel = submit.textContent ?? "Meld interesse";
+
+    const setStatus = (message = "", tone: "success" | "error" | "" = "") => {
+      status.textContent = message;
+      if (tone) status.dataset.tone = tone;
+      else delete status.dataset.tone;
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      email.value = email.value.trim();
+      setStatus();
+
+      if (!email.value || !email.checkValidity()) {
+        setStatus("Skriv inn en gyldig e-postadresse.", "error");
+        email.focus();
+        return;
+      }
+
+      submit.disabled = true;
+      submit.textContent = "Sender …";
+
+      try {
+        const response = await fetch("/api/interest-signup", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: email.value,
+            consent_version: form.dataset.consentVersion,
+            source: form.dataset.source,
+            website: website.value,
+          }),
+        });
+
+        if (!response.ok) throw new Error("interest_signup_failed");
+
+        form.reset();
+        fields.hidden = true;
+        privacy.hidden = true;
+        setStatus("Takk — vi tar kontakt når vi har noe relevant.", "success");
+      } catch {
+        setStatus("Kunne ikke melde interesse akkurat nå. Prøv igjen senere.", "error");
+      } finally {
+        submit.disabled = false;
+        submit.textContent = originalLabel;
+      }
+    });
+  })();
+</script>

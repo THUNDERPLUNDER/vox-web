@@ -1,4 +1,4 @@
-/* CONTRACT: Dedicated Neon store for Conversation Feedback v0.1 only. No chat/session content. #346 */
+/* CONTRACT: Dedicated conversation_feedback table in the shared Neon input resource. No chat/session content. #346 · #453 */
 import { neon } from "@neondatabase/serverless";
 import type { ConversationFeedbackInput } from "./conversation-feedback-v01.ts";
 import { CONVERSATION_FEEDBACK_RETENTION_DAYS } from "./conversation-feedback-v01.ts";

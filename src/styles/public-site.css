@@ -47,6 +47,8 @@ body.public-site {
 
 .public-header__brand:focus-visible,
 .public-page a:focus-visible,
+.public-page button:focus-visible,
+.public-page input:focus-visible,
 .public-footer a:focus-visible {
   border-radius: 2px;
   outline: 3px solid rgb(var(--focus-ring) / 0.42);
@@ -177,6 +179,87 @@ body.public-site {
 
 .public-section--contact .public-section__body { color: rgb(var(--reading-ink)); }
 
+.public-interest {
+  position: relative;
+  display: grid;
+  max-width: 34rem;
+  gap: 0.8rem;
+}
+
+.public-interest__label {
+  color: rgb(var(--reading-ink));
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.public-interest__fields {
+  display: flex;
+  gap: 0.65rem;
+  align-items: stretch;
+}
+
+.public-interest__fields input {
+  min-width: 0;
+  flex: 1;
+  padding: 0.78rem 0.9rem;
+  border: 1px solid rgb(var(--border));
+  border-radius: 0.55rem;
+  background: rgb(var(--article-page-canvas));
+  color: rgb(var(--reading-ink));
+  font: inherit;
+}
+
+.public-interest__fields input::placeholder {
+  color: rgb(var(--reading-ink-secondary) / 0.72);
+}
+
+.public-interest__fields button {
+  flex: none;
+  padding: 0.78rem 1rem;
+  border: 0;
+  border-radius: 0.55rem;
+  background: rgb(var(--accent-primary));
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 650;
+}
+
+.public-interest__fields button:disabled {
+  cursor: default;
+  opacity: 0.58;
+}
+
+.public-interest__privacy,
+.public-interest__status {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.public-interest__privacy {
+  color: rgb(var(--reading-ink-secondary));
+}
+
+.public-interest__status {
+  min-height: 1.3em;
+  color: rgb(var(--reading-ink));
+  font-weight: 550;
+}
+
+.public-interest__status[data-tone="error"] {
+  color: rgb(var(--reading-ink));
+}
+
+.public-interest__honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .public-partner-stamp {
   display: block;
   width: min(11.5rem, 70%);
@@ -293,6 +376,15 @@ body.public-site {
   }
 
   .public-section__body { max-width: 38rem; }
+
+  .public-interest__fields {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .public-interest__fields button {
+    width: fit-content;
+  }
 
   .public-authored {
     grid-template-columns: 1fr;
