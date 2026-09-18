@@ -22,7 +22,13 @@ body.public-site {
   margin-inline: auto;
 }
 
-.public-header { padding-block: clamp(1.5rem, 3vw, 2.5rem); }
+.public-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: clamp(1.5rem, 3vw, 2.5rem);
+}
 
 .public-header__brand {
   display: inline-flex;
