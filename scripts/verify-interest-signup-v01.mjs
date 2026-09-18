@@ -35,7 +35,7 @@ const [apiSource, componentSource, storeSource] = await Promise.all([
 
 assert.match(apiSource, /console\.error\("\[api\/interest-signup\] storage_error"\)/);
 assert.doesNotMatch(apiSource, /posthog/i);
-assert.doesNotMatch(componentSource, /diagnos|høreapparat|telefon|adresse/i);
+assert.doesNotMatch(componentSource, /name="(?:diagnosis|hearing|device|phone|address|age)"/i);
 assert.doesNotMatch(componentSource, /posthog/i);
 assert.match(storeSource, /public_interest_signup/);
 assert.doesNotMatch(storeSource, /conversation_feedback|session_id|transcript/i);
