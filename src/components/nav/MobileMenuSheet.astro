@@ -1,6 +1,7 @@
 <!-- CONTRACT: Full-screen mobile drawer; must stay outside backdrop-blur ancestors so fixed positioning works. -->
 ---
 import { NO_NAV_CHAT_HREF, NO_NAV_CHAT_LABEL, NO_NAV_LINKS } from "../../lib/no-nav-links";
+import AccountMenu from "../access/AccountMenu.astro";
 import { isNavActive } from "../../lib/nav-active";
 
 type Props = {
@@ -67,6 +68,9 @@ const chatActive = isNavActive(NO_NAV_CHAT_HREF, currentPath);
         </a>
       ) : null
     }
+    <div class="mt-4 border-t border-[rgb(var(--border))/0.35] pt-4">
+      <AccountMenu variant="mobile" />
+    </div>
     {
       showDevtoolsToggle ? (
         <div class="mt-4 border-t border-[rgb(var(--border))/0.35] pt-4">
