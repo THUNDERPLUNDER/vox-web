@@ -45,6 +45,29 @@ export type RoadmapWatchSignal = {
   };
 };
 
+export type RoadmapTemporalLane = {
+  id: string;
+  label: string;
+};
+
+export type RoadmapTemporalItem = {
+  id: string;
+  lane: string;
+  label: string;
+  start: string;
+  end: string;
+  timing: TimingConfidence;
+  milestone?: boolean;
+  sourceInitiativeIds: string[];
+};
+
+export type RoadmapTemporalTimeline = {
+  startMonth: string;
+  endMonth: string;
+  lanes: RoadmapTemporalLane[];
+  items: RoadmapTemporalItem[];
+};
+
 export const roadmapProjectionMeta = {
   version: "v0.1",
   title: "Viddel Horizon Roadmap",
@@ -323,6 +346,33 @@ export const roadmapFrontPreviewLabels: Record<string, string> = {
   "funded-round-one": "Avgrens første finansierte MVP-runde",
   "retrieval-benchmark": "Bygg Viddels evaluerings- og benchmarkkapabilitet",
   inventory: "Utforsk varig bruker-eid kontekst",
+};
+
+
+export const roadmapTemporalTimeline: RoadmapTemporalTimeline = {
+  startMonth: "2026-09",
+  endMonth: "2027-01",
+  lanes: [
+    { id: "marketready", label: "Markedsklar" },
+    { id: "product", label: "Produkt" },
+    { id: "learning", label: "Læring" },
+    { id: "test", label: "Test" },
+  ],
+  items: [
+    { id: "marketready-rig", lane: "marketready", label: "Rigge + lære", start: "2026-09", end: "2026-10", timing: "bounded", sourceInitiativeIds: ["doga-markedsklar", "clinic-value"] },
+    { id: "marketready-test-support", lane: "marketready", label: "Teststøtte", start: "2026-11", end: "2026-12", timing: "open", sourceInitiativeIds: ["doga-markedsklar"] },
+    { id: "marketready-synthesis", lane: "marketready", label: "Syntese", start: "2027-01", end: "2027-01", timing: "open", sourceInitiativeIds: ["doga-markedsklar", "clinic-value"] },
+    { id: "product-mobilise", lane: "product", label: "Mobilisere", start: "2026-09", end: "2026-09", timing: "bounded", sourceInitiativeIds: ["delivery-partner", "funding-scope"] },
+    { id: "product-testable", lane: "product", label: "Gjøre testbar", start: "2026-10", end: "2026-11", timing: "bounded", sourceInitiativeIds: ["funded-round-one", "beta-gate"] },
+    { id: "product-iterate", lane: "product", label: "Avgrenset iterasjon", start: "2026-12", end: "2027-01", timing: "open", sourceInitiativeIds: ["round-two"] },
+    { id: "learning-field-clinic", lane: "learning", label: "Felt + klinikk", start: "2026-09", end: "2026-10", timing: "bounded", sourceInitiativeIds: ["clinic-value", "user-relationships"] },
+    { id: "learning-users-field", lane: "learning", label: "Brukere i felt", start: "2026-11", end: "2026-12", timing: "open", sourceInitiativeIds: ["user-relationships", "first-user-loop"] },
+    { id: "learning-synthesis", lane: "learning", label: "Syntese", start: "2027-01", end: "2027-01", timing: "open", sourceInitiativeIds: ["user-relationships", "research-collaboration"] },
+    { id: "test-design", lane: "test", label: "Testdesign", start: "2026-09", end: "2026-10", timing: "bounded", sourceInitiativeIds: ["beta-gate", "first-user-loop"] },
+    { id: "test-start", lane: "test", label: "Teststart", start: "2026-11", end: "2026-11", timing: "open", sourceInitiativeIds: ["first-user-loop"] },
+    { id: "test-evidence", lane: "test", label: "Evidens + læring", start: "2026-12", end: "2026-12", timing: "open", sourceInitiativeIds: ["round-two"] },
+    { id: "test-way-forward", lane: "test", label: "Veien videre", start: "2027-01", end: "2027-01", timing: "open", milestone: true, sourceInitiativeIds: ["round-two", "retrieval-benchmark"] },
+  ],
 };
 
 export const executionLikelihoodLabels: Record<ExecutionLikelihood, string> = {

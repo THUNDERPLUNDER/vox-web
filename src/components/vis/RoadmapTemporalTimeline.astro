@@ -1,0 +1,454 @@
+---
+import type {
+  RoadmapTemporalItem,
+  RoadmapTemporalTimeline,
+  TimingConfidence,
+} from "../../data/vis-roadmap-horizons-v01.ts";
+
+interface Props {
+  timeline: RoadmapTemporalTimeline;
+  sourceState: "fresh" | "fallback";
+  detailHref: string;
+}
+
+const { timeline, sourceState, detailHref } = Astro.props;
+
+const monthFormatter = new Intl.DateTimeFormat("nb-NO", { month: "short" });
+const monthYearFormatter = new Intl.DateTimeFormat("nb-NO", { month: "short", year: "numeric" });
+
+function parseMonth(value: string): Date {
+  return new Date(`${value}-01T00:00:00Z`);
+}
+
+function addMonth(value: string): string {
+  const date = parseMonth(value);
+  date.setUTCMonth(date.getUTCMonth() + 1);
+  return date.toISOString().slice(0, 7);
+}
+
+function monthRange(start: string, end: string): string[] {
+  const months: string[] = [];
+  let current = start;
+  while (current <= end) {
+    months.push(current);
+    current = addMonth(current);
+  }
+  return months;
+}
+
+const months = monthRange(timeline.startMonth, timeline.endMonth);
+const monthIndex = new Map(months.map((month, index) => [month, index]));
+
+const itemsByLane = new Map<string, RoadmapTemporalItem[]>();
+for (const lane of timeline.lanes) {
+  itemsByLane.set(
+    lane.id,
+    timeline.items
+      .filter((item) => item.lane === lane.id)
+      .sort((a, b) => (monthIndex.get(a.start) ?? 0) - (monthIndex.get(b.start) ?? 0)),
+  );
+}
+
+const timingLabels: Record<TimingConfidence, string> = {
+  fixed: "Fast tidspunkt",
+  bounded: "Avgrenset tidsrom",
+  open: "Åpen timing",
+};
+
+const laneColors: Record<string, string> = {
+  marketready: "58 112 227",
+  product: "37 157 105",
+  learning: "224 168 54",
+  test: "225 111 78",
+};
+
+const timelineStart = parseMonth(timeline.startMonth);
+const timelineEndExclusive = parseMonth(addMonth(timeline.endMonth));
+const now = new Date();
+const rawTodayPercent =
+  ((now.getTime() - timelineStart.getTime()) /
+    (timelineEndExclusive.getTime() - timelineStart.getTime())) *
+  100;
+const todayVisible = rawTodayPercent >= 0 && rawTodayPercent <= 100;
+const todayPercent = Math.min(100, Math.max(0, rawTodayPercent));
+
+const monthLabel = (value: string, index: number) => {
+  const date = parseMonth(value);
+  if (index === 0 || date.getUTCMonth() === 0) {
+    return monthYearFormatter.format(date).replace(".", "");
+  }
+  return monthFormatter.format(date).replace(".", "");
+};
+
+const ariaForItem = (item: RoadmapTemporalItem) =>
+  `${item.label}. ${timingLabels[item.timing]}. Omtrentlig plassering ${item.start} til ${item.end}.`;
+---
+
+<section class="temporal" aria-labelledby="temporal-title">
+  <div class="temporal__heading">
+    <div>
+      <p class="temporal__eyebrow">Tidslinje · orientering</p>
+      <h3 id="temporal-title">September → januar</h3>
+      <p>
+        En mulig tidslig plassering av det overordnede roadmapet. Bruk den til å se hvor en idé naturlig hører hjemme.
+      </p>
+    </div>
+    <a href={detailHref}>Åpne roadmapet <span aria-hidden="true">↗</span></a>
+  </div>
+
+  <div class="temporal__viewport" tabindex="0" aria-label="Horisontal tidslinje fra september 2026 til januar 2027">
+    <div class="temporal__board" style={`--months: ${months.length};`}>
+      <div class="temporal__corner" aria-hidden="true"></div>
+      <div class="temporal__months">
+        {months.map((month, index) => (
+          <div class="temporal__month">
+            <span>{monthLabel(month, index)}</span>
+          </div>
+        ))}
+        {todayVisible ? (
+          <div class="temporal__today temporal__today--header" style={`left: ${todayPercent}%;`}>
+            <span>I DAG</span>
+          </div>
+        ) : null}
+      </div>
+
+      {timeline.lanes.map((lane) => {
+        const laneItems = itemsByLane.get(lane.id) ?? [];
+        const laneColor = laneColors[lane.id] ?? "82 96 113";
+        return (
+          <>
+            <div class="temporal__lane-label" style={`--lane-rgb: ${laneColor};`}>
+              <span class="temporal__lane-dot" aria-hidden="true"></span>
+              <strong>{lane.label}</strong>
+            </div>
+            <div class="temporal__track" style={`--lane-rgb: ${laneColor}; --months: ${months.length};`}>
+              {laneItems.map((item) => {
+                const start = (monthIndex.get(item.start) ?? 0) + 1;
+                const end = (monthIndex.get(item.end) ?? start - 1) + 2;
+                return (
+                  <div
+                    class:list={[
+                      "temporal__item",
+                      `temporal__item--${item.timing}`,
+                      item.milestone && "temporal__item--milestone",
+                    ]}
+                    style={`grid-column: ${start} / ${end};`}
+                    title={ariaForItem(item)}
+                    aria-label={ariaForItem(item)}
+                  >
+                    <span>{item.label}</span>
+                    <small>{timingLabels[item.timing]}</small>
+                  </div>
+                );
+              })}
+              {todayVisible ? <div class="temporal__today" style={`left: ${todayPercent}%;`} aria-hidden="true"></div> : null}
+            </div>
+          </>
+        );
+      })}
+    </div>
+  </div>
+
+  <div class="temporal__legend" aria-label="Slik leses tidslinjen">
+    <span><i class="temporal__legend-mark temporal__legend-mark--bounded" aria-hidden="true"></i> Avgrenset</span>
+    <span><i class="temporal__legend-mark temporal__legend-mark--open" aria-hidden="true"></i> Åpen timing</span>
+    <span class="temporal__legend-source">
+      {sourceState === "fresh" ? "Samme godkjente roadmap-state som NOW / NEXT / LATER" : "Viser bundet fallback-state"}
+    </span>
+  </div>
+</section>
+
+<style>
+  .temporal {
+    padding: clamp(1.2rem, 3vw, 2rem);
+    border-bottom: 1px solid rgb(213 222 232);
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.74), rgb(248 250 252 / 0.82));
+    color: rgb(15 27 46);
+  }
+
+  .temporal__heading {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .temporal__eyebrow {
+    margin: 0;
+    color: rgb(82 96 113);
+    font-size: 0.69rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+
+  .temporal__heading h3 {
+    margin: 0.28rem 0 0;
+    font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+    letter-spacing: -0.02em;
+  }
+
+  .temporal__heading p:not(.temporal__eyebrow) {
+    max-width: 48rem;
+    margin: 0.35rem 0 0;
+    color: rgb(82 96 113);
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
+  .temporal__heading a {
+    flex: none;
+    color: rgb(35 83 173);
+    font-size: 0.76rem;
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .temporal__viewport {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-gutter: stable;
+    border: 1px solid rgb(213 222 232);
+    border-radius: 0.9rem;
+    background: rgb(255 255 255 / 0.88);
+  }
+
+  .temporal__viewport:focus-visible {
+    outline: 2px solid rgb(54 114 230 / 0.7);
+    outline-offset: 2px;
+  }
+
+  .temporal__board {
+    display: grid;
+    grid-template-columns: 9.25rem minmax(56rem, 1fr);
+    min-width: 66rem;
+  }
+
+  .temporal__corner,
+  .temporal__lane-label {
+    position: sticky;
+    left: 0;
+    z-index: 4;
+    background: rgb(252 253 254 / 0.98);
+    border-right: 1px solid rgb(213 222 232);
+  }
+
+  .temporal__corner {
+    min-height: 2.45rem;
+    border-bottom: 1px solid rgb(213 222 232);
+  }
+
+  .temporal__months,
+  .temporal__track {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(var(--months), minmax(0, 1fr));
+  }
+
+  .temporal__months {
+    min-height: 2.45rem;
+    border-bottom: 1px solid rgb(213 222 232);
+    background: rgb(248 250 252);
+  }
+
+  .temporal__month {
+    display: flex;
+    align-items: center;
+    padding: 0 0.65rem;
+    border-left: 1px solid rgb(226 232 240);
+  }
+
+  .temporal__month:first-child {
+    border-left: 0;
+  }
+
+  .temporal__month span {
+    color: rgb(76 92 112);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .temporal__lane-label {
+    display: flex;
+    min-height: 3.55rem;
+    gap: 0.55rem;
+    align-items: center;
+    padding: 0.7rem 0.8rem;
+    border-bottom: 1px solid rgb(232 237 242);
+  }
+
+  .temporal__lane-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    flex: none;
+    border-radius: 999px;
+    background: rgb(var(--lane-rgb));
+  }
+
+  .temporal__lane-label strong {
+    font-size: 0.73rem;
+    letter-spacing: -0.005em;
+  }
+
+  .temporal__track {
+    min-height: 3.55rem;
+    align-items: center;
+    border-bottom: 1px solid rgb(232 237 242);
+    background:
+      repeating-linear-gradient(
+        to right,
+        transparent 0,
+        transparent calc((100% / var(--months)) - 1px),
+        rgb(226 232 240) calc((100% / var(--months)) - 1px),
+        rgb(226 232 240) calc(100% / var(--months))
+      );
+  }
+
+  .temporal__item {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    min-width: 0;
+    min-height: 2.1rem;
+    gap: 0.15rem;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0.38rem 0.34rem;
+    padding: 0.36rem 0.58rem;
+    overflow: hidden;
+    border: 1px solid rgb(var(--lane-rgb) / 0.35);
+    border-radius: 0.58rem;
+    background: rgb(var(--lane-rgb) / 0.12);
+    color: rgb(22 37 56);
+  }
+
+  .temporal__item span {
+    overflow: hidden;
+    font-size: 0.71rem;
+    font-weight: 700;
+    line-height: 1.15;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .temporal__item small {
+    color: rgb(82 96 113);
+    font-size: 0.58rem;
+    line-height: 1.1;
+  }
+
+  .temporal__item--fixed {
+    border-color: rgb(var(--lane-rgb) / 0.78);
+    background: rgb(var(--lane-rgb) / 0.2);
+  }
+
+  .temporal__item--bounded {
+    border-color: rgb(var(--lane-rgb) / 0.42);
+    background:
+      linear-gradient(90deg, rgb(var(--lane-rgb) / 0.2), rgb(var(--lane-rgb) / 0.1));
+  }
+
+  .temporal__item--open {
+    border-style: dashed;
+    background:
+      linear-gradient(90deg, rgb(var(--lane-rgb) / 0.12), rgb(var(--lane-rgb) / 0.035));
+  }
+
+  .temporal__item--milestone {
+    border-color: rgb(var(--lane-rgb) / 0.7);
+    box-shadow: inset 3px 0 0 rgb(var(--lane-rgb));
+  }
+
+  .temporal__today {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgb(15 27 46 / 0.3);
+    pointer-events: none;
+  }
+
+  .temporal__today--header {
+    z-index: 5;
+  }
+
+  .temporal__today--header span {
+    position: absolute;
+    top: 0.18rem;
+    left: 0.28rem;
+    padding: 0.08rem 0.25rem;
+    border-radius: 0.25rem;
+    background: rgb(15 27 46);
+    color: white;
+    font-size: 0.54rem;
+    font-weight: 750;
+    letter-spacing: 0.07em;
+    white-space: nowrap;
+  }
+
+  .temporal__legend {
+    display: flex;
+    gap: 0.8rem 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 0.65rem;
+    color: rgb(82 96 113);
+    font-size: 0.64rem;
+  }
+
+  .temporal__legend > span {
+    display: inline-flex;
+    gap: 0.35rem;
+    align-items: center;
+  }
+
+  .temporal__legend-mark {
+    display: inline-block;
+    width: 1.1rem;
+    height: 0.42rem;
+    border: 1px solid rgb(82 96 113 / 0.38);
+    border-radius: 999px;
+    background: rgb(82 96 113 / 0.1);
+  }
+
+  .temporal__legend-mark--open {
+    border-style: dashed;
+    background: linear-gradient(90deg, rgb(82 96 113 / 0.1), transparent);
+  }
+
+  .temporal__legend-source {
+    margin-left: auto;
+  }
+
+  @media (max-width: 720px) {
+    .temporal__heading {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .temporal__board {
+      grid-template-columns: 7.75rem minmax(52rem, 1fr);
+      min-width: 60rem;
+    }
+
+    .temporal__lane-label {
+      padding-inline: 0.65rem;
+    }
+
+    .temporal__legend-source {
+      width: 100%;
+      margin-left: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .temporal__viewport {
+      scroll-behavior: auto;
+    }
+  }
+</style>

@@ -7,6 +7,7 @@ import { groupedVisEntries, wireframeIndexEntries } from "../../lib/vis-wirefram
 import { visProjectStateV01 } from "../../data/vis-project-state-v01.ts";
 import { roadmapHorizons } from "../../data/vis-roadmap-horizons-v01.ts";
 import { loadVisRoadmapProjectionV02 } from "../../data/load-vis-roadmap-projection-v02.ts";
+import RoadmapTemporalTimeline from "../../components/vis/RoadmapTemporalTimeline.astro";
 
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
@@ -203,6 +204,12 @@ const roadmapPreviewWatch = roadmapFrontPreview.watch
           }
         </p>
       </section>
+
+      <RoadmapTemporalTimeline
+        timeline={roadmapProjection.temporalTimeline}
+        sourceState={roadmapSourceState}
+        detailHref={internalHref("/vis/system/roadmap-timeline-v01")}
+      />
 
       <div class="project-state__grid">
         <section aria-labelledby="priorities-title">

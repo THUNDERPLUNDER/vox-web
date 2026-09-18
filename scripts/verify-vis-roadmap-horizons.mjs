@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import {
   githubIssueHref,
   roadmapInitiatives,
+  roadmapTemporalTimeline,
   roadmapWatchSignals,
   validateRoadmapProjection,
 } from "../src/data/vis-roadmap-horizons-v01.ts";
@@ -34,6 +35,14 @@ assert.ok(
 assert.ok(
   !roadmapWatchSignals.some((signal) => signal.id === "funding-terms"),
   "the resolved IN decision must not remain an open WATCH signal",
+);
+
+assert.equal(roadmapTemporalTimeline.lanes.length, 4, "temporal fallback must expose four orientation lanes");
+assert.equal(roadmapTemporalTimeline.startMonth, "2026-09");
+assert.equal(roadmapTemporalTimeline.endMonth, "2027-01");
+assert.ok(
+  roadmapTemporalTimeline.items.every((item) => item.sourceInitiativeIds.length > 0),
+  "every temporal item must retain roadmap provenance",
 );
 
 const baseline = roadmapInitiatives[0];
@@ -79,6 +88,14 @@ assert.ok(
   "every initiative must keep a GitHub drill-down",
 );
 
+const temporalSource = await readFile(
+  new URL("../src/components/vis/RoadmapTemporalTimeline.astro", import.meta.url),
+  "utf8",
+);
+assert.ok(temporalSource.includes("I DAG"), "temporal timeline must expose a visible today marker");
+assert.ok(temporalSource.includes("overflow-x: auto"), "temporal timeline must preserve horizontal orientation on narrow screens");
+assert.ok(temporalSource.includes("timingLabels"), "temporal timing confidence must be available as text, not color alone");
+
 const cardSource = await readFile(
   new URL("../src/components/vis/RoadmapInitiativeCard.astro", import.meta.url),
   "utf8",
@@ -99,6 +116,16 @@ const remoteResponse = await fetch(ROADMAP_PROJECTION_V02_URL, { cache: "no-stor
 assert.ok(remoteResponse.ok, `approved v0.2 state source must be reachable (${remoteResponse.status})`);
 const remoteProjection = await remoteResponse.json();
 assert.deepEqual(validateRoadmapProjectionV02(remoteProjection), [], "approved v0.2 projection must validate");
+assert.equal(remoteProjection.temporalTimeline.startMonth, "2026-09", "approved temporal projection must start in September");
+assert.equal(remoteProjection.temporalTimeline.endMonth, "2027-01", "approved temporal projection must end in January");
+assert.equal(remoteProjection.temporalTimeline.lanes.length, 4, "approved temporal projection must expose four lanes");
+const invalidTemporalFixture = structuredClone(remoteProjection);
+invalidTemporalFixture.temporalTimeline.items[0].sourceInitiativeIds = ["missing-initiative"];
+assert.ok(
+  validateRoadmapProjectionV02(invalidTemporalFixture).some((error) => error.includes("Unknown temporal source initiative")),
+  "temporal items must not reference unknown roadmap initiatives",
+);
+
 const richWatchFixture = structuredClone(remoteProjection);
 richWatchFixture.watchSignals = [
   ...richWatchFixture.watchSignals,
