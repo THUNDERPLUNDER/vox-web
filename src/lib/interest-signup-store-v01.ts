@@ -68,6 +68,10 @@ export async function saveInterestSignup(
       ${input.source},
       ${environment}
     )
-    ON CONFLICT (email) DO NOTHING
+    ON CONFLICT (email) DO UPDATE SET
+      consent_at = NOW(),
+      consent_version = EXCLUDED.consent_version,
+      source = EXCLUDED.source,
+      environment = EXCLUDED.environment
   `;
 }
