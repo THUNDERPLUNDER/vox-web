@@ -1,0 +1,143 @@
+---
+/* CONTRACT: Password-protected read-only view of public interest signups (#455). Not CRM. */
+import "../../styles/global.css";
+import { hasValidLabSession, isLabRouteAvailable } from "../../lib/lab-auth-v01.ts";
+import { listInterestSignups, type InterestSignupRecord } from "../../lib/interest-signup-store-v01.ts";
+
+export const prerender = false;
+
+if (!isLabRouteAvailable()) {
+  return new Response(null, { status: 404, statusText: "Not Found" });
+}
+
+if (!hasValidLabSession(Astro.request)) {
+  return Astro.redirect(`/lab/login?return=${encodeURIComponent("/lab/interesse")}`);
+}
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
+Astro.response.headers.set("Cache-Control", "private, no-store, max-age=0");
+
+let records: InterestSignupRecord[] = [];
+let loadError = "";
+
+try {
+  records = await listInterestSignups();
+} catch {
+  loadError = "Kunne ikke hente interessentlisten akkurat nå.";
+}
+
+const dateFormatter = new Intl.DateTimeFormat("nb-NO", {
+  dateStyle: "short",
+  timeStyle: "short",
+  timeZone: "Europe/Oslo",
+});
+
+const formatDate = (iso: string) => {
+  const date = new Date(iso);
+  return Number.isNaN(date.getTime()) ? "—" : dateFormatter.format(date);
+};
+
+const environmentLabel = (value: string) => {
+  if (value === "production") return "Produksjon";
+  if (value === "preview") return "Preview";
+  return value || "Ukjent";
+};
+---
+
+<!doctype html>
+<html lang="no" data-theme="system">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Viddel Lab · Interesse</title>
+  </head>
+  <body class="min-h-dvh bg-[rgb(var(--bg))] text-[rgb(var(--text))] antialiased">
+    <main class="mx-auto flex w-full max-w-6xl flex-col gap-7 px-4 py-8 sm:px-6 sm:py-12">
+      <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div class="space-y-1">
+          <p class="text-xs font-medium uppercase tracking-[0.14em] text-[rgb(var(--muted))]">Viddel Lab</p>
+          <h1 class="font-display text-3xl font-semibold tracking-tight">Interessenter</h1>
+          <p class="text-sm text-[rgb(var(--muted))]">
+            <strong class="text-[rgb(var(--text))]">{records.length}</strong>
+            {records.length === 1 ? " registrert adresse" : " registrerte adresser"}
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <a
+            href="/api/lab/interest-signups.csv"
+            class="inline-flex items-center rounded-full border border-[rgb(var(--border))] px-3.5 py-2 text-sm font-medium text-[rgb(var(--text))] no-underline hover:bg-[rgb(var(--surface-subtle))]"
+          >
+            Last ned CSV
+          </a>
+          <button
+            id="lab-logout"
+            type="button"
+            class="rounded-full border border-[rgb(var(--border))] px-3.5 py-2 text-sm font-medium hover:bg-[rgb(var(--surface-subtle))]"
+          >
+            Logg ut
+          </button>
+        </div>
+      </header>
+
+      {
+        loadError ? (
+          <p class="rounded-[var(--radius-md)] border border-[rgb(var(--border))] bg-[rgb(var(--surface-elevated))] p-4 text-sm">
+            {loadError}
+          </p>
+        ) : records.length === 0 ? (
+          <p class="rounded-[var(--radius-md)] border border-[rgb(var(--border))] bg-[rgb(var(--surface-elevated))] p-5 text-sm text-[rgb(var(--muted))]">
+            Ingen registrerte adresser ennå.
+          </p>
+        ) : (
+          <section aria-label="Registrerte interessenter" class="overflow-hidden rounded-[var(--radius-md)] border border-[rgb(var(--border))] bg-[rgb(var(--surface-elevated))]">
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[760px] border-collapse text-left text-sm">
+                <thead class="bg-[rgb(var(--surface-subtle))] text-xs uppercase tracking-wide text-[rgb(var(--muted))]">
+                  <tr>
+                    <th class="px-4 py-3 font-medium">E-post</th>
+                    <th class="px-4 py-3 font-medium">Første registrering</th>
+                    <th class="px-4 py-3 font-medium">Sist bekreftet</th>
+                    <th class="px-4 py-3 font-medium">Kilde</th>
+                    <th class="px-4 py-3 font-medium">Miljø</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {records.map((record) => (
+                    <tr class="border-t border-[rgb(var(--border))] align-top">
+                      <td class="px-4 py-3.5 font-medium">
+                        <a class="text-[rgb(var(--text))] underline decoration-[rgb(var(--border))] underline-offset-4 hover:decoration-current" href={`mailto:${record.email}`}>
+                          {record.email}
+                        </a>
+                      </td>
+                      <td class="whitespace-nowrap px-4 py-3.5 text-[rgb(var(--muted))]">{formatDate(record.createdAt)}</td>
+                      <td class="whitespace-nowrap px-4 py-3.5 text-[rgb(var(--muted))]">{formatDate(record.consentAt)}</td>
+                      <td class="px-4 py-3.5 text-[rgb(var(--muted))]">{record.source}</td>
+                      <td class="px-4 py-3.5">
+                        <span class="inline-flex rounded-full bg-[rgb(var(--surface-subtle))] px-2.5 py-1 text-xs font-medium">
+                          {environmentLabel(record.environment)}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )
+      }
+
+      <p class="max-w-2xl text-xs leading-relaxed text-[rgb(var(--muted))]">
+        Intern read-only flate. Ingen tagging, notater, utsendelser eller profilkobling.
+      </p>
+    </main>
+
+    <script>
+      document.getElementById("lab-logout")?.addEventListener("click", async () => {
+        await fetch("/api/lab/logout", { method: "POST", credentials: "same-origin" });
+        window.location.href = "/lab/login?return=/lab/interesse";
+      });
+    </script>
+  </body>
+</html>
