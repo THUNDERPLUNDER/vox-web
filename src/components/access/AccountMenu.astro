@@ -1,0 +1,250 @@
+---
+/* CONTRACT: Discreet global Viddel Access control. Client reads only current access state. #457 */
+type Props = {
+  variant?: "header" | "mobile" | "public";
+};
+
+const { variant = "header" } = Astro.props as Props;
+---
+
+<div
+  class:list={[
+    "viddel-account",
+    variant === "mobile" && "viddel-account--mobile",
+    variant === "public" && "viddel-account--public",
+  ]}
+  data-viddel-account
+  data-account-variant={variant}
+  hidden
+>
+  <a class="viddel-account__login" href="/login" data-account-login>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <circle cx="12" cy="8" r="3.5"></circle>
+      <path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path>
+    </svg>
+    <span class="viddel-account__login-label">Logg inn</span>
+  </a>
+
+  <div class="viddel-account__session" data-account-session hidden>
+    <button
+      type="button"
+      class="viddel-account__trigger"
+      data-account-trigger
+      aria-haspopup="menu"
+      aria-expanded="false"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <circle cx="12" cy="8" r="3.5"></circle>
+        <path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path>
+      </svg>
+      <span data-account-role-label>Konto</span>
+    </button>
+
+    <div class="viddel-account__menu" data-account-menu role="menu" hidden>
+      <a href="/admin" data-account-admin role="menuitem" hidden>Admin</a>
+      <a href="/partner" data-account-partner role="menuitem" hidden>Partnerområde</a>
+      <button type="button" data-account-logout role="menuitem">Logg ut</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { accessAuthClient } from "../../lib/access-auth-client-v01";
+
+  const closeAllAccountMenus = () => {
+    document.querySelectorAll<HTMLElement>("[data-account-menu]").forEach((menu) => {
+      menu.hidden = true;
+    });
+    document.querySelectorAll<HTMLButtonElement>("[data-account-trigger]").forEach((button) => {
+      button.setAttribute("aria-expanded", "false");
+    });
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-viddel-account]").forEach(async (root) => {
+    const login = root.querySelector<HTMLElement>("[data-account-login]");
+    const sessionWrap = root.querySelector<HTMLElement>("[data-account-session]");
+    const trigger = root.querySelector<HTMLButtonElement>("[data-account-trigger]");
+    const menu = root.querySelector<HTMLElement>("[data-account-menu]");
+    const roleLabel = root.querySelector<HTMLElement>("[data-account-role-label]");
+    const adminLink = root.querySelector<HTMLElement>("[data-account-admin]");
+    const partnerLink = root.querySelector<HTMLElement>("[data-account-partner]");
+    const logout = root.querySelector<HTMLButtonElement>("[data-account-logout]");
+
+    if (!login || !sessionWrap || !trigger || !menu || !roleLabel || !adminLink || !partnerLink || !logout) {
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/access/me", {
+        credentials: "same-origin",
+        headers: { Accept: "application/json" },
+      });
+      const state = await response.json();
+
+      if (!state.configured) return;
+
+      root.hidden = false;
+
+      if (!state.authenticated) {
+        login.hidden = false;
+        sessionWrap.hidden = true;
+        return;
+      }
+
+      login.hidden = true;
+      sessionWrap.hidden = false;
+
+      const isAdmin = state.role === "admin";
+      roleLabel.textContent = isAdmin ? "Admin" : "Partner";
+      adminLink.hidden = !isAdmin;
+      partnerLink.hidden = false;
+
+      trigger.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const willOpen = menu.hidden;
+        closeAllAccountMenus();
+        menu.hidden = !willOpen;
+        trigger.setAttribute("aria-expanded", willOpen ? "true" : "false");
+      });
+
+      logout.addEventListener("click", async () => {
+        await accessAuthClient.signOut();
+        window.location.href = "/";
+      });
+    } catch {
+      root.hidden = true;
+    }
+  });
+
+  document.addEventListener("click", closeAllAccountMenus);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeAllAccountMenus();
+  });
+</script>
+
+<style>
+  .viddel-account {
+    position: relative;
+    flex: none;
+  }
+
+  .viddel-account__login,
+  .viddel-account__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.25rem;
+    padding: 0.45rem 0.72rem;
+    border: 1px solid rgb(var(--border) / 0.65);
+    border-radius: 999px;
+    background: rgb(var(--surface) / 0.34);
+    color: rgb(var(--text));
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .viddel-account__login:hover,
+  .viddel-account__trigger:hover {
+    background: rgb(var(--surface-subtle) / 0.72);
+  }
+
+  .viddel-account svg {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+  }
+
+  .viddel-account__menu {
+    position: absolute;
+    z-index: 120;
+    top: calc(100% + 0.45rem);
+    right: 0;
+    width: max-content;
+    min-width: 10rem;
+    padding: 0.35rem;
+    border: 1px solid rgb(var(--border) / 0.7);
+    border-radius: 0.75rem;
+    background: rgb(var(--surface-elevated));
+    box-shadow: var(--shadow-md);
+  }
+
+  .viddel-account__menu a,
+  .viddel-account__menu button {
+    display: flex;
+    width: 100%;
+    padding: 0.62rem 0.72rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: rgb(var(--text));
+    font: inherit;
+    font-size: 0.82rem;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .viddel-account__menu a:hover,
+  .viddel-account__menu button:hover {
+    background: rgb(var(--surface-subtle));
+  }
+
+  .viddel-account--mobile {
+    width: 100%;
+  }
+
+  .viddel-account--mobile .viddel-account__login,
+  .viddel-account--mobile .viddel-account__trigger {
+    width: 100%;
+    justify-content: flex-start;
+    min-height: 2.75rem;
+    padding-inline: 0.75rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .viddel-account--mobile .viddel-account__menu {
+    position: static;
+    width: 100%;
+    margin-top: 0.35rem;
+    box-shadow: none;
+  }
+
+  .viddel-account--public .viddel-account__login,
+  .viddel-account--public .viddel-account__trigger {
+    background: transparent;
+    color: rgb(var(--reading-ink));
+    border-color: rgb(var(--border) / 0.72);
+  }
+
+  @media (max-width: 767px) {
+    .viddel-account--public .viddel-account__login-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .viddel-account--public .viddel-account__login,
+    .viddel-account--public .viddel-account__trigger {
+      width: 2.35rem;
+      height: 2.35rem;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .viddel-account--public .viddel-account__trigger span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+</style>
